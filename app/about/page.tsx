@@ -86,7 +86,7 @@ export default function AboutPage() {
       <HeroSection
         badge="About BVN"
         headline="Built to Move Businesses Forward."
-        subtext="BVN is a Philippines-based digital agency built for the modern business. From startups to enterprises, we empower brands to grow their digital presence and streamline their operations."
+        subtext="BVN is a global digital agency trusted by 238+ clients worldwide — and now bringing that same world-class expertise to local businesses. From startups to enterprises, we empower brands to grow and scale."
       />
 
       {/* ── About Block ──────────────────────────────────── */}
@@ -108,15 +108,17 @@ export default function AboutPage() {
                 Your All-in-One Growth Partner
               </h2>
               <p className="text-white/60 text-base leading-relaxed mb-5">
-                BVN is a Philippines-based digital agency built for the modern
-                business. From startups to enterprises, we empower brands to
-                grow their digital presence and streamline their operations.
+                BVN is a global digital agency trusted by 238+ clients across
+                multiple countries — and now bringing that same world-class
+                expertise to local businesses. From startups to enterprises,
+                we empower brands to grow their digital presence and
+                streamline their operations.
               </p>
               <p className="text-white/60 text-base leading-relaxed mb-8">
                 With two powerful service branches — Marketing Automation and
                 Operations Automation — we bring together the full spectrum of
                 digital capabilities your business needs to compete and win in
-                today&apos;s fast-paced environment.
+                today&apos;s fast-paced, borderless economy.
               </p>
               <GlowButton href="/contact" variant="filled" showArrow>
                 Work With Us
@@ -126,7 +128,7 @@ export default function AboutPage() {
             {/* Stats block */}
             <div className="grid grid-cols-2 gap-4">
               {[
-                { number: "100+", label: "Clients Served" },
+                { number: "238+", label: "Clients Served" },
                 { number: "2", label: "Service Branches" },
                 { number: "10+", label: "Marketing Services" },
                 { number: "8+", label: "Automation Services" },
@@ -204,13 +206,13 @@ export default function AboutPage() {
                 Our Vision
               </span>
               <h3 className="font-heading font-bold text-white text-2xl mb-4">
-                Philippines&apos; Most Trusted Agency
+                The World&apos;s Most Trusted Agency
               </h3>
               <p className="text-white/60 leading-relaxed">
-                To become the Philippines&apos; most trusted all-in-one digital
-                agency — known for innovation, integrity, and measurable results
-                that transform businesses and create lasting value for our
-                clients.
+                To become the world&apos;s most trusted all-in-one digital
+                agency — known globally for innovation, integrity, and
+                measurable results, while remaining the go-to partner for
+                local businesses ready to scale.
               </p>
             </motion.div>
           </motion.div>

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About BVN — Philippines Digital Marketing & Automation Agency",
+  title: "About BVN — Global Digital Marketing & Automation Agency",
   description:
-    "Learn about BVN — a Philippines-based digital agency combining marketing expertise and business automation to help Filipino businesses scale faster. Our team, mission, and values.",
+    "Learn about BVN — a global digital agency trusted by 238+ clients worldwide, combining marketing expertise and business automation to help businesses scale. Now serving local clients too.",
   keywords:
-    "about BVN Philippines, BVN digital agency, digital marketing agency Philippines about, business automation company Philippines",
+    "about BVN, BVN digital agency, global digital marketing agency, business automation company, international marketing agency Philippines",
   openGraph: {
     title: "About BVN — Philippines Digital Marketing & Automation Agency",
     description:
