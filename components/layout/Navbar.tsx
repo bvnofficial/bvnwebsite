@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Menu, X, ChevronDown,
@@ -207,30 +208,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
         <nav className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="flex items-center gap-1">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 28 28"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="group-hover:scale-110 transition-transform"
-              >
-                <polygon
-                  points="4,24 14,4 24,24 14,18"
-                  fill="#E86010"
-                  stroke="#F5A623"
-                  strokeWidth="1"
-                />
-              </svg>
-              <span
-                className="font-heading font-extrabold text-2xl tracking-tight"
-                style={{ color: "#FFFFFF" }}
-              >
-                BVN
-              </span>
-            </span>
+          <Link href="/" className="flex items-center group">
+            <Image
+              src="/bvn-logo.png"
+              alt="BVN Logo"
+              width={52}
+              height={52}
+              className="group-hover:scale-105 transition-transform duration-200"
+              priority
+            />
           </Link>
 
           {/* Desktop Nav */}

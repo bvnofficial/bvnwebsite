@@ -51,7 +51,7 @@ const organizationJsonLd = {
   "@type": "Organization",
   name: "BVN",
   url: "https://www.bvnofficial.com",
-  logo: "https://www.bvnofficial.com/logo.png",
+  logo: "https://www.bvnofficial.com/bvn-logo.png",
   description:
     "BVN is a Philippines-based digital marketing and business automation agency helping Filipino businesses scale through marketing excellence and intelligent operations automation.",
   contactPoint: {
