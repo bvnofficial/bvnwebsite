@@ -3,6 +3,12 @@ const nextConfig = {
   images: {
     domains: ["www.bvnofficial.com"],
   },
+  async rewrites() {
+    return [
+      { source: "/x1r", destination: "/x1r/index.html" },
+      { source: "/x1r/", destination: "/x1r/index.html" },
+    ];
+  },
   async headers() {
     return [
       {
