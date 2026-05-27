@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3 } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 
@@ -14,6 +14,15 @@ const apps = [
     href: "/apps/solar-calculator",
     badge: "Free Tool",
     color: "yellow",
+  },
+  {
+    icon: Grid3X3,
+    title: "Tile Calculator",
+    description:
+      "Draw your room or floor area on a grid, choose your tile size, and instantly see how many tiles you need — with a live tile overlay preview and waste factor.",
+    href: "/apps/tile-calculator",
+    badge: "Free Tool",
+    color: "orange",
   },
 ];
 

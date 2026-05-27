@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tile Calculator – Draw Your Room & Count Tiles</title>
+<meta name="description" content="Free visual tile calculator. Draw your room or floor area on a grid, choose your tile size, and instantly see how many tiles you need — with a live tile overlay preview." />
+<meta name="keywords" content="tile calculator, floor tile estimator, room tile count, tile layout planner, how many tiles do I need" />
+<meta property="og:title" content="Tile Calculator – Draw Your Room & Count Tiles" />
+<meta property="og:description" content="Draw any room shape, pick your tile size, and get an instant tile count with waste factor. Free and easy to use." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='14' height='14' x='1' y='1' rx='2' fill='%23e8d5b7' stroke='%23a89070' stroke-width='1.5'/><rect width='14' height='14' x='17' y='1' rx='2' fill='%23c8b9a0' stroke='%23a89070' stroke-width='1.5'/><rect width='14' height='14' x='1' y='17' rx='2' fill='%23c8b9a0' stroke='%23a89070' stroke-width='1.5'/><rect width='14' height='14' x='17' y='17' rx='2' fill='%23e8d5b7' stroke='%23a89070' stroke-width='1.5'/></svg>" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: system-ui, -apple-system, sans-serif; background: #f1ede8; }
+  body { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    width: 270px; min-width: 270px; background: #fff;
+    border-right: 1px solid #e0dbd4;
+    display: flex; flex-direction: column; overflow-y: auto;
+  }
+  .brand {
+    padding: 14px 16px 11px;
+    border-bottom: 1px solid #e8e3dd;
+  }
+  .brand h1 { font-size: 17px; font-weight: 700; color: #1a1614; letter-spacing: -0.02em; }
+  .brand p  { margin-top: 3px; font-size: 11px; color: #8a807a; }
+
+  .section {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e8e3dd;
+  }
+  .section-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .07em; color: #7a706a; display: block; margin-bottom: 6px;
+  }
+
+  /* Tool buttons */
+  .tool-row { display: flex; gap: 6px; }
+  .tool-btn {
+    flex: 1; padding: 7px 8px; font-size: 11px; font-weight: 500;
+    background: #f5f0ea; border: 1px solid #ddd8d0; border-radius: 5px;
+    cursor: pointer; color: #3a3330; transition: all .12s;
+  }
+  .tool-btn.active { background: #1a1614; color: #f5f0e8; border-color: #1a1614; }
+  .tool-hint { margin-top: 5px; font-size: 10px; color: #9a918a; line-height: 1.4; }
+
+  /* Chips */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .chip {
+    padding: 3px 7px; font-size: 10px; background: #f5f0ea;
+    border: 1px solid #ddd8d0; border-radius: 4px; cursor: pointer; color: #4a4240;
+    transition: all .12s;
+  }
+  .chip.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+  /* Inputs */
+  .row2 { display: flex; gap: 6px; }
+  .field { flex: 1; }
+  .field label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: #7a706a; display: block; margin-bottom: 3px; }
+  input[type=number], select {
+    width: 100%; padding: 5px 6px; font-size: 12px;
+    border: 1px solid #ddd8d0; border-radius: 5px; background: #fafaf8; color: #3a3330;
+  }
+  input[type=number]:focus, select:focus { outline: none; border-color: #2563eb; }
+
+  /* Color swatches */
+  .swatch-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+  .swatch {
+    width: 24px; height: 24px; border-radius: 3px; border: 1px solid #ccc8c0;
+    cursor: pointer; padding: 0; transition: border .1s;
+  }
+  .swatch.active { border: 2px solid #1a1614; }
+  input[type=color] { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #ccc8c0; cursor: pointer; padding: 1px; }
+
+  .checkbox-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: #3a3330; cursor: pointer; user-select: none;
+    margin-top: 2px;
+  }
+
+  /* Results panel */
+  #results {
+    padding: 14px 16px; background: #18120e; color: #f5f0e8; flex: 1;
+  }
+  .results-header { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: #7a6e68; margin-bottom: 10px; }
+  .tile-count { font-size: 40px; font-weight: 800; line-height: 1; color: #f59e0b; font-variant-numeric: tabular-nums; }
+  .tile-count-sub { font-size: 11px; color: #8a7e78; margin-top: 2px; margin-bottom: 12px; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stat-box { background: rgba(255,255,255,.05); border-radius: 5px; padding: 8px 10px; }
+  .stat-label { font-size: 9px; color: #7a6e68; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+  .stat-val { font-size: 13px; font-weight: 600; }
+  .stat-sub { font-size: 10px; color: #5a504a; margin-top: 1px; }
+
+  /* Action row */
+  #actions {
+    padding: 10px 16px; display: flex; gap: 6px;
+    background: #fff; border-top: 1px solid #e8e3dd;
+  }
+  .act-btn {
+    flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 500;
+    background: #f5f0ea; border: 1px solid #ddd8d0; border-radius: 5px;
+    cursor: pointer; color: #3a3330;
+  }
+  .act-btn.danger { color: #dc2626; }
+
+  /* Canvas area */
+  #canvas-wrap {
+    flex: 1; overflow: auto; padding: 22px;
+    display: flex; align-items: flex-start;
+  }
+  .canvas-container { position: relative; }
+  canvas {
+    display: block; cursor: crosshair;
+    border-radius: 6px; box-shadow: 0 2px 16px rgba(0,0,0,.13);
+    border: 1px solid #ddd8d0;
+  }
+  #hint-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,.9); border-radius: 5px; padding: 5px 10px;
+    font-size: 11px; color: #5a524e; border: 1px solid #e0dbd4;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<div id="sidebar">
+  <div class="brand">
+    <h1>Tile Calculator</h1>
+    <p>Draw your room &middot; count your tiles</p>
+  </div>
+
+  <!-- Drawing tool -->
+  <div class="section">
+    <span class="section-label">Drawing Tool</span>
+    <div class="tool-row">
+      <button class="tool-btn active" id="btn-rect" onclick="setTool('rect')">⬜ Rectangle</button>
+      <button class="tool-btn"        id="btn-poly" onclick="setTool('poly')">⬡ Polygon</button>
+    </div>
+    <p class="tool-hint" id="tool-hint">Click &amp; drag to draw a room</p>
+  </div>
+
+  <!-- Scale -->
+  <div class="section">
+    <label class="section-label" for="scale-sel">Grid Scale</label>
+    <select id="scale-sel" onchange="onScaleChange()">
+      <option value="0">1 square = 1 ft</option>
+      <option value="1">1 square = 0.5 ft</option>
+      <option value="2">1 square = 1 m</option>
+      <option value="3">1 square = 0.5 m</option>
+    </select>
+  </div>
+
+  <!-- Tile size -->
+  <div class="section">
+    <span class="section-label">Tile Size</span>
+    <div class="chip-row" id="preset-chips"></div>
+    <div class="row2">
+      <div class="field">
+        <label for="tile-w">Width</label>
+        <input type="number" id="tile-w" min="0.1" step="0.1" value="12" oninput="onTileChange(); selectChip(5)" />
+      </div>
+      <div class="field">
+        <label for="tile-h">Height</label>
+        <input type="number" id="tile-h" min="0.1" step="0.1" value="12" oninput="onTileChange(); selectChip(5)" />
+      </div>
+      <div class="field">
+        <label for="tile-unit">Unit</label>
+        <select id="tile-unit" onchange="onTileChange(); selectChip(5)">
+          <option value="in" selected>in</option>
+          <option value="ft">ft</option>
+          <option value="cm">cm</option>
+          <option value="m">m</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grout & Waste -->
+  <div class="section">
+    <div class="row2">
+      <div class="field">
+        <label for="grout">Grout (inches)</label>
+        <input type="number" id="grout" min="0" step="0.0625" value="0.125" oninput="redraw()" />
+      </div>
+      <div class="field">
+        <label for="waste">Waste %</label>
+        <input type="number" id="waste" min="0" max="50" value="10" oninput="updateResults()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Color -->
+  <div class="section">
+    <span class="section-label">Tile Color</span>
+    <div class="swatch-row" id="swatch-row"></div>
+    <label class="checkbox-label">
+      <input type="checkbox" id="show-tiles" checked onchange="redraw()" />
+      Show tile overlay on canvas
+    </label>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="results-header">Results</div>
+    <div class="tile-count" id="r-count">—</div>
+    <div class="tile-count-sub" id="r-sub">draw a room to calculate</div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-label">Total area</div><div class="stat-val" id="r-area">—</div><div class="stat-sub" id="r-area2"></div></div>
+      <div class="stat-box"><div class="stat-label">Base count</div><div class="stat-val" id="r-base">—</div><div class="stat-sub" id="r-base2"></div></div>
+      <div class="stat-box"><div class="stat-label">Rooms drawn</div><div class="stat-val" id="r-rooms">0</div><div class="stat-sub"></div></div>
+      <div class="stat-box"><div class="stat-label">Tile size</div><div class="stat-val" id="r-size">12×12</div><div class="stat-sub" id="r-unit">in</div></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div id="actions">
+    <button class="act-btn" onclick="undoShape()">↩ Undo</button>
+    <button class="act-btn danger" onclick="clearAll()">✕ Clear All</button>
+  </div>
+</div>
+
+<!-- ── Canvas ── -->
+<div id="canvas-wrap">
+  <div class="canvas-container">
+    <canvas id="canvas" width="1200" height="800"></canvas>
+    <div id="hint-badge">Click &amp; drag to draw a room</div>
+  </div>
+</div>
+
+<script>
+// ─── Config ──────────────────────────────────────────────────────────────────
+const GRID_PX = 60;
+const SCALES = [
+  { label: '1 ft', cellUnit: 'ft', cellSize: 1 },
+  { label: '0.5 ft', cellUnit: 'ft', cellSize: 0.5 },
+  { label: '1 m', cellUnit: 'm', cellSize: 1 },
+  { label: '0.5 m', cellUnit: 'm', cellSize: 0.5 },
+];
+const PRESETS = [
+  { label: '12" × 12"', w: 12, h: 12, unit: 'in' },
+  { label: '18" × 18"', w: 18, h: 18, unit: 'in' },
+  { label: '24" × 24"', w: 24, h: 24, unit: 'in' },
+  { label: '30 × 30 cm', w: 30, h: 30, unit: 'cm' },
+  { label: '60 × 60 cm', w: 60, h: 60, unit: 'cm' },
+  { label: 'Custom', w: 0, h: 0, unit: 'in' },
+];
+const COLORS = [
+  '#e8d5b7','#c8b9a0','#a89070','#d4c5b0',
+  '#f5f0e8','#e0ddd5','#b8c4cc','#8fa8b8',
+  '#d4b8b0','#c0a898','#8b9e8a','#a8c4a0',
+];
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let shapes = [];       // { type:'rect', x,y,w,h } | { type:'poly', points:[{x,y}] }
+let tool = 'rect';
+let scaleIdx = 0;
+let tileColor = COLORS[0];
+
+// drawing state
+let drawing = false;
+let rectStart = null;
+let rectCurrent = null;
+let polyPoints = [];
+let polyMouse = null;
+
+// ─── Unit helpers ─────────────────────────────────────────────────────────────
+function toInches(v, u) {
+  if (u === 'in') return v;
+  if (u === 'ft') return v * 12;
+  if (u === 'm')  return v * 39.3701;
+  if (u === 'cm') return v * 0.393701;
+  return v;
+}
+
+// ─── Geometry ─────────────────────────────────────────────────────────────────
+function shapeArea(shape) {
+  if (shape.type === 'rect') return shape.w * shape.h;
+  const pts = shape.points;
+  let area = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const j = (i + 1) % pts.length;
+    area += pts[i].x * pts[j].y - pts[j].x * pts[i].y;
+  }
+  return Math.abs(area) / 2;
+}
+
+function snap(v) { return Math.round(v / GRID_PX); }
+
+// ─── Canvas setup ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function evPt(e) {
+  const r = canvas.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+// ─── Drawing ──────────────────────────────────────────────────────────────────
+function redraw() {
+  const W = canvas.width, H = canvas.height;
+  const scale = SCALES[scaleIdx];
+  const showTiles = document.getElementById('show-tiles').checked;
+  const grout = parseFloat(document.getElementById('grout').value) || 0;
+  const tw = parseFloat(document.getElementById('tile-w').value) || 12;
+  const th = parseFloat(document.getElementById('tile-h').value) || 12;
+  const tUnit = document.getElementById('tile-unit').value;
+
+  const cellInches = toInches(scale.cellSize, scale.cellUnit);
+  const tileWIn = toInches(tw, tUnit) + toInches(grout, 'in');
+  const tileHIn = toInches(th, tUnit) + toInches(grout, 'in');
+  const tilePxW = (tileWIn / cellInches) * GRID_PX;
+  const tilePxH = (tileHIn / cellInches) * GRID_PX;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#f8f7f4';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#d9d4cc';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x += GRID_PX) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y <= H; y += GRID_PX) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Axis labels
+  ctx.fillStyle = '#bbb';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'left';
+  for (let gx = 0; gx * GRID_PX <= W; gx += 5) {
+    ctx.fillText(`${gx * scale.cellSize}${scale.cellUnit}`, gx * GRID_PX + 3, 11);
+  }
+  ctx.textAlign = 'right';
+  for (let gy = 5; gy * GRID_PX <= H; gy += 5) {
+    ctx.fillText(`${gy * scale.cellSize}${scale.cellUnit}`, GRID_PX - 3, gy * GRID_PX - 3);
+  }
+
+  // Draw shapes
+  shapes.forEach(shape => drawShape(shape, tilePxW, tilePxH, showTiles, scale));
+
+  // In-progress rect
+  if (tool === 'rect' && drawing && rectCurrent) {
+    const sx = rectStart.x, sy = rectStart.y;
+    const ex = rectCurrent.x, ey = rectCurrent.y;
+    const gx = Math.min(snap(sx), snap(ex)) * GRID_PX;
+    const gy = Math.min(snap(sy), snap(ey)) * GRID_PX;
+    const gw = Math.abs(snap(ex) - snap(sx)) * GRID_PX;
+    const gh = Math.abs(snap(ey) - snap(sy)) * GRID_PX;
+    ctx.setLineDash([6, 3]);
+    ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2;
+    ctx.strokeRect(gx, gy, gw, gh);
+    ctx.fillStyle = 'rgba(59,130,246,.1)';
+    ctx.fillRect(gx, gy, gw, gh);
+    ctx.setLineDash([]);
+    if (gw > 20 && gh > 20) {
+      const wCells = Math.abs(snap(ex) - snap(sx));
+      const hCells = Math.abs(snap(ey) - snap(sy));
+      ctx.fillStyle = '#2563eb'; ctx.font = 'bold 11px monospace'; ctx.textAlign = 'center';
+      ctx.fillText(`${(wCells * scale.cellSize).toFixed(1)} × ${(hCells * scale.cellSize).toFixed(1)} ${scale.cellUnit}`, gx + gw / 2, gy + gh / 2);
+    }
+  }
+
+  // In-progress polygon
+  if (tool === 'poly' && polyPoints.length > 0) {
+    ctx.setLineDash([5, 3]);
+    ctx.strokeStyle = '#059669'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(polyPoints[0].x * GRID_PX, polyPoints[0].y * GRID_PX);
+    polyPoints.slice(1).forEach(p => ctx.lineTo(p.x * GRID_PX, p.y * GRID_PX));
+    if (polyMouse) ctx.lineTo(polyMouse.x, polyMouse.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    polyPoints.forEach((p, i) => {
+      ctx.beginPath();
+      ctx.arc(p.x * GRID_PX, p.y * GRID_PX, i === 0 ? 7 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = i === 0 ? '#ef4444' : '#059669';
+      ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+    });
+  }
+
+  updateResults();
+}
+
+function drawShape(shape, tilePxW, tilePxH, showTiles, scale) {
+  if (shape.type === 'rect') {
+    const px = shape.x * GRID_PX, py = shape.y * GRID_PX;
+    const pw = shape.w * GRID_PX, ph = shape.h * GRID_PX;
+
+    if (showTiles && tilePxW > 3 && tilePxH > 3) {
+      ctx.save();
+      ctx.beginPath(); ctx.rect(px, py, pw, ph); ctx.clip();
+      const cols = Math.ceil(pw / tilePxW) + 1;
+      const rows = Math.ceil(ph / tilePxH) + 1;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          ctx.fillStyle = tileColor;
+          ctx.fillRect(px + c * tilePxW + .5, py + r * tilePxH + .5, tilePxW - 1, tilePxH - 1);
+          ctx.strokeStyle = 'rgba(80,55,30,.22)'; ctx.lineWidth = .8;
+          ctx.strokeRect(px + c * tilePxW + .5, py + r * tilePxH + .5, tilePxW - 1, tilePxH - 1);
+        }
+      }
+      ctx.restore();
+    } else {
+      ctx.fillStyle = 'rgba(59,130,246,.15)';
+      ctx.fillRect(px, py, pw, ph);
+    }
+
+    ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2;
+    ctx.strokeRect(px, py, pw, ph);
+
+    // Dimension labels
+    ctx.fillStyle = '#1d4ed8'; ctx.font = 'bold 11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${(shape.w * scale.cellSize).toFixed(1)} ${scale.cellUnit}`, px + pw / 2, py - 5);
+    ctx.save();
+    ctx.translate(px - 6, py + ph / 2);
+    ctx.rotate(-Math.PI / 2); ctx.textAlign = 'center';
+    ctx.fillText(`${(shape.h * scale.cellSize).toFixed(1)} ${scale.cellUnit}`, 0, 0);
+    ctx.restore();
+
+  } else {
+    const pts = shape.points;
+    if (pts.length < 2) return;
+
+    if (showTiles && tilePxW > 3 && tilePxH > 3) {
+      const minX = Math.min(...pts.map(p => p.x));
+      const minY = Math.min(...pts.map(p => p.y));
+      const maxX = Math.max(...pts.map(p => p.x));
+      const maxY = Math.max(...pts.map(p => p.y));
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x * GRID_PX, pts[0].y * GRID_PX);
+      pts.slice(1).forEach(p => ctx.lineTo(p.x * GRID_PX, p.y * GRID_PX));
+      ctx.closePath(); ctx.clip();
+      const cols = Math.ceil(((maxX - minX) * GRID_PX) / tilePxW) + 2;
+      const rows = Math.ceil(((maxY - minY) * GRID_PX) / tilePxH) + 2;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const tx = minX * GRID_PX + c * tilePxW;
+          const ty = minY * GRID_PX + r * tilePxH;
+          ctx.fillStyle = tileColor;
+          ctx.fillRect(tx + .5, ty + .5, tilePxW - 1, tilePxH - 1);
+          ctx.strokeStyle = 'rgba(80,55,30,.22)'; ctx.lineWidth = .8;
+          ctx.strokeRect(tx + .5, ty + .5, tilePxW - 1, tilePxH - 1);
+        }
+      }
+      ctx.restore();
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x * GRID_PX, pts[0].y * GRID_PX);
+    pts.slice(1).forEach(p => ctx.lineTo(p.x * GRID_PX, p.y * GRID_PX));
+    ctx.closePath();
+    if (!showTiles || tilePxW <= 3) {
+      ctx.fillStyle = 'rgba(16,185,129,.15)'; ctx.fill();
+    }
+    ctx.strokeStyle = '#059669'; ctx.lineWidth = 2; ctx.stroke();
+  }
+}
+
+// ─── Results ─────────────────────────────────────────────────────────────────
+function updateResults() {
+  const scale = SCALES[scaleIdx];
+  const grout = parseFloat(document.getElementById('grout').value) || 0;
+  const tw = parseFloat(document.getElementById('tile-w').value) || 12;
+  const th = parseFloat(document.getElementById('tile-h').value) || 12;
+  const tUnit = document.getElementById('tile-unit').value;
+  const waste = parseFloat(document.getElementById('waste').value) || 10;
+
+  const cellInches = toInches(scale.cellSize, scale.cellUnit);
+  const totalCells = shapes.reduce((s, sh) => s + shapeArea(sh), 0);
+  const totalInch2 = totalCells * cellInches * cellInches;
+  const totalFt2 = totalInch2 / 144;
+  const totalM2 = totalInch2 / 1550.0031;
+
+  const tileWIn = toInches(tw, tUnit) + toInches(grout, 'in');
+  const tileHIn = toInches(th, tUnit) + toInches(grout, 'in');
+  const tileArea = tileWIn * tileHIn;
+  const base = tileArea > 0 ? Math.ceil(totalInch2 / tileArea) : 0;
+  const withWaste = Math.ceil(base * (1 + waste / 100));
+
+  document.getElementById('r-count').textContent = shapes.length === 0 ? '—' : withWaste.toLocaleString();
+  document.getElementById('r-sub').textContent = shapes.length === 0 ? 'draw a room to calculate' : `tiles needed · includes ${waste}% waste`;
+  document.getElementById('r-area').textContent = shapes.length === 0 ? '—' : `${totalFt2.toFixed(2)} ft²`;
+  document.getElementById('r-area2').textContent = shapes.length === 0 ? '' : `${totalM2.toFixed(2)} m²`;
+  document.getElementById('r-base').textContent = shapes.length === 0 ? '—' : base.toLocaleString();
+  document.getElementById('r-base2').textContent = shapes.length === 0 ? '' : `+${waste}% = ${withWaste}`;
+  document.getElementById('r-rooms').textContent = shapes.length;
+  document.getElementById('r-size').textContent = `${tw}×${th}`;
+  document.getElementById('r-unit').textContent = tUnit;
+}
+
+// ─── Mouse events ─────────────────────────────────────────────────────────────
+canvas.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  const pt = evPt(e);
+  if (tool === 'rect') {
+    drawing = true;
+    rectStart = pt;
+    rectCurrent = pt;
+  } else if (tool === 'poly') {
+    polyPoints.push({ x: snap(pt.x), y: snap(pt.y) });
+    redraw();
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  const pt = evPt(e);
+  if (tool === 'rect' && drawing) {
+    rectCurrent = pt; redraw();
+  } else if (tool === 'poly') {
+    polyMouse = pt; redraw();
+  }
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (tool === 'rect' && drawing) {
+    drawing = false;
+    const pt = evPt(e);
+    const sx = rectStart.x, sy = rectStart.y;
+    const gx = Math.min(snap(sx), snap(pt.x));
+    const gy = Math.min(snap(sy), snap(pt.y));
+    const gw = Math.abs(snap(pt.x) - snap(sx));
+    const gh = Math.abs(snap(pt.y) - snap(sy));
+    if (gw > 0 && gh > 0) shapes.push({ type: 'rect', x: gx, y: gy, w: gw, h: gh });
+    rectCurrent = null; redraw();
+  }
+});
+
+canvas.addEventListener('dblclick', () => {
+  if (tool === 'poly' && polyPoints.length >= 3) {
+    shapes.push({ type: 'poly', points: [...polyPoints] });
+    polyPoints = []; polyMouse = null; redraw();
+  }
+});
+
+// ─── UI handlers ─────────────────────────────────────────────────────────────
+function setTool(t) {
+  tool = t;
+  polyPoints = []; polyMouse = null;
+  document.getElementById('btn-rect').classList.toggle('active', t === 'rect');
+  document.getElementById('btn-poly').classList.toggle('active', t === 'poly');
+  document.getElementById('tool-hint').textContent =
+    t === 'rect' ? 'Click & drag to draw a room' : 'Click to add corners · Double-click to close';
+  document.getElementById('hint-badge').textContent =
+    t === 'rect' ? 'Click & drag to draw a room' : 'Click corners · Double-click to close polygon';
+  redraw();
+}
+
+function onScaleChange() {
+  scaleIdx = parseInt(document.getElementById('scale-sel').value);
+  redraw();
+}
+function onTileChange() { redraw(); }
+
+function selectChip(idx) {
+  document.querySelectorAll('.chip').forEach((c, i) => c.classList.toggle('active', i === idx));
+  if (PRESETS[idx].w > 0) {
+    document.getElementById('tile-w').value = PRESETS[idx].w;
+    document.getElementById('tile-h').value = PRESETS[idx].h;
+    document.getElementById('tile-unit').value = PRESETS[idx].unit;
+    redraw();
+  }
+}
+
+function undoShape() { shapes.pop(); redraw(); }
+function clearAll() { shapes = []; polyPoints = []; polyMouse = null; redraw(); }
+
+function setColor(c) {
+  tileColor = c;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === c));
+  redraw();
+}
+
+// ─── Build UI ─────────────────────────────────────────────────────────────────
+// Preset chips
+const chipRow = document.getElementById('preset-chips');
+PRESETS.forEach((p, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'chip' + (i === 0 ? ' active' : '');
+  btn.textContent = p.label;
+  btn.onclick = () => selectChip(i);
+  chipRow.appendChild(btn);
+});
+
+// Color swatches
+const swatchRow = document.getElementById('swatch-row');
+COLORS.forEach(c => {
+  const btn = document.createElement('button');
+  btn.className = 'swatch' + (c === tileColor ? ' active' : '');
+  btn.style.background = c;
+  btn.dataset.color = c;
+  btn.title = c;
+  btn.onclick = () => setColor(c);
+  swatchRow.appendChild(btn);
+});
+// Custom color picker
+const colorPicker = document.createElement('input');
+colorPicker.type = 'color';
+colorPicker.value = tileColor;
+colorPicker.title = 'Pick any color';
+colorPicker.oninput = () => { tileColor = colorPicker.value; redraw(); };
+swatchRow.appendChild(colorPicker);
+
+// Initial draw
+redraw();
+</script>
+</body>
+</html>

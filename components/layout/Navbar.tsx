@@ -8,7 +8,7 @@ import {
   Menu, X, ChevronDown,
   Share2, BarChart2, Search, Mail, FileText, Video, Users, Globe, Smartphone, Database,
   Bot, Workflow, UserCheck, Settings, Clock, Shield, PieChart, Plug,
-  Sun, Wrench, TrendingUp, BookOpen,
+  Sun, Wrench, TrendingUp, BookOpen, Grid3X3,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ const marketingDropdown = [
 
 const appsDropdown = [
   { label: "Solar Sizing Calculator", href: "/apps/solar-calculator", icon: Sun },
+  { label: "Tile Calculator", href: "/apps/tile-calculator", icon: Grid3X3 },
   { label: "More Coming Soon", href: "/apps", icon: Wrench },
 ];
 
