@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Megaphone,
@@ -16,6 +17,7 @@ import BranchCard from "@/components/ui/BranchCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import SectionHeader from "@/components/ui/SectionHeader";
 import GlowButton from "@/components/ui/GlowButton";
+import { ParticleTextEffect } from "@/components/ui/particle-text-effect";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 32 },
@@ -67,8 +69,25 @@ const featurePills = [
 ];
 
 export default function HomePage() {
+  // Default true to prevent server/client flash — corrected on mount
+  const [hasEntered, setHasEntered] = useState(true);
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("bvn-entered")) {
+      setHasEntered(false);
+    }
+  }, []);
+
+  const handleEnter = () => {
+    sessionStorage.setItem("bvn-entered", "1");
+    setHasEntered(true);
+  };
+
   return (
     <>
+      {/* ── Entrance overlay — shown once per session ───── */}
+      {!hasEntered && <ParticleTextEffect onEnter={handleEnter} />}
+
       {/* ── SECTION 1: Hero ─────────────────────────────── */}
       <HeroSection
         headline="Elevate Your Business. Dominate Your Market."
