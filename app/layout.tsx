@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     locale: "en_PH",
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        url: "https://www.bvnofficial.com/bvn-logo.png",
+        width: 600,
+        height: 600,
         alt: "BVN — Marketing & Operations Automation Agency Philippines",
       },
     ],
