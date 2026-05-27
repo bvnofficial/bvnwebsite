@@ -14,7 +14,7 @@ export default function TrackerDetectorPage() {
         className="w-full h-full border-0"
         title="BVN Tracker Detector"
         loading="lazy"
-        allow="bluetooth"
+        allow="bluetooth; camera; microphone"
       />
     </div>
   );
