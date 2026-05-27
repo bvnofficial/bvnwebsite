@@ -7,7 +7,7 @@ import {
   Menu, X, ChevronDown,
   Share2, BarChart2, Search, Mail, FileText, Video, Users, Globe, Smartphone, Database,
   Bot, Workflow, UserCheck, Settings, Clock, Shield, PieChart, Plug,
-  Sun, Wrench,
+  Sun, Wrench, TrendingUp, BookOpen,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,6 +30,19 @@ const appsDropdown = [
   { label: "More Coming Soon", href: "/apps", icon: Wrench },
 ];
 
+const blogDropdown = [
+  { label: "Business Automation Guide", href: "/blog/business-automation-philippines-guide", icon: Settings },
+  { label: "Social Media Management PH", href: "/blog/social-media-management-philippines", icon: Share2 },
+  { label: "AI Automation for Business", href: "/blog/ai-automation-save-time-business", icon: Bot },
+  { label: "SEO Philippines 2025", href: "/blog/seo-philippines-rank-google-2025", icon: Search },
+  { label: "CRM Automation Philippines", href: "/blog/crm-automation-philippines-sales", icon: Database },
+  { label: "Digital Marketing Strategy", href: "/blog/digital-marketing-philippines-strategy-2025", icon: BarChart2 },
+  { label: "HR & Payroll Automation", href: "/blog/hr-payroll-automation-philippines", icon: UserCheck },
+  { label: "Content Marketing Converts", href: "/blog/content-marketing-strategy-converts", icon: FileText },
+  { label: "Website Losing Customers?", href: "/blog/website-losing-customers-fix", icon: Globe },
+  { label: "Cost of Not Automating", href: "/blog/cost-not-automating-business-2025", icon: TrendingUp },
+];
+
 const operationsDropdown = [
   { label: "AI Agents & Automation", href: "/operations/ai-agents", icon: Bot },
   { label: "CRM Automation", href: "/operations/crm-automation", icon: Workflow },
@@ -45,12 +58,13 @@ interface DropdownMenuProps {
   label: string;
   href: string;
   items: { label: string; href: string; icon: LucideIcon }[];
-  accentColor: "orange" | "blue";
+  accentColor: "orange" | "blue" | "green";
   isActive: boolean;
   columns?: 1 | 2;
+  width?: string;
 }
 
-function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1 }: DropdownMenuProps) {
+function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1, width }: DropdownMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLLIElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -65,9 +79,12 @@ function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1 }
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const accent = accentColor === "orange"
-    ? { text: "text-orange", bg: "bg-orange/10", border: "border-orange/20", icon: "text-orange", hover: "hover:border-orange/40 hover:bg-orange/5", underline: "bg-orange" }
-    : { text: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20", icon: "text-blue-400", hover: "hover:border-blue-400/40 hover:bg-blue-400/5", underline: "bg-blue-400" };
+  const accent =
+    accentColor === "orange"
+      ? { text: "text-orange", bg: "bg-orange/10", border: "border-orange/20", icon: "text-orange", hover: "hover:border-orange/40 hover:bg-orange/5", underline: "bg-orange" }
+      : accentColor === "green"
+      ? { text: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20", icon: "text-emerald-400", hover: "hover:border-emerald-400/40 hover:bg-emerald-400/5", underline: "bg-emerald-400" }
+      : { text: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20", icon: "text-blue-400", hover: "hover:border-blue-400/40 hover:bg-blue-400/5", underline: "bg-blue-400" };
 
   return (
     <li
@@ -111,8 +128,8 @@ function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1 }
           "rounded-2xl border border-white/10 bg-navy-dark/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden",
           "transition-all duration-200 origin-top-left",
           open ? "opacity-100 scale-100" : "opacity-0 scale-95",
-          columns === 2 ? "w-[480px]" : "w-64"
         )}
+        style={{ width: width ?? (columns === 2 ? "480px" : "260px") }}
       >
         {/* Header link to parent section */}
         <div className={cn("px-4 pt-4 pb-3 border-b border-white/5 mb-1")}>
@@ -154,6 +171,7 @@ export default function Navbar() {
   const [mobileMarketing, setMobileMarketing] = useState(false);
   const [mobileOperations, setMobileOperations] = useState(false);
   const [mobileApps, setMobileApps] = useState(false);
+  const [mobileBlog, setMobileBlog] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -167,6 +185,7 @@ export default function Navbar() {
     setMobileMarketing(false);
     setMobileOperations(false);
     setMobileApps(false);
+    setMobileBlog(false);
   }, [pathname]);
 
   const simpleLinks = [
@@ -276,6 +295,17 @@ export default function Navbar() {
               accentColor="orange"
               isActive={pathname.startsWith("/apps")}
               columns={1}
+            />
+
+            {/* Blog Dropdown */}
+            <DropdownMenu
+              label="Blog"
+              href="/blog"
+              items={blogDropdown}
+              accentColor="green"
+              isActive={pathname.startsWith("/blog")}
+              columns={2}
+              width="520px"
             />
 
             {/* Pricing */}
@@ -463,6 +493,43 @@ export default function Navbar() {
                       className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
                     >
                       <Icon size={12} className="text-orange shrink-0" />
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Blog Accordion */}
+            <div>
+              <button
+                onClick={() => setMobileBlog((v) => !v)}
+                className={cn(
+                  "w-full flex items-center justify-between px-4 py-3 rounded-lg font-accent font-semibold text-sm transition-colors",
+                  pathname.startsWith("/blog") ? "text-emerald-400 bg-emerald-400/10" : "text-white/80 hover:text-white hover:bg-white/5"
+                )}
+              >
+                Blog
+                <ChevronDown
+                  size={14}
+                  className={cn("transition-transform duration-200", mobileBlog && "rotate-180")}
+                />
+              </button>
+              {mobileBlog && (
+                <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-emerald-400/20 pl-3">
+                  <Link
+                    href="/blog"
+                    className="px-3 py-2 text-xs font-accent font-bold text-emerald-400/80 hover:text-emerald-400 transition-colors uppercase tracking-widest"
+                  >
+                    All Articles →
+                  </Link>
+                  {blogDropdown.map(({ label, href, icon: Icon }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
+                    >
+                      <Icon size={12} className="text-emerald-400 shrink-0" />
                       {label}
                     </Link>
                   ))}
