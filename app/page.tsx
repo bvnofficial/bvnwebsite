@@ -91,7 +91,7 @@ export default function HomePage() {
       {/* ── SECTION 1: Hero ─────────────────────────────── */}
       <HeroSection
         headline="Elevate Your Business. Dominate Your Market."
-        subtext="BVN is your all-in-one growth partner — combining high-impact marketing strategies with intelligent business automation to help you scale faster, smarter, and stronger."
+        subtext="BVN is your all-in-one global growth partner — trusted by 238+ clients worldwide and now serving local businesses. We combine high-impact marketing with intelligent automation to help you scale faster, smarter, and stronger."
         primaryCta={{ label: "Explore Marketing", href: "/marketing" }}
         secondaryCta={{ label: "Explore Operations", href: "/operations" }}
       />

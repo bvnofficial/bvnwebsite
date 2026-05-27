@@ -5,17 +5,17 @@ import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "BVN — Marketing & Operations Automation Agency Philippines",
-    template: "%s | BVN Philippines",
+    default: "BVN — Global Marketing & Operations Automation Agency",
+    template: "%s | BVN",
   },
   description:
-    "BVN is a Philippines-based digital marketing and business automation agency. We help Filipino businesses scale faster with social media management, SEO, CRM automation, HR payroll automation, and AI agents.",
+    "BVN is a global digital marketing and business automation agency serving clients worldwide — now also empowering local Philippine businesses. We deliver social media management, SEO, CRM automation, HR payroll automation, and AI agents.",
   keywords:
-    "digital marketing agency Philippines, business automation Philippines, social media management Philippines, SEO Philippines, CRM automation Philippines, HR payroll automation Philippines, AI automation Philippines",
+    "digital marketing agency, business automation agency, social media management, SEO agency, CRM automation, HR payroll automation, AI automation, digital marketing Philippines, international marketing agency",
   openGraph: {
-    title: "BVN — Marketing & Operations Automation Agency Philippines",
+    title: "BVN — Global Marketing & Operations Automation Agency",
     description:
-      "High-impact digital marketing + intelligent business automation under one roof. Serving Philippine businesses since day one.",
+      "High-impact digital marketing + intelligent business automation. Trusted by 238+ clients worldwide — now serving local and international businesses.",
     url: "https://www.bvnofficial.com",
     siteName: "BVN",
     type: "website",
@@ -25,15 +25,15 @@ export const metadata: Metadata = {
         url: "https://www.bvnofficial.com/bvn-logo.png",
         width: 600,
         height: 600,
-        alt: "BVN — Marketing & Operations Automation Agency Philippines",
+        alt: "BVN — Global Marketing & Operations Automation Agency",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BVN — Marketing & Operations Automation Agency Philippines",
+    title: "BVN — Global Marketing & Operations Automation Agency",
     description:
-      "High-impact digital marketing + intelligent business automation for Philippine businesses.",
+      "High-impact digital marketing + intelligent business automation. Trusted by 238+ clients worldwide — now serving local and international businesses.",
     site: "@bvnofficial",
   },
   metadataBase: new URL("https://www.bvnofficial.com"),
@@ -61,7 +61,7 @@ const organizationJsonLd = {
   url: "https://www.bvnofficial.com",
   logo: "https://www.bvnofficial.com/bvn-logo.png",
   description:
-    "BVN is a Philippines-based digital marketing and business automation agency helping Filipino businesses scale through marketing excellence and intelligent operations automation.",
+    "BVN is a global digital marketing and business automation agency trusted by 238+ clients worldwide. We help businesses across the globe — and locally in the Philippines — scale through marketing excellence and intelligent operations automation.",
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+63-981-655-6555",
