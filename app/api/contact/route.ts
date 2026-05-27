@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
         body: JSON.stringify({
-          from: "BVN Website <onboarding@resend.dev>",
+          from: "BVN Website <noreply@bvnofficial.com>",
           to: ["bvn@bvnofficial.com"],
           reply_to: email,
           subject: `New Inquiry: ${service} — ${name}`,
