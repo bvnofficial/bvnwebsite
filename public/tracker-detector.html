@@ -602,10 +602,26 @@ let settings  = {sound:true, vibrate:true, ignored:false};
 window.addEventListener('DOMContentLoaded', ()=>{
   loadSettings();
   loadHistory();
-  checkBluetooth();
   checkHttps();
   drawRing(false);
   updateUI();
+
+  // Immediate Bluetooth support check — show visible status
+  const meta = document.getElementById('meta-bt');
+  if(!navigator.bluetooth){
+    meta.textContent = '❌ Bluetooth: not supported';
+    document.getElementById('bt-warn').style.display = 'block';
+  } else {
+    meta.textContent = '🟢 Bluetooth: ready';
+    // Non-blocking availability check
+    navigator.bluetooth.getAvailability()
+      .then(avail => { meta.textContent = avail ? '🟢 Bluetooth: on' : '🔴 Bluetooth: off — please turn on Bluetooth'; })
+      .catch(() => { meta.textContent = '🟢 Bluetooth: ready'; });
+    // Timeout fallback so it never stays on "checking"
+    setTimeout(() => {
+      if(meta.textContent.includes('checking')) meta.textContent = '🟢 Bluetooth: ready';
+    }, 2000);
+  }
 });
 
 // ─── Persist ─────────────────────────────────────────────────────────────────

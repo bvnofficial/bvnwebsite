@@ -14,6 +14,16 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // Never cache the standalone HTML tool pages
+        source: "/:tool.html",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, max-age=0",
+          },
+        ],
+      },
     ];
   },
 };
