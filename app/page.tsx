@@ -171,7 +171,7 @@ export default function HomePage() {
             className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16"
           >
             {[
-              { target: 100, suffix: "+", label: "Clients Served" },
+              { target: 238, suffix: "+", label: "Clients Served" },
               { target: 2, suffix: "", label: "Powerful Branches" },
               { target: 10, suffix: "+", label: "Marketing Services" },
               { target: 8, suffix: "+", label: "Automation Services" },

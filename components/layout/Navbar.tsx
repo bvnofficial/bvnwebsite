@@ -7,6 +7,7 @@ import {
   Menu, X, ChevronDown,
   Share2, BarChart2, Search, Mail, FileText, Video, Users, Globe, Smartphone, Database,
   Bot, Workflow, UserCheck, Settings, Clock, Shield, PieChart, Plug,
+  Sun, Wrench,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,11 @@ const marketingDropdown = [
   { label: "Web Development", href: "/marketing/web-development", icon: Globe },
   { label: "App Development", href: "/marketing/app-development", icon: Smartphone },
   { label: "CRM Solutions", href: "/marketing/crm-solutions", icon: Database },
+];
+
+const appsDropdown = [
+  { label: "Solar Sizing Calculator", href: "/apps/solar-calculator", icon: Sun },
+  { label: "More Coming Soon", href: "/apps", icon: Wrench },
 ];
 
 const operationsDropdown = [
@@ -134,6 +140,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileMarketing, setMobileMarketing] = useState(false);
   const [mobileOperations, setMobileOperations] = useState(false);
+  const [mobileApps, setMobileApps] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -146,6 +153,7 @@ export default function Navbar() {
     setMobileOpen(false);
     setMobileMarketing(false);
     setMobileOperations(false);
+    setMobileApps(false);
   }, [pathname]);
 
   const simpleLinks = [
@@ -244,6 +252,16 @@ export default function Navbar() {
               items={operationsDropdown}
               accentColor="blue"
               isActive={pathname.startsWith("/operations")}
+              columns={1}
+            />
+
+            {/* Apps Dropdown */}
+            <DropdownMenu
+              label="Apps"
+              href="/apps"
+              items={appsDropdown}
+              accentColor="orange"
+              isActive={pathname.startsWith("/apps")}
               columns={1}
             />
 
@@ -395,6 +413,43 @@ export default function Navbar() {
                       className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
                     >
                       <Icon size={12} className="text-blue-400 shrink-0" />
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Apps Accordion */}
+            <div>
+              <button
+                onClick={() => setMobileApps((v) => !v)}
+                className={cn(
+                  "w-full flex items-center justify-between px-4 py-3 rounded-lg font-accent font-semibold text-sm transition-colors",
+                  pathname.startsWith("/apps") ? "text-orange bg-orange/10" : "text-white/80 hover:text-white hover:bg-white/5"
+                )}
+              >
+                Apps
+                <ChevronDown
+                  size={14}
+                  className={cn("transition-transform duration-200", mobileApps && "rotate-180")}
+                />
+              </button>
+              {mobileApps && (
+                <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-orange/20 pl-3">
+                  <Link
+                    href="/apps"
+                    className="px-3 py-2 text-xs font-accent font-bold text-orange/80 hover:text-orange transition-colors uppercase tracking-widest"
+                  >
+                    All Apps →
+                  </Link>
+                  {appsDropdown.map(({ label, href, icon: Icon }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
+                    >
+                      <Icon size={12} className="text-orange shrink-0" />
                       {label}
                     </Link>
                   ))}
