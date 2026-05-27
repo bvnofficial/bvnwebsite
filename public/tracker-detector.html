@@ -636,9 +636,13 @@ async function checkBluetooth(){
     document.getElementById('bt-warn').style.display='block';
     return false;
   }
-  const avail = await navigator.bluetooth.getAvailability().catch(()=>false);
+  // Use a timeout — getAvailability() can hang on some systems
+  const avail = await Promise.race([
+    navigator.bluetooth.getAvailability().catch(()=>true),
+    new Promise(resolve => setTimeout(()=>resolve(true), 1500))
+  ]);
   meta.textContent = avail ? '🟢 Bluetooth: on' : '🔴 Bluetooth: off';
-  return avail;
+  return true; // Don't block scanning on availability result
 }
 function checkHttps(){
   if(location.protocol!=='https:' && !['localhost','127.0.0.1'].includes(location.hostname))
@@ -669,19 +673,19 @@ async function toggleScan(){
 }
 
 async function startScan(){
-  if(!navigator.bluetooth){ showToast('Bluetooth not supported'); return; }
-  const avail = await checkBluetooth();
-  if(!avail){ showToast('Please enable Bluetooth'); return; }
+  if(!navigator.bluetooth){
+    showToast('❌ Bluetooth not supported — use Chrome on Desktop or Android');
+    document.getElementById('bt-warn').style.display='block';
+    return;
+  }
 
   scanning=true;
   scanStart=Date.now();
   updateScanUI(true);
   sessionTimer = setInterval(updateSessionTime, 1000);
-
-  // Show scan info
   document.getElementById('scan-info').style.display='block';
 
-  // Single scan — user can tap again to add more devices
+  // Go straight to scan — don't wait for availability check
   await doScan();
 }
 
