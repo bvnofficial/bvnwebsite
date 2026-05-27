@@ -20,6 +20,14 @@ export const metadata: Metadata = {
     siteName: "BVN",
     type: "website",
     locale: "en_PH",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "BVN — Marketing & Operations Automation Agency Philippines",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
