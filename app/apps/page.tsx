@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench, Grid3X3 } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 
@@ -23,6 +23,33 @@ const apps = [
     href: "/apps/tile-calculator",
     badge: "Free Tool",
     color: "orange",
+  },
+  {
+    icon: LayoutDashboard,
+    title: "Floor Plan Designer",
+    description:
+      "Design your floor plan online for free. Draw rooms, add furniture, label spaces, resize and export as PNG. No signup required.",
+    href: "/apps/floor-plan-designer",
+    badge: "Free Tool",
+    color: "blue",
+  },
+  {
+    icon: ImageDown,
+    title: "Image Compressor",
+    description:
+      "Compress and resize images instantly in your browser. Supports JPEG, PNG, and WebP. Nothing is uploaded — 100% private.",
+    href: "/apps/image-compressor",
+    badge: "Free Tool",
+    color: "green",
+  },
+  {
+    icon: Receipt,
+    title: "Invoice Generator",
+    description:
+      "Create professional invoices in seconds. Add your logo, line items, tax, and download as PDF. Free with no signup needed.",
+    href: "/apps/invoice-generator",
+    badge: "Free Tool",
+    color: "purple",
   },
 ];
 
@@ -94,8 +121,17 @@ export default function AppsPage() {
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center
-                      ${color === "yellow" ? "bg-yellow-500/15 border border-yellow-500/20" : "bg-orange/10 border border-orange/20"}`}>
-                      <Icon size={22} className={color === "yellow" ? "text-yellow-400" : "text-orange"} />
+                      ${color === "yellow" ? "bg-yellow-500/15 border border-yellow-500/20"
+                      : color === "blue" ? "bg-blue-500/15 border border-blue-500/20"
+                      : color === "green" ? "bg-emerald-500/15 border border-emerald-500/20"
+                      : color === "purple" ? "bg-purple-500/15 border border-purple-500/20"
+                      : "bg-orange/10 border border-orange/20"}`}>
+                      <Icon size={22} className={
+                        color === "yellow" ? "text-yellow-400"
+                        : color === "blue" ? "text-blue-400"
+                        : color === "green" ? "text-emerald-400"
+                        : color === "purple" ? "text-purple-400"
+                        : "text-orange"} />
                     </div>
                     <span className="text-xs font-accent font-semibold px-2.5 py-1 rounded-full
                       bg-green-500/10 border border-green-500/20 text-green-400">

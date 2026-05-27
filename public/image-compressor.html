@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Image Compressor – Free Online Image Optimizer & Converter</title>
+<meta name="description" content="Compress and resize images free in your browser. Supports JPEG, PNG, WebP. No upload to server, 100% private. Reduce file size instantly."/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='2' width='28' height='28' rx='4' fill='%2310b981'/><path d='M8 20l6-8 5 6 3-4 5 6' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:system-ui,-apple-system,sans-serif;background:#f0fdf4;color:#1c1917}
+
+/* ── Header ── */
+header{
+  background:#065f46;color:#fff;padding:0 24px;
+  display:flex;align-items:center;gap:12px;height:52px;
+  position:sticky;top:0;z-index:10;
+}
+header h1{font-size:16px;font-weight:700;letter-spacing:-.02em}
+header p{font-size:11px;color:#6ee7b7;margin-left:auto}
+#btn-dl-all{
+  padding:7px 16px;font-size:12px;font-weight:600;
+  background:#10b981;color:#fff;border:none;border-radius:5px;
+  cursor:pointer;display:none;
+}
+#btn-dl-all:hover{background:#059669}
+
+/* ── Settings bar ── */
+#settings{
+  background:#fff;border-bottom:1px solid #d1fae5;
+  padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;
+  position:sticky;top:52px;z-index:9;box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.setting-group{display:flex;align-items:center;gap:8px}
+.setting-group label{font-size:12px;font-weight:600;color:#065f46;white-space:nowrap}
+.setting-group input[type=range]{
+  width:130px;accent-color:#10b981;cursor:pointer;
+}
+.setting-group select{
+  padding:5px 8px;font-size:12px;border:1px solid #a7f3d0;border-radius:5px;
+  background:#f0fdf4;color:#065f46;cursor:pointer;
+}
+#quality-val{
+  font-size:13px;font-weight:700;color:#059669;
+  background:#d1fae5;padding:2px 8px;border-radius:4px;min-width:42px;text-align:center;
+}
+.sep{width:1px;height:24px;background:#d1fae5}
+.setting-info{font-size:11px;color:#6b7280;margin-left:auto}
+
+/* ── Drop zone ── */
+#dropzone{
+  margin:24px;border:3px dashed #6ee7b7;border-radius:12px;
+  background:#fff;padding:48px 24px;text-align:center;
+  cursor:pointer;transition:all .15s;
+}
+#dropzone.drag-over{border-color:#10b981;background:#ecfdf5;transform:scale(1.01)}
+#dropzone:hover{border-color:#10b981;background:#f0fdf4}
+.drop-icon{font-size:48px;display:block;margin-bottom:12px}
+.drop-title{font-size:18px;font-weight:700;color:#065f46;margin-bottom:6px}
+.drop-sub{font-size:13px;color:#6b7280;margin-bottom:14px}
+#file-input{display:none}
+.drop-btn{
+  display:inline-block;padding:9px 24px;font-size:13px;font-weight:600;
+  background:#10b981;color:#fff;border-radius:6px;border:none;cursor:pointer;
+}
+.drop-btn:hover{background:#059669}
+.drop-note{font-size:11px;color:#9ca3af;margin-top:10px}
+
+/* ── Results grid ── */
+#results{padding:0 24px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+
+/* ── Image card ── */
+.img-card{
+  background:#fff;border-radius:10px;overflow:hidden;
+  border:1px solid #d1fae5;box-shadow:0 2px 8px rgba(0,0,0,.05);
+  transition:box-shadow .15s;
+}
+.img-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.card-preview{
+  position:relative;overflow:hidden;cursor:crosshair;
+  height:200px;background:#f0fdf4;user-select:none;
+}
+.card-preview img{
+  position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;
+}
+.card-preview .before-img{clip-path:inset(0 50% 0 0);z-index:2}
+.card-preview .after-img{z-index:1}
+.preview-label{
+  position:absolute;top:8px;z-index:5;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  padding:3px 8px;border-radius:10px;pointer-events:none;
+}
+.lbl-before{left:8px;background:rgba(0,0,0,.55);color:#fff}
+.lbl-after{right:8px;background:#059669;color:#fff}
+.divider{
+  position:absolute;top:0;bottom:0;z-index:4;
+  width:3px;background:#fff;cursor:ew-resize;
+  left:50%;transform:translateX(-50%);
+  box-shadow:0 0 0 1px rgba(0,0,0,.15);
+}
+.divider::after{
+  content:'⇔';
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#fff;border-radius:50%;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  box-shadow:0 0 0 2px rgba(0,0,0,.1);line-height:24px;text-align:center;
+  color:#065f46;font-weight:700;
+}
+
+.card-info{padding:12px 14px}
+.card-name{font-size:12px;font-weight:600;color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:8px}
+.card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.stat{background:#f0fdf4;border-radius:5px;padding:6px 8px;text-align:center}
+.stat-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;display:block;margin-bottom:2px}
+.stat-val{font-size:13px;font-weight:700;color:#065f46}
+.stat-val.red{color:#dc2626}
+.stat-val.green{color:#059669}
+.reduction-bar{height:5px;background:#e5e7eb;border-radius:3px;margin-bottom:10px;overflow:hidden}
+.reduction-fill{height:100%;background:linear-gradient(90deg,#10b981,#059669);border-radius:3px;transition:width .4s}
+.card-actions{display:flex;gap:6px}
+.dl-btn{
+  flex:1;padding:7px;font-size:12px;font-weight:600;
+  background:#10b981;color:#fff;border:none;border-radius:5px;cursor:pointer;
+}
+.dl-btn:hover{background:#059669}
+.rm-btn{
+  padding:7px 10px;font-size:12px;
+  background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;border-radius:5px;cursor:pointer;
+}
+.rm-btn:hover{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
+
+/* ── Processing overlay ── */
+.processing{
+  display:flex;align-items:center;justify-content:center;
+  height:200px;color:#6b7280;font-size:13px;gap:8px;
+}
+.spinner{
+  width:20px;height:20px;border:2px solid #d1fae5;border-top-color:#10b981;
+  border-radius:50%;animation:spin .6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Summary bar ── */
+#summary{
+  display:none;
+  background:#065f46;color:#fff;
+  padding:10px 24px;font-size:13px;
+  position:sticky;bottom:0;
+  display:none;align-items:center;gap:14px;flex-wrap:wrap;
+}
+#summary.visible{display:flex}
+.sum-stat{display:flex;align-items:center;gap:5px}
+.sum-label{color:#6ee7b7;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.sum-val{font-weight:700}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🗜️ Image Compressor</h1>
+  <button id="btn-dl-all" onclick="downloadAll()">⬇ Download All</button>
+  <p>100% in-browser · No server upload · Completely private</p>
+</header>
+
+<!-- Settings -->
+<div id="settings">
+  <div class="setting-group">
+    <label>Quality</label>
+    <input type="range" id="quality" min="5" max="100" value="80" oninput="onSettingsChange()"/>
+    <span id="quality-val">80%</span>
+  </div>
+  <div class="sep"></div>
+  <div class="setting-group">
+    <label>Output Format</label>
+    <select id="format" onchange="onSettingsChange()">
+      <option value="original">Original Format</option>
+      <option value="image/jpeg">JPEG</option>
+      <option value="image/png">PNG</option>
+      <option value="image/webp">WebP</option>
+    </select>
+  </div>
+  <div class="sep"></div>
+  <div class="setting-group">
+    <label>Max Width</label>
+    <select id="maxwidth" onchange="onSettingsChange()">
+      <option value="0">Original Size</option>
+      <option value="3840">4K (3840px)</option>
+      <option value="1920">Full HD (1920px)</option>
+      <option value="1280">HD (1280px)</option>
+      <option value="800">Web (800px)</option>
+      <option value="400">Thumbnail (400px)</option>
+    </select>
+  </div>
+  <div class="sep"></div>
+  <div class="setting-group">
+    <label>Max Height</label>
+    <select id="maxheight" onchange="onSettingsChange()">
+      <option value="0">Original Size</option>
+      <option value="2160">4K (2160px)</option>
+      <option value="1080">Full HD (1080px)</option>
+      <option value="720">HD (720px)</option>
+      <option value="600">Web (600px)</option>
+      <option value="300">Thumbnail (300px)</option>
+    </select>
+  </div>
+  <p class="setting-info">Changes apply to all images · Drag the divider on each card to compare</p>
+</div>
+
+<!-- Drop zone -->
+<div id="dropzone"
+  onclick="document.getElementById('file-input').click()"
+  ondragover="onDragOver(event)"
+  ondragleave="onDragLeave(event)"
+  ondrop="onDrop(event)">
+  <span class="drop-icon">🖼️</span>
+  <div class="drop-title">Drop images here</div>
+  <div class="drop-sub">JPEG, PNG, WebP, GIF · Multiple files supported</div>
+  <button class="drop-btn" onclick="event.stopPropagation();document.getElementById('file-input').click()">Choose Files</button>
+  <p class="drop-note">All processing happens in your browser — nothing is uploaded</p>
+</div>
+<input type="file" id="file-input" accept="image/*" multiple onchange="onFilesSelected(this.files)"/>
+
+<!-- Results -->
+<div id="results"></div>
+
+<!-- Summary -->
+<div id="summary">
+  <div class="sum-stat"><span class="sum-label">Images</span><span class="sum-val" id="sum-count">0</span></div>
+  <div class="sum-stat"><span class="sum-label">Original</span><span class="sum-val" id="sum-orig">0 KB</span></div>
+  <div class="sum-stat"><span class="sum-label">Compressed</span><span class="sum-val" id="sum-comp">0 KB</span></div>
+  <div class="sum-stat"><span class="sum-label">Saved</span><span class="sum-val" id="sum-saved">0 KB (0%)</span></div>
+</div>
+
+<script>
+// ─── State ────────────────────────────────────────────────────────────────────
+let images = [];  // { id, name, origFile, origUrl, origSize, compBlob, compUrl, compSize, el }
+let idCounter = 0;
+
+// ─── Drag & Drop ─────────────────────────────────────────────────────────────
+function onDragOver(e){ e.preventDefault(); document.getElementById('dropzone').classList.add('drag-over'); }
+function onDragLeave(e){ document.getElementById('dropzone').classList.remove('drag-over'); }
+function onDrop(e){
+  e.preventDefault();
+  document.getElementById('dropzone').classList.remove('drag-over');
+  const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/'));
+  if(files.length) processFiles(files);
+}
+function onFilesSelected(files){ processFiles([...files]); }
+
+// ─── Process files ────────────────────────────────────────────────────────────
+function processFiles(files){
+  files.forEach(file=>{
+    const id=++idCounter;
+    const origUrl=URL.createObjectURL(file);
+    const entry={ id, name:file.name, origFile:file, origUrl, origSize:file.size, compBlob:null, compUrl:null, compSize:null };
+    images.push(entry);
+    const card=createCard(entry);
+    entry.el=card;
+    document.getElementById('results').appendChild(card);
+    compressImage(entry);
+  });
+  document.getElementById('dropzone').style.display='none';
+  updateSummary();
+}
+
+// ─── Compression ─────────────────────────────────────────────────────────────
+function compressImage(entry){
+  const quality=parseInt(document.getElementById('quality').value)/100;
+  const formatSel=document.getElementById('format').value;
+  const maxW=parseInt(document.getElementById('maxwidth').value)||0;
+  const maxH=parseInt(document.getElementById('maxheight').value)||0;
+
+  const origExt=entry.name.split('.').pop().toLowerCase();
+  let outFormat=formatSel==='original' ? (origExt==='png'?'image/png':origExt==='webp'?'image/webp':'image/jpeg') : formatSel;
+
+  const img=new Image();
+  img.onload=()=>{
+    let w=img.naturalWidth, h=img.naturalHeight;
+    if(maxW>0 && w>maxW){ h=Math.round(h*(maxW/w)); w=maxW; }
+    if(maxH>0 && h>maxH){ w=Math.round(w*(maxH/h)); h=maxH; }
+
+    const canvas=document.createElement('canvas');
+    canvas.width=w; canvas.height=h;
+    const ctx=canvas.getContext('2d');
+    if(outFormat==='image/jpeg'){
+      ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,w,h);
+    }
+    ctx.drawImage(img,0,0,w,h);
+
+    canvas.toBlob(blob=>{
+      if(!blob) return;
+      if(entry.compUrl) URL.revokeObjectURL(entry.compUrl);
+      entry.compBlob=blob;
+      entry.compUrl=URL.createObjectURL(blob);
+      entry.compSize=blob.size;
+      entry.outFormat=outFormat;
+      updateCard(entry);
+      updateSummary();
+    }, outFormat, outFormat==='image/png'?undefined:quality);
+  };
+  img.src=entry.origUrl;
+}
+
+// ─── Card creation ────────────────────────────────────────────────────────────
+function createCard(entry){
+  const card=document.createElement('div');
+  card.className='img-card';
+  card.id='card-'+entry.id;
+  card.innerHTML=`
+    <div class="card-preview processing" id="prev-${entry.id}">
+      <div class="spinner"></div> Processing…
+    </div>
+    <div class="card-info">
+      <div class="card-name" title="${entry.name}">${entry.name}</div>
+      <div class="card-stats" id="stats-${entry.id}">
+        <div class="stat"><span class="stat-label">Original</span><span class="stat-val" id="orig-${entry.id}">—</span></div>
+        <div class="stat"><span class="stat-label">Compressed</span><span class="stat-val" id="comp-${entry.id}">—</span></div>
+        <div class="stat"><span class="stat-label">Reduction</span><span class="stat-val green" id="red-${entry.id}">—</span></div>
+      </div>
+      <div class="reduction-bar"><div class="reduction-fill" id="bar-${entry.id}" style="width:0"></div></div>
+      <div class="card-actions">
+        <button class="dl-btn" id="dl-${entry.id}" onclick="downloadOne(${entry.id})" disabled>⬇ Download</button>
+        <button class="rm-btn" onclick="removeCard(${entry.id})">✕</button>
+      </div>
+    </div>
+  `;
+  // Orig size
+  document.getElementById('orig-'+entry.id) && (()=>{})(); // placeholder
+  return card;
+}
+
+function updateCard(entry){
+  const prevEl=document.getElementById('prev-'+entry.id);
+  prevEl.innerHTML=`
+    <img class="after-img" src="${entry.compUrl}" alt="compressed" draggable="false"/>
+    <img class="before-img" src="${entry.origUrl}" alt="original" draggable="false" id="before-${entry.id}"/>
+    <span class="preview-label lbl-before">Before</span>
+    <span class="preview-label lbl-after">After</span>
+    <div class="divider" id="div-${entry.id}"></div>
+  `;
+  prevEl.classList.remove('processing');
+
+  // Size display
+  document.getElementById('orig-'+entry.id).textContent=fmtBytes(entry.origSize);
+  document.getElementById('comp-'+entry.id).textContent=fmtBytes(entry.compSize);
+  const reduction=Math.max(0,((entry.origSize-entry.compSize)/entry.origSize)*100);
+  const redEl=document.getElementById('red-'+entry.id);
+  redEl.textContent=reduction.toFixed(1)+'%';
+  redEl.className='stat-val '+(reduction>0?'green':reduction<0?'red':'');
+  document.getElementById('bar-'+entry.id).style.width=Math.min(100,reduction)+'%';
+
+  const dlBtn=document.getElementById('dl-'+entry.id);
+  dlBtn.disabled=false;
+
+  // Drag divider
+  initDivider(entry.id);
+  document.getElementById('btn-dl-all').style.display='inline-block';
+}
+
+// ─── Divider drag ─────────────────────────────────────────────────────────────
+function initDivider(id){
+  const div=document.getElementById('div-'+id);
+  const prevEl=document.getElementById('prev-'+id);
+  const beforeImg=document.getElementById('before-'+id);
+  if(!div||!beforeImg) return;
+
+  let dragging=false;
+  const onMove=e=>{
+    if(!dragging) return;
+    const rect=prevEl.getBoundingClientRect();
+    const clientX=e.touches?e.touches[0].clientX:e.clientX;
+    const pct=Math.min(100,Math.max(0,(clientX-rect.left)/rect.width*100));
+    div.style.left=pct+'%';
+    beforeImg.style.clipPath=`inset(0 ${100-pct}% 0 0)`;
+  };
+  div.addEventListener('mousedown',e=>{dragging=true;e.preventDefault()});
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',()=>{dragging=false});
+  div.addEventListener('touchstart',e=>{dragging=true;e.preventDefault()},{passive:false});
+  div.addEventListener('touchmove',onMove,{passive:false});
+  div.addEventListener('touchend',()=>{dragging=false});
+}
+
+// ─── Settings change ─────────────────────────────────────────────────────────
+function onSettingsChange(){
+  const q=parseInt(document.getElementById('quality').value);
+  document.getElementById('quality-val').textContent=q+'%';
+  images.forEach(entry=>{
+    const prevEl=document.getElementById('prev-'+entry.id);
+    if(prevEl) prevEl.innerHTML='<div class="spinner"></div> Re-processing…';
+    compressImage(entry);
+  });
+}
+
+// ─── Download ─────────────────────────────────────────────────────────────────
+function downloadOne(id){
+  const entry=images.find(i=>i.id===id);
+  if(!entry||!entry.compBlob) return;
+  const ext=entry.outFormat.split('/')[1]==='jpeg'?'jpg':entry.outFormat.split('/')[1];
+  const base=entry.name.replace(/\.[^.]+$/,'');
+  const a=document.createElement('a');
+  a.href=entry.compUrl;
+  a.download=`${base}_compressed.${ext}`;
+  a.click();
+}
+
+function downloadAll(){
+  images.forEach((entry,i)=>{
+    setTimeout(()=>downloadOne(entry.id), i*250);
+  });
+}
+
+// ─── Remove card ─────────────────────────────────────────────────────────────
+function removeCard(id){
+  images=images.filter(i=>i.id!==id);
+  const card=document.getElementById('card-'+id);
+  if(card) card.remove();
+  if(images.length===0){
+    document.getElementById('dropzone').style.display='';
+    document.getElementById('btn-dl-all').style.display='none';
+  }
+  updateSummary();
+}
+
+// ─── Summary ─────────────────────────────────────────────────────────────────
+function updateSummary(){
+  const ready=images.filter(i=>i.compSize!==null);
+  const sumEl=document.getElementById('summary');
+  if(ready.length===0){ sumEl.classList.remove('visible'); return; }
+  sumEl.classList.add('visible');
+  const origTotal=ready.reduce((s,i)=>s+i.origSize,0);
+  const compTotal=ready.reduce((s,i)=>s+i.compSize,0);
+  const saved=origTotal-compTotal;
+  const pct=origTotal>0?Math.max(0,(saved/origTotal)*100).toFixed(1):0;
+  document.getElementById('sum-count').textContent=images.length;
+  document.getElementById('sum-orig').textContent=fmtBytes(origTotal);
+  document.getElementById('sum-comp').textContent=fmtBytes(compTotal);
+  document.getElementById('sum-saved').textContent=`${fmtBytes(saved)} (${pct}%)`;
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function fmtBytes(bytes){
+  if(bytes===0) return '0 B';
+  const k=1024;
+  if(bytes<k) return bytes+' B';
+  if(bytes<k*k) return (bytes/k).toFixed(1)+' KB';
+  return (bytes/(k*k)).toFixed(2)+' MB';
+}
+
+// Paste from clipboard
+document.addEventListener('paste',e=>{
+  const items=[...e.clipboardData.items].filter(i=>i.type.startsWith('image/'));
+  if(items.length){
+    const files=items.map(i=>i.getAsFile());
+    processFiles(files);
+  }
+});
+</script>
+</body>
+</html>
