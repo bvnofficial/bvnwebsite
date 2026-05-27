@@ -8,7 +8,7 @@ import {
   Menu, X, ChevronDown,
   Share2, BarChart2, Search, Mail, FileText, Video, Users, Globe, Smartphone, Database,
   Bot, Workflow, UserCheck, Settings, Clock, Shield, PieChart, Plug,
-  Sun, Wrench, TrendingUp, BookOpen, Grid3X3, LayoutDashboard, ImageDown, Receipt,
+  Sun, Wrench, TrendingUp, BookOpen, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,7 @@ const appsDropdown = [
   { label: "Floor Plan Designer", href: "/apps/floor-plan-designer", icon: LayoutDashboard },
   { label: "Image Compressor", href: "/apps/image-compressor", icon: ImageDown },
   { label: "Invoice Generator", href: "/apps/invoice-generator", icon: Receipt },
+  { label: "Tracker Detector", href: "/apps/tracker-detector", icon: Bluetooth },
 ];
 
 const blogDropdown = [

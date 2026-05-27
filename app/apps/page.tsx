@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 
@@ -50,6 +50,15 @@ const apps = [
     href: "/apps/invoice-generator",
     badge: "Free Tool",
     color: "purple",
+  },
+  {
+    icon: Bluetooth,
+    title: "Tracker Detector",
+    description:
+      "Detect hidden Bluetooth trackers near you. Identifies AirTags, Tile, Samsung SmartTags and unknown BLE devices. Requires Bluetooth & Chrome.",
+    href: "/apps/tracker-detector",
+    badge: "Free Tool",
+    color: "blue",
   },
 ];
 

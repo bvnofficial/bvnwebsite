@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#060911"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>BVN Tracker Detector – Bluetooth Tracker Finder</title>
+<meta name="description" content="BVN Tracker Detector — Detect hidden Bluetooth trackers near you. Identifies AirTags, Tile, Samsung SmartTags and unknown BLE tracking devices. Privacy protection app."/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#060911;color:#e2e8f0;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+
+:root{
+  --bg:   #060911;
+  --bg2:  #0d1526;
+  --bg3:  #172035;
+  --border:#1e3a5f;
+  --text: #e2e8f0;
+  --muted:#64748b;
+  --blue: #3b82f6;
+  --green:#22c55e;
+  --yellow:#f59e0b;
+  --red:  #ef4444;
+  --purple:#a855f7;
+}
+
+/* ── Shell ── */
+#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto}
+
+/* ── Header ── */
+header{
+  padding:10px 16px 10px;background:var(--bg2);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.hrow{display:flex;align-items:center;gap:10px}
+.logo{font-size:22px}
+/* BVN logo */
+.bvn-logo{
+  height:34px;width:auto;object-fit:contain;
+  display:block;flex-shrink:0;
+}
+.bvn-logo-fallback{
+  font-size:15px;font-weight:900;color:#fff;letter-spacing:-.02em;
+  display:none;
+}
+.header-divider{
+  width:1px;height:24px;background:var(--border);flex-shrink:0;
+}
+.app-name{font-size:16px;font-weight:800;letter-spacing:-.03em}
+.app-name span{color:var(--blue)}
+.scan-badge{
+  margin-left:auto;display:flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
+}
+.badge-idle{background:rgba(100,116,139,.15);color:var(--muted)}
+.badge-scanning{background:rgba(59,130,246,.15);color:var(--blue);animation:badge-pulse 2s infinite}
+.badge-alert{background:rgba(239,68,68,.15);color:var(--red)}
+@keyframes badge-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+.scan-meta{
+  margin-top:6px;font-size:11px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.sep{color:var(--border)}
+
+/* ── Content ── */
+#content{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:70px}
+
+/* ── Scanner Visual ── */
+#scanner-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  padding:28px 16px 16px;
+}
+#scan-ring-wrap{position:relative;width:220px;height:220px;margin-bottom:20px}
+#scan-ring-wrap canvas{position:absolute;top:0;left:0}
+.scan-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  z-index:2;
+}
+.scan-count{font-size:36px;font-weight:800;line-height:1}
+.scan-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+
+#start-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 32px;border-radius:50px;border:none;font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:.01em;
+}
+.btn-idle{background:var(--blue);color:#fff;box-shadow:0 4px 24px rgba(59,130,246,.4)}
+.btn-idle:active{transform:scale(.96)}
+.btn-scanning{background:var(--red);color:#fff;box-shadow:0 4px 24px rgba(239,68,68,.3)}
+.btn-scanning:active{transform:scale(.96)}
+
+/* ── Tabs ── */
+#tabs{
+  display:flex;border-bottom:1px solid var(--border);
+  background:var(--bg2);flex-shrink:0;
+  padding:0 12px;margin-top:4px;
+}
+.tab{
+  padding:10px 14px;font-size:12px;font-weight:700;color:var(--muted);
+  border-bottom:2px solid transparent;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.06em;transition:all .15s;
+  display:flex;align-items:center;gap:5px;
+}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-badge{
+  font-size:10px;background:var(--red);color:#fff;
+  border-radius:10px;padding:1px 6px;font-weight:800;
+  display:none;
+}
+.tab-badge.show{display:inline}
+
+/* ── Device List ── */
+.section-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--muted);padding:14px 14px 6px;
+}
+.empty-tab{
+  display:flex;flex-direction:column;align-items:center;
+  padding:48px 24px;text-align:center;color:var(--muted);gap:10px;
+}
+.empty-tab .ei{font-size:44px}
+.empty-tab h3{font-size:16px;font-weight:700;color:var(--text)}
+.empty-tab p{font-size:13px;line-height:1.6;max-width:280px}
+
+/* ── Device Card ── */
+.dev-card{
+  margin:0 12px 8px;background:var(--bg2);border-radius:14px;
+  border:1px solid var(--border);overflow:hidden;
+  transition:border-color .2s;
+}
+.dev-card.risk-caution{border-color:rgba(245,158,11,.4)}
+.dev-card.risk-warning{border-color:rgba(239,68,68,.5);box-shadow:0 0 0 1px rgba(239,68,68,.15)}
+.dev-top{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.dev-icon-wrap{
+  width:42px;height:42px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;position:relative;
+}
+.risk-dot{
+  position:absolute;top:-2px;right:-2px;width:10px;height:10px;
+  border-radius:50%;border:2px solid var(--bg2);
+}
+.risk-safe   .risk-dot{background:var(--green)}
+.risk-caution .risk-dot{background:var(--yellow)}
+.risk-warning .risk-dot{background:var(--red);animation:dot-pulse 1.2s infinite}
+@keyframes dot-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.3)}}
+.dev-info{flex:1;min-width:0}
+.dev-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dev-type{font-size:11px;color:var(--muted);margin-top:1px}
+.dev-signal{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.rssi-val{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.rssi-bars{display:flex;align-items:flex-end;gap:2px;height:14px}
+.rssi-bar{width:3px;border-radius:1px;background:var(--bg3)}
+.rssi-bar.lit{background:var(--green)}
+.rssi-bar.med{background:var(--yellow)}
+.rssi-bar.low{background:var(--red)}
+
+.dev-risk-row{
+  padding:6px 14px 8px;display:flex;align-items:center;gap:6px;
+  font-size:11px;border-top:1px solid var(--bg3);
+}
+.risk-pill{
+  padding:2px 8px;border-radius:10px;font-size:10px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.pill-safe   {background:rgba(34,197,94,.12);color:#4ade80}
+.pill-caution{background:rgba(245,158,11,.15);color:#fbbf24}
+.pill-warning{background:rgba(239,68,68,.15);color:#f87171}
+.risk-text{color:var(--muted);flex:1}
+
+.dev-actions{display:flex;gap:6px;padding:0 12px 12px}
+.da-btn{
+  flex:1;padding:8px 6px;border-radius:9px;border:none;
+  font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.ring-da{background:rgba(59,130,246,.12);color:var(--blue)}
+.ring-da:active,.ring-da.on{background:var(--blue);color:#fff}
+.ring-da.on{animation:ring-pulse 1s infinite}
+@keyframes ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.5)}50%{box-shadow:0 0 0 8px transparent}}
+.ignore-da{background:rgba(100,116,139,.1);color:var(--muted)}
+.ignore-da:active,.ignore-da.ignored{background:var(--green);color:#fff}
+.info-da{background:rgba(168,85,247,.1);color:var(--purple)}
+.info-da:active{background:var(--purple);color:#fff}
+.seen-label{font-size:10px;color:var(--muted);padding:0 14px 10px}
+
+/* ── HTTPS/BT warning ── */
+.warn-bar{
+  margin:10px 12px;padding:10px 12px;border-radius:10px;font-size:12px;
+  line-height:1.6;
+}
+.warn-https{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#fca5a5}
+.warn-bt{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fcd34d}
+.warn-info{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#93c5fd}
+
+/* ── Bottom nav ── */
+nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;display:flex;
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding-bottom:env(safe-area-inset-bottom,0);z-index:50;
+}
+.nav-btn{
+  flex:1;padding:10px 4px;display:flex;flex-direction:column;
+  align-items:center;gap:3px;font-size:9px;font-weight:700;
+  color:var(--muted);border:none;background:none;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.05em;transition:color .12s;
+}
+.nav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn.active{color:var(--blue)}
+.nav-btn.active svg{stroke:var(--blue)}
+
+/* ── Detail sheet ── */
+#detail-sheet{
+  position:fixed;inset:0;z-index:100;display:none;
+}
+#detail-sheet.open{display:flex;flex-direction:column;justify-content:flex-end}
+#det-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px)}
+#det-panel{
+  position:relative;z-index:1;background:var(--bg2);
+  border-radius:20px 20px 0 0;padding:20px 20px calc(24px + env(safe-area-inset-bottom,0));
+  max-height:80vh;overflow-y:auto;
+}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+.det-icon-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.det-icon{font-size:32px;background:var(--bg3);width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.det-title{font-size:18px;font-weight:800}
+.det-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.det-table{width:100%;margin-bottom:16px}
+.det-table tr td{padding:7px 0;border-bottom:1px solid var(--bg3);font-size:13px;vertical-align:top}
+.det-table tr td:first-child{color:var(--muted);width:42%;font-weight:600;font-size:12px}
+.det-table tr td:last-child{color:var(--text);font-weight:500}
+.det-risk-card{padding:12px;border-radius:10px;margin-bottom:16px}
+.det-risk-safe   {background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2)}
+.det-risk-caution{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)}
+.det-risk-warning{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
+.det-risk-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.det-risk-body{font-size:12px;color:var(--muted);line-height:1.6}
+.det-actions{display:flex;gap:8px;margin-top:4px}
+.det-btn{
+  flex:1;padding:12px;border-radius:12px;border:none;
+  font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;
+}
+.det-ring{background:var(--blue);color:#fff}
+.det-ring:active{transform:scale(.97)}
+.det-ignore{background:var(--bg3);color:var(--muted);border:1px solid var(--border)}
+.det-ignore:active{transform:scale(.97)}
+.det-close{width:100%;padding:12px;margin-top:8px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer}
+
+/* ── Settings page ── */
+#page-settings{padding:0 0 20px;display:none}
+.sett-section{padding:14px}
+.sett-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;display:block}
+.sett-card{background:var(--bg2);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+.sett-row{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;
+  border-bottom:1px solid var(--bg3);font-size:13px;
+}
+.sett-row:last-child{border-bottom:none}
+.sett-row-icon{font-size:18px;flex-shrink:0}
+.sett-row-text{flex:1}
+.sett-row-label{font-weight:600}
+.sett-row-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.toggle{
+  width:44px;height:24px;background:var(--border);border-radius:12px;
+  position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none;
+}
+.toggle.on{background:var(--blue)}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;
+  background:#fff;border-radius:50%;transition:transform .2s;
+}
+.toggle.on::after{transform:translateX(20px)}
+.sett-val{font-size:12px;color:var(--blue);font-weight:700}
+.danger-btn{
+  width:calc(100% - 28px);margin:0 14px;padding:12px;
+  border-radius:10px;border:1px solid rgba(239,68,68,.3);
+  background:rgba(239,68,68,.08);color:#f87171;font-size:13px;font-weight:700;cursor:pointer;
+}
+.danger-btn:active{background:var(--red);color:#fff}
+
+/* ── Spinner ── */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Scrollbar ── */
+#content::-webkit-scrollbar{width:4px}
+#content::-webkit-scrollbar-track{background:transparent}
+#content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── Toast ── */
+#toast{
+  position:fixed;bottom:82px;left:50%;transform:translateX(-50%);
+  background:#1e293b;color:var(--text);padding:10px 18px;
+  border-radius:24px;font-size:13px;font-weight:600;z-index:300;
+  box-shadow:0 4px 24px rgba(0,0,0,.5);border:1px solid var(--border);
+  white-space:nowrap;max-width:90vw;text-align:center;
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- Header -->
+<header>
+  <div class="hrow">
+    <!-- BVN Logo -->
+    <img
+      class="bvn-logo"
+      src="bvn-logo.png"
+      alt="BVN"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
+    />
+    <span class="bvn-logo-fallback">BVN</span>
+    <div class="header-divider"></div>
+    <span class="logo">🛡</span>
+    <span class="app-name">Tracker<span> Detector</span></span>
+    <div class="scan-badge badge-idle" id="scan-badge">
+      <div class="badge-dot"></div>
+      <span id="badge-text">Idle</span>
+    </div>
+  </div>
+  <div class="scan-meta">
+    <span id="meta-bt">Bluetooth: checking…</span>
+    <span class="sep">·</span>
+    <span id="meta-count">0 devices found</span>
+    <span class="sep">·</span>
+    <span id="meta-session">Session: 0s</span>
+  </div>
+</header>
+
+<!-- Content -->
+<div id="content">
+
+  <!-- ── Scanner page ── -->
+  <div id="page-scan">
+    <!-- Warnings -->
+    <div id="https-warn" class="warn-bar warn-https" style="display:none">
+      ⚠️ <strong>HTTPS required</strong> — Web Bluetooth only works on HTTPS. Upload to an HTTPS site for full functionality.
+    </div>
+    <div id="bt-warn" class="warn-bar warn-bt" style="display:none">
+      📵 <strong>Bluetooth not supported</strong> in this browser. Use Chrome on Android or Chrome desktop.
+    </div>
+    <div class="warn-bar warn-info" id="scan-info" style="display:none">
+      💡 Your browser may show a device picker — select the tracker you want to analyze, or select <strong>any device</strong> to add it.
+    </div>
+
+    <!-- Radar visual -->
+    <div id="scanner-wrap">
+      <div id="scan-ring-wrap">
+        <canvas id="ring-canvas" width="220" height="220"></canvas>
+        <div class="scan-center">
+          <div class="scan-count" id="scan-count">0</div>
+          <div class="scan-label" id="scan-sublabel">Found</div>
+        </div>
+      </div>
+      <button id="start-btn" class="btn-idle" onclick="toggleScan()">
+        📡 Start Scanning
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div id="tabs">
+      <div class="tab active" id="tab-all" onclick="switchTab('all')">
+        All <span class="tab-badge" id="badge-all"></span>
+      </div>
+      <div class="tab" id="tab-alerts" onclick="switchTab('alerts')">
+        Alerts <span class="tab-badge show" id="badge-alerts">0</span>
+      </div>
+      <div class="tab" id="tab-safe" onclick="switchTab('safe')">
+        Safe <span class="tab-badge" id="badge-safe"></span>
+      </div>
+    </div>
+
+    <div id="list-all"></div>
+    <div id="list-alerts" style="display:none"></div>
+    <div id="list-safe"   style="display:none"></div>
+  </div>
+
+  <!-- ── Settings page ── -->
+  <div id="page-settings">
+    <div class="sett-section">
+      <span class="sett-label">Scanner</span>
+      <div class="sett-card">
+        <div class="sett-row">
+          <span class="sett-row-icon">🔔</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Sound Alerts</div>
+            <div class="sett-row-sub">Beep when a suspicious tracker is found</div>
+          </div>
+          <button class="toggle on" id="toggle-sound" onclick="toggleSetting('sound',this)"></button>
+        </div>
+        <div class="sett-row">
+          <span class="sett-row-icon">📳</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Vibration</div>
+            <div class="sett-row-sub">Vibrate on tracker detection</div>
+          </div>
+          <button class="toggle on" id="toggle-vibrate" onclick="toggleSetting('vibrate',this)"></button>
+        </div>
+        <div class="sett-row">
+          <span class="sett-row-icon">👁</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Show ignored devices</div>
+            <div class="sett-row-sub">Show devices you've marked as safe</div>
+          </div>
+          <button class="toggle" id="toggle-ignored" onclick="toggleSetting('ignored',this)"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sett-section">
+      <span class="sett-label">Risk Detection</span>
+      <div class="sett-card">
+        <div class="sett-row">
+          <span class="sett-row-icon">⏱</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Caution threshold</div>
+            <div class="sett-row-sub">Minutes before marking as caution</div>
+          </div>
+          <span class="sett-val">5 min</span>
+        </div>
+        <div class="sett-row">
+          <span class="sett-row-icon">⚠️</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Warning threshold</div>
+            <div class="sett-row-sub">Minutes before marking as warning</div>
+          </div>
+          <span class="sett-val">15 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sett-section">
+      <span class="sett-label">About</span>
+      <div class="sett-card">
+        <div class="sett-row">
+          <span class="sett-row-icon">🔒</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Privacy First</div>
+            <div class="sett-row-sub">All data stays on your device. Nothing is uploaded.</div>
+          </div>
+        </div>
+        <div class="sett-row">
+          <span class="sett-row-icon">🌐</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Works on</div>
+            <div class="sett-row-sub">Chrome (Android & Desktop). HTTPS required.</div>
+          </div>
+        </div>
+        <div class="sett-row">
+          <span class="sett-row-icon">📡</span>
+          <div class="sett-row-text">
+            <div class="sett-row-label">Detects</div>
+            <div class="sett-row-sub">AirTag, Tile, Samsung SmartTag, Chipolo, unknown BLE trackers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sett-section">
+      <span class="sett-label">Data</span>
+      <button class="danger-btn" onclick="clearHistory()">🗑 Clear All Scan History</button>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- Bottom nav -->
+<nav>
+  <button class="nav-btn active" id="nav-scan" onclick="showPage('scan')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 000 11.4M17.7 6.3a8 8 0 010 11.4M3.5 3.5a14 14 0 000 17M20.5 3.5a14 14 0 010 17"/></svg>
+    Scanner
+  </button>
+  <button class="nav-btn" id="nav-settings" onclick="showPage('settings')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    Settings
+  </button>
+</nav>
+
+</div><!-- /app -->
+
+<!-- Device detail sheet -->
+<div id="detail-sheet">
+  <div id="det-overlay" onclick="closeDetail()"></div>
+  <div id="det-panel">
+    <div class="sheet-handle"></div>
+    <div class="det-icon-row">
+      <div class="det-icon" id="det-icon">📡</div>
+      <div>
+        <div class="det-title" id="det-title">Device</div>
+        <div class="det-sub" id="det-sub">Unknown</div>
+      </div>
+    </div>
+    <div id="det-risk-card" class="det-risk-card det-risk-safe">
+      <div class="det-risk-title" id="det-risk-title">🟢 Safe</div>
+      <div class="det-risk-body" id="det-risk-body">No threat detected.</div>
+    </div>
+    <table class="det-table" id="det-table"></table>
+    <div class="det-actions">
+      <button class="det-btn det-ring" id="det-ring-btn" onclick="ringFromDetail()">🔔 Make it Ring</button>
+      <button class="det-btn det-ignore" id="det-ignore-btn" onclick="ignoreFromDetail()">✓ Mark as Safe</button>
+    </div>
+    <button class="det-close" onclick="closeDetail()">Close</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── Tracker Database ─────────────────────────────────────────────────────────
+const TRACKER_DB = [
+  {
+    name:'Apple AirTag',
+    icon:'🎯',
+    color:'rgba(255,255,255,.08)',
+    companyIds:[0x004C],
+    serviceUUIDs:['0000fd6f-0000-1000-8000-00805f9b34fb','fd6f'],
+    namePatterns:[/airtag/i],
+    risk:'warning',
+    desc:'Apple tracking device. Can ring via iOS Find My app.',
+    ring:true,
+  },
+  {
+    name:'Apple Device',
+    icon:'🍎',
+    color:'rgba(255,255,255,.06)',
+    companyIds:[0x004C],
+    serviceUUIDs:[],
+    namePatterns:[/iphone|ipad|macbook|apple/i],
+    risk:'safe',
+    desc:'Apple device (iPhone, iPad, Mac). Not necessarily a tracker.',
+    ring:false,
+  },
+  {
+    name:'Tile Tracker',
+    icon:'⬛',
+    color:'rgba(59,130,246,.1)',
+    companyIds:[0x0049],
+    serviceUUIDs:['0000feed-0000-1000-8000-00805f9b34fb'],
+    namePatterns:[/tile/i],
+    risk:'warning',
+    desc:'Tile Bluetooth tracker.',
+    ring:true,
+  },
+  {
+    name:'Samsung SmartTag',
+    icon:'🔵',
+    color:'rgba(59,130,246,.08)',
+    companyIds:[0x0075],
+    serviceUUIDs:['0000fd5a-0000-1000-8000-00805f9b34fb'],
+    namePatterns:[/smarttag|galaxy tag/i],
+    risk:'warning',
+    desc:'Samsung SmartTag tracker.',
+    ring:true,
+  },
+  {
+    name:'Chipolo Tracker',
+    icon:'🟣',
+    color:'rgba(168,85,247,.1)',
+    companyIds:[0x00D2],
+    serviceUUIDs:[],
+    namePatterns:[/chipolo/i],
+    risk:'caution',
+    desc:'Chipolo Bluetooth tracker.',
+    ring:true,
+  },
+  {
+    name:'Nut/Nutale Tag',
+    icon:'🥜',
+    color:'rgba(245,158,11,.08)',
+    companyIds:[],
+    serviceUUIDs:[],
+    namePatterns:[/nut |nutale|nut_/i],
+    risk:'caution',
+    desc:'Nut/Nutale Bluetooth tracker.',
+    ring:true,
+  },
+];
+
+const IMMEDIATE_ALERT = '00001802-0000-1000-8000-00805f9b34fb';
+const ALERT_CHAR      = '00002a06-0000-1000-8000-00805f9b34fb';
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let devices   = [];   // all known devices this session
+let scanning  = false;
+let scanStart = null;
+let sessionTimer = null;
+let scanInterval  = null;
+let activeTab = 'all';
+let detailDevice  = null;
+let detailRinging = false;
+let settings  = {sound:true, vibrate:true, ignored:false};
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', ()=>{
+  loadSettings();
+  loadHistory();
+  checkBluetooth();
+  checkHttps();
+  drawRing(false);
+  updateUI();
+});
+
+// ─── Persist ─────────────────────────────────────────────────────────────────
+function saveHistory(){
+  const toSave = devices.map(d=>({...d, btDevice:undefined}));
+  try{ localStorage.setItem('tg_devices_v2', JSON.stringify(toSave)); }catch(e){}
+}
+function loadHistory(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('tg_devices_v2')||'[]');
+    devices = saved.map(d=>({...d, btDevice:null, ringing:false}));
+  }catch(e){ devices=[]; }
+}
+function loadSettings(){
+  try{ Object.assign(settings, JSON.parse(localStorage.getItem('tg_settings')||'{}')); }catch(e){}
+  ['sound','vibrate','ignored'].forEach(k=>{
+    const t=document.getElementById('toggle-'+k);
+    if(t) t.className='toggle'+(settings[k]?' on':'');
+  });
+}
+function saveSettings(){ localStorage.setItem('tg_settings', JSON.stringify(settings)); }
+
+// ─── Bluetooth check ──────────────────────────────────────────────────────────
+async function checkBluetooth(){
+  const meta = document.getElementById('meta-bt');
+  if(!navigator.bluetooth){
+    meta.textContent='Bluetooth: not supported';
+    document.getElementById('bt-warn').style.display='block';
+    return false;
+  }
+  const avail = await navigator.bluetooth.getAvailability().catch(()=>false);
+  meta.textContent = avail ? '🟢 Bluetooth: on' : '🔴 Bluetooth: off';
+  return avail;
+}
+function checkHttps(){
+  if(location.protocol!=='https:' && !['localhost','127.0.0.1'].includes(location.hostname))
+    document.getElementById('https-warn').style.display='block';
+}
+
+// ─── Pages ────────────────────────────────────────────────────────────────────
+function showPage(page){
+  document.getElementById('page-scan').style.display     = page==='scan'?'':'none';
+  document.getElementById('page-settings').style.display = page==='settings'?'':'none';
+  document.getElementById('nav-scan').classList.toggle('active',page==='scan');
+  document.getElementById('nav-settings').classList.toggle('active',page==='settings');
+}
+
+function switchTab(tab){
+  activeTab=tab;
+  ['all','alerts','safe'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('list-'+t).style.display = t===tab?'':'none';
+  });
+  renderLists();
+}
+
+// ─── Toggle scan ─────────────────────────────────────────────────────────────
+async function toggleScan(){
+  if(scanning){ stopScan(); return; }
+  await startScan();
+}
+
+async function startScan(){
+  if(!navigator.bluetooth){ showToast('Bluetooth not supported'); return; }
+  const avail = await checkBluetooth();
+  if(!avail){ showToast('Please enable Bluetooth'); return; }
+
+  scanning=true;
+  scanStart=Date.now();
+  updateScanUI(true);
+  sessionTimer = setInterval(updateSessionTime, 1000);
+
+  // Show scan info
+  document.getElementById('scan-info').style.display='block';
+
+  // Do first scan immediately, then repeat
+  await doScan();
+  scanInterval = setInterval(doScan, 8000);
+}
+
+function stopScan(){
+  scanning=false;
+  clearInterval(sessionTimer);
+  clearInterval(scanInterval);
+  updateScanUI(false);
+  document.getElementById('scan-info').style.display='none';
+  showToast('Scan stopped · '+devices.length+' device'+(devices.length!==1?'s':'')+' found');
+  saveHistory();
+}
+
+async function doScan(){
+  if(!scanning) return;
+  try {
+    // Try passive scan first (experimental)
+    if(navigator.bluetooth.requestLEScan){
+      const scan = await navigator.bluetooth.requestLEScan({
+        acceptAllAdvertisements:true,
+        keepRepeatedDevices:true
+      });
+      scan.addEventListener('advertisementreceived', onAdvert);
+      setTimeout(()=>{ try{scan.stop();}catch(e){} }, 4000);
+      return;
+    }
+    // Fallback: device picker
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices:true,
+      optionalServices:[IMMEDIATE_ALERT]
+    });
+    processDevice({
+      name: device.name||'Unknown Device',
+      rssi: -70,
+      manufacturerData: new Map(),
+      serviceData: new Map(),
+      uuids: [],
+      btDevice: device,
+    });
+  } catch(e){
+    if(e.name==='NotFoundError') return; // user cancelled
+    if(e.name!=='NotAllowedError') console.warn('Scan error:',e.message);
+  }
+}
+
+function onAdvert(event){
+  const mfData = {};
+  if(event.manufacturerData){
+    event.manufacturerData.forEach((val,key)=>{
+      mfData[key] = Array.from(new Uint8Array(val.buffer));
+    });
+  }
+  const svcUUIDs = event.uuids||[];
+  processDevice({
+    address: event.device.id,
+    name: event.device.name || event.name || 'Unknown Device',
+    rssi: event.rssi,
+    manufacturerData: event.manufacturerData||new Map(),
+    mfData,
+    uuids: svcUUIDs,
+    btDevice: event.device,
+    txPower: event.txPower,
+  });
+}
+
+// ─── Process device ───────────────────────────────────────────────────────────
+function processDevice(raw){
+  const addr = raw.address || raw.btDevice?.id || 'dev_'+Math.random().toString(36).slice(2);
+  const now = Date.now();
+
+  // Identify tracker type
+  const mfIds = raw.mfData ? Object.keys(raw.mfData).map(Number) : [];
+  const tracker = identifyTracker(raw.name, mfIds, raw.uuids||[]);
+
+  // Find existing or create new
+  let dev = devices.find(d=>d.id===addr);
+  if(dev){
+    dev.rssi = raw.rssi||dev.rssi;
+    dev.lastSeen = now;
+    dev.seenCount++;
+    dev.name = raw.name||dev.name;
+    if(!dev.tracker && tracker) dev.tracker=tracker;
+  } else {
+    dev = {
+      id:addr,
+      name:raw.name||'Unknown Device',
+      rssi:raw.rssi||-80,
+      firstSeen:now,
+      lastSeen:now,
+      seenCount:1,
+      tracker,
+      mfIds,
+      uuids:raw.uuids||[],
+      ignored:false,
+      ringing:false,
+      btDevice:raw.btDevice||null,
+      txPower:raw.txPower||null,
+    };
+    devices.push(dev);
+
+    // New device alert
+    if(tracker && tracker.risk==='warning'){
+      alertDevice(dev);
+    }
+  }
+
+  dev.risk = calcRisk(dev);
+  updateUI();
+}
+
+// ─── Identify tracker ─────────────────────────────────────────────────────────
+function identifyTracker(name, mfIds, uuids){
+  const nameLower = (name||'').toLowerCase();
+  const uuidLower = uuids.map(u=>(u||'').toLowerCase());
+
+  for(const t of TRACKER_DB){
+    // Name match
+    if(t.namePatterns.some(p=>p.test(nameLower))) return t;
+    // Company ID match
+    if(t.companyIds.length && t.companyIds.some(id=>mfIds.includes(id))) return t;
+    // Service UUID match
+    if(t.serviceUUIDs.length && t.serviceUUIDs.some(u=>uuidLower.some(du=>du.includes(u.replace('0000','').replace('-0000-1000-8000-00805f9b34fb',''))))){
+      return t;
+    }
+  }
+
+  // Heuristic: if it has no name but has manufacturer data, likely a tracker
+  if(!name && mfIds.length>0){
+    return {
+      name:'Unknown Tracker',icon:'❓',color:'rgba(239,68,68,.08)',
+      companyIds:[],serviceUUIDs:[],namePatterns:[],
+      risk:'caution',desc:'Unknown BLE device with manufacturer data. Could be a tracker.',ring:false,
+    };
+  }
+  return null;
+}
+
+// ─── Risk calculation ─────────────────────────────────────────────────────────
+function calcRisk(dev){
+  if(dev.ignored) return 'safe';
+  if(!dev.tracker) return 'safe';
+
+  const minsSeen = (dev.lastSeen - dev.firstSeen) / 60000;
+  const base = dev.tracker.risk;
+
+  // Escalate based on time
+  if(base==='warning') return 'warning';
+  if(base==='caution'){
+    if(minsSeen > 15 || dev.seenCount > 10) return 'warning';
+    return 'caution';
+  }
+  if(base==='safe'){
+    if(minsSeen > 30) return 'caution';
+    return 'safe';
+  }
+  return 'safe';
+}
+
+// ─── Alert ────────────────────────────────────────────────────────────────────
+function alertDevice(dev){
+  if(settings.vibrate && navigator.vibrate) navigator.vibrate([100,50,100,50,200]);
+  if(settings.sound) playAlert();
+  showToast('⚠️ '+dev.tracker.name+' detected nearby!');
+}
+
+function playAlert(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [440,600,440].forEach((f,i)=>{
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value=f; g.gain.value=0.2;
+      o.start(ctx.currentTime+i*0.2);
+      o.stop(ctx.currentTime+i*0.2+0.15);
+    });
+  }catch(e){}
+}
+
+// ─── UI Update ────────────────────────────────────────────────────────────────
+function updateUI(){
+  const visible = devices.filter(d=>!d.ignored||settings.ignored);
+  const alerts  = visible.filter(d=>d.risk==='caution'||d.risk==='warning');
+  const safe    = visible.filter(d=>d.risk==='safe');
+
+  document.getElementById('scan-count').textContent   = visible.length;
+  document.getElementById('scan-sublabel').textContent = visible.length===1?'Detected':'Detected';
+  document.getElementById('meta-count').textContent   = visible.length+' device'+(visible.length!==1?'s':'');
+
+  const alertBadge=document.getElementById('badge-alerts');
+  alertBadge.textContent=alerts.length;
+  alertBadge.className='tab-badge'+(alerts.length>0?' show':'');
+
+  renderLists();
+}
+
+function renderLists(){
+  const visible = devices.filter(d=>!d.ignored||settings.ignored);
+  const alerts  = visible.filter(d=>d.risk==='caution'||d.risk==='warning');
+  const safe    = visible.filter(d=>d.risk==='safe');
+
+  renderList('all',   visible);
+  renderList('alerts',alerts );
+  renderList('safe',  safe   );
+}
+
+function renderList(id, list){
+  const el=document.getElementById('list-'+id);
+  if(!el) return;
+  if(list.length===0){
+    el.innerHTML=`<div class="empty-tab">
+      <div class="ei">${id==='alerts'?'✅':id==='safe'?'🛡':'📡'}</div>
+      <h3>${id==='alerts'?'No alerts':'No devices'}</h3>
+      <p>${id==='alerts'?'No suspicious trackers detected near you. Stay safe!':
+           id==='safe'?'No safe devices found yet.':
+           scanning?'Scanning… devices will appear here.':'Tap Start Scanning to begin.'}</p>
+    </div>`;
+    return;
+  }
+  // Sort: warnings first
+  const sorted=[...list].sort((a,b)=>{
+    const order={warning:0,caution:1,safe:2};
+    return (order[a.risk]||2)-(order[b.risk]||2);
+  });
+  el.innerHTML='';
+  sorted.forEach(dev=>{
+    if(id==='all') el.appendChild(makeDevCard(dev));
+    else if(id==='alerts') el.appendChild(makeDevCard(dev));
+    else el.appendChild(makeDevCard(dev));
+  });
+}
+
+function makeDevCard(dev){
+  const card=document.createElement('div');
+  card.className=`dev-card risk-${dev.risk}`;
+  card.id='devcard-'+dev.id;
+
+  const t = dev.tracker;
+  const icon  = t?t.icon:'📶';
+  const color = t?t.color:'rgba(59,130,246,.06)';
+  const typeName = t?t.name:'Unknown Device';
+
+  const rssiBars  = buildRssiBars(dev.rssi);
+  const rssiColor = dev.rssi>-60?'var(--green)':dev.rssi>-75?'var(--yellow)':'var(--red)';
+  const minAgo    = Math.round((Date.now()-dev.firstSeen)/60000);
+  const timeLabel = minAgo<1?'just now':minAgo<60?minAgo+'m ago':Math.round(minAgo/60)+'h ago';
+
+  const riskPill  = dev.risk==='warning'
+    ? '<span class="risk-pill pill-warning">⚠ Warning</span>'
+    : dev.risk==='caution'
+    ? '<span class="risk-pill pill-caution">⚡ Caution</span>'
+    : '<span class="risk-pill pill-safe">✓ Safe</span>';
+
+  const riskText  = dev.risk==='warning'
+    ? 'Tracker has been near you — may be following you'
+    : dev.risk==='caution'
+    ? 'Unknown device detected — seen '+(dev.seenCount>1?dev.seenCount+'× ':'')+'nearby'
+    : dev.ignored?'Marked as safe by you':'Device detected, no threat identified';
+
+  card.innerHTML=`
+    <div class="dev-top" onclick="openDetail('${dev.id}')" style="cursor:pointer">
+      <div class="dev-icon-wrap risk-${dev.risk}" style="background:${color}">
+        <span>${icon}</span>
+        <div class="risk-dot"></div>
+      </div>
+      <div class="dev-info">
+        <div class="dev-name">${esc(dev.name)}</div>
+        <div class="dev-type">${typeName}</div>
+      </div>
+      <div class="dev-signal">
+        <span class="rssi-val" style="color:${rssiColor}">${dev.rssi} dBm</span>
+        <div class="rssi-bars">${rssiBars}</div>
+      </div>
+    </div>
+    <div class="dev-risk-row">
+      ${riskPill}
+      <span class="risk-text">${riskText}</span>
+    </div>
+    <div class="dev-actions">
+      ${t&&t.ring?`<button class="da-btn ring-da ${dev.ringing?'on':''}" id="rb-${dev.id}" onclick="toggleRing('${dev.id}')">${dev.ringing?'⏹ Stop':'🔔 Ring'}</button>`:''}
+      <button class="da-btn ignore-da ${dev.ignored?'ignored':''}" onclick="toggleIgnore('${dev.id}')">${dev.ignored?'✓ Ignored':'✓ Mark Safe'}</button>
+      <button class="da-btn info-da" onclick="openDetail('${dev.id}')">ℹ Info</button>
+    </div>
+    <div class="seen-label">First seen: ${timeLabel} · Seen ${dev.seenCount} time${dev.seenCount!==1?'s':''}</div>
+  `;
+  return card;
+}
+
+function buildRssiBars(rssi){
+  const strength = rssi>=−45?4:rssi>=−60?3:rssi>=−75?2:rssi>=−90?1:0;
+  const cls = strength>=3?'lit':strength>=2?'med':'low';
+  const heights=[9,12,15,18];
+  return heights.map((h,i)=>`<div class="rssi-bar ${i<strength?cls:''}" style="height:${h}px"></div>`).join('');
+}
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+// ─── Ring ─────────────────────────────────────────────────────────────────────
+async function toggleRing(id){
+  const dev=devices.find(d=>d.id===id);
+  if(!dev) return;
+  dev.ringing=!dev.ringing;
+  updateUI();
+  try{
+    const device = dev.btDevice || await navigator.bluetooth.requestDevice({
+      acceptAllDevices:true,
+      optionalServices:[IMMEDIATE_ALERT]
+    });
+    dev.btDevice=device;
+    const server = await device.gatt.connect();
+    const svc    = await server.getPrimaryService(IMMEDIATE_ALERT);
+    const char   = await svc.getCharacteristic(ALERT_CHAR);
+    await char.writeValue(new Uint8Array([dev.ringing?2:0]));
+    showToast(dev.ringing?'🔔 Ringing '+dev.name:'🔕 Stopped');
+  }catch(e){
+    dev.ringing=false;
+    showToast('Could not connect: '+(e.message||e));
+    updateUI();
+  }
+}
+
+// ─── Ignore ───────────────────────────────────────────────────────────────────
+function toggleIgnore(id){
+  const dev=devices.find(d=>d.id===id);
+  if(!dev) return;
+  dev.ignored=!dev.ignored;
+  dev.risk=calcRisk(dev);
+  saveHistory();
+  updateUI();
+  showToast(dev.ignored?'✅ Marked as safe':'Removed from safe list');
+}
+
+// ─── Detail sheet ─────────────────────────────────────────────────────────────
+function openDetail(id){
+  const dev=devices.find(d=>d.id===id);
+  if(!dev) return;
+  detailDevice=dev;
+  detailRinging=false;
+
+  const t=dev.tracker;
+  document.getElementById('det-icon').textContent = t?t.icon:'📶';
+  document.getElementById('det-title').textContent = dev.name;
+  document.getElementById('det-sub').textContent = t?t.name:'Unknown Device';
+
+  const rc = document.getElementById('det-risk-card');
+  rc.className='det-risk-card det-risk-'+dev.risk;
+  const riskTitles={warning:'⚠️ Potential Tracker',caution:'⚡ Suspicious Device',safe:'✅ No Threat'};
+  const riskBodies={
+    warning:'This device has been detected multiple times and matches known tracker signatures. If this is not your device, someone may be tracking you.',
+    caution:'This device has been detected nearby. It could be a tracker or a nearby device. Monitor if it continues to appear.',
+    safe:'No threat detected. This device appears to be a nearby phone, headphone, or other personal device.'
+  };
+  document.getElementById('det-risk-title').textContent = riskTitles[dev.risk]||riskTitles.safe;
+  document.getElementById('det-risk-body').textContent  = riskBodies[dev.risk]||riskBodies.safe;
+
+  const minAgo=Math.round((Date.now()-dev.firstSeen)/60000);
+  const rows=[
+    ['Type',         t?t.name:'Unknown BLE Device'],
+    ['Device Name',  dev.name||'—'],
+    ['Signal',       dev.rssi+' dBm ('+rssiLabel(dev.rssi)+')'],
+    ['Company IDs',  dev.mfIds&&dev.mfIds.length?dev.mfIds.map(id=>'0x'+id.toString(16).toUpperCase().padStart(4,'0')).join(', '):'—'],
+    ['First Seen',   minAgo<1?'Just now':minAgo+'m ago'],
+    ['Times Seen',   dev.seenCount+'×'],
+    ['Status',       dev.ignored?'Marked safe':'Active'],
+    ['Description',  t?t.desc:'Unknown device.'],
+  ];
+
+  const tbl=document.getElementById('det-table');
+  tbl.innerHTML=rows.map(([k,v])=>`<tr><td>${k}</td><td>${esc(String(v))}</td></tr>`).join('');
+
+  const rb=document.getElementById('det-ring-btn');
+  rb.style.display=t&&t.ring?'':'none';
+  rb.textContent='🔔 Make it Ring';
+
+  const ib=document.getElementById('det-ignore-btn');
+  ib.textContent=dev.ignored?'✗ Remove Safe Mark':'✓ Mark as Safe';
+
+  document.getElementById('detail-sheet').classList.add('open');
+}
+
+function closeDetail(){
+  document.getElementById('detail-sheet').classList.remove('open');
+  if(detailDevice&&detailRinging){
+    toggleRing(detailDevice.id);
+  }
+  detailDevice=null;
+}
+
+async function ringFromDetail(){
+  if(!detailDevice) return;
+  await toggleRing(detailDevice.id);
+  detailRinging=detailDevice.ringing;
+  document.getElementById('det-ring-btn').textContent=detailDevice.ringing?'⏹ Stop Ringing':'🔔 Make it Ring';
+}
+
+function ignoreFromDetail(){
+  if(!detailDevice) return;
+  toggleIgnore(detailDevice.id);
+  const ib=document.getElementById('det-ignore-btn');
+  ib.textContent=detailDevice.ignored?'✗ Remove Safe Mark':'✓ Mark as Safe';
+}
+
+function rssiLabel(r){ return r>=-55?'Excellent':r>=-65?'Good':r>=-75?'Fair':r>=-85?'Weak':'Very weak'; }
+
+// ─── Settings toggles ─────────────────────────────────────────────────────────
+function toggleSetting(key, el){
+  settings[key]=!settings[key];
+  el.classList.toggle('on',settings[key]);
+  saveSettings();
+  if(key==='ignored') updateUI();
+}
+
+function clearHistory(){
+  if(!confirm('Clear all scan history? This cannot be undone.')) return;
+  devices=[];
+  try{ localStorage.removeItem('tg_devices_v2'); }catch(e){}
+  updateUI();
+  showToast('History cleared');
+}
+
+// ─── Scan ring animation ──────────────────────────────────────────────────────
+const ringCanvas=document.getElementById('ring-canvas');
+const rctx=ringCanvas.getContext('2d');
+let ringPhase=0, ringAnim=null;
+
+function drawRing(active){
+  const W=220, H=220, cx=110, cy=110;
+  rctx.clearRect(0,0,W,H);
+
+  const alerts=devices.filter(d=>d.risk==='warning'||d.risk==='caution').length;
+  const color = alerts>0?'#ef4444':active?'#3b82f6':'#1e3a5f';
+
+  // Outer pulsing rings (only when scanning)
+  if(active){
+    for(let i=0;i<3;i++){
+      const phase=(ringPhase/60+i/3)%1;
+      const r=40+phase*70;
+      const alpha=0.4*(1-phase);
+      rctx.beginPath();
+      rctx.arc(cx,cy,r,0,Math.PI*2);
+      rctx.strokeStyle=color+Math.round(alpha*255).toString(16).padStart(2,'0');
+      rctx.lineWidth=2;
+      rctx.stroke();
+    }
+  }
+
+  // Fixed circles
+  [35,60,85,105].forEach((r,i)=>{
+    rctx.beginPath(); rctx.arc(cx,cy,r,0,Math.PI*2);
+    rctx.strokeStyle=`rgba(${alerts>0?'239,68,68':active?'59,130,246':'30,58,95'},${0.15+i*0.05})`;
+    rctx.lineWidth=1; rctx.stroke();
+  });
+
+  // Center circle
+  const grad=rctx.createRadialGradient(cx,cy,0,cx,cy,32);
+  grad.addColorStop(0,(alerts>0?'rgba(239,68,68,.25)':active?'rgba(59,130,246,.2)':'rgba(30,58,95,.3)'));
+  grad.addColorStop(1,'transparent');
+  rctx.fillStyle=grad;
+  rctx.beginPath(); rctx.arc(cx,cy,32,0,Math.PI*2); rctx.fill();
+
+  rctx.fillStyle=active?color:'#1e3a5f';
+  rctx.beginPath(); rctx.arc(cx,cy,22,0,Math.PI*2); rctx.fill();
+
+  // Icon
+  rctx.font='16px serif';
+  rctx.textAlign='center'; rctx.textBaseline='middle';
+  rctx.fillText(alerts>0?'⚠️':active?'📡':'🛡',cx,cy);
+
+  // Device dots
+  const allDev=devices.filter(d=>!d.ignored||settings.ignored);
+  allDev.slice(0,12).forEach((dev,i)=>{
+    const angle=(i/Math.max(allDev.length,1))*Math.PI*2 - Math.PI/2;
+    const dist = Math.max(38,Math.min(100,(-dev.rssi-40)*1.3));
+    const dx=cx+Math.cos(angle)*dist, dy=cy+Math.sin(angle)*dist;
+    const dc=dev.risk==='warning'?'#ef4444':dev.risk==='caution'?'#f59e0b':'#22c55e';
+    rctx.beginPath(); rctx.arc(dx,dy,5,0,Math.PI*2);
+    rctx.fillStyle=dc; rctx.fill();
+    // Glow
+    const grd=rctx.createRadialGradient(dx,dy,0,dx,dy,10);
+    grd.addColorStop(0,dc+'66'); grd.addColorStop(1,'transparent');
+    rctx.fillStyle=grd;
+    rctx.beginPath(); rctx.arc(dx,dy,10,0,Math.PI*2); rctx.fill();
+  });
+
+  if(active) ringPhase++;
+}
+
+function startRingAnim(){
+  function tick(){ drawRing(true); ringAnim=requestAnimationFrame(tick); }
+  tick();
+}
+function stopRingAnim(){ cancelAnimationFrame(ringAnim); drawRing(false); }
+
+// ─── Scan UI state ────────────────────────────────────────────────────────────
+function updateScanUI(on){
+  const btn=document.getElementById('start-btn');
+  const badge=document.getElementById('scan-badge');
+  const text=document.getElementById('badge-text');
+  btn.className=on?'btn-scanning':'btn-idle';
+  btn.innerHTML=on?'⏹ Stop Scanning':'📡 Start Scanning';
+  badge.className='scan-badge '+(on?'badge-scanning':'badge-idle');
+  text.textContent=on?'Scanning':'Idle';
+  if(on) startRingAnim(); else stopRingAnim();
+}
+
+function updateSessionTime(){
+  if(!scanStart) return;
+  const s=Math.round((Date.now()-scanStart)/1000);
+  const m=Math.floor(s/60), sec=s%60;
+  document.getElementById('meta-session').textContent=
+    'Session: '+(m>0?m+'m ':'')+sec+'s';
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.style.opacity='0',3200);
+}
+</script>
+</body>
+</html>
