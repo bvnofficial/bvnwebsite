@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=Raleway:wght@500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #1B3060;
+  --orange: #E86010;
+  --orange-light: #F5A623;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background: #0A0F1E;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Grid Background ─────────────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── Glass Morphism ──────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── Glow Effects ────────────────────────────────────────── */
+.orange-glow {
+  box-shadow: 0 0 24px rgba(232, 96, 16, 0.4);
+}
+
+.orange-glow-lg {
+  box-shadow: 0 0 40px rgba(232, 96, 16, 0.5), 0 0 80px rgba(232, 96, 16, 0.2);
+}
+
+/* ── Text Gradient ───────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, #E86010, #F5A623);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animated Border Shimmer ─────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.border-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(232, 96, 16, 0.3) 0%,
+    rgba(245, 166, 35, 0.8) 25%,
+    rgba(232, 96, 16, 0.3) 50%,
+    rgba(27, 48, 96, 0.4) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0F1E;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E86010;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #F5A623;
+}
+
+/* ── Selection ───────────────────────────────────────────── */
+::selection {
+  background: rgba(232, 96, 16, 0.4);
+  color: #fff;
+}
+
+/* ── Focus Visible ───────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #E86010;
+  outline-offset: 2px;
+}
