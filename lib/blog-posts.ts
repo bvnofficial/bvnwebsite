@@ -27,20 +27,20 @@ export const blogPosts: BlogPost[] = [
   // ─────────────────────────────────────────────────────────
   {
     slug: "business-automation-philippines-guide",
-    title: "How to Automate Your Business Operations in the Philippines: A Complete 2025 Guide",
-    metaTitle: "Business Automation Philippines: Complete 2025 Guide | BVN",
+    title: "How to Automate Your Business Operations in the Philippines: A Complete 2026 Guide",
+    metaTitle: "Business Automation Philippines: Complete 2026 Guide | BVN",
     metaDescription:
       "Learn how to automate your business operations in the Philippines. Step-by-step guide covering CRM, HR, payroll, and AI tools that save 20+ hours per week.",
     category: "Operations",
     readTime: "8 min read",
-    date: "May 20, 2025",
-    dateISO: "2025-05-20",
+    date: "May 20, 2026",
+    dateISO: "2026-05-20",
     excerpt:
       "Business automation is no longer a luxury reserved for large corporations. Philippine SMEs are discovering how the right automation tools can reclaim 20+ hours per week, reduce costly errors, and scale without bloating the payroll.",
     keywords: [
       "business automation Philippines",
       "operations automation Philippines",
-      "automate business Philippines 2025",
+      "automate business Philippines 2026",
       "business process automation PH",
     ],
     sections: [
@@ -170,21 +170,21 @@ export const blogPosts: BlogPost[] = [
   // ─────────────────────────────────────────────────────────
   {
     slug: "social-media-management-philippines",
-    title: "Social Media Management for Filipino Businesses: What Actually Works in 2025",
-    metaTitle: "Social Media Management Philippines 2025: What Actually Works | BVN",
+    title: "Social Media Management for Filipino Businesses: What Actually Works in 2026",
+    metaTitle: "Social Media Management Philippines 2026: What Actually Works | BVN",
     metaDescription:
-      "Discover the most effective social media strategies for Filipino businesses in 2025. Learn which platforms drive real results and how to grow your brand online in the Philippines.",
+      "Discover the most effective social media strategies for Filipino businesses in 2026. Learn which platforms drive real results and how to grow your brand online in the Philippines.",
     category: "Marketing",
     readTime: "7 min read",
-    date: "May 19, 2025",
-    dateISO: "2025-05-19",
+    date: "May 19, 2026",
+    dateISO: "2026-05-19",
     excerpt:
       "The Philippines is one of the most socially active countries in the world — Filipinos spend an average of 3.5 hours per day on social media. For businesses, this is a massive opportunity. But only if you know how to cut through the noise.",
     keywords: [
       "social media management Philippines",
       "social media marketing Philippines",
       "social media for Filipino businesses",
-      "social media strategy Philippines 2025",
+      "social media strategy Philippines 2026",
     ],
     sections: [
       {
@@ -193,11 +193,11 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: "h2",
-        text: "The Philippine Social Media Landscape in 2025",
+        text: "The Philippine Social Media Landscape in 2026",
       },
       {
         type: "paragraph",
-        text: "As of 2025, Facebook remains the dominant platform in the Philippines with over 85 million users. TikTok has exploded as a discovery platform, particularly for consumer brands targeting 18–35 year olds. Instagram continues to be strong for lifestyle, food, and service businesses. LinkedIn is growing rapidly among B2B companies and professionals.",
+        text: "As of 2026, Facebook remains the dominant platform in the Philippines with over 85 million users. TikTok has exploded as a discovery platform, particularly for consumer brands targeting 18–35 year olds. Instagram continues to be strong for lifestyle, food, and service businesses. LinkedIn is growing rapidly among B2B companies and professionals.",
       },
       {
         type: "list",
@@ -243,7 +243,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: "paragraph",
-        text: "Video content generates 3x more engagement than static images on Facebook and 10x more on TikTok. In 2025, if your brand isn't producing regular video content, you are invisible to a huge segment of your potential customers.",
+        text: "Video content generates 3x more engagement than static images on Facebook and 10x more on TikTok. In 2026, if your brand isn't producing regular video content, you are invisible to a huge segment of your potential customers.",
       },
       {
         type: "h3",
@@ -263,7 +263,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: "paragraph",
-        text: "Short-form video is the highest-ROI content format in 2025. Businesses that post 3–5 short videos per week are seeing 5–10x more organic reach compared to image posts. The key is consistency and authenticity — production quality matters less than genuine value.",
+        text: "Short-form video is the highest-ROI content format in 2026. Businesses that post 3–5 short videos per week are seeing 5–10x more organic reach compared to image posts. The key is consistency and authenticity — production quality matters less than genuine value.",
       },
       {
         type: "h3",
@@ -320,8 +320,8 @@ export const blogPosts: BlogPost[] = [
       "AI automation is transforming Philippine businesses. Discover what AI automation is, how it works, and real examples of how it saves 20+ hours per week for business owners.",
     category: "Operations",
     readTime: "7 min read",
-    date: "May 18, 2025",
-    dateISO: "2025-05-18",
+    date: "May 18, 2026",
+    dateISO: "2026-05-18",
     excerpt:
       "AI automation isn't science fiction — it's the competitive advantage that forward-thinking Philippine businesses are using right now to slash operating costs, speed up workflows, and deliver better customer experiences.",
     keywords: [
@@ -329,7 +329,7 @@ export const blogPosts: BlogPost[] = [
       "AI automation save time",
       "artificial intelligence business automation",
       "AI agents Philippines",
-      "business AI tools 2025",
+      "business AI tools 2026",
     ],
     sections: [
       {
@@ -453,28 +453,28 @@ export const blogPosts: BlogPost[] = [
   // POST 4
   // ─────────────────────────────────────────────────────────
   {
-    slug: "seo-philippines-rank-google-2025",
-    title: "SEO Philippines 2025: How to Rank Your Business on Google's First Page",
-    metaTitle: "SEO Philippines 2025: Rank on Google's First Page | BVN",
+    slug: "seo-philippines-rank-google-2026",
+    title: "SEO Philippines 2026: How to Rank Your Business on Google's First Page",
+    metaTitle: "SEO Philippines 2026: Rank on Google's First Page | BVN",
     metaDescription:
       "A complete SEO guide for Philippine businesses. Learn keyword research, on-page SEO, local SEO, and link building to rank on Google's first page and get more customers.",
     category: "Marketing",
     readTime: "9 min read",
-    date: "May 17, 2025",
-    dateISO: "2025-05-17",
+    date: "May 17, 2026",
+    dateISO: "2026-05-17",
     excerpt:
-      "93% of online experiences start with a search engine — and if your business isn't on Google's first page, you're invisible to most of your potential customers. Here's the complete SEO playbook for Philippine businesses in 2025.",
+      "93% of online experiences start with a search engine — and if your business isn't on Google's first page, you're invisible to most of your potential customers. Here's the complete SEO playbook for Philippine businesses in 2026.",
     keywords: [
       "SEO Philippines",
       "SEO services Philippines",
       "how to rank on Google Philippines",
-      "local SEO Philippines 2025",
+      "local SEO Philippines 2026",
       "SEO for Philippine businesses",
     ],
     sections: [
       {
         type: "paragraph",
-        text: "93% of online experiences start with a search engine — and if your business isn't on Google's first page, you're invisible to most of your potential customers. The businesses that show up first get the clicks, the calls, and the conversions. Here's the complete SEO playbook for Philippine businesses in 2025.",
+        text: "93% of online experiences start with a search engine — and if your business isn't on Google's first page, you're invisible to most of your potential customers. The businesses that show up first get the clicks, the calls, and the conversions. Here's the complete SEO playbook for Philippine businesses in 2026.",
       },
       {
         type: "h2",
@@ -586,8 +586,8 @@ export const blogPosts: BlogPost[] = [
       "Manual sales tracking is costing Philippine businesses leads and revenue. Learn how CRM automation helps you close more deals, track every lead, and scale your sales process.",
     category: "Operations",
     readTime: "6 min read",
-    date: "May 16, 2025",
-    dateISO: "2025-05-16",
+    date: "May 16, 2026",
+    dateISO: "2026-05-16",
     excerpt:
       "If your sales team is tracking leads in a spreadsheet or relying on memory to follow up, you're losing business. CRM automation is the single biggest upgrade most Philippine businesses can make to their sales process.",
     keywords: [
@@ -690,20 +690,20 @@ export const blogPosts: BlogPost[] = [
   // POST 6
   // ─────────────────────────────────────────────────────────
   {
-    slug: "digital-marketing-philippines-strategy-2025",
-    title: "Digital Marketing Philippines: The Complete 2025 Strategy for Growing Your Business Online",
-    metaTitle: "Digital Marketing Philippines 2025: Complete Strategy Guide | BVN",
+    slug: "digital-marketing-philippines-strategy-2026",
+    title: "Digital Marketing Philippines: The Complete 2026 Strategy for Growing Your Business Online",
+    metaTitle: "Digital Marketing Philippines 2026: Complete Strategy Guide | BVN",
     metaDescription:
-      "The complete digital marketing guide for Philippine businesses in 2025. Learn SEO, social media, email, content, and paid ads strategies to dominate your market online.",
+      "The complete digital marketing guide for Philippine businesses in 2026. Learn SEO, social media, email, content, and paid ads strategies to dominate your market online.",
     category: "Marketing",
     readTime: "10 min read",
-    date: "May 15, 2025",
-    dateISO: "2025-05-15",
+    date: "May 15, 2026",
+    dateISO: "2026-05-15",
     excerpt:
       "Digital marketing in the Philippines has never been more competitive — or more full of opportunity. With over 90 million internet users and one of the world's most engaged social media populations, the businesses that master digital marketing will own their markets.",
     keywords: [
       "digital marketing Philippines",
-      "digital marketing strategy Philippines 2025",
+      "digital marketing strategy Philippines 2026",
       "online marketing Philippines",
       "digital marketing agency Philippines",
     ],
@@ -714,7 +714,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: "h2",
-        text: "The Digital Marketing Landscape in the Philippines (2025)",
+        text: "The Digital Marketing Landscape in the Philippines (2026)",
       },
       {
         type: "paragraph",
@@ -770,7 +770,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: "paragraph",
-        text: "Video is now the dominant content format online. From TikTok shorts to YouTube tutorials to Facebook Live sessions, video content generates more engagement, builds more trust, and converts better than any other format. In 2025, video marketing is not optional — it's essential.",
+        text: "Video is now the dominant content format online. From TikTok shorts to YouTube tutorials to Facebook Live sessions, video content generates more engagement, builds more trust, and converts better than any other format. In 2026, video marketing is not optional — it's essential.",
       },
       {
         type: "h2",
@@ -819,13 +819,13 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "hr-payroll-automation-philippines",
     title: "HR and Payroll Automation Philippines: Manage Your Team Without the Headaches",
-    metaTitle: "HR & Payroll Automation Philippines 2025: Complete Guide | BVN",
+    metaTitle: "HR & Payroll Automation Philippines 2026: Complete Guide | BVN",
     metaDescription:
       "HR and payroll management doesn't have to be painful. Learn how Philippine businesses are using automation to handle payroll, attendance, and compliance effortlessly.",
     category: "Operations",
     readTime: "7 min read",
-    date: "May 14, 2025",
-    dateISO: "2025-05-14",
+    date: "May 14, 2026",
+    dateISO: "2026-05-14",
     excerpt:
       "Managing HR and payroll in the Philippines is notoriously complex — between SSS, PhilHealth, Pag-IBIG, BIR withholding, and labor law compliance, even a 10-person team can consume 20+ hours per payroll cycle. Automation changes everything.",
     keywords: [
@@ -935,8 +935,8 @@ export const blogPosts: BlogPost[] = [
       "Learn how to create content that converts visitors into clients. Proven content marketing strategies for Philippine businesses to attract leads and build authority.",
     category: "Marketing",
     readTime: "8 min read",
-    date: "May 13, 2025",
-    dateISO: "2025-05-13",
+    date: "May 13, 2026",
+    dateISO: "2026-05-13",
     excerpt:
       "Most businesses are creating content that gets zero results. Not because content marketing doesn't work — it absolutely does — but because they're making fundamental strategic mistakes. Here's the framework that actually converts.",
     keywords: [
@@ -1059,8 +1059,8 @@ export const blogPosts: BlogPost[] = [
       "A slow, outdated, or poorly designed website is silently driving customers away. Discover 7 signs your website is hurting your business and how a web redesign can fix them.",
     category: "Marketing",
     readTime: "6 min read",
-    date: "May 12, 2025",
-    dateISO: "2025-05-12",
+    date: "May 12, 2026",
+    dateISO: "2026-05-12",
     excerpt:
       "Your website is working 24/7 as your digital salesperson. When it's good, it wins clients in your sleep. When it's bad, it silently repels the very customers you worked hard to attract. Here are 7 signs your website is costing you business.",
     keywords: [
@@ -1167,15 +1167,15 @@ export const blogPosts: BlogPost[] = [
   // POST 10
   // ─────────────────────────────────────────────────────────
   {
-    slug: "cost-not-automating-business-2025",
-    title: "The Hidden Cost of NOT Automating Your Business in 2025 (And What To Do About It)",
-    metaTitle: "The Real Cost of Not Automating Your Business in 2025 | BVN",
+    slug: "cost-not-automating-business-2026",
+    title: "The Hidden Cost of NOT Automating Your Business in 2026 (And What To Do About It)",
+    metaTitle: "The Real Cost of Not Automating Your Business in 2026 | BVN",
     metaDescription:
       "Every hour your team spends on manual tasks is money lost. Discover the real hidden cost of not automating your business and how Philippine businesses are saving thousands monthly.",
     category: "Operations",
     readTime: "7 min read",
-    date: "May 11, 2025",
-    dateISO: "2025-05-11",
+    date: "May 11, 2026",
+    dateISO: "2026-05-11",
     excerpt:
       "Most business owners think of automation as a cost. The reality? Not automating is the far more expensive choice — it's just a cost that's hidden in plain sight across your payroll, lost deals, and missed opportunities.",
     keywords: [
