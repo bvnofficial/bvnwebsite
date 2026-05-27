@@ -53,6 +53,7 @@ interface DropdownMenuProps {
 function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1 }: DropdownMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLLIElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -72,8 +73,13 @@ function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1 }
     <li
       ref={ref}
       className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => {
+        clearTimeout(closeTimer.current);
+        setOpen(true);
+      }}
+      onMouseLeave={() => {
+        closeTimer.current = setTimeout(() => setOpen(false), 120);
+      }}
     >
       <button
         onClick={() => setOpen((v) => !v)}
@@ -93,12 +99,18 @@ function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1 }
         )}
       </button>
 
-      {/* Dropdown Panel */}
+      {/* Dropdown Panel — pt-2 fills the gap so mouse never leaves the li */}
       <div
         className={cn(
-          "absolute top-full left-0 mt-1 rounded-2xl border border-white/10 bg-navy-dark/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden z-50",
+          "absolute top-full left-0 pt-2 z-50",
+          open ? "pointer-events-auto" : "pointer-events-none"
+        )}
+      >
+      <div
+        className={cn(
+          "rounded-2xl border border-white/10 bg-navy-dark/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden",
           "transition-all duration-200 origin-top-left",
-          open ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none",
+          open ? "opacity-100 scale-100" : "opacity-0 scale-95",
           columns === 2 ? "w-[480px]" : "w-64"
         )}
       >
@@ -130,6 +142,7 @@ function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1 }
           ))}
         </div>
         <div className="h-2" />
+      </div>
       </div>
     </li>
   );
