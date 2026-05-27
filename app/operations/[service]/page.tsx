@@ -9,9 +9,20 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { service: string } }) {
   const service = getOperationsService(params.service);
   if (!service) return {};
+  const canonical = `https://www.bvnofficial.com/operations/${service.slug}`;
   return {
-    title: `${service.title} — BVN Operations`,
+    title: `${service.title} Philippines — BVN Operations Automation`,
     description: service.heroSubtext,
+    keywords: `${service.title.toLowerCase()} Philippines, ${service.title.toLowerCase()} services Philippines, business automation Philippines`,
+    openGraph: {
+      title: `${service.title} Philippines — BVN Operations Automation`,
+      description: service.heroSubtext,
+      url: canonical,
+      type: "website",
+    },
+    alternates: {
+      canonical,
+    },
   };
 }
 
