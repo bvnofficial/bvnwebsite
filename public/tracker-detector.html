@@ -348,7 +348,7 @@ nav{
       📵 <strong>Bluetooth not supported</strong> in this browser. Use Chrome on Android or Chrome desktop.
     </div>
     <div class="warn-bar warn-info" id="scan-info" style="display:none">
-      💡 Your browser may show a device picker — select the tracker you want to analyze, or select <strong>any device</strong> to add it.
+      💡 Chrome will show a <strong>device picker popup</strong> — select any nearby Bluetooth device to analyze it. Tap <strong>Start Scanning</strong> again to add more devices.
     </div>
 
     <!-- Radar visual -->
@@ -681,9 +681,8 @@ async function startScan(){
   // Show scan info
   document.getElementById('scan-info').style.display='block';
 
-  // Do first scan immediately, then repeat
+  // Single scan — user can tap again to add more devices
   await doScan();
-  scanInterval = setInterval(doScan, 8000);
 }
 
 function stopScan(){
@@ -698,33 +697,32 @@ function stopScan(){
 
 async function doScan(){
   if(!scanning) return;
+  showToast('📡 Chrome will show a device picker — select any nearby device');
   try {
-    // Try passive scan first (experimental)
-    if(navigator.bluetooth.requestLEScan){
-      const scan = await navigator.bluetooth.requestLEScan({
-        acceptAllAdvertisements:true,
-        keepRepeatedDevices:true
-      });
-      scan.addEventListener('advertisementreceived', onAdvert);
-      setTimeout(()=>{ try{scan.stop();}catch(e){} }, 4000);
-      return;
-    }
-    // Fallback: device picker
+    // Always use requestDevice (works on all Chrome versions)
     const device = await navigator.bluetooth.requestDevice({
-      acceptAllDevices:true,
-      optionalServices:[IMMEDIATE_ALERT]
+      acceptAllDevices: true,
+      optionalServices: [IMMEDIATE_ALERT]
     });
     processDevice({
-      name: device.name||'Unknown Device',
+      name: device.name || 'Unknown Device',
       rssi: -70,
       manufacturerData: new Map(),
       serviceData: new Map(),
       uuids: [],
       btDevice: device,
     });
+    // Ask if they want to scan another device
+    showToast('✅ Device added! Tap Stop then Start again to add more.');
   } catch(e){
-    if(e.name==='NotFoundError') return; // user cancelled
-    if(e.name!=='NotAllowedError') console.warn('Scan error:',e.message);
+    if(e.name === 'NotFoundError') {
+      showToast('No device selected — tap Start Scanning to try again');
+    } else if(e.name === 'NotAllowedError') {
+      showToast('❌ Bluetooth permission denied — allow it in Chrome settings');
+    } else {
+      showToast('⚠️ Error: ' + (e.message || e.name));
+      console.warn('Scan error:', e);
+    }
   }
 }
 
