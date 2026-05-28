@@ -14,6 +14,10 @@ const AIAgentsDemo = dynamic(() => import("@/components/demos/AIAgentsDemo"));
 const CRMDemo = dynamic(() => import("@/components/demos/CRMDemo"));
 const HRPayrollDemo = dynamic(() => import("@/components/demos/HRPayrollDemo"));
 const AnalyticsDemo = dynamic(() => import("@/components/demos/AnalyticsDemo"));
+const OperationsAutomationDemo = dynamic(() => import("@/components/demos/OperationsAutomationDemo"));
+const TimeTrackingDemo = dynamic(() => import("@/components/demos/TimeTrackingDemo"));
+const AdminAutomationDemo = dynamic(() => import("@/components/demos/AdminAutomationDemo"));
+const IntegrationsDemo = dynamic(() => import("@/components/demos/IntegrationsDemo"));
 const GenericDemo = dynamic(() => import("@/components/demos/GenericDemo"));
 
 function renderDemo(demoType: string, title: string) {
@@ -22,6 +26,10 @@ function renderDemo(demoType: string, title: string) {
     case "crm-automation": return <CRMDemo />;
     case "hr-payroll": return <HRPayrollDemo />;
     case "analytics": return <AnalyticsDemo />;
+    case "operations-automation": return <OperationsAutomationDemo />;
+    case "time-tracking": return <TimeTrackingDemo />;
+    case "admin-automation": return <AdminAutomationDemo />;
+    case "integrations": return <IntegrationsDemo />;
     default: return <GenericDemo demoType={demoType} title={title} />;
   }
 }

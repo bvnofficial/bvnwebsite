@@ -15,10 +15,12 @@ const SocialMediaDemo = dynamic(() => import("@/components/demos/SocialMediaDemo
 const DigitalMarketingDemo = dynamic(() => import("@/components/demos/DigitalMarketingDemo"));
 const SEODemo = dynamic(() => import("@/components/demos/SEODemo"));
 const EmailMarketingDemo = dynamic(() => import("@/components/demos/EmailMarketingDemo"));
-const AIAgentsDemo = dynamic(() => import("@/components/demos/AIAgentsDemo"));
-const CRMDemo = dynamic(() => import("@/components/demos/CRMDemo"));
-const HRPayrollDemo = dynamic(() => import("@/components/demos/HRPayrollDemo"));
-const AnalyticsDemo = dynamic(() => import("@/components/demos/AnalyticsDemo"));
+const ContentMarketingDemo = dynamic(() => import("@/components/demos/ContentMarketingDemo"));
+const VideoMarketingDemo = dynamic(() => import("@/components/demos/VideoMarketingDemo"));
+const InfluencerMarketingDemo = dynamic(() => import("@/components/demos/InfluencerMarketingDemo"));
+const WebDevDemo = dynamic(() => import("@/components/demos/WebDevDemo"));
+const AppDevDemo = dynamic(() => import("@/components/demos/AppDevDemo"));
+const CRMSolutionsDemo = dynamic(() => import("@/components/demos/CRMSolutionsDemo"));
 const GenericDemo = dynamic(() => import("@/components/demos/GenericDemo"));
 
 function renderDemo(demoType: string, title: string) {
@@ -27,10 +29,12 @@ function renderDemo(demoType: string, title: string) {
     case "digital-marketing": return <DigitalMarketingDemo />;
     case "seo": return <SEODemo />;
     case "email-marketing": return <EmailMarketingDemo />;
-    case "ai-agents": return <AIAgentsDemo />;
-    case "crm-automation": return <CRMDemo />;
-    case "hr-payroll": return <HRPayrollDemo />;
-    case "analytics": return <AnalyticsDemo />;
+    case "content-marketing": return <ContentMarketingDemo />;
+    case "video-marketing": return <VideoMarketingDemo />;
+    case "influencer-marketing": return <InfluencerMarketingDemo />;
+    case "web-development": return <WebDevDemo />;
+    case "app-development": return <AppDevDemo />;
+    case "crm-solutions": return <CRMSolutionsDemo />;
     default: return <GenericDemo demoType={demoType} title={title} />;
   }
 }
