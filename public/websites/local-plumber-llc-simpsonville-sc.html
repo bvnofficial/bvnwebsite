@@ -73,12 +73,16 @@
 
   footer{background:var(--steel);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
   footer a{color:#90caf9;text-decoration:none}
+
+<style>
+.hero,.hero-section{background-image:linear-gradient(135deg,rgba(10,20,40,.82) 0%,rgba(20,40,80,.72) 100%),url("https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=1400&h=800&q=85&fit=crop&auto=format");background-size:cover;background-position:center}
+</style>
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">Local Plumber <span>LLC</span></div>
+  <div class="logo" style="display:flex;align-items:center;gap:10px"><svg width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;border-radius:8px"><rect width="42" height="42" rx="8" fill="#1a5fb4"/><text x="21" y="29" font-size="17" text-anchor="middle" fill="white" font-family="'Segoe UI',Arial,sans-serif" font-weight="800">LP</text></svg><span style="display:flex;flex-direction:column;line-height:1.2">Local Plumber <span>LLC</span></span></div>
   <a href="tel:localplumberllc" class="nav-phone">📞 Call Now</a>
 </nav>
 
@@ -139,7 +143,7 @@
 <div class="about-band">
   <div class="about-inner">
     <div class="profile-card">
-      <div class="avatar">🔧</div>
+      <div class="avatar" style="padding:0;overflow:hidden"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=400&q=85&fit=crop&auto=format" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
       <div class="profile-name">Local Plumber LLC</div>
       <div class="profile-role">Licensed SC Plumber</div>
       <ul class="cred-list">
@@ -186,6 +190,16 @@
   </div>
 </div>
 
+
+<section id="gallery" style="padding:4rem 2rem;max-width:1100px;margin:0 auto">
+  <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:#1a5fb4;font-weight:700;margin-bottom:.6rem">Our Work</p>
+  <h2 style="font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800;margin-bottom:2rem;line-height:1.25">See the Results</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem">
+    <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&h=540&q=85&fit=crop&auto=format" alt="Work photo" loading="lazy" style="width:100%;height:230px;object-fit:cover;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:transform .3s" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+    <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&h=540&q=85&fit=crop&auto=format" alt="Work photo" loading="lazy" style="width:100%;height:230px;object-fit:cover;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:transform .3s" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=540&q=85&fit=crop&auto=format" alt="Work photo" loading="lazy" style="width:100%;height:230px;object-fit:cover;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:transform .3s" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+  </div>
+</section>
 <footer>
   <p>© 2025 Local Plumber LLC | Simpsonville, SC 29681 | localplumberllc@gmail.com</p>
   <br>
