@@ -5,8 +5,6 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-      { source: "/websites/x1r", destination: "/websites/x1r/index.html" },
-      { source: "/websites/x1r/", destination: "/websites/x1r/index.html" },
     ];
   },
   async headers() {
