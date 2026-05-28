@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Brown Earthworks — Northcliffe, WA</title>
+<meta name="description" content="Les Brown Earthworks — experienced earthmoving contractor in Northcliffe, WA. Excavation, land clearing, grading and rural earthworks across South West WA.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--brown:#6d4c2a;--dark-brown:#4a3120;--olive:#7a8c3a;--sand:#f5efe6;--light:#f9f5f0;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--light)}
+
+  nav{background:var(--dark-brown);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#d4a96a}
+  .nav-phone{color:#d4a96a;font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:linear-gradient(135deg,var(--dark-brown) 0%,var(--brown) 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'⛏️';font-size:14rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#d4a96a;padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#d4a96a;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-brown{background:var(--olive);color:#fff}
+  .btn-brown:hover{background:#5d6e2c}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .cert-bar{background:var(--olive);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.84rem}
+  .cert-bar span{font-weight:700}
+  .cert-bar span::before{content:'✓ ';color:#d4e89a}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark-brown);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:6px;padding:2rem;box-shadow:0 2px 14px rgba(0,0,0,.07);border-left:5px solid var(--brown);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--dark-brown);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--sand);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .bio-card{background:var(--dark-brown);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .bio-icon{font-size:4.5rem;margin-bottom:1rem}
+  .bio-name{font-size:1.3rem;font-weight:800;color:#d4a96a}
+  .bio-role{font-size:.85rem;opacity:.65;margin-top:.3rem}
+  .bio-list{list-style:none;margin-top:1.5rem;text-align:left}
+  .bio-list li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem}
+  .bio-list li::before{content:'✓';color:#d4a96a;font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--dark-brown);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#d4a96a;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--brown);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #e0d4c8;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--brown)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--brown);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-brown)}
+
+  footer{background:var(--dark-brown);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#d4a96a;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Les Brown <span>Earthworks</span></div>
+  <a href="mailto:lbrown10011@gmail.com" class="nav-phone">📧 Get a Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Northcliffe, Western Australia</div>
+  <div class="hero-inner">
+    <h1>Rural Earthworks<br><em>Built to Last.</em></h1>
+    <p>Les Brown Earthworks delivers reliable, professional earthmoving services across Northcliffe and South West WA. Excavation, clearing, grading and rural project work — done with experience and care every time.</p>
+    <div class="btns">
+      <a href="mailto:lbrown10011@gmail.com" class="btn btn-brown">📧 Get a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="cert-bar">
+  <span>Experienced Operator</span>
+  <span>Rural &amp; Residential</span>
+  <span>South West WA</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Services</p>
+  <h2>Earthmoving &amp; Excavation<br>Across South West WA</h2>
+  <p class="lead">From small residential jobs to large rural earthworks — Les Brown brings the right equipment and hands-on experience to every project.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌾</div>
+      <h3>Rural Land Clearing</h3>
+      <p>Paddock and bush clearing, scrub removal and vegetation management for farms and rural holdings across the South West region.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🪨</div>
+      <h3>Excavation</h3>
+      <p>Foundation excavation, trench digging, bulk excavation and general earthmoving. Accurate, efficient and tidy.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚧</div>
+      <h3>Track &amp; Access Road Grading</h3>
+      <p>Farm tracks, access roads and property driveways graded and maintained. Keep your property connected year-round.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💧</div>
+      <h3>Drainage Works</h3>
+      <p>Surface drainage, swales, culverts and water management earthworks. Managing water on your property properly.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>Site Preparation</h3>
+      <p>Building site levelling, compaction and preparation for residential and rural construction. Get the groundwork right from the start.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔥</div>
+      <h3>Fire Breaks</h3>
+      <p>Firebreak preparation and maintenance for rural properties across South West WA. Essential for property protection each season.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Les Brown Earthworks</p>
+      <h2>Northcliffe's Experienced<br>Earthmoving Contractor</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Les Brown has been moving earth across the Northcliffe area and surrounding South West WA for years. A local operator with deep knowledge of the land, the terrain and what it takes to get the job done right in this part of the country.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">Whether it's a small residential excavation or a large-scale rural clearing job — Les brings the same commitment to quality and getting things done properly every time.</p>
+    </div>
+    <div class="bio-card">
+      <div class="bio-icon">⛏️</div>
+      <div class="bio-name">Les Brown</div>
+      <div class="bio-role">Owner &amp; Operator — Northcliffe, WA</div>
+      <ul class="bio-list">
+        <li>Experienced machine operator</li>
+        <li>Rural, residential &amp; civil work</li>
+        <li>Local — Northcliffe based</li>
+        <li>Full equipment range</li>
+        <li>Fair, transparent pricing</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Les cleared our property and put in a dam — excellent workmanship, great communication throughout and the price was exactly what was quoted. Couldn't ask for better."</blockquote>
+  <cite>— Local Customer, South West WA</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Request a Quote</p>
+      <h2>Get In Touch With Les</h2>
+      <p class="lead" style="margin-bottom:2rem">Describe your earthworks project and Les will get back to you with a free, honest quote. Serving Northcliffe, Pemberton and surrounding South West WA.</p>
+      <p>📧 <a href="mailto:lbrown10011@gmail.com">lbrown10011@gmail.com</a></p>
+      <p>📍 Northcliffe, WA 6262</p>
+      <p>🌍 South West WA — rural &amp; regional projects</p>
+      <p>🚜 All earthmoving equipment available</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Job Type (e.g. 'Land clearing', 'Excavation', 'Firebreak')">
+      <textarea placeholder="Tell us about the project — location, scale, timeline, any special requirements..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Les Brown Earthworks | Northcliffe, WA 6262 | lbrown10011@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

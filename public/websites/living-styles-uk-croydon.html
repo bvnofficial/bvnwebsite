@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Living Styles UK — Garden & Cleaning Services | Croydon, London</title>
+<meta name="description" content="Professional gardening and cleaning services in Croydon, South London. Free quotes, reliable team, fully insured.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--navy:#1a3a5c;--blue:#2563a8;--sky:#e8f4fd;--gold:#f0a500;--text:#333;--light:#f7f9fc}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:#fff}
+
+  nav{background:var(--navy);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:700;letter-spacing:1px}
+  .logo span{color:var(--gold)}
+  nav ul{list-style:none;display:flex;gap:2rem}
+  nav ul a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;transition:color .2s}
+  nav ul a:hover{color:#fff}
+  @media(max-width:600px){nav ul{display:none}}
+
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);color:#fff;padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::after{content:'🌿';font-size:12rem;position:absolute;right:-2rem;bottom:-2rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:var(--gold);padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:var(--gold);font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;max-width:520px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:6px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-gold{background:var(--gold);color:#fff}
+  .btn-gold:hover{background:#d4900a}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
+
+  .trust{background:var(--gold);padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+  .trust span{color:#fff;font-size:.82rem;font-weight:700;letter-spacing:.5px}
+  .trust span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--navy);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:var(--light);border-radius:10px;padding:2rem;border-top:4px solid var(--blue);transition:transform .2s,box-shadow .2s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.1)}
+  .card-icon{font-size:2.2rem;margin-bottom:1rem}
+  .card h3{font-size:1.1rem;color:var(--navy);margin-bottom:.5rem;font-weight:700}
+  .card p{font-size:.9rem;color:#666;line-height:1.65}
+
+  .why{background:var(--navy);color:#fff;padding:4rem 2rem}
+  .why-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.why-inner{grid-template-columns:1fr}}
+  .why h2{color:#fff}
+  .why .tag{color:var(--gold)}
+  .why-list{list-style:none;margin-top:1.5rem}
+  .why-list li{padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.95rem;display:flex;gap:.8rem;align-items:flex-start}
+  .why-list li::before{content:'✓';color:var(--gold);font-weight:800;flex-shrink:0}
+  .stat-box{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:2rem;text-align:center}
+  .stat-num{font-size:3.5rem;font-weight:800;color:var(--gold);line-height:1}
+  .stat-desc{font-size:.85rem;opacity:.7;margin-top:.5rem;letter-spacing:1px;text-transform:uppercase}
+
+  .quote-strip{background:var(--sky);padding:3rem 2rem;text-align:center}
+  .quote-strip blockquote{font-size:1.25rem;color:var(--navy);font-style:italic;max-width:650px;margin:0 auto .75rem;line-height:1.65}
+  .quote-strip cite{color:var(--blue);font-size:.9rem;font-weight:600}
+
+  .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-wrap{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.2}
+  .contact-info a{color:var(--blue);text-decoration:none}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #ddd;border-radius:6px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--blue)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--blue);color:#fff;border:none;width:100%;padding:1rem;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--navy)}
+
+  footer{background:#111;color:rgba(255,255,255,.5);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Living <span>Styles</span> UK</div>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#contact">Get a Quote</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Croydon, South London</div>
+  <h1>Your Garden & Home,<br><em>Always Immaculate.</em></h1>
+  <p>Living Styles UK brings professional gardening and cleaning to homes across Croydon. Reliable. Insured. Done right the first time.</p>
+  <div class="btns">
+    <a href="#contact" class="btn btn-gold">Get a Free Quote</a>
+    <a href="#services" class="btn btn-ghost">See Our Services</a>
+  </div>
+</div>
+
+<div class="trust">
+  <span>Fully Insured</span>
+  <span>Free Quotes</span>
+  <span>Croydon Based</span>
+  <span>Residential & Commercial</span>
+</div>
+
+<section id="services">
+  <p class="tag">What We Do</p>
+  <h2>Garden & Cleaning Services<br>You Can Count On</h2>
+  <p class="lead">From overgrown gardens to spotless interiors — we handle it all. One team, one call, everything sorted.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Garden Maintenance</h3>
+      <p>Lawn mowing, hedge trimming, weeding, pruning, seasonal tidy-ups and full garden clearances. We keep your outdoor space looking sharp all year round.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏡</div>
+      <h3>Garden Landscaping</h3>
+      <p>Transform your outdoor space with bespoke landscaping, planting schemes, raised beds and garden redesigns tailored to your lifestyle and budget.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <h3>Domestic Cleaning</h3>
+      <p>Regular home cleans, deep cleans, end-of-tenancy, and one-off spring cleans. We bring our own supplies and leave your home spotless.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏢</div>
+      <h3>Commercial Cleaning</h3>
+      <p>Office cleaning, commercial premises, communal areas and contract cleaning for landlords and property managers across South London.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍂</div>
+      <h3>Seasonal Clearances</h3>
+      <p>Autumn leaf clearances, winter prep, spring garden revivals — we keep your outdoor spaces ready for every season without the hassle.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔑</div>
+      <h3>End of Tenancy</h3>
+      <p>Move-out cleans that meet letting agent standards. Thorough, fast and priced to help you get your deposit back in full.</p>
+    </div>
+  </div>
+</section>
+
+<div class="why">
+  <div class="why-inner">
+    <div>
+      <p class="tag">Why Choose Us</p>
+      <h2>South London's Trusted Outdoor & Cleaning Team</h2>
+      <ul class="why-list">
+        <li>Over 16 years serving homes and businesses in Croydon</li>
+        <li>Fully insured for gardening and domestic cleaning work</li>
+        <li>Consistent, vetted team — same faces every visit</li>
+        <li>Free, no-obligation quotes with transparent pricing</li>
+        <li>Flexible scheduling including weekends</li>
+        <li>Eco-friendly cleaning products available on request</li>
+      </ul>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">16+</div>
+      <div class="stat-desc">Years in the Industry</div>
+      <br>
+      <div class="stat-num">CR0</div>
+      <div class="stat-desc">Croydon Based & Proud</div>
+      <br>
+      <div class="stat-num">⭐⭐⭐⭐⭐</div>
+      <div class="stat-desc">Customer Rated</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Living Styles transformed our overgrown back garden and cleaned the whole house in one day. Brilliant team — can't recommend them enough."</blockquote>
+  <cite>— Happy Customer, Croydon CR0</cite>
+</div>
+
+<section id="contact">
+  <p class="tag">Get In Touch</p>
+  <h2>Free Quote — No Obligation</h2>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <p class="lead" style="margin-bottom:2rem">Tell us what you need and we'll get back to you with a free, no-pressure quote. We cover all of Croydon and surrounding South London areas.</p>
+      <p>📍 316 Whitehorse Road, Croydon, CR0 2LE</p>
+      <p>📧 <a href="mailto:contact@gardenandcleaning.co.uk">contact@gardenandcleaning.co.uk</a></p>
+      <p>🌐 Serving CR0, CR2, CR3, SW16, SE25 & surrounding areas</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number">
+      <input type="text" placeholder="Service Required (e.g. 'Garden clearance + clean')">
+      <textarea placeholder="Any extra details — size of garden, frequency, special requests..."></textarea>
+      <button type="submit" class="submit">Request Free Quote →</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Living Styles UK — Gardening & Cleaning | Croydon, London | contact@gardenandcleaning.co.uk</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

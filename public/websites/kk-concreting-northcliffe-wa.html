@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K & K Concreting — Northcliffe, WA | Concrete Driveways & Slabs</title>
+<meta name="description" content="K & K Concreting in Northcliffe, WA — professional concrete driveways, slabs, paths and foundations across South West WA. Free quotes from your local concreter.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--orange:#e65100;--dark-orange:#bf360c;--concrete:#78909c;--dark:#1c2833;--cream:#fafaf8;--light:#f4f6f8;--text:#222}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:900;letter-spacing:.5px}
+  .logo span{color:#ffab40}
+  .nav-phone{color:#ffab40;font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:linear-gradient(135deg,var(--dark) 0%,var(--concrete) 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🧱';font-size:14rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.05;line-height:1}
+  .badge{display:inline-block;background:rgba(255,171,64,.15);border:1px solid rgba(255,171,64,.35);color:#ffab40;padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.15;margin-bottom:1rem;font-weight:900}
+  .hero h1 em{color:#ffab40;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-orange{background:var(--orange);color:#fff}
+  .btn-orange:hover{background:var(--dark-orange)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.35)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.7)}
+
+  .cert-strip{background:var(--orange);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.84rem}
+  .cert-strip span{font-weight:700}
+  .cert-strip span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:6px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-top:5px solid var(--orange);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--dark);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--light);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .kk-card{background:var(--dark);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .kk-icon{font-size:4.5rem;margin-bottom:1rem}
+  .kk-title{font-size:1.2rem;font-weight:800;color:#ffab40}
+  .kk-sub{font-size:.85rem;opacity:.65;margin-top:.4rem;line-height:1.6}
+  .why-list{list-style:none;margin-top:1.5rem}
+  .why-list li{padding:.65rem 0;border-bottom:1px solid #dde3eb;font-size:.95rem;display:flex;gap:.75rem;color:#444}
+  .why-list li::before{content:'✓';color:var(--orange);font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--dark);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#ffab40;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--orange);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #ddd;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--orange)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--orange);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-orange)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#ffab40;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">K &amp; K <span>Concreting</span></div>
+  <a href="mailto:kblazseka86@gmail.com" class="nav-phone">📧 Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Northcliffe, Western Australia</div>
+  <div class="hero-inner">
+    <h1>Quality Concrete.<br><em>Built to Last.</em></h1>
+    <p>K &amp; K Concreting serves Northcliffe and South West WA with professional concrete work that stands the test of time. Driveways, slabs, paths, footings and more — laid right, every time.</p>
+    <div class="btns">
+      <a href="mailto:kblazseka86@gmail.com" class="btn btn-orange">📧 Get a Free Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="cert-strip">
+  <span>Experienced Concreters</span>
+  <span>Residential &amp; Rural</span>
+  <span>Northcliffe Local</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Concrete Services</p>
+  <h2>Professional Concreting<br>Across South West WA</h2>
+  <p class="lead">From a simple garden path to a full driveway or shed slab — K &amp; K Concreting delivers quality work at a fair price for homes and rural properties across the region.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🚗</div>
+      <h3>Driveways</h3>
+      <p>Plain, exposed aggregate and coloured concrete driveways that look great and last for decades. Proper sub-base preparation included.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>Concrete Slabs</h3>
+      <p>House slabs, shed bases, carport slabs and outbuilding foundations. Correctly reinforced and finished to specification.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚶</div>
+      <h3>Pathways &amp; Footpaths</h3>
+      <p>Concrete garden paths, footpaths and entry paths. Smooth, level and neatly finished.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏚️</div>
+      <h3>Rural Property Work</h3>
+      <p>Farm yard aprons, machinery pads, water trough bases and rural hardstand areas. Built tough for working properties.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏊</div>
+      <h3>Pool Surrounds &amp; Patios</h3>
+      <p>Concrete pool surrounds, alfresco slabs and patio areas. Slip-resistant finishes and coloured options available.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Repairs &amp; Extensions</h3>
+      <p>Concrete repairs, crack filling, extensions to existing slabs and driveway widening. Matched finishes where possible.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About K &amp; K Concreting</p>
+      <h2>Northcliffe's Local<br>Concreting Team</h2>
+      <p class="lead" style="margin-bottom:1.5rem">K &amp; K Concreting is a trusted local concreting business serving Northcliffe and surrounding South West WA. We take pride in getting the details right — proper preparation, correct mix, neat finishing and a job that lasts.</p>
+      <ul class="why-list">
+        <li>Experienced concreting professionals</li>
+        <li>Residential, rural and light commercial</li>
+        <li>Northcliffe local — quick mobilisation</li>
+        <li>Reinforced concrete all structural work</li>
+        <li>Honest, upfront quotes</li>
+      </ul>
+    </div>
+    <div class="kk-card">
+      <div class="kk-icon">🧱</div>
+      <div class="kk-title">K &amp; K Concreting</div>
+      <div class="kk-sub">Northcliffe, WA 6262<br>Quality concrete for homes and rural properties<br>across South West WA</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"K &amp; K poured our driveway and shed slab — excellent work, clean edges, no issues. They prepared the ground properly and the finish looks great. Thoroughly recommended."</blockquote>
+  <cite>— Local Customer, Northcliffe WA</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get a Quote</p>
+      <h2>Let's Talk Concrete</h2>
+      <p class="lead" style="margin-bottom:2rem">Describe your concrete project and we'll get back to you with a free, honest quote. Serving Northcliffe, Pemberton and South West WA.</p>
+      <p>📧 <a href="mailto:kblazseka86@gmail.com">kblazseka86@gmail.com</a></p>
+      <p>📍 Northcliffe, WA 6262</p>
+      <p>🌍 South West WA — all property types</p>
+      <p>✅ Free quotes — all jobs considered</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Job Type (e.g. 'Driveway', 'Shed slab', 'Paths')">
+      <textarea placeholder="Tell us about the project — size, location, timeline, any special requirements..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 K & K Concreting | Northcliffe, WA 6262 | kblazseka86@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juniper Kitchen — Scratch Cooking & Catering | Bonham, TX</title>
+<meta name="description" content="Juniper Kitchen in Bonham, TX — homemade scratch cooking, catering & events. Order now or book your next event.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --green: #2d5016;
+    --light-green: #5a7a2e;
+    --cream: #fdf6ec;
+    --warm: #e8d5b0;
+    --dark: #1a1a1a;
+    --text: #333;
+  }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); }
+
+  /* NAV */
+  nav {
+    background: var(--green);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { color: #fff; font-size: 1.4rem; letter-spacing: 2px; font-style: italic; }
+  .logo span { color: var(--warm); }
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav ul a { color: #fff; text-decoration: none; font-family: sans-serif; font-size: 0.9rem; letter-spacing: 1px; opacity: 0.85; transition: opacity 0.2s; }
+  nav ul a:hover { opacity: 1; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, rgba(43,90,52,0.82), rgba(76,153,90,0.68)), url('https://images.unsplash.com/photo-1sYDJbqi9e4?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    color: #fff;
+    text-align: center;
+    padding: 5rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: var(--warm);
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .hero h1 em { color: var(--warm); font-style: normal; }
+  .hero p {
+    font-family: sans-serif;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+  .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    padding: 0.9rem 2.2rem;
+    border-radius: 4px;
+    font-family: sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .btn-primary { background: var(--warm); color: var(--green); }
+  .btn-primary:hover { background: #fff; }
+  .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+
+  /* TRUST BAR */
+  .trust-bar {
+    background: var(--warm);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .trust-item { font-family: sans-serif; font-size: 0.85rem; color: var(--green); font-weight: 600; letter-spacing: 0.5px; }
+  .trust-item::before { content: '✓ '; }
+
+  /* SECTIONS */
+  section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-family: sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--light-green);
+    margin-bottom: 0.75rem;
+  }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--green); margin-bottom: 1rem; line-height: 1.2; }
+  .lead { font-size: 1.1rem; color: #555; line-height: 1.7; max-width: 650px; }
+
+  /* MENU / SERVICES GRID */
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2.5rem; }
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+  .card-icon { background: var(--green); color: var(--warm); font-size: 2rem; padding: 1.5rem; text-align: center; }
+  .card-body { padding: 1.5rem; }
+  .card-body h3 { font-size: 1.2rem; color: var(--green); margin-bottom: 0.5rem; }
+  .card-body p { font-family: sans-serif; font-size: 0.9rem; color: #666; line-height: 1.6; }
+
+  /* ABOUT */
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (max-width: 680px) { .about-inner { grid-template-columns: 1fr; } }
+  .about-visual {
+    background: var(--green);
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #fff;
+  }
+  .about-visual .big-num { font-size: 4rem; color: var(--warm); font-style: italic; line-height: 1; }
+  .about-visual .big-label { font-family: sans-serif; font-size: 0.85rem; letter-spacing: 2px; opacity: 0.8; margin-top: 0.5rem; }
+  .about-visual .divider { border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 1.5rem 0; }
+
+  /* TESTIMONIAL */
+  .testimonial-section { background: var(--green); padding: 4rem 2rem; text-align: center; }
+  .testimonial-section blockquote { color: #fff; font-size: 1.3rem; font-style: italic; max-width: 650px; margin: 0 auto 1rem; line-height: 1.6; }
+  .testimonial-section cite { color: var(--warm); font-family: sans-serif; font-size: 0.9rem; letter-spacing: 1px; }
+
+  /* HOURS */
+  .hours-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem; }
+  .hour-card { background: #fff; border-radius: 6px; padding: 1.2rem 1.5rem; box-shadow: 0 1px 8px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; font-family: sans-serif; }
+  .hour-day { font-weight: 600; color: var(--green); font-size: 0.9rem; }
+  .hour-time { color: #666; font-size: 0.85rem; }
+  .hour-card.closed .hour-time { color: #aaa; }
+
+  /* CONTACT */
+  .contact-section { background: var(--cream); }
+  .contact-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  @media (max-width: 680px) { .contact-inner { grid-template-columns: 1fr; } }
+  .contact-info p { font-family: sans-serif; font-size: 1rem; color: #555; line-height: 2; }
+  .contact-info a { color: var(--light-green); text-decoration: none; }
+  .contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: sans-serif;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    background: #fff;
+    transition: border-color 0.2s;
+  }
+  .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--light-green); }
+  .contact-form textarea { height: 130px; resize: vertical; }
+  .contact-form .btn-submit {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+  .contact-form .btn-submit:hover { background: var(--light-green); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 2rem;
+    font-family: sans-serif;
+    font-size: 0.85rem;
+  }
+  footer a { color: var(--warm); text-decoration: none; }
+
+  /* MOBILE NAV */
+  @media (max-width: 600px) {
+    nav ul { display: none; }
+    .trust-bar { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span>Juniper</span> Kitchen</div>
+  <ul>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#hours">Hours</a></li>
+    <li><a href="#contact">Book & Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">📍 Bonham, Texas</div>
+  <h1>Honest Food.<br><em>Made from Scratch.</em></h1>
+  <p>Juniper Kitchen is Bonham's home for handmade meals, baked goods, and catering — every dish crafted with heart by Stacy Hilliard.</p>
+  <div class="hero-buttons">
+    <a href="#menu" class="btn btn-primary">See Our Menu</a>
+    <a href="#contact" class="btn btn-outline">Book Catering</a>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <span class="trust-item">Family Owned & Operated</span>
+  <span class="trust-item">Scratch Kitchen</span>
+  <span class="trust-item">Catering Available</span>
+  <span class="trust-item">Bonham's Favourite Spot</span>
+</div>
+
+<!-- MENU -->
+<section id="menu">
+  <p class="section-label">What We Serve</p>
+  <h2>A Menu Made with Love</h2>
+  <p class="lead">Everything on our menu is made fresh in our kitchen — no shortcuts, no compromises. Come in for lunch, dinner, or let us cater your next event.</p>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-icon">🍽️</div>
+      <div class="card-body">
+        <h3>Scratch Cooking</h3>
+        <p>Daily specials, homemade soups, hand-pressed burgers, slow-cooked mains — real food the way it should taste.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎂</div>
+      <div class="card-body">
+        <h3>Baked Goods & Cakes</h3>
+        <p>Custom cakes, pastries, pies, and desserts baked in-house daily by Stacy — perfected over years at Juniper Cake Co.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍴</div>
+      <div class="card-body">
+        <h3>Catering & Events</h3>
+        <p>Weddings, corporate lunches, birthday dinners, community events — we bring the Juniper Kitchen experience to your table.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="background:#fff; padding:4rem 0;">
+  <div style="max-width:1100px; margin:0 auto; padding: 0 2rem;">
+    <div class="about-inner">
+      <div class="about-visual">
+        <div class="big-num">10+</div>
+        <div class="big-label">Years of Scratch Baking</div>
+        <hr class="divider">
+        <div class="big-num">❤️</div>
+        <div class="big-label">Bonham's Local Favourite</div>
+        <hr class="divider">
+        <div class="big-num">100%</div>
+        <div class="big-label">Made From Scratch</div>
+      </div>
+      <div>
+        <p class="section-label">Our Story</p>
+        <h2>From Cake Company to Full Kitchen</h2>
+        <p class="lead">Stacy Hilliard has been baking for the Bonham community for over a decade through Juniper Cake Company. Juniper Kitchen is the next chapter — a full scratch kitchen where every dish is made the way home cooking should be: with quality ingredients and genuine care.</p>
+        <br>
+        <p style="font-family:sans-serif; color:#666; line-height:1.7;">We opened at 110 E Russell Ave to serve Bonham families the kind of food you can feel good about. Come as you are, stay as long as you like.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<div class="testimonial-section">
+  <blockquote>"Best food in Bonham, hands down. The kind of place you bring family and come back every week. Stacy puts her heart into every single dish."</blockquote>
+  <cite>— Happy Customer, Bonham TX</cite>
+</div>
+
+<!-- HOURS -->
+<section id="hours">
+  <p class="section-label">When We're Open</p>
+  <h2>Hours of Operation</h2>
+  <div class="hours-grid">
+    <div class="hour-card"><span class="hour-day">Mon – Thu</span><span class="hour-time">11:00 AM – 8:00 PM</span></div>
+    <div class="hour-card"><span class="hour-day">Fri – Sat</span><span class="hour-time">11:00 AM – 9:00 PM</span></div>
+    <div class="hour-card"><span class="hour-day">Sunday</span><span class="hour-time">11:00 AM – 3:00 PM</span></div>
+  </div>
+  <p style="font-family:sans-serif; color:#888; font-size:0.9rem; margin-top:1.5rem;">📍 110 E Russell Ave, Bonham, TX &nbsp;|&nbsp; 📞 (903) 449-4261</p>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="section-label">Get In Touch</p>
+      <h2>Book a Table or Catering</h2>
+      <p class="lead" style="margin-bottom:2rem;">Whether you're planning a special event or just want to know today's special — we'd love to hear from you.</p>
+      <p>📍 110 E Russell Ave, Bonham, TX 75418</p>
+      <p>📞 <a href="tel:9034494261">(903) 449-4261</a></p>
+      <p>📧 <a href="mailto:junipercakeco.stacy@gmail.com">junipercakeco.stacy@gmail.com</a></p>
+      <p>🕐 Mon–Thu: 11am–8pm &nbsp;|&nbsp; Fri–Sat: 11am–9pm &nbsp;|&nbsp; Sun: 11am–3pm</p>
+    </div>
+    <div class="contact-form">
+      <form>
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <input type="tel" placeholder="Phone Number">
+        <input type="text" placeholder="Event Type or Enquiry (e.g. 'Birthday Catering for 30')">
+        <textarea placeholder="Tell us a bit more..."></textarea>
+        <button type="submit" class="btn-submit">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Juniper Kitchen | 110 E Russell Ave, Bonham, TX 75418 | (903) 449-4261</p>
+  <br>
+  <p>Website crafted with ❤️ by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

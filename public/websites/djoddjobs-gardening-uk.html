@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Djoddjobs Gardening Services — UK | Lawn, Hedges & Garden Tidy-Ups</title>
+<meta name="description" content="Djoddjobs Gardening Services — professional lawn mowing, hedge trimming, garden clearances and tidy-ups across the UK. Reliable, friendly, fully insured.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--green:#2e7d32;--dark:#1b3a1c;--lime:#f1f8e9;--warm:#fffef9;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--warm)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#a5d6a7}
+  .nav-cta{background:var(--green);color:#fff;padding:.5rem 1.3rem;border-radius:50px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-cta:hover{background:#1b5e20}
+
+  .hero{background:linear-gradient(160deg,var(--dark) 0%,var(--green) 100%);color:#fff;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🌿';font-size:15rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#a5d6a7;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:640px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#a5d6a7;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-green{background:var(--green);color:#fff}
+  .btn-green:hover{background:#1b5e20}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .trust-bar{background:var(--green);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.83rem}
+  .trust-bar span{font-weight:700}
+  .trust-bar span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 14px rgba(46,125,50,.09);border-left:5px solid var(--green);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:.75rem}
+  .card h3{font-size:1rem;color:var(--dark);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--lime);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .promise-card{background:var(--dark);color:#fff;border-radius:10px;padding:2.5rem}
+  .promise-card .pc-head{font-size:1.1rem;font-weight:800;color:#a5d6a7;margin-bottom:1.5rem}
+  .promise-card ul{list-style:none}
+  .promise-card li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem}
+  .promise-card li::before{content:'✓';color:#a5d6a7;font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--dark);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.2rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#a5d6a7;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--green);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #c8e6c9;border-radius:6px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--green)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--green);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:#1b5e20}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#a5d6a7;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Djodd<span>jobs</span></div>
+  <a href="#contact" class="nav-cta">Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">🇬🇧 Gardening Services — United Kingdom</div>
+  <div class="hero-inner">
+    <h1>Odd Gardening Jobs?<br><em>That's Our Speciality.</em></h1>
+    <p>Djoddjobs Gardening Services — the team for any garden task, big or small. Lawn mowing, hedge trimming, one-off tidy-ups, seasonal clears and everything in between. Reliable, honest, insured.</p>
+    <div class="btns">
+      <a href="#contact" class="btn btn-green">Get a Free Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <span>Any Size Job</span>
+  <span>Fully Insured</span>
+  <span>One-Off or Regular</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Garden Services</p>
+  <h2>No Garden Job<br>Too Big or Too Small</h2>
+  <p class="lead">Djoddjobs handles the garden tasks you don't want to tackle yourself — from regular upkeep to one-off odd jobs. Always done properly, always at a fair price.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Lawn Mowing</h3>
+      <p>Regular or one-off mowing with neat edging and trimming. From small terraced gardens to large lawns.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✂️</div>
+      <h3>Hedge Trimming</h3>
+      <p>Hedges cut, shaped and tidied. All sizes and species — and we take all the clippings away.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍂</div>
+      <h3>Garden Tidy-Ups</h3>
+      <p>One-off clear-outs, seasonal tidy-ups, leaf clearance and general garden maintenance. Garden looking its best, quickly.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌱</div>
+      <h3>Weeding</h3>
+      <p>Hand weeding of borders, driveways and patios. Persistent weeds sorted properly — not just scraped back.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏡</div>
+      <h3>Garden Clearances</h3>
+      <p>Full garden clearances for overgrown spaces, rental properties and end-of-tenancy gardens. All waste removed.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Odd Gardening Jobs</h3>
+      <p>Got a one-off gardening task that needs doing? That's what we're here for — just ask, and we'll get it sorted.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Djoddjobs</p>
+      <h2>The Gardeners Who<br>Show Up and Get It Done</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Djoddjobs Gardening Services is built around one simple idea — great garden work at a fair price, done when we say we'll do it. We take on the jobs others won't, and we do them properly.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">Whether it's a regular maintenance contract or a one-off job you've been putting off for months — we'll get it sorted.</p>
+    </div>
+    <div class="promise-card">
+      <div class="pc-head">Why Customers Choose Djoddjobs</div>
+      <ul>
+        <li>Fully insured for all garden work</li>
+        <li>Any size job considered</li>
+        <li>All waste taken away included</li>
+        <li>One-off jobs — no contract required</li>
+        <li>Free, honest quotes</li>
+        <li>Friendly, reliable team</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Had Djoddjobs clear a completely overgrown garden — they transformed it in one visit. Brilliant work, fair price, couldn't be happier with the results."</blockquote>
+  <cite>— Happy Customer, UK</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Free Quote — No Obligation</h2>
+      <p class="lead" style="margin-bottom:2rem">Tell us what you need done and we'll get back to you with a free, no-fuss quote. Any garden job considered.</p>
+      <p>📧 <a href="mailto:Djoddjobsgardeningservices@outlook.com">Djoddjobsgardeningservices@outlook.com</a></p>
+      <p>🇬🇧 United Kingdom</p>
+      <p>✅ Insured — free quotes always</p>
+      <p>🌱 One-off or regular — both welcome</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number">
+      <select>
+        <option value="">Job Type</option>
+        <option>Lawn Mowing</option>
+        <option>Hedge Trimming</option>
+        <option>Garden Tidy-Up</option>
+        <option>Weeding</option>
+        <option>Garden Clearance</option>
+        <option>One-Off Odd Job</option>
+        <option>Regular Maintenance Contract</option>
+      </select>
+      <textarea placeholder="Tell us about your garden and what needs doing — size, condition, any specifics..."></textarea>
+      <button type="submit" class="submit">Request Free Quote →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Djoddjobs Gardening Services | United Kingdom | Djoddjobsgardeningservices@outlook.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

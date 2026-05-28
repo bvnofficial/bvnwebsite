@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Glass — Glazing Services | Northcliffe, WA | Robert Bridson</title>
+<meta name="description" content="Budget Glass in Northcliffe, WA — professional glazing, glass repairs, window replacements and windscreen services. Call Robert Bridson for a fast quote.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--sky:#0288d1;--dark-sky:#01579b;--ice:#e1f5fe;--silver:#607d8b;--dark:#1c2833;--cream:#f8fcff;--text:#222}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800}
+  .logo span{color:#81d4fa}
+  .nav-phone{color:#81d4fa;font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:linear-gradient(135deg,var(--dark-sky) 0%,var(--sky) 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🪟';font-size:14rem;position:absolute;right:-1rem;bottom:-3rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#e1f5fe;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#e1f5fe;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-sky{background:#fff;color:var(--sky)}
+  .btn-sky:hover{background:var(--ice)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.45)}
+  .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
+
+  .trust-strip{background:var(--dark-sky);color:#fff;padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.84rem}
+  .trust-strip span{font-weight:700}
+  .trust-strip span::before{content:'✓ ';color:#81d4fa}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--sky);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 16px rgba(2,136,209,.08);border-top:4px solid var(--sky);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2.2rem;margin-bottom:1rem}
+  .card h3{font-size:1.05rem;color:var(--dark);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--ice);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .glazier-card{background:var(--dark-sky);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .avatar{width:90px;height:90px;background:var(--sky);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1rem}
+  .gname{font-size:1.4rem;font-weight:800}
+  .grole{color:#81d4fa;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;margin-top:.3rem}
+  .glist{list-style:none;margin-top:1.5rem;text-align:left}
+  .glist li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem}
+  .glist li::before{content:'✓';color:#81d4fa;font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--silver);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#81d4fa;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--sky);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #b3e5fc;border-radius:6px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--sky)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--sky);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-sky)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#81d4fa;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Budget <span>Glass</span></div>
+  <a href="mailto:budgetglass2@gmail.com" class="nav-phone">📧 Get a Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Northcliffe, Western Australia</div>
+  <div class="hero-inner">
+    <h1>Glass Repairs &amp;<br><em>Glazing Done Right.</em></h1>
+    <p>Budget Glass provides professional glazing services across Northcliffe and the South West WA region. From broken windows and glass repairs to frameless panels and windscreen chips — Robert Bridson gets it sorted fast.</p>
+    <div class="btns">
+      <a href="mailto:budgetglass2@gmail.com" class="btn btn-sky">📧 Get a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="trust-strip">
+  <span>Local &amp; Trusted</span>
+  <span>Fast Turnaround</span>
+  <span>All Glass Types</span>
+  <span>Competitive Prices</span>
+</div>
+
+<section id="services">
+  <p class="tag">Our Services</p>
+  <h2>Complete Glazing Services for<br>Homes & Rural Properties</h2>
+  <p class="lead">Broken glass? New windows? Windscreen chip? Budget Glass handles all glazing needs across Northcliffe and surrounding South West WA communities.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🪟</div>
+      <h3>Window Glass Replacement</h3>
+      <p>Broken or cracked window glass replaced quickly and neatly. All frame types and glass sizes — residential and commercial.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚗</div>
+      <h3>Windscreen Repairs</h3>
+      <p>Chip repairs and windscreen replacements for cars, utes and farm vehicles. Keep your vehicle roadworthy and your vision clear.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔲</div>
+      <h3>Sliding Doors & Panels</h3>
+      <p>Sliding door glass, shower screens, frameless panels and glass balustrades. Measured, cut and fitted to perfection.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏚️</div>
+      <h3>Rural & Farmhouse Glazing</h3>
+      <p>Servicing rural properties, sheds and farm buildings across the South West. We come to you — wherever you are in the region.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔒</div>
+      <h3>Security Glass</h3>
+      <p>Toughened and laminated glass options for added security and safety. Especially important for rural and remote properties.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Emergency Glazing</h3>
+      <p>Broken window? Don't leave it open overnight. Emergency boarding and glass replacement — fast response when you need it most.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div class="glazier-card">
+      <div class="avatar">🪟</div>
+      <div class="gname">Robert Bridson</div>
+      <div class="grole">Glazier & Owner, Budget Glass</div>
+      <ul class="glist">
+        <li>Experienced, qualified glazier</li>
+        <li>Northcliffe local — quick response</li>
+        <li>Cars, homes &amp; rural properties</li>
+        <li>All glass types &amp; sizes</li>
+        <li>Fair, transparent pricing</li>
+      </ul>
+    </div>
+    <div>
+      <p class="tag">About Budget Glass</p>
+      <h2>Northcliffe's Local<br>Glazing Expert</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Robert Bridson has been providing glazing services to the Northcliffe and Boorara Brook community for years. Out here in the South West, you need a tradesperson who actually shows up — and Budget Glass always does.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">From a smashed window after a storm to a new shower screen fitout — Budget Glass offers professional results at a fair price, every time.</p>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Rob had our window replaced same day — came out to the property, measured up, and had it done by afternoon. Brilliant service and a really fair price. Can't recommend enough."</blockquote>
+  <cite>— Local Customer, Northcliffe WA</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get a Quote</p>
+      <h2>Contact Robert Today</h2>
+      <p class="lead" style="margin-bottom:2rem">Send a message about your glazing job — include what you need and where you are, and Robert will get back to you with a fast, honest quote.</p>
+      <p>📧 <a href="mailto:budgetglass2@gmail.com">budgetglass2@gmail.com</a></p>
+      <p>📍 Northcliffe, WA 6262</p>
+      <p>🌍 Serving Northcliffe, Pemberton &amp; South West WA</p>
+      <p>⚡ Emergency boarding available</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Job Type (e.g. 'Broken window', 'Windscreen chip', 'Shower screen')">
+      <textarea placeholder="More details — size, location on property, urgency, anything else useful..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Budget Glass | Robert Bridson | Northcliffe, WA 6262 | budgetglass2@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

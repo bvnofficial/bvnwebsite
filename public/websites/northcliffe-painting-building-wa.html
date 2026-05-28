@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Northcliffe Painting & Building Maintenance — Steve Jasper | Northcliffe, WA</title>
+<meta name="description" content="Northcliffe Painting & Building Maintenance — Steve Jasper. Professional painting, property maintenance and building repairs in Northcliffe and South West WA.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--navy:#1a3a5c;--blue:#2563a8;--orange:#e07b00;--cream:#fffdf8;--light:#f0f4f8;--text:#222}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--navy);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.2rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#f9a825}
+  .nav-phone{color:#f9a825;font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🖌️';font-size:15rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#f9a825;padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#f9a825;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:5px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-orange{background:var(--orange);color:#fff}
+  .btn-orange:hover{background:#c46b00}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .cert-strip{background:var(--orange);color:#fff;padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.84rem}
+  .cert-strip span{font-weight:700}
+  .cert-strip span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--navy);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-left:4px solid var(--orange);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2.2rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--navy);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--light);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .builder-card{background:var(--navy);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .avatar{width:90px;height:90px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1rem}
+  .bname{font-size:1.4rem;font-weight:800}
+  .brole{color:#f9a825;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;margin-top:.3rem}
+  .blist{list-style:none;margin-top:1.5rem;text-align:left}
+  .blist li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem}
+  .blist li::before{content:'✓';color:#f9a825;font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--navy);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#f9a825;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--blue);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #cfdce8;border-radius:5px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--blue)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--navy);color:#fff;border:none;width:100%;padding:1rem;border-radius:5px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--blue)}
+
+  footer{background:var(--navy);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#f9a825;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Northcliffe <span>Painting & Building</span></div>
+  <a href="mailto:meerupsprings@bbsat.com.au" class="nav-phone">📧 Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Northcliffe, Western Australia</div>
+  <div class="hero-inner">
+    <h1>Painting &amp; Property<br><em>Done Properly.</em></h1>
+    <p>Steve Jasper of Northcliffe Painting & Building Maintenance has been keeping South West WA properties looking sharp and well maintained for years. Interior, exterior, repairs and maintenance — quality you can see.</p>
+    <div class="btns">
+      <a href="mailto:meerupsprings@bbsat.com.au" class="btn btn-orange">📧 Get a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="cert-strip">
+  <span>Licensed Painter</span>
+  <span>WA Based</span>
+  <span>Interior &amp; Exterior</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Services</p>
+  <h2>Painting &amp; Building Maintenance<br>Across Northcliffe &amp; South West WA</h2>
+  <p class="lead">From a fresh coat of paint to property maintenance and repairs — Steve handles it all with the skill and attention to detail that comes from years of local experience.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🖌️</div>
+      <h3>Interior Painting</h3>
+      <p>Feature walls, full interior repaints, trim and ceiling work. Clean edges, quality finishes — rooms transformed.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏚️</div>
+      <h3>Exterior Painting</h3>
+      <p>House exteriors, sheds, fences and outbuildings. Proper prep, quality paint — protection and kerb appeal that lasts.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔨</div>
+      <h3>Building Maintenance</h3>
+      <p>General property repairs, timber maintenance, minor building work and ongoing maintenance. Keep your property in top condition.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>Preparation & Surface Repairs</h3>
+      <p>Crack filling, sanding, waterproofing and proper surface preparation before painting. Good prep makes all the difference.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Rural & Farm Properties</h3>
+      <p>Sheds, farm buildings, rural homes and outbuildings — painting and maintenance for properties across the South West region.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <h3>Rental Property Maintenance</h3>
+      <p>Between-tenancy painting and maintenance for landlords and property managers. Quick turnaround, professional finish.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div class="builder-card">
+      <div class="avatar">🖌️</div>
+      <div class="bname">Steve Jasper</div>
+      <div class="brole">Painter &amp; Building Maintenance</div>
+      <ul class="blist">
+        <li>Licensed painter — WA registered</li>
+        <li>Northcliffe local — fast response</li>
+        <li>Interior &amp; exterior painting</li>
+        <li>Building maintenance &amp; repairs</li>
+        <li>Fair, transparent pricing</li>
+      </ul>
+    </div>
+    <div>
+      <p class="tag">About Steve Jasper</p>
+      <h2>Northcliffe's Trusted<br>Painter &amp; Builder</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Steve Jasper has been painting and maintaining properties across Northcliffe and the South West WA region for years. When you hire Steve, you're getting a local tradesperson with real skills, proper preparation, and a commitment to quality that shows in every job.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">From a quick touch-up to a full exterior repaint — Steve brings the same standard to every job. No shortcuts, no sloppy work.</p>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Steve painted our whole house — interior and exterior. Absolutely meticulous preparation, clean lines, and it looked brand new when he was done. Very happy with the result."</blockquote>
+  <cite>— Local Customer, Northcliffe WA</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get a Quote</p>
+      <h2>Talk to Steve Today</h2>
+      <p class="lead" style="margin-bottom:2rem">Describe your project and Steve will get back to you with a free, honest quote. Serving Northcliffe, Pemberton and surrounding South West WA.</p>
+      <p>📧 <a href="mailto:meerupsprings@bbsat.com.au">meerupsprings@bbsat.com.au</a></p>
+      <p>📍 Northcliffe, WA 6262</p>
+      <p>🌍 South West WA — Northcliffe to Pemberton &amp; beyond</p>
+      <p>✅ Licensed painter — free quotes</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <select>
+        <option value="">Type of Work</option>
+        <option>Interior Painting</option>
+        <option>Exterior Painting</option>
+        <option>Building Maintenance</option>
+        <option>Surface Prep &amp; Repairs</option>
+        <option>Shed / Farm Building</option>
+        <option>Rental Property</option>
+        <option>Other</option>
+      </select>
+      <textarea placeholder="Describe the job — property type, size, what needs doing, timeline..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Northcliffe Painting & Building Maintenance | Steve Jasper | Northcliffe, WA 6262 | meerupsprings@bbsat.com.au</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

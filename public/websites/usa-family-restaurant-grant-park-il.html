@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USA Family Restaurant — Grant Park, IL | Home-Cooked Meals</title>
+<meta name="description" content="USA Family Restaurant in Grant Park, Illinois — home-cooked American comfort food, daily specials, breakfast, lunch and dinner. Come on in.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--red:#c0392b;--dark-red:#922b21;--blue:#1a5276;--cream:#fffdf6;--warm:#f9f3e8;--text:#2a1a0e}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--dark-red);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:900;letter-spacing:.5px}
+  .logo span{color:#f9d71c}
+  nav ul{list-style:none;display:flex;gap:2rem}
+  nav ul a{color:rgba(255,255,255,.85);text-decoration:none;font-size:.9rem;transition:color .2s}
+  nav ul a:hover{color:#f9d71c}
+  @media(max-width:600px){nav ul{display:none}}
+
+  .hero{background:var(--blue);color:#fff;padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'🇺🇸';font-size:13rem;position:absolute;left:-2rem;top:-2rem;opacity:.06;line-height:1}
+  .hero::after{content:'🍳';font-size:11rem;position:absolute;right:-1rem;bottom:-2rem;opacity:.07;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#f9d71c;padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:900}
+  .hero h1 em{color:#f9d71c;font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;max-width:480px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-yellow{background:#f9d71c;color:var(--dark-red)}
+  .btn-yellow:hover{background:#e6c618}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .hours-strip{background:var(--red);color:#fff;text-align:center;padding:1rem 2rem;font-size:.9rem;letter-spacing:.5px;font-weight:600}
+  .hours-strip strong{color:#f9d71c}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--blue);margin-bottom:1rem;line-height:1.25;font-weight:900}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .menu-card{background:#fff;border-radius:8px;padding:2rem;text-align:center;box-shadow:0 3px 18px rgba(192,57,43,.1);border-bottom:4px solid var(--red);transition:transform .2s}
+  .menu-card:hover{transform:translateY(-4px)}
+  .menu-card .icon{font-size:2.5rem;margin-bottom:.75rem}
+  .menu-card h3{font-size:1.05rem;color:var(--blue);font-weight:800;margin-bottom:.4rem}
+  .menu-card p{font-size:.86rem;color:#777;line-height:1.6}
+
+  .about-band{background:var(--warm);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .diner-card{background:var(--blue);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .diner-icon{font-size:4.5rem;margin-bottom:1rem}
+  .diner-title{font-size:1.2rem;font-weight:800;color:#f9d71c}
+  .diner-sub{font-size:.85rem;opacity:.7;margin-top:.5rem;line-height:1.65}
+
+  .quote-strip{background:var(--red);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#f9d71c;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.4}
+  .contact-info a{color:var(--red);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #e8c8c5;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--red)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--red);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:.5px}
+  .submit:hover{background:var(--dark-red)}
+
+  footer{background:var(--blue);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#f9d71c;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">USA Family <span>Restaurant</span></div>
+  <ul>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#find-us">Find Us</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Grant Park, Illinois</div>
+  <h1>Real Food.<br><em>Family Style.</em></h1>
+  <p>USA Family Restaurant in Grant Park, IL — home-cooked American comfort food made with care. Breakfast, lunch, dinner and daily specials. Pull up a chair, you're family here.</p>
+  <div class="btns">
+    <a href="#menu" class="btn btn-yellow">See Our Menu</a>
+    <a href="#find-us" class="btn btn-ghost">Find Us</a>
+  </div>
+</div>
+
+<div class="hours-strip">
+  🕔 Open Daily &nbsp;|&nbsp; 📍 Grant Park, IL &nbsp;|&nbsp; 📞 <strong>Call for Hours</strong> &nbsp;|&nbsp; 🍳 Breakfast &bull; Lunch &bull; Dinner
+</div>
+
+<section id="menu">
+  <p class="tag">On the Menu</p>
+  <h2>Home-Cooked Comfort<br>Food Done Right</h2>
+  <p class="lead">From the first cup of coffee to the last slice of pie — everything at USA Family Restaurant is made with the care and quality that keeps Grant Park coming back.</p>
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div class="icon">🍳</div>
+      <h3>Breakfast All Day</h3>
+      <p>Eggs your way, pancakes, biscuits &amp; gravy, French toast and all-American breakfast plates. Mornings done right.</p>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🥪</div>
+      <h3>Lunch Favourites</h3>
+      <p>Hot sandwiches, burgers, soups, salads and daily lunch specials. Quick, filling and full of flavour.</p>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🍽️</div>
+      <h3>Dinner Plates</h3>
+      <p>Hearty dinner entrées, comfort food classics and family-sized portions. The kind of dinner you remember.</p>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🥧</div>
+      <h3>Daily Specials & Pies</h3>
+      <p>Homemade pies, rotating daily specials and scratch-made desserts. Worth every last bite.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band" id="about">
+  <div class="about-inner">
+    <div>
+      <p class="tag">Our Story</p>
+      <h2>Grant Park's Favourite<br>Family Diner</h2>
+      <p class="lead" style="margin-bottom:1.5rem">USA Family Restaurant has been serving Grant Park with honest, home-cooked American food for years. This isn't chain food — it's the real thing. Made in our kitchen, served with a smile, eaten at a table surrounded by good company.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">We believe food should be simple, generous, and made with care. Come in hungry, leave happy — that's our promise to Grant Park.</p>
+    </div>
+    <div class="diner-card">
+      <div class="diner-icon">🇺🇸</div>
+      <div class="diner-title">USA Family Restaurant</div>
+      <div class="diner-sub">Grant Park, Illinois<br>Home-cooked American food, made fresh daily.<br>A community table since day one.</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"The best diner in the area, no question. Huge portions, everything homemade, and the staff always make you feel like a regular. Wouldn't eat anywhere else."</blockquote>
+  <cite>— Regular Customer, Grant Park IL</cite>
+</div>
+
+<section id="find-us" style="background:#fff;max-width:100%;padding:4rem 2rem">
+  <div style="max-width:900px;margin:0 auto">
+    <div class="contact-inner">
+      <div class="contact-info">
+        <p class="tag">Find Us</p>
+        <h2>Come On In</h2>
+        <p class="lead" style="margin-bottom:2rem">Walk-ins always welcome — no reservation needed. Just come in, grab a seat, and let us take care of you.</p>
+        <p>📍 Grant Park, IL 60940</p>
+        <p>📞 <a href="tel:staglbagl">(Call for current hours)</a></p>
+        <p>📧 <a href="mailto:staglbagl@gmail.com">staglbagl@gmail.com</a></p>
+        <p>🕐 Open Daily — Breakfast, Lunch &amp; Dinner</p>
+        <p>🍽️ Dine in &amp; takeout available</p>
+      </div>
+      <form>
+        <input type="text" placeholder="Your Name">
+        <input type="email" placeholder="Email Address">
+        <input type="tel" placeholder="Phone Number">
+        <input type="text" placeholder="Enquiry (catering, large groups, events...)">
+        <textarea placeholder="Tell us more — party size, event date, any dietary needs..."></textarea>
+        <button type="submit" class="submit">Send Message 🍽️</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 USA Family Restaurant | Grant Park, IL 60940 | staglbagl@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

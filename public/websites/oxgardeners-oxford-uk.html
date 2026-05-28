@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OxGardeners — Garden Maintenance & Design | Oxford, UK</title>
+<meta name="description" content="OxGardeners in Oxford — professional garden maintenance, planting, design and tidy-ups across Oxford and Oxfordshire. Friendly, reliable, fully insured.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--moss:#5d8a3c;--dark-moss:#3d5e26;--clay:#8b5e3c;--sage:#f4f8ee;--warm:#fffdf6;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--warm)}
+
+  nav{background:var(--dark-moss);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:800;font-style:italic}
+  .logo span{color:#b8e994}
+  .nav-cta{background:var(--clay);color:#fff;padding:.5rem 1.3rem;border-radius:50px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-cta:hover{background:#6d4a2c}
+
+  .hero{background:linear-gradient(160deg,var(--dark-moss) 0%,var(--moss) 100%);color:#fff;padding:5.5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'🌷';font-size:13rem;position:absolute;right:-1rem;top:-2rem;opacity:.07;line-height:1}
+  .hero::after{content:'🌱';font-size:11rem;position:absolute;left:-2rem;bottom:-2rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#b8e994;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800;font-style:italic}
+  .hero h1 em{color:#b8e994;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;max-width:500px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-clay{background:var(--clay);color:#fff}
+  .btn-clay:hover{background:#6d4a2c}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+  .perks{background:var(--clay);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.83rem}
+  .perks span{font-weight:700}
+  .perks span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--moss);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark-moss);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:10px;padding:2rem;box-shadow:0 2px 16px rgba(93,138,60,.1);border-top:4px solid var(--moss);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2.2rem;margin-bottom:.75rem}
+  .card h3{font-size:1rem;color:var(--dark-moss);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--sage);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .values-card{background:var(--dark-moss);color:#fff;border-radius:10px;padding:2.5rem}
+  .values-card .vc-head{font-size:1.1rem;font-weight:800;color:#b8e994;margin-bottom:1.5rem}
+  .values-card ul{list-style:none}
+  .values-card li{padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem}
+  .values-card li::before{content:'✓';color:#b8e994;font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--dark-moss);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#b8e994;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--moss);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #d0e8c0;border-radius:6px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--moss)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--moss);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-moss)}
+
+  footer{background:var(--dark-moss);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#b8e994;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Ox<span>Gardeners</span></div>
+  <a href="#contact" class="nav-cta">Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Oxford, Oxfordshire, UK</div>
+  <h1>Beautiful Oxford<br><em>Gardens, Effortlessly.</em></h1>
+  <p>OxGardeners brings professional care, friendly service and green-fingered skill to gardens across Oxford. From weekly maintenance to planting projects — we make your garden something to enjoy.</p>
+  <div class="btns">
+    <a href="#contact" class="btn btn-clay">Get a Free Quote</a>
+    <a href="#services" class="btn btn-ghost">Our Services</a>
+  </div>
+</div>
+
+<div class="perks">
+  <span>Oxford Based</span>
+  <span>Fully Insured</span>
+  <span>Regular Contracts Welcome</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Garden Services</p>
+  <h2>From Weekly Upkeep<br>to Full Transformations</h2>
+  <p class="lead">Whether your garden needs a regular tidy or a complete overhaul — OxGardeners has the experience and passion to deliver beautiful results.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Regular Garden Maintenance</h3>
+      <p>Weekly or fortnightly visits covering lawn care, weeding, edging and general upkeep. Your garden always looking its best.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌱</div>
+      <h3>Planting & Borders</h3>
+      <p>Planting schemes, seasonal colour, border redesigns and ongoing border maintenance. Plants that thrive all year round.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✂️</div>
+      <h3>Hedge & Shrub Trimming</h3>
+      <p>Precision trimming for hedges, topiary and shrubs. Clean shapes, tidy finish, all clippings removed and disposed of.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍂</div>
+      <h3>Seasonal Tidy-Ups</h3>
+      <p>Spring and autumn garden clear-ups, leaf clearance and seasonal prep. Your garden ready for what comes next.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏡</div>
+      <h3>Garden Clearances</h3>
+      <p>Full clearances for overgrown, neglected or end-of-tenancy gardens. Transforming wild spaces into manageable ones.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🪴</div>
+      <h3>Garden Design Advice</h3>
+      <p>Not sure what to plant or how to improve your outdoor space? We'll walk you through ideas that work for your garden and lifestyle.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About OxGardeners</p>
+      <h2>Oxford's Friendly,<br>Professional Garden Team</h2>
+      <p class="lead" style="margin-bottom:1.5rem">OxGardeners was built on a simple belief — that everyone deserves a garden they're proud of. We bring enthusiasm, expertise and reliability to every garden we work in, from terraced town houses to sprawling Oxfordshire properties.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">Our team loves gardens — and it shows in the care and attention we bring to every single job.</p>
+    </div>
+    <div class="values-card">
+      <div class="vc-head">The OxGardeners Promise</div>
+      <ul>
+        <li>Always on time, always reliable</li>
+        <li>Fully insured for all garden work</li>
+        <li>All waste collected and removed</li>
+        <li>Transparent, fair pricing</li>
+        <li>Flexible — one-off or regular contracts</li>
+        <li>Oxford &amp; all of Oxfordshire covered</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"OxGardeners have completely transformed our garden — they really listen to what you want and deliver something beautiful. Absolutely recommend them to anyone in Oxford."</blockquote>
+  <cite>— Happy Customer, Oxford</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Free Quote — No Obligation</h2>
+      <p class="lead" style="margin-bottom:2rem">Tell us about your garden and we'll get back to you quickly with a free, friendly quote. We're based in Oxford and cover all of Oxfordshire.</p>
+      <p>📧 <a href="mailto:oxgardeners@protonmail.com">oxgardeners@protonmail.com</a></p>
+      <p>📍 Oxford, Oxfordshire, UK</p>
+      <p>🌍 Serving Oxford, Abingdon, Bicester &amp; Oxfordshire</p>
+      <p>✅ Insured — free quotes always</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number">
+      <select>
+        <option value="">Service Needed</option>
+        <option>Regular Maintenance</option>
+        <option>Planting / Borders</option>
+        <option>Hedge / Shrub Trimming</option>
+        <option>Seasonal Tidy-Up</option>
+        <option>Garden Clearance</option>
+        <option>Design Advice</option>
+        <option>Not Sure — Just a Quote</option>
+      </select>
+      <textarea placeholder="Tell us about your garden — rough size, what you'd like, any problem areas..."></textarea>
+      <button type="submit" class="submit">Get My Free Quote →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 OxGardeners | Oxford, Oxfordshire, UK | oxgardeners@protonmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

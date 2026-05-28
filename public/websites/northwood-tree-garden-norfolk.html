@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Northwood Tree & Garden Services — Norfolk, UK</title>
+<meta name="description" content="Northwood Tree & Garden Services in Norfolk — professional tree surgery, hedge trimming, garden maintenance and stump grinding. Free quotes, fully insured.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--forest:#2e7d32;--dark-green:#1b5e20;--bark:#5d4037;--sage:#f1f8e9;--cream:#fffef7;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:#1a2a1a;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#a5d6a7}
+  .nav-phone{color:#a5d6a7;font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:linear-gradient(135deg,#1a2a1a 0%,var(--dark-green) 60%,var(--forest) 100%);color:#fff;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::before{content:'🌳';font-size:16rem;position:absolute;right:-2rem;bottom:-4rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#a5d6a7;padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#a5d6a7;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-green{background:var(--forest);color:#fff}
+  .btn-green:hover{background:var(--dark-green)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .certs-strip{background:var(--bark);color:#fff;padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.84rem}
+  .certs-strip span{font-weight:700}
+  .certs-strip span::before{content:'✓ ';color:#a5d6a7}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--forest);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:#1a2a1a;margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:6px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-left:5px solid var(--forest);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:1rem}
+  .card h3{font-size:1.05rem;color:#1a2a1a;margin-bottom:.4rem;font-weight:700}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--sage);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .trust-card{background:#1a2a1a;color:#fff;border-radius:10px;padding:2.5rem}
+  .trust-card ul{list-style:none;margin-top:1.5rem}
+  .trust-card li{padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.8rem;align-items:flex-start}
+  .trust-card li::before{content:'✓';color:#a5d6a7;font-weight:800;flex-shrink:0}
+  .trust-card .tc-head{font-size:1.2rem;font-weight:800;color:#a5d6a7}
+  .trust-card .tc-sub{font-size:.85rem;opacity:.65;margin-top:.25rem}
+
+  .quote-strip{background:#1a2a1a;color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#a5d6a7;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--forest);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #c8e6c9;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--forest)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--forest);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-green)}
+
+  footer{background:#1a2a1a;color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#a5d6a7;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Northwood <span>Tree & Garden</span></div>
+  <a href="mailto:norfolkgdl@outlook.com" class="nav-phone">📧 Get a Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Norfolk, United Kingdom</div>
+  <div class="hero-inner">
+    <h1>Norfolk's Tree &<br><em>Garden Experts.</em></h1>
+    <p>Northwood Tree & Garden Services delivers professional tree surgery, hedge trimming, stump grinding and garden maintenance across Norfolk. Fully insured, fully qualified — from single trees to full garden transformations.</p>
+    <div class="btns">
+      <a href="#contact" class="btn btn-green">Get a Free Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="certs-strip">
+  <span>Fully Insured</span>
+  <span>NPTC Qualified</span>
+  <span>Norfolk Based</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Our Services</p>
+  <h2>Professional Tree & Garden<br>Care Across Norfolk</h2>
+  <p class="lead">Every job handled with skill, care, and full clean-up included. Whether it's a single tree or a complete garden overhaul, we deliver.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌳</div>
+      <h3>Tree Surgery</h3>
+      <p>Crown reduction, deadwooding, shaping and selective pruning. Expert tree care that keeps your trees healthy and your garden safe.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🪓</div>
+      <h3>Tree Removal & Felling</h3>
+      <p>Safe, controlled felling of trees of all sizes. We handle the whole job — from felling to log splitting and full site clearance.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Hedge Trimming</h3>
+      <p>Precision hedge cutting and shaping for all hedge types and sizes. Regular maintenance contracts available — neat hedges all year round.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h3>Stump Grinding</h3>
+      <p>Complete stump removal using professional grinding equipment. No more tripping hazards or regrowth — cleared flush with the ground.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍂</div>
+      <h3>Garden Clearances</h3>
+      <p>Overgrown gardens transformed. Full clearance, waste removal and tidy-ups — seasonal or one-off, large or small.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌱</div>
+      <h3>Ongoing Maintenance</h3>
+      <p>Regular garden upkeep, lawn care, pruning and seasonal maintenance. Keep your garden looking its best without the effort.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Northwood</p>
+      <h2>Norfolk's Trusted Tree & Garden Team</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Northwood Tree & Garden Services has been caring for Norfolk's trees and gardens for years. We're the local team that shows up, does the job properly, and leaves your property cleaner than we found it.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">From the Broads to the coast — if it grows in Norfolk, we take care of it.</p>
+    </div>
+    <div class="trust-card">
+      <div class="tc-head">Why Norfolk Chooses Us</div>
+      <div class="tc-sub">Qualified, insured, and reliable — every time</div>
+      <ul>
+        <li>NPTC qualified arborists</li>
+        <li>Full public liability insurance</li>
+        <li>All waste removed and disposed</li>
+        <li>Free, no-obligation quotes</li>
+        <li>Local — Norfolk born and based</li>
+        <li>Residential, commercial & rural work</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Northwood did a fantastic job on our large oak — professional from start to finish. They cleared every last branch and you wouldn't know they'd been there. Brilliant service."</blockquote>
+  <cite>— Local Customer, Norfolk</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Free Quote — No Obligation</h2>
+      <p class="lead" style="margin-bottom:2rem">Tell us what you need and we'll get back to you with a free, honest quote. We serve all of Norfolk and surrounding areas.</p>
+      <p>📧 <a href="mailto:norfolkgdl@outlook.com">norfolkgdl@outlook.com</a></p>
+      <p>📍 Based in Norfolk, UK</p>
+      <p>🌍 Serving all of Norfolk &amp; surrounds</p>
+      <p>✅ Free quotes — fully insured</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number">
+      <select>
+        <option value="">Service Required</option>
+        <option>Tree Surgery / Pruning</option>
+        <option>Tree Removal / Felling</option>
+        <option>Hedge Trimming</option>
+        <option>Stump Grinding</option>
+        <option>Garden Clearance</option>
+        <option>Ongoing Maintenance</option>
+        <option>Other / Not Sure</option>
+      </select>
+      <textarea placeholder="Describe the job — number of trees, hedge length, garden size, any access issues..."></textarea>
+      <button type="submit" class="submit">Request Free Quote →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Northwood Tree & Garden Services | Norfolk, UK | norfolkgdl@outlook.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

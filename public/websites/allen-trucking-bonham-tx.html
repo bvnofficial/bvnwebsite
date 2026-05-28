@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allen Trucking Co. — Bonham, TX | Reliable Transport & Hauling</title>
+<meta name="description" content="Allen Trucking Co. in Bonham, TX — dependable local trucking, freight hauling and transport services across Fannin County and North Texas. Call for a quote.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--yellow:#f9a825;--dark-yellow:#e65100;--charcoal:#2d2d2d;--dark:#1a1a1a;--light:#f5f5f0;--text:#222}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--light)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:900;letter-spacing:1px}
+  .logo span{color:var(--yellow)}
+  .nav-phone{color:var(--yellow);font-weight:700;font-size:1rem;text-decoration:none}
+
+  .hero{background:var(--dark);color:#fff;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🚛';font-size:14rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.07;line-height:1}
+  .hero-stripe{position:absolute;top:0;left:0;width:6px;height:100%;background:var(--yellow)}
+  .badge{display:inline-block;background:rgba(249,168,37,.15);border:1px solid rgba(249,168,37,.35);color:var(--yellow);padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px;padding-left:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:900}
+  .hero h1 em{color:var(--yellow);font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-yellow{background:var(--yellow);color:var(--dark)}
+  .btn-yellow:hover{background:#e6951a}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.35)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.7)}
+
+  .quick-strip{background:var(--yellow);color:var(--dark);padding:1rem 2rem;text-align:center;font-size:.95rem;font-weight:800;letter-spacing:.5px}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--dark-yellow);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:900}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:6px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-top:5px solid var(--yellow);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2.2rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--dark);font-weight:800;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--charcoal);color:#fff;padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .about-band .tag{color:var(--yellow)}
+  .about-band h2{color:#fff}
+  .about-band .lead{color:rgba(255,255,255,.8)}
+  .cred-list{list-style:none;margin-top:1.5rem}
+  .cred-list li{padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem;color:rgba(255,255,255,.85)}
+  .cred-list li::before{content:'— ';color:var(--yellow);font-weight:800;flex-shrink:0}
+  .stat-box{background:rgba(249,168,37,.12);border:1px solid rgba(249,168,37,.3);border-radius:10px;padding:2.5rem;text-align:center}
+  .stat-icon{font-size:5rem;margin-bottom:1rem}
+  .stat-title{font-size:1.2rem;font-weight:800;color:var(--yellow)}
+  .stat-sub{font-size:.85rem;opacity:.65;margin-top:.4rem}
+
+  .quote-strip{background:var(--dark-yellow);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:var(--yellow);font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--dark-yellow);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #ddd;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--yellow)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--dark);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:1px}
+  .submit:hover{background:var(--dark-yellow)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.4);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--yellow);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Allen <span>Trucking Co.</span></div>
+  <a href="mailto:truckindude@yahoo.com" class="nav-phone">📧 Get a Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-stripe"></div>
+  <div class="badge">📍 Bonham, Texas</div>
+  <div class="hero-inner">
+    <h1>North Texas Hauling.<br><em>Done Right.</em></h1>
+    <p>Allen Trucking Co. is Bonham's dependable trucking and hauling service. Whether you need freight moved across Fannin County or a long-haul run across North Texas — we deliver on time, every time.</p>
+    <div class="btns">
+      <a href="mailto:truckindude@yahoo.com" class="btn btn-yellow">📧 Request a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="quick-strip">
+  🚛 Local hauling & freight — Bonham TX &amp; all of Fannin County | Email: truckindude@yahoo.com
+</div>
+
+<section id="services">
+  <p class="tag">What We Haul</p>
+  <h2>Reliable Trucking &<br>Transport Services</h2>
+  <p class="lead">From local deliveries to long-haul freight — Allen Trucking Co. gets your load where it needs to be. Dependable, insured, and Bonham proud.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <h3>Freight Hauling</h3>
+      <p>Local and regional freight transport. Pallets, equipment, materials and general cargo — loaded, secured and delivered on schedule.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>Construction & Materials</h3>
+      <p>Heavy materials, lumber, gravel, sand and equipment transport for job sites across North Texas. We work with contractors and builders.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚜</div>
+      <h3>Agricultural Hauling</h3>
+      <p>Grain, feed, livestock equipment and farm supplies — Allen Trucking understands the needs of Fannin County's farming community.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <h3>Residential Moving & Hauling</h3>
+      <p>Large item hauling, junk removal loads and household transport. Need something moved that won't fit in a car? We've got you.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📍</div>
+      <h3>Local Deliveries</h3>
+      <p>Same-day and scheduled local deliveries across Bonham, Sherman, Greenville and Fannin County. Fast, reliable, professional.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛣️</div>
+      <h3>Long-Distance Transport</h3>
+      <p>Need freight moved farther? Allen Trucking runs regional routes across North Texas and beyond — contact us to discuss your load.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Allen Trucking</p>
+      <h2>Bonham's Own<br>Trucking Company</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Allen Trucking Co. was built on a simple idea — show up, do the job right, and give people a fair price. Based in Bonham, TX, we've been hauling freight and materials across Fannin County and North Texas with the kind of reliability that keeps customers coming back.</p>
+      <ul class="cred-list">
+        <li>Licensed &amp; fully insured</li>
+        <li>Bonham, TX based — local knowledge</li>
+        <li>Flexible scheduling for contractors</li>
+        <li>Farm, construction &amp; commercial hauling</li>
+        <li>Honest pricing — no hidden fees</li>
+      </ul>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon">🚛</div>
+      <div class="stat-title">Allen Trucking Co.</div>
+      <div class="stat-sub">Bonham, TX — Fannin County &amp; North Texas<br>Hauling freight the right way since day one</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Allen Trucking showed up on time, handled our materials with care and charged exactly what they quoted. No nonsense, no surprises — exactly what you want from a hauler."</blockquote>
+  <cite>— Local Contractor, Bonham TX</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Request a Quote</p>
+      <h2>Let's Move Your Load</h2>
+      <p class="lead" style="margin-bottom:2rem">Tell us what you need hauled, where it's going, and when — we'll get back to you fast with an honest quote.</p>
+      <p>📧 <a href="mailto:truckindude@yahoo.com">truckindude@yahoo.com</a></p>
+      <p>📍 Bonham, TX 75418</p>
+      <p>🌍 Serving Fannin County &amp; North Texas</p>
+      <p>🚛 Licensed &amp; insured carrier</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Type of Haul (e.g. 'Construction materials', 'Grain haul')">
+      <textarea placeholder="Tell us more — what's being hauled, pickup and delivery locations, weight/size estimate, timeline..."></textarea>
+      <button type="submit" class="submit">REQUEST A QUOTE →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Allen Trucking Co. | Bonham, TX 75418 | truckindude@yahoo.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

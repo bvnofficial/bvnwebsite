@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J.P.R. Plumbing & Gas — Northcliffe, WA | John Reed</title>
+<meta name="description" content="J.P.R. Plumbing and Gas — trusted local plumber and gasfitter serving Northcliffe and surrounds, WA. Call John Reed today.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--orange:#e05a00;--dark-orange:#b54800;--navy:#1c2e4a;--light:#f4f7fa;--cream:#fffdf9;--text:#222}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--navy);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:var(--orange)}
+  .nav-phone{color:var(--orange);font-weight:700;font-size:1rem;text-decoration:none}
+  @media(max-width:600px){nav ul{display:none}}
+
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,#2a4570 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🔧';font-size:16rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.05;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--orange);padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:var(--orange);font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:5px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-orange{background:var(--orange);color:#fff}
+  .btn-orange:hover{background:var(--dark-orange)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+  .call-strip{background:var(--orange);padding:1rem 2rem;text-align:center;color:#fff;font-size:.95rem;font-weight:600}
+  .call-strip a{color:#fff;text-decoration:none;font-size:1.1rem;font-weight:800}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--navy);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:1.75rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-left:4px solid var(--orange);transition:transform .2s,box-shadow .2s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.12)}
+  .card-icon{font-size:2rem;margin-bottom:1rem}
+  .card h3{font-size:1.05rem;color:var(--navy);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--light);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .profile-card{background:var(--navy);color:#fff;border-radius:12px;padding:2.5rem;text-align:center}
+  .avatar{width:90px;height:90px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1rem}
+  .profile-name{font-size:1.4rem;font-weight:800;color:#fff}
+  .profile-role{color:var(--orange);font-size:.85rem;letter-spacing:1px;text-transform:uppercase;margin-top:.3rem}
+  .profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;text-align:center}
+  .pstat .num{font-size:2rem;font-weight:800;color:var(--orange)}
+  .pstat .lbl{font-size:.75rem;opacity:.65;letter-spacing:1px;text-transform:uppercase}
+
+  .trust-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}
+  .trust-item{background:#fff;border-radius:8px;padding:1rem 1.2rem;display:flex;gap:.8rem;align-items:flex-start;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+  .trust-item .check{color:var(--orange);font-weight:800;flex-shrink:0;margin-top:.1rem}
+  .trust-item p{font-size:.88rem;color:#555;line-height:1.5}
+
+  .quote-strip{background:var(--navy);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:620px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:var(--orange);font-size:.9rem;font-weight:600}
+
+  .contact-section{padding:4rem 2rem;background:#fff;max-width:100%}
+  .contact-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--orange);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #dde3ec;border-radius:5px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--orange)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--orange);color:#fff;border:none;width:100%;padding:1rem;border-radius:5px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-orange)}
+
+  footer{background:#111;color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--orange);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">J.P.R. <span>Plumbing & Gas</span></div>
+  <a href="tel:0897676440" class="nav-phone">📞 08 9776 6440</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Northcliffe, Western Australia</div>
+  <div class="hero-inner">
+    <h1>Your Local Plumber<br><em>Done Right.</em></h1>
+    <p>J.P.R. Plumbing and Gas has been serving Northcliffe and surrounding WA communities for years. Licensed, reliable, and always on time. Call John Reed for a fast, no-fuss quote.</p>
+    <div class="btns">
+      <a href="tel:0427271473" class="btn btn-orange">📞 Call John Now</a>
+      <a href="#contact" class="btn btn-ghost">Get a Quote</a>
+    </div>
+  </div>
+</div>
+
+<div class="call-strip">
+  🚨 Plumbing emergency? Call John directly: <a href="tel:0427271473">0427 271 473</a>
+</div>
+
+<section id="services">
+  <p class="tag">What We Do</p>
+  <h2>Full Plumbing & Gasfitting<br>Services in Northcliffe</h2>
+  <p class="lead">From burst pipes to gas installations, J.P.R. handles it all. Residential, rural and light commercial — no job too big or too small.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🚰</div>
+      <h3>General Plumbing</h3>
+      <p>Leaking taps, burst pipes, blocked drains, hot water systems and full fixture installations. Fast response, quality finish.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔥</div>
+      <h3>Gas Fitting</h3>
+      <p>Licensed gas installations, appliance connections, gas line repairs and safety checks. All work compliant with WA regulations.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏚️</div>
+      <h3>Rural & Residential</h3>
+      <p>Servicing homes, farms and rural properties across Northcliffe, Pemberton and the surrounding region. We come to you.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌊</div>
+      <h3>Water Systems</h3>
+      <p>Rainwater tanks, bore pumps, irrigation connections, hot water unit replacements and rural water supply solutions.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>New Installations</h3>
+      <p>Bathroom and kitchen renovations, new builds, extension plumbing — planned and executed properly from day one.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔎</div>
+      <h3>Maintenance & Inspections</h3>
+      <p>Pre-purchase inspections, compliance checks and routine maintenance to keep your plumbing in peak condition year round.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div class="profile-card">
+      <div class="avatar">👷</div>
+      <div class="profile-name">John Reed</div>
+      <div class="profile-role">Licensed Plumber & Gasfitter</div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="num">WA</div><div class="lbl">Licensed</div></div>
+        <div class="pstat"><div class="num">✓</div><div class="lbl">Insured</div></div>
+        <div class="pstat"><div class="num">🔧</div><div class="lbl">All Jobs</div></div>
+        <div class="pstat"><div class="num">📍</div><div class="lbl">Local</div></div>
+      </div>
+    </div>
+    <div>
+      <p class="tag">About J.P.R.</p>
+      <h2>Northcliffe's Trusted<br>Local Tradesman</h2>
+      <p class="lead" style="margin-bottom:1.5rem">John Reed has been the go-to plumber and gasfitter for the Northcliffe community for years. When you call J.P.R., you're getting a licensed tradesman who knows the area, knows the properties, and takes pride in doing the job right.</p>
+      <div class="trust-grid">
+        <div class="trust-item"><span class="check">✓</span><p>WA Licensed Plumber & Gasfitter</p></div>
+        <div class="trust-item"><span class="check">✓</span><p>Full public liability insurance</p></div>
+        <div class="trust-item"><span class="check">✓</span><p>Competitive, honest pricing</p></div>
+        <div class="trust-item"><span class="check">✓</span><p>Fast response — local based</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"John has sorted our plumbing every time without fail. Turns up when he says he will, charges a fair price, and does the job properly. That's all you want from a plumber."</blockquote>
+  <cite>— Local Customer, Northcliffe WA</cite>
+</div>
+
+<div class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Call or Send a Message</h2>
+      <p class="lead" style="margin-bottom:2rem">Whether it's an emergency callout or a planned job, get in touch with John today for a fast, honest quote.</p>
+      <p>📞 Office: <a href="tel:0897676440">08 9776 6440</a></p>
+      <p>📱 Mobile: <a href="tel:0427271473">0427 271 473</a></p>
+      <p>📧 <a href="mailto:jprplumbingandgas@bigpond.com">jprplumbingandgas@bigpond.com</a></p>
+      <p>📍 Northcliffe, WA 6262</p>
+      <p>⚡ Emergency callouts available</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Job Type (e.g. 'Leaking pipe', 'Gas install')">
+      <textarea placeholder="Describe the job or issue — as much detail as you can..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 J.P.R. Plumbing and Gas | John Reed | Northcliffe, WA 6262 | 0427 271 473</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

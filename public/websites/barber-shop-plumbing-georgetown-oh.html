@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barber Shop Plumbing LLC — Georgetown, OH | Licensed Plumber</title>
+<meta name="description" content="Barber Shop Plumbing LLC in Georgetown, Ohio — licensed local plumber for repairs, drains, water heaters and emergency plumbing. Call for a fast quote.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--red:#b71c1c;--dark-red:#7f0000;--gold:#c9a62a;--dark:#1a1a1a;--charcoal:#2d2d2d;--cream:#fafaf7;--light:#f5f5f0}
+  body{font-family:'Segoe UI',sans-serif;color:#222;background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:var(--gold)}
+  .nav-phone{color:var(--gold);font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:var(--dark);color:#fff;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero-stripe{position:absolute;top:0;left:0;width:6px;height:100%;background:repeating-linear-gradient(to bottom,var(--red) 0,var(--red) 20px,#fff 20px,#fff 30px,#001aff 30px,#001aff 50px)}
+  .badge{display:inline-block;background:rgba(201,166,42,.12);border:1px solid rgba(201,166,42,.35);color:var(--gold);padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px;padding-left:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:var(--gold);font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-red{background:var(--red);color:#fff}
+  .btn-red:hover{background:var(--dark-red)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.35)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.7)}
+
+  .call-strip{background:var(--red);color:#fff;text-align:center;padding:.9rem 2rem;font-size:.95rem;font-weight:700}
+  .call-strip a{color:#fff;text-decoration:none}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:6px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-left:4px solid var(--red);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--dark);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--charcoal);color:#fff;padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .about-band .tag{color:var(--gold)}
+  .about-band h2{color:#fff}
+  .about-band .lead{color:rgba(255,255,255,.8);margin-bottom:1.5rem}
+  .cred-list{list-style:none}
+  .cred-list li{padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem;color:rgba(255,255,255,.85)}
+  .cred-list li::before{content:'✓';color:var(--gold);font-weight:800;flex-shrink:0}
+  .badge-box{background:rgba(201,166,42,.1);border:1px solid rgba(201,166,42,.3);border-radius:8px;padding:2rem;text-align:center}
+  .badge-icon{font-size:5rem;margin-bottom:1rem}
+  .badge-title{font-size:1.2rem;font-weight:800;color:var(--gold)}
+  .badge-sub{font-size:.85rem;opacity:.65;margin-top:.3rem}
+
+  .quote-strip{background:var(--dark-red);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:var(--gold);font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--red);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #ddd;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--red)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--dark);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:1px}
+  .submit:hover{background:var(--red)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.4);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Barber Shop <span>Plumbing LLC</span></div>
+  <a href="mailto:barbershopplumbingllc@gmail.com" class="nav-phone">📧 Get a Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-stripe"></div>
+  <div class="badge">📍 Georgetown, Ohio</div>
+  <div class="hero-inner">
+    <h1>Georgetown's<br><em>Trusted Plumber.</em></h1>
+    <p>Barber Shop Plumbing LLC — Georgetown, Ohio's reliable licensed plumber. Repairs, drain clearing, water heaters, bathroom work and emergency callouts. Straight talking, fair pricing, done right.</p>
+    <div class="btns">
+      <a href="mailto:barbershopplumbingllc@gmail.com" class="btn btn-red">📧 Get a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="call-strip">
+  🚨 Plumbing emergency in Georgetown? Email us now: <a href="mailto:barbershopplumbingllc@gmail.com">barbershopplumbingllc@gmail.com</a>
+</div>
+
+<section id="services">
+  <p class="tag">Services</p>
+  <h2>Full Plumbing Services in<br>Georgetown &amp; Brown County, OH</h2>
+  <p class="lead">From dripping faucets to full bathroom remodels — Barber Shop Plumbing LLC handles all residential and light commercial plumbing across Georgetown, Sardinia, Hamersville and surrounding Brown County.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Plumbing Repairs</h3>
+      <p>Leaky pipes, burst lines, dripping faucets, running toilets and general repairs. Fast response, lasting fixes.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌀</div>
+      <h3>Drain Cleaning</h3>
+      <p>Clogged drains, slow sinks, backed-up sewer lines. We clear them properly — not just temporarily.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔥</div>
+      <h3>Water Heater Service</h3>
+      <p>Water heater repair, flushing and full replacement. Tank and tankless — all major brands serviced.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛁</div>
+      <h3>Bathroom &amp; Kitchen Plumbing</h3>
+      <p>New installations, fixture replacements and full plumbing rough-in for bathroom and kitchen remodels.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>New Construction</h3>
+      <p>Rough-in and trim plumbing for new builds and additions in Georgetown and Brown County.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>Inspections &amp; Maintenance</h3>
+      <p>Pre-purchase plumbing inspections, water quality checks and annual maintenance to keep your system running right.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Barber Shop Plumbing</p>
+      <h2>Georgetown's Local<br>Licensed Plumber</h2>
+      <p class="lead">Barber Shop Plumbing LLC is Georgetown's go-to plumbing contractor — licensed, insured, and always upfront about what needs doing and what it'll cost. No surprises, no upsells, just good plumbing.</p>
+      <ul class="cred-list" style="margin-top:1.5rem">
+        <li>Ohio Licensed Plumbing Contractor</li>
+        <li>Fully insured &amp; bonded</li>
+        <li>Georgetown local — fast response</li>
+        <li>Residential &amp; light commercial</li>
+        <li>Upfront, honest pricing</li>
+      </ul>
+    </div>
+    <div class="badge-box">
+      <div class="badge-icon">🔧</div>
+      <div class="badge-title">Barber Shop Plumbing LLC</div>
+      <div class="badge-sub">Georgetown, OH — Brown County &amp; surrounds<br>Licensed, insured, and on your side</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Called Barber Shop Plumbing for a drain issue — they diagnosed it fast, fixed it same day and the price was exactly what they quoted. Exactly the kind of plumber Georgetown needs."</blockquote>
+  <cite>— Customer, Georgetown OH</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Request a Quote</h2>
+      <p class="lead" style="margin-bottom:2rem">Describe your plumbing job and we'll get back to you quickly with a free, honest quote. Emergency or planned — Georgetown and Brown County covered.</p>
+      <p>📧 <a href="mailto:barbershopplumbingllc@gmail.com">barbershopplumbingllc@gmail.com</a></p>
+      <p>📍 Georgetown, OH 45121</p>
+      <p>🌍 Serving Georgetown, Brown County &amp; SW Ohio</p>
+      <p>⚡ Emergency callouts available</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Type of Job (e.g. 'Clogged drain', 'Water heater')">
+      <textarea placeholder="Tell us about the issue — what's happening, when it started, your address..."></textarea>
+      <button type="submit" class="submit">SEND MESSAGE →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Barber Shop Plumbing LLC | Georgetown, OH 45121 | barbershopplumbingllc@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

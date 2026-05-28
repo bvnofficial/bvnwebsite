@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calhoun's Barber Shop — Classic Cuts | Thomasville, AL</title>
+<meta name="description" content="Calhoun's Barber Shop in Thomasville, Alabama — traditional barbershop cuts, fades, shaves and trims. Walk-ins welcome.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--red:#b71c1c;--dark-red:#8b0000;--gold:#d4af37;--dark:#1a1a1a;--charcoal:#2d2d2d;--cream:#fafaf7;--light:#f5f5f0}
+  body{font-family:'Segoe UI',sans-serif;color:#222;background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:1px}
+  .logo span{color:var(--gold)}
+  .nav-phone{color:var(--gold);font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:var(--dark);color:#fff;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero-stripe{position:absolute;top:0;left:0;width:8px;height:100%;background:repeating-linear-gradient(to bottom,var(--red) 0,var(--red) 20px,#fff 20px,#fff 30px,#001aff 30px,#001aff 50px)}
+  .hero-inner{max-width:700px;padding-left:2rem}
+  .badge{display:inline-block;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:var(--gold);padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.1;margin-bottom:1rem;font-weight:900}
+  .hero h1 em{color:var(--gold);font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.85;line-height:1.7;margin-bottom:2.5rem;max-width:520px}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-gold{background:var(--gold);color:var(--dark)}
+  .btn-gold:hover{background:#c4a028}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.35)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.7)}
+
+  .hours-strip{background:var(--red);color:#fff;padding:1rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.88rem}
+  .hours-item strong{font-weight:800}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:900}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .service{background:#fff;border-radius:6px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-left:5px solid var(--red);transition:transform .2s}
+  .service:hover{transform:translateY(-4px)}
+  .service .icon{font-size:2rem;margin-bottom:.8rem}
+  .service h3{font-size:1rem;color:var(--dark);font-weight:800;margin-bottom:.4rem}
+  .service p{font-size:.88rem;color:#666;line-height:1.6}
+  .service .price{font-size:1.1rem;font-weight:800;color:var(--red);margin-top:.75rem}
+
+  .about-band{background:var(--charcoal);color:#fff;padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .about-band .tag{color:var(--gold)}
+  .about-band h2{color:#fff}
+  .about-band .lead{color:rgba(255,255,255,.8)}
+  .classic-list{list-style:none;margin-top:1.5rem}
+  .classic-list li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;color:rgba(255,255,255,.8)}
+  .classic-list li::before{content:'— ';color:var(--gold);font-weight:800}
+  .badge-box{background:rgba(255,255,255,.07);border:1px solid rgba(212,175,55,.3);border-radius:8px;padding:2rem;text-align:center}
+  .badge-icon{font-size:5rem;margin-bottom:1rem}
+  .badge-text{font-size:1.2rem;font-weight:800;color:var(--gold)}
+  .badge-sub{font-size:.85rem;opacity:.65;margin-top:.4rem}
+
+  .quote-strip{background:var(--red);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:620px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:var(--gold);font-size:.9rem;font-weight:700}
+
+  .contact-section{background:var(--light);padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.4}
+  .contact-info a{color:var(--red);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #ddd;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;background:#fff;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--red)}
+  .submit{background:var(--dark);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:1px}
+  .submit:hover{background:var(--red)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.4);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Calhoun's <span>Barber Shop</span></div>
+  <a href="tel:2517693315" class="nav-phone">📞 (251) 769-3315</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-stripe"></div>
+  <div class="hero-inner">
+    <div class="badge">📍 Thomasville, Alabama</div>
+    <h1>Sharp Cuts.<br><em>No Nonsense.</em></h1>
+    <p>Calhoun's Barber Shop has been giving Thomasville its cleanest cuts for years. Classic barbershop atmosphere, skilled hands, fair prices — exactly what a barber shop should be.</p>
+    <div class="btns">
+      <a href="tel:2517693315" class="btn btn-gold">📞 Call to Book</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="hours-strip">
+  <span>Tue–Thu: <strong>9AM – 6PM</strong></span>
+  <span>Friday: <strong>8:30AM – 6PM</strong></span>
+  <span>Saturday: <strong>7:30AM – 4PM</strong></span>
+  <span>Mon & Sun: <strong>Closed</strong></span>
+</div>
+
+<section id="services">
+  <p class="tag">The Menu</p>
+  <h2>Classic Barbershop Services</h2>
+  <p class="lead">Every cut done right. Walk in looking rough, walk out looking sharp. No appointment needed — walk-ins always welcome.</p>
+  <div class="services">
+    <div class="service">
+      <div class="icon">💈</div>
+      <h3>Men's Haircut</h3>
+      <p>Classic cuts, modern fades, textured crops and everything in between. Finished with a hot towel and proper finishing.</p>
+    </div>
+    <div class="service">
+      <div class="icon">🪒</div>
+      <h3>Straight Razor Shave</h3>
+      <p>Old-school hot lather straight razor shave — a proper barbershop experience you can't get just anywhere.</p>
+    </div>
+    <div class="service">
+      <div class="icon">✂️</div>
+      <h3>Beard Trim & Shape</h3>
+      <p>Line-ups, taper fades, beard shaping and clean edge-ups. Your beard, perfected.</p>
+    </div>
+    <div class="service">
+      <div class="icon">👦</div>
+      <h3>Kids' Cuts</h3>
+      <p>Bringing the youngsters in for their first cut or a regular trim — we're patient and make it easy for the little ones.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Calhoun's</p>
+      <h2>Thomasville's Go-To Barber Shop</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Calhoun's is what a barber shop should be — a place where you get a great cut, a good conversation, and walk out feeling like yourself again. Located at 1148 W. Front Street, right here in Thomasville.</p>
+      <ul class="classic-list">
+        <li>Walk-ins always welcome</li>
+        <li>Experienced, skilled barbers</li>
+        <li>Fair prices — no surprises</li>
+        <li>Friendly, community atmosphere</li>
+        <li>Cash and card accepted</li>
+      </ul>
+    </div>
+    <div class="badge-box">
+      <div class="badge-icon">💈</div>
+      <div class="badge-text">Est. Thomasville, AL</div>
+      <div class="badge-sub">Your neighbourhood barbershop<br>on W. Front Street</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Best barber in Thomasville, hands down. Always consistent, always fair, always makes you feel welcome. Won't go anywhere else."</blockquote>
+  <cite>— Regular Customer, Thomasville AL</cite>
+</div>
+
+<div class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Find Us</p>
+      <h2>Come On In</h2>
+      <p class="lead" style="margin-bottom:2rem">No appointment needed — just walk in during opening hours and we'll take care of you. Give us a call if you want to check wait times.</p>
+      <p>📍 1148 W. Front Street, Thomasville, AL 36784</p>
+      <p>📞 <a href="tel:2517693315">(251) 769-3315</a></p>
+      <p>📧 <a href="mailto:melcal2009@yahoo.com">melcal2009@yahoo.com</a></p>
+      <p>🕐 Tue–Thu: 9AM–6PM &nbsp;|&nbsp; Fri: 8:30AM–6PM &nbsp;|&nbsp; Sat: 7:30AM–4PM</p>
+      <p>🚶 Walk-ins welcome — no appointment necessary</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name">
+      <input type="tel" placeholder="Phone Number">
+      <input type="email" placeholder="Email Address">
+      <select>
+        <option value="">Preferred Day</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+        <option>Saturday</option>
+      </select>
+      <textarea placeholder="Any special requests? (e.g. 'Low fade', 'Just a trim', 'Beard shape-up')"></textarea>
+      <button type="submit" class="submit">SEND MESSAGE</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Calhoun's Barber Shop | 1148 W. Front Street, Thomasville, AL 36784 | (251) 769-3315</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

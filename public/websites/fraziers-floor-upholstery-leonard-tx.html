@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frazier's Floor & Upholstery — Leonard, TX | Cleaning & Restoration</title>
+<meta name="description" content="Frazier's Floor & Upholstery in Leonard, TX — professional floor cleaning, upholstery restoration, carpet cleaning and fabric care across Fannin County.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--brown:#5d4037;--dark-brown:#3e2723;--tan:#efebe9;--warm:#fff8f3;--rust:#bf360c;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--warm)}
+
+  nav{background:var(--dark-brown);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#ffccbc}
+  .nav-cta{background:var(--rust);color:#fff;padding:.5rem 1.3rem;border-radius:4px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-cta:hover{background:#870000}
+
+  .hero{background:linear-gradient(160deg,var(--dark-brown) 0%,var(--brown) 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🛋️';font-size:14rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#ffccbc;padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:640px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#ffccbc;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-rust{background:var(--rust);color:#fff}
+  .btn-rust:hover{background:#870000}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .trust-bar{background:var(--rust);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.83rem}
+  .trust-bar span{font-weight:700}
+  .trust-bar span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark-brown);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 16px rgba(93,64,55,.09);border-bottom:4px solid var(--brown);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2.2rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--dark-brown);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--tan);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .brand-box{background:var(--dark-brown);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .brand-icon{font-size:5rem;margin-bottom:1rem}
+  .brand-title{font-size:1.2rem;font-weight:800;color:#ffccbc}
+  .brand-sub{font-size:.85rem;opacity:.65;margin-top:.4rem;line-height:1.6}
+  .why-list{list-style:none;margin-top:1.5rem}
+  .why-list li{padding:.65rem 0;border-bottom:1px solid #d3c0b8;font-size:.95rem;display:flex;gap:.75rem;color:#555}
+  .why-list li::before{content:'✓';color:var(--rust);font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--dark-brown);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#ffccbc;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--brown);text-decoration:none;font-weight:600}
+  .fb-cta{background:var(--rust);color:#fff;display:inline-block;padding:.85rem 2rem;border-radius:4px;font-weight:700;text-decoration:none;margin-top:1rem;font-size:.95rem;transition:background .2s}
+  .fb-cta:hover{background:#870000}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #d7c4bc;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--brown)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--brown);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-brown)}
+
+  footer{background:var(--dark-brown);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#ffccbc;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Frazier's <span>Floor & Upholstery</span></div>
+  <a href="#contact" class="nav-cta">Get a Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Leonard, Texas</div>
+  <div class="hero-inner">
+    <h1>Floors &amp; Upholstery<br><em>Brought Back to Life.</em></h1>
+    <p>Frazier's Floor & Upholstery in Leonard, TX — professional floor cleaning, upholstery restoration and fabric care for homes across Fannin County. We bring the clean to you.</p>
+    <div class="btns">
+      <a href="#contact" class="btn btn-rust">Get a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <span>Leonard, TX Based</span>
+  <span>Residential & Commercial</span>
+  <span>Stain Specialists</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Services</p>
+  <h2>Floor Cleaning &amp; Upholstery<br>Restoration in Fannin County</h2>
+  <p class="lead">From deeply stained carpets to tired sofas and hardwood floors that need new life — Frazier's has the equipment, products and expertise to get the results that matter.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🪟</div>
+      <h3>Carpet Cleaning</h3>
+      <p>Deep steam extraction cleaning for all carpet types. Stains, pet odours and deep-set dirt eliminated — carpets like new.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🪵</div>
+      <h3>Hard Floor Cleaning</h3>
+      <p>Professional cleaning for hardwood, tile, vinyl and laminate floors. Restore shine and remove deep-seated grime.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛋️</div>
+      <h3>Upholstery Cleaning</h3>
+      <p>Sofas, chairs, ottomans and fabric furniture cleaned and refreshed. Remove stains, allergens and odours from your upholstery.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🐾</div>
+      <h3>Pet Stain &amp; Odour Removal</h3>
+      <p>Specialist treatment to neutralise pet stains and odours at the source — from carpets, rugs and furniture.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏢</div>
+      <h3>Commercial Floor Care</h3>
+      <p>Office and commercial floor cleaning contracts available. Keep your business looking professional and well-maintained.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔑</div>
+      <h3>Move-In / Move-Out Cleans</h3>
+      <p>Carpet and floor cleaning for rental properties and real estate. Thorough, fast and priced right for property transitions.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Frazier's</p>
+      <h2>Leonard's Trusted<br>Floor &amp; Fabric Specialists</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Frazier's Floor & Upholstery has been helping Leonard, TX homeowners restore their floors and furniture for years. Professional equipment, the right products, and genuine care for every job — no matter how big or small.</p>
+      <ul class="why-list">
+        <li>Professional-grade cleaning equipment</li>
+        <li>Stain and odour treatment specialists</li>
+        <li>Residential and commercial work</li>
+        <li>Fair, upfront pricing</li>
+        <li>Serving Leonard and all of Fannin County</li>
+      </ul>
+    </div>
+    <div class="brand-box">
+      <div class="brand-icon">✨</div>
+      <div class="brand-title">Frazier's Floor &amp; Upholstery</div>
+      <div class="brand-sub">Leonard, TX — Fannin County &amp; surrounds<br>Bringing floors and furniture back to life since day one.</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Frazier's cleaned our living room carpet and the sofa — honestly couldn't believe how good it looked afterwards. Stains I thought were permanent — gone. Will never use anyone else."</blockquote>
+  <cite>— Happy Customer, Leonard TX</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Book a Clean</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Ready to restore your floors and furniture? Fill in the form or connect with us on Facebook for a fast, free quote.</p>
+      <p>📍 Leonard, TX 75452</p>
+      <p>🌍 Serving Leonard &amp; Fannin County, TX</p>
+      <p>📘 Find us on Facebook for photos, reviews and to get in touch directly.</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Service (e.g. 'Carpet clean', 'Sofa restoration')">
+      <textarea placeholder="Tell us about the job — rooms, size, type of fabric, any specific stains or concerns..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Frazier's Floor & Upholstery | Leonard, TX 75452 | Serving Fannin County</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

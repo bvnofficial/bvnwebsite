@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Local Plumber — South London | Plumbing & Heating Services</title>
+<meta name="description" content="My Local Plumber in South London — reliable plumbing and heating services. Boilers, leaks, blocked drains, bathrooms and emergency callouts across South London.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--red:#d32f2f;--dark-red:#b71c1c;--dark:#1c2833;--mid:#2e4057;--cream:#fafafa;--light:#f2f6fa;--text:#222}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#ef9a9a}
+  .nav-phone{color:#ef9a9a;font-weight:700;font-size:.95rem;text-decoration:none}
+
+  .hero{background:linear-gradient(135deg,var(--dark) 0%,var(--mid) 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🔧';font-size:14rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.05;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);color:#ef9a9a;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#ef9a9a;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-red{background:var(--red);color:#fff}
+  .btn-red:hover{background:var(--dark-red)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .emergency-strip{background:var(--red);color:#fff;text-align:center;padding:1rem 2rem;font-size:.95rem;font-weight:700}
+  .emergency-strip a{color:#fff;text-decoration:none}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-left:4px solid var(--red);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--dark);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .why-band{background:var(--light);padding:4rem 2rem}
+  .why-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.why-inner{grid-template-columns:1fr}}
+  .why-list{list-style:none;margin-top:1.5rem}
+  .why-list li{padding:.65rem 0;border-bottom:1px solid #dde5ef;font-size:.95rem;display:flex;gap:.75rem;color:#444}
+  .why-list li::before{content:'✓';color:var(--red);font-weight:800;flex-shrink:0}
+  .cov-box{background:var(--dark);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .cov-icon{font-size:4rem;margin-bottom:1rem}
+  .cov-title{font-size:1.15rem;font-weight:800;color:#ef9a9a;margin-bottom:.5rem}
+  .cov-sub{font-size:.85rem;opacity:.65;line-height:1.65}
+
+  .quote-strip{background:var(--mid);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#ef9a9a;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--red);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #ddd;border-radius:6px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--red)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--red);color:#fff;border:none;width:100%;padding:1rem;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-red)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#ef9a9a;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">My Local <span>Plumber</span></div>
+  <a href="mailto:info@mylocalplumber.co.uk" class="nav-phone">📧 Get a Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 South London, UK</div>
+  <div class="hero-inner">
+    <h1>South London's<br><em>Trusted Plumber.</em></h1>
+    <p>My Local Plumber covers South London with honest, professional plumbing and heating services. Boiler faults, burst pipes, blocked drains, bathroom installations and emergency callouts — we're the plumber South London calls.</p>
+    <div class="btns">
+      <a href="mailto:info@mylocalplumber.co.uk" class="btn btn-red">📧 Get a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="emergency-strip">
+  🚨 Plumbing emergency? Contact us now — fast response across South London: <a href="mailto:info@mylocalplumber.co.uk">info@mylocalplumber.co.uk</a>
+</div>
+
+<section id="services">
+  <p class="tag">What We Do</p>
+  <h2>Full Plumbing &amp; Heating<br>Across South London</h2>
+  <p class="lead">From a dripping tap to a full bathroom refit — My Local Plumber covers all plumbing and heating work across South London. Residential, landlord and commercial clients welcome.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🔥</div>
+      <h3>Boiler Repairs &amp; Servicing</h3>
+      <p>Annual boiler services, fault diagnosis, repairs and replacements. Gas Safe registered engineers for all boiler work.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚰</div>
+      <h3>Plumbing Repairs</h3>
+      <p>Leaking pipes, burst pipes, dripping taps, running toilets and all general plumbing repairs. Fast response across South London.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌀</div>
+      <h3>Blocked Drains</h3>
+      <p>Blocked toilets, sinks, baths and external drains — cleared quickly and effectively. High-pressure jetting available.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛁</div>
+      <h3>Bathroom Installations</h3>
+      <p>Full bathroom installations and refits — supply, fit and finish. We handle the whole job from stripping out to the final fixture.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💧</div>
+      <h3>Hot Water &amp; Cylinders</h3>
+      <p>Hot water cylinder repairs, replacements and upgrades. Unvented cylinder specialists — all work to Part L regulations.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <h3>Landlord &amp; Property Services</h3>
+      <p>Landlord boiler certificates (CP12), plumbing maintenance contracts and tenant callout management. Trusted by South London landlords.</p>
+    </div>
+  </div>
+</section>
+
+<div class="why-band">
+  <div class="why-inner">
+    <div>
+      <p class="tag">Why My Local Plumber</p>
+      <h2>South London's Plumber<br>You Can Rely On</h2>
+      <ul class="why-list">
+        <li>Gas Safe registered engineers</li>
+        <li>Fully insured for all plumbing and heating work</li>
+        <li>Emergency callouts available</li>
+        <li>Upfront, honest pricing — no hidden charges</li>
+        <li>Landlord certificates and maintenance contracts</li>
+        <li>South London based — fast local response</li>
+      </ul>
+    </div>
+    <div class="cov-box">
+      <div class="cov-icon">🔧</div>
+      <div class="cov-title">Covering All of South London</div>
+      <div class="cov-sub">SE1–SE28, SW1–SW20, CR0, BR1–BR8 and surrounding South London postcodes. Local knowledge, fast response.</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Quick to respond, diagnosed the problem fast, and fixed it same day. Pricing was fair and transparent from the start. Finally found a plumber in South London I'll keep using."</blockquote>
+  <cite>— Happy Customer, South London</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Free Quote — No Obligation</h2>
+      <p class="lead" style="margin-bottom:2rem">Describe your plumbing or heating issue and we'll get back to you quickly with a free quote. Emergency or planned work — we cover all of South London.</p>
+      <p>📧 <a href="mailto:info@mylocalplumber.co.uk">info@mylocalplumber.co.uk</a></p>
+      <p>📍 South London, UK</p>
+      <p>🌍 All South London postcodes covered</p>
+      <p>🚨 Emergency callouts available</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <select>
+        <option value="">Service Required</option>
+        <option>Boiler Repair / Service</option>
+        <option>Plumbing Repair</option>
+        <option>Blocked Drain</option>
+        <option>Bathroom Installation</option>
+        <option>Hot Water / Cylinder</option>
+        <option>Landlord Certificate (CP12)</option>
+        <option>Emergency Callout</option>
+        <option>Other</option>
+      </select>
+      <textarea placeholder="Describe the issue or job — what's happening, when it started, any relevant details..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 My Local Plumber | South London, UK | info@mylocalplumber.co.uk</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

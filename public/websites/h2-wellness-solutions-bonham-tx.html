@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H2 Wellness Solutions — Bonham, TX | Med Spa & Wellness</title>
+<meta name="description" content="H2 Wellness Solutions in Bonham, TX — medical wellness, IV therapy, aesthetic treatments and holistic health services. Book your consultation today.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--teal:#006064;--light-teal:#00838f;--blush:#fce4ec;--gold:#c9a84c;--dark:#1a1a2e;--cream:#fffbf8;--text:#2d2d2d}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#80cbc4}
+  .nav-book{background:var(--gold);color:var(--dark);padding:.5rem 1.3rem;border-radius:50px;font-size:.85rem;font-weight:700;text-decoration:none;transition:opacity .2s}
+  .nav-book:hover{opacity:.85}
+
+  .hero{background:linear-gradient(160deg,var(--dark) 0%,var(--teal) 100%);color:#fff;padding:5.5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::after{content:'💧';font-size:14rem;position:absolute;right:-1rem;bottom:-2rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#80cbc4;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#80cbc4;font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;max-width:500px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-gold{background:var(--gold);color:var(--dark)}
+  .btn-gold:hover{opacity:.85}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.45)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+  .trust-bar{background:var(--teal);color:#fff;padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.83rem}
+  .trust-bar span{font-weight:700}
+  .trust-bar span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--light-teal);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:12px;padding:2rem;text-align:center;box-shadow:0 3px 20px rgba(0,96,100,.09);border-top:4px solid var(--light-teal);transition:transform .2s}
+  .card:hover{transform:translateY(-5px)}
+  .card-icon{font-size:2.5rem;margin-bottom:.75rem}
+  .card h3{font-size:1rem;color:var(--dark);font-weight:800;margin-bottom:.4rem}
+  .card p{font-size:.86rem;color:#777;line-height:1.65}
+
+  .about-band{background:var(--blush);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .doc-card{background:var(--teal);color:#fff;border-radius:14px;padding:2.5rem;text-align:center}
+  .doc-avatar{width:100px;height:100px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 1rem;border:3px solid rgba(255,255,255,.3)}
+  .doc-name{font-size:1.4rem;font-weight:800}
+  .doc-title{font-size:.85rem;opacity:.8;letter-spacing:1px}
+  .doc-list{list-style:none;margin-top:1.5rem;text-align:left}
+  .doc-list li{padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.15);font-size:.9rem;opacity:.9}
+  .doc-list li::before{content:'✓ ';font-weight:800}
+
+  .quote-strip{background:var(--dark);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#80cbc4;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--teal);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #b2dfdb;border-radius:8px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--teal)}
+  form textarea{height:100px;resize:vertical}
+  .submit{background:var(--teal);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#80cbc4;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">H2 <span>Wellness Solutions</span></div>
+  <a href="#contact" class="nav-book">Book a Consultation</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Bonham, Texas</div>
+  <h1>Feel Your Best.<br><em>Live Your Best.</em></h1>
+  <p>H2 Wellness Solutions brings medical wellness and aesthetic care to Bonham, TX. From IV therapy and hormone optimisation to aesthetic treatments — Dr. Sammy and the H2 team help you look great and feel even better.</p>
+  <div class="btns">
+    <a href="#contact" class="btn btn-gold">Book a Consultation</a>
+    <a href="#services" class="btn btn-ghost">Our Services</a>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <span>Medical Professional</span>
+  <span>Personalised Treatment Plans</span>
+  <span>Bonham, TX</span>
+  <span>Free Consultations</span>
+</div>
+
+<section id="services">
+  <p class="tag">Our Services</p>
+  <h2>Wellness & Aesthetic Treatments<br>Tailored to You</h2>
+  <p class="lead">At H2 Wellness Solutions, every treatment plan is personalised. We combine medical expertise with a genuine commitment to your health, energy and confidence.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">💧</div>
+      <h3>IV Therapy</h3>
+      <p>Customised IV drips for hydration, energy, immunity and recovery. Fast-acting nutrients delivered directly into your bloodstream.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <h3>Weight Loss Programs</h3>
+      <p>Medical weight loss programs including semaglutide, B12 injections and nutritional coaching. Safe, supervised and effective.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔬</div>
+      <h3>Hormone Therapy</h3>
+      <p>Hormone optimisation for men and women — testosterone, thyroid and bioidentical hormone replacement to restore your vitality.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <h3>Aesthetic Treatments</h3>
+      <p>Botox, dermal fillers, skin rejuvenation and aesthetic injectables. Natural-looking results from a medical professional you can trust.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Holistic Wellness</h3>
+      <p>Nutritional counselling, supplement guidance and holistic wellness planning. A whole-body approach to feeling your absolute best.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🩺</div>
+      <h3>Wellness Consultations</h3>
+      <p>Initial consultations to assess your health goals and build a personalised treatment plan. Start your wellness journey today.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div class="doc-card">
+      <div class="doc-avatar">🩺</div>
+      <div class="doc-name">Dr. Sammy</div>
+      <div class="doc-title">Medical Director — H2 Wellness Solutions</div>
+      <ul class="doc-list">
+        <li>Licensed medical professional</li>
+        <li>IV therapy &amp; hormone specialist</li>
+        <li>Aesthetic injectables certified</li>
+        <li>Personalised care approach</li>
+        <li>Bonham, TX — serving Fannin County</li>
+      </ul>
+    </div>
+    <div>
+      <p class="tag">About H2 Wellness</p>
+      <h2>Bonham's Own<br>Wellness &amp; Aesthetic Clinic</h2>
+      <p class="lead" style="margin-bottom:1.5rem">H2 Wellness Solutions was built to bring real medical wellness to Bonham and Fannin County — because you shouldn't have to drive hours to Dallas for quality care. Dr. Sammy and the team combine clinical expertise with a warm, personal approach you won't find at a chain clinic.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">Whether you're looking to boost your energy, lose weight medically or refresh your appearance — H2 is where your wellness journey starts.</p>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Dr. Sammy completely transformed how I feel. IV therapy every month, and the weight loss program has been a game changer. The most supportive clinic I've ever been to."</blockquote>
+  <cite>— Happy Patient, Bonham TX</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Book Your Appointment</p>
+      <h2>Start Your Wellness Journey</h2>
+      <p class="lead" style="margin-bottom:2rem">Ready to feel your best? Book a consultation with Dr. Sammy — we'll put together a personalised plan around your health goals.</p>
+      <p>📧 <a href="mailto:drsammy@h2wellnesssolutions.com">drsammy@h2wellnesssolutions.com</a></p>
+      <p>📍 Bonham, TX 75418</p>
+      <p>🌍 Serving Bonham &amp; Fannin County, TX</p>
+      <p>✅ Free initial consultations available</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <select>
+        <option value="">Area of Interest</option>
+        <option>IV Therapy</option>
+        <option>Weight Loss Program</option>
+        <option>Hormone Therapy</option>
+        <option>Aesthetic Treatments</option>
+        <option>General Wellness Consultation</option>
+        <option>Other</option>
+      </select>
+      <textarea placeholder="Tell us about your wellness goals — what are you hoping to achieve?"></textarea>
+      <button type="submit" class="submit">Request Consultation ✨</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 H2 Wellness Solutions | Bonham, TX 75418 | drsammy@h2wellnesssolutions.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

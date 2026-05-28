@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local Plumber LLC — Simpsonville, SC | Plumbing Services</title>
+<meta name="description" content="Local Plumber LLC in Simpsonville, SC — licensed plumbing repairs, installations, drain clearing and emergency service. Call for a fast, honest quote.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1565c0;--dark-blue:#0d47a1;--steel:#37474f;--light:#ecf4ff;--cream:#f8fbff;--text:#222}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--steel);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#90caf9}
+  .nav-phone{color:#90caf9;font-weight:700;font-size:1rem;text-decoration:none}
+
+  .hero{background:linear-gradient(135deg,var(--steel) 0%,var(--dark-blue) 100%);color:#fff;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🔧';font-size:16rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.04;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#90caf9;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#90caf9;font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:5px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-blue{background:var(--blue);color:#fff}
+  .btn-blue:hover{background:var(--dark-blue)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+  .emergency-strip{background:var(--blue);color:#fff;text-align:center;padding:1rem 2rem;font-size:.95rem;font-weight:700}
+  .emergency-strip a{color:#fff;text-decoration:none;font-size:1.1rem}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--steel);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:1.75rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-left:4px solid var(--blue);transition:transform .2s,box-shadow .2s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.1)}
+  .card-icon{font-size:2rem;margin-bottom:1rem}
+  .card h3{font-size:1.05rem;color:var(--steel);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--light);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .profile-card{background:var(--steel);color:#fff;border-radius:10px;padding:2.5rem;text-align:center}
+  .avatar{width:90px;height:90px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1rem}
+  .profile-name{font-size:1.4rem;font-weight:800}
+  .profile-role{color:#90caf9;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;margin-top:.3rem}
+  .cred-list{list-style:none;margin-top:1.5rem;text-align:left}
+  .cred-list li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem;align-items:flex-start}
+  .cred-list li::before{content:'✓';color:#90caf9;font-weight:800;flex-shrink:0}
+  .about-text .lead{margin-bottom:1.5rem}
+
+  .quote-strip{background:var(--steel);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#90caf9;font-size:.9rem;font-weight:600}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--blue);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #bbdefb;border-radius:5px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--blue)}
+  form textarea{height:120px;resize:vertical}
+  .submit{background:var(--blue);color:#fff;border:none;width:100%;padding:1rem;border-radius:5px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-blue)}
+
+  footer{background:var(--steel);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#90caf9;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Local Plumber <span>LLC</span></div>
+  <a href="tel:localplumberllc" class="nav-phone">📞 Call Now</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Simpsonville, South Carolina</div>
+  <div class="hero-inner">
+    <h1>Your Local Plumber.<br><em>Licensed & Reliable.</em></h1>
+    <p>Local Plumber LLC serves Simpsonville and the greater Greenville County area with honest, professional plumbing. From leaky faucets to full remodels — we get it fixed right the first time.</p>
+    <div class="btns">
+      <a href="tel:localplumberllc" class="btn btn-blue">📞 Call for a Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="emergency-strip">
+  🚨 Plumbing emergency? Call us — available for urgent callouts: <a href="mailto:localplumberllc@gmail.com">localplumberllc@gmail.com</a>
+</div>
+
+<section id="services">
+  <p class="tag">What We Do</p>
+  <h2>Full Plumbing Services for<br>Simpsonville & Greenville County</h2>
+  <p class="lead">Whether it's a small repair or a full installation, Local Plumber LLC handles residential and light commercial plumbing across the Upstate SC area.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🚰</div>
+      <h3>Repairs & Leak Fixes</h3>
+      <p>Leaky faucets, burst pipes, running toilets, pipe repairs and water pressure issues. Fast diagnosis and lasting repairs.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌀</div>
+      <h3>Drain Cleaning</h3>
+      <p>Clogged drains, slow sinks, backed-up sewer lines. Professional clearing and camera inspections available.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔥</div>
+      <h3>Water Heater Service</h3>
+      <p>Water heater repairs, replacements and new installs. Tank and tankless systems — we do it all.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <h3>Bathroom & Kitchen Plumbing</h3>
+      <p>Full bathroom and kitchen plumbing for remodels and new installs. Fixtures, supply lines, rough-in and finish work.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>New Construction</h3>
+      <p>Rough-in and finish plumbing for new builds. Working with builders and contractors throughout Greenville County.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔎</div>
+      <h3>Inspections & Maintenance</h3>
+      <p>Pre-purchase plumbing inspections, routine maintenance and annual check-ups to keep your system in top shape.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div class="profile-card">
+      <div class="avatar">🔧</div>
+      <div class="profile-name">Local Plumber LLC</div>
+      <div class="profile-role">Licensed SC Plumber</div>
+      <ul class="cred-list">
+        <li>SC Licensed Plumbing Contractor</li>
+        <li>Fully insured &amp; bonded</li>
+        <li>Upstate SC local</li>
+        <li>Residential &amp; commercial</li>
+        <li>Honest, upfront pricing</li>
+      </ul>
+    </div>
+    <div class="about-text">
+      <p class="tag">About Us</p>
+      <h2>Simpsonville's Trusted<br>Local Plumbing Team</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Local Plumber LLC has been keeping homes and businesses running smoothly across Simpsonville and Greenville County. When you call us, you get a licensed professional who shows up on time, gives you a fair price, and does the job right.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">No oversized crews. No hidden fees. Just honest local plumbing from a team that stands behind its work.</p>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Quick response, fair price and fixed our burst pipe same day. These guys are the real deal — the kind of plumber you keep on speed dial."</blockquote>
+  <cite>— Happy Customer, Simpsonville SC</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Call or Send a Message</h2>
+      <p class="lead" style="margin-bottom:2rem">For a fast, honest quote — call us or drop a message below. We serve Simpsonville, Mauldin, Greenville and surrounding Upstate SC communities.</p>
+      <p>📧 <a href="mailto:localplumberllc@gmail.com">localplumberllc@gmail.com</a></p>
+      <p>📍 Simpsonville, SC 29681</p>
+      <p>🌍 Serving Greenville County &amp; Upstate SC</p>
+      <p>⚡ Emergency callouts available</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="text" placeholder="Type of Job (e.g. 'Leaking pipe', 'Water heater')">
+      <textarea placeholder="Tell us about the issue — as much detail as you can..."></textarea>
+      <button type="submit" class="submit">Send Message →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Local Plumber LLC | Simpsonville, SC 29681 | localplumberllc@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

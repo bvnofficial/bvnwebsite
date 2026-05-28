@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bun Donuts — Fresh Donuts Every Morning | Bonham, TX</title>
+<meta name="description" content="Bun Donuts in Bonham, TX — freshly made donuts and pastries every morning. Open 5am daily.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--pink:#e8447a;--dark-pink:#c4305f;--yellow:#ffd166;--cream:#fff9f0;--brown:#3d1a0a;--text:#2d1a0a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--brown);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.4rem;font-weight:900;letter-spacing:1px}
+  .logo span{color:var(--yellow)}
+  nav ul{list-style:none;display:flex;gap:2rem}
+  nav ul a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;transition:color .2s}
+  nav ul a:hover{color:var(--yellow)}
+  @media(max-width:600px){nav ul{display:none}}
+
+  .hero{background:var(--pink);color:#fff;text-align:center;padding:5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::before{content:'🍩';font-size:14rem;position:absolute;left:-3rem;top:-2rem;opacity:.08;line-height:1;pointer-events:none}
+  .hero::after{content:'☕';font-size:10rem;position:absolute;right:-1rem;bottom:-1rem;opacity:.08;line-height:1;pointer-events:none}
+  .badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:var(--yellow);padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.1;margin-bottom:1rem;font-weight:900}
+  .hero h1 em{color:var(--yellow);font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.92;max-width:480px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:50px;font-size:.95rem;font-weight:800;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-yellow{background:var(--yellow);color:var(--brown)}
+  .btn-yellow:hover{background:#ffe999;transform:scale(1.03)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5)}
+  .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
+
+  .hours-strip{background:var(--brown);color:#fff;text-align:center;padding:1rem 2rem;font-size:.9rem;letter-spacing:.5px}
+  .hours-strip strong{color:var(--yellow)}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--pink);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--brown);margin-bottom:1rem;line-height:1.25;font-weight:900}
+  .lead{font-size:1.05rem;color:#6b3a2a;line-height:1.75;max-width:600px}
+
+  .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .menu-card{background:#fff;border-radius:12px;padding:2rem 1.5rem;text-align:center;box-shadow:0 4px 20px rgba(232,68,122,.1);transition:transform .2s,box-shadow .2s;border-bottom:4px solid var(--pink)}
+  .menu-card:hover{transform:translateY(-5px);box-shadow:0 12px 35px rgba(232,68,122,.2)}
+  .menu-card .icon{font-size:2.5rem;margin-bottom:1rem}
+  .menu-card h3{font-size:1.05rem;color:var(--brown);font-weight:800;margin-bottom:.4rem}
+  .menu-card p{font-size:.85rem;color:#888;line-height:1.5}
+
+  .about-strip{background:var(--yellow);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .fun-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .fun-stat{background:#fff;border-radius:10px;padding:1.5rem;text-align:center}
+  .fun-stat .num{font-size:2.8rem;font-weight:900;color:var(--pink);line-height:1}
+  .fun-stat .lbl{font-size:.78rem;color:var(--brown);letter-spacing:1px;text-transform:uppercase;margin-top:.4rem;font-weight:700}
+
+  .quote-strip{background:var(--pink);color:#fff;text-align:center;padding:3.5rem 2rem}
+  .quote-strip blockquote{font-size:1.3rem;font-style:italic;max-width:600px;margin:0 auto .75rem;line-height:1.6}
+  .quote-strip cite{color:var(--yellow);font-size:.9rem;font-weight:600}
+
+  .contact-section{background:#fff;padding:4rem 2rem}
+  .contact-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--pink);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:2px solid #ffe0eb;border-radius:8px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;background:var(--cream);transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--pink)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--pink);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;transition:background .2s;letter-spacing:.5px}
+  .submit:hover{background:var(--dark-pink)}
+
+  footer{background:var(--brown);color:rgba(255,255,255,.5);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--yellow);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">🍩 Bun <span>Donuts</span></div>
+  <ul>
+    <li><a href="#menu">Our Donuts</a></li>
+    <li><a href="#about">About Us</a></li>
+    <li><a href="#contact">Find Us</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Bonham, Texas</div>
+  <h1>Donuts Worth<br><em>Waking Up For.</em></h1>
+  <p>Freshly made every morning in Bonham, TX. Bun Donuts — where the day starts right, one glazed ring at a time.</p>
+  <div class="btns">
+    <a href="#menu" class="btn btn-yellow">See Our Menu</a>
+    <a href="#contact" class="btn btn-ghost">Find Us</a>
+  </div>
+</div>
+
+<div class="hours-strip">
+  🕔 Open Daily: <strong>5:00 AM – 12:00 PM</strong> &nbsp;|&nbsp; 📍 300 W Sam Rayburn Dr, Bonham, TX &nbsp;|&nbsp; 📞 <strong>(903) 583-1178</strong>
+</div>
+
+<section id="menu">
+  <p class="tag">Fresh Daily</p>
+  <h2>Made Every Morning,<br>Gone by Noon</h2>
+  <p class="lead">We bake in small batches so everything stays fresh. Arrive early for the best picks — when they're gone, they're gone.</p>
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div class="icon">🍩</div>
+      <h3>Classic Glazed</h3>
+      <p>The one that started it all. Light, airy, perfectly glazed — the gold standard of donuts.</p>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🍫</div>
+      <h3>Chocolate Frosted</h3>
+      <p>Rich chocolate icing on a fresh-baked ring. Simple, indulgent, always a crowd favourite.</p>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🍓</div>
+      <h3>Filled & Fancy</h3>
+      <p>Cream-filled, jam-packed, sprinkle-topped — our rotating specials change daily. Always a surprise.</p>
+    </div>
+    <div class="menu-card">
+      <div class="icon">☕</div>
+      <h3>Coffee & Drinks</h3>
+      <p>Fresh-brewed coffee, sweet tea, and cold drinks to pair perfectly with your morning donut run.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-strip">
+  <div class="about-inner">
+    <div>
+      <p class="tag" style="color:var(--brown)">Our Story</p>
+      <h2 style="color:var(--brown)">Bonham's Early Morning Ritual</h2>
+      <p style="font-size:1.05rem;color:var(--brown);line-height:1.75;margin-bottom:1.5rem">Bun Donuts has been getting Bonham's mornings started right, one fresh batch at a time. We open before the sun is fully up because that's when donuts matter most — before the workday, on the school run, or just because.</p>
+      <p style="font-size:.95rem;color:var(--brown);opacity:.8;line-height:1.7">Local, independent, and proud of it. Stop in and say hello — we'll have your regular ready.</p>
+    </div>
+    <div class="fun-stats">
+      <div class="fun-stat"><div class="num">5AM</div><div class="lbl">Opens Daily</div></div>
+      <div class="fun-stat"><div class="num">🍩</div><div class="lbl">Fresh Batches</div></div>
+      <div class="fun-stat"><div class="num">TX</div><div class="lbl">Bonham Proud</div></div>
+      <div class="fun-stat"><div class="num">☕</div><div class="lbl">Coffee Too</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"The best donuts in Bonham, full stop. My kids would riot if I drove past without stopping. Hot, fresh, and always worth the early wake-up."</blockquote>
+  <cite>— Local Customer, Bonham TX</cite>
+</div>
+
+<section id="contact" style="background:#fff;max-width:100%;padding:4rem 2rem;">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="contact-inner">
+      <div class="contact-info">
+        <p class="tag">Come Find Us</p>
+        <h2>We're Easy to Find</h2>
+        <p class="lead" style="margin-bottom:2rem">Pop in any morning between 5am and noon — no ordering needed. Just show up and pick your favourites.</p>
+        <p>📍 300 W Sam Rayburn Dr, Bonham, TX 75418</p>
+        <p>📞 <a href="tel:9035831178">(903) 583-1178</a></p>
+        <p>📧 <a href="mailto:hellothefuture2023@gmail.com">hellothefuture2023@gmail.com</a></p>
+        <p>🕐 Mon–Sun: 5:00 AM – 12:00 PM</p>
+        <p>🏪 <strong>Dine in or take out — walk-ins welcome</strong></p>
+      </div>
+      <form>
+        <input type="text" placeholder="Your Name">
+        <input type="email" placeholder="Email Address">
+        <input type="tel" placeholder="Phone Number">
+        <input type="text" placeholder="Enquiry (bulk orders, catering, events)">
+        <textarea placeholder="Tell us more — large orders, school events, office donuts?"></textarea>
+        <button type="submit" class="submit">Send Message 🍩</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Bun Donuts | 300 W Sam Rayburn Dr, Bonham, TX | (903) 583-1178</p>
+  <br>
+  <p>Website crafted by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

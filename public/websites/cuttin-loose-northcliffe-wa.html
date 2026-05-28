@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuttin' Loose — Hair Salon | Northcliffe, WA | Kerry Marshall</title>
+<meta name="description" content="Cuttin' Loose hair salon in Northcliffe, WA — professional cuts, colours, styling and treatments by Kerry Marshall. Book your appointment today.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--rose:#c2185b;--light-rose:#e91e8c;--blush:#fce4ec;--dark:#1a1a2e;--cream:#fffaf8;--text:#2d2d2d}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:800;font-style:italic}
+  .logo span{color:var(--light-rose)}
+  .nav-book{background:var(--rose);color:#fff;padding:.5rem 1.2rem;border-radius:50px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-book:hover{background:var(--light-rose)}
+
+  .hero{background:linear-gradient(160deg,var(--dark) 0%,var(--rose) 100%);color:#fff;padding:5.5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'✂️';font-size:14rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.07;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fce4ec;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.1;margin-bottom:1rem;font-weight:900;font-style:italic}
+  .hero h1 em{color:#fce4ec;font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;max-width:480px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-white{background:#fff;color:var(--rose)}
+  .btn-white:hover{background:var(--blush)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.45)}
+  .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
+
+  .hours-bar{background:var(--rose);color:#fff;text-align:center;padding:1rem 2rem;font-size:.9rem;font-weight:600}
+  .hours-bar strong{font-size:1rem}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.5rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .service-card{background:#fff;border-radius:12px;padding:2rem;text-align:center;box-shadow:0 3px 20px rgba(194,24,91,.1);transition:transform .2s,box-shadow .2s;border-top:4px solid var(--rose)}
+  .service-card:hover{transform:translateY(-5px);box-shadow:0 12px 35px rgba(194,24,91,.2)}
+  .service-card .icon{font-size:2.5rem;margin-bottom:1rem}
+  .service-card h3{font-size:1rem;color:var(--dark);font-weight:800;margin-bottom:.4rem}
+  .service-card p{font-size:.86rem;color:#777;line-height:1.6}
+
+  .about-section{background:var(--blush);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .stylist-card{background:var(--rose);border-radius:14px;padding:2.5rem;color:#fff;text-align:center}
+  .stylist-avatar{width:100px;height:100px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 1rem;border:3px solid rgba(255,255,255,.3)}
+  .stylist-name{font-size:1.5rem;font-weight:800;margin-bottom:.3rem}
+  .stylist-title{font-size:.85rem;opacity:.8;letter-spacing:1px}
+  .stylist-list{list-style:none;margin-top:1.5rem;text-align:left}
+  .stylist-list li{padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.15);font-size:.9rem;opacity:.9}
+  .stylist-list li::before{content:'✓ ';font-weight:800}
+
+  .quote-strip{background:var(--dark);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.3rem;font-style:italic;max-width:620px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:var(--light-rose);font-size:.9rem;font-weight:600}
+
+  .booking-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .booking-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.booking-inner{grid-template-columns:1fr}}
+  .booking-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .booking-info a{color:var(--rose);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #f0c0d0;border-radius:8px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;background:#fff;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--rose)}
+  form textarea{height:100px;resize:vertical}
+  .submit{background:var(--rose);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--light-rose)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--light-rose);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Cuttin' <span>Loose</span></div>
+  <a href="#booking" class="nav-book">Book Now</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Northcliffe, Western Australia</div>
+  <h1>Hair That Makes<br><em>You Feel Amazing.</em></h1>
+  <p>Northcliffe's local hair salon — cuts, colours, treatments and styling by Kerry Marshall. Walk away looking and feeling your best.</p>
+  <div class="btns">
+    <a href="#booking" class="btn btn-white">Book an Appointment</a>
+    <a href="#services" class="btn btn-ghost">Our Services</a>
+  </div>
+</div>
+
+<div class="hours-bar">
+  ✂️ Appointments available — call <strong>0466 882 336</strong> to book your slot
+</div>
+
+<section id="services">
+  <p class="tag">Services</p>
+  <h2>Everything Your Hair Needs</h2>
+  <p class="lead">From a quick trim to a full colour transformation — Cuttin' Loose delivers professional salon results right here in Northcliffe.</p>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="icon">✂️</div>
+      <h3>Cuts & Styling</h3>
+      <p>Precision cuts for all hair types and lengths. Women's, men's and children's cuts — finished with a professional style.</p>
+    </div>
+    <div class="service-card">
+      <div class="icon">🎨</div>
+      <h3>Colour & Highlights</h3>
+      <p>Full colour, highlights, balayage, toning and colour corrections. Bring your inspo picture — Kerry will make it happen.</p>
+    </div>
+    <div class="service-card">
+      <div class="icon">💆</div>
+      <h3>Treatments</h3>
+      <p>Deep conditioning, keratin smoothing, scalp treatments — healthy hair from root to tip, every visit.</p>
+    </div>
+    <div class="service-card">
+      <div class="icon">🌸</div>
+      <h3>Special Occasions</h3>
+      <p>Bridal hair, formal up-dos and special event styling. Look incredible for your big day with a professional finish.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-section">
+  <div class="about-inner">
+    <div class="stylist-card">
+      <div class="stylist-avatar">💇</div>
+      <div class="stylist-name">Kerry Marshall</div>
+      <div class="stylist-title">Hair Stylist & Salon Owner</div>
+      <ul class="stylist-list">
+        <li>Fully qualified hair stylist</li>
+        <li>Northcliffe local — community proud</li>
+        <li>Colour specialist</li>
+        <li>Bridal & occasion styling</li>
+        <li>All hair types & textures welcome</li>
+      </ul>
+    </div>
+    <div>
+      <p class="tag">Meet Kerry</p>
+      <h2>Your Local Stylist Who Actually Knows Your Hair</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Kerry Marshall has been cutting and styling hair in the Northcliffe community for years. There's something special about having a local stylist who knows your name, your hair history, and what works for you.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.75">Forget driving to the city for a decent cut. Cuttin' Loose brings professional salon quality to your doorstep — with a friendly face and a personal touch you won't find anywhere else.</p>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Kerry has been cutting my hair for years and she never misses. Best colour I've ever had and she always gets the cut exactly right. Wouldn't go anywhere else."</blockquote>
+  <cite>— Happy Client, Northcliffe WA</cite>
+</div>
+
+<div class="booking-section">
+  <div class="booking-inner">
+    <div class="booking-info">
+      <p class="tag">Book Your Appointment</p>
+      <h2>Ready for a Fresh New Look?</h2>
+      <p class="lead" style="margin-bottom:2rem">Get in touch with Kerry to book your appointment. Slots fill up — so the earlier you call, the better!</p>
+      <p>📞 <a href="tel:0466882336">0466 882 336</a></p>
+      <p>📧 <a href="mailto:kezza87@hotmail.com.au">kezza87@hotmail.com.au</a></p>
+      <p>📍 Northcliffe, WA 6262</p>
+      <p>📮 PO Box 428, Northcliffe WA 6262</p>
+      <p>⏰ By appointment — call to check availability</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="tel" placeholder="Phone Number" required>
+      <input type="email" placeholder="Email Address">
+      <select>
+        <option value="">Select Service</option>
+        <option>Cut & Style</option>
+        <option>Colour / Highlights</option>
+        <option>Treatment</option>
+        <option>Bridal / Special Occasion</option>
+        <option>Other — I'll explain below</option>
+      </select>
+      <textarea placeholder="Anything else Kerry should know? (e.g. 'Going blonde', 'Big chop', 'Wedding on the 15th')"></textarea>
+      <button type="submit" class="submit">Request Appointment ✂️</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Cuttin' Loose | Kerry Marshall | Northcliffe, WA 6262 | 0466 882 336</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

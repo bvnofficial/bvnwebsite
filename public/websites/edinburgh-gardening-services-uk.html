@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edinburgh Gardening Services — Edinburgh, Scotland | Garden Maintenance</title>
+<meta name="description" content="Edinburgh Gardening Services — professional garden maintenance, lawn care, hedge trimming and garden design across Edinburgh and the Lothians. Free quotes.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--navy:#1a2a4a;--blue:#2c5282;--tartan:#8b1a1a;--sage:#f0f7f0;--cream:#fafef7;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--navy);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.25rem;font-weight:800;letter-spacing:.5px}
+  .logo span{color:#90cdf4}
+  .nav-cta{background:var(--tartan);color:#fff;padding:.5rem 1.3rem;border-radius:4px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-cta:hover{background:#6b1010}
+
+  .hero{background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);color:#fff;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::after{content:'🏴󠁧󠁢󠁳󠁣󠁴󠁿';font-size:12rem;position:absolute;right:-1rem;bottom:-2rem;opacity:.07;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#90cdf4;padding:.4rem 1.2rem;border-radius:4px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:640px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#90cdf4;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:4px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-tartan{background:var(--tartan);color:#fff}
+  .btn-tartan:hover{background:#6b1010}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .trust-bar{background:var(--tartan);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.83rem}
+  .trust-bar span{font-weight:700}
+  .trust-bar span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--navy);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:6px;padding:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);border-top:4px solid var(--blue);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:.75rem}
+  .card h3{font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .about-band{background:var(--sage);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .edinburgh-card{background:var(--navy);color:#fff;border-radius:10px;padding:2.5rem}
+  .edinburgh-card .ec-head{font-size:1.1rem;font-weight:800;color:#90cdf4;margin-bottom:1.5rem}
+  .edinburgh-card ul{list-style:none}
+  .edinburgh-card li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem}
+  .edinburgh-card li::before{content:'✓';color:#90cdf4;font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--navy);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.2rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#90cdf4;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--blue);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #cdd8ea;border-radius:4px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--blue)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--blue);color:#fff;border:none;width:100%;padding:1rem;border-radius:4px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--navy)}
+
+  footer{background:var(--navy);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#90cdf4;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Edinburgh <span>Gardening</span></div>
+  <a href="#contact" class="nav-cta">Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Edinburgh, Scotland</div>
+  <div class="hero-inner">
+    <h1>Edinburgh Gardens<br><em>At Their Best.</em></h1>
+    <p>Edinburgh Gardening Services provides professional garden maintenance and care across Edinburgh and the Lothians. From regular lawn care to full seasonal overhauls — keeping Edinburgh's gardens looking great all year round.</p>
+    <div class="btns">
+      <a href="#contact" class="btn btn-tartan">Get a Free Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <span>Edinburgh Based</span>
+  <span>Fully Insured</span>
+  <span>Regular Contracts</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Garden Services</p>
+  <h2>Professional Garden Care<br>Across Edinburgh & the Lothians</h2>
+  <p class="lead">Whether it's a weekly garden visit or a one-off seasonal overhaul, Edinburgh Gardening Services brings the same level of expertise and care to every garden we tend.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Lawn Mowing & Edging</h3>
+      <p>Regular lawn care including mowing, scarifying and edging — keeping Edinburgh lawns in top condition through every season.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✂️</div>
+      <h3>Hedge & Shrub Trimming</h3>
+      <p>Precise trimming for all hedges and shrubs, from box hedging to laurel. All waste removed and disposed of responsibly.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍂</div>
+      <h3>Seasonal Garden Care</h3>
+      <p>Spring preparation, autumn leaf clearance and winter tidy-ups. Your garden ready for every season the Scottish weather throws at it.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌱</div>
+      <h3>Planting & Border Care</h3>
+      <p>Seasonal planting, border maintenance and weeding. Well-maintained borders that give year-round interest.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏡</div>
+      <h3>Garden Clearances</h3>
+      <p>Full garden clearances for neglected or overgrown gardens. Single visit to completely transform an unmanageable space.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <h3>Regular Maintenance Contracts</h3>
+      <p>Fortnightly or monthly scheduled visits keeping your garden maintained throughout the year. Reliable, consistent service.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About Us</p>
+      <h2>Edinburgh's Trusted<br>Garden Maintenance Team</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Edinburgh Gardening Services has been caring for Edinburgh gardens for years. We understand the Scottish climate and what it means for your garden — and we bring that knowledge to every job we take on.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">From the New Town to the suburbs — whether you have a small city garden or a sprawling Lothian property, we have the skills and experience to keep it looking its best.</p>
+    </div>
+    <div class="edinburgh-card">
+      <div class="ec-head">Why Edinburgh Trusts Us</div>
+      <ul>
+        <li>Fully insured for all garden work</li>
+        <li>Edinburgh born and based team</li>
+        <li>All waste removed and disposed of</li>
+        <li>Flexible scheduling — weekly to monthly</li>
+        <li>Free, no-obligation quotes</li>
+        <li>Serving Edinburgh &amp; the Lothians</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Our Edinburgh garden was a complete mess — Edinburgh Gardening Services transformed it in a day and now maintain it regularly. Excellent work, always reliable."</blockquote>
+  <cite>— Happy Customer, Edinburgh</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Free Quote — No Obligation</h2>
+      <p class="lead" style="margin-bottom:2rem">Tell us about your garden and what you need — we'll get back to you with a free, straightforward quote. Serving all of Edinburgh and the surrounding Lothians.</p>
+      <p>📧 <a href="mailto:edinburghgardeningservices@gmail.com">edinburghgardeningservices@gmail.com</a></p>
+      <p>📍 Edinburgh, Scotland</p>
+      <p>🌍 Edinburgh &amp; East / West / Midlothian</p>
+      <p>✅ Insured — free quotes always</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number">
+      <select>
+        <option value="">Service Required</option>
+        <option>Regular Lawn Maintenance</option>
+        <option>Hedge Trimming</option>
+        <option>Seasonal Tidy-Up</option>
+        <option>Garden Clearance</option>
+        <option>Planting / Borders</option>
+        <option>Full Maintenance Contract</option>
+        <option>Other</option>
+      </select>
+      <textarea placeholder="Tell us about your garden — size, condition, frequency required, your postcode..."></textarea>
+      <button type="submit" class="submit">Request Free Quote →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Edinburgh Gardening Services | Edinburgh, Scotland | edinburghgardeningservices@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

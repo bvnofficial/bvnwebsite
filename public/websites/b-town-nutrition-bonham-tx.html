@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Town Nutrition — Bonham, TX | Supplements & Wellness</title>
+<meta name="description" content="B-Town Nutrition in Bonham, TX — your local source for premium supplements, protein, energy drinks and wellness products. Shop local and feel great.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--purple:#6a1b9a;--dark-purple:#4a0072;--lime:#c6e600;--dark:#1a1a2e;--cream:#fdfbff;--light:#f3e5ff;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--cream)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:900;letter-spacing:1px}
+  .logo span{color:var(--lime)}
+  .nav-cta{background:var(--purple);color:#fff;padding:.5rem 1.3rem;border-radius:50px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-cta:hover{background:var(--dark-purple)}
+
+  .hero{background:linear-gradient(160deg,var(--dark) 0%,var(--dark-purple) 60%,var(--purple) 100%);color:#fff;padding:5.5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'💪';font-size:14rem;position:absolute;left:-2rem;top:-2rem;opacity:.06;line-height:1}
+  .hero::after{content:'⚡';font-size:10rem;position:absolute;right:-1rem;bottom:-1rem;opacity:.06;line-height:1}
+  .badge{display:inline-block;background:rgba(198,230,0,.15);border:1px solid rgba(198,230,0,.35);color:var(--lime);padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:900}
+  .hero h1 em{color:var(--lime);font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;max-width:500px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-lime{background:var(--lime);color:var(--dark)}
+  .btn-lime:hover{background:#b5d200}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .strip{background:var(--purple);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.83rem}
+  .strip span{font-weight:700}
+  .strip span::before{content:'⚡ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--purple);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:12px;padding:2rem;text-align:center;box-shadow:0 3px 20px rgba(106,27,154,.1);border-top:4px solid var(--purple);transition:transform .2s}
+  .card:hover{transform:translateY(-5px)}
+  .card-icon{font-size:2.5rem;margin-bottom:.75rem}
+  .card h3{font-size:1.05rem;color:var(--dark);font-weight:800;margin-bottom:.4rem}
+  .card p{font-size:.86rem;color:#777;line-height:1.65}
+
+  .about-band{background:var(--light);padding:4rem 2rem}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.about-inner{grid-template-columns:1fr}}
+  .brand-card{background:var(--dark);color:#fff;border-radius:14px;padding:2.5rem;text-align:center}
+  .brand-logo{font-size:4.5rem;margin-bottom:1rem}
+  .brand-name{font-size:1.4rem;font-weight:900;color:var(--lime)}
+  .brand-sub{font-size:.85rem;opacity:.65;margin-top:.3rem}
+  .brand-list{list-style:none;margin-top:1.5rem;text-align:left}
+  .brand-list li{padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;opacity:.9}
+  .brand-list li::before{content:'⚡ ';color:var(--lime)}
+
+  .quote-strip{background:var(--dark-purple);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:var(--lime);font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--purple);text-decoration:none;font-weight:600}
+  form input,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #e1bee7;border-radius:8px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--purple)}
+  form textarea{height:100px;resize:vertical}
+  .submit{background:var(--purple);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-purple)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:var(--lime);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">B-Town <span>Nutrition</span></div>
+  <a href="#contact" class="nav-cta">Find Us</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Bonham, Texas</div>
+  <h1>Fuel Your Goals.<br><em>Right Here in Bonham.</em></h1>
+  <p>B-Town Nutrition is Bonham's local supplement and wellness shop. Premium protein, energy, pre-workout and wellness products — plus personalised guidance to help you reach your health goals.</p>
+  <div class="btns">
+    <a href="#products" class="btn btn-lime">See Our Products</a>
+    <a href="#contact" class="btn btn-ghost">Find Us</a>
+  </div>
+</div>
+
+<div class="strip">
+  <span>Premium Supplements</span>
+  <span>Personalised Guidance</span>
+  <span>Bonham Local</span>
+  <span>Walk-Ins Welcome</span>
+</div>
+
+<section id="products">
+  <p class="tag">What We Carry</p>
+  <h2>Everything You Need<br>to Hit Your Goals</h2>
+  <p class="lead">Whether you're just starting your fitness journey or you're a seasoned athlete — B-Town Nutrition has the products and knowledge to support your goals.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🥤</div>
+      <h3>Protein Supplements</h3>
+      <p>Whey, casein, plant-based and mass gainers. Top brands and best-value options for every budget and goal.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Pre-Workout & Energy</h3>
+      <p>Pre-workout powders, energy drinks and focus supplements. Fuel your training without the crash.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Vitamins &amp; Wellness</h3>
+      <p>Multivitamins, omega-3, greens, collagen and general wellness supplements. Health from the inside out.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <h3>Weight Management</h3>
+      <p>Fat burners, meal replacements, appetite support and metabolism boosters. Science-backed products that work.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🦴</div>
+      <h3>Recovery &amp; Performance</h3>
+      <p>BCAAs, creatine, glutamine, sleep and recovery supplements. Recover better, perform harder.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <h3>Free Product Guidance</h3>
+      <p>Not sure what to take? We'll walk you through the options that make sense for your specific body and goals. No upsells — just honest advice.</p>
+    </div>
+  </div>
+</section>
+
+<div class="about-band">
+  <div class="about-inner">
+    <div>
+      <p class="tag">About B-Town</p>
+      <h2>Bonham's Own<br>Nutrition &amp; Wellness Store</h2>
+      <p class="lead" style="margin-bottom:1.5rem">B-Town Nutrition was created to bring premium supplement options to Bonham without the drive to the city. We know our products, we know our customers, and we care about getting you the right things for your goals — not just making a sale.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">Come in, ask us anything, and walk out with exactly what you need. That's the B-Town way.</p>
+    </div>
+    <div class="brand-card">
+      <div class="brand-logo">💪</div>
+      <div class="brand-name">B-Town Nutrition</div>
+      <div class="brand-sub">Bonham, TX — Your Local Wellness Store</div>
+      <ul class="brand-list">
+        <li>Premium supplement brands</li>
+        <li>Personalised product guidance</li>
+        <li>Energy drinks &amp; ready-to-drink</li>
+        <li>Weight management products</li>
+        <li>Walk-ins welcome — Bonham, TX</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"B-Town Nutrition is the only place I shop for supplements now. They actually know what they're talking about and helped me find the right stack for my goals. Love supporting local."</blockquote>
+  <cite>— Happy Customer, Bonham TX</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Find Us</p>
+      <h2>Come On In</h2>
+      <p class="lead" style="margin-bottom:1.5rem">Walk in during business hours or reach out on Instagram for availability, product questions and orders. Bonham's supplement store — right here for you.</p>
+      <p>📍 Bonham, TX 75418</p>
+      <p>📸 Follow us on Instagram: @btownnutrition</p>
+      <p>🌍 Serving Bonham &amp; Fannin County, TX</p>
+      <p>🛒 Walk-ins welcome</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name">
+      <input type="email" placeholder="Email Address">
+      <input type="tel" placeholder="Phone Number">
+      <input type="text" placeholder="Product Question or Goal (e.g. 'Lose weight', 'Build muscle')">
+      <textarea placeholder="Tell us what you're looking for — we'll help you find the right products..."></textarea>
+      <button type="submit" class="submit">Send Message 💪</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 B-Town Nutrition | Bonham, TX 75418 | @btownnutrition on Instagram</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

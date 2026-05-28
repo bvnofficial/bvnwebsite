@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GardenMaintain — Garden Maintenance Services | Oxford, UK</title>
+<meta name="description" content="GardenMaintain in Oxford — professional garden maintenance, lawn care, hedge trimming and tidy-ups. Free quotes, reliable service across Oxford and Oxfordshire.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--green:#388e3c;--dark-green:#1b5e20;--lime:#f9fbe7;--warm:#fff8f0;--dark:#1a2a1a;--text:#2a2a2a}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:var(--warm)}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:1px}
+  .logo span{color:#a5d6a7}
+  .nav-cta{background:var(--green);color:#fff;padding:.5rem 1.3rem;border-radius:50px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-cta:hover{background:var(--dark-green)}
+
+  .hero{background:linear-gradient(160deg,var(--dark) 0%,var(--dark-green) 100%);color:#fff;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::before{content:'🌿';font-size:15rem;position:absolute;right:-2rem;top:-2rem;opacity:.06;line-height:1}
+  .hero::after{content:'✂️';font-size:8rem;position:absolute;left:-1rem;bottom:-1rem;opacity:.05;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#a5d6a7;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-inner{max-width:650px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#a5d6a7;font-style:normal}
+  .hero p{font-size:1.05rem;opacity:.9;line-height:1.7;margin-bottom:2.5rem}
+  .btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn{padding:.9rem 2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-green{background:var(--green);color:#fff}
+  .btn-green:hover{background:var(--dark-green)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:#fff}
+
+  .trust-bar{background:var(--green);color:#fff;padding:.85rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;font-size:.83rem}
+  .trust-bar span{font-weight:700}
+  .trust-bar span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 16px rgba(56,142,60,.08);border-left:5px solid var(--green);transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card-icon{font-size:2rem;margin-bottom:.75rem}
+  .card h3{font-size:1rem;color:var(--dark);font-weight:700;margin-bottom:.4rem}
+  .card p{font-size:.88rem;color:#666;line-height:1.65}
+
+  .season-band{background:var(--lime);padding:4rem 2rem}
+  .season-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.season-inner{grid-template-columns:1fr}}
+  .season-card{background:var(--dark-green);color:#fff;border-radius:10px;padding:2.5rem}
+  .season-card .sc-head{font-size:1.2rem;font-weight:800;color:#a5d6a7;margin-bottom:.3rem}
+  .season-card .sc-sub{font-size:.85rem;opacity:.7;margin-bottom:1.5rem}
+  .season-card ul{list-style:none}
+  .season-card li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;display:flex;gap:.75rem}
+  .season-card li::before{content:'✓';color:#a5d6a7;font-weight:800;flex-shrink:0}
+
+  .quote-strip{background:var(--dark);color:#fff;text-align:center;padding:3.5rem 2rem}
+  blockquote{font-size:1.25rem;font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65;opacity:.95}
+  cite{color:#a5d6a7;font-size:.9rem;font-weight:700}
+
+  .contact-section{background:#fff;padding:4rem 2rem;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--green);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #c8e6c9;border-radius:6px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--green)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--green);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-green)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#a5d6a7;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Garden<span>Maintain</span></div>
+  <a href="#contact" class="nav-cta">Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">📍 Oxford, Oxfordshire, UK</div>
+  <div class="hero-inner">
+    <h1>The Garden You Want.<br><em>Without the Hard Work.</em></h1>
+    <p>GardenMaintain provides reliable, professional garden maintenance across Oxford and Oxfordshire. Lawns, hedges, borders, seasonal tidy-ups — handled regularly so your garden always looks its best.</p>
+    <div class="btns">
+      <a href="#contact" class="btn btn-green">Get a Free Quote</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <span>Oxford Based</span>
+  <span>Fully Insured</span>
+  <span>Regular Contracts</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">Garden Services</p>
+  <h2>Everything Your Garden<br>Needs, Done Properly</h2>
+  <p class="lead">From weekly lawn mowing to full seasonal overhauls — GardenMaintain keeps Oxford gardens looking great all year round, without the hassle.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Lawn Mowing & Edging</h3>
+      <p>Regular mowing, edging and striping. Weekly or fortnightly schedules available — a smart, tidy lawn all season long.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✂️</div>
+      <h3>Hedge Trimming</h3>
+      <p>Precise hedge cutting for all species and sizes — box, laurel, privet and more. Clean shapes, tidy finish, waste removed.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌱</div>
+      <h3>Weeding & Border Care</h3>
+      <p>Hand weeding, border tidy-ups and mulching. Keep your beds looking clean and your plants thriving.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍂</div>
+      <h3>Seasonal Tidy-Ups</h3>
+      <p>Spring clean-ups, autumn leaf clearances and winter prep. Your garden sorted for each season without lifting a finger.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌳</div>
+      <h3>Pruning & Shrub Care</h3>
+      <p>Shrub pruning, rose cutting and overgrown plant taming. Proper pruning keeps your plants healthy and your garden shapely.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏡</div>
+      <h3>Garden Clearances</h3>
+      <p>Full garden clearances for overgrown or neglected spaces. We clear, tidy and dispose of all waste — a fresh start from scratch.</p>
+    </div>
+  </div>
+</section>
+
+<div class="season-band">
+  <div class="season-inner">
+    <div>
+      <p class="tag">About GardenMaintain</p>
+      <h2>Oxford's Reliable Garden<br>Maintenance Service</h2>
+      <p class="lead" style="margin-bottom:1.5rem">GardenMaintain has been keeping Oxford gardens looking their best for years. We work with homeowners, landlords and property managers across the city and county — delivering consistent, professional results every visit.</p>
+      <p style="font-size:.95rem;color:#666;line-height:1.7">Regular maintenance contract? One-off clear-up? Both — no problem. We fit around you.</p>
+    </div>
+    <div class="season-card">
+      <div class="sc-head">Why Choose GardenMaintain?</div>
+      <div class="sc-sub">Oxford's trusted garden team</div>
+      <ul>
+        <li>Fully insured for all garden work</li>
+        <li>Regular, reliable scheduled visits</li>
+        <li>All waste taken away included</li>
+        <li>Free, no-obligation quotes</li>
+        <li>Landlord & property manager accounts</li>
+        <li>Oxford &amp; all of Oxfordshire covered</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"GardenMaintain has looked after our garden for two years — always turns up, always does a thorough job and the lawn has never looked better. A real find."</blockquote>
+  <cite>— Regular Customer, Oxford</cite>
+</div>
+
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="tag">Get In Touch</p>
+      <h2>Free Quote — No Obligation</h2>
+      <p class="lead" style="margin-bottom:2rem">Tell us about your garden and what you need — we'll get back to you with a free, no-pressure quote. Same-day responses.</p>
+      <p>📧 <a href="mailto:gardenmaintain@yahoo.co.uk">gardenmaintain@yahoo.co.uk</a></p>
+      <p>📍 Oxford, Oxfordshire, UK</p>
+      <p>🌍 Serving Oxford, Abingdon, Witney &amp; surrounding areas</p>
+      <p>✅ Insured — free quotes always</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number">
+      <select>
+        <option value="">Service Required</option>
+        <option>Regular Lawn Mowing</option>
+        <option>Hedge Trimming</option>
+        <option>Garden Clearance</option>
+        <option>Seasonal Tidy-Up</option>
+        <option>Weeding / Border Care</option>
+        <option>Pruning</option>
+        <option>Full Maintenance Contract</option>
+        <option>Other / Not Sure</option>
+      </select>
+      <textarea placeholder="Tell us about your garden — size, what needs doing, how often you'd like visits..."></textarea>
+      <button type="submit" class="submit">Request Free Quote →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 GardenMaintain | Oxford, Oxfordshire, UK | gardenmaintain@yahoo.co.uk</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>

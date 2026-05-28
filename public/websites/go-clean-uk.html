@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Clean UK — Professional Cleaning Services | UK</title>
+<meta name="description" content="Go Clean UK — reliable domestic and commercial cleaning services across the UK. Deep cleans, regular cleans, end-of-tenancy and office cleaning. Free quote today.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--teal:#00796b;--dark-teal:#004d40;--mint:#e0f2f1;--sky:#f0fbfa;--dark:#1a1a2e;--text:#2d2d2d}
+  body{font-family:'Segoe UI',sans-serif;color:var(--text);background:#fff}
+
+  nav{background:var(--dark);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  .logo{color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:1px}
+  .logo span{color:#4dd0e1}
+  nav ul{list-style:none;display:flex;gap:2rem}
+  nav ul a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;transition:color .2s}
+  nav ul a:hover{color:#4dd0e1}
+  .nav-cta{background:var(--teal);color:#fff;padding:.5rem 1.3rem;border-radius:50px;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .2s}
+  .nav-cta:hover{background:var(--dark-teal)}
+  @media(max-width:600px){nav ul{display:none}}
+
+  .hero{background:linear-gradient(135deg,var(--dark) 0%,var(--dark-teal) 100%);color:#fff;padding:5.5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::after{content:'✨';font-size:14rem;position:absolute;right:-2rem;bottom:-3rem;opacity:.05;line-height:1}
+  .badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#80cbc4;padding:.4rem 1.2rem;border-radius:50px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.15;margin-bottom:1rem;font-weight:800}
+  .hero h1 em{color:#4dd0e1;font-style:normal}
+  .hero p{font-size:1.1rem;opacity:.9;max-width:500px;margin:0 auto 2.5rem;line-height:1.7}
+  .btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{padding:.9rem 2.2rem;border-radius:50px;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;cursor:pointer;border:none}
+  .btn-teal{background:var(--teal);color:#fff}
+  .btn-teal:hover{background:var(--dark-teal)}
+  .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+  .trust-bar{background:var(--teal);padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+  .trust-bar span{color:#fff;font-size:.82rem;font-weight:700;letter-spacing:.5px}
+  .trust-bar span::before{content:'✓ '}
+
+  section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+  .tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.6rem}
+  h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;line-height:1.25;font-weight:800}
+  .lead{font-size:1.05rem;color:#555;line-height:1.75;max-width:600px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem}
+  .card{background:var(--sky);border-radius:10px;padding:2rem;border-top:4px solid var(--teal);transition:transform .2s,box-shadow .2s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,121,107,.12)}
+  .card-icon{font-size:2.2rem;margin-bottom:1rem}
+  .card h3{font-size:1.05rem;color:var(--dark);margin-bottom:.5rem;font-weight:700}
+  .card p{font-size:.9rem;color:#666;line-height:1.65}
+
+  .why-band{background:var(--dark-teal);color:#fff;padding:4rem 2rem}
+  .why-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:680px){.why-inner{grid-template-columns:1fr}}
+  .why-band h2{color:#fff}
+  .why-band .tag{color:#80cbc4}
+  .why-list{list-style:none;margin-top:1.5rem}
+  .why-list li{padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.95rem;display:flex;gap:.8rem;align-items:flex-start}
+  .why-list li::before{content:'✓';color:#4dd0e1;font-weight:800;flex-shrink:0}
+  .clean-box{background:rgba(255,255,255,.07);border:1px solid rgba(77,208,225,.25);border-radius:12px;padding:2rem;text-align:center}
+  .clean-icon{font-size:4.5rem;margin-bottom:1rem}
+  .clean-title{font-size:1.25rem;font-weight:800;color:#4dd0e1;margin-bottom:.5rem}
+  .clean-sub{font-size:.85rem;opacity:.7;line-height:1.6}
+
+  .quote-strip{background:var(--mint);padding:3.5rem 2rem;text-align:center}
+  .quote-strip blockquote{font-size:1.25rem;color:var(--dark);font-style:italic;max-width:640px;margin:0 auto .75rem;line-height:1.65}
+  .quote-strip cite{color:var(--teal);font-size:.9rem;font-weight:700}
+
+  .contact-section{padding:4rem 2rem;background:#fff;max-width:100%}
+  .contact-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  @media(max-width:680px){.contact-inner{grid-template-columns:1fr}}
+  .contact-info p{font-size:.95rem;color:#555;line-height:2.3}
+  .contact-info a{color:var(--teal);text-decoration:none;font-weight:600}
+  form input,form select,form textarea{width:100%;padding:.8rem 1rem;border:1.5px solid #b2dfdb;border-radius:8px;font-size:.95rem;font-family:inherit;margin-bottom:.9rem;background:#fff;transition:border-color .2s}
+  form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--teal)}
+  form textarea{height:110px;resize:vertical}
+  .submit{background:var(--teal);color:#fff;border:none;width:100%;padding:1rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+  .submit:hover{background:var(--dark-teal)}
+
+  footer{background:var(--dark);color:rgba(255,255,255,.45);text-align:center;padding:2rem;font-size:.82rem}
+  footer a{color:#4dd0e1;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Go Clean <span>UK</span></div>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#contact">Quote</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Free Quote</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">🇬🇧 Professional Cleaning — United Kingdom</div>
+  <h1>A Spotless Home<br><em>Every Single Time.</em></h1>
+  <p>Go Clean UK delivers professional cleaning services you can count on — reliable, thorough, and done right. From regular home cleans to deep cleans and end-of-tenancy jobs, we've got you covered.</p>
+  <div class="btns">
+    <a href="#contact" class="btn btn-teal">Get a Free Quote</a>
+    <a href="#services" class="btn btn-ghost">Our Services</a>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <span>Fully Insured</span>
+  <span>DBS Checked Staff</span>
+  <span>Eco-Friendly Products</span>
+  <span>Free Quotes</span>
+</div>
+
+<section id="services">
+  <p class="tag">What We Clean</p>
+  <h2>Professional Cleaning<br>For Every Situation</h2>
+  <p class="lead">Domestic or commercial, one-off or regular — Go Clean UK brings the same high standard every time. No shortcuts, no skipped corners.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <h3>Regular Home Cleans</h3>
+      <p>Weekly, fortnightly or monthly home cleaning. Same trusted cleaner every visit, keeping your home spotless without the hassle.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧹</div>
+      <h3>Deep Cleans</h3>
+      <p>Top-to-bottom intensive cleans — kitchens, bathrooms, carpets, skirting boards. Perfect after a party, before moving in, or just for a fresh start.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔑</div>
+      <h3>End of Tenancy</h3>
+      <p>Comprehensive move-out cleans to letting agent standards. We help you get your full deposit back — guaranteed satisfaction.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏢</div>
+      <h3>Office & Commercial</h3>
+      <p>Daily, weekly or contract commercial cleaning for offices, retail premises, and communal areas. Professional, discreet, and reliable.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Eco-Friendly Cleaning</h3>
+      <p>We offer eco-conscious cleaning using non-toxic, biodegradable products — safe for kids, pets, and the planet. Just ask.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📅</div>
+      <h3>One-Off & Spring Cleans</h3>
+      <p>No contract needed. Book a one-time clean whenever you need it — post-renovation, after guests, or seasonal refresh.</p>
+    </div>
+  </div>
+</section>
+
+<div class="why-band">
+  <div class="why-inner">
+    <div>
+      <p class="tag">Why Go Clean UK</p>
+      <h2>The Cleaning Service You'll Actually Trust</h2>
+      <ul class="why-list">
+        <li>Fully insured — peace of mind on every job</li>
+        <li>DBS-checked, vetted cleaning professionals</li>
+        <li>Consistent team — familiar faces you can rely on</li>
+        <li>Flexible scheduling, including evenings and weekends</li>
+        <li>Eco-friendly products available on request</li>
+        <li>Free, no-obligation quotes — transparent pricing always</li>
+      </ul>
+    </div>
+    <div class="clean-box">
+      <div class="clean-icon">🧽</div>
+      <div class="clean-title">Your Satisfaction Is Guaranteed</div>
+      <div class="clean-sub">Not happy with any part of the clean? We'll come back and fix it — no questions asked. That's the Go Clean UK promise.</div>
+    </div>
+  </div>
+</div>
+
+<div class="quote-strip">
+  <blockquote>"Go Clean UK did our end-of-tenancy clean and the estate agent couldn't believe how good it looked. We got every penny of the deposit back. Absolute lifesavers."</blockquote>
+  <cite>— Happy Customer, United Kingdom</cite>
+</div>
+
+<div class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-info" id="contact">
+      <p class="tag">Get Your Free Quote</p>
+      <h2>Let's Get Your Place Sparkling</h2>
+      <p class="lead" style="margin-bottom:2rem">Tell us what you need and we'll get back to you with a free, no-pressure quote. Most jobs quoted same day.</p>
+      <p>📧 <a href="mailto:gocleanuk.com@gmail.com">gocleanuk.com@gmail.com</a></p>
+      <p>⏰ Mon–Sat: 8AM–7PM</p>
+      <p>🇬🇧 Serving across the United Kingdom</p>
+      <p>✅ Insured &amp; vetted professionals</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="tel" placeholder="Phone Number">
+      <select>
+        <option value="">Type of Clean</option>
+        <option>Regular Home Clean</option>
+        <option>Deep Clean</option>
+        <option>End of Tenancy</option>
+        <option>Office / Commercial</option>
+        <option>One-Off / Spring Clean</option>
+        <option>Other</option>
+      </select>
+      <textarea placeholder="Tell us more — property size, frequency, any specific areas to focus on..."></textarea>
+      <button type="submit" class="submit">Request Free Quote →</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Go Clean UK | Professional Cleaning Services | gocleanuk.com@gmail.com</p>
+  <br>
+  <p>Website by <a href="https://www.bvnofficial.com" target="_blank">BVN Digital</a> — <em>Elevate Your Business. Dominate Your Market.</em></p>
+</footer>
+
+</body>
+</html>
