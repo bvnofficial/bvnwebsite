@@ -76,12 +76,16 @@
 
   footer{background:var(--dark);color:rgba(255,255,255,.4);text-align:center;padding:2rem;font-size:.82rem}
   footer a{color:var(--yellow);text-decoration:none}
+
+<style>
+.hero,.hero-section{background-image:linear-gradient(135deg,rgba(10,20,40,.82) 0%,rgba(20,40,80,.72) 100%),url("https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&h=800&q=85&fit=crop&auto=format");background-size:cover;background-position:center}
+</style>
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">DRB <span>Earthworks</span></div>
+  <div class="logo" style="display:flex;align-items:center;gap:10px"><svg width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;border-radius:8px"><rect width="42" height="42" rx="8" fill="#7d5a3c"/><text x="21" y="29" font-size="13" text-anchor="middle" fill="white" font-family="'Segoe UI',Arial,sans-serif" font-weight="800">DRB</text></svg><span style="display:flex;flex-direction:column;line-height:1.2">DRB <span>Earthworks</span></span></div>
   <a href="mailto:dbarlow@hotmail.com" class="nav-phone">📧 Get a Quote</a>
 </nav>
 
@@ -191,6 +195,16 @@
   </div>
 </div>
 
+
+<section id="gallery" style="padding:4rem 2rem;max-width:1100px;margin:0 auto">
+  <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:#7d5a3c;font-weight:700;margin-bottom:.6rem">Our Work</p>
+  <h2 style="font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800;margin-bottom:2rem;line-height:1.25">See the Results</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem">
+    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=540&q=85&fit=crop&auto=format" alt="Work photo" loading="lazy" style="width:100%;height:230px;object-fit:cover;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:transform .3s" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=540&q=85&fit=crop&auto=format" alt="Work photo" loading="lazy" style="width:100%;height:230px;object-fit:cover;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:transform .3s" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+    <img src="https://images.unsplash.com/photo-1558618047-3c8c5d7a2e1e?w=800&h=540&q=85&fit=crop&auto=format" alt="Work photo" loading="lazy" style="width:100%;height:230px;object-fit:cover;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:transform .3s" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+  </div>
+</section>
 <footer>
   <p>© 2025 DRB Earthworks | Dean Barlow | Northcliffe, WA 6262 | dbarlow@hotmail.com</p>
   <br>
