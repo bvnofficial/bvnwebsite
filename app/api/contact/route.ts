@@ -66,17 +66,18 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`;
 
-    // ── Send via Nodemailer (SMTP) if credentials are set ──────────
+    // ── Send via Nodemailer (GoDaddy SMTP) ────────────────────────
     const smtpHost = process.env.SMTP_HOST;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    const smtpUser = process.env.EMAIL_ADDRESS;
+    const smtpPass = process.env.EMAIL_PASSWORD;
+    const smtpPort = Number(process.env.SMTP_PORT || 465);
 
     if (smtpHost && smtpUser && smtpPass) {
       const nodemailer = await import("nodemailer");
       const transporter = nodemailer.createTransport({
         host: smtpHost,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: process.env.SMTP_SECURE === "true",
+        port: smtpPort,
+        secure: smtpPort === 465, // port 465 = SSL, 587 = STARTTLS
         auth: { user: smtpUser, pass: smtpPass },
       });
 
