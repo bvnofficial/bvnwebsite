@@ -8,7 +8,7 @@ import {
   Menu, X, ChevronDown,
   Share2, BarChart2, Search, Mail, FileText, Video, Users, Globe, Smartphone, Database,
   Bot, Workflow, UserCheck, Settings, Clock, Shield, PieChart, Plug,
-  Sun, Wrench, TrendingUp, BookOpen, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth,
+  Sun, Wrench, TrendingUp, BookOpen, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,9 @@ const marketingDropdown = [
 ];
 
 const appsDropdown = [
+  { label: "Salary Calculator PH", href: "/apps/salary-calculator", icon: DollarSign },
+  { label: "13th Month Calculator", href: "/apps/13th-month-calculator", icon: Gift },
+  { label: "QR Code Generator", href: "/apps/qr-code-generator", icon: QrCode },
   { label: "Solar Sizing Calculator", href: "/apps/solar-calculator", icon: Sun },
   { label: "Tile Calculator", href: "/apps/tile-calculator", icon: Grid3X3 },
   { label: "Floor Plan Designer", href: "/apps/floor-plan-designer", icon: LayoutDashboard },
@@ -36,16 +39,16 @@ const appsDropdown = [
 ];
 
 const blogDropdown = [
+  { label: "Salary Calculator Guide", href: "/blog/philippine-salary-calculator-take-home-pay-guide", icon: DollarSign },
+  { label: "13th Month Pay Guide", href: "/blog/13th-month-pay-philippines-complete-guide", icon: Gift },
+  { label: "QR Code for Business", href: "/blog/qr-code-generator-philippines-business-guide", icon: QrCode },
   { label: "Solar Panel Sizing Guide", href: "/blog/solar-panel-sizing-philippines-guide", icon: Sun },
   { label: "Free Invoice Generator", href: "/blog/free-invoice-generator-philippines-small-business", icon: Receipt },
   { label: "Detect Hidden Trackers", href: "/blog/how-to-detect-hidden-trackers-website-privacy", icon: Shield },
   { label: "Compress Images Free", href: "/blog/compress-images-free-guide-website-speed", icon: ImageDown },
-  { label: "Tile Calculator Guide", href: "/blog/tile-calculator-philippines-how-many-tiles", icon: Grid3X3 },
   { label: "Business Automation Guide", href: "/blog/business-automation-philippines-guide", icon: Settings },
   { label: "Social Media Management PH", href: "/blog/social-media-management-philippines", icon: Share2 },
-  { label: "AI Automation for Business", href: "/blog/ai-automation-save-time-business", icon: Bot },
   { label: "SEO Philippines 2025", href: "/blog/seo-philippines-rank-google-2025", icon: Search },
-  { label: "Digital Marketing Strategy", href: "/blog/digital-marketing-philippines-strategy-2025", icon: BarChart2 },
 ];
 
 const operationsDropdown = [

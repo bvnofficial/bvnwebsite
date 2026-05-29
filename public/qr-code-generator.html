@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Free QR Code Generator — BVN</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:24px}
+.wrap{max-width:680px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:580px){.wrap{grid-template-columns:1fr}}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px}
+.card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:14px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:6px;margin-top:12px}
+label:first-of-type{margin-top:0}
+input,select,textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s;resize:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(232,96,16,.6)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tab{padding:6px 14px;border-radius:8px;font-size:.76rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.tab.active{background:#E86010;border-color:#E86010;color:#fff}
+.tab:hover:not(.active){border-color:rgba(232,96,16,.4);color:rgba(255,255,255,.8)}
+.color-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.color-group{display:flex;align-items:center;gap:8px}
+.color-group input[type=color]{width:36px;height:36px;padding:2px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);cursor:pointer;flex-shrink:0}
+.color-group input[type=text]{flex:1}
+.btn{width:100%;background:#E86010;color:#fff;border:none;border-radius:12px;padding:12px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:14px;transition:.2s}
+.btn:hover{background:#F5A623;box-shadow:0 0 24px rgba(232,96,16,.4)}
+.qr-panel{display:flex;flex-direction:column;align-items:center;gap:16px}
+.qr-box{background:#fff;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:center;min-height:200px;min-width:200px;width:100%}
+#qrcode{display:flex;align-items:center;justify-content:center}
+#qrcode img,#qrcode canvas{border-radius:4px}
+.qr-placeholder{text-align:center;color:rgba(0,0,0,.3);font-size:.8rem;padding:20px}
+.qr-placeholder .icon{font-size:3rem;margin-bottom:8px}
+.dl-btns{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dl-btn{padding:10px;border-radius:10px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.8)}
+.dl-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.dl-btn.primary{background:#E86010;border-color:#E86010;color:#fff}
+.dl-btn.primary:hover{background:#F5A623}
+.size-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dynamic-fields{display:none}
+.dynamic-fields.show{display:block}
+.bvn-footer{text-align:center;margin-top:20px;font-size:.75rem;color:rgba(255,255,255,.25);max-width:680px;margin-left:auto;margin-right:auto}
+.bvn-footer a{color:#E86010;text-decoration:none}
+</style>
+</head>
+<body>
+<h1>📱 Free QR Code Generator</h1>
+<p class="subtitle">Create QR codes for URLs, WiFi, contacts, and more — free, instant, no sign-up</p>
+
+<div class="wrap">
+  <!-- Left: Controls -->
+  <div class="card">
+    <div class="card-title">QR Code Type</div>
+    <div class="tabs">
+      <button class="tab active" onclick="setType('url',this)">🔗 URL</button>
+      <button class="tab" onclick="setType('text',this)">📝 Text</button>
+      <button class="tab" onclick="setType('wifi',this)">📶 WiFi</button>
+      <button class="tab" onclick="setType('email',this)">📧 Email</button>
+      <button class="tab" onclick="setType('phone',this)">📞 Phone</button>
+      <button class="tab" onclick="setType('sms',this)">💬 SMS</button>
+    </div>
+
+    <!-- URL -->
+    <div id="fields-url" class="dynamic-fields show">
+      <label>Website URL</label>
+      <input type="url" id="url-url" placeholder="https://www.bvnofficial.com" oninput="liveGenerate()"/>
+    </div>
+    <!-- Text -->
+    <div id="fields-text" class="dynamic-fields">
+      <label>Text Content</label>
+      <textarea id="text-text" rows="4" placeholder="Enter any text..." oninput="liveGenerate()"></textarea>
+    </div>
+    <!-- WiFi -->
+    <div id="fields-wifi" class="dynamic-fields">
+      <label>Network Name (SSID)</label>
+      <input type="text" id="wifi-ssid" placeholder="MyWiFiNetwork" oninput="liveGenerate()"/>
+      <label>Password</label>
+      <input type="text" id="wifi-pass" placeholder="WiFiPassword123" oninput="liveGenerate()"/>
+      <label>Security Type</label>
+      <select id="wifi-sec" onchange="liveGenerate()">
+        <option value="WPA">WPA/WPA2</option>
+        <option value="WEP">WEP</option>
+        <option value="">No password</option>
+      </select>
+    </div>
+    <!-- Email -->
+    <div id="fields-email" class="dynamic-fields">
+      <label>Email Address</label>
+      <input type="email" id="email-to" placeholder="you@email.com" oninput="liveGenerate()"/>
+      <label>Subject (optional)</label>
+      <input type="text" id="email-sub" placeholder="Hello!" oninput="liveGenerate()"/>
+    </div>
+    <!-- Phone -->
+    <div id="fields-phone" class="dynamic-fields">
+      <label>Phone Number</label>
+      <input type="tel" id="phone-num" placeholder="+639XXXXXXXXX" oninput="liveGenerate()"/>
+    </div>
+    <!-- SMS -->
+    <div id="fields-sms" class="dynamic-fields">
+      <label>Phone Number</label>
+      <input type="tel" id="sms-num" placeholder="+639XXXXXXXXX" oninput="liveGenerate()"/>
+      <label>Message (optional)</label>
+      <textarea id="sms-msg" rows="3" placeholder="Hi there!" oninput="liveGenerate()"></textarea>
+    </div>
+
+    <div class="card-title" style="margin-top:18px">Customise</div>
+    <div class="color-row">
+      <div>
+        <label>Foreground</label>
+        <div class="color-group">
+          <input type="color" id="fgColor" value="#000000" oninput="syncColor('fg');liveGenerate()"/>
+          <input type="text" id="fgHex" value="#000000" maxlength="7" oninput="syncHex('fg');liveGenerate()"/>
+        </div>
+      </div>
+      <div>
+        <label>Background</label>
+        <div class="color-group">
+          <input type="color" id="bgColor" value="#ffffff" oninput="syncColor('bg');liveGenerate()"/>
+          <input type="text" id="bgHex" value="#ffffff" maxlength="7" oninput="syncHex('bg');liveGenerate()"/>
+        </div>
+      </div>
+    </div>
+    <div class="size-row" style="margin-top:12px">
+      <div>
+        <label>Size</label>
+        <select id="qrSize" onchange="liveGenerate()">
+          <option value="128">Small (128px)</option>
+          <option value="200">Medium (200px)</option>
+          <option value="256" selected>Standard (256px)</option>
+          <option value="512">Large (512px)</option>
+        </select>
+      </div>
+      <div>
+        <label>Error Correction</label>
+        <select id="ecLevel" onchange="liveGenerate()">
+          <option value="L">L — Low (7%)</option>
+          <option value="M" selected>M — Medium (15%)</option>
+          <option value="Q">Q — Quartile (25%)</option>
+          <option value="H">H — High (30%)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Preview + Download -->
+  <div class="card">
+    <div class="card-title">Preview</div>
+    <div class="qr-panel">
+      <div class="qr-box" id="qrBox">
+        <div id="qrcode">
+          <div class="qr-placeholder">
+            <div class="icon">◻</div>
+            <div>Enter content to generate QR code</div>
+          </div>
+        </div>
+      </div>
+      <div class="dl-btns">
+        <button class="dl-btn primary" onclick="downloadPNG()">⬇ Download PNG</button>
+        <button class="dl-btn" onclick="copyQR()">📋 Copy Image</button>
+      </div>
+      <div id="dlMsg" style="font-size:.75rem;color:#34d399;display:none">✓ Downloaded!</div>
+    </div>
+  </div>
+</div>
+
+<div class="bvn-footer">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Digital Marketing Agency</a></div>
+
+<script>
+let currentType = 'url';
+let qrInstance = null;
+let debounceTimer = null;
+
+function setType(type, el) {
+  currentType = type;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.dynamic-fields').forEach(f => f.classList.remove('show'));
+  document.getElementById('fields-' + type).classList.add('show');
+  liveGenerate();
+}
+
+function getContent() {
+  switch(currentType) {
+    case 'url': return document.getElementById('url-url').value.trim() || '';
+    case 'text': return document.getElementById('text-text').value.trim() || '';
+    case 'wifi': {
+      const s = document.getElementById('wifi-ssid').value.trim();
+      const p = document.getElementById('wifi-pass').value.trim();
+      const t = document.getElementById('wifi-sec').value;
+      if (!s) return '';
+      return `WIFI:T:${t};S:${s};P:${p};;`;
+    }
+    case 'email': {
+      const to = document.getElementById('email-to').value.trim();
+      const sub = document.getElementById('email-sub').value.trim();
+      if (!to) return '';
+      return sub ? `mailto:${to}?subject=${encodeURIComponent(sub)}` : `mailto:${to}`;
+    }
+    case 'phone': {
+      const n = document.getElementById('phone-num').value.trim();
+      return n ? `tel:${n}` : '';
+    }
+    case 'sms': {
+      const n = document.getElementById('sms-num').value.trim();
+      const m = document.getElementById('sms-msg').value.trim();
+      if (!n) return '';
+      return m ? `smsto:${n}:${m}` : `smsto:${n}`;
+    }
+  }
+  return '';
+}
+
+function liveGenerate() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(generateQR, 300);
+}
+
+function generateQR() {
+  const content = getContent();
+  const container = document.getElementById('qrcode');
+  container.innerHTML = '';
+
+  if (!content) {
+    container.innerHTML = '<div class="qr-placeholder"><div class="icon">◻</div><div>Enter content to generate QR code</div></div>';
+    return;
+  }
+
+  const size = parseInt(document.getElementById('qrSize').value);
+  const fg = document.getElementById('fgHex').value || '#000000';
+  const bg = document.getElementById('bgHex').value || '#ffffff';
+  const ec = document.getElementById('ecLevel').value;
+  const ecMap = {L: QRCode.CorrectLevel.L, M: QRCode.CorrectLevel.M, Q: QRCode.CorrectLevel.Q, H: QRCode.CorrectLevel.H};
+
+  try {
+    qrInstance = new QRCode(container, {
+      text: content,
+      width: size,
+      height: size,
+      colorDark: fg,
+      colorLight: bg,
+      correctLevel: ecMap[ec] || QRCode.CorrectLevel.M
+    });
+  } catch(e) {
+    container.innerHTML = '<div style="color:red;font-size:.8rem;padding:20px">Error: Content too long for this error correction level. Try L or M.</div>';
+  }
+}
+
+function syncColor(which) {
+  const val = document.getElementById(which+'Color').value;
+  document.getElementById(which+'Hex').value = val;
+}
+function syncHex(which) {
+  const val = document.getElementById(which+'Hex').value;
+  if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+    document.getElementById(which+'Color').value = val;
+  }
+}
+
+function getCanvas() {
+  const c = document.querySelector('#qrcode canvas');
+  if (c) return c;
+  const img = document.querySelector('#qrcode img');
+  if (img) {
+    const cv = document.createElement('canvas');
+    cv.width = img.naturalWidth || 256;
+    cv.height = img.naturalHeight || 256;
+    cv.getContext('2d').drawImage(img, 0, 0);
+    return cv;
+  }
+  return null;
+}
+
+function downloadPNG() {
+  const canvas = getCanvas();
+  if (!canvas) { alert('Generate a QR code first!'); return; }
+  const a = document.createElement('a');
+  a.download = 'qrcode-bvn.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  const msg = document.getElementById('dlMsg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+
+function copyQR() {
+  const canvas = getCanvas();
+  if (!canvas) { alert('Generate a QR code first!'); return; }
+  canvas.toBlob(blob => {
+    navigator.clipboard.write([new ClipboardItem({'image/png': blob})]).then(() => {
+      const msg = document.getElementById('dlMsg');
+      msg.textContent = '✓ Copied to clipboard!';
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; msg.textContent = '✓ Downloaded!'; }, 2000);
+    }).catch(() => alert('Copy failed. Use Download PNG instead.'));
+  });
+}
+
+// Generate on load with placeholder
+setTimeout(() => {
+  document.getElementById('url-url').value = 'https://www.bvnofficial.com';
+  liveGenerate();
+}, 200);
+</script>
+</body>
+</html>

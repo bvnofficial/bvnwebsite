@@ -1,11 +1,38 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 
 const apps = [
+  {
+    icon: DollarSign,
+    title: "Salary Calculator Philippines",
+    description:
+      "Calculate your exact take-home pay after SSS, PhilHealth, Pag-IBIG, and BIR withholding tax. Uses 2026 TRAIN Law rates. Shows monthly and annual breakdown.",
+    href: "/apps/salary-calculator",
+    badge: "🔥 Popular",
+    color: "green",
+  },
+  {
+    icon: Gift,
+    title: "13th Month Pay Calculator",
+    description:
+      "Compute your 13th month pay based on months worked, salary, and LWOP deductions. Includes tax-exempt status check and advance payment guide.",
+    href: "/apps/13th-month-calculator",
+    badge: "Free Tool",
+    color: "yellow",
+  },
+  {
+    icon: QrCode,
+    title: "QR Code Generator",
+    description:
+      "Create QR codes for URLs, WiFi passwords, contacts, emails, phone numbers, and SMS. Customizable colors and sizes. Download as PNG instantly.",
+    href: "/apps/qr-code-generator",
+    badge: "Free Tool",
+    color: "purple",
+  },
   {
     icon: Sun,
     title: "Solar Sizing Calculator",

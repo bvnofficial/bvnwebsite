@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>13th Month Pay Calculator Philippines 2026 — BVN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:24px}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:16px;max-width:680px;margin-left:auto;margin-right:auto}
+.card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:14px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:6px;margin-top:14px}
+label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.95rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(232,96,16,.6)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;background:#E86010;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:16px;transition:.2s}
+.btn:hover{background:#F5A623;box-shadow:0 0 24px rgba(232,96,16,.4)}
+
+/* Results */
+.results{display:none;max-width:680px;margin:0 auto}
+.hero{background:linear-gradient(135deg,#1c1a0a,#251e00);border:1px solid rgba(251,191,36,.25);border-radius:16px;padding:28px;text-align:center;margin-bottom:14px}
+.hero .lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(251,191,36,.8);margin-bottom:6px}
+.hero .amount{font-size:2.6rem;font-weight:900;color:#fbbf24;line-height:1}
+.hero .sublbl{font-size:.8rem;color:rgba(255,255,255,.4);margin-top:6px}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border-bottom:none}
+.row .n{font-size:.85rem;color:rgba(255,255,255,.7)}
+.row .n small{display:block;font-size:.72rem;color:rgba(255,255,255,.35);margin-top:1px}
+.row .v{font-size:.9rem;font-weight:700;color:#fff}
+.row.total{padding-top:14px;margin-top:4px;border-top:2px solid rgba(255,255,255,.1);border-bottom:none}
+.row.total .n{font-weight:700;color:#fff}
+.row.total .v{font-size:1.05rem;font-weight:900;color:#fbbf24}
+.yellow{color:#fbbf24}.green{color:#34d399}.red{color:#f87171}
+
+.months-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:4px}
+@media(max-width:400px){.months-grid{grid-template-columns:repeat(4,1fr)}}
+.month-chip{padding:7px 4px;border-radius:8px;text-align:center;font-size:.72rem;font-weight:700;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
+.month-chip.worked{background:rgba(232,96,16,.15);border-color:rgba(232,96,16,.3);color:#E86010}
+.month-chip.partial{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.2);color:#fbbf24}
+
+.tax-box{background:#1c1f2e;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:14px}
+.tax-box h3{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4);margin-bottom:10px}
+.tax-status{display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px}
+.tax-status.exempt{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2)}
+.tax-status.taxable{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2)}
+.tax-icon{font-size:1.6rem}
+.tax-text .t1{font-size:.85rem;font-weight:700}
+.tax-text .t2{font-size:.75rem;color:rgba(255,255,255,.5);margin-top:2px}
+.exempt .t1{color:#34d399}.taxable .t1{color:#f87171}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.info-item{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.info-item .il{font-size:.68rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.info-item .iv{font-size:1rem;font-weight:800}
+
+.recalc{width:100%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:16px;transition:.2s}
+.recalc:hover{background:rgba(255,255,255,.1);color:#fff}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;line-height:1.6;max-width:580px;margin:0 auto 20px;padding:0 8px}
+.bvn-footer{text-align:center;margin-top:20px;font-size:.75rem;color:rgba(255,255,255,.25)}
+.bvn-footer a{color:#E86010;text-decoration:none}
+.toggle-row{display:flex;gap:8px;margin-bottom:4px}
+.toggle-btn{flex:1;padding:9px;border-radius:10px;font-size:.8rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.toggle-btn.active{background:#E86010;border-color:#E86010;color:#fff}
+</style>
+</head>
+<body>
+<h1>🎄 13th Month Pay Calculator</h1>
+<p class="subtitle">Compute your 13th month pay under Philippine Labor Law — 2026</p>
+
+<div class="card" id="inputCard">
+  <div class="card-title">Employee Details</div>
+
+  <label>Computation Method</label>
+  <div class="toggle-row">
+    <button class="toggle-btn active" id="btnSimple" onclick="setMode('simple',this)">Simple (Salary × Months)</button>
+    <button class="toggle-btn" id="btnDetailed" onclick="setMode('detailed',this)">Detailed (Monthly Breakdown)</button>
+  </div>
+
+  <!-- Simple Mode -->
+  <div id="simpleMode">
+    <label>Monthly Basic Salary (₱)</label>
+    <input type="number" id="basicSalary" value="20000" min="500" placeholder="e.g. 20000"/>
+
+    <div class="row2">
+      <div>
+        <label>Months Worked in 2026</label>
+        <select id="monthsWorked">
+          <option value="12">12 months (Full Year)</option>
+          <option value="11">11 months</option>
+          <option value="10">10 months</option>
+          <option value="9">9 months</option>
+          <option value="8">8 months</option>
+          <option value="7">7 months</option>
+          <option value="6">6 months</option>
+          <option value="5">5 months</option>
+          <option value="4">4 months</option>
+          <option value="3">3 months</option>
+          <option value="2">2 months</option>
+          <option value="1">1 month</option>
+        </select>
+      </div>
+      <div>
+        <label>Work Days per Month</label>
+        <select id="workDays">
+          <option value="22">22 days (standard)</option>
+          <option value="26">26 days (Mon-Sat)</option>
+          <option value="30">30 days (daily rate)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Mode -->
+  <div id="detailedMode" style="display:none">
+    <label>Monthly Basic Salary (₱)</label>
+    <input type="number" id="basicSalaryD" value="20000" min="500" placeholder="e.g. 20000"/>
+    <label style="margin-top:12px">Actual Basic Salary Earned Per Month (override if different)</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px" id="monthInputs">
+    </div>
+  </div>
+
+  <label>Include Unpaid Absences / Leaves Without Pay?</label>
+  <select id="hasLwop">
+    <option value="no">No — Fully worked all months</option>
+    <option value="yes">Yes — I had unpaid leaves</option>
+  </select>
+  <div id="lwopFields" style="display:none">
+    <label>Total Unpaid Leave Days</label>
+    <input type="number" id="lwopDays" value="0" min="0" placeholder="e.g. 5"/>
+    <label>Daily Rate (₱) — Basic Salary ÷ Work Days</label>
+    <input type="number" id="dailyRate" value="909" placeholder="e.g. 909"/>
+  </div>
+
+  <button class="btn" onclick="calculate()">Calculate 13th Month Pay →</button>
+</div>
+
+<div class="results" id="results">
+  <button class="recalc" onclick="recalculate()">← Edit Details</button>
+
+  <div class="hero">
+    <div class="lbl">Your 13th Month Pay</div>
+    <div class="amount" id="r13th">₱0</div>
+    <div class="sublbl" id="rRelease">Expected release: on or before December 24, 2026</div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="il">Monthly Salary</div>
+      <div class="iv" id="rSalary">₱0</div>
+    </div>
+    <div class="info-item">
+      <div class="il">Months Worked</div>
+      <div class="iv" id="rMonths">0 of 12</div>
+    </div>
+    <div class="info-item">
+      <div class="il">Total Salary Earned</div>
+      <div class="iv" id="rTotalEarned">₱0</div>
+    </div>
+    <div class="info-item">
+      <div class="il">LWOP Deduction</div>
+      <div class="iv red" id="rLwop">₱0</div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="card-title">Formula Breakdown</div>
+    <div class="row">
+      <div class="n">Total Basic Salary Earned (Jan–Dec) <small>All months actually worked × salary rate</small></div>
+      <div class="v" id="bTotalEarned">₱0</div>
+    </div>
+    <div class="row">
+      <div class="n">Less: LWOP Deductions <small>Unpaid leave days × daily rate</small></div>
+      <div class="v red" id="bLwop">−₱0</div>
+    </div>
+    <div class="row">
+      <div class="n">Adjusted Total Salary Earned</div>
+      <div class="v" id="bAdjusted">₱0</div>
+    </div>
+    <div class="row">
+      <div class="n">Divide by 12</div>
+      <div class="v">÷ 12</div>
+    </div>
+    <div class="row total">
+      <div class="n">13TH MONTH PAY</div>
+      <div class="v" id="bResult">₱0</div>
+    </div>
+  </div>
+
+  <div class="tax-box">
+    <h3>Tax Status</h3>
+    <div class="tax-status" id="taxStatus">
+      <div class="tax-icon">✅</div>
+      <div class="tax-text">
+        <div class="t1" id="taxTitle">Tax-Exempt</div>
+        <div class="t2" id="taxDesc">Your 13th month pay is below ₱90,000 — fully tax-free under TRAIN Law.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="card-title">Important Reminders</div>
+    <div class="row">
+      <div class="n">Legal Deadline <small>Employer must release by December 24</small></div>
+      <div class="v yellow">Dec 24, 2026</div>
+    </div>
+    <div class="row">
+      <div class="n">Who Qualifies <small>All rank-and-file employees who worked at least 1 month</small></div>
+      <div class="v green">You Qualify</div>
+    </div>
+    <div class="row">
+      <div class="n">Included in Computation <small>Basic salary only — not OT, bonuses, allowances</small></div>
+      <div class="v">Basic Pay Only</div>
+    </div>
+    <div class="row">
+      <div class="n">Advance Payment <small>Employers may release half before Holy Week (optional)</small></div>
+      <div class="v" id="rHalfAmt">₱0 (½ early)</div>
+    </div>
+    <div class="row">
+      <div class="n">Tax-Free Ceiling <small>13th month + other benefits — exempt up to ₱90,000 under TRAIN Law</small></div>
+      <div class="v green">₱90,000</div>
+    </div>
+  </div>
+</div>
+
+<p class="note">Based on Presidential Decree No. 851, DOLE Labor Advisory, and TRAIN Law (RA 10963). 13th month pay is computed on basic salary only — overtime pay, allowances, and bonuses are excluded. This calculator is for estimation only.</p>
+
+<div class="bvn-footer">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Business Automation Agency</a></div>
+
+<script>
+const fmt = n => '₱' + Math.round(n).toLocaleString('en-PH');
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+let currentMode = 'simple';
+
+function setMode(m, el) {
+  currentMode = m;
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('simpleMode').style.display = m === 'simple' ? 'block' : 'none';
+  document.getElementById('detailedMode').style.display = m === 'detailed' ? 'block' : 'none';
+}
+
+document.getElementById('hasLwop').addEventListener('change', function() {
+  document.getElementById('lwopFields').style.display = this.value === 'yes' ? 'block' : 'none';
+  if (this.value === 'yes') {
+    const s = parseFloat(document.getElementById('basicSalary').value) || 20000;
+    document.getElementById('dailyRate').value = Math.round(s / 22);
+  }
+});
+
+document.getElementById('basicSalary').addEventListener('input', function() {
+  if (document.getElementById('hasLwop').value === 'yes') {
+    document.getElementById('dailyRate').value = Math.round(parseFloat(this.value || 0) / 22);
+  }
+});
+
+// Build month inputs
+(function() {
+  const container = document.getElementById('monthInputs');
+  MONTHS.forEach((m, i) => {
+    const d = document.createElement('div');
+    d.innerHTML = `<div style="font-size:.65rem;color:rgba(255,255,255,.45);margin-bottom:3px">${m}</div>
+      <input type="number" id="m${i}" style="padding:7px 10px;font-size:.82rem" placeholder="0" min="0"/>`;
+    container.appendChild(d);
+  });
+})();
+
+document.getElementById('basicSalaryD').addEventListener('input', function() {
+  const s = parseFloat(this.value) || 0;
+  MONTHS.forEach((_, i) => {
+    const el = document.getElementById('m'+i);
+    if (!el.dataset.modified) el.value = s || '';
+  });
+});
+document.getElementById('monthInputs').addEventListener('input', e => {
+  if (e.target.tagName === 'INPUT') e.target.dataset.modified = '1';
+});
+
+function calculate() {
+  let totalEarned = 0;
+  let monthsWorked = 0;
+  let salary = 0;
+
+  if (currentMode === 'simple') {
+    salary = parseFloat(document.getElementById('basicSalary').value) || 0;
+    monthsWorked = parseFloat(document.getElementById('monthsWorked').value) || 12;
+    totalEarned = salary * monthsWorked;
+  } else {
+    salary = parseFloat(document.getElementById('basicSalaryD').value) || 0;
+    MONTHS.forEach((_, i) => {
+      const v = parseFloat(document.getElementById('m'+i).value) || 0;
+      if (v > 0) monthsWorked++;
+      totalEarned += v;
+    });
+  }
+
+  const hasLwop = document.getElementById('hasLwop').value === 'yes';
+  const lwopDays = hasLwop ? (parseFloat(document.getElementById('lwopDays').value) || 0) : 0;
+  const dailyRate = hasLwop ? (parseFloat(document.getElementById('dailyRate').value) || 0) : 0;
+  const lwopDeduction = lwopDays * dailyRate;
+
+  const adjusted = Math.max(0, totalEarned - lwopDeduction);
+  const thirteenthMonth = adjusted / 12;
+  const isExempt = thirteenthMonth <= 90000;
+
+  // Update DOM
+  document.getElementById('r13th').textContent = fmt(thirteenthMonth);
+  document.getElementById('rSalary').textContent = fmt(salary);
+  document.getElementById('rMonths').textContent = monthsWorked + ' of 12';
+  document.getElementById('rTotalEarned').textContent = fmt(totalEarned);
+  document.getElementById('rLwop').textContent = lwopDeduction > 0 ? '−'+fmt(lwopDeduction) : '₱0';
+
+  document.getElementById('bTotalEarned').textContent = fmt(totalEarned);
+  document.getElementById('bLwop').textContent = lwopDeduction > 0 ? '−'+fmt(lwopDeduction) : '₱0';
+  document.getElementById('bAdjusted').textContent = fmt(adjusted);
+  document.getElementById('bResult').textContent = fmt(thirteenthMonth);
+  document.getElementById('rHalfAmt').textContent = fmt(thirteenthMonth / 2) + ' (½ early optional)';
+
+  // Tax status
+  const statusEl = document.getElementById('taxStatus');
+  if (isExempt) {
+    statusEl.className = 'tax-status exempt';
+    document.getElementById('taxTitle').textContent = 'Tax-Exempt ✓';
+    document.getElementById('taxDesc').textContent = `Your 13th month pay of ${fmt(thirteenthMonth)} is below ₱90,000 — 100% tax-free under TRAIN Law.`;
+    document.querySelector('.tax-icon').textContent = '✅';
+  } else {
+    statusEl.className = 'tax-status taxable';
+    const excess = thirteenthMonth - 90000;
+    document.getElementById('taxTitle').textContent = 'Partially Taxable';
+    document.getElementById('taxDesc').textContent = `₱90,000 is tax-free. The excess ${fmt(excess)} will be added to your taxable income for the year.`;
+    document.querySelector('.tax-icon').textContent = '⚠️';
+  }
+
+  document.getElementById('inputCard').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function recalculate() {
+  document.getElementById('inputCard').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+}
+</script>
+</body>
+</html>

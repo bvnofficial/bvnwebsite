@@ -3369,6 +3369,514 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  // ─────────────────────────────────────────────────────────
+  // POST 16 — Philippine Salary Calculator
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "philippine-salary-calculator-take-home-pay-guide",
+    title: "How to Compute Your Take-Home Pay in the Philippines — Complete 2026 Guide (Free Calculator)",
+    metaTitle: "Philippine Take-Home Pay Calculator 2026 — SSS PhilHealth Pag-IBIG BIR | BVN",
+    metaDescription:
+      "Calculate your exact take-home pay in the Philippines after SSS, PhilHealth, Pag-IBIG, and BIR withholding tax. Free calculator using 2026 TRAIN Law rates.",
+    category: "Operations",
+    readTime: "8 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "Every Filipino employee deserves to know exactly where their salary goes. SSS, PhilHealth, Pag-IBIG, and BIR withholding tax all chip away at your gross pay — but most people have no idea how the deductions are computed. This guide breaks it all down.",
+    keywords: [
+      "take home pay calculator Philippines",
+      "salary calculator Philippines 2026",
+      "SSS PhilHealth PagIBIG deductions Philippines",
+      "BIR withholding tax Philippines",
+      "net pay calculator Philippines",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "You just got a job offer for ₱30,000 a month. Exciting! But how much will you actually receive in your bank account on payday? The answer depends on four mandatory deductions that every private employee in the Philippines must pay: SSS, PhilHealth, Pag-IBIG, and BIR withholding tax. This guide explains each deduction clearly, shows you how to compute them yourself, and gives you a free calculator to get your exact take-home pay instantly.",
+      },
+      {
+        type: "cta",
+        heading: "Skip the Math — Use the Free Salary Calculator",
+        text: "Enter your monthly salary and get your exact take-home pay breakdown in seconds. Includes SSS, PhilHealth, Pag-IBIG, and BIR withholding tax — 2026 rates.",
+      },
+      {
+        type: "h2",
+        text: "The 4 Mandatory Deductions Every Filipino Employee Pays",
+      },
+      {
+        type: "h3",
+        text: "1. SSS (Social Security System)",
+      },
+      {
+        type: "paragraph",
+        text: "SSS is your mandatory government social security contribution. It funds retirement benefits, disability benefits, sickness allowances, maternity benefits, and death benefits. As of 2026, the total SSS contribution rate is 15% of your Monthly Salary Credit (MSC) — split between you and your employer. The employee share is 5% of your MSC, with a ceiling of ₱35,000 MSC and a floor of ₱4,000. This means your maximum monthly SSS deduction is ₱1,750.",
+      },
+      {
+        type: "list",
+        items: [
+          "Employee share: 5% of Monthly Salary Credit (MSC)",
+          "MSC floor: ₱4,000 | MSC ceiling: ₱35,000",
+          "Maximum employee deduction: ₱1,750/month",
+          "Employer counterpart: 10% of MSC",
+          "Monthly Salary Credit is based on brackets, not exact salary",
+        ],
+      },
+      {
+        type: "h3",
+        text: "2. PhilHealth (Philippine Health Insurance Corporation)",
+      },
+      {
+        type: "paragraph",
+        text: "PhilHealth provides health insurance coverage for you and your dependents — hospitalization, outpatient care, and certain medical procedures. The 2026 contribution rate is 5% of your monthly basic salary, split equally: 2.5% employee, 2.5% employer. There's a floor of ₱10,000 and a ceiling of ₱100,000. So your PhilHealth deduction ranges from ₱250/month (for salaries ≤ ₱10,000) to a maximum of ₱2,500/month (for salaries ≥ ₱100,000).",
+      },
+      {
+        type: "h3",
+        text: "3. Pag-IBIG / HDMF (Home Development Mutual Fund)",
+      },
+      {
+        type: "paragraph",
+        text: "Pag-IBIG contributions fund housing loans and savings programs. For mandatory contributions, employees earning ₱1,500 or more per month contribute 2% of their salary, with the employer matching. The mandatory contribution is capped at ₱5,000 salary, so the maximum mandatory employee deduction is ₱100/month. Employees may opt to make voluntary additional contributions above this amount to build bigger savings or qualify for higher housing loan amounts.",
+      },
+      {
+        type: "h3",
+        text: "4. BIR Withholding Tax (Bureau of Internal Revenue)",
+      },
+      {
+        type: "paragraph",
+        text: "Income tax is withheld by your employer monthly and remitted to the BIR on your behalf. The tax is computed on your taxable income — your gross salary minus your mandatory government contributions (SSS + PhilHealth + Pag-IBIG). Under the TRAIN Law (RA 10963), the monthly tax brackets are: ₱0–₱20,833 = 0%, ₱20,834–₱33,332 = 20% of excess, ₱33,333–₱66,666 = ₱2,500 + 25% of excess, ₱66,667–₱166,666 = ₱10,833 + 30% of excess, and higher brackets at 32% and 35%.",
+      },
+      {
+        type: "callout",
+        text: "Good news: If your taxable income after deductions is ₱20,833 or below per month (₱250,000/year), you pay ZERO income tax under TRAIN Law. For an employee earning ₱25,000/month, their taxable income after deductions is approximately ₱23,000 — resulting in a small tax of around ₱433/month.",
+      },
+      {
+        type: "h2",
+        text: "Sample Computation: ₱25,000 Monthly Salary",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Gross Basic Salary: ₱25,000",
+          "SSS Deduction: ₱1,250 (5% of ₱25,000 MSC)",
+          "PhilHealth Deduction: ₱625 (2.5% of ₱25,000)",
+          "Pag-IBIG Deduction: ₱100 (maximum mandatory)",
+          "Total Contributions: ₱1,975",
+          "Taxable Income: ₱25,000 − ₱1,975 = ₱23,025",
+          "BIR Withholding Tax: (₱23,025 − ₱20,833) × 20% = ₱438",
+          "Net Take-Home Pay: ₱25,000 − ₱1,975 − ₱438 = ₱22,587",
+        ],
+      },
+      {
+        type: "h2",
+        text: "How Non-Taxable Allowances Affect Your Net Pay",
+      },
+      {
+        type: "paragraph",
+        text: "Many employers provide allowances on top of basic salary — transportation, meal, clothing, and rice allowances. Under TRAIN Law, de minimis benefits (minor perks that are not subject to fringe benefits tax) include: rice subsidy up to ₱2,000/month, meal allowance up to ₱25/meal per day for employees on overtime, and clothing/uniform allowance up to ₱6,000/year. These allowances are not included in your taxable compensation, meaning they don't increase your BIR withholding tax.",
+      },
+      {
+        type: "h2",
+        text: "Semi-Monthly vs Monthly Pay — Does the Computation Change?",
+      },
+      {
+        type: "paragraph",
+        text: "Many Philippine companies pay semi-monthly (twice a month — on the 15th and last day). The deductions are simply split in half: your monthly SSS deduction of ₱1,250 becomes ₱625 per paycheck, PhilHealth of ₱625 becomes ₱312.50, etc. Some companies deduct all government contributions on the first pay period of the month — check your payslip to understand your company's schedule.",
+      },
+      {
+        type: "h2",
+        text: "Government Employee vs Private Employee — Any Difference?",
+      },
+      {
+        type: "paragraph",
+        text: "Government employees contribute to GSIS (Government Service Insurance System) instead of SSS. GSIS employee contribution is 9% of monthly salary, with no ceiling — significantly higher than SSS. PhilHealth and Pag-IBIG contributions are the same as private employees. Income tax computation is identical under TRAIN Law.",
+      },
+      {
+        type: "h2",
+        text: "Minimum Wage Earners — Are They Exempt?",
+      },
+      {
+        type: "paragraph",
+        text: "Under TRAIN Law, minimum wage earners are completely exempt from income tax — no BIR withholding tax at all. They still pay SSS, PhilHealth, and Pag-IBIG. As of 2026, the minimum wage in Metro Manila is ₱645/day (non-agriculture) — approximately ₱14,190/month for a 22-working-day month. At this salary level, BIR withholding tax is zero.",
+      },
+      {
+        type: "cta",
+        heading: "Calculate Your Exact Take-Home Pay",
+        text: "Use BVN's free Philippine Salary Calculator. Enter your salary, choose your employment type, and see a complete breakdown of all deductions — 2026 rates.",
+      },
+      {
+        type: "h2",
+        text: "Tips to Maximize Your Take-Home Pay Legally",
+      },
+      {
+        type: "list",
+        items: [
+          "Negotiate allowances instead of basic salary — allowances like meal and rice subsidy aren't taxable",
+          "Maximize voluntary Pag-IBIG contributions — extra savings earn dividends and increase your housing loan eligibility",
+          "File your ITR annually — you may be entitled to a tax refund if too much was withheld",
+          "Keep receipts for allowable deductions — medical expenses, tuition for dependents, and charitable contributions can reduce taxable income",
+          "For freelancers: register with BIR and pay the 8% flat tax option if gross receipts are below ₱3M — often lower than graduated rates",
+        ],
+      },
+      {
+        type: "callout",
+        text: "Employers: Are you computing payroll manually? BVN builds automated payroll systems that calculate SSS, PhilHealth, Pag-IBIG, and BIR deductions automatically every month — eliminating errors and saving your HR team hours of work.",
+      },
+      {
+        type: "cta",
+        heading: "Automate Your Payroll Computation",
+        text: "BVN builds HR and payroll automation for Philippine businesses. Stop computing deductions manually — let the system handle it accurately every month.",
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // POST 17 — QR Code Generator
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "qr-code-generator-philippines-business-guide",
+    title: "How to Create a QR Code for Free — The Complete Guide for Philippine Businesses (+ Free Generator)",
+    metaTitle: "Free QR Code Generator Philippines — Create QR Codes Instantly | BVN",
+    metaDescription:
+      "Create custom QR codes for your business — URLs, WiFi, contacts, payments, and more. Free QR code generator with no sign-up, no watermark, and instant PNG download.",
+    category: "Marketing",
+    readTime: "6 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "QR codes have become the most versatile marketing tool for Philippine businesses — from restaurant menus to GCash payments to Facebook page links. Here's everything you need to know about creating, using, and maximizing QR codes for your business.",
+    keywords: [
+      "free QR code generator Philippines",
+      "create QR code Philippines",
+      "QR code for business Philippines",
+      "GCash QR code",
+      "QR code menu Philippines",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Walk into any Filipino restaurant, café, or retail store today and you'll see them everywhere — QR codes on table tents, receipts, storefronts, and business cards. The pandemic accelerated QR adoption in the Philippines by years, and now customers expect it. From linking to your Facebook page to accepting GCash payments to sharing your WiFi password, QR codes are the most versatile, free marketing tool available to any Philippine business. This guide shows you exactly how to use them — and gives you a free tool to create them in seconds.",
+      },
+      {
+        type: "cta",
+        heading: "Generate Your QR Code — Free",
+        text: "Create QR codes for URLs, WiFi, contacts, emails, and more. Customize colors, download as PNG. No sign-up, no watermark.",
+      },
+      {
+        type: "h2",
+        text: "What Can You Create a QR Code For?",
+      },
+      {
+        type: "list",
+        items: [
+          "Website or landing page URLs — drive traffic from print materials to your site",
+          "Facebook, Instagram, or TikTok page links — grow your social media following offline",
+          "GCash or Maya QR payment codes — accept cashless payments from any customer",
+          "WiFi network credentials — let customers connect without sharing passwords verbally",
+          "Contact cards (vCard) — let people save your number and email with one scan",
+          "Google Maps location — direct customers to your store without confusion",
+          "Online menu or menu PDF — replace printed menus with a scan-to-view digital menu",
+          "Google Review link — make it easy for happy customers to leave a 5-star review",
+          "WhatsApp or Viber chat link — let customers message you with one scan",
+          "Event registration or RSVP form — streamline event check-ins",
+        ],
+      },
+      {
+        type: "h2",
+        text: "How QR Codes Are Changing Business in the Philippines",
+      },
+      {
+        type: "h3",
+        text: "Cashless Payments",
+      },
+      {
+        type: "paragraph",
+        text: "GCash and Maya (PayMaya) QR codes have transformed how Filipinos pay. A small eatery in Cavite can now accept payments from customers who have no cash — just by displaying a printed QR code. The BSP's QR Ph standard means any QR payment from GCash can be scanned by Maya users and vice versa. Every Philippine business should have a visible QR payment code — it costs nothing to set up and never expires.",
+      },
+      {
+        type: "h3",
+        text: "Digital Menus for Food Businesses",
+      },
+      {
+        type: "paragraph",
+        text: "Printed menus are expensive to update, easily damaged, and carry hygiene concerns. A QR code menu links to a Google Drive PDF, a Canva design, or a simple webpage that you can update anytime without reprinting. For carinderias, food carts, and small restaurants, this is a game-changer — your menu update from yesterday is live on the QR code today.",
+      },
+      {
+        type: "h3",
+        text: "Social Media Growth at Scale",
+      },
+      {
+        type: "paragraph",
+        text: "Print a QR code that links directly to your Facebook page on every receipt, packaging, business card, and storefront. Every customer who scans it can follow you in two taps. This is infinitely more effective than saying 'find us on Facebook as [your business name].' The QR eliminates friction — and friction is the enemy of follower growth.",
+      },
+      {
+        type: "h2",
+        text: "Types of QR Codes: Static vs Dynamic",
+      },
+      {
+        type: "h3",
+        text: "Static QR Codes (Free)",
+      },
+      {
+        type: "paragraph",
+        text: "Static QR codes encode the content directly into the code pattern. Once created, the destination cannot be changed — if you change your URL, you need a new QR code. Static QR codes are free, don't expire, and never require a subscription. BVN's free QR Generator creates static codes. For most Philippine business uses — payment links, social media pages, WiFi — static QR codes are perfectly sufficient.",
+      },
+      {
+        type: "h3",
+        text: "Dynamic QR Codes (Paid services)",
+      },
+      {
+        type: "paragraph",
+        text: "Dynamic QR codes use a redirect URL so the destination can be changed without creating a new QR code. They also track scan analytics — how many people scanned, from where, and on what device. Services like Bitly, QR Tiger, and Beaconstac offer dynamic QR codes starting at $5–$15/month. For large campaigns where you need analytics or frequent URL changes, dynamic codes are worth it.",
+      },
+      {
+        type: "h2",
+        text: "How to Create a QR Code in 60 Seconds",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Open BVN's free QR Code Generator",
+          "Select your QR type: URL, WiFi, Contact, Email, Phone, or SMS",
+          "Enter the content — your URL, WiFi credentials, or contact details",
+          "Customize colors to match your brand (optional)",
+          "Choose size — 256px for digital use, 512px for print",
+          "Set error correction level — use H (High) if you'll add a logo over the QR code",
+          "Download as PNG — ready to use on receipts, menus, signage, and ads",
+        ],
+      },
+      {
+        type: "h2",
+        text: "QR Code Best Practices for Philippine Businesses",
+      },
+      {
+        type: "h3",
+        text: "Always Test Before Printing",
+      },
+      {
+        type: "paragraph",
+        text: "Scan your QR code with multiple phones (iPhone and Android) before printing 1,000 receipts. A QR code that doesn't scan is worse than no QR code — it creates a bad impression and wastes materials.",
+      },
+      {
+        type: "h3",
+        text: "Print at the Right Size",
+      },
+      {
+        type: "paragraph",
+        text: "The minimum print size for a reliable scan is 2cm × 2cm (about 0.8 inches square). For storefront or outdoor use, bigger is better — a 10cm × 10cm QR code is much more scannable from a distance than a tiny one. Use our 512px download for print materials.",
+      },
+      {
+        type: "h3",
+        text: "Add a Call-to-Action",
+      },
+      {
+        type: "paragraph",
+        text: "Never put a QR code without telling people what will happen when they scan it. 'Scan to view menu,' 'Scan to pay via GCash,' or 'Scan to follow us on Facebook' dramatically increases scan rates. People need a reason to point their camera at a strange square.",
+      },
+      {
+        type: "h3",
+        text: "Brand Your QR Code",
+      },
+      {
+        type: "paragraph",
+        text: "Use your brand colors for the QR code foreground instead of plain black. Add your logo in the center (use High error correction level to compensate). A branded QR code looks professional and builds trust — customers are more likely to scan a QR code that looks official than a random black square.",
+      },
+      {
+        type: "callout",
+        text: "Pro tip: Use a Google shortened link (or Bitly free tier) as your QR URL. Short URLs make the QR code pattern less dense — more reliable scans, especially on lower-resolution phone cameras.",
+      },
+      {
+        type: "h2",
+        text: "Creative Ways Philippine Businesses Use QR Codes",
+      },
+      {
+        type: "list",
+        items: [
+          "Laundry shops — QR on receipts links to Facebook for order status updates",
+          "Food carts — QR on the cart for GCash payment eliminates change-making",
+          "Real estate brokers — QR on tarpaulins links to a property listing page or Viber chat",
+          "Online sellers — QR on packaging links to a 'how-to-use' video on YouTube",
+          "Barber shops — QR at the counter links to Google Reviews with a 'Please rate us' note",
+          "Sari-sari stores — QR for Maya payment displayed prominently to encourage cashless",
+          "Events — QR on invitations links to Google Maps, RSVP form, or event schedule",
+        ],
+      },
+      {
+        type: "cta",
+        heading: "Create Your QR Code Right Now — Free",
+        text: "BVN's free QR Code Generator — URLs, WiFi, contacts, SMS, email. Customize, download PNG, use anywhere. No sign-up required.",
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // POST 18 — 13th Month Pay
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "13th-month-pay-philippines-complete-guide",
+    title: "13th Month Pay Philippines: Everything You Need to Know in 2026 (Free Calculator)",
+    metaTitle: "13th Month Pay Philippines 2026 — Complete Guide + Free Calculator | BVN",
+    metaDescription:
+      "Complete guide to 13th month pay in the Philippines — who qualifies, how it's computed, when it's released, tax rules, and LWOP deductions. Free calculator included.",
+    category: "Operations",
+    readTime: "7 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "13th month pay is one of the most anticipated benefits for Filipino employees — and one of the most misunderstood obligations for employers. Here's everything you need to know: who qualifies, how it's computed, when it must be released, and what happens if an employer doesn't pay.",
+    keywords: [
+      "13th month pay Philippines 2026",
+      "13th month pay computation Philippines",
+      "13th month pay calculator Philippines",
+      "how to compute 13th month pay",
+      "13th month pay TRAIN Law",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Every November and December, two questions dominate Filipino workplace conversations: 'When will we get our 13th month pay?' and 'How much will I receive?' For employees, it's a much-anticipated financial boost before the holidays. For employers and HR teams, it's a legally mandated obligation with specific computation rules. This guide covers everything — the law behind it, who qualifies, how to compute it (with and without leave without pay), the tax exemption rules, and when employers must release it.",
+      },
+      {
+        type: "cta",
+        heading: "Compute Your 13th Month Pay Now — Free",
+        text: "Use BVN's free 13th Month Pay Calculator. Enter your monthly salary and months worked — get your exact 13th month pay, tax status, and advance payment amount.",
+      },
+      {
+        type: "h2",
+        text: "What is 13th Month Pay and What's the Law Behind It?",
+      },
+      {
+        type: "paragraph",
+        text: "13th month pay is a mandatory cash benefit required by Presidential Decree No. 851, signed on December 16, 1975, and amended by Memorandum Order No. 28. It requires all private sector employers to pay their rank-and-file employees a 13th month bonus equivalent to one month's basic salary per year. The DOLE (Department of Labor and Employment) enforces this requirement — employers who fail to pay can face administrative and legal sanctions.",
+      },
+      {
+        type: "h2",
+        text: "Who Qualifies for 13th Month Pay?",
+      },
+      {
+        type: "paragraph",
+        text: "All rank-and-file employees in the private sector who have worked for at least one month during the calendar year qualify for 13th month pay — regardless of their position, employment status (regular, probationary, project-based, or contractual), or method of payment (daily, weekly, or monthly). Even employees who resign or are separated from the company before December 24 are entitled to a pro-rated 13th month pay.",
+      },
+      {
+        type: "list",
+        items: [
+          "✅ Regular employees — full 13th month pay",
+          "✅ Probationary employees — pro-rated based on months worked",
+          "✅ Project-based/contractual employees — pro-rated if worked at least 1 month",
+          "✅ Resigned employees — entitled to pro-rated amount up to resignation date",
+          "✅ Separated employees (retrenched/redundancy) — entitled to pro-rated amount",
+          "❌ Managerial employees — NOT covered by PD 851 (though many employers voluntarily give it)",
+          "❌ Government employees — covered by GSIS and different benefit rules, not PD 851",
+          "❌ Household helpers and personal service workers — excluded from PD 851",
+        ],
+      },
+      {
+        type: "h2",
+        text: "How to Compute 13th Month Pay",
+      },
+      {
+        type: "paragraph",
+        text: "The formula is straightforward: 13th Month Pay = Total Basic Salary Earned in a Calendar Year ÷ 12. The key words are 'basic salary' and 'earned.' Basic salary includes only the fixed rate of pay — it does NOT include overtime pay, premium pay (night differential, holiday pay), allowances, commissions, or other monetary benefits, unless these are part of the fixed base pay by company practice.",
+      },
+      {
+        type: "h3",
+        text: "Example: Full Year Employee",
+      },
+      {
+        type: "paragraph",
+        text: "Maria earns ₱20,000/month and worked all 12 months of the year without absences. Her 13th month pay = (₱20,000 × 12) ÷ 12 = ₱20,000. Simple: it equals exactly one month's basic salary when the employee works a full calendar year without LWOP.",
+      },
+      {
+        type: "h3",
+        text: "Example: New Employee (Partial Year)",
+      },
+      {
+        type: "paragraph",
+        text: "Juan was hired on May 1, 2026 and earns ₱18,000/month. By December 31, he has worked 8 months (May through December). His 13th month pay = (₱18,000 × 8) ÷ 12 = ₱12,000. He receives ₱12,000 — two-thirds of a month's salary, proportional to his time worked.",
+      },
+      {
+        type: "h3",
+        text: "Example: Employee with Leave Without Pay (LWOP)",
+      },
+      {
+        type: "paragraph",
+        text: "Ana earns ₱15,000/month but had 10 days of unpaid leave during the year. Her daily rate = ₱15,000 ÷ 22 working days = ₱681.82. LWOP deduction = 10 × ₱681.82 = ₱6,818.20. Adjusted annual salary = (₱15,000 × 12) − ₱6,818.20 = ₱173,181.80. 13th month pay = ₱173,181.80 ÷ 12 = ₱14,431.82.",
+      },
+      {
+        type: "callout",
+        text: "Important: Only leave WITHOUT pay reduces your 13th month pay. Paid vacation leaves, sick leaves that were paid, and paid holidays do NOT reduce your 13th month pay — the salary was earned.",
+      },
+      {
+        type: "h2",
+        text: "13th Month Pay Tax Rules Under TRAIN Law",
+      },
+      {
+        type: "paragraph",
+        text: "Under the TRAIN Law (Republic Act 10963), 13th month pay is tax-exempt up to ₱90,000 per year. This ₱90,000 ceiling applies to the combined total of 13th month pay AND other benefits (Christmas bonus, productivity bonus, cash gifts, etc.). If your combined 13th month pay and other benefits exceed ₱90,000, the excess is added to your taxable compensation income for that year — resulting in higher withholding tax for the December payroll.",
+      },
+      {
+        type: "list",
+        items: [
+          "13th month pay + all other benefits ≤ ₱90,000 → FULLY TAX-EXEMPT",
+          "13th month pay + all other benefits > ₱90,000 → EXCESS is taxable",
+          "Example: ₱20,000 13th month pay + ₱5,000 Christmas bonus = ₱25,000 total → fully exempt",
+          "Example: ₱80,000 13th month + ₱20,000 bonus = ₱100,000 → ₱10,000 taxable",
+          "Most rank-and-file employees earning under ₱600,000/year won't exceed ₱90,000 in benefits",
+        ],
+      },
+      {
+        type: "h2",
+        text: "When Must the 13th Month Pay Be Released?",
+      },
+      {
+        type: "paragraph",
+        text: "Under PD 851, the 13th month pay must be paid on or before December 24 of each year. Employers who fail to pay on time face DOLE complaints, administrative fines, and potential criminal liability. Many companies release the full amount earlier — in mid-November or early December — as a sign of goodwill and to allow employees to plan their holiday spending.",
+      },
+      {
+        type: "h3",
+        text: "The Half-in-Advance Option",
+      },
+      {
+        type: "paragraph",
+        text: "While not required by law, many Philippine companies voluntarily release half of the 13th month pay before Holy Week (March/April) and the remaining half in December. This is a common practice especially in larger corporations and BPOs. Some companies also release it in June for mid-year. The total across all releases must equal at least one month's basic salary.",
+      },
+      {
+        type: "h2",
+        text: "For Employers: How to Handle 13th Month Pay Correctly",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Identify all qualifying employees — include probationary, project-based, and contractual workers",
+          "Pull individual total basic salary earned per employee for the year (exclude OT, allowances, commissions)",
+          "Deduct LWOP days if applicable, using the correct daily rate computation",
+          "Divide the adjusted total by 12 to get each employee's 13th month pay",
+          "Submit the Establishment Report on Benefits (ERB) to DOLE — required annually",
+          "Release on or before December 24 — document the release in payslips",
+          "Withhold BIR tax on the excess above ₱90,000 if applicable",
+        ],
+      },
+      {
+        type: "callout",
+        text: "Employers processing 13th month pay manually for 20+ employees risk computation errors, compliance issues, and DOLE complaints. BVN builds automated payroll systems that compute 13th month pay accurately — accounting for LWOP, partial year hires, and tax thresholds.",
+      },
+      {
+        type: "h2",
+        text: "What If My Employer Doesn't Pay 13th Month Pay?",
+      },
+      {
+        type: "paragraph",
+        text: "13th month pay is a legal right, not a discretionary benefit. If your employer fails to pay on time or pays less than the correct amount, you have the right to file a complaint with the DOLE Regional Office covering your workplace. DOLE can conduct a labor inspection and order the employer to pay the deficiency with interest. In cases of deliberate non-payment, criminal charges under the Labor Code are possible.",
+      },
+      {
+        type: "cta",
+        heading: "Calculate Your 13th Month Pay Now",
+        text: "Use BVN's free 13th Month Pay Calculator. Get your exact entitlement, LWOP deduction, tax status, and advance payment amount in seconds.",
+      },
+    ],
+  },
+
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
