@@ -2543,6 +2543,832 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+
+  // ─────────────────────────────────────────────────────────
+  // POST 11 — Solar Panel Sizing
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "solar-panel-sizing-philippines-guide",
+    title: "How to Size a Solar Panel System for Your Philippine Home or Business (Free Calculator)",
+    metaTitle: "Solar Panel System Sizing Philippines 2026 — Free Calculator | BVN",
+    metaDescription:
+      "Learn exactly how many solar panels you need for your home or business in the Philippines. Use our free Solar Sizing Calculator and stop overpaying for undersized systems.",
+    category: "Operations",
+    readTime: "8 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "Solar energy is booming in the Philippines — but most homeowners and business owners have no idea how to size a system correctly. Oversize it and you waste money. Undersize it and you still pay Meralco. Here's how to get it exactly right.",
+    keywords: [
+      "solar panel sizing Philippines",
+      "how many solar panels Philippines",
+      "solar system calculator Philippines",
+      "solar energy Philippines 2026",
+      "solar panel kw Philippines",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Solar energy is booming in the Philippines — and for good reason. With electricity rates among the highest in Southeast Asia and over 300 sunny days per year in most provinces, going solar isn't just eco-friendly, it's one of the smartest financial decisions a Filipino homeowner or business owner can make. But here's the problem: most people have no idea how to size a system correctly. Oversize it and you waste ₱100,000+ on panels you don't need. Undersize it and you still pay a massive Meralco bill every month. This guide will walk you through exactly how solar system sizing works — and give you a free tool to calculate yours in under 60 seconds.",
+      },
+      {
+        type: "h2",
+        text: "Why Solar Panel Sizing Matters So Much in the Philippines",
+      },
+      {
+        type: "paragraph",
+        text: "Philippine electricity costs are brutal. As of 2026, residential rates in Metro Manila average ₱11–₱14 per kWh — among the highest in ASEAN. A typical family consuming 400–600 kWh per month is paying ₱4,400–₱8,400 just in electricity. For small businesses, it's often ₱20,000–₱80,000 per month. The government's net metering program means you can sell excess solar power back to the grid — but only if your system is properly sized to actually generate excess power.",
+      },
+      {
+        type: "h2",
+        text: "The 3 Key Numbers You Need Before Sizing Any Solar System",
+      },
+      {
+        type: "h3",
+        text: "1. Monthly kWh Consumption",
+      },
+      {
+        type: "paragraph",
+        text: "Look at your Meralco or VECO bill. Find the 'kWh used' figure — not the peso amount, the actual kilowatt-hours. This is your baseline. If your bill doesn't show kWh, divide your total bill by your average rate per kWh (usually shown on the bill). A typical Filipino household uses 200–600 kWh per month. A small office uses 500–2,000 kWh. A small manufacturing facility can use 5,000–20,000+ kWh.",
+      },
+      {
+        type: "h3",
+        text: "2. Peak Sun Hours in Your Area",
+      },
+      {
+        type: "paragraph",
+        text: "Not all parts of the Philippines get equal sun. Metro Manila averages about 4.5 peak sun hours per day. Cebu and Visayas average 5.0–5.5 hours. Mindanao, particularly Davao and Cagayan de Oro, can see 5.5–6.0 peak sun hours. This number is critical because it directly determines how much power your panels can generate each day.",
+      },
+      {
+        type: "h3",
+        text: "3. System Losses (Efficiency Factor)",
+      },
+      {
+        type: "paragraph",
+        text: "No solar system operates at 100% efficiency. Inverter losses, wiring resistance, temperature derating, dust accumulation, and partial shading all reduce real-world output. A well-designed residential system typically operates at 75–80% of its rated capacity. Commercial systems with proper installation and maintenance can achieve 80–85%.",
+      },
+      {
+        type: "h2",
+        text: "The Solar Sizing Formula (And Why You Don't Have to Do It Manually)",
+      },
+      {
+        type: "paragraph",
+        text: "The basic formula is: Required System Size (kW) = Monthly kWh ÷ (Peak Sun Hours × 30 days × System Efficiency). For example, a Manila household using 450 kWh/month: 450 ÷ (4.5 × 30 × 0.78) = 450 ÷ 105.3 = 4.27 kW system needed. You'd round up to a 5 kW system to account for future load growth and have net metering surplus.",
+      },
+      {
+        type: "callout",
+        text: "Skip the math — use BVN's free Solar Sizing Calculator to get your exact system size, estimated cost, ROI timeline, and monthly savings in under 60 seconds.",
+      },
+      {
+        type: "cta",
+        heading: "Try the Free Solar Sizing Calculator",
+        text: "Calculate exactly how many solar panels you need for your Philippine home or business — free, instant, no sign-up required.",
+      },
+      {
+        type: "h2",
+        text: "Solar System Types: On-Grid vs Off-Grid vs Hybrid",
+      },
+      {
+        type: "h3",
+        text: "On-Grid (Grid-Tied) Systems",
+      },
+      {
+        type: "paragraph",
+        text: "On-grid systems are connected to the Meralco or local utility grid. When your panels produce more than you consume, excess power flows back to the grid and you earn credits (net metering). When panels under-produce — at night or on cloudy days — you draw from the grid. On-grid is the most cost-effective option for areas with reliable power. Most Philippine urban installations are on-grid.",
+      },
+      {
+        type: "h3",
+        text: "Off-Grid Systems",
+      },
+      {
+        type: "paragraph",
+        text: "Off-grid systems use large battery banks to store solar energy for use when the sun isn't shining. They're ideal for rural areas, farms, and locations where grid power is unreliable or unavailable. The downside: batteries add significant cost (₱80,000–₱300,000+ for a whole-home system) and must be replaced every 7–15 years depending on type.",
+      },
+      {
+        type: "h3",
+        text: "Hybrid Systems",
+      },
+      {
+        type: "paragraph",
+        text: "Hybrid systems combine grid connection with battery storage. You get the benefits of net metering plus backup power during brownouts. For Philippine businesses that cannot afford downtime — restaurants, clinics, data centers, retail stores — hybrid is the gold standard. Expect to pay 30–50% more than a pure on-grid system, but the brownout protection is worth every peso.",
+      },
+      {
+        type: "h2",
+        text: "How Much Does a Solar System Cost in the Philippines in 2026?",
+      },
+      {
+        type: "list",
+        items: [
+          "3 kW on-grid system: ₱120,000–₱180,000 (ideal for apartments, small homes)",
+          "5 kW on-grid system: ₱190,000–₱270,000 (ideal for medium homes, small offices)",
+          "10 kW on-grid system: ₱340,000–₱480,000 (ideal for large homes, medium businesses)",
+          "20 kW commercial system: ₱650,000–₱950,000 (restaurants, clinics, retail stores)",
+          "50 kW commercial system: ₱1.5M–₱2.2M (factories, large offices, schools)",
+        ],
+      },
+      {
+        type: "h2",
+        text: "ROI: How Fast Will Your Solar System Pay Itself Back?",
+      },
+      {
+        type: "paragraph",
+        text: "A properly sized residential solar system in the Philippines typically pays itself back in 4–6 years. With a 25-year panel lifespan, that's 19–21 years of near-free electricity. For businesses with higher consumption and daytime loads perfectly matched to solar production, payback can be as fast as 2–3 years. The ROI calculation is simple: Annual Electricity Savings ÷ Total System Cost = Payback Period in Years.",
+      },
+      {
+        type: "paragraph",
+        text: "Example: A 10 kW system costs ₱420,000 and saves ₱8,500/month on electricity. Annual savings = ₱102,000. Payback period = 420,000 ÷ 102,000 = 4.1 years. After that, the next 20 years of savings is pure profit.",
+      },
+      {
+        type: "h2",
+        text: "Common Solar Sizing Mistakes Filipino Buyers Make",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Sizing based on current bill only — not accounting for future appliances or business growth",
+          "Ignoring roof orientation — south-facing roofs in the Philippines produce the most power",
+          "Forgetting about shading — one shaded panel can cut system output by 20–30%",
+          "Choosing the cheapest inverter — inverters are the brain of the system; cheap ones fail faster",
+          "Skipping the net metering application — leaving thousands of pesos in grid credits unclaimed",
+          "Not checking with the local utility (Meralco, VECO, etc.) on interconnection requirements",
+        ],
+      },
+      {
+        type: "callout",
+        text: "Pro tip: Always size your solar system 10–20% larger than your current consumption to account for appliance additions, business growth, and future EV charging needs.",
+      },
+      {
+        type: "h2",
+        text: "Use Our Free Solar Sizing Calculator Now",
+      },
+      {
+        type: "paragraph",
+        text: "We built a free Solar Sizing Calculator specifically for Philippine conditions — it uses local peak sun hour data, Philippine utility rate structures, and net metering rules to give you an accurate system recommendation. Enter your monthly bill or kWh usage, select your province, and get instant results: recommended system size, estimated cost range, monthly savings projection, and payback period.",
+      },
+      {
+        type: "cta",
+        heading: "Calculate Your Solar System Size — Free",
+        text: "Use BVN's free Solar Sizing Calculator built for Philippine conditions. Get your system size, cost estimate, and ROI in 60 seconds.",
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // POST 12 — Invoice Generator
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "free-invoice-generator-philippines-small-business",
+    title: "How to Create a Professional Invoice Online for Free — The Complete Guide for Filipino Freelancers and Small Businesses",
+    metaTitle: "Free Invoice Generator Philippines — Create Professional Invoices Online | BVN",
+    metaDescription:
+      "Create professional invoices online for free in under 60 seconds. Perfect for Filipino freelancers, consultants, and small businesses. No sign-up, no watermark.",
+    category: "Operations",
+    readTime: "6 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "Getting paid on time starts with a professional invoice. But most freelancers and small business owners in the Philippines are still using Word documents, handwritten receipts, or sloppy spreadsheets. Here's how to do it properly — for free.",
+    keywords: [
+      "free invoice generator Philippines",
+      "invoice maker Philippines",
+      "how to make invoice Philippines",
+      "online invoice generator free",
+      "invoice template Philippines freelancer",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Getting paid on time starts with a professional invoice. But most freelancers and small business owners in the Philippines are still using Word documents, handwritten receipts, or awkward spreadsheets to bill their clients. The result? Payments get delayed, clients question your professionalism, and you spend 30 minutes formatting every single invoice. There's a better way — and it's completely free.",
+      },
+      {
+        type: "h2",
+        text: "Why Professional Invoices Matter More Than You Think",
+      },
+      {
+        type: "paragraph",
+        text: "In the Philippines' growing freelance economy — with over 1.5 million registered freelancers and millions more in the informal economy — how you invoice says a lot about how you run your business. A clean, professional invoice communicates that you're serious, organized, and trustworthy. It also significantly reduces the 'I didn't receive it' or 'let me check with accounting' excuses that delay payment.",
+      },
+      {
+        type: "list",
+        items: [
+          "Professional invoices get paid 30% faster on average than informal billing",
+          "Proper invoices are required for BIR official receipts and VAT compliance",
+          "International clients (US, AU, UK) expect formal invoicing — it builds trust",
+          "Detailed line items reduce payment disputes and client confusion",
+          "Sequential invoice numbers help you track unpaid bills and cash flow",
+        ],
+      },
+      {
+        type: "h2",
+        text: "What Every Philippine Business Invoice Must Include",
+      },
+      {
+        type: "paragraph",
+        text: "Whether you're a solo freelancer or a registered corporation, your invoices should always contain these essential elements to be professional and legally useful.",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Your business name, address, and contact details (or your registered trade name)",
+          "Your TIN (Tax Identification Number) if you're registered with BIR",
+          "Client's full name or company name and address",
+          "Unique invoice number (sequential — Invoice #001, #002, etc.)",
+          "Invoice date and payment due date",
+          "Itemized list of products or services with quantity, unit price, and total",
+          "Subtotal, VAT (if VAT-registered), and grand total",
+          "Payment instructions — bank name, account number, GCash, PayMaya, or PayMongo",
+          "Your terms and conditions (late payment fees, revision policy, etc.)",
+        ],
+      },
+      {
+        type: "h2",
+        text: "VAT and Tax Considerations for Filipino Invoices",
+      },
+      {
+        type: "h3",
+        text: "Are You VAT-Registered?",
+      },
+      {
+        type: "paragraph",
+        text: "In the Philippines, businesses with annual gross receipts exceeding ₱3,000,000 are required to register for VAT. If you're VAT-registered, your invoice must include a 12% VAT line item separately from your subtotal, and your official receipts must be BIR-printed. If you're below the threshold, you're considered a non-VAT taxpayer and should use a percentage tax system (3% under TRAIN Law, or 1% under certain periods).",
+      },
+      {
+        type: "h3",
+        text: "Withholding Tax for Corporate Clients",
+      },
+      {
+        type: "paragraph",
+        text: "If you bill a corporation or government agency in the Philippines, they are required by BIR to withhold a portion of your payment (typically 2–10% depending on the service type) and remit it on your behalf. This is called creditable withholding tax (CWT). Your invoice should note that 'Withholding tax applies as required by BIR' and you'll receive a BIR Form 2307 from your client — keep these; they're your tax credits.",
+      },
+      {
+        type: "callout",
+        text: "Important: Official Receipts (ORs) are different from invoices. Invoices are pre-payment billing documents. ORs are issued after payment is received and are the BIR-registered acknowledgment of income. Your invoice generator creates billing invoices — you still need BIR-registered ORs for formal tax compliance.",
+      },
+      {
+        type: "h2",
+        text: "How to Create an Invoice in 60 Seconds — Free",
+      },
+      {
+        type: "paragraph",
+        text: "BVN built a free Invoice Generator specifically for Filipino freelancers and small business owners. No sign-up required. No watermarks. No subscription. Just clean, professional invoices you can download as PDF and send to clients immediately.",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Open the BVN Invoice Generator — no account needed",
+          "Enter your name/business name and contact details",
+          "Enter your client's name and address",
+          "Add your invoice number, date, and due date",
+          "List your services or products with prices",
+          "Select currency (PHP, USD, AUD, GBP)",
+          "Add your payment details (bank transfer, GCash, etc.)",
+          "Click Generate — download or print your professional PDF invoice",
+        ],
+      },
+      {
+        type: "cta",
+        heading: "Create Your Invoice Right Now — Free",
+        text: "Use BVN's free Invoice Generator. Professional invoices in 60 seconds — no watermarks, no sign-up, no cost.",
+      },
+      {
+        type: "h2",
+        text: "Invoice Payment Terms Filipino Businesses Should Use",
+      },
+      {
+        type: "h3",
+        text: "Net 7, Net 15, Net 30 — What Do They Mean?",
+      },
+      {
+        type: "paragraph",
+        text: "'Net 30' means payment is due 30 days from the invoice date. 'Net 15' means 15 days. For most Philippine freelancers and small businesses, we recommend Net 7 or Net 15 — shorter payment windows improve cash flow and reduce the risk of clients 'forgetting'. For new clients, consider requiring a 50% downpayment upfront before starting any work.",
+      },
+      {
+        type: "h3",
+        text: "Late Payment Fees",
+      },
+      {
+        type: "paragraph",
+        text: "Add a late payment clause to every invoice: '1.5% monthly interest will be charged on overdue balances.' This is standard business practice and gives you legal standing to charge more if a client pays late. Most professional clients will respect this; problematic clients will either pay on time or reveal themselves early.",
+      },
+      {
+        type: "h2",
+        text: "5 Invoicing Mistakes Filipino Freelancers Make",
+      },
+      {
+        type: "list",
+        items: [
+          "No due date — 'Upon receipt' is not a due date; always put a specific date",
+          "Vague line items — 'Marketing services ₱15,000' tells the client nothing; itemize everything",
+          "No payment method details — always include your exact GCash number, bank name, and account",
+          "Starting work without a deposit — get 50% upfront from new clients, always",
+          "Never following up — send a polite reminder 3 days before due date and 1 day after",
+        ],
+      },
+      {
+        type: "h2",
+        text: "Automate Your Invoicing for Growing Businesses",
+      },
+      {
+        type: "paragraph",
+        text: "Once you're handling 10+ clients, manual invoicing becomes a bottleneck. BVN helps businesses set up automated invoicing systems that generate and send invoices automatically when a project is completed, send reminders before and after due dates, track payment status in real time, and sync with your accounting software. This is especially powerful for subscription-based services, retainer clients, and any business with recurring billing.",
+      },
+      {
+        type: "cta",
+        heading: "Ready to Automate Your Billing?",
+        text: "BVN builds custom invoicing and payment automation for Philippine businesses. Stop chasing payments — let the system do it for you.",
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // POST 13 — Tracker Detector
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "how-to-detect-hidden-trackers-website-privacy",
+    title: "Is Someone Tracking You Online? How to Find Hidden Trackers on Any Website (Free Tool)",
+    metaTitle: "How to Detect Hidden Website Trackers — Free Privacy Tool | BVN",
+    metaDescription:
+      "Discover how many hidden trackers are watching you on every website you visit. Use BVN's free Tracker Detector to reveal cookies, pixels, and surveillance scripts instantly.",
+    category: "Marketing",
+    readTime: "7 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "Every website you visit is watching you. Ad networks, social media pixels, analytics scripts, and invisible tracking cookies are collecting your data right now — often without your meaningful consent. Here's how to see exactly who's watching.",
+    keywords: [
+      "website tracker detector",
+      "how to find trackers on website",
+      "online privacy Philippines",
+      "detect cookies website",
+      "website privacy checker",
+      "hidden trackers internet",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Every website you visit is watching you. Right now, as you read this, ad networks, social media pixels, analytics platforms, and invisible tracking scripts are recording your behavior — what you click, how long you stay, where you came from, and where you go next. Most people have no idea how many trackers follow them across the internet. This guide explains what website trackers are, why they exist, how they affect your privacy and security, and how you can detect and block them using a free tool.",
+      },
+      {
+        type: "h2",
+        text: "What Are Website Trackers?",
+      },
+      {
+        type: "paragraph",
+        text: "Website trackers are pieces of code embedded in websites that collect data about visitors. They range from relatively harmless analytics tools to invasive cross-site surveillance systems that follow you around the entire internet. Most trackers are invisible — you'll never see them on the page, but they're silently collecting and transmitting your data to third parties.",
+      },
+      {
+        type: "h2",
+        text: "The 6 Types of Trackers Hidden on Most Websites",
+      },
+      {
+        type: "h3",
+        text: "1. Analytics Trackers",
+      },
+      {
+        type: "paragraph",
+        text: "Google Analytics is on roughly 85% of all websites. It tracks page views, session duration, device type, location, traffic sources, and user flow. While useful for website owners, Google uses this data to build advertising profiles. Even if a site itself isn't collecting your data maliciously, the analytics tool it uses might be.",
+      },
+      {
+        type: "h3",
+        text: "2. Advertising Pixels",
+      },
+      {
+        type: "paragraph",
+        text: "Facebook Pixel, TikTok Pixel, Google Ads tags, and similar tools fire every time you visit a page. They tell advertisers that you visited a product page, added something to cart, or viewed a specific service. This is what makes 'retargeting ads' possible — that ad following you around after you visited a website is the pixel in action.",
+      },
+      {
+        type: "h3",
+        text: "3. Session Replay Scripts",
+      },
+      {
+        type: "paragraph",
+        text: "Tools like Hotjar, FullStory, and Microsoft Clarity record your actual screen as you browse — every mouse movement, scroll, and click. Website owners use this for UX research, but it also means a video recording of your browsing session exists on a third-party server. These are among the most invasive trackers most people don't know about.",
+      },
+      {
+        type: "h3",
+        text: "4. Social Media Widgets",
+      },
+      {
+        type: "paragraph",
+        text: "That 'Like' button on a news article? Even if you don't click it, Facebook knows you visited that page. Social share buttons from Facebook, Twitter/X, LinkedIn, and Pinterest all load code from those platforms when the page loads — tracking you even if you're not logged in.",
+      },
+      {
+        type: "h3",
+        text: "5. Fingerprinting Scripts",
+      },
+      {
+        type: "paragraph",
+        text: "Browser fingerprinting is a tracking method that doesn't use cookies at all. It collects unique characteristics of your browser — screen resolution, installed fonts, timezone, language settings, hardware specs — and combines them to create a unique 'fingerprint' that identifies you across sessions even if you clear all cookies. Fingerprinting is nearly impossible to block without specialized tools.",
+      },
+      {
+        type: "h3",
+        text: "6. Affiliate and Click-Tracking Links",
+      },
+      {
+        type: "paragraph",
+        text: "When you click a link on a review site, blog, or comparison portal, you're often redirected through a tracking server that records the click and assigns it to an affiliate ID before sending you to your destination. This is how affiliate marketing commissions are tracked — and it also means every click is logged somewhere.",
+      },
+      {
+        type: "callout",
+        text: "The average website has 7–15 third-party trackers. Popular news sites and e-commerce platforms often have 30–50 or more. Use BVN's free Tracker Detector to see exactly what's running on any site.",
+      },
+      {
+        type: "cta",
+        heading: "Detect Trackers on Any Website — Free",
+        text: "Use BVN's free Tracker Detector to instantly reveal every hidden script, pixel, and cookie running on any website you visit.",
+      },
+      {
+        type: "h2",
+        text: "Why Should Philippine Internet Users Care About Trackers?",
+      },
+      {
+        type: "paragraph",
+        text: "The Philippines has among the highest social media usage rates in the world. Filipinos are online constantly — for work, shopping, entertainment, and communication. This makes Filipino internet users extremely valuable data targets for global ad networks. Your browsing behavior, political views, health concerns, financial situation, and purchasing patterns are being harvested and sold to advertisers, data brokers, and increasingly, to AI training datasets.",
+      },
+      {
+        type: "paragraph",
+        text: "The Philippines' Data Privacy Act of 2012 (Republic Act 10173) is supposed to protect citizens from unauthorized data collection, but enforcement is limited and most tracking happens through servers located outside Philippine jurisdiction. Understanding what's tracking you is the first step to protecting yourself.",
+      },
+      {
+        type: "h2",
+        text: "How to Check What Trackers Are on Any Website",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Open BVN's free Tracker Detector tool",
+          "Enter the URL of any website you want to inspect",
+          "The tool scans for known tracker signatures and scripts",
+          "View a full report: tracker names, categories, and what data they collect",
+          "See the tracker 'risk score' — how invasive the site's tracking is",
+          "Use the results to decide whether to browse with a VPN, ad blocker, or avoid the site",
+        ],
+      },
+      {
+        type: "h2",
+        text: "How to Protect Yourself from Online Trackers",
+      },
+      {
+        type: "h3",
+        text: "Use a Privacy-Focused Browser",
+      },
+      {
+        type: "paragraph",
+        text: "Brave Browser blocks trackers and ads by default. Firefox with uBlock Origin is also excellent. Chrome, while the most popular browser in the Philippines, is made by the world's largest advertising company — it collects significant browsing data by design.",
+      },
+      {
+        type: "h3",
+        text: "Install an Ad and Tracker Blocker",
+      },
+      {
+        type: "paragraph",
+        text: "uBlock Origin (free, open-source) is the most effective content blocker available. It blocks thousands of known trackers, ad networks, and malicious scripts. Privacy Badger from the EFF automatically learns to block invisible trackers as you browse.",
+      },
+      {
+        type: "h3",
+        text: "Use a VPN",
+      },
+      {
+        type: "paragraph",
+        text: "A VPN (Virtual Private Network) hides your IP address from websites and trackers, preventing location-based tracking and making it harder to link your activity across sites. Popular options for Philippines users include Mullvad, ProtonVPN, and ExpressVPN.",
+      },
+      {
+        type: "h2",
+        text: "For Businesses: Why You Should Audit Your Own Website's Trackers",
+      },
+      {
+        type: "paragraph",
+        text: "If you run a website or online store, you should know exactly what trackers you're loading — especially post-GDPR and under Philippine data privacy regulations. Many business owners don't realize that marketing tools installed by their web developer are collecting visitor data without proper consent notices. Running BVN's Tracker Detector on your own site is a fast way to audit your compliance exposure.",
+      },
+      {
+        type: "cta",
+        heading: "Check Your Website's Trackers Now",
+        text: "Use BVN's free Tracker Detector. See every hidden script on your site — or any site — in seconds. No technical knowledge required.",
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // POST 14 — Image Compressor
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "compress-images-free-guide-website-speed",
+    title: "How to Compress Images Without Losing Quality — The Essential Guide for Philippine Businesses and Content Creators",
+    metaTitle: "Compress Images Free Without Losing Quality — Guide for Philippine Businesses | BVN",
+    metaDescription:
+      "Learn how to compress images for free without sacrificing quality. Faster websites, better SEO, and lower data costs — use BVN's free Image Compressor and see the difference.",
+    category: "Marketing",
+    readTime: "6 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "Large images are silently killing your website's performance, your Google rankings, and your customers' patience. Here's how to fix it in minutes — for free.",
+    keywords: [
+      "compress images free Philippines",
+      "image compressor no quality loss",
+      "reduce image file size",
+      "website speed Philippines",
+      "image optimization SEO",
+      "compress photos online free",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Every extra second your website takes to load costs you customers. Studies show that 53% of mobile users abandon a page that takes longer than 3 seconds to load — and in the Philippines, where many users are still on mobile data connections, this matters even more. The single biggest cause of slow websites is uncompressed images. A photo straight from your phone is 3–8MB. A properly optimized version of the same photo? 150–400KB. Same visual quality. One-twentieth the file size. This guide shows you exactly how to compress images the right way.",
+      },
+      {
+        type: "h2",
+        text: "Why Image Size Matters So Much in the Philippines",
+      },
+      {
+        type: "paragraph",
+        text: "The Philippines ranks among the countries with the slowest average internet speeds in Southeast Asia. While Metro Manila has improving fiber infrastructure, a large portion of the population — including your potential customers — browses on mobile data connections ranging from LTE to 3G. Large images mean long load times, high data consumption, and frustrated visitors who click away before your page even finishes loading.",
+      },
+      {
+        type: "list",
+        items: [
+          "Google uses page speed as a direct ranking factor — slow sites rank lower",
+          "A 1-second delay in load time can reduce conversions by 7%",
+          "Mobile users in the Philippines are data-conscious — heavy pages cost them real money",
+          "Large images fail to load completely on slow connections, showing broken layouts",
+          "Facebook and Instagram compress images automatically — but poorly — if you upload unoptimized files",
+        ],
+      },
+      {
+        type: "h2",
+        text: "Understanding Image File Formats: Which One Should You Use?",
+      },
+      {
+        type: "h3",
+        text: "JPEG / JPG",
+      },
+      {
+        type: "paragraph",
+        text: "JPEG is the standard format for photographs and complex images with many colors. It uses lossy compression, meaning some quality is sacrificed to achieve smaller file sizes. For most web and social media use, a JPEG at 80–85% quality is indistinguishable from the original but 60–80% smaller. Use JPEG for photos, product images, and lifestyle shots.",
+      },
+      {
+        type: "h3",
+        text: "PNG",
+      },
+      {
+        type: "paragraph",
+        text: "PNG uses lossless compression and supports transparency. It's ideal for logos, graphics with text, screenshots, and images with flat colors. PNGs tend to be larger than JPEGs, but you should never convert a PNG logo to JPEG — you'll lose the transparent background and introduce compression artifacts around text.",
+      },
+      {
+        type: "h3",
+        text: "WebP",
+      },
+      {
+        type: "paragraph",
+        text: "WebP is Google's modern image format that provides superior compression for both photos and graphics. A WebP image is typically 25–35% smaller than an equivalent JPEG at the same quality. All modern browsers support WebP, making it the ideal format for web use. BVN's Image Compressor can convert your images to WebP for maximum compression.",
+      },
+      {
+        type: "h3",
+        text: "AVIF",
+      },
+      {
+        type: "paragraph",
+        text: "AVIF is the newest image format, offering even better compression than WebP. It's supported by Chrome, Firefox, and Safari. If your audience is primarily on modern browsers, AVIF can reduce image sizes by 50%+ versus JPEG with no visible quality difference.",
+      },
+      {
+        type: "h2",
+        text: "How to Compress Images Without Losing Quality — Step by Step",
+      },
+      {
+        type: "paragraph",
+        text: "The goal is to find the sweet spot where the file size is as small as possible while the image still looks great to the human eye. Here's the process professionals use:",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Start with the highest quality original — never compress an already-compressed image",
+          "Resize the image to its actual display dimensions — don't serve a 4000px image in a 800px column",
+          "Choose the right format — JPEG for photos, PNG for graphics, WebP for web",
+          "Set compression quality to 80–85% for JPEG — visually identical to 100% but 60% smaller",
+          "Strip metadata — photo EXIF data (GPS, camera model, timestamps) adds file size with zero visual value",
+          "Use BVN's free Image Compressor to do all of the above automatically",
+        ],
+      },
+      {
+        type: "cta",
+        heading: "Compress Your Images Right Now — Free",
+        text: "Use BVN's free Image Compressor. Upload any image and get a compressed version in seconds — no quality loss, no watermarks, completely free.",
+      },
+      {
+        type: "h2",
+        text: "How Much Can Image Compression Improve Your Website Speed?",
+      },
+      {
+        type: "paragraph",
+        text: "The impact is dramatic. A typical Philippine business website with 10 unoptimized product photos might have an image payload of 15–25MB. After proper compression, that drops to 1.5–3MB — a 10x reduction. In real terms, that page might take 18 seconds to load on an LTE connection before optimization. After? Under 2 seconds. Your bounce rate drops. Your Google ranking improves. Your conversion rate increases.",
+      },
+      {
+        type: "h2",
+        text: "Image Compression for Social Media in the Philippines",
+      },
+      {
+        type: "h3",
+        text: "Facebook and Instagram",
+      },
+      {
+        type: "paragraph",
+        text: "Both platforms automatically recompress images you upload — often aggressively. To minimize quality loss, upload images at exactly the platform's recommended dimensions (1080×1080 for Instagram square, 1200×630 for Facebook link previews) and compress them yourself first at 90% quality. This gives the platform's compressor less work to do and results in better final quality.",
+      },
+      {
+        type: "h3",
+        text: "Viber and Messenger",
+      },
+      {
+        type: "paragraph",
+        text: "Viber and Facebook Messenger are the dominant messaging apps in the Philippines for business communication. Sending large uncompressed images through these apps eats through data limits and takes forever to download. Always compress images before sending via messaging apps — your clients will appreciate it.",
+      },
+      {
+        type: "h2",
+        text: "For Developers: Image Optimization Best Practices",
+      },
+      {
+        type: "list",
+        items: [
+          "Use Next.js Image component (or similar) for automatic format selection and lazy loading",
+          "Implement responsive images with srcset for different screen sizes",
+          "Enable lazy loading for below-the-fold images with loading='lazy'",
+          "Use a CDN (Cloudflare, Bunny.net) to serve images from edge locations near your users",
+          "Set proper cache headers for images — they rarely change, cache them for 1 year",
+          "Consider image CDN services like Cloudinary or Imgix for large-scale image management",
+        ],
+      },
+      {
+        type: "callout",
+        text: "BVN builds high-performance websites optimized for Philippine internet conditions — fast loading on mobile data, SEO-ready, and conversion-focused.",
+      },
+      {
+        type: "cta",
+        heading: "Speed Up Your Website Today",
+        text: "Start by compressing your images with BVN's free tool. For a full website speed audit and optimization, talk to BVN's web team.",
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // POST 15 — Tile Calculator
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "tile-calculator-philippines-how-many-tiles",
+    title: "How Many Tiles Do I Need? The Complete Tiling Guide for Philippine Homes and Businesses (Free Calculator)",
+    metaTitle: "Tile Calculator Philippines — How Many Tiles Do I Need? Free Tool | BVN",
+    metaDescription:
+      "Calculate exactly how many tiles you need for any floor or wall in the Philippines. Free Tile Calculator includes wastage buffer, grout spacing, and cost estimation.",
+    category: "Operations",
+    readTime: "7 min read",
+    date: "May 30, 2026",
+    dateISO: "2026-05-30",
+    excerpt:
+      "Buying too few tiles mid-project means delays and mismatched batches. Buying too many wastes thousands of pesos. Here's how to calculate exactly how many tiles you need — with the right wastage buffer for Philippine conditions.",
+    keywords: [
+      "tile calculator Philippines",
+      "how many tiles do I need Philippines",
+      "tile computation Philippines",
+      "flooring calculator Philippines",
+      "tiling guide Philippines",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Nothing ruins a tiling project faster than running short halfway through — especially in the Philippines, where the same tile batch from the same factory can differ slightly in shade between deliveries. Buy too few tiles and you're stuck hunting for matching tiles that may no longer be in stock. Buy too many and you've wasted ₱5,000–₱30,000 on tiles gathering dust in a corner. Getting the number right upfront is critical — and surprisingly simple once you know the formula.",
+      },
+      {
+        type: "h2",
+        text: "The Basic Tile Calculation Formula",
+      },
+      {
+        type: "paragraph",
+        text: "The core formula is straightforward: Total Tiles Needed = (Area to Tile ÷ Area per Tile) × Wastage Factor. For a 20 sqm floor using 60×60cm tiles (0.36 sqm each): 20 ÷ 0.36 = 55.6 tiles. Round up to 56. Add 10% wastage: 56 × 1.10 = 61.6 → buy 62 tiles. Simple — but the wastage factor is where most people get it wrong.",
+      },
+      {
+        type: "h2",
+        text: "Understanding Tile Wastage — The Most Misunderstood Part",
+      },
+      {
+        type: "paragraph",
+        text: "Wastage accounts for tiles that get cut, chipped, cracked during installation, or need to be replaced later. The correct wastage percentage depends on several factors — and using the wrong number is the most common (and most expensive) tiling mistake.",
+      },
+      {
+        type: "h3",
+        text: "10% Wastage — Standard Rectangular Layout",
+      },
+      {
+        type: "paragraph",
+        text: "A straight grid layout (tiles parallel to walls) with a regular rectangular room is the most material-efficient pattern. With a skilled tiler and few obstacles, 10% wastage is realistic. This is the minimum you should ever plan for.",
+      },
+      {
+        type: "h3",
+        text: "15% Wastage — Diagonal Layout",
+      },
+      {
+        type: "paragraph",
+        text: "Diagonal tile layouts (tiles set at 45 degrees to the wall) are popular in Philippine homes for their elegant look. However, they create significantly more cut waste, especially along the edges and corners. Always use 15% wastage for diagonal patterns.",
+      },
+      {
+        type: "h3",
+        text: "20% Wastage — Herringbone or Complex Patterns",
+      },
+      {
+        type: "paragraph",
+        text: "Herringbone, chevron, or intricate mosaic patterns require many small cuts and precise alignment. In these cases, 20% wastage is the industry standard — and some expert tilers recommend 25% for complex natural stone or wood-look tile patterns.",
+      },
+      {
+        type: "h3",
+        text: "Extra Wastage for L-Shaped Rooms, Pillars, and Irregular Spaces",
+      },
+      {
+        type: "paragraph",
+        text: "Philippine homes and commercial spaces often feature built-in pillars, curved walls, and irregular room shapes. Each internal corner, pillar face, and curved surface requires custom cuts that increase waste. Add an extra 5% for rooms with 3 or more obstacles (pillars, built-in furniture bases, etc.).",
+      },
+      {
+        type: "callout",
+        text: "Pro tip: Always buy from the same batch/lot number. Tiles from different production batches can have slight color and size variations — even in the same product line. Check the lot number on the tile box before purchasing.",
+      },
+      {
+        type: "cta",
+        heading: "Calculate Your Tiles Right Now — Free",
+        text: "Use BVN's free Tile Calculator. Enter your room dimensions, tile size, and pattern — get the exact number of tiles and estimated cost instantly.",
+      },
+      {
+        type: "h2",
+        text: "Tile Sizes Most Commonly Used in the Philippines",
+      },
+      {
+        type: "list",
+        items: [
+          "30×30cm — Classic bathroom floor tiles, outdoor areas, utility rooms",
+          "40×40cm — Common in older homes, budget renovations, service areas",
+          "60×60cm — Most popular for modern Philippine living rooms and commercial spaces",
+          "60×120cm — Trending in mid-to-high-end residential and hotel projects",
+          "80×80cm and 90×90cm — Premium residential and commercial installations",
+          "30×60cm — Popular for kitchen backsplash and bathroom walls",
+          "20×20cm — Mosaic patterns, shower floors, accent walls",
+        ],
+      },
+      {
+        type: "h2",
+        text: "How to Measure Your Space Correctly",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Measure the length and width of the room in meters at the widest points",
+          "For L-shaped rooms: divide into rectangles, calculate each, then add totals",
+          "Subtract fixed areas you won't tile (built-in closets, bathtubs, kitchen island bases)",
+          "For walls: measure height × width of each wall section separately",
+          "Don't forget door thresholds and transitions — small areas add up",
+          "Double-check all measurements — always measure twice, order once",
+        ],
+      },
+      {
+        type: "h2",
+        text: "Philippine Tile Prices — What to Expect in 2026",
+      },
+      {
+        type: "paragraph",
+        text: "Tile prices in the Philippines vary enormously based on origin, finish, and where you buy. Here's a general reference for 2026 market prices per piece (assuming standard 60×60cm tiles):",
+      },
+      {
+        type: "list",
+        items: [
+          "Budget ceramic tiles (local/Chinese import): ₱35–₱80 per piece",
+          "Mid-range ceramic or porcelain: ₱85–₱200 per piece",
+          "Premium porcelain or natural stone look: ₱220–₱500 per piece",
+          "Imported Italian or Spanish tiles: ₱500–₱2,000+ per piece",
+          "Natural stone (marble, granite, travertine): ₱800–₱5,000+ per piece",
+        ],
+      },
+      {
+        type: "h2",
+        text: "Don't Forget the Hidden Costs of Tiling",
+      },
+      {
+        type: "paragraph",
+        text: "The tile itself is just one part of the total cost. Many Philippine homeowners budget only for tiles and are shocked by the additional costs. Always factor in: tile adhesive (₱350–₱600 per bag, covers ~5 sqm), grout (₱200–₱500 per bag), waterproofing membrane for wet areas (₱150–₱300 per sqm), tile trim/edging strips, and most importantly — tiler's labor fee (₱150–₱400 per sqm in 2026 depending on region and complexity).",
+      },
+      {
+        type: "callout",
+        text: "Total installed cost (tile + materials + labor) for a mid-range 60×60cm porcelain tile in Metro Manila typically runs ₱800–₱1,500 per sqm in 2026.",
+      },
+      {
+        type: "h2",
+        text: "Where to Buy Tiles in the Philippines",
+      },
+      {
+        type: "paragraph",
+        text: "For volume purchases, tile dealers and distributors offer significantly better prices than retail hardware stores. Check AllHome, Wilcon Depot, and Ceramic World for wide selections. For premium or imported tiles, visit tile specialty showrooms in Mandauyong (Metro Manila), Cebu, and Davao. Online platforms like Lazada and Shopee are useful for small orders and hard-to-find specialty tiles, but always request physical samples before ordering large quantities.",
+      },
+      {
+        type: "cta",
+        heading: "Calculate Your Tile Order Now",
+        text: "Use BVN's free Tile Calculator — get the exact number of tiles, wastage buffer, and cost estimate for your Philippine renovation project.",
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {

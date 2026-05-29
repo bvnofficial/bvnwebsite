@@ -36,16 +36,16 @@ const appsDropdown = [
 ];
 
 const blogDropdown = [
+  { label: "Solar Panel Sizing Guide", href: "/blog/solar-panel-sizing-philippines-guide", icon: Sun },
+  { label: "Free Invoice Generator", href: "/blog/free-invoice-generator-philippines-small-business", icon: Receipt },
+  { label: "Detect Hidden Trackers", href: "/blog/how-to-detect-hidden-trackers-website-privacy", icon: Shield },
+  { label: "Compress Images Free", href: "/blog/compress-images-free-guide-website-speed", icon: ImageDown },
+  { label: "Tile Calculator Guide", href: "/blog/tile-calculator-philippines-how-many-tiles", icon: Grid3X3 },
   { label: "Business Automation Guide", href: "/blog/business-automation-philippines-guide", icon: Settings },
   { label: "Social Media Management PH", href: "/blog/social-media-management-philippines", icon: Share2 },
   { label: "AI Automation for Business", href: "/blog/ai-automation-save-time-business", icon: Bot },
   { label: "SEO Philippines 2025", href: "/blog/seo-philippines-rank-google-2025", icon: Search },
-  { label: "CRM Automation Philippines", href: "/blog/crm-automation-philippines-sales", icon: Database },
   { label: "Digital Marketing Strategy", href: "/blog/digital-marketing-philippines-strategy-2025", icon: BarChart2 },
-  { label: "HR & Payroll Automation", href: "/blog/hr-payroll-automation-philippines", icon: UserCheck },
-  { label: "Content Marketing Converts", href: "/blog/content-marketing-strategy-converts", icon: FileText },
-  { label: "Website Losing Customers?", href: "/blog/website-losing-customers-fix", icon: Globe },
-  { label: "Cost of Not Automating", href: "/blog/cost-not-automating-business-2025", icon: TrendingUp },
 ];
 
 const operationsDropdown = [
