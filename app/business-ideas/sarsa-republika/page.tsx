@@ -524,41 +524,53 @@ export default function SarsaRepublikaPage() {
           <Flame size={12} /> Business Concept · Developed by BVN
         </motion.div>
 
-        {/* Logo with glow halo */}
+        {/* Logo — circular badge with glowing gradient ring */}
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
-          className="relative mb-4"
+          className="relative mx-auto mb-6"
+          style={{
+            width: 320, height: 320,
+            borderRadius: "50%",
+            padding: 6,
+            background: `linear-gradient(135deg, ${C.gold} 0%, ${C.orange} 35%, ${C.red} 65%, ${C.gold} 100%)`,
+            boxShadow: `0 0 0 2px ${C.orange}50, 0 0 32px 8px ${C.orange}70, 0 0 72px 20px ${C.red}40, 0 0 120px 40px ${C.redDark}30`,
+          }}
         >
-          {/* Outer glow ring */}
-          <div className="absolute inset-0 rounded-full -m-6"
-            style={{ background: `radial-gradient(circle, ${C.orange}30 0%, ${C.red}18 40%, transparent 70%)`,
-              filter: "blur(18px)" }} />
-          {/* Inner bright ring */}
-          <div className="absolute inset-0 rounded-full -m-2"
-            style={{ boxShadow: `0 0 60px 20px ${C.orange}28, 0 0 120px 40px ${C.red}18` }} />
-          <Image
-            src="/sarsa-republika-logo.png"
-            alt="Sarsa Republika Logo"
-            width={420}
-            height={420}
-            className="relative mx-auto"
-            style={{ filter: `drop-shadow(0 0 24px ${C.orange}80) drop-shadow(0 8px 32px rgba(0,0,0,0.8))` }}
-            priority
-          />
+          {/* White logo circle inside the border */}
+          <div style={{ borderRadius: "50%", overflow: "hidden", width: "100%", height: "100%", background: "#fff" }}>
+            <Image
+              src="/sarsa-republika-logo.png"
+              alt="Sarsa Republika Logo"
+              width={320}
+              height={320}
+              className="w-full h-full object-cover"
+              style={{ transform: "scale(1.08)", transformOrigin: "center 45%" }}
+              priority
+            />
+          </div>
         </motion.div>
 
         {/* SPATCHCOCK headline */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}>
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="h-px w-12 md:w-20" style={{ background: `linear-gradient(to right, transparent, ${C.orange}80)` }} />
-            <p className="font-heading font-black text-xl md:text-2xl tracking-[0.25em] uppercase"
-              style={{ background: `linear-gradient(135deg, ${C.orange}, ${C.gold})`,
-                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Spatchcock Rotisserie
-            </p>
-            <div className="h-px w-12 md:w-20" style={{ background: `linear-gradient(to left, transparent, ${C.orange}80)` }} />
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="h-px w-16 md:w-28" style={{ background: `linear-gradient(to right, transparent, ${C.orange})` }} />
+            <span className="text-2xl">🔥</span>
+            <div className="h-px w-16 md:w-28" style={{ background: `linear-gradient(to left, transparent, ${C.orange})` }} />
           </div>
+          <p className="font-heading font-black text-4xl md:text-5xl lg:text-6xl tracking-[0.12em] uppercase mb-1"
+            style={{
+              background: `linear-gradient(135deg, ${C.gold} 0%, ${C.orange} 40%, #FF4400 100%)`,
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+              textShadow: "none",
+              filter: `drop-shadow(0 0 20px ${C.orange}80)`,
+            }}>
+            SPATCHCOCK
+          </p>
+          <p className="font-heading font-bold text-lg md:text-xl tracking-[0.35em] uppercase"
+            style={{ color: C.muted, letterSpacing: "0.35em" }}>
+            ROTISSERIE
+          </p>
         </motion.div>
 
         <motion.p
