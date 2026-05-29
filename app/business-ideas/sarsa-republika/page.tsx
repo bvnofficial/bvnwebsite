@@ -559,16 +559,11 @@ export default function SarsaRepublikaPage() {
             <div className="h-px w-16 md:w-28" style={{ background: `linear-gradient(to left, transparent, ${C.orange})` }} />
           </div>
           <p className="font-heading font-black text-4xl md:text-5xl lg:text-6xl tracking-[0.12em] uppercase mb-1"
-            style={{
-              background: `linear-gradient(135deg, ${C.gold} 0%, ${C.orange} 40%, #FF4400 100%)`,
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-              textShadow: "none",
-              filter: `drop-shadow(0 0 20px ${C.orange}80)`,
-            }}>
+            style={{ color: C.gold }}>
             SPATCHCOCK
           </p>
           <p className="font-heading font-bold text-lg md:text-xl tracking-[0.35em] uppercase"
-            style={{ color: C.muted, letterSpacing: "0.35em" }}>
+            style={{ color: C.orange }}>
             ROTISSERIE
           </p>
         </motion.div>
