@@ -37,6 +37,9 @@ const sauces = [
   { id: 8, name: "Banana Ketchup Fiesta", tag: "Sweet", color: "#CC5500", emoji: "🍌", heat: 0, region: "Nationwide", desc: "Classic Filipino banana ketchup with calamansi zest. Sweet, tangy, party-ready. Kids go wild for this." },
   { id: 9, name: "Bagoong Verde", tag: "Funky", color: "#3D7A3D", emoji: "🦐", heat: 2, region: "Pangasinan", desc: "Green shrimp paste, lime, and garlic. Funky, pungent, intensely umami — uniquely Pinoy." },
   { id: 10, name: "Lechon Sauce Klasiko", tag: "Classic", color: "#8B1A1A", emoji: "🔥", heat: 0, region: "Cebu", desc: "The original liver-based lechon dipping sauce. Rich, peppery, and deeply Filipino. The closer." },
+  { id: 11, name: "Adobo Sarsa", tag: "New", color: "#3A2800", emoji: "🍶", heat: 1, region: "Nationwide", desc: "Slow-reduced adobo sauce — soy, vinegar, bay leaf, and black pepper. Poured warm over your chicken, it soaks into every bite." },
+  { id: 12, name: "Kaldereta Sarsa", tag: "New", color: "#8B2500", emoji: "🫕", heat: 2, region: "Luzon", desc: "Tomato-based kaldereta sauce with liver spread, olives, and bell pepper. Bold, hearty, and rich — turns your box into a full Filipino fiesta." },
+  { id: 13, name: "Gravy Klasiko", tag: "New", color: "#5C4A1E", emoji: "🥣", heat: 0, region: "Nationwide", desc: "Thick, golden chicken gravy made from rotisserie drippings. Poured generously over rice and chicken. Simple, comforting, dangerous." },
 ];
 
 // ── Menu ──────────────────────────────────────────────────────
@@ -219,7 +222,7 @@ export default function SarsaRepublikaPage() {
         >
           {[
             { icon: "🔥", text: "Spatchcock Rotisserie" },
-            { icon: "🫙", text: "10 Filipino Sauces" },
+            { icon: "🫙", text: "13 Filipino Sauces" },
             { icon: "📦", text: "Rice Box Concept" },
             { icon: "🛒", text: "Stainless Street Cart" },
           ].map((p) => (
@@ -273,7 +276,7 @@ export default function SarsaRepublikaPage() {
                     Sarsa Republika takes everything Filipinos love about lechon manok — the golden skin, the smoky rotisserie smell, the community gathering around a cart — and upgrades it.
                   </p>
                   <p style={{ color: C.muted }} className="text-base leading-relaxed mb-4">
-                    Spatchcock (butterfly) cut means faster, more even cooking and crispier skin all around. A premium stainless cart signals quality before the customer even tastes anything. And 10 rotating Filipino sauces make every visit different.
+                    Spatchcock (butterfly) cut means faster, more even cooking and crispier skin all around. A premium stainless cart signals quality before the customer even tastes anything. And 13 rotating Filipino sauces make every visit different.
                   </p>
                   <p style={{ color: C.muted }} className="text-base leading-relaxed">
                     The packaging is the game-changer: a Peri Peri-style rice box, branded, clean, Instagrammable. You&apos;re not just buying chicken — you&apos;re buying an experience.
@@ -325,7 +328,7 @@ export default function SarsaRepublikaPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[
                     { icon: "🐔", title: "Spatchcock Method", desc: "Butterfly cut = 40% faster cooking, crispier skin on all sides, more even heat distribution." },
-                    { icon: "🫙", title: "10 Filipino Sauces", desc: "No other cart offers this. Each sauce is a different region, a different story. Repeat customers guaranteed." },
+                    { icon: "🫙", title: "13 Filipino Sauces", desc: "No other cart offers this. Each sauce is a different region, a different story. Repeat customers guaranteed." },
                     { icon: "📦", title: "The Sarsa Box", desc: "Rice box presentation = premium perception, higher price tolerance, Instagrammable, delivery-ready." },
                     { icon: "🛒", title: "Premium Stainless Cart", desc: "Signals cleanliness, quality, and legitimacy before the customer even tastes anything." },
                     { icon: "🏳️", title: "Filipino Pride Branding", desc: "Every sauce tells a regional story. Customers feel connected to their heritage with every bite." },
