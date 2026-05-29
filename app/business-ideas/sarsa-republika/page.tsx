@@ -296,158 +296,296 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 
 // ── Cart Visual SVG ───────────────────────────────────────────
 function CartVisual() {
+  // Spatchcock chicken shape — flat butterfly profile, wide not tall
+  function Spatchcock({ cx, cy, flip }: { cx: number; cy: number; flip?: boolean }) {
+    const fill1 = flip ? "#C06010" : "#D4820A";
+    const fill2 = flip ? "#B85010" : "#C07010";
+    return (
+      <g transform={`translate(${cx},${cy})`}>
+        {/* main body — wide flat ellipse */}
+        <ellipse rx="26" ry="13" fill={fill1} stroke="#7A3800" strokeWidth="0.8"/>
+        {/* skin highlight */}
+        <ellipse rx="20" ry="7" cy="-2" fill={fill2} opacity="0.5"/>
+        {/* left drumstick */}
+        <ellipse cx="-22" cy="9" rx="6" ry="9" fill={fill1} stroke="#7A3800" strokeWidth="0.8"/>
+        <ellipse cx="-22" cy="16" rx="4" ry="4" fill="#5A2800" stroke="#3A1000" strokeWidth="0.5"/>
+        {/* right drumstick */}
+        <ellipse cx="22" cy="9" rx="6" ry="9" fill={fill1} stroke="#7A3800" strokeWidth="0.8"/>
+        <ellipse cx="22" cy="16" rx="4" ry="4" fill="#5A2800" stroke="#3A1000" strokeWidth="0.5"/>
+        {/* wing tips */}
+        <ellipse cx="-16" cy="-10" rx="8" ry="5" fill={fill2} stroke="#7A3800" strokeWidth="0.6" transform="rotate(-20,-16,-10)"/>
+        <ellipse cx="16" cy="-10" rx="8" ry="5" fill={fill2} stroke="#7A3800" strokeWidth="0.6" transform="rotate(20,16,-10)"/>
+        {/* breast scoring marks */}
+        <path d="M -6,-4 Q 0,2 6,-4" fill="none" stroke="#7A3800" strokeWidth="0.8" opacity="0.6"/>
+      </g>
+    );
+  }
+
   return (
-    <div className="relative w-full max-w-xl mx-auto select-none">
-      <svg viewBox="0 0 580 680" className="w-full" style={{ filter: "drop-shadow(0 8px 40px rgba(232,114,28,0.25))" }}>
-        {/* ── DIMENSION ARROWS ── */}
-        {/* Width arrow bottom */}
-        <line x1="90" y1="618" x2="490" y2="618" stroke="#FFB800" strokeWidth="1.5" strokeDasharray="none"/>
-        <polygon points="90,614 90,622 78,618" fill="#FFB800"/>
-        <polygon points="490,614 490,622 502,618" fill="#FFB800"/>
-        <text x="290" y="636" textAnchor="middle" fill="#FFB800" fontSize="13" fontWeight="bold">150 cm</text>
-        {/* Height arrow left */}
-        <line x1="52" y1="58" x2="52" y2="572" stroke="#FFB800" strokeWidth="1.5"/>
-        <polygon points="48,58 56,58 52,46" fill="#FFB800"/>
-        <polygon points="48,572 56,572 52,584" fill="#FFB800"/>
-        <text x="30" y="318" textAnchor="middle" fill="#FFB800" fontSize="13" fontWeight="bold" transform="rotate(-90,30,318)">210 cm</text>
-
-        {/* ── CART SHADOW ── */}
-        <rect x="95" y="72" width="400" height="510" rx="10" fill="rgba(0,0,0,0.4)"/>
-
-        {/* ── TOP SIGNAGE SECTION (40cm) ── */}
+    <div className="relative w-full max-w-2xl mx-auto select-none">
+      <svg viewBox="0 0 720 820" className="w-full" style={{ filter: "drop-shadow(0 12px 48px rgba(196,30,58,0.35))" }}>
         <defs>
-          <linearGradient id="signageGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#9B0000"/>
-            <stop offset="100%" stopColor="#C41E3A"/>
+          {/* Logo clip */}
+          <clipPath id="logoClip"><circle cx="360" cy="105" r="60"/></clipPath>
+          {/* Gradients */}
+          <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#A80010"/>
+            <stop offset="60%" stopColor="#C41E3A"/>
+            <stop offset="100%" stopColor="#8B0020"/>
           </linearGradient>
-          <linearGradient id="steelGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#CBD5DC"/>
-            <stop offset="50%" stopColor="#A8B8C2"/>
-            <stop offset="100%" stopColor="#8898A8"/>
+          <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#D8E4EC"/>
+            <stop offset="30%" stopColor="#B8CAD8"/>
+            <stop offset="70%" stopColor="#9AAAB8"/>
+            <stop offset="100%" stopColor="#7888A0"/>
           </linearGradient>
-          <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0A2535"/>
-            <stop offset="100%" stopColor="#0D3040"/>
+          <linearGradient id="steelV" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#C8D8E4"/>
+            <stop offset="50%" stopColor="#A0B4C4"/>
+            <stop offset="100%" stopColor="#7A8EA0"/>
           </linearGradient>
-          <radialGradient id="fireGlow" cx="50%" cy="100%" r="60%">
-            <stop offset="0%" stopColor="#FF6B00" stopOpacity="0.7"/>
-            <stop offset="100%" stopColor="#FF6B00" stopOpacity="0"/>
+          <linearGradient id="glassG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#071820"/>
+            <stop offset="100%" stopColor="#0D2A3A"/>
+          </linearGradient>
+          <radialGradient id="fire" cx="50%" cy="100%" r="70%">
+            <stop offset="0%" stopColor="#FF7800" stopOpacity="0.85"/>
+            <stop offset="50%" stopColor="#FF3800" stopOpacity="0.4"/>
+            <stop offset="100%" stopColor="#FF0000" stopOpacity="0"/>
           </radialGradient>
+          <radialGradient id="goldRing" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FFD060"/>
+            <stop offset="100%" stopColor="#E8821C"/>
+          </radialGradient>
+          <linearGradient id="counterG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#F0F8FF"/>
+            <stop offset="40%" stopColor="#D8E8F4"/>
+            <stop offset="100%" stopColor="#A8BCCC"/>
+          </linearGradient>
+          <linearGradient id="doorG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#B0C4D4"/>
+            <stop offset="50%" stopColor="#98AABB"/>
+            <stop offset="100%" stopColor="#80909E"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <linearGradient id="wheelG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3A4858"/>
+            <stop offset="100%" stopColor="#1A2230"/>
+          </linearGradient>
         </defs>
-        <rect x="90" y="58" width="400" height="100" rx="10" fill="url(#signageGrad)" stroke="#7A0000" strokeWidth="1.5"/>
-        {/* LED strip accent */}
-        <rect x="90" y="148" width="400" height="5" fill="#FFB800" opacity="0.8"/>
-        {/* Brand text */}
-        <text x="290" y="96" textAnchor="middle" fill="white" fontSize="22" fontWeight="900" fontFamily="Arial Black, Arial" letterSpacing="3">SARSA REPUBLIKA</text>
-        <text x="290" y="118" textAnchor="middle" fill="#FFD060" fontSize="12" fontFamily="Arial" letterSpacing="4">SARSA NG PILIPINO</text>
-        {/* Decorative dots */}
-        <circle cx="118" cy="108" r="5" fill="#FFB800" opacity="0.7"/>
-        <circle cx="462" cy="108" r="5" fill="#FFB800" opacity="0.7"/>
-        <text x="290" y="140" textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="9" letterSpacing="2">✦ 13 FILIPINO SAUCES · SPATCHCOCK ROTISSERIE ✦</text>
 
-        {/* ── ROTISSERIE GLASS (70cm) ── */}
-        <rect x="90" y="153" width="400" height="175" fill="url(#steelGrad)" stroke="#7890A0" strokeWidth="1"/>
-        {/* Glass window */}
-        <rect x="104" y="162" width="320" height="155" rx="4" fill="url(#glassGrad)" stroke="#2A5570" strokeWidth="2"/>
-        {/* Glass reflection */}
-        <rect x="106" y="164" width="60" height="151" rx="3" fill="rgba(255,255,255,0.04)"/>
-        {/* Fire glow at bottom */}
-        <rect x="104" y="267" width="320" height="50" rx="4" fill="url(#fireGlow)"/>
+        {/* ── DROP SHADOW ── */}
+        <rect x="78" y="58" width="520" height="650" rx="14" fill="rgba(0,0,0,0.55)" transform="translate(6,8)"/>
+
+        {/* ══ BODY OUTLINE ══ */}
+        <rect x="78" y="50" width="520" height="650" rx="14" fill="url(#steelV)" stroke="#5A7080" strokeWidth="2"/>
+
+        {/* ══ SIGNAGE PANEL ══ */}
+        <rect x="78" y="50" width="520" height="150" rx="14" fill="url(#sg)" stroke="#7A0020" strokeWidth="1.5"/>
+        <rect x="78" y="192" width="520" height="8" fill="#FFB800" opacity="0.9"/>
+        {/* Corner bolts */}
+        {[104,576].map(x => [76,168].map(y => (
+          <circle key={`${x}${y}`} cx={x} cy={y} r="5" fill="#C8A000" stroke="#8A6000" strokeWidth="1"/>
+        )))}
+
+        {/* Logo circle border — gold ring */}
+        <circle cx="360" cy="105" r="70" fill="url(#goldRing)" stroke="#8B0000" strokeWidth="2"
+          style={{ filter: "drop-shadow(0 0 12px rgba(255,180,0,0.7))" }}/>
+        <circle cx="360" cy="105" r="64" fill="#FAFAFA"/>
+        {/* Logo image clipped to inner circle */}
+        <image href="/sarsa-republika-logo.png" x="255" y="0" width="210" height="210" clipPath="url(#logoClip)" preserveAspectRatio="xMidYMid meet"/>
+
+        {/* Brand text either side of logo */}
+        <text x="175" y="88" textAnchor="middle" fill="white" fontSize="11" fontWeight="900" fontFamily="Arial Black,Arial" letterSpacing="1" opacity="0.9">SARSA</text>
+        <text x="175" y="106" textAnchor="middle" fill="#FFD060" fontSize="9" fontFamily="Arial" letterSpacing="2">NG</text>
+        <text x="175" y="122" textAnchor="middle" fill="white" fontSize="11" fontWeight="900" fontFamily="Arial Black,Arial" letterSpacing="1" opacity="0.9">PILIPINO</text>
+        <text x="545" y="88" textAnchor="middle" fill="white" fontSize="9" fontFamily="Arial" letterSpacing="1" opacity="0.7">13</text>
+        <text x="545" y="104" textAnchor="middle" fill="#FFD060" fontSize="8" fontFamily="Arial" letterSpacing="1">FILIPINO</text>
+        <text x="545" y="118" textAnchor="middle" fill="white" fontSize="8" fontFamily="Arial" letterSpacing="1" opacity="0.7">SAUCES</text>
+        <text x="360" y="170" textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="9" letterSpacing="3">✦  SPATCHCOCK ROTISSERIE  ✦</text>
+
+        {/* ══ ROTISSERIE SECTION ══ */}
+        <rect x="78" y="200" width="520" height="220" fill="url(#steelV)" stroke="#5A7080" strokeWidth="1"/>
+        {/* Glass frame */}
+        <rect x="92" y="210" width="430" height="195" rx="6" fill="#0B1C28" stroke="#2A4858" strokeWidth="3"/>
+        {/* Glass inner */}
+        <rect x="95" y="213" width="424" height="189" rx="4" fill="url(#glassG)"/>
+        {/* Glass left reflection strip */}
+        <rect x="97" y="215" width="28" height="185" rx="3" fill="rgba(255,255,255,0.05)"/>
+        {/* Fire glow from below */}
+        <rect x="95" y="340" width="424" height="62" rx="4" fill="url(#fire)"/>
+        {/* Spit rod holders */}
+        <rect x="92" y="270" width="10" height="6" rx="2" fill="#C8D8E4"/>
+        <rect x="518" y="270" width="10" height="6" rx="2" fill="#C8D8E4"/>
+        <rect x="92" y="318" width="10" height="6" rx="2" fill="#C8D8E4"/>
+        <rect x="518" y="318" width="10" height="6" rx="2" fill="#C8D8E4"/>
         {/* Spit rods */}
-        <line x1="104" y1="210" x2="424" y2="210" stroke="#B8C8D4" strokeWidth="3" strokeLinecap="round"/>
-        <line x1="104" y1="248" x2="424" y2="248" stroke="#B8C8D4" strokeWidth="3" strokeLinecap="round"/>
-        {/* Chickens on top spit */}
-        <ellipse cx="148" cy="210" rx="18" ry="22" fill="#D4820A" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="196" cy="210" rx="18" ry="22" fill="#C87010" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="244" cy="210" rx="18" ry="22" fill="#D4820A" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="292" cy="210" rx="18" ry="22" fill="#C87010" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="340" cy="210" rx="18" ry="22" fill="#D4820A" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="388" cy="210" rx="18" ry="22" fill="#C87010" stroke="#A05000" strokeWidth="1"/>
-        {/* Chickens on bottom spit */}
-        <ellipse cx="163" cy="248" rx="18" ry="22" fill="#CC7010" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="211" cy="248" rx="18" ry="22" fill="#D4820A" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="259" cy="248" rx="18" ry="22" fill="#CC7010" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="307" cy="248" rx="18" ry="22" fill="#D4820A" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="355" cy="248" rx="18" ry="22" fill="#CC7010" stroke="#A05000" strokeWidth="1"/>
-        <ellipse cx="403" cy="248" rx="18" ry="22" fill="#D4820A" stroke="#A05000" strokeWidth="1"/>
-        {/* Flame icons at bottom */}
-        <text x="155" y="308" textAnchor="middle" fontSize="10">🔥</text>
-        <text x="215" y="308" textAnchor="middle" fontSize="10">🔥</text>
-        <text x="275" y="308" textAnchor="middle" fontSize="10">🔥</text>
-        <text x="335" y="308" textAnchor="middle" fontSize="10">🔥</text>
-        <text x="395" y="308" textAnchor="middle" fontSize="10">🔥</text>
-        {/* Rotisserie label */}
-        <rect x="430" y="165" width="52" height="148" rx="4" fill="#0D2535" stroke="#2A5570" strokeWidth="1"/>
-        <text x="456" y="245" textAnchor="middle" fill="#7AADCC" fontSize="9" fontWeight="bold" transform="rotate(90,456,245)">ROTISSERIE · 6–8 BIRDS</text>
-
-        {/* ── COUNTER TOP (8cm) ── */}
-        <rect x="90" y="328" width="400" height="18" fill="#D8E4EC" stroke="#9AAAB8" strokeWidth="1"/>
-        <rect x="90" y="332" width="400" height="4" fill="rgba(255,255,255,0.4)"/>
-
-        {/* ── SERVICE AREA (38cm) ── */}
-        <rect x="90" y="346" width="400" height="94" fill="url(#steelGrad)" stroke="#7890A0" strokeWidth="1"/>
-        {/* Dividers */}
-        <line x1="228" y1="346" x2="228" y2="440" stroke="#7890A0" strokeWidth="1"/>
-        <line x1="366" y1="346" x2="366" y2="440" stroke="#7890A0" strokeWidth="1"/>
-        {/* Section 1: Order Here */}
-        <rect x="96" y="354" width="126" height="78" rx="3" fill="#0A2030" stroke="#2A5060" strokeWidth="1"/>
-        <text x="159" y="382" textAnchor="middle" fill="#FFB800" fontSize="9" fontWeight="bold">ORDER HERE</text>
-        <text x="159" y="396" textAnchor="middle" fill="white" fontSize="8">Solo Box ₱159</text>
-        <text x="159" y="408" textAnchor="middle" fill="white" fontSize="8">Duo Box  ₱289</text>
-        <text x="159" y="420" textAnchor="middle" fill="white" fontSize="8">Fiesta Box ₱499</text>
-        {/* Section 2: Sauce tray */}
-        <text x="297" y="368" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="8" fontWeight="bold">SAUCE DISPLAY</text>
-        {[0,1,2,3,4,5].map(i => (
-          <circle key={i} cx={240 + i * 21} cy="400" r="9" fill={["#E8721C","#CC2200","#5A3200","#4A7A2E","#2D5016","#FFB800"][i]} stroke="#1A1A1A" strokeWidth="1"/>
+        <line x1="102" y1="273" x2="518" y2="273" stroke="#C0D0DC" strokeWidth="4" strokeLinecap="round"/>
+        <line x1="102" y1="321" x2="518" y2="321" stroke="#C0D0DC" strokeWidth="4" strokeLinecap="round"/>
+        {/* Spatchcock chickens — top spit */}
+        <Spatchcock cx={148} cy={273}/>
+        <Spatchcock cx={210} cy={273} flip/>
+        <Spatchcock cx={272} cy={273}/>
+        <Spatchcock cx={334} cy={273} flip/>
+        <Spatchcock cx={396} cy={273}/>
+        <Spatchcock cx={458} cy={273} flip/>
+        {/* Spatchcock chickens — bottom spit */}
+        <Spatchcock cx={165} cy={321} flip/>
+        <Spatchcock cx={227} cy={321}/>
+        <Spatchcock cx={289} cy={321} flip/>
+        <Spatchcock cx={351} cy={321}/>
+        <Spatchcock cx={413} cy={321} flip/>
+        <Spatchcock cx={475} cy={321}/>
+        {/* Heat shimmer lines */}
+        {[130,180,230,280,330,380,430,480].map((x,i) => (
+          <line key={x} x1={x} y1="380" x2={x+(i%2?3:-3)} y2="358" stroke="#FF8800" strokeWidth="1" opacity="0.3"/>
         ))}
-        {/* Section 3: GCash */}
-        <rect x="372" y="354" width="112" height="78" rx="3" fill="#0A2030" stroke="#1177AA" strokeWidth="1.5"/>
-        <text x="428" y="378" textAnchor="middle" fill="#00AAFF" fontSize="9" fontWeight="bold">GCash / Cash</text>
-        <rect x="394" y="385" width="68" height="40" rx="2" fill="#EEEEEE"/>
-        <text x="428" y="410" textAnchor="middle" fill="#333" fontSize="8">QR CODE</text>
+        {/* LPG burner at bottom */}
+        {[140,200,260,320,380,440].map(x => (
+          <ellipse key={x} cx={x} cy="392" rx="14" ry="4" fill="#1A3040" stroke="#2A5060" strokeWidth="1"/>
+        ))}
+        {/* Flame emoji row */}
+        {[140,200,260,320,380,440].map(x => (
+          <text key={x} x={x} y="390" textAnchor="middle" fontSize="10">🔥</text>
+        ))}
+        {/* Side panel: "6–8 BIRDS" label */}
+        <rect x="524" y="212" width="66" height="191" rx="5" fill="#0B1C28" stroke="#2A4858" strokeWidth="1.5"/>
+        <text x="557" y="308" textAnchor="middle" fill="#7AADCC" fontSize="10" fontWeight="bold" transform="rotate(90,557,308)">ROTISSERIE · 6–8 BIRDS</text>
 
-        {/* ── STORAGE CABINET (58cm) ── */}
-        <rect x="90" y="440" width="400" height="132" rx="0" fill="url(#steelGrad)" stroke="#7890A0" strokeWidth="1"/>
+        {/* ══ COUNTER TOP ══ */}
+        <rect x="78" y="420" width="520" height="24" fill="url(#counterG)" stroke="#9AAAB8" strokeWidth="1.5"/>
+        <rect x="78" y="422" width="520" height="6" fill="rgba(255,255,255,0.5)"/>
+        {/* Counter overhang shadow */}
+        <rect x="78" y="443" width="520" height="5" fill="rgba(0,0,0,0.18)"/>
+
+        {/* ══ SERVICE AREA ══ */}
+        <rect x="78" y="448" width="520" height="120" fill="url(#steelV)" stroke="#5A7080" strokeWidth="1"/>
+        {/* Panel dividers */}
+        <line x1="268" y1="455" x2="268" y2="562" stroke="#8090A0" strokeWidth="1.5"/>
+        <line x1="458" y1="455" x2="458" y2="562" stroke="#8090A0" strokeWidth="1.5"/>
+        {/* ORDER PANEL */}
+        <rect x="85" y="456" width="176" height="100" rx="4" fill="#071420" stroke="#1A3850" strokeWidth="1.5"/>
+        <rect x="87" y="458" width="172" height="20" rx="3" fill="#0D2030"/>
+        <text x="173" y="472" textAnchor="middle" fill="#FFB800" fontSize="10" fontWeight="bold" letterSpacing="1">ORDER HERE</text>
+        <text x="173" y="494" textAnchor="middle" fill="white" fontSize="9">Solo Box ₱159</text>
+        <text x="173" y="510" textAnchor="middle" fill="white" fontSize="9">Duo Box    ₱289</text>
+        <text x="173" y="526" textAnchor="middle" fill="white" fontSize="9">Fiesta Box ₱499</text>
+        <text x="173" y="542" textAnchor="middle" fill="#FFD060" fontSize="8">Add-On Sarsa ₱25</text>
+        {/* SAUCE DISPLAY */}
+        <text x="363" y="470" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="8" letterSpacing="2">SAUCE DISPLAY</text>
+        <rect x="280" y="478" width="166" height="74" rx="4" fill="rgba(0,0,0,0.2)" stroke="#3A4A58" strokeWidth="1"/>
+        {/* Sauce cups — two rows */}
+        {[300,335,370,405].map((x,i) => (
+          <g key={x}>
+            <ellipse cx={x} cy="500" rx="12" ry="5" fill="#1A1A1A"/>
+            <rect x={x-10} y="490" width="20" height="12" rx="2" fill={["#E8721C","#CC2200","#5A3200","#4A7A2E"][i]}/>
+            <ellipse cx={x} cy="490" rx="10" ry="4" fill={["#F08030","#DD3010","#7A4800","#60A040"][i]}/>
+          </g>
+        ))}
+        {[317,352,387,422].map((x,i) => (
+          <g key={x}>
+            <ellipse cx={x} cy="532" rx="12" ry="5" fill="#1A1A1A"/>
+            <rect x={x-10} y="522" width="20" height="12" rx="2" fill={["#2D5016","#6B3A00","#CC5500","#5C4A1E"][i]}/>
+            <ellipse cx={x} cy="522" rx="10" ry="4" fill={["#40700A","#9A5000","#EE7020","#7A6030"][i]}/>
+          </g>
+        ))}
+        {/* GCASH PANEL */}
+        <rect x="465" y="456" width="126" height="100" rx="4" fill="#071420" stroke="#0055AA" strokeWidth="2"/>
+        <rect x="467" y="458" width="122" height="20" rx="3" fill="#003080"/>
+        <text x="528" y="472" textAnchor="middle" fill="#00AAFF" fontSize="10" fontWeight="bold">GCash / Cash</text>
+        <rect x="483" y="483" width="90" height="60" rx="3" fill="white"/>
+        {/* QR pattern (decorative) */}
+        {[0,1,2,3,4,5,6].map(row => [0,1,2,3,4,5,6].map(col => {
+          const on = (row<2&&col<2)||(row<2&&col>4)||(row>4&&col<2)||((row+col)%2===0&&row>1&&row<5&&col>1&&col<5);
+          return on ? <rect key={`${row}${col}`} x={487+col*11} y={487+row*7} width="9" height="6" rx="1" fill="#1A1A1A"/> : null;
+        }))}
+        <text x="528" y="550" textAnchor="middle" fill="#0088DD" fontSize="7" letterSpacing="1">SCAN TO PAY</text>
+
+        {/* ══ STORAGE CABINET ══ */}
+        <rect x="78" y="568" width="520" height="140" fill="url(#steelV)" stroke="#5A7080" strokeWidth="1"/>
         {/* Cabinet door left */}
-        <rect x="100" y="450" width="185" height="112" rx="5" fill="#98AABB" stroke="#6A8898" strokeWidth="1.5"/>
-        <rect x="100" y="450" width="185" height="112" rx="5" fill="rgba(255,255,255,0.06)"/>
+        <rect x="88" y="578" width="242" height="118" rx="6" fill="url(#doorG)" stroke="#6A8898" strokeWidth="2"/>
+        {/* Door inner panel recess */}
+        <rect x="96" y="586" width="226" height="102" rx="4" fill="rgba(0,0,0,0.08)" stroke="#7A9AAA" strokeWidth="1"/>
+        {/* Door panel cross lines */}
+        <line x1="96" y1="637" x2="322" y2="637" stroke="#7A9AAA" strokeWidth="0.8" opacity="0.4"/>
+        <line x1="209" y1="586" x2="209" y2="688" stroke="#7A9AAA" strokeWidth="0.8" opacity="0.4"/>
         {/* Door handle left */}
-        <rect x="172" y="498" width="40" height="8" rx="4" fill="#5A7080" stroke="#3A5060" strokeWidth="1"/>
+        <rect x="182" y="631" width="54" height="10" rx="5" fill="#5A7080" stroke="#3A5060" strokeWidth="1.5"/>
+        <rect x="184" y="633" width="50" height="6" rx="4" fill="#6A8090"/>
+        {/* Door text */}
+        <text x="209" y="620" textAnchor="middle" fill="rgba(30,50,70,0.4)" fontSize="9" fontWeight="bold">INGREDIENTS</text>
+        <text x="209" y="633" textAnchor="middle" fill="rgba(30,50,70,0.3)" fontSize="8">& SAUCES</text>
         {/* Cabinet door right */}
-        <rect x="295" y="450" width="185" height="112" rx="5" fill="#98AABB" stroke="#6A8898" strokeWidth="1.5"/>
-        <rect x="295" y="450" width="185" height="112" rx="5" fill="rgba(255,255,255,0.06)"/>
+        <rect x="338" y="578" width="252" height="118" rx="6" fill="url(#doorG)" stroke="#6A8898" strokeWidth="2"/>
+        <rect x="346" y="586" width="236" height="102" rx="4" fill="rgba(0,0,0,0.08)" stroke="#7A9AAA" strokeWidth="1"/>
+        <line x1="346" y1="637" x2="582" y2="637" stroke="#7A9AAA" strokeWidth="0.8" opacity="0.4"/>
+        <line x1="464" y1="586" x2="464" y2="688" stroke="#7A9AAA" strokeWidth="0.8" opacity="0.4"/>
         {/* Door handle right */}
-        <rect x="367" y="498" width="40" height="8" rx="4" fill="#5A7080" stroke="#3A5060" strokeWidth="1"/>
-        {/* Labels inside doors */}
-        <text x="192" y="490" textAnchor="middle" fill="rgba(0,0,0,0.3)" fontSize="8">INGREDIENTS</text>
-        <text x="192" y="502" textAnchor="middle" fill="rgba(0,0,0,0.3)" fontSize="8">& SAUCES</text>
-        <text x="387" y="490" textAnchor="middle" fill="rgba(0,0,0,0.3)" fontSize="8">PACKAGING</text>
-        <text x="387" y="502" textAnchor="middle" fill="rgba(0,0,0,0.3)" fontSize="8">& TOOLS</text>
-        {/* Bottom edge */}
-        <rect x="90" y="568" width="400" height="8" rx="0" fill="#6A7A88" stroke="#4A5A68" strokeWidth="1"/>
+        <rect x="437" y="631" width="54" height="10" rx="5" fill="#5A7080" stroke="#3A5060" strokeWidth="1.5"/>
+        <rect x="439" y="633" width="50" height="6" rx="4" fill="#6A8090"/>
+        <text x="464" y="620" textAnchor="middle" fill="rgba(30,50,70,0.4)" fontSize="9" fontWeight="bold">PACKAGING</text>
+        <text x="464" y="633" textAnchor="middle" fill="rgba(30,50,70,0.3)" fontSize="8">& TOOLS</text>
 
-        {/* ── WHEELS ── */}
-        <circle cx="148" cy="580" r="24" fill="#1E2830" stroke="#4A5868" strokeWidth="3"/>
-        <circle cx="148" cy="580" r="10" fill="#3A4858" stroke="#5A6878" strokeWidth="1.5"/>
-        <circle cx="432" cy="580" r="24" fill="#1E2830" stroke="#4A5868" strokeWidth="3"/>
-        <circle cx="432" cy="580" r="10" fill="#3A4858" stroke="#5A6878" strokeWidth="1.5"/>
+        {/* ══ BASE FRAME ══ */}
+        <rect x="78" y="708" width="520" height="22" rx="4" fill="#607080" stroke="#4A5868" strokeWidth="1.5"/>
+        <rect x="78" y="708" width="520" height="6" fill="rgba(255,255,255,0.15)" rx="4"/>
 
-        {/* ── SECTION LABELS (right side) ── */}
-        <line x1="494" y1="108" x2="520" y2="108" stroke="#3D1A00" strokeWidth="1" strokeDasharray="3,2"/>
-        <text x="522" y="112" fill="rgba(255,245,232,0.45)" fontSize="9">Signage</text>
-        <line x1="494" y1="240" x2="520" y2="240" stroke="#3D1A00" strokeWidth="1" strokeDasharray="3,2"/>
-        <text x="522" y="244" fill="rgba(255,245,232,0.45)" fontSize="9">Rotisserie</text>
-        <line x1="494" y1="336" x2="520" y2="336" stroke="#3D1A00" strokeWidth="1" strokeDasharray="3,2"/>
-        <text x="522" y="340" fill="rgba(255,245,232,0.45)" fontSize="9">Counter</text>
-        <line x1="494" y1="392" x2="520" y2="392" stroke="#3D1A00" strokeWidth="1" strokeDasharray="3,2"/>
-        <text x="522" y="396" fill="rgba(255,245,232,0.45)" fontSize="9">Service</text>
-        <line x1="494" y1="504" x2="520" y2="504" stroke="#3D1A00" strokeWidth="1" strokeDasharray="3,2"/>
-        <text x="522" y="508" fill="rgba(255,245,232,0.45)" fontSize="9">Storage</text>
+        {/* ══ CASTER WHEELS ══ */}
+        {/* Left wheel assembly */}
+        <rect x="140" y="728" width="12" height="30" rx="3" fill="#506070"/>
+        <rect x="128" y="756" width="36" height="10" rx="3" fill="#4A5868"/>
+        <circle cx="146" cy="778" r="26" fill="url(#wheelG)" stroke="#3A4858" strokeWidth="3"/>
+        <circle cx="146" cy="778" r="18" fill="#243040" stroke="#3A4858" strokeWidth="1.5"/>
+        <circle cx="146" cy="778" r="8" fill="#384858" stroke="#4A5868" strokeWidth="1"/>
+        {[0,60,120,180,240,300].map(a => {
+          const rad = a * Math.PI / 180;
+          return <line key={a} x1={146+Math.cos(rad)*8} y1={778+Math.sin(rad)*8} x2={146+Math.cos(rad)*17} y2={778+Math.sin(rad)*17} stroke="#4A5868" strokeWidth="2"/>;
+        })}
+        {/* Right wheel assembly */}
+        <rect x="568" y="728" width="12" height="30" rx="3" fill="#506070"/>
+        <rect x="556" y="756" width="36" height="10" rx="3" fill="#4A5868"/>
+        <circle cx="574" cy="778" r="26" fill="url(#wheelG)" stroke="#3A4858" strokeWidth="3"/>
+        <circle cx="574" cy="778" r="18" fill="#243040" stroke="#3A4858" strokeWidth="1.5"/>
+        <circle cx="574" cy="778" r="8" fill="#384858" stroke="#4A5868" strokeWidth="1"/>
+        {[0,60,120,180,240,300].map(a => {
+          const rad = a * Math.PI / 180;
+          return <line key={a} x1={574+Math.cos(rad)*8} y1={778+Math.sin(rad)*8} x2={574+Math.cos(rad)*17} y2={778+Math.sin(rad)*17} stroke="#4A5868" strokeWidth="2"/>;
+        })}
+
+        {/* ══ DIMENSION ARROWS ══ */}
+        <line x1="78" y1="740" x2="78" y2="808" stroke="none"/>
+        {/* Width */}
+        <line x1="78" y1="810" x2="598" y2="810" stroke="#FFB800" strokeWidth="1.5"/>
+        <polygon points="78,806 78,814 66,810" fill="#FFB800"/>
+        <polygon points="598,806 598,814 610,810" fill="#FFB800"/>
+        <text x="338" y="826" textAnchor="middle" fill="#FFB800" fontSize="13" fontWeight="bold">150 cm</text>
+        {/* Height */}
+        <line x1="44" y1="50" x2="44" y2="730" stroke="#FFB800" strokeWidth="1.5"/>
+        <polygon points="40,50 48,50 44,38" fill="#FFB800"/>
+        <polygon points="40,730 48,730 44,742" fill="#FFB800"/>
+        <text x="22" y="393" textAnchor="middle" fill="#FFB800" fontSize="13" fontWeight="bold" transform="rotate(-90,22,393)">210 cm</text>
+
+        {/* ══ SECTION LABELS ══ */}
+        {[
+          { y: 125, label: "LED Signage" },
+          { y: 307, label: "Rotisserie" },
+          { y: 432, label: "Counter" },
+          { y: 508, label: "Service" },
+          { y: 637, label: "Storage" },
+        ].map(({ y, label }) => (
+          <g key={label}>
+            <line x1="598" y1={y} x2="620" y2={y} stroke="#3D1A00" strokeWidth="1" strokeDasharray="3,2"/>
+            <text x="624" y={y+4} fill="rgba(255,245,232,0.4)" fontSize="10">{label}</text>
+          </g>
+        ))}
       </svg>
 
-      {/* Parking space note */}
-      <p className="text-center text-xs mt-3" style={{ color: "rgba(255,245,232,0.3)" }}>
-        Footprint: 150cm × 65cm — fits within one standard parking space (250cm × 500cm)
+      <p className="text-center text-xs mt-2" style={{ color: "rgba(255,245,232,0.3)" }}>
+        Footprint: 150cm × 65cm — fits in one standard parking space (250cm × 500cm)
       </p>
     </div>
   );
