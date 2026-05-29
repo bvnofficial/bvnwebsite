@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Flame, Star, TrendingUp, Settings, Megaphone,
@@ -185,26 +186,16 @@ export default function SarsaRepublikaPage() {
           <Flame size={12} /> Business Concept · Developed by BVN
         </motion.div>
 
-        {/* Logo text */}
+        {/* Logo */}
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>
-          <div className="text-7xl md:text-9xl mb-2" style={{ lineHeight: 1 }}>🐓</div>
-          <h1
-            className="font-heading font-extrabold text-5xl md:text-7xl lg:text-8xl leading-none mb-3"
-            style={{ color: C.text, letterSpacing: "-0.02em" }}
-          >
-            SARSA
-          </h1>
-          <h1
-            className="font-heading font-extrabold text-5xl md:text-7xl lg:text-8xl leading-none"
-            style={{
-              background: `linear-gradient(135deg, ${C.red}, ${C.orange})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            REPUBLIKA
-          </h1>
+          <Image
+            src="/sarsa-republika-logo.png"
+            alt="Sarsa Republika Logo"
+            width={340}
+            height={340}
+            className="mx-auto drop-shadow-2xl"
+            priority
+          />
         </motion.div>
 
         <motion.p
@@ -212,7 +203,7 @@ export default function SarsaRepublikaPage() {
           className="mt-6 text-lg md:text-xl max-w-xl"
           style={{ color: C.muted }}
         >
-          Filipino spatchcock rotisserie chicken · 10 signature sauces · served in a box, street-food style
+          Filipino spatchcock rotisserie chicken · 13 signature sauces · served in a box, street-food style
         </motion.p>
 
         {/* Pillars */}
