@@ -276,7 +276,7 @@ export default function SarsaRepublikaPage() {
                     Spatchcock (butterfly) cut means faster, more even cooking and crispier skin all around. A premium stainless cart signals quality before the customer even tastes anything. And 10 rotating Filipino sauces make every visit different.
                   </p>
                   <p style={{ color: C.muted }} className="text-base leading-relaxed">
-                    The packaging is the game-changer: a Peri Peri-style rice box, branded, clean, Instagrammable. You're not just buying chicken — you're buying an experience.
+                    The packaging is the game-changer: a Peri Peri-style rice box, branded, clean, Instagrammable. You&apos;re not just buying chicken — you&apos;re buying an experience.
                   </p>
                 </div>
 
