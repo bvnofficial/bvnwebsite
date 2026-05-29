@@ -161,15 +161,17 @@ export function ParticleTextEffect({
       offscreen.height = canvas.height
       const octx = offscreen.getContext("2d")!
 
-      // Scale font size to word length + canvas width, capped sensibly
-      const fontSize = Math.min(
-        canvas.width / (word.length * 0.52),
-        canvas.height * 0.38,
-        200
-      )
+      // Start with height-based size, then shrink until text fits within 88% of canvas width
+      let fontSize = Math.min(canvas.height * 0.38, 200)
+      fontSize = Math.max(48, fontSize)
+      octx.font = `900 ${fontSize}px 'Arial Black', Arial`
+      const measured = octx.measureText(word).width
+      if (measured > canvas.width * 0.88) {
+        fontSize = Math.max(32, fontSize * (canvas.width * 0.88) / measured)
+      }
 
       octx.fillStyle = "white"
-      octx.font = `900 ${Math.max(48, fontSize)}px 'Arial Black', Arial`
+      octx.font = `900 ${fontSize}px 'Arial Black', Arial`
       octx.textAlign = "center"
       octx.textBaseline = "middle"
       octx.fillText(word, canvas.width / 2, canvas.height / 2)
@@ -310,7 +312,7 @@ export function ParticleTextEffect({
 
   return (
     <div
-      className={`fixed inset-0 z-50 bg-black cursor-pointer select-none
+      className={`fixed inset-0 z-50 bg-black cursor-pointer select-none overflow-hidden
         transition-opacity duration-700 ease-in-out
         ${visible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
       onClick={handleClick}
