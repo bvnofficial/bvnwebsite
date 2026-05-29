@@ -3,14 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Megaphone,
-  Settings2,
-  Wrench,
-  Bot,
-  Target,
-  Users,
-  Mail,
-  Phone,
+  Megaphone, Settings2, Wrench, Bot, Target, Users, Mail, Phone, Zap, Globe, TrendingUp, Shield,
 } from "lucide-react";
 import HeroSection from "@/components/ui/HeroSection";
 import BranchCard from "@/components/ui/BranchCard";
@@ -21,18 +14,12 @@ import { ParticleTextEffect } from "@/components/ui/particle-text-effect";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 32 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } },
 };
-
 const staggerContainer = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.1 } },
 };
-
 const childVariant = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
@@ -62,14 +49,25 @@ const operationsServices = [
 ];
 
 const featurePills = [
-  { icon: Wrench, label: "Everything You Need" },
-  { icon: Bot, label: "Smart Technology" },
-  { icon: Target, label: "Results-Driven" },
-  { icon: Users, label: "Proven Expertise" },
+  { icon: Wrench, label: "Everything You Need", sub: "All services under one roof" },
+  { icon: Bot, label: "Smart Technology", sub: "AI-powered solutions" },
+  { icon: Target, label: "Results-Driven", sub: "Measurable ROI always" },
+  { icon: Users, label: "Proven Expertise", sub: "238+ clients served" },
+];
+
+// Marquee items for the services strip
+const marqueeItems = [
+  { icon: Zap, text: "Social Media Management" },
+  { icon: Globe, text: "SEO & Digital Marketing" },
+  { icon: Bot, text: "AI Automation" },
+  { icon: TrendingUp, text: "CRM Solutions" },
+  { icon: Shield, text: "HR & Payroll" },
+  { icon: Target, text: "Content Marketing" },
+  { icon: Megaphone, text: "Influencer Marketing" },
+  { icon: Settings2, text: "Operations Automation" },
 ];
 
 export default function HomePage() {
-  // Default true to prevent server/client flash — corrected on mount
   const [hasEntered, setHasEntered] = useState(true);
 
   useEffect(() => {
@@ -85,26 +83,45 @@ export default function HomePage() {
 
   return (
     <>
-      {/* ── Entrance overlay — shown once per session ───── */}
       {!hasEntered && <ParticleTextEffect onEnter={handleEnter} />}
 
-      {/* ── SECTION 1: Hero ─────────────────────────────── */}
+      {/* ── SECTION 1: Hero ─────────────────────────────────── */}
       <HeroSection
         headline="Elevate Your Business. Dominate Your Market."
-        subtext="BVN is your all-in-one global growth partner — trusted by 238+ clients worldwide and now serving local businesses. We combine high-impact marketing with intelligent automation to help you scale faster, smarter, and stronger."
+        subtext="BVN is your all-in-one global growth partner — trusted by 238+ clients worldwide. We combine high-impact marketing with intelligent automation to help you scale faster, smarter, and stronger."
         primaryCta={{ label: "Explore Marketing", href: "/marketing" }}
         secondaryCta={{ label: "Explore Operations", href: "/operations" }}
       />
 
-      {/* ── SECTION 2: Two Branches ──────────────────────── */}
+      {/* ── SERVICES MARQUEE STRIP ──────────────────────────── */}
+      <div className="relative py-5 border-y border-orange/10 bg-black/30 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "linear-gradient(90deg, #0A0F1E 0%, transparent 8%, transparent 92%, #0A0F1E 100%)" }} />
+        <div className="marquee-track marquee-track-fast">
+          {[...marqueeItems, ...marqueeItems, ...marqueeItems].map(({ icon: ItemIcon, text }, i) => (
+            <span key={i} className="inline-flex items-center gap-2.5 px-8 whitespace-nowrap">
+              <span className="w-6 h-6 rounded-lg bg-orange/10 border border-orange/20 flex items-center justify-center shrink-0">
+                <ItemIcon size={12} className="text-orange" />
+              </span>
+              <span className="font-accent font-semibold text-xs tracking-widest text-white/45 uppercase">{text}</span>
+              <span className="w-1 h-1 rounded-full bg-orange/30 shrink-0 ml-4" />
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── SECTION 2: Two Branches ──────────────────────────── */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={sectionVariants}
-        className="relative bg-navy-dark border-t border-white/5 py-24 px-6 md:px-12 lg:px-24"
+        className="relative bg-[#0A0F1E] border-t border-white/5 py-28 px-6 md:px-12 lg:px-24"
       >
-        <div className="absolute inset-0 grid-bg pointer-events-none opacity-60" />
+        <div className="absolute inset-0 grid-bg pointer-events-none opacity-40" />
+        {/* Subtle scan line */}
+        <div className="scan-line" style={{ animationDelay: "3s", opacity: 0.4 }} />
+
         <div className="relative max-w-7xl mx-auto">
           <SectionHeader
             label="Our Services"
@@ -146,29 +163,35 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* ── SECTION 3: Why BVN ──────────────────────────── */}
+      {/* ── SECTION 3: Why BVN / Stats ──────────────────────── */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={sectionVariants}
-        className="relative py-24 px-6 md:px-12 lg:px-24 bg-navy-surface border-t border-white/5"
+        className="relative py-28 px-6 md:px-12 lg:px-24 bg-[#080C18] border-t border-white/5"
       >
-        <div className="max-w-7xl mx-auto">
+        {/* Floating orbs */}
+        <div className="absolute top-0 left-0 w-96 h-96 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(232,96,16,0.07) 0%, transparent 70%)", filter: "blur(40px)" }} />
+        <div className="absolute bottom-0 right-0 w-96 h-96 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(96,165,250,0.06) 0%, transparent 70%)", filter: "blur(40px)" }} />
+
+        <div className="max-w-7xl mx-auto relative">
           <SectionHeader
             label="Why BVN"
             title="Numbers That Speak<br/>for Themselves"
-            subtitle="We've delivered results for businesses across industries — from startups to established enterprises."
+            subtitle="Delivering results for businesses across industries — from startups to established enterprises worldwide."
             centered
           />
 
-          {/* Stats Row */}
+          {/* Stats */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16"
           >
             {[
               { target: 238, suffix: "+", label: "Clients Served" },
@@ -177,109 +200,120 @@ export default function HomePage() {
               { target: 8, suffix: "+", label: "Automation Services" },
             ].map((stat) => (
               <motion.div key={stat.label} variants={childVariant}>
-                <AnimatedCounter
-                  target={stat.target}
-                  suffix={stat.suffix}
-                  label={stat.label}
-                />
+                <AnimatedCounter target={stat.target} suffix={stat.suffix} label={stat.label} />
               </motion.div>
             ))}
           </motion.div>
 
-          {/* Feature Pills */}
+          {/* Feature pills — futuristic version */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
           >
-            {featurePills.map(({ icon: PillIcon, label }) => (
+            {featurePills.map(({ icon: PillIcon, label, sub }) => (
               <motion.div
                 key={label}
                 variants={childVariant}
-                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3
-                  hover:border-orange/30 hover:bg-white/8 transition-colors"
+                whileHover={{ y: -4, scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+                className="group relative flex items-center gap-4 bg-white/[0.04] border border-white/8 rounded-2xl px-5 py-4
+                  hover:border-orange/40 hover:bg-white/[0.07] transition-all duration-300 overflow-hidden"
               >
-                <div className="w-8 h-8 rounded-lg bg-orange/10 flex items-center justify-center shrink-0">
-                  <PillIcon size={16} className="text-orange" />
+                {/* Hover glow */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
+                  style={{ background: "radial-gradient(ellipse at 0% 50%, rgba(232,96,16,0.1), transparent 70%)" }} />
+                <div className="w-10 h-10 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center shrink-0
+                  group-hover:bg-orange/20 group-hover:border-orange/50 transition-all duration-300">
+                  <PillIcon size={18} className="text-orange" />
                 </div>
-                <span className="font-accent font-semibold text-white/80 text-sm">
-                  {label}
-                </span>
+                <div>
+                  <p className="font-accent font-bold text-white/85 text-sm group-hover:text-white transition-colors">{label}</p>
+                  <p className="font-body text-white/35 text-xs mt-0.5 group-hover:text-white/55 transition-colors">{sub}</p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </motion.section>
 
-      {/* ── SECTION 4: CTA Banner ────────────────────────── */}
+      {/* ── SECTION 4: CTA Banner ────────────────────────────── */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={sectionVariants}
-        className="relative py-24 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
-        style={{
-          background:
-            "linear-gradient(135deg, #1B3060 0%, #E86010 50%, #F5A623 100%)",
-        }}
+        className="relative py-28 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
       >
-        {/* Overlay to darken and add texture */}
-        <div className="absolute inset-0 bg-navy-dark/50 grid-bg" />
+        {/* Aurora background */}
+        <div className="absolute inset-0 bg-[#0A0F1E]" />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(232,96,16,0.18) 0%, rgba(27,48,96,0.12) 40%, transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 60% 80% at 20% 50%, rgba(27,48,96,0.3) 0%, transparent 60%)" }} />
+        <div className="absolute inset-0 grid-bg opacity-30" />
+
+        {/* Animated scan line */}
+        <div className="scan-line" style={{ animationDelay: "1s" }} />
+
+        {/* Corner decorators */}
+        <div className="absolute top-8 left-8 corner-tl w-10 h-10" />
+        <div className="absolute top-8 right-8 corner-tr w-10 h-10" />
+        <div className="absolute bottom-8 left-8 corner-bl w-10 h-10" />
+        <div className="absolute bottom-8 right-8 corner-br w-10 h-10" />
 
         <div className="relative max-w-4xl mx-auto text-center">
-          <motion.span
-            variants={childVariant}
-            className="inline-block font-accent font-semibold text-xs tracking-[0.2em] uppercase
-              text-orange-light mb-4 px-3 py-1.5 rounded-full bg-white/10 border border-white/20"
-          >
-            Let&apos;s Grow Together
-          </motion.span>
+          <motion.div variants={childVariant} className="mb-6 flex justify-center">
+            <span className="inline-flex items-center gap-2 font-accent font-semibold text-xs tracking-[0.2em] uppercase
+              text-orange px-4 py-2 rounded-full bg-orange/10 border border-orange/25 neon-border">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange" style={{ boxShadow: "0 0 6px rgba(232,96,16,1)" }} />
+              Let&apos;s Grow Together
+            </span>
+          </motion.div>
 
           <motion.h2
             variants={childVariant}
             className="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl text-white mb-4 leading-tight"
           >
             Ready to Grow?{" "}
-            <span className="text-orange-light">Let&apos;s Talk.</span>
+            <span className="text-gradient">Let&apos;s Talk.</span>
           </motion.h2>
 
-          <motion.p
-            variants={childVariant}
-            className="text-white/80 text-lg mb-10 max-w-2xl mx-auto"
-          >
+          {/* Glowing line */}
+          <motion.div variants={childVariant} className="flex justify-center mb-6">
+            <div className="h-px w-40"
+              style={{ background: "linear-gradient(90deg, transparent, #E86010, transparent)", boxShadow: "0 0 20px rgba(232,96,16,0.5)" }} />
+          </motion.div>
+
+          <motion.p variants={childVariant} className="text-white/55 text-lg mb-10 max-w-2xl mx-auto">
             Contact us today and discover what BVN can do for your business.
           </motion.p>
 
           <motion.div variants={childVariant} className="mb-8">
-            <GlowButton
-              href="/contact"
-              variant="filled"
-              showArrow
-              className="text-base px-8 py-4 shadow-[0_0_32px_rgba(232,96,16,0.6)]"
-            >
+            <GlowButton href="/contact" variant="filled" showArrow
+              className="text-base px-8 py-4 neon-glow">
               Book a Free Consultation
             </GlowButton>
           </motion.div>
 
-          {/* Contact Info */}
           <motion.div
             variants={staggerContainer}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 text-white/70"
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 text-white/50"
           >
-            <a
-              href="mailto:bvn@bvnofficial.com"
-              className="flex items-center gap-2 hover:text-white transition-colors"
-            >
-              <Mail size={16} className="text-orange-light" />
+            <a href="mailto:bvn@bvnofficial.com"
+              className="flex items-center gap-2 hover:text-orange transition-colors duration-200 group">
+              <div className="w-7 h-7 rounded-lg bg-orange/10 border border-orange/20 flex items-center justify-center group-hover:border-orange/50 transition-colors">
+                <Mail size={13} className="text-orange" />
+              </div>
               <span className="text-sm">bvn@bvnofficial.com</span>
             </a>
-            <a
-              href="tel:+639816556555"
-              className="flex items-center gap-2 hover:text-white transition-colors"
-            >
-              <Phone size={16} className="text-orange-light" />
+            <a href="tel:+639816556555"
+              className="flex items-center gap-2 hover:text-orange transition-colors duration-200 group">
+              <div className="w-7 h-7 rounded-lg bg-orange/10 border border-orange/20 flex items-center justify-center group-hover:border-orange/50 transition-colors">
+                <Phone size={13} className="text-orange" />
+              </div>
               <span className="text-sm">+63 981 655 6555</span>
             </a>
           </motion.div>
