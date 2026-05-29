@@ -503,59 +503,87 @@ export default function SarsaRepublikaPage() {
 
       {/* ── HERO ─────────────────────────────────────────── */}
       <section
-        className="relative flex flex-col items-center justify-center text-center px-6 py-24 overflow-hidden"
-        style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${C.redDark}55 0%, ${C.dark} 70%)` }}
+        className="relative flex flex-col items-center justify-center text-center px-6 pt-16 pb-24 overflow-hidden"
+        style={{ background: `radial-gradient(ellipse 100% 70% at 50% 0%, ${C.redDark}88 0%, ${C.dark} 65%)` }}
       >
-        {/* Decorative ring */}
+        {/* Decorative rings */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-white/5" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-white/5" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-white/5" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full border border-white/5" />
+          {/* Orange heat glow behind logo */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[420px] h-[420px] rounded-full"
+            style={{ background: `radial-gradient(circle, ${C.orange}22 0%, transparent 70%)` }} />
         </div>
 
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6 border"
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-8 border"
           style={{ borderColor: `${C.orange}55`, background: `${C.orange}15`, color: C.orange }}
         >
           <Flame size={12} /> Business Concept · Developed by BVN
         </motion.div>
 
-        {/* Logo */}
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>
+        {/* Logo with glow halo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
+          className="relative mb-4"
+        >
+          {/* Outer glow ring */}
+          <div className="absolute inset-0 rounded-full -m-6"
+            style={{ background: `radial-gradient(circle, ${C.orange}30 0%, ${C.red}18 40%, transparent 70%)`,
+              filter: "blur(18px)" }} />
+          {/* Inner bright ring */}
+          <div className="absolute inset-0 rounded-full -m-2"
+            style={{ boxShadow: `0 0 60px 20px ${C.orange}28, 0 0 120px 40px ${C.red}18` }} />
           <Image
             src="/sarsa-republika-logo.png"
             alt="Sarsa Republika Logo"
-            width={340}
-            height={340}
-            className="mx-auto drop-shadow-2xl"
+            width={420}
+            height={420}
+            className="relative mx-auto"
+            style={{ filter: `drop-shadow(0 0 24px ${C.orange}80) drop-shadow(0 8px 32px rgba(0,0,0,0.8))` }}
             priority
           />
         </motion.div>
 
+        {/* SPATCHCOCK headline */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}>
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="h-px w-12 md:w-20" style={{ background: `linear-gradient(to right, transparent, ${C.orange}80)` }} />
+            <p className="font-heading font-black text-xl md:text-2xl tracking-[0.25em] uppercase"
+              style={{ background: `linear-gradient(135deg, ${C.orange}, ${C.gold})`,
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Spatchcock Rotisserie
+            </p>
+            <div className="h-px w-12 md:w-20" style={{ background: `linear-gradient(to left, transparent, ${C.orange}80)` }} />
+          </div>
+        </motion.div>
+
         <motion.p
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-          className="mt-6 text-lg md:text-xl max-w-xl"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+          className="text-base md:text-lg max-w-lg leading-relaxed"
           style={{ color: C.muted }}
         >
-          Filipino spatchcock rotisserie chicken · 13 signature sauces · served in a box, street-food style
+          Filipino-style butterfly-cut chicken on a rotating spit · 13 signature sauces · served Peri Peri–style in a branded rice box
         </motion.p>
 
         {/* Pillars */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
           className="flex flex-wrap items-center justify-center gap-3 mt-8"
         >
           {[
-            { icon: "🔥", text: "Spatchcock Rotisserie" },
+            { icon: "🔥", text: "Spatchcock Cut" },
             { icon: "🫙", text: "13 Filipino Sauces" },
-            { icon: "📦", text: "Rice Box Concept" },
+            { icon: "📦", text: "Peri Peri–Style Box" },
             { icon: "🛒", text: "Stainless Street Cart" },
           ].map((p) => (
             <div
               key={p.text}
               className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
-              style={{ background: `${C.card}`, border: `1px solid ${C.border}`, color: C.text }}
+              style={{ background: `${C.card}`, border: `1px solid ${C.orange}30`, color: C.text }}
             >
               <span>{p.icon}</span> {p.text}
             </div>
