@@ -199,18 +199,18 @@ const operationsPlans = [
 
 // ── VA Hourly Rates ───────────────────────────────────────
 const vaRates = [
-  { type: "General / Admin VA", rate: "$5–$8/hr" },
-  { type: "Customer Support VA", rate: "$6–$9/hr" },
-  { type: "Social Media Manager VA", rate: "$8–$12/hr" },
-  { type: "Executive Assistant", rate: "$10–$15/hr" },
-  { type: "Research & Content VA", rate: "$7–$11/hr" },
-  { type: "HR & Recruitment VA", rate: "$8–$12/hr" },
+  { type: "General / Admin VA", rate: "$8–$12/hr" },
+  { type: "Customer Support VA", rate: "$9–$14/hr" },
+  { type: "Social Media Manager VA", rate: "$12–$18/hr" },
+  { type: "Executive Assistant", rate: "$15–$22/hr" },
+  { type: "Research & Content VA", rate: "$10–$16/hr" },
+  { type: "HR & Recruitment VA", rate: "$12–$18/hr" },
 ];
 
 const vaPackages = [
-  { name: "Trial", hours: "20 hrs/mo", price: "$120–$200" },
-  { name: "Part-Time", hours: "80 hrs/mo", price: "$480–$800" },
-  { name: "Full-Time", hours: "160 hrs/mo", price: "$960–$1,600+" },
+  { name: "Trial", hours: "20 hrs/mo", price: "$200–$350" },
+  { name: "Part-Time", hours: "80 hrs/mo", price: "$800–$1,400" },
+  { name: "Full-Time", hours: "160 hrs/mo", price: "$1,600–$2,800+" },
 ];
 
 function Note({ children }: { children: React.ReactNode }) {
