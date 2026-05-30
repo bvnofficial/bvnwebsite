@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>VAT Calculator Philippines 12% — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.wrap{max-width:600px;margin:0 auto}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:22px;margin-bottom:14px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}
+input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;color:#fff;font-size:1.1rem;outline:none;transition:.2s}
+input:focus{border-color:rgba(232,96,16,.6)}
+.tog{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.togbtn{padding:11px;border-radius:10px;font-size:.85rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s;text-align:center}
+.togbtn.active{background:#E86010;border-color:#E86010;color:#fff}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border-bottom:none}.row.total{border-top:2px solid rgba(255,255,255,.1);margin-top:4px;padding-top:16px}
+.row .n{font-size:.85rem;color:rgba(255,255,255,.65)}.row .n small{display:block;font-size:.7rem;color:rgba(255,255,255,.3);margin-top:1px}
+.row .v{font-size:.95rem;font-weight:700}
+.green{color:#34d399}.red{color:#f87171}.orange{color:#E86010}.white{color:#fff}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.qbtn{padding:8px 4px;border-radius:8px;font-size:.75rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.6);cursor:pointer;text-align:center;transition:.2s}
+.qbtn:hover{border-color:rgba(232,96,16,.4);color:#E86010}
+.also{background:#1a1a0a;border:1px solid rgba(232,96,16,.15);border-radius:12px;padding:16px;margin-top:14px}
+.also h3{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(232,96,16,.7);margin-bottom:10px}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25);margin-top:20px}.ft a{color:#E86010;text-decoration:none}
+</style></head>
+<body>
+<h1>🧮 VAT Calculator Philippines</h1>
+<p class="sub">Compute 12% Value-Added Tax — inclusive and exclusive — instantly</p>
+<div class="wrap">
+  <div class="card">
+    <div class="ct">Enter Amount</div>
+    <label>Amount (₱)</label>
+    <input type="number" id="amount" placeholder="e.g. 10000" oninput="calc()" value="10000"/>
+    <div class="quick">
+      <button class="qbtn" onclick="setAmt(1000)">₱1,000</button>
+      <button class="qbtn" onclick="setAmt(5000)">₱5,000</button>
+      <button class="qbtn" onclick="setAmt(10000)">₱10,000</button>
+      <button class="qbtn" onclick="setAmt(50000)">₱50,000</button>
+    </div>
+    <div class="tog" style="margin-top:14px">
+      <button class="togbtn active" id="btnExcl" onclick="setMode('excl')">VAT Exclusive<br/><small style="font-size:.7rem;opacity:.7">Add VAT to amount</small></button>
+      <button class="togbtn" id="btnIncl" onclick="setMode('incl')">VAT Inclusive<br/><small style="font-size:.7rem;opacity:.7">Extract VAT from amount</small></button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Results</div>
+    <div class="row"><div class="n">Input Amount<small id="modeLabel">VAT not included</small></div><div class="v white" id="rInput">₱0</div></div>
+    <div class="row"><div class="n">VAT (12%)</div><div class="v red" id="rVAT">₱0</div></div>
+    <div class="row total"><div class="n" style="font-weight:700;color:#fff">Gross Amount (with VAT)</div><div class="v orange" id="rGross">₱0</div></div>
+  </div>
+  <div class="also">
+    <h3>Also: 3% Percentage Tax (Non-VAT Taxpayers)</h3>
+    <div class="row" style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+      <div class="n" style="font-size:.8rem">3% Tax on gross receipts</div>
+      <div class="v" id="r3pct" style="color:#60a5fa">₱0</div>
+    </div>
+    <p style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:8px;line-height:1.5">Non-VAT registered businesses (gross receipts below ₱3M/year) pay 3% percentage tax instead of 12% VAT. Under TRAIN Law, this was temporarily reduced to 1% (2020–2023), now back to 3%.</p>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="ct">Bulk VAT Calculation</div>
+    <p style="font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:10px">Multiple amounts? Enter one per line:</p>
+    <textarea id="bulk" rows="4" style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.85rem;outline:none;resize:none" placeholder="1000&#10;2500&#10;8750" oninput="bulkCalc()"></textarea>
+    <div id="bulkRes" style="margin-top:10px;font-size:.8rem;color:rgba(255,255,255,.6)"></div>
+  </div>
+</div>
+<div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Business Automation Agency</a></div>
+<script>
+const fmt=n=>'₱'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+let mode='excl';
+function setMode(m){mode=m;document.getElementById('btnExcl').classList.toggle('active',m==='excl');document.getElementById('btnIncl').classList.toggle('active',m==='incl');document.getElementById('modeLabel').textContent=m==='excl'?'VAT not included':'VAT already included';calc();}
+function setAmt(v){document.getElementById('amount').value=v;calc();}
+function calc(){
+  const a=parseFloat(document.getElementById('amount').value)||0;
+  let net,vat,gross;
+  if(mode==='excl'){net=a;vat=a*0.12;gross=a+vat;}
+  else{gross=a;net=a/1.12;vat=a-net;}
+  document.getElementById('rInput').textContent=fmt(a);
+  document.getElementById('rVAT').textContent=fmt(vat);
+  document.getElementById('rGross').textContent=fmt(gross);
+  document.getElementById('r3pct').textContent=fmt(net*0.03);
+}
+function bulkCalc(){
+  const lines=document.getElementById('bulk').value.split('\n').filter(l=>l.trim());
+  if(!lines.length){document.getElementById('bulkRes').innerHTML='';return;}
+  let totalNet=0,totalVat=0;
+  const rows=lines.map(l=>{const v=parseFloat(l)||0;const vat=v*0.12;totalNet+=v;totalVat+=vat;return `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span>${fmt(v)}</span><span style="color:#f87171">+${fmt(vat)}</span><span style="color:#E86010">${fmt(v+vat)}</span></div>`;});
+  rows.push(`<div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700;border-top:2px solid rgba(255,255,255,.1);margin-top:4px"><span>TOTAL</span><span style="color:#f87171">+${fmt(totalVat)}</span><span style="color:#E86010">${fmt(totalNet+totalVat)}</span></div>`);
+  document.getElementById('bulkRes').innerHTML=rows.join('');
+}
+calc();
+</script></body></html>

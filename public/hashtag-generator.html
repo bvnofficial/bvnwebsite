@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Free Hashtag Generator for Instagram & TikTok — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.wrap{max-width:720px;margin:0 auto}.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+input,select,textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s;resize:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(232,96,16,.6)}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}label:first-of-type{margin-top:0}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.cat{padding:6px 12px;border-radius:8px;font-size:.75rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.cat.active{background:#E86010;border-color:#E86010;color:#fff}.cat:hover:not(.active){border-color:rgba(232,96,16,.4);color:rgba(255,255,255,.8)}
+.platforms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.plt{padding:8px;border-radius:10px;font-size:.78rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s;text-align:center}
+.plt.active{background:rgba(232,96,16,.15);border-color:rgba(232,96,16,.4);color:#E86010}
+.btn{width:100%;background:#E86010;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:14px;transition:.2s}.btn:hover{background:#F5A623}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tag{padding:6px 12px;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;user-select:none}
+.tag.pop{background:rgba(232,96,16,.15);border:1px solid rgba(232,96,16,.3);color:#E86010}
+.tag.pop:hover{background:rgba(232,96,16,.3)}
+.tag.med{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.25);color:#60a5fa}
+.tag.med:hover{background:rgba(96,165,250,.25)}
+.tag.nich{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:#a78bfa}
+.tag.nich:hover{background:rgba(167,139,250,.2)}
+.tag.copied{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.4);color:#34d399}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.72rem;margin-top:10px}
+.leg{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.45)}
+.leg span{width:10px;height:10px;border-radius:3px;display:inline-block}
+.actions{display:flex;gap:8px;margin-top:12px}
+.abtn{flex:1;padding:10px;border-radius:10px;font-size:.8rem;font-weight:600;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);cursor:pointer;transition:.2s}
+.abtn:hover{background:rgba(255,255,255,.12)}
+.count{font-size:.72rem;color:rgba(255,255,255,.35);margin-top:6px;text-align:right}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25);margin-top:16px}.ft a{color:#E86010;text-decoration:none}
+</style></head>
+<body>
+<h1>📱 Hashtag Generator</h1>
+<p class="sub">Find the best hashtags for Instagram, TikTok & Facebook — free, instant, Philippines-ready</p>
+<div class="wrap">
+  <div class="card">
+    <div class="ct">Platform</div>
+    <div class="platforms">
+      <button class="plt active" id="plt-ig" onclick="setPlt('ig',this)">📸 Instagram</button>
+      <button class="plt" id="plt-tt" onclick="setPlt('tt',this)">🎵 TikTok</button>
+      <button class="plt" id="plt-fb" onclick="setPlt('fb',this)">👍 Facebook</button>
+    </div>
+    <label style="margin-top:14px">Topic or Keyword</label>
+    <input type="text" id="topic" placeholder="e.g. restaurant Manila, online business, fitness"/>
+    <label>Category</label>
+    <div class="cats" id="cats"></div>
+    <label>Count</label>
+    <select id="count"><option value="15">15 hashtags</option><option value="20">20 hashtags</option><option value="25" selected>25 hashtags</option><option value="30">30 hashtags</option></select>
+    <button class="btn" onclick="generate()">Generate Hashtags →</button>
+  </div>
+  <div class="card" id="resCard" style="display:none">
+    <div class="ct">Generated Hashtags <span id="resCount" style="color:#E86010"></span></div>
+    <p style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:10px">Click any hashtag to copy it. Click Copy All to copy everything.</p>
+    <div class="tags" id="tagList"></div>
+    <div class="legend">
+      <div class="leg"><span style="background:rgba(232,96,16,.5)"></span> Popular (high reach)</div>
+      <div class="leg"><span style="background:rgba(96,165,250,.5)"></span> Medium (balanced)</div>
+      <div class="leg"><span style="background:rgba(167,139,250,.5)"></span> Niche (targeted)</div>
+    </div>
+    <div class="count" id="countLbl"></div>
+    <div class="actions">
+      <button class="abtn" onclick="copyAll()">📋 Copy All</button>
+      <button class="abtn" onclick="copyCaption()">✍️ Copy as Caption</button>
+      <button class="abtn" onclick="regenerate()">🔄 Regenerate</button>
+    </div>
+    <textarea id="hiddenArea" style="position:absolute;left:-9999px" readonly></textarea>
+  </div>
+</div>
+<div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Digital Marketing Agency</a></div>
+<script>
+const DB = {
+  food:[
+    {t:['foodie','foodporn','instafood','foodphotography','delicious'],tier:'pop'},
+    {t:['philippinefood','pinoyfood','lutongpinoy','filipinofood','foodph'],tier:'med'},
+    {t:['homecooking','foodlover','yummy','freshfood','healthyeating','localfood'],tier:'nich'},
+  ],
+  business:[
+    {t:['entrepreneur','business','startup','success','marketing'],tier:'pop'},
+    {t:['pinoyentrepreneur','businessph','msme','smallbusiness','onlinebusiness'],tier:'med'},
+    {t:['bizowner','grindtime','entrepreneurlife','b2b','businessgrowth'],tier:'nich'},
+  ],
+  fashion:[
+    {t:['fashion','ootd','style','outfit','instafashion'],tier:'pop'},
+    {t:['pinayootd','filipinafashion','phnstyle','localfashion','styleinfluencer'],tier:'med'},
+    {t:['fashionblogger','styletips','fashionph','outfitoftheday','trendingph'],tier:'nich'},
+  ],
+  tech:[
+    {t:['technology','tech','innovation','digital','ai'],tier:'pop'},
+    {t:['techph','digitaltransformation','automation','techstartup','pinoydeveloper'],tier:'med'},
+    {t:['softwaredev','webdev','coding','devlife','techcommunity'],tier:'nich'},
+  ],
+  travel:[
+    {t:['travel','wanderlust','explore','philippines','travelph'],tier:'pop'},
+    {t:['visayas','luzon','mindanao','islandlife','beachph'],tier:'med'},
+    {t:['hiddenbeach','travelblogger','budgettravel','pilipinas','discoverph'],tier:'nich'},
+  ],
+  beauty:[
+    {t:['beauty','makeup','skincare','glam','selfcare'],tier:'pop'},
+    {t:['pinaybeauty','filipinabeauty','beautyph','localbrand','skincareph'],tier:'med'},
+    {t:['beautyblogger','makeuptutorial','glowup','kbeauty','cleanbeauty'],tier:'nich'},
+  ],
+  fitness:[
+    {t:['fitness','workout','gym','health','fitlife'],tier:'pop'},
+    {t:['fitnessph','gymph','pinayfit','healthyph','fitnessmotivation'],tier:'med'},
+    {t:['homeworkout','weightloss','gymlife','fitnessblogger','healthylifestyle'],tier:'nich'},
+  ],
+  realestate:[
+    {t:['realestate','property','investment','homesweethome','housegoals'],tier:'pop'},
+    {t:['realestateph','propertyph','condoph','housingph','manilarealty'],tier:'med'},
+    {t:['propertyinvestment','realtorph','affordablehousing','condolife','metromanilaproperty'],tier:'nich'},
+  ],
+  general:[
+    {t:['philippines','pilipinas','proud2bepinoy','pinoy','manila'],tier:'pop'},
+    {t:['phmade','localph','supportlocal','phbusiness','baybayin'],tier:'med'},
+    {t:['pinoypride','everyday','lifeph','phentrepreneur','discoverph'],tier:'nich'},
+  ],
+  marketing:[
+    {t:['marketing','digitalmarketing','socialmedia','branding','contentcreator'],tier:'pop'},
+    {t:['marketingph','digitalph','brandingph','smm','contentph'],tier:'med'},
+    {t:['marketingtips','growyourbrand','contentmarketing','seo','leadgeneration'],tier:'nich'},
+  ],
+};
+const CATS=['Food 🍜','Business 💼','Fashion 👗','Tech 💻','Travel ✈️','Beauty 💄','Fitness 💪','Real Estate 🏠','Marketing 📊','General 🇵🇭'];
+const CAT_KEYS=['food','business','fashion','tech','travel','beauty','fitness','realestate','marketing','general'];
+let selCat='general',selPlt='ig',lastTags=[];
+
+function init(){
+  const c=document.getElementById('cats');
+  CATS.forEach((n,i)=>{
+    const b=document.createElement('button');b.className='cat'+(i===9?' active':'');
+    b.textContent=n;b.onclick=()=>{document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));b.classList.add('active');selCat=CAT_KEYS[i];};
+    c.appendChild(b);
+  });
+}
+function setPlt(p,el){selPlt=p;document.querySelectorAll('.plt').forEach(x=>x.classList.remove('active'));el.classList.add('active');}
+function generate(){
+  const topic=document.getElementById('topic').value.trim();
+  const count=parseInt(document.getElementById('count').value);
+  const cats=DB[selCat]||DB.general;
+  let tags=[];
+  cats.forEach(g=>{g.t.forEach(t=>tags.push({tag:'#'+t,tier:g.tier}));});
+  // Add topic-based tags
+  if(topic){const w=topic.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(Boolean);
+    w.forEach(word=>{tags.unshift({tag:'#'+word,tier:'pop'},{tag:'#'+word+'ph',tier:'med'},{tag:'#'+word+'philippines',tier:'nich'});});}
+  // Add general PH tags
+  const ph=[{tag:'#philippines',tier:'pop'},{tag:'#pilipinas',tier:'pop'},{tag:'#pinoy',tier:'med'},{tag:'#supportlocal',tier:'med'},{tag:'#phinstagram',tier:'nich'}];
+  ph.forEach(t=>tags.push(t));
+  // Deduplicate, shuffle, slice
+  const seen=new Set();tags=tags.filter(t=>{if(seen.has(t.tag))return false;seen.add(t.tag);return true;});
+  tags=tags.sort(()=>Math.random()-0.5).slice(0,count);
+  lastTags=tags;
+  renderTags(tags);
+  document.getElementById('resCard').style.display='block';
+  document.getElementById('resCount').textContent=`(${tags.length})`;
+  const lim=selPlt==='ig'?30:selPlt==='tt'?20:25;
+  document.getElementById('countLbl').textContent=`${tags.length} hashtags selected. Platform limit: ~${lim} recommended for ${selPlt==='ig'?'Instagram':selPlt==='tt'?'TikTok':'Facebook'}`;
+}
+function renderTags(tags){
+  const c=document.getElementById('tagList');c.innerHTML='';
+  tags.forEach(({tag,tier})=>{
+    const el=document.createElement('div');el.className='tag '+tier;el.textContent=tag;
+    el.onclick=()=>{navigator.clipboard.writeText(tag);el.classList.add('copied');el.textContent='✓ Copied!';setTimeout(()=>{el.classList.remove('copied');el.textContent=tag;},1500);};
+    c.appendChild(el);
+  });
+}
+function copyAll(){const text=lastTags.map(t=>t.tag).join(' ');navigator.clipboard.writeText(text);alert('All hashtags copied!');}
+function copyCaption(){const text='\n\n'+lastTags.map(t=>t.tag).join(' ');navigator.clipboard.writeText(text);alert('Caption format copied!');}
+function regenerate(){generate();}
+init();
+</script></body></html>

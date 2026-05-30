@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 
@@ -86,6 +86,78 @@ const apps = [
     href: "/apps/tracker-detector",
     badge: "Free Tool",
     color: "blue",
+  },
+  {
+    icon: Landmark,
+    title: "Loan Calculator Philippines",
+    description: "Calculate monthly amortization for personal loans, car loans, housing loans, SSS, and Pag-IBIG. Full amortization schedule included.",
+    href: "/apps/loan-calculator",
+    badge: "🔥 Popular",
+    color: "yellow",
+  },
+  {
+    icon: Calculator,
+    title: "VAT Calculator Philippines",
+    description: "Compute 12% VAT inclusive and exclusive instantly. Includes 3% percentage tax for non-VAT businesses and bulk calculation.",
+    href: "/apps/vat-calculator",
+    badge: "Free Tool",
+    color: "blue",
+  },
+  {
+    icon: Hash,
+    title: "Hashtag Generator",
+    description: "Find the best Instagram and TikTok hashtags for your content. Sorted by popularity — popular, medium, and niche tags by category.",
+    href: "/apps/hashtag-generator",
+    badge: "Free Tool",
+    color: "purple",
+  },
+  {
+    icon: KeyRound,
+    title: "Password Generator",
+    description: "Generate strong, secure passwords instantly. Customize length, character types, and strength. 100% private — nothing is stored.",
+    href: "/apps/password-generator",
+    badge: "Free Tool",
+    color: "green",
+  },
+  {
+    icon: Building2,
+    title: "CHB / Hollow Block Calculator",
+    description: "Calculate CHB blocks, cement bags, and sand needed for any wall. Includes door/window deductions and wastage factor.",
+    href: "/apps/chb-calculator",
+    badge: "Free Tool",
+    color: "orange",
+  },
+  {
+    icon: Paintbrush,
+    title: "Paint Calculator Philippines",
+    description: "Calculate how many liters of paint you need for any room, wall, ceiling, or exterior. Includes cost estimate and local brand reference.",
+    href: "/apps/paint-calculator",
+    badge: "Free Tool",
+    color: "orange",
+  },
+  {
+    icon: Link2,
+    title: "UTM Link Builder",
+    description: "Build trackable campaign URLs for Google Analytics, Facebook, TikTok, and email marketing. Save history, use presets.",
+    href: "/apps/utm-builder",
+    badge: "Free Tool",
+    color: "blue",
+  },
+  {
+    icon: TrendingUp,
+    title: "Break-Even Calculator",
+    description: "Find exactly when your business starts making profit. Enter fixed costs, variable costs, and selling price — get your break-even point.",
+    href: "/apps/break-even-calculator",
+    badge: "Free Tool",
+    color: "green",
+  },
+  {
+    icon: Tag,
+    title: "Meta Tag Generator",
+    description: "Generate perfect SEO meta tags, Open Graph, and Twitter Card tags with live Google and Facebook preview. Copy-ready HTML output.",
+    href: "/apps/meta-tag-generator",
+    badge: "Free Tool",
+    color: "purple",
   },
 ];
 

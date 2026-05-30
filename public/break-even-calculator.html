@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Break-Even Calculator — Philippines Business Tool — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.wrap{max-width:700px;margin:0 auto}.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}label:first-of-type{margin-top:0}
+label em{color:rgba(255,255,255,.3);font-style:normal;font-size:.7rem;margin-left:4px}
+input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s}
+input:focus{border-color:rgba(232,96,16,.6)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;background:#E86010;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:14px;transition:.2s}.btn:hover{background:#F5A623}
+.res{display:none;max-width:700px;margin:0 auto}
+.hero{text-align:center;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hero-card{border-radius:16px;padding:20px}
+.hero-card.green{background:linear-gradient(135deg,#0d1f0d,#1a301a);border:1px solid rgba(52,211,153,.2)}
+.hero-card.orange{background:linear-gradient(135deg,#1a1200,#221800);border:1px solid rgba(232,96,16,.2)}
+.h-lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px}
+.h-amt{font-size:1.8rem;font-weight:900}.h-sub{font-size:.75rem;color:rgba(255,255,255,.4);margin-top:4px}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border:none}.row .n{font-size:.84rem;color:rgba(255,255,255,.65)}.row .n small{display:block;font-size:.7rem;color:rgba(255,255,255,.3)}
+.row .v{font-weight:700}
+.chart-wrap{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}
+.chart{height:180px;position:relative;margin-top:10px;border-left:1px solid rgba(255,255,255,.15);border-bottom:1px solid rgba(255,255,255,.15)}
+.chart-bar{position:absolute;bottom:0;border-radius:4px 4px 0 0;transition:height .5s ease}
+.chart-lbl{position:absolute;bottom:-20px;font-size:.6rem;color:rgba(255,255,255,.4);transform:translateX(-50%);white-space:nowrap}
+.table{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;margin-bottom:14px}
+.th{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;background:rgba(255,255,255,.06);padding:10px 14px}
+.th span{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4)}
+.tr{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:9px 14px;border-top:1px solid rgba(255,255,255,.05);font-size:.78rem}
+.tr:nth-child(odd){background:rgba(255,255,255,.02)}
+.recalc{width:100%;max-width:700px;display:block;margin:0 auto 14px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25)}.ft a{color:#E86010;text-decoration:none}
+@media(max-width:480px){.row2{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.th,.tr{grid-template-columns:1fr 1fr 1fr}.th span:last-child,.tr span:last-child{display:none}}
+</style></head>
+<body>
+<h1>📊 Break-Even Calculator</h1>
+<p class="sub">Find out exactly when your business starts making money — free tool for Filipino entrepreneurs</p>
+<div class="wrap">
+  <div class="card" id="inp">
+    <div class="ct">Business Costs & Pricing</div>
+    <div class="row2">
+      <div><label>Monthly Fixed Costs (₱)<em>Rent, salaries, utilities...</em></label><input type="number" id="fixed" value="50000" min="0" placeholder="e.g. 50000"/></div>
+      <div><label>Variable Cost per Unit (₱)<em>Materials, packaging per item...</em></label><input type="number" id="variable" value="120" min="0" placeholder="e.g. 120"/></div>
+    </div>
+    <div class="row2">
+      <div><label>Selling Price per Unit (₱)<em>What you charge per item/service</em></label><input type="number" id="price" value="250" min="0" placeholder="e.g. 250"/></div>
+      <div><label>Current Monthly Sales (units)<em>How many you sell per month</em></label><input type="number" id="current" value="300" min="0" placeholder="e.g. 300"/></div>
+    </div>
+    <div class="row2">
+      <div><label>Business Type</label>
+        <select id="btype" style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none">
+          <option>Product-based</option><option>Service-based</option><option>Food & Restaurant</option><option>Retail</option><option>Online Store</option>
+        </select>
+      </div>
+      <div><label>Currency</label>
+        <select id="curr" style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none">
+          <option value="₱">₱ Philippine Peso</option><option value="$">$ US Dollar</option><option value="A$">A$ Australian Dollar</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" onclick="calc()">Calculate Break-Even →</button>
+  </div>
+</div>
+<div class="res" id="res">
+  <button class="recalc" onclick="back()">← Edit Inputs</button>
+  <div class="hero">
+    <div class="hero-card green">
+      <div class="h-lbl" style="color:rgba(52,211,153,.8)">Break-Even Units</div>
+      <div class="h-amt" style="color:#34d399" id="rBEU">0</div>
+      <div class="h-sub" id="rBEUlbl">units per month</div>
+    </div>
+    <div class="hero-card orange">
+      <div class="h-lbl" style="color:rgba(232,96,16,.8)">Break-Even Revenue</div>
+      <div class="h-amt" style="color:#E86010" id="rBER">₱0</div>
+      <div class="h-sub">revenue to cover all costs</div>
+    </div>
+  </div>
+  <div class="breakdown">
+    <div class="ct">Financial Summary</div>
+    <div class="row"><div class="n">Fixed Costs</div><div class="v" id="bFixed" style="color:#f87171">₱0</div></div>
+    <div class="row"><div class="n">Variable Cost/Unit</div><div class="v" id="bVar" style="color:#f87171">₱0</div></div>
+    <div class="row"><div class="n">Selling Price/Unit</div><div class="v" id="bPrice" style="color:#34d399">₱0</div></div>
+    <div class="row"><div class="n">Contribution Margin/Unit<small>Selling price − Variable cost</small></div><div class="v" id="bMargin" style="color:#34d399">₱0</div></div>
+    <div class="row"><div class="n">Margin (%)</div><div class="v" id="bMarginPct" style="color:#34d399">0%</div></div>
+    <div class="row"><div class="n">Break-Even Units/Month</div><div class="v" id="bBEU" style="color:#E86010">0</div></div>
+    <div class="row"><div class="n">Your Current Sales</div><div class="v" id="bCur" style="color:#fff">0</div></div>
+    <div class="row"><div class="n">Current Status</div><div class="v" id="bStatus">—</div></div>
+    <div class="row"><div class="n">Current Monthly Profit</div><div class="v" id="bProfit">₱0</div></div>
+  </div>
+  <div class="table">
+    <div class="th"><span>Units Sold</span><span>Revenue</span><span>Total Cost</span><span>Profit/Loss</span></div>
+    <div id="tableBody"></div>
+  </div>
+</div>
+<div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Business Tools</a></div>
+<script>
+function fmt(n,c='₱'){return c+Math.round(Math.abs(n)).toLocaleString('en-PH');}
+function calc(){
+  const fixed=parseFloat(document.getElementById('fixed').value)||0;
+  const variable=parseFloat(document.getElementById('variable').value)||0;
+  const price=parseFloat(document.getElementById('price').value)||0;
+  const current=parseFloat(document.getElementById('current').value)||0;
+  const c=document.getElementById('curr').value;
+  if(price<=variable){alert('Selling price must be higher than variable cost!');return;}
+  const margin=price-variable;
+  const marginPct=(margin/price*100).toFixed(1);
+  const beu=Math.ceil(fixed/margin);
+  const ber=beu*price;
+  const curRevenue=current*price;
+  const curCost=fixed+current*variable;
+  const curProfit=curRevenue-curCost;
+  document.getElementById('rBEU').textContent=beu.toLocaleString();
+  document.getElementById('rBEUlbl').textContent='units per month needed';
+  document.getElementById('rBER').textContent=fmt(ber,c);
+  document.getElementById('bFixed').textContent=fmt(fixed,c);
+  document.getElementById('bVar').textContent=fmt(variable,c);
+  document.getElementById('bPrice').textContent=fmt(price,c);
+  document.getElementById('bMargin').textContent=fmt(margin,c);
+  document.getElementById('bMarginPct').textContent=marginPct+'%';
+  document.getElementById('bBEU').textContent=beu.toLocaleString()+' units';
+  document.getElementById('bCur').textContent=current.toLocaleString()+' units';
+  const above=current>=beu;
+  document.getElementById('bStatus').textContent=above?'✅ Profitable (+'+(current-beu)+' units above break-even)':'❌ Below break-even (need '+(beu-current)+' more units)';
+  document.getElementById('bStatus').style.color=above?'#34d399':'#f87171';
+  document.getElementById('bProfit').textContent=(curProfit>=0?'+':'')+fmt(curProfit,c);
+  document.getElementById('bProfit').style.color=curProfit>=0?'#34d399':'#f87171';
+  // Table at various sales levels
+  const steps=[Math.round(beu*0.25),Math.round(beu*0.5),Math.round(beu*0.75),beu,Math.round(beu*1.25),Math.round(beu*1.5),Math.round(beu*2)];
+  const rows=steps.map(u=>{const rev=u*price;const cost=fixed+u*variable;const profit=rev-cost;
+    return `<div class="tr ${u===beu?'style="background:rgba(232,96,16,.08)"':''}"><span>${u.toLocaleString()}</span><span>${fmt(rev,c)}</span><span>${fmt(cost,c)}</span><span style="color:${profit>=0?'#34d399':'#f87171'}">${profit>=0?'+':''}${fmt(profit,c)}</span></div>`;});
+  document.getElementById('tableBody').innerHTML=rows.join('');
+  document.getElementById('inp').style.display='none';document.getElementById('res').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function back(){document.getElementById('inp').style.display='block';document.getElementById('res').style.display='none';}
+</script></body></html>

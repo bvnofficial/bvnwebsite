@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Free UTM Link Builder — Track Marketing Campaigns — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.wrap{max-width:700px;margin:0 auto}.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}label:first-of-type{margin-top:0}
+label span{color:rgba(232,96,16,.8);margin-left:3px}label em{color:rgba(255,255,255,.3);font-style:normal;font-size:.7rem;margin-left:6px}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(232,96,16,.6)}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.pre{padding:6px 12px;border-radius:8px;font-size:.74rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.pre:hover{border-color:rgba(232,96,16,.4);color:#E86010}
+.output{background:rgba(232,96,16,.06);border:1px solid rgba(232,96,16,.2);border-radius:14px;padding:16px;margin-top:4px;word-break:break-all;font-family:monospace;font-size:.82rem;color:#F5A623;min-height:50px;line-height:1.6}
+.actions{display:flex;gap:8px;margin-top:10px}
+.abtn{flex:1;padding:10px;border-radius:10px;font-size:.8rem;font-weight:600;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);cursor:pointer;transition:.2s}
+.abtn:hover,.abtn.done{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.3);color:#34d399}
+.abtn.primary{background:#E86010;border-color:#E86010;color:#fff}.abtn.primary:hover{background:#F5A623}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.params{font-size:.72rem;color:rgba(255,255,255,.35);margin-top:8px;padding:10px;background:rgba(255,255,255,.03);border-radius:8px;line-height:1.8}
+.params span{color:#E86010}
+.history{max-height:180px;overflow-y:auto;margin-top:10px}
+.hitem{font-family:monospace;font-size:.74rem;color:rgba(255,255,255,.4);padding:6px 8px;border-radius:6px;cursor:pointer;transition:.2s;word-break:break-all;border-bottom:1px solid rgba(255,255,255,.05)}
+.hitem:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25);margin-top:16px}.ft a{color:#E86010;text-decoration:none}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+</style></head>
+<body>
+<h1>🔗 UTM Link Builder</h1>
+<p class="sub">Build trackable campaign URLs for Google Analytics, Facebook Ads, and more — free</p>
+<div class="wrap">
+  <div class="card">
+    <div class="ct">Quick Presets</div>
+    <div class="presets">
+      <button class="pre" onclick="preset('facebook','social','summer_sale')">📘 Facebook</button>
+      <button class="pre" onclick="preset('google','cpc','brand_keywords')">🔍 Google Ads</button>
+      <button class="pre" onclick="preset('newsletter','email','monthly_update')">📧 Email</button>
+      <button class="pre" onclick="preset('tiktok','social','viral_video')">🎵 TikTok</button>
+      <button class="pre" onclick="preset('instagram','social','ig_story')">📸 Instagram</button>
+      <button class="pre" onclick="preset('viber','messenger','promo_blast')">💬 Viber</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Campaign Parameters</div>
+    <label>Website URL <span>*</span></label>
+    <input type="url" id="url" placeholder="https://www.bvnofficial.com" oninput="build()"/>
+    <div class="row2">
+      <div><label>Campaign Source <span>*</span><em>(where traffic comes from)</em></label>
+        <input type="text" id="source" placeholder="facebook, google, newsletter" oninput="build()"/></div>
+      <div><label>Campaign Medium <span>*</span><em>(marketing channel)</em></label>
+        <input type="text" id="medium" placeholder="social, cpc, email, organic" oninput="build()"/></div>
+    </div>
+    <label>Campaign Name <span>*</span><em>(name your campaign)</em></label>
+    <input type="text" id="name" placeholder="e.g. summer_sale_2026" oninput="build()"/>
+    <div class="row2">
+      <div><label>Campaign Term <em>(paid keywords, optional)</em></label>
+        <input type="text" id="term" placeholder="e.g. digital+marketing" oninput="build()"/></div>
+      <div><label>Campaign Content <em>(differentiate ads, optional)</em></label>
+        <input type="text" id="content" placeholder="e.g. banner_v1" oninput="build()"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Generated UTM URL</div>
+    <div class="output" id="output">Enter a URL and campaign source to generate your tracking link.</div>
+    <div class="actions">
+      <button class="abtn primary" onclick="copyURL()">📋 Copy URL</button>
+      <button class="abtn" onclick="shortURL()">✂️ Shorten</button>
+      <button class="abtn" onclick="reset()">🔄 Reset</button>
+    </div>
+    <div class="params">
+      <strong>UTM Parameters:</strong><br/>
+      <span>utm_source</span> — identifies the traffic source (facebook, google, email)<br/>
+      <span>utm_medium</span> — the marketing channel (social, cpc, email, organic)<br/>
+      <span>utm_campaign</span> — your campaign name (use underscores, no spaces)<br/>
+      <span>utm_term</span> — paid search keywords (optional, Google Ads)<br/>
+      <span>utm_content</span> — differentiates ads/links (optional, A/B testing)
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Recent Links</div>
+    <div class="history" id="history"><p style="color:rgba(255,255,255,.3);font-size:.78rem">Generated links will appear here. Click to load.</p></div>
+  </div>
+</div>
+<div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Digital Marketing Agency</a></div>
+<script>
+let history_=JSON.parse(localStorage.getItem('utm_history')||'[]');
+function enc(v){return encodeURIComponent(v.trim().replace(/\s+/g,'_'));}
+function build(){
+  const url=document.getElementById('url').value.trim();
+  const src=document.getElementById('source').value.trim();
+  const med=document.getElementById('medium').value.trim();
+  const name=document.getElementById('name').value.trim();
+  const term=document.getElementById('term').value.trim();
+  const cont=document.getElementById('content').value.trim();
+  if(!url||!src||!med||!name){document.getElementById('output').textContent='Fill in URL, source, medium, and campaign name to generate your link.';return;}
+  let u=url.replace(/\/$/, '');
+  const sep=u.includes('?')?'&':'?';
+  let params=`utm_source=${enc(src)}&utm_medium=${enc(med)}&utm_campaign=${enc(name)}`;
+  if(term)params+=`&utm_term=${enc(term)}`;
+  if(cont)params+=`&utm_content=${enc(cont)}`;
+  const full=u+sep+params;
+  document.getElementById('output').textContent=full;
+  saveHistory(full);
+}
+function saveHistory(url){
+  history_=history_.filter(u=>u!==url);history_.unshift(url);history_=history_.slice(0,10);
+  localStorage.setItem('utm_history',JSON.stringify(history_));renderHistory();
+}
+function renderHistory(){
+  const h=document.getElementById('history');
+  if(!history_.length){h.innerHTML='<p style="color:rgba(255,255,255,.3);font-size:.78rem">No links yet.</p>';return;}
+  h.innerHTML=history_.map(u=>`<div class="hitem" onclick="loadURL('${u.replace(/'/g,"\\'")}')">${u}</div>`).join('');
+}
+function loadURL(url){document.getElementById('output').textContent=url;}
+function copyURL(){
+  const t=document.getElementById('output').textContent;
+  if(t.startsWith('Fill')||t.startsWith('Enter'))return;
+  navigator.clipboard.writeText(t);
+  const btn=event.target;btn.textContent='✓ Copied!';btn.classList.add('done');
+  setTimeout(()=>{btn.textContent='📋 Copy URL';btn.classList.remove('done');},2000);
+}
+function shortURL(){window.open('https://bitly.com/','_blank');}
+function reset(){['url','source','medium','name','term','content'].forEach(id=>document.getElementById(id).value='');document.getElementById('output').textContent='Enter a URL and campaign source to generate your tracking link.';}
+function preset(src,med,name){document.getElementById('source').value=src;document.getElementById('medium').value=med;document.getElementById('name').value=name;build();}
+renderHistory();
+</script></body></html>

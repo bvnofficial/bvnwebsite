@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Paint Calculator Philippines — How Much Paint Do I Need? — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.wrap{max-width:680px;margin:0 auto}.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(232,96,16,.6)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{width:100%;background:#E86010;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:14px;transition:.2s}.btn:hover{background:#F5A623}
+.surfaces{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.surf{padding:7px 12px;border-radius:8px;font-size:.76rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.surf.active{background:rgba(232,96,16,.15);border-color:rgba(232,96,16,.4);color:#E86010}
+.res{display:none;max-width:680px;margin:0 auto}
+.hero{background:linear-gradient(135deg,#110a00,#1a1000);border:1px solid rgba(232,96,16,.2);border-radius:16px;padding:22px;text-align:center;margin-bottom:14px}
+.hero .lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(232,96,16,.8);margin-bottom:6px}
+.hero .amt{font-size:2.2rem;font-weight:900;color:#E86010}.hero .sub2{font-size:.8rem;color:rgba(255,255,255,.4);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.sl{font-size:.68rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.sv{font-size:1.05rem;font-weight:800}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border:none}.row .n{font-size:.84rem;color:rgba(255,255,255,.65)}.row .n small{display:block;font-size:.7rem;color:rgba(255,255,255,.3)}
+.row .v{font-weight:700;color:#E86010}
+.recalc{width:100%;max-width:680px;display:block;margin:0 auto 14px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;max-width:580px;margin:0 auto 16px;line-height:1.6}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25)}.ft a{color:#E86010;text-decoration:none}
+@media(max-width:480px){.row2,.row3{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}}
+</style></head>
+<body>
+<h1>🎨 Paint Calculator Philippines</h1>
+<p class="sub">How much paint do you need? Calculate liters, gallons, and cost instantly — 2026</p>
+<div class="wrap">
+  <div class="card" id="inp">
+    <div class="ct">What are you painting?</div>
+    <div class="surfaces">
+      <button class="surf active" id="s-room" onclick="setSurf('room',this)">🏠 Room</button>
+      <button class="surf" id="s-wall" onclick="setSurf('wall',this)">🧱 Single Wall</button>
+      <button class="surf" id="s-ceiling" onclick="setSurf('ceiling',this)">⬜ Ceiling</button>
+      <button class="surf" id="s-exterior" onclick="setSurf('exterior',this)">🏡 Exterior</button>
+      <button class="surf" id="s-fence" onclick="setSurf('fence',this)">📏 Fence</button>
+    </div>
+    <div id="roomFields">
+      <div class="row3">
+        <div><label>Length (m)</label><input type="number" id="rLen" value="4" min="0.1" step="0.1"/></div>
+        <div><label>Width (m)</label><input type="number" id="rWid" value="3" min="0.1" step="0.1"/></div>
+        <div><label>Height (m)</label><input type="number" id="rHgt" value="2.7" min="0.1" step="0.1"/></div>
+      </div>
+    </div>
+    <div id="wallFields" style="display:none">
+      <div class="row2">
+        <div><label>Wall Width (m)</label><input type="number" id="wLen" value="5" min="0.1" step="0.1"/></div>
+        <div><label>Wall Height (m)</label><input type="number" id="wHgt" value="3" min="0.1" step="0.1"/></div>
+      </div>
+    </div>
+    <div id="ceilFields" style="display:none">
+      <div class="row2">
+        <div><label>Length (m)</label><input type="number" id="cLen" value="4" min="0.1" step="0.1"/></div>
+        <div><label>Width (m)</label><input type="number" id="cWid" value="3" min="0.1" step="0.1"/></div>
+      </div>
+    </div>
+    <div class="row2" style="margin-top:10px">
+      <div><label>Doors</label><input type="number" id="nDoors" value="1" min="0"/></div>
+      <div><label>Windows</label><input type="number" id="nWins" value="2" min="0"/></div>
+    </div>
+    <div class="row2">
+      <div><label>Number of Coats</label><select id="coats"><option value="1">1 coat</option><option value="2" selected>2 coats</option><option value="3">3 coats</option></select></div>
+      <div><label>Paint Type</label><select id="ptype">
+        <option value="12">Flat/Matte (12 sqm/L)</option>
+        <option value="10" selected>Semi-gloss (10 sqm/L)</option>
+        <option value="9">Gloss (9 sqm/L)</option>
+        <option value="8">Primer/Sealer (8 sqm/L)</option>
+        <option value="14">Elastomeric (14 sqm/L)</option>
+      </select></div>
+    </div>
+    <div class="row2">
+      <div><label>Paint Price per Liter (₱)</label><input type="number" id="pprice" value="250" min="1" placeholder="e.g. 250"/></div>
+      <div><label>Wastage</label><select id="pwaste"><option value="5">5%</option><option value="10" selected>10%</option><option value="15">15%</option></select></div>
+    </div>
+    <button class="btn" onclick="calc()">Calculate Paint Needed →</button>
+  </div>
+</div>
+<div class="res" id="res">
+  <button class="recalc" onclick="back()">← Edit Details</button>
+  <div class="hero">
+    <div class="lbl">Total Paint Needed</div>
+    <div class="amt" id="rLiters">0 L</div>
+    <div class="sub2" id="rGallons"></div>
+  </div>
+  <div class="grid">
+    <div class="stat"><div class="sl">Paint Area</div><div class="sv" id="rArea" style="color:#fff">0 sqm</div></div>
+    <div class="stat"><div class="sl">Paint Cans</div><div class="sv" id="rCans" style="color:#E86010">0</div></div>
+    <div class="stat"><div class="sl">Est. Cost</div><div class="sv" id="rCost" style="color:#34d399">₱0</div></div>
+  </div>
+  <div class="breakdown">
+    <div class="ct">Breakdown</div>
+    <div class="row"><div class="n">Total Paintable Area</div><div class="v" id="bArea">0 sqm</div></div>
+    <div class="row"><div class="n">Coats</div><div class="v" id="bCoats">2</div></div>
+    <div class="row"><div class="n">Coverage rate</div><div class="v" id="bCov">0 sqm/L</div></div>
+    <div class="row"><div class="n">Base paint needed</div><div class="v" id="bBase">0 L</div></div>
+    <div class="row"><div class="n">Wastage</div><div class="v" id="bWaste">+0 L</div></div>
+    <div class="row"><div class="n">Total liters</div><div class="v" id="bTotal">0 L</div></div>
+    <div class="row"><div class="n">In gallons (÷3.785)</div><div class="v" id="bGal">0 gal</div></div>
+    <div class="row"><div class="n">Estimated cost (per liter)</div><div class="v" id="bCostD">₱0</div></div>
+  </div>
+  <div class="breakdown">
+    <div class="ct">Local Paint Brand Reference (2026)</div>
+    <div class="row"><div class="n">Davies / Boysen (flat)</div><div class="v">~₱180–₱250/L</div></div>
+    <div class="row"><div class="n">Boysen (semi-gloss)</div><div class="v">~₱220–₱300/L</div></div>
+    <div class="row"><div class="n">Nippon Paint (premium)</div><div class="v">~₱350–₱500/L</div></div>
+    <div class="row"><div class="n">Elastomeric (waterproof)</div><div class="v">~₱400–₱600/L</div></div>
+  </div>
+</div>
+<p class="note">Coverage rates are approximate and vary by brand, surface texture, and application method. Rough/textured surfaces absorb more paint. Always buy slightly more than calculated. Consult your paint supplier for exact brand coverage specs.</p>
+<div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Home Tools</a></div>
+<script>
+const fmt=n=>'₱'+Math.round(n).toLocaleString('en-PH');
+let surf='room';
+function setSurf(s,el){surf=s;document.querySelectorAll('.surf').forEach(b=>b.classList.remove('active'));el.classList.add('active');
+  ['room','wall','ceil'].forEach(k=>{document.getElementById(k+'Fields').style.display=s===k.replace('ceil','ceilin').replace('ceilinFields','ceilFields')?'block':'none';});
+  document.getElementById('roomFields').style.display=s==='room'?'block':'none';
+  document.getElementById('wallFields').style.display=s==='wall'?'block':'none';
+  document.getElementById('ceilFields').style.display=(s==='ceiling'||s==='fence'||s==='exterior')?'block':'none';
+}
+function getArea(){
+  const doors=parseInt(document.getElementById('nDoors').value)||0;
+  const wins=parseInt(document.getElementById('nWins').value)||0;
+  const deduct=doors*1.68+wins*1.2;
+  if(surf==='room'){
+    const L=parseFloat(document.getElementById('rLen').value)||0;
+    const W=parseFloat(document.getElementById('rWid').value)||0;
+    const H=parseFloat(document.getElementById('rHgt').value)||0;
+    return Math.max(0,2*(L+W)*H-deduct);
+  }if(surf==='wall'){
+    return Math.max(0,(parseFloat(document.getElementById('wLen').value)||0)*(parseFloat(document.getElementById('wHgt').value)||0)-deduct);
+  }
+  return Math.max(0,(parseFloat(document.getElementById('cLen').value)||0)*(parseFloat(document.getElementById('cWid').value)||0));
+}
+function calc(){
+  const area=getArea();
+  const coats=parseInt(document.getElementById('coats').value);
+  const cov=parseInt(document.getElementById('ptype').value);
+  const price=parseFloat(document.getElementById('pprice').value)||250;
+  const waste=parseInt(document.getElementById('pwaste').value)/100;
+  const baseLiters=(area*coats)/cov;
+  const totalLiters=baseLiters*(1+waste);
+  const gallons=totalLiters/3.785;
+  const cans=Math.ceil(totalLiters/4); // standard 4L can
+  const cost=totalLiters*price;
+  document.getElementById('rLiters').textContent=totalLiters.toFixed(1)+' L';
+  document.getElementById('rGallons').textContent=gallons.toFixed(2)+' gallons (approx. '+cans+' × 4L cans)';
+  document.getElementById('rArea').textContent=area.toFixed(1)+' sqm';
+  document.getElementById('rCans').textContent=cans+' cans';
+  document.getElementById('rCost').textContent=fmt(cost);
+  document.getElementById('bArea').textContent=area.toFixed(2)+' sqm';
+  document.getElementById('bCoats').textContent=coats;
+  document.getElementById('bCov').textContent=cov+' sqm/L';
+  document.getElementById('bBase').textContent=baseLiters.toFixed(2)+' L';
+  document.getElementById('bWaste').textContent='+'+((totalLiters-baseLiters).toFixed(2))+' L';
+  document.getElementById('bTotal').textContent=totalLiters.toFixed(2)+' L';
+  document.getElementById('bGal').textContent=gallons.toFixed(2)+' gal';
+  document.getElementById('bCostD').textContent=fmt(cost)+' (₱'+price+'/L)';
+  document.getElementById('inp').style.display='none';document.getElementById('res').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function back(){document.getElementById('inp').style.display='block';document.getElementById('res').style.display='none';}
+</script></body></html>

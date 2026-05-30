@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Loan Calculator Philippines 2026 — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}
+.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;max-width:700px;margin:0 auto 16px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s}input:focus,select:focus{border-color:rgba(232,96,16,.6)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{width:100%;background:#E86010;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:14px;transition:.2s}.btn:hover{background:#F5A623}
+.res{display:none;max-width:700px;margin:0 auto}
+.hero{background:linear-gradient(135deg,#1a1200,#201800);border:1px solid rgba(232,96,16,.2);border-radius:16px;padding:24px;text-align:center;margin-bottom:14px}
+.hero .lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(232,96,16,.8);margin-bottom:6px}
+.hero .amt{font-size:2.4rem;font-weight:900;color:#E86010}.hero .sub2{font-size:.8rem;color:rgba(255,255,255,.4);margin-top:4px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.stat .sl{font-size:.68rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.stat .sv{font-size:1rem;font-weight:800}
+.bk{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;margin-bottom:14px}
+.bkh{display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.06);padding:10px 14px;gap:4px}
+.bkh span{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4)}
+.bkr{display:grid;grid-template-columns:repeat(5,1fr);padding:9px 14px;gap:4px;border-top:1px solid rgba(255,255,255,.05);font-size:.78rem}
+.bkr:nth-child(odd){background:rgba(255,255,255,.02)}
+.recalc{width:100%;max-width:700px;display:block;margin:0 auto 14px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
+.recalc:hover{background:rgba(255,255,255,.1)}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;max-width:600px;margin:0 auto 16px;line-height:1.6}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25);margin-top:8px}.ft a{color:#E86010;text-decoration:none}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.tab{padding:6px 14px;border-radius:8px;font-size:.76rem;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.tab.active{background:#E86010;border-color:#E86010;color:#fff}
+@media(max-width:480px){.row2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.bkh,.bkr{grid-template-columns:repeat(3,1fr)}.bkh span:nth-child(n+4),.bkr span:nth-child(n+4){display:none}}</style></head>
+<body>
+<h1>🏦 Loan Calculator Philippines</h1>
+<p class="sub">Compute monthly amortization — personal, car, housing, SSS, Pag-IBIG — 2026</p>
+<div class="card" id="inp">
+  <div class="ct">Loan Type</div>
+  <div class="tabs">
+    <button class="tab active" onclick="setType('personal',this,18)">💳 Personal</button>
+    <button class="tab" onclick="setType('car',this,18)">🚗 Car Loan</button>
+    <button class="tab" onclick="setType('housing',this,7)">🏠 Housing</button>
+    <button class="tab" onclick="setType('sss',this,10)">🏛️ SSS Loan</button>
+    <button class="tab" onclick="setType('pagibig',this,6.375)">🏡 Pag-IBIG</button>
+  </div>
+  <label>Loan Amount (₱)</label>
+  <input type="number" id="amount" value="100000" min="1000" placeholder="e.g. 500000"/>
+  <div class="row2">
+    <div><label>Annual Interest Rate (%)</label><input type="number" id="rate" value="18" min="0.1" step="0.1" placeholder="e.g. 18"/></div>
+    <div><label>Loan Term</label><select id="term">
+      <option value="6">6 months</option><option value="12">1 year</option><option value="18">18 months</option>
+      <option value="24" selected>2 years</option><option value="36">3 years</option><option value="48">4 years</option>
+      <option value="60">5 years</option><option value="84">7 years</option><option value="120">10 years</option>
+      <option value="180">15 years</option><option value="240">20 years</option><option value="300">25 years</option>
+      <option value="360">30 years</option>
+    </select></div>
+  </div>
+  <button class="btn" onclick="calculate()">Calculate Monthly Payment →</button>
+</div>
+<div class="res" id="res">
+  <button class="recalc" onclick="back()">← Edit Loan Details</button>
+  <div class="hero">
+    <div class="lbl">Monthly Payment</div>
+    <div class="amt" id="rMonthly">₱0</div>
+    <div class="sub2" id="rDesc"></div>
+  </div>
+  <div class="grid3">
+    <div class="stat"><div class="sl">Loan Amount</div><div class="sv" id="rPrincipal" style="color:#fff">₱0</div></div>
+    <div class="stat"><div class="sl">Total Interest</div><div class="sv" id="rInterest" style="color:#f87171">₱0</div></div>
+    <div class="stat"><div class="sl">Total Payment</div><div class="sv" id="rTotal" style="color:#E86010">₱0</div></div>
+  </div>
+  <div class="bk">
+    <div class="bkh"><span>#</span><span>Payment</span><span>Principal</span><span>Interest</span><span>Balance</span></div>
+    <div id="amort"></div>
+  </div>
+</div>
+<p class="note">Based on standard amortizing loan formula. Car loan rates in PH are often quoted as add-on rates — actual effective rate may vary. Always confirm with your bank or lender.</p>
+<div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN</a></div>
+<script>
+const fmt=n=>'₱'+Math.round(n).toLocaleString('en-PH');
+const fmtD=n=>'₱'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+function setType(t,el,r){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('rate').value=r;}
+function calculate(){
+  const P=parseFloat(document.getElementById('amount').value)||0;
+  const annualRate=parseFloat(document.getElementById('rate').value)||0;
+  const n=parseInt(document.getElementById('term').value)||12;
+  const r=annualRate/100/12;
+  let M;
+  if(r===0){M=P/n;}else{M=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+  const totalPay=M*n;
+  const totalInt=totalPay-P;
+  document.getElementById('rMonthly').textContent=fmt(M);
+  document.getElementById('rDesc').textContent=`for ${n} months at ${annualRate}% per year`;
+  document.getElementById('rPrincipal').textContent=fmt(P);
+  document.getElementById('rInterest').textContent=fmt(totalInt);
+  document.getElementById('rTotal').textContent=fmt(totalPay);
+  // Amortization schedule (first 24 rows or full if shorter)
+  let bal=P;const rows=[];const show=Math.min(n,24);
+  for(let i=1;i<=show;i++){const intPay=bal*r;const prinPay=M-intPay;bal-=prinPay;
+    rows.push(`<div class="bkr"><span style="color:rgba(255,255,255,.4)">${i}</span><span>${fmtD(M)}</span><span style="color:#34d399">${fmtD(prinPay)}</span><span style="color:#f87171">${fmtD(intPay)}</span><span>${fmtD(Math.max(0,bal))}</span></div>`);}
+  if(n>24)rows.push(`<div style="text-align:center;padding:10px;color:rgba(255,255,255,.4);font-size:.75rem">... ${n-24} more months not shown</div>`);
+  document.getElementById('amort').innerHTML=rows.join('');
+  document.getElementById('inp').style.display='none';document.getElementById('res').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function back(){document.getElementById('inp').style.display='block';document.getElementById('res').style.display='none';}
+</script></body></html>

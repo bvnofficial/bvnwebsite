@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>CHB Hollow Block Calculator Philippines — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.wrap{max-width:680px;margin:0 auto}.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(232,96,16,.6)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;background:#E86010;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:14px;transition:.2s}.btn:hover{background:#F5A623}
+.res{display:none;max-width:680px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center}
+.sl{font-size:.68rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.sv{font-size:1.3rem;font-weight:900}.sv small{font-size:.7rem;font-weight:400;color:rgba(255,255,255,.4)}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border:none}.row .n{font-size:.85rem;color:rgba(255,255,255,.65)}.row .n small{display:block;font-size:.7rem;color:rgba(255,255,255,.3)}
+.row .v{font-weight:700;color:#E86010}
+.recalc{width:100%;max-width:680px;display:block;margin:0 auto 14px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;max-width:580px;margin:0 auto 16px;line-height:1.6}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25)}.ft a{color:#E86010;text-decoration:none}
+@media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}}
+</style></head>
+<body>
+<h1>🧱 CHB / Hollow Block Calculator</h1>
+<p class="sub">Calculate CHB blocks, cement, and sand for any wall — Philippines 2026</p>
+<div class="wrap">
+  <div class="card" id="inp">
+    <div class="ct">Wall Details</div>
+    <div class="row2">
+      <div><label>Wall Length (meters)</label><input type="number" id="len" value="5" min="0.1" step="0.1" placeholder="e.g. 5"/></div>
+      <div><label>Wall Height (meters)</label><input type="number" id="hgt" value="3" min="0.1" step="0.1" placeholder="e.g. 3"/></div>
+    </div>
+    <div class="row2">
+      <div><label>CHB Size</label><select id="size">
+        <option value="4">4" CHB (4×8×16 in)</option>
+        <option value="6" selected>6" CHB (6×8×16 in)</option>
+        <option value="8">8" CHB (8×8×16 in)</option>
+      </select></div>
+      <div><label>Wall Type</label><select id="wtype">
+        <option value="single" selected>Single wythe</option>
+        <option value="double">Double wythe</option>
+      </select></div>
+    </div>
+    <label>Openings to Subtract</label>
+    <div class="row2">
+      <div><label style="margin-top:0">Number of Doors</label><input type="number" id="doors" value="0" min="0" placeholder="0"/></div>
+      <div><label style="margin-top:0">Number of Windows</label><input type="number" id="wins" value="0" min="0" placeholder="0"/></div>
+    </div>
+    <div class="row2">
+      <div><label>Wastage Factor (%)</label><select id="waste"><option value="5">5% (simple wall)</option><option value="10" selected>10% (standard)</option><option value="15">15% (complex)</option></select></div>
+      <div><label>CHB Price per piece (₱)</label><input type="number" id="price" value="18" min="1" placeholder="e.g. 18"/></div>
+    </div>
+    <button class="btn" onclick="calc()">Calculate Materials →</button>
+  </div>
+</div>
+<div class="res" id="res">
+  <button class="recalc" onclick="back()">← Edit Wall Details</button>
+  <div class="grid">
+    <div class="stat"><div class="sl">CHB Blocks Needed</div><div class="sv" style="color:#E86010" id="rCHB">0 <small>pcs</small></div></div>
+    <div class="stat"><div class="sl">Wall Area</div><div class="sv" id="rArea">0 <small>sqm</small></div></div>
+    <div class="stat"><div class="sl">Cement Bags</div><div class="sv" style="color:#60a5fa" id="rCem">0 <small>bags</small></div></div>
+    <div class="stat"><div class="sl">Sand (cu.m.)</div><div class="sv" style="color:#fbbf24" id="rSand">0 <small>cu.m.</small></div></div>
+  </div>
+  <div class="breakdown">
+    <div class="ct">Detailed Breakdown</div>
+    <div class="row"><div class="n">Gross Wall Area<small>Length × Height</small></div><div class="v" id="bGross">0 sqm</div></div>
+    <div class="row"><div class="n">Door Deduction<small>Standard door: 0.8m × 2.1m = 1.68 sqm each</small></div><div class="v" id="bDoor">0 sqm</div></div>
+    <div class="row"><div class="n">Window Deduction<small>Standard window: 1.2m × 1.0m = 1.2 sqm each</small></div><div class="v" id="bWin">0 sqm</div></div>
+    <div class="row"><div class="n">Net Wall Area</div><div class="v" id="bNet">0 sqm</div></div>
+    <div class="row"><div class="n">CHB per sqm<small>Accounting for mortar joints</small></div><div class="v" id="bPSqm">0 pcs</div></div>
+    <div class="row"><div class="n">Base CHB count</div><div class="v" id="bBase">0 pcs</div></div>
+    <div class="row"><div class="n">Wastage Addition</div><div class="v" id="bWaste">0 pcs</div></div>
+    <div class="row"><div class="n">Total CHB (final)<small>Including wastage</small></div><div class="v" id="bTotal">0 pcs</div></div>
+    <div class="row"><div class="n">Estimated CHB Cost<small>At ₱<span id="bPrice">18</span>/piece</small></div><div class="v" id="bCost">₱0</div></div>
+  </div>
+  <div class="breakdown">
+    <div class="ct">Mortar Materials (approximate)</div>
+    <div class="row"><div class="n">Portland Cement<small>1 bag per ~0.3 cu.m. mortar</small></div><div class="v" id="mCem">0 bags</div></div>
+    <div class="row"><div class="n">Washed Sand<small>0.5 cu.m. per bag of cement</small></div><div class="v" id="mSand">0 cu.m.</div></div>
+    <div class="row"><div class="n">Gravel (if concrete mix)</div><div class="v">Not required</div></div>
+  </div>
+</div>
+<p class="note">Standard CHB sizes: 4"×8"×16", 6"×8"×16", 8"×8"×16". Coverage varies by mortar joint thickness (typically 10–12mm). Always add 5–10% extra for breakage. Consult your mason or structural engineer for load-bearing walls.</p>
+<div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Construction Tools</a></div>
+<script>
+const fmt=n=>'₱'+Math.round(n).toLocaleString('en-PH');
+function calc(){
+  const L=parseFloat(document.getElementById('len').value)||0;
+  const H=parseFloat(document.getElementById('hgt').value)||0;
+  const size=parseInt(document.getElementById('size').value);
+  const wtype=document.getElementById('wtype').value;
+  const doors=parseInt(document.getElementById('doors').value)||0;
+  const wins=parseInt(document.getElementById('wins').value)||0;
+  const wastePct=parseInt(document.getElementById('waste').value)/100;
+  const price=parseFloat(document.getElementById('price').value)||18;
+  const multiplier=wtype==='double'?2:1;
+  // Coverage: standard CHB 40cm×20cm = 0.08 sqm gross, accounting for mortar joints ~10mm
+  // So ~12.5 blocks per sqm but with mortar joints ~12 blocks per sqm
+  const chbPerSqm=12.5*multiplier;
+  const doorArea=doors*0.8*2.1;
+  const winArea=wins*1.2*1.0;
+  const grossArea=L*H;
+  const netArea=Math.max(0,grossArea-doorArea-winArea);
+  const baseCHB=Math.ceil(netArea*chbPerSqm);
+  const wasteAdd=Math.ceil(baseCHB*wastePct);
+  const totalCHB=baseCHB+wasteAdd;
+  // Mortar: approximately 1 bag cement per 50 CHBs (rough guide)
+  const cemBags=Math.ceil(totalCHB/50);
+  const sandCuM=(cemBags*0.5).toFixed(2);
+  // Update results
+  document.getElementById('rCHB').innerHTML=totalCHB+' <small>pcs</small>';
+  document.getElementById('rArea').innerHTML=netArea.toFixed(1)+' <small>sqm</small>';
+  document.getElementById('rCem').innerHTML=cemBags+' <small>bags</small>';
+  document.getElementById('rSand').innerHTML=sandCuM+' <small>cu.m.</small>';
+  document.getElementById('bGross').textContent=grossArea.toFixed(2)+' sqm';
+  document.getElementById('bDoor').textContent=(doorArea).toFixed(2)+' sqm';
+  document.getElementById('bWin').textContent=(winArea).toFixed(2)+' sqm';
+  document.getElementById('bNet').textContent=netArea.toFixed(2)+' sqm';
+  document.getElementById('bPSqm').textContent=chbPerSqm.toFixed(1)+' pcs';
+  document.getElementById('bBase').textContent=baseCHB+' pcs';
+  document.getElementById('bWaste').textContent='+'+wasteAdd+' pcs ('+Math.round(wastePct*100)+'%)';
+  document.getElementById('bTotal').textContent=totalCHB+' pcs';
+  document.getElementById('bPrice').textContent=price;
+  document.getElementById('bCost').textContent=fmt(totalCHB*price);
+  document.getElementById('mCem').textContent=cemBags+' bags (40kg)';
+  document.getElementById('mSand').textContent=sandCuM+' cu.m.';
+  document.getElementById('inp').style.display='none';
+  document.getElementById('res').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function back(){document.getElementById('inp').style.display='block';document.getElementById('res').style.display='none';}
+</script></body></html>

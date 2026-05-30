@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Free Meta Tag Generator — SEO Tool — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:20px}
+.wrap{max-width:760px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.wrap{grid-template-columns:1fr}}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:18px;height:fit-content}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+label{display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.55);margin-bottom:4px;margin-top:10px}label:first-of-type{margin-top:0}
+label span{color:rgba(232,96,16,.8)}.lim{font-size:.65rem;float:right}
+input,select,textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:9px 12px;color:#fff;font-size:.85rem;outline:none;transition:.2s;resize:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(232,96,16,.6)}
+.bar{height:3px;border-radius:99px;margin-top:4px;transition:all .3s;background:rgba(255,255,255,.08)}
+.preview{background:#fff;border-radius:12px;padding:16px;margin-top:12px}
+.prev-url{font-size:.7rem;color:#1a0dab;margin-bottom:3px;word-break:break-all}
+.prev-title{font-size:.95rem;font-weight:500;color:#1a0dab;margin-bottom:3px;line-height:1.3;word-break:break-all}
+.prev-desc{font-size:.8rem;color:#545454;line-height:1.5}
+.og-preview{background:#f0f0f0;border-radius:10px;overflow:hidden;margin-top:10px}
+.og-img{width:100%;height:80px;background:#ddd;display:flex;align-items:center;justify-content:center;color:#999;font-size:.75rem}
+.og-text{padding:10px;background:#fff}
+.og-domain{font-size:.65rem;color:#65676b;text-transform:uppercase;margin-bottom:2px}
+.og-title{font-size:.8rem;font-weight:600;color:#1c1e21;margin-bottom:2px}
+.og-desc{font-size:.75rem;color:#65676b;line-height:1.4}
+.output{background:#0d1117;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;font-family:monospace;font-size:.72rem;line-height:1.8;color:#e6edf3;margin-top:12px;white-space:pre-wrap;word-break:break-all;max-height:280px;overflow-y:auto}
+.output .tag{color:#7ee787}.output .attr{color:#79c0ff}.output .val{color:#a5d6ff}
+.abtn{width:100%;padding:10px;border-radius:10px;font-size:.82rem;font-weight:600;border:1px solid rgba(232,96,16,.3);background:rgba(232,96,16,.1);color:#E86010;cursor:pointer;transition:.2s;margin-top:8px}
+.abtn:hover{background:rgba(232,96,16,.2)}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25);margin-top:16px;grid-column:1/-1}.ft a{color:#E86010;text-decoration:none}
+</style></head>
+<body>
+<h1>🏷️ Meta Tag Generator</h1>
+<p class="sub">Generate perfect SEO meta tags, Open Graph, and Twitter Card tags — free</p>
+<div class="wrap">
+  <!-- Left: Inputs -->
+  <div>
+    <div class="card">
+      <div class="ct">Basic SEO Tags</div>
+      <label>Page Title <span>*</span><span class="lim" id="titleLim" style="color:#34d399">0/60</span></label>
+      <input type="text" id="title" maxlength="70" placeholder="Your Page Title — BVN" oninput="update()"/>
+      <div class="bar" id="titleBar"></div>
+      <label>Meta Description <span>*</span><span class="lim" id="descLim" style="color:#34d399">0/160</span></label>
+      <textarea id="desc" rows="3" maxlength="200" placeholder="Write a compelling description (120–160 characters). Include your main keyword." oninput="update()"></textarea>
+      <div class="bar" id="descBar"></div>
+      <label>Keywords <em style="font-style:normal;color:rgba(255,255,255,.3);font-size:.7rem">(comma-separated, less important in 2026)</em></label>
+      <input type="text" id="keywords" placeholder="keyword1, keyword2, keyword3" oninput="update()"/>
+      <label>Author</label>
+      <input type="text" id="author" placeholder="BVN Digital Agency" oninput="update()"/>
+      <label>Robots</label>
+      <select id="robots" onchange="update()">
+        <option value="index, follow">index, follow (default — crawl & rank)</option>
+        <option value="noindex, follow">noindex, follow (don't rank, follow links)</option>
+        <option value="index, nofollow">index, nofollow (rank, don't follow links)</option>
+        <option value="noindex, nofollow">noindex, nofollow (block completely)</option>
+      </select>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="ct">Open Graph (Facebook/LinkedIn)</div>
+      <label>OG Title</label>
+      <input type="text" id="ogTitle" placeholder="Same as page title usually" oninput="update()"/>
+      <label>OG Description</label>
+      <textarea id="ogDesc" rows="2" placeholder="Description for social sharing" oninput="update()"></textarea>
+      <label>OG Image URL</label>
+      <input type="url" id="ogImage" placeholder="https://yoursite.com/og-image.jpg" oninput="update()"/>
+      <label>Site URL</label>
+      <input type="url" id="siteUrl" placeholder="https://www.bvnofficial.com" oninput="update()"/>
+    </div>
+  </div>
+  <!-- Right: Preview + Output -->
+  <div>
+    <div class="card">
+      <div class="ct">Google Search Preview</div>
+      <div class="preview">
+        <div class="prev-url" id="prevUrl">https://www.bvnofficial.com</div>
+        <div class="prev-title" id="prevTitle">Your Page Title</div>
+        <div class="prev-desc" id="prevDesc">Your meta description will appear here. Write 120–160 characters for best results.</div>
+      </div>
+      <div class="ct" style="margin-top:14px">Facebook Preview</div>
+      <div class="og-preview">
+        <div class="og-img" id="ogImgPrev">1200×630 OG Image</div>
+        <div class="og-text">
+          <div class="og-domain" id="ogDomain">bvnofficial.com</div>
+          <div class="og-title" id="ogTitlePrev">Page Title</div>
+          <div class="og-desc" id="ogDescPrev">Description for social sharing</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="ct">Generated HTML Tags</div>
+      <div class="output" id="output"><!-- Enter your page details to generate meta tags --></div>
+      <button class="abtn" onclick="copyTags()">📋 Copy All Tags</button>
+    </div>
+  </div>
+  <div class="ft">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine SEO & Digital Marketing Agency</a></div>
+</div>
+<script>
+function update(){
+  const title=document.getElementById('title').value;
+  const desc=document.getElementById('desc').value;
+  const keywords=document.getElementById('keywords').value;
+  const author=document.getElementById('author').value;
+  const robots=document.getElementById('robots').value;
+  const ogTitle=document.getElementById('ogTitle').value||title;
+  const ogDesc=document.getElementById('ogDesc').value||desc;
+  const ogImage=document.getElementById('ogImage').value;
+  const siteUrl=document.getElementById('siteUrl').value||'https://www.bvnofficial.com';
+  // Char limits
+  const tl=title.length;const dl=desc.length;
+  document.getElementById('titleLim').textContent=tl+'/60';
+  document.getElementById('titleLim').style.color=tl>60?'#f87171':tl>50?'#fbbf24':'#34d399';
+  document.getElementById('titleBar').style.width=(tl/70*100)+'%';
+  document.getElementById('titleBar').style.background=tl>60?'#f87171':tl>50?'#fbbf24':'#34d399';
+  document.getElementById('descLim').textContent=dl+'/160';
+  document.getElementById('descLim').style.color=dl>160?'#f87171':dl>140?'#fbbf24':'#34d399';
+  document.getElementById('descBar').style.width=(dl/200*100)+'%';
+  document.getElementById('descBar').style.background=dl>160?'#f87171':dl>140?'#fbbf24':'#34d399';
+  // Google preview
+  document.getElementById('prevUrl').textContent=siteUrl;
+  document.getElementById('prevTitle').textContent=title||'Your Page Title';
+  document.getElementById('prevDesc').textContent=desc||'Your meta description will appear here.';
+  // FB preview
+  try{const u=new URL(siteUrl);document.getElementById('ogDomain').textContent=u.hostname;}catch(e){}
+  document.getElementById('ogTitlePrev').textContent=ogTitle||title||'Page Title';
+  document.getElementById('ogDescPrev').textContent=ogDesc||desc||'Description';
+  if(ogImage){document.getElementById('ogImgPrev').style.background=`url(${ogImage}) center/cover`;document.getElementById('ogImgPrev').textContent='';}
+  else{document.getElementById('ogImgPrev').style.background='#ddd';document.getElementById('ogImgPrev').textContent='1200×630 OG Image';}
+  // Generate tags
+  const esc=s=>s.replace(/"/g,'&quot;');
+  let tags=`<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n`;
+  if(title)tags+=`<title>${esc(title)}</title>\n`;
+  if(desc)tags+=`<meta name="description" content="${esc(desc)}">\n`;
+  if(keywords)tags+=`<meta name="keywords" content="${esc(keywords)}">\n`;
+  if(author)tags+=`<meta name="author" content="${esc(author)}">\n`;
+  tags+=`<meta name="robots" content="${robots}">\n`;
+  tags+=`\n<!-- Open Graph -->\n`;
+  tags+=`<meta property="og:type" content="website">\n`;
+  tags+=`<meta property="og:url" content="${esc(siteUrl)}">\n`;
+  if(ogTitle||title)tags+=`<meta property="og:title" content="${esc(ogTitle||title)}">\n`;
+  if(ogDesc||desc)tags+=`<meta property="og:description" content="${esc(ogDesc||desc)}">\n`;
+  if(ogImage)tags+=`<meta property="og:image" content="${esc(ogImage)}">\n`;
+  tags+=`\n<!-- Twitter Card -->\n`;
+  tags+=`<meta name="twitter:card" content="summary_large_image">\n`;
+  if(ogTitle||title)tags+=`<meta name="twitter:title" content="${esc(ogTitle||title)}">\n`;
+  if(ogDesc||desc)tags+=`<meta name="twitter:description" content="${esc(ogDesc||desc)}">\n`;
+  if(ogImage)tags+=`<meta name="twitter:image" content="${esc(ogImage)}">\n`;
+  document.getElementById('output').textContent=tags;
+}
+function copyTags(){
+  const t=document.getElementById('output').textContent;
+  navigator.clipboard.writeText(t).then(()=>{const btn=event.target;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='📋 Copy All Tags',2000);});
+}
+update();
+</script></body></html>
