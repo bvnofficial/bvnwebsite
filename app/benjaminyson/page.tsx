@@ -16,6 +16,8 @@ import {
   Briefcase,
   GraduationCap,
   User,
+  Award,
+  BadgeCheck,
 } from "lucide-react";
 import GlowButton from "@/components/ui/GlowButton";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -134,6 +136,48 @@ const experience = [
     period: "Jan 2013 – Feb 2015",
     desc: "Led overall marketing strategy, brand positioning, and client acquisition. Oversaw campaign planning across digital channels, managed the marketing team, and ensured sustained lead generation and growth.",
     color: "green",
+  },
+];
+
+const certificates = [
+  {
+    title: "Google Ads Search Certification",
+    issuer: "Google",
+    logo: "🔍",
+    date: "Sep 2024",
+    expiry: "Sep 2025",
+    id: "12c99f413",
+    color: "blue",
+  },
+  {
+    title: "Inbound Marketing Certified",
+    issuer: "HubSpot Academy",
+    logo: "🟠",
+    date: "Mar 2024",
+    expiry: "Apr 2026",
+    color: "orange",
+  },
+  {
+    title: "Basics of Digital Marketing",
+    issuer: "Cambridge International Qualifications (CIQ) · UniAthens · FEDE",
+    logo: "🎓",
+    date: "Apr 2024",
+    color: "purple",
+  },
+  {
+    title: "Certified Lean Six Sigma White Belt (CSSWB)",
+    issuer: "Six Sigma PH · Minitab · ISSSP",
+    logo: "⚡",
+    date: "Mar 2024",
+    id: "cert_1hIcIlv5",
+    color: "green",
+  },
+  {
+    title: "Bachelor of Science in Business Administration",
+    issuer: "Saint Francis of Assisi College, Pasay City",
+    logo: "🏛️",
+    date: "2012",
+    color: "orange",
   },
 ];
 
@@ -458,6 +502,67 @@ export default function BenjaminYsonPage() {
                   <p className="text-white/50 text-sm">{school}</p>
                   <p className="text-orange text-xs font-accent font-semibold mt-1">{year}</p>
                 </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* ── CERTIFICATES ───────────────────────────────────── */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+        variants={sectionVariants}
+        className="py-24 px-6 md:px-12 lg:px-24 bg-navy-surface border-t border-white/5"
+      >
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader
+            label="Certifications & Credentials"
+            title="Verified Qualifications"
+            subtitle="Professionally certified across digital marketing, automation, and quality management."
+          />
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-10"
+          >
+            {certificates.map(({ title, issuer, logo, date, expiry, id, color }) => (
+              <motion.div
+                key={title}
+                variants={childVariant}
+                whileHover={{ y: -5, boxShadow: "0 0 32px rgba(232,96,16,0.12)" }}
+                transition={{ duration: 0.2 }}
+                className={`group bg-white/5 border rounded-2xl p-6 transition-all ${colorMap[color]}`}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center text-2xl flex-shrink-0 transition-colors ${iconColorMap[color]}`}>
+                    {logo}
+                  </div>
+                  <BadgeCheck size={18} className={`mt-1 ${labelColorMap[color]}`} />
+                </div>
+                <h3 className="font-heading font-bold text-white text-base leading-snug mb-2">{title}</h3>
+                <p className="text-white/45 text-xs mb-3 leading-relaxed">{issuer}</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="bg-white/5 border border-white/10 text-white/50 px-2.5 py-0.5 rounded-md text-xs font-accent">
+                    Issued: {date}
+                  </span>
+                  {expiry && (
+                    <span className={`px-2.5 py-0.5 rounded-md text-xs font-accent border ${
+                      color === "orange" ? "bg-orange/10 border-orange/20 text-orange" :
+                      color === "blue" ? "bg-blue-500/10 border-blue-500/20 text-blue-400" :
+                      color === "green" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" :
+                      "bg-purple-500/10 border-purple-500/20 text-purple-400"
+                    }`}>
+                      Valid until {expiry}
+                    </span>
+                  )}
+                </div>
+                {id && (
+                  <p className="text-white/25 text-xs mt-2 font-mono">ID: {id}</p>
+                )}
               </motion.div>
             ))}
           </motion.div>
