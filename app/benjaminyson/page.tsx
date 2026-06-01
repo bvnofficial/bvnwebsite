@@ -18,6 +18,7 @@ import {
   User,
   Award,
   BadgeCheck,
+  Download,
 } from "lucide-react";
 import GlowButton from "@/components/ui/GlowButton";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -275,9 +276,13 @@ export default function BenjaminYsonPage() {
               <GlowButton href="#contact" variant="filled" showArrow>
                 Let&apos;s Work Together
               </GlowButton>
-              <GlowButton href="https://www.bvnofficial.com" variant="outline">
-                BVN Agency
-              </GlowButton>
+              <a
+                href="/benjamin-yson-cv.pdf"
+                download="Benjamin-Yson-CV.pdf"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-heading font-semibold text-sm border border-white/30 text-white hover:bg-white/10 hover:border-white/50 active:scale-95 transition-all duration-200"
+              >
+                <Download size={15} /> Download CV
+              </a>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
@@ -303,7 +308,7 @@ export default function BenjaminYsonPage() {
           >
             {[
               { label: "Currently Excels In", value: "WordPress + GoHighLevel", sub: "Full builds · Funnels · CRM · Automations", delay: 0 },
-              { label: "Agency", value: "BVN Digital Marketing", sub: "Operations & Marketing Manager · 2020–2026", delay: 0.8 },
+              { label: "Latest Role", value: "Operations & Marketing Manager", sub: "Digital Agency · Jan 2020 – Mar 2026", delay: 0.8 },
               { label: "Location", value: "Las Piñas, Philippines 🇵🇭", sub: "Available for remote work worldwide", delay: 1.6 },
             ].map(({ label, value, sub, delay }, i) => (
               <motion.div
@@ -593,7 +598,7 @@ export default function BenjaminYsonPage() {
                 { icon: Mail, label: "Email", value: "bvnyson@gmail.com" },
                 { icon: Phone, label: "Phone", value: "(+63) 981-655-6555" },
                 { icon: MapPin, label: "Location", value: "Las Piñas, Philippines 🇵🇭" },
-                { icon: Globe, label: "Agency", value: "www.bvnofficial.com", href: "https://www.bvnofficial.com" },
+                { icon: Globe, label: "Portfolio", value: "bvnofficial.com/benjaminyson", href: "https://www.bvnofficial.com/benjaminyson" },
               ].map(({ icon: Icon, label, value, href }) => (
                 <div key={label} className="flex items-center gap-4">
                   <div className="w-11 h-11 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center flex-shrink-0">
@@ -704,9 +709,13 @@ export default function BenjaminYsonPage() {
             <GlowButton href="#contact" variant="filled" showArrow className="text-base px-8 py-4">
               Get in Touch
             </GlowButton>
-            <GlowButton href="https://www.bvnofficial.com" variant="outline" className="text-base px-8 py-4">
-              Visit BVN Agency
-            </GlowButton>
+            <a
+              href="/benjamin-yson-cv.pdf"
+              download="Benjamin-Yson-CV.pdf"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-heading font-semibold text-base border border-white/30 text-white hover:bg-white/10 hover:border-white/50 active:scale-95 transition-all duration-200"
+            >
+              <Download size={16} /> Download CV
+            </a>
           </div>
         </div>
       </motion.section>
