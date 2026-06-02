@@ -1,19 +1,14 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Lock, CheckCircle, AlertCircle, ChevronRight, Shield, Zap, ChevronDown } from "lucide-react";
 
-// Fixed exchange rates to PHP (update periodically)
-const TO_PHP: Record<string, number> = {
-  USD: 56,
-  PHP: 1,
-  GBP: 72,
-  AUD: 37,
-  EUR: 61,
-  SGD: 42,
+// Fallback rates (used until live rates load)
+const FALLBACK_TO_PHP: Record<string, number> = {
+  USD: 56, PHP: 1, GBP: 72, AUD: 37, EUR: 61, SGD: 42,
 };
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
@@ -58,6 +53,24 @@ function PaymentsForm() {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [toPhp, setToPhp] = useState<Record<string, number>>(FALLBACK_TO_PHP);
+  const [ratesLoading, setRatesLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://open.er-api.com/v6/latest/PHP")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.rates) {
+          const rates: Record<string, number> = { PHP: 1 };
+          for (const c of CURRENCIES.filter((x) => x !== "PHP")) {
+            if (data.rates[c]) rates[c] = Math.round((1 / data.rates[c]) * 100) / 100;
+          }
+          setToPhp(rates);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setRatesLoading(false));
+  }, []);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -77,7 +90,7 @@ function PaymentsForm() {
   );
 
   const rawAmount = selectedAmt === "custom" ? customAmt.replace(/[^0-9.]/g, "") : selectedAmt;
-  const phpAmount = rawAmount ? Math.round(Number(rawAmount) * TO_PHP[currency]) : 0;
+  const phpAmount = rawAmount ? Math.round(Number(rawAmount) * (toPhp[currency] ?? FALLBACK_TO_PHP[currency])) : 0;
   const displayAmount = fmt(rawAmount, currency);
   const phpDisplay = phpAmount ? "₱" + phpAmount.toLocaleString("en-PH") : "₱0";
 
@@ -181,9 +194,15 @@ function PaymentsForm() {
                       <span className="flex items-center gap-2">
                         <span className="text-orange font-bold font-mono">{sym}</span>
                         <span>{currency}</span>
-                        <span className="text-white/30 text-xs">
-                          {currency !== "PHP" && `≈ ₱${TO_PHP[currency].toLocaleString()}/1`}
-                        </span>
+                        {currency !== "PHP" && (
+                          <span className="text-white/30 text-xs flex items-center gap-1">
+                            ≈ ₱{(toPhp[currency] ?? FALLBACK_TO_PHP[currency]).toLocaleString()}/1
+                            {ratesLoading
+                              ? <span className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
+                              : <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Live rate" />
+                            }
+                          </span>
+                        )}
                       </span>
                       <ChevronDown
                         size={14}
@@ -416,7 +435,8 @@ function PaymentsForm() {
 
               {currency !== "PHP" && rawAmount && (
                 <p className="text-center text-white/25 text-xs -mt-2">
-                  PayMongo charges in PHP · {displayAmount} ≈ {phpDisplay} at current rates
+                  PayMongo charges in PHP · {displayAmount} ≈ {phpDisplay}
+                  {" "}· {ratesLoading ? "loading rate…" : "live rate"}
                 </p>
               )}
 
