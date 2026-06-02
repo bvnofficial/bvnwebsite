@@ -28,6 +28,8 @@ const marketingPlans = [
     tier: "STARTER",
     price: "$500",
     isPopular: false,
+    ctaLabel: "Get Started — $500/mo",
+    ctaHref: "/payments?amount=500&currency=$&description=Marketing+Starter+Plan&plan=Marketing+STARTER",
     features: [
       { label: "Platforms", value: "2" },
       { label: "Posts/Month", value: "12" },
@@ -49,6 +51,8 @@ const marketingPlans = [
     tier: "GROWTH",
     price: "$1,200",
     isPopular: true,
+    ctaLabel: "Get Started — $1,200/mo",
+    ctaHref: "/payments?amount=1200&currency=$&description=Marketing+Growth+Plan&plan=Marketing+GROWTH",
     features: [
       { label: "Platforms", value: "4" },
       { label: "Posts/Month", value: "20" },
@@ -70,6 +74,8 @@ const marketingPlans = [
     tier: "PRO",
     price: "$2,500",
     isPopular: false,
+    ctaLabel: "Get Started — $2,500/mo",
+    ctaHref: "/payments?amount=2500&currency=$&description=Marketing+Pro+Plan&plan=Marketing+PRO",
     features: [
       { label: "Platforms", value: "6+" },
       { label: "Posts/Month", value: "30+" },
@@ -142,6 +148,8 @@ const operationsPlans = [
     tier: "STARTER",
     price: "$600",
     isPopular: false,
+    ctaLabel: "Get Started — $600/mo",
+    ctaHref: "/payments?amount=600&currency=$&description=Operations+Starter+Plan&plan=Operations+STARTER",
     features: [
       { label: "CRM", value: "Basic (2 pipelines)" },
       { label: "AI Agents", value: "—" },
@@ -161,6 +169,8 @@ const operationsPlans = [
     tier: "GROWTH",
     price: "$1,400",
     isPopular: true,
+    ctaLabel: "Get Started — $1,400/mo",
+    ctaHref: "/payments?amount=1400&currency=$&description=Operations+Growth+Plan&plan=Operations+GROWTH",
     features: [
       { label: "CRM", value: "Advanced (5 pipelines)" },
       { label: "AI Agents", value: "1 agent" },
@@ -180,6 +190,8 @@ const operationsPlans = [
     tier: "PRO",
     price: "$3,000",
     isPopular: false,
+    ctaLabel: "Get Started — $3,000/mo",
+    ctaHref: "/payments?amount=3000&currency=$&description=Operations+Pro+Plan&plan=Operations+PRO",
     features: [
       { label: "CRM", value: "Enterprise (unlimited)" },
       { label: "AI Agents", value: "Up to 3 agents" },
