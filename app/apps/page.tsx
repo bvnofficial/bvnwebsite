@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
+import ShareButtons from "@/components/ui/ShareButtons";
 
 const apps = [
   {
@@ -221,40 +222,48 @@ export default function AppsPage() {
           >
             {apps.map(({ icon: Icon, title, description, href, badge, color }) => (
               <motion.div key={href} variants={child}>
-                <Link
-                  href={href}
-                  className="group flex flex-col h-full bg-white/5 border border-white/10 rounded-2xl p-6
-                    hover:border-orange/30 hover:bg-white/8 hover:shadow-[0_0_32px_rgba(232,96,16,0.12)]
-                    transition-all duration-300"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center
-                      ${color === "yellow" ? "bg-yellow-500/15 border border-yellow-500/20"
-                      : color === "blue" ? "bg-blue-500/15 border border-blue-500/20"
-                      : color === "green" ? "bg-emerald-500/15 border border-emerald-500/20"
-                      : color === "purple" ? "bg-purple-500/15 border border-purple-500/20"
-                      : "bg-orange/10 border border-orange/20"}`}>
-                      <Icon size={22} className={
-                        color === "yellow" ? "text-yellow-400"
-                        : color === "blue" ? "text-blue-400"
-                        : color === "green" ? "text-emerald-400"
-                        : color === "purple" ? "text-purple-400"
-                        : "text-orange"} />
+                <div className="group flex flex-col h-full bg-white/5 border border-white/10 rounded-2xl
+                  hover:border-orange/30 hover:bg-white/8 hover:shadow-[0_0_32px_rgba(232,96,16,0.12)]
+                  transition-all duration-300">
+                  <Link href={href} className="flex flex-col flex-1 p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center
+                        ${color === "yellow" ? "bg-yellow-500/15 border border-yellow-500/20"
+                        : color === "blue" ? "bg-blue-500/15 border border-blue-500/20"
+                        : color === "green" ? "bg-emerald-500/15 border border-emerald-500/20"
+                        : color === "purple" ? "bg-purple-500/15 border border-purple-500/20"
+                        : "bg-orange/10 border border-orange/20"}`}>
+                        <Icon size={22} className={
+                          color === "yellow" ? "text-yellow-400"
+                          : color === "blue" ? "text-blue-400"
+                          : color === "green" ? "text-emerald-400"
+                          : color === "purple" ? "text-purple-400"
+                          : "text-orange"} />
+                      </div>
+                      <span className="text-xs font-accent font-semibold px-2.5 py-1 rounded-full
+                        bg-green-500/10 border border-green-500/20 text-green-400">
+                        {badge}
+                      </span>
                     </div>
-                    <span className="text-xs font-accent font-semibold px-2.5 py-1 rounded-full
-                      bg-green-500/10 border border-green-500/20 text-green-400">
-                      {badge}
-                    </span>
-                  </div>
 
-                  <h3 className="font-heading font-bold text-white text-lg mb-2">{title}</h3>
-                  <p className="text-white/55 text-sm leading-relaxed flex-1">{description}</p>
+                    <h3 className="font-heading font-bold text-white text-lg mb-2">{title}</h3>
+                    <p className="text-white/55 text-sm leading-relaxed flex-1">{description}</p>
 
-                  <div className="flex items-center gap-1.5 mt-5 text-orange text-sm font-accent font-semibold
-                    group-hover:gap-2.5 transition-all duration-200">
-                    Open Tool <ArrowRight size={14} />
+                    <div className="flex items-center gap-1.5 mt-5 text-orange text-sm font-accent font-semibold
+                      group-hover:gap-2.5 transition-all duration-200">
+                      Open Tool <ArrowRight size={14} />
+                    </div>
+                  </Link>
+
+                  <div className="flex items-center justify-between px-6 pb-4 pt-2 border-t border-white/5">
+                    <span className="text-white/30 text-xs font-accent">Share:</span>
+                    <ShareButtons
+                      url={`https://www.bvnofficial.com${href}`}
+                      title={title}
+                      compact
+                    />
                   </div>
-                </Link>
+                </div>
               </motion.div>
             ))}
 

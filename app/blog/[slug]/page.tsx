@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Tag, ArrowRight } from "lucide-react";
 import { blogPosts, getBlogPost, type ContentSection } from "@/lib/blog-posts";
 import GlowButton from "@/components/ui/GlowButton";
+import ShareButtons from "@/components/ui/ShareButtons";
 
 // ── Static params for all blog posts ─────────────────────────
 export async function generateStaticParams() {
@@ -143,9 +144,15 @@ export default function BlogPostPage({
           </h1>
 
           {/* Excerpt */}
-          <p className="text-white/60 text-lg leading-relaxed">
+          <p className="text-white/60 text-lg leading-relaxed mb-6">
             {post.excerpt}
           </p>
+
+          {/* Share */}
+          <ShareButtons
+            url={`https://www.bvnofficial.com/blog/${post.slug}`}
+            title={post.title}
+          />
         </div>
       </section>
 
