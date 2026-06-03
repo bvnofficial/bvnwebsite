@@ -34,7 +34,6 @@ const CURRENCIES = ["USD", "PHP", "GBP", "AUD", "EUR", "SGD"];
 const PAYMENT_METHODS = [
   { label: "Card", icon: "💳" },
   { label: "GCash", icon: "📱" },
-  { label: "Maya", icon: "🟢" },
 ];
 
 function fmt(amount: string, currency: string) {

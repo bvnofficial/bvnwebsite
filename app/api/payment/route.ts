@@ -17,7 +17,35 @@ export async function POST(req: Request) {
     }
 
     const amountCentavos = Math.round(Number(amount) * 100);
-    const origin = req.headers.get("origin") || "https://www.bvnofficial.com";
+    const baseUrl = "https://www.bvnofficial.com";
+
+    const body = {
+      data: {
+        attributes: {
+          billing: {
+            name,
+            email,
+            ...(phone ? { phone } : {}),
+          },
+          send_email_receipt: true,
+          show_description: true,
+          show_line_items: true,
+          description: description || "BVN Digital Agency Services",
+          line_items: [
+            {
+              currency: "PHP",
+              amount: amountCentavos,
+              name: description || "BVN Digital Agency Services",
+              quantity: 1,
+            },
+          ],
+          payment_method_types: ["card", "gcash"],
+          success_url: `${baseUrl}/payments/success`,
+          cancel_url: `${baseUrl}/payments`,
+          metadata: { customer_name: name, customer_email: email },
+        },
+      },
+    };
 
     const sessionRes = await fetch(`${PAYMONGO_BASE}/checkout_sessions`, {
       method: "POST",
@@ -25,39 +53,14 @@ export async function POST(req: Request) {
         Authorization: pmAuth(),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        data: {
-          attributes: {
-            billing: {
-              name,
-              email,
-              phone: phone || undefined,
-            },
-            send_email_receipt: true,
-            show_description: true,
-            show_line_items: true,
-            description: description || "BVN Digital Agency Services",
-            line_items: [
-              {
-                currency: "PHP",
-                amount: amountCentavos,
-                name: description || "BVN Digital Agency Services",
-                quantity: 1,
-              },
-            ],
-            payment_method_types: ["card", "gcash", "maya", "billease", "dob_ubp"],
-            success_url: `${origin}/payments/success`,
-            cancel_url: `${origin}/payments`,
-            metadata: { customer_name: name, customer_email: email },
-          },
-        },
-      }),
+      body: JSON.stringify(body),
     });
 
     if (!sessionRes.ok) {
       const err = await sessionRes.json().catch(() => ({}));
-      console.error("PayMongo error:", err);
-      return NextResponse.json({ error: "Failed to create payment session" }, { status: 500 });
+      const pmMsg = err?.errors?.[0]?.detail ?? err?.errors?.[0]?.code ?? "Unknown PayMongo error";
+      console.error("PayMongo error:", JSON.stringify(err));
+      return NextResponse.json({ error: pmMsg }, { status: 500 });
     }
 
     const session = await sessionRes.json();
