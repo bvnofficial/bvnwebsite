@@ -4,9 +4,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Lock, CheckCircle, AlertCircle, ChevronRight, Shield, Zap, ChevronDown } from "lucide-react";
+import { Lock, CheckCircle, AlertCircle, ChevronRight, Shield, ChevronDown } from "lucide-react";
 
-// Fallback rates (used until live rates load)
 const FALLBACK_TO_PHP: Record<string, number> = {
   USD: 56, PHP: 1, GBP: 72, AUD: 37, EUR: 61, SGD: 42,
 };
@@ -30,11 +29,6 @@ const PRESETS: Record<string, string[]> = {
 };
 
 const CURRENCIES = ["USD", "PHP", "GBP", "AUD", "EUR", "SGD"];
-
-const PAYMENT_METHODS = [
-  { label: "Card", icon: "💳" },
-  { label: "GCash", icon: "📱" },
-];
 
 function fmt(amount: string, currency: string) {
   if (!amount || isNaN(Number(amount))) return CURRENCY_SYMBOLS[currency] + "0";
@@ -73,7 +67,6 @@ function PaymentsForm() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [description, setDescription] = useState(urlDescription);
   const [currency, setCurrency] = useState("USD");
 
@@ -96,8 +89,7 @@ function PaymentsForm() {
   function selectCurrency(c: string) {
     setCurrency(c);
     setCurrencyOpen(false);
-    // Reset amount selection for new currency
-    setSelectedAmt(PRESETS[c][1]); // second preset as default
+    setSelectedAmt(PRESETS[c][1]);
     setCustomAmt("");
   }
 
@@ -116,24 +108,20 @@ function PaymentsForm() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/payment", {
+      const res = await fetch("/api/nowpayment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
           email,
-          phone: phone || undefined,
-          amount: phpAmount,             // always PHP centavos for PayMongo
-          displayAmount: displayAmount,  // original currency for description
+          amount: rawAmount,
           currency,
           description: description || urlPlan || undefined,
         }),
       });
-
       const data = await res.json();
-
-      if (data.checkoutUrl) {
-        router.push(data.checkoutUrl);
+      if (data.invoiceUrl) {
+        router.push(data.invoiceUrl);
       } else {
         setErrMsg(data.error || "Something went wrong. Please try again.");
       }
@@ -146,12 +134,11 @@ function PaymentsForm() {
 
   return (
     <div className="min-h-screen bg-[#0A0F1E] py-24 px-4">
-      {/* BG glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-30"
           style={{
-            background: "radial-gradient(ellipse, rgba(232,96,16,0.15), transparent 70%)",
+            background: "radial-gradient(ellipse, rgba(139,92,246,0.15), transparent 70%)",
             filter: "blur(80px)",
           }}
         />
@@ -168,7 +155,7 @@ function PaymentsForm() {
             {urlPlan ? `${urlPlan} — Secure Payment` : "Secure Payment"}
           </h1>
           <p className="text-white/40 text-sm">
-            Powered by PayMongo · 256-bit SSL · PCI DSS Level 1
+            Powered by NOWPayments · Pay by card · Settled in USDT
           </p>
         </div>
 
@@ -188,10 +175,10 @@ function PaymentsForm() {
                     <button
                       type="button"
                       onClick={() => setCurrencyOpen(!currencyOpen)}
-                      className="w-full flex items-center justify-between px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm font-body hover:border-orange/40 transition"
+                      className="w-full flex items-center justify-between px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm font-body hover:border-violet-500/40 transition"
                     >
                       <span className="flex items-center gap-2">
-                        <span className="text-orange font-bold font-mono">{sym}</span>
+                        <span className="text-violet-400 font-bold font-mono">{sym}</span>
                         <span>{currency}</span>
                         {currency !== "PHP" && (
                           <span className="text-white/30 text-xs flex items-center gap-1">
@@ -216,13 +203,13 @@ function PaymentsForm() {
                             type="button"
                             onClick={() => selectCurrency(c)}
                             className={`w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-white/5 transition text-left
-                              ${currency === c ? "text-orange font-bold" : "text-white/70"}`}
+                              ${currency === c ? "text-violet-400 font-bold" : "text-white/70"}`}
                           >
                             <span className="flex items-center gap-2">
                               <span className="font-mono w-6">{CURRENCY_SYMBOLS[c]}</span>
                               <span>{c}</span>
                             </span>
-                            {currency === c && <CheckCircle size={12} className="text-orange" />}
+                            {currency === c && <CheckCircle size={12} className="text-violet-400" />}
                           </button>
                         ))}
                       </div>
@@ -240,7 +227,7 @@ function PaymentsForm() {
                       onClick={() => setSelectedAmt(v)}
                       className={`py-2.5 rounded-xl text-sm font-bold font-accent border transition-all
                         ${selectedAmt === v
-                          ? "bg-orange text-white border-orange shadow-[0_0_15px_rgba(232,96,16,0.4)]"
+                          ? "bg-violet-600 text-white border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.4)]"
                           : "bg-white/4 border-white/8 text-white/50 hover:border-white/20"}`}
                     >
                       {fmt(v, currency)}
@@ -251,7 +238,7 @@ function PaymentsForm() {
                     onClick={() => setSelectedAmt("custom")}
                     className={`py-2.5 rounded-xl text-sm font-bold font-accent border transition-all
                       ${selectedAmt === "custom"
-                        ? "bg-orange text-white border-orange shadow-[0_0_15px_rgba(232,96,16,0.4)]"
+                        ? "bg-violet-600 text-white border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.4)]"
                         : "bg-white/4 border-white/8 text-white/50 hover:border-white/20"}`}
                   >
                     Custom
@@ -267,7 +254,7 @@ function PaymentsForm() {
                       value={customAmt}
                       onChange={(e) => setCustomAmt(e.target.value)}
                       min="1"
-                      className="w-full bg-white/6 border border-white/15 rounded-xl pl-8 pr-4 py-2.5 text-white text-sm font-body outline-none focus:border-orange/60 transition"
+                      className="w-full bg-white/6 border border-white/15 rounded-xl pl-8 pr-4 py-2.5 text-white text-sm font-body outline-none focus:border-violet-500/60 transition"
                     />
                   </div>
                 )}
@@ -275,7 +262,7 @@ function PaymentsForm() {
                 <div className="pt-3 border-t border-white/8 space-y-1">
                   <div className="flex justify-between items-center">
                     <span className="text-white/40 text-sm">Total</span>
-                    <span className="text-orange font-heading font-black text-2xl">{displayAmount}</span>
+                    <span className="text-violet-400 font-heading font-black text-2xl">{displayAmount}</span>
                   </div>
                   {currency !== "PHP" && rawAmount && (
                     <div className="flex justify-between items-center">
@@ -296,23 +283,26 @@ function PaymentsForm() {
                   placeholder="e.g. Social Media Package, Web Dev Deposit..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 font-body outline-none focus:border-orange/50 transition"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 font-body outline-none focus:border-violet-500/50 transition"
                 />
                 {urlPlan && !description && (
-                  <p className="mt-1.5 text-orange/60 text-xs font-accent">{urlPlan}</p>
+                  <p className="mt-1.5 text-violet-400/60 text-xs font-accent">{urlPlan}</p>
                 )}
               </div>
 
               {/* Accepted payments */}
               <div className="bg-[#111827] border border-white/8 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <Zap size={13} className="text-orange" />
+                  <span className="text-lg">₿</span>
                   <span className="text-white/40 text-xs font-bold font-accent uppercase tracking-widest">
                     Accepted Payments
                   </span>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  {PAYMENT_METHODS.map((m) => (
+                  {[
+                    { label: "Visa / Mastercard", icon: "💳" },
+                    { label: "USDT (ERC-20)", icon: "🔷" },
+                  ].map((m) => (
                     <div key={m.label} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg">
                       <span className="text-sm">{m.icon}</span>
                       <span className="text-white/60 text-xs font-accent font-semibold">{m.label}</span>
@@ -329,7 +319,7 @@ function PaymentsForm() {
                     Secure Checkout
                   </span>
                 </div>
-                {["256-bit TLS encryption", "PCI DSS Level 1 certified", "Powered by PayMongo"].map((t) => (
+                {["256-bit TLS encryption", "Powered by NOWPayments", "USDT settled to GCash GCrypto"].map((t) => (
                   <div key={t} className="flex items-center gap-2 py-1.5">
                     <CheckCircle size={11} className="text-emerald-400 shrink-0" />
                     <span className="text-white/40 text-xs">{t}</span>
@@ -354,7 +344,7 @@ function PaymentsForm() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Juan Dela Cruz"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 font-body outline-none focus:border-orange/55 transition"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 font-body outline-none focus:border-violet-500/55 transition"
                     />
                   </div>
                   <div>
@@ -365,16 +355,7 @@ function PaymentsForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="juan@email.com"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 font-body outline-none focus:border-orange/55 transition"
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="block text-white/45 text-xs font-semibold mb-1.5">Phone Number</label>
-                    <input
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+63 9XX XXX XXXX"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 font-body outline-none focus:border-orange/55 transition"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 font-body outline-none focus:border-violet-500/55 transition"
                     />
                   </div>
                 </div>
@@ -387,14 +368,14 @@ function PaymentsForm() {
                 </p>
                 <div className="space-y-3">
                   {[
-                    { step: "1", text: "Click Pay — you'll be redirected to PayMongo's secure checkout" },
-                    { step: "2", text: "Choose your payment method: card, GCash, or Maya" },
-                    { step: "3", text: "Payment is confirmed instantly — you'll receive a receipt via email" },
+                    { step: "1", text: "Click Pay — you'll be redirected to NOWPayments secure checkout" },
+                    { step: "2", text: "Pay by credit or debit card (Visa / Mastercard)" },
+                    { step: "3", text: "Payment converts to USDT and settles instantly" },
                     { step: "4", text: "BVN team will contact you within 24 hours to begin your project" },
                   ].map((item) => (
                     <div key={item.step} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-orange/15 border border-orange/30 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-orange text-[10px] font-black">{item.step}</span>
+                      <div className="w-6 h-6 rounded-full bg-violet-500/15 border border-violet-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-violet-400 text-[10px] font-black">{item.step}</span>
                       </div>
                       <p className="text-white/50 text-sm leading-relaxed">{item.text}</p>
                     </div>
@@ -414,33 +395,26 @@ function PaymentsForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 py-4 bg-orange text-white font-heading font-extrabold text-base rounded-2xl
-                  shadow-[0_0_30px_rgba(232,96,16,0.45)] hover:bg-orange-light hover:shadow-[0_0_50px_rgba(232,96,16,0.65)]
+                className="w-full flex items-center justify-center gap-3 py-4 bg-violet-600 text-white font-heading font-extrabold text-base rounded-2xl
+                  shadow-[0_0_30px_rgba(139,92,246,0.45)] hover:bg-violet-500 hover:shadow-[0_0_50px_rgba(139,92,246,0.65)]
                   disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {loading ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Redirecting to PayMongo...
+                    Redirecting to NOWPayments...
                   </>
                 ) : (
                   <>
                     <Lock size={16} />
-                    Pay {displayAmount} via PayMongo
+                    Pay {displayAmount} via NOWPayments
                     <ChevronRight size={16} />
                   </>
                 )}
               </button>
 
-              {currency !== "PHP" && rawAmount && (
-                <p className="text-center text-white/25 text-xs -mt-2">
-                  PayMongo charges in PHP · {displayAmount} ≈ {phpDisplay}
-                  {" "}· {ratesLoading ? "loading rate…" : "live rate"}
-                </p>
-              )}
-
               <p className="text-center text-white/20 text-xs pb-2">
-                🔒 Your payment is processed securely by PayMongo · PCI DSS Level 1
+                🔒 Your payment is processed securely by NOWPayments · USDT (ERC-20)
               </p>
             </div>
           </div>
@@ -455,7 +429,7 @@ export default function PaymentsPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-[#0A0F1E] flex items-center justify-center">
-          <div className="w-10 h-10 border-2 border-orange/20 border-t-orange rounded-full animate-spin" />
+          <div className="w-10 h-10 border-2 border-violet-500/20 border-t-violet-500 rounded-full animate-spin" />
         </div>
       }
     >
