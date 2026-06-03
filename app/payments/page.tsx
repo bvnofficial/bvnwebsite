@@ -155,7 +155,7 @@ function PaymentsForm() {
             {urlPlan ? `${urlPlan} — Secure Payment` : "Secure Payment"}
           </h1>
           <p className="text-white/40 text-sm">
-            Powered by NOWPayments · Pay by card · Settled in USDT
+            Powered by Plisio · Pay by card · Settled in USDT
           </p>
         </div>
 
@@ -319,7 +319,7 @@ function PaymentsForm() {
                     Secure Checkout
                   </span>
                 </div>
-                {["256-bit TLS encryption", "Powered by NOWPayments", "USDT settled to GCash GCrypto"].map((t) => (
+                {["256-bit TLS encryption", "Powered by Plisio", "USDT settled to GCash GCrypto"].map((t) => (
                   <div key={t} className="flex items-center gap-2 py-1.5">
                     <CheckCircle size={11} className="text-emerald-400 shrink-0" />
                     <span className="text-white/40 text-xs">{t}</span>
@@ -368,7 +368,7 @@ function PaymentsForm() {
                 </p>
                 <div className="space-y-3">
                   {[
-                    { step: "1", text: "Click Pay — you'll be redirected to NOWPayments secure checkout" },
+                    { step: "1", text: "Click Pay — you'll be redirected to Plisio's secure checkout" },
                     { step: "2", text: "Pay by credit or debit card (Visa / Mastercard)" },
                     { step: "3", text: "Payment converts to USDT and settles instantly" },
                     { step: "4", text: "BVN team will contact you within 24 hours to begin your project" },
@@ -402,19 +402,19 @@ function PaymentsForm() {
                 {loading ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Redirecting to NOWPayments...
+                    Redirecting to Plisio...
                   </>
                 ) : (
                   <>
                     <Lock size={16} />
-                    Pay {displayAmount} via NOWPayments
+                    Pay {displayAmount} via Plisio
                     <ChevronRight size={16} />
                   </>
                 )}
               </button>
 
               <p className="text-center text-white/20 text-xs pb-2">
-                🔒 Your payment is processed securely by NOWPayments · USDT (ERC-20)
+                🔒 Your payment is processed securely by Plisio · USDT (ERC-20)
               </p>
             </div>
           </div>
