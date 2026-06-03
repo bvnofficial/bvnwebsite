@@ -24,7 +24,6 @@ export async function POST(req: Request) {
       cancel_url: `${baseUrl}/payments`,
       is_fixed_rate: true,
       is_fee_paid_by_user: false,
-      payout_address: process.env.NOWPAYMENTS_WALLET,
       customer_email: email,
     };
 
