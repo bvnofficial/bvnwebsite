@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       order_number: orderId,
       amount: String(amount),
       source_currency: (currency || "USD").toUpperCase(),
-      currency: "USDT",
+      currency: "USDT_ETH",
       callback_url: `${baseUrl}/api/nowpayment/webhook`,
       success_url: `${baseUrl}/payments/success?method=crypto&order=${orderId}`,
       cancel_url: `${baseUrl}/payments`,
