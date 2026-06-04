@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQ 80th Birthday — AVP Script</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    color: #fff;
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP BAR ── */
+  #topbar {
+    background: linear-gradient(180deg,#111118,transparent);
+    padding: 14px 28px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  #title-label {
+    font-size: 13px;
+    color: #d4af37;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* progress bar */
+  #progress-wrap { flex: 1; position: relative; }
+  #progress-bg {
+    height: 4px; background: #2a2a3a; border-radius: 2px; cursor: pointer;
+  }
+  #progress-fill {
+    height: 100%; background: #d4af37; border-radius: 2px;
+    width: 0%; transition: width 0.3s;
+  }
+  #time-label {
+    font-size: 12px; color: #888; margin-top: 4px; text-align: right;
+  }
+
+  /* controls */
+  #controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .btn {
+    background: #1e1e2e; border: 1px solid #333;
+    color: #ccc; padding: 7px 14px; border-radius: 6px;
+    cursor: pointer; font-size: 13px; transition: all .15s;
+  }
+  .btn:hover { background: #2a2a3e; color: #fff; border-color: #d4af37; }
+  .btn.active, #playbtn.playing { background: #d4af37; color: #000; border-color: #d4af37; }
+  #speed-select {
+    background: #1e1e2e; border: 1px solid #333; color: #ccc;
+    padding: 7px 8px; border-radius: 6px; font-size: 13px; cursor: pointer;
+  }
+
+  /* ── SCRIPT AREA ── */
+  #script-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* gradient masks top/bottom */
+  #script-wrap::before, #script-wrap::after {
+    content: '';
+    position: absolute; left: 0; right: 0; height: 120px; z-index: 2; pointer-events: none;
+  }
+  #script-wrap::before { top: 0; background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%); }
+  #script-wrap::after  { bottom: 0; background: linear-gradient(0deg, #0a0a0f 0%, transparent 100%); }
+
+  #script-inner {
+    width: 100%; max-width: 860px;
+    padding: 0 40px;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+  }
+
+  #script-scroll {
+    transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+    padding: 45vh 0;
+  }
+
+  /* lines */
+  .line {
+    text-align: center;
+    padding: 10px 0;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .line .text {
+    font-size: 28px;
+    line-height: 1.55;
+    color: #444;
+    transition: color 0.4s, text-shadow 0.4s, font-size 0.4s;
+    white-space: pre-line;
+  }
+  .line.past .text { color: #2a2a3a; }
+  .line.active .text {
+    color: #ffffff;
+    font-size: 34px;
+    text-shadow: 0 0 40px rgba(212,175,55,0.35);
+  }
+  .line.near .text { color: #666; font-size: 26px; }
+
+  /* chapter lines */
+  .line.chapter-line { padding: 28px 0 14px; }
+  .line.chapter-line .text {
+    font-size: 13px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #2a2a2a;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+  }
+  .line.chapter-line.active .text {
+    color: #d4af37;
+    font-size: 14px;
+    text-shadow: 0 0 20px rgba(212,175,55,0.5);
+  }
+  .line.chapter-line.past .text { color: #1a1a1a; }
+
+  /* name lines (Carlo, Angel, etc.) */
+  .line.name-line.active .text {
+    color: #d4af37;
+    font-size: 42px;
+    font-style: italic;
+    text-shadow: 0 0 50px rgba(212,175,55,0.5);
+  }
+
+  /* gold divider between chapters */
+  .chapter-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d4af3740, transparent);
+    margin: 8px 80px;
+  }
+
+  /* blank lines (photos with no subtitle) */
+  .line.blank-line { padding: 4px 0; }
+  .line.blank-line .text { font-size: 14px; color: #1a1a1a; }
+  .line.blank-line.active .text { color: #333; font-size: 14px; }
+
+  /* ── BOTTOM HINT ── */
+  #hint {
+    text-align: center;
+    font-size: 11px;
+    color: #2a2a3a;
+    padding: 8px;
+    flex-shrink: 0;
+    letter-spacing: 2px;
+  }
+
+  /* spacebar visual flash */
+  body.flash { background: #0f0f18; }
+
+  /* Opening overlay */
+  #opening {
+    position: fixed; inset: 0; background: #08080f;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 100; transition: opacity 1s;
+  }
+  #opening h1 {
+    color: #d4af37; font-size: 38px; letter-spacing: 4px;
+    text-align: center; text-transform: uppercase; margin-bottom: 10px;
+  }
+  #opening h2 {
+    color: #888; font-size: 18px; letter-spacing: 2px; text-align: center; margin-bottom: 60px;
+  }
+  #start-btn {
+    background: #d4af37; color: #000; border: none;
+    padding: 16px 48px; font-size: 18px; border-radius: 8px;
+    cursor: pointer; letter-spacing: 2px; font-family: 'Arial', sans-serif;
+    font-weight: bold; transition: transform .15s;
+  }
+  #start-btn:hover { transform: scale(1.05); }
+</style>
+</head>
+<body>
+
+<!-- Opening screen -->
+<div id="opening">
+  <h1>EQ 80th Birthday</h1>
+  <h2>AVP Script Teleprompter</h2>
+  <button id="start-btn" onclick="startShow()">▶ START</button>
+</div>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div id="title-label">EQ 80th · AVP Script</div>
+  <div id="progress-wrap">
+    <div id="progress-bg" onclick="seekProgress(event)">
+      <div id="progress-fill"></div>
+    </div>
+    <div id="time-label">0:00 / 0:00</div>
+  </div>
+  <div id="controls">
+    <button class="btn" onclick="jump(-1)" title="Previous">◀◀</button>
+    <button class="btn" id="playbtn" onclick="togglePlay()">▶ Play</button>
+    <button class="btn" onclick="jump(1)" title="Next">▶▶</button>
+    <select id="speed-select" onchange="setSpeed(this.value)">
+      <option value="0.75">0.75×</option>
+      <option value="1" selected>1×</option>
+      <option value="1.25">1.25×</option>
+      <option value="1.5">1.5×</option>
+      <option value="2">2×</option>
+    </select>
+    <button class="btn" onclick="resetShow()">↺</button>
+  </div>
+</div>
+
+<!-- Script -->
+<div id="script-wrap">
+  <div id="script-inner">
+    <div id="script-scroll"></div>
+  </div>
+</div>
+
+<div id="hint">SPACE · PLAY/PAUSE &nbsp;|&nbsp; ← → · NAVIGATE &nbsp;|&nbsp; CLICK LINE TO JUMP</div>
+
+<script>
+// ─────────────────────────────────────────────
+// SCRIPT DATA  (text, type, duration in seconds)
+// type: "title" | "chapter" | "line" | "name" | "blank"
+// t = start time in video (seconds)
+// ─────────────────────────────────────────────
+const SCRIPT = [
+  // ── OPENING ──────────────────────────────────
+  {t:0,    text:"HAPPY 80TH BIRTHDAY\nPMGEN EFREN \"EQ\" FERNANDEZ (RET.)", type:"chapter"},
+
+  // ── CHAPTER 1 ─────────────────────────────────
+  {t:4.5,  text:"WHERE IT ALL BEGAN",                                        type:"chapter"},
+  {t:7.5,  text:"Before he was General Efren \"EQ\" Fernandez…",            type:"line"},
+  {t:10.5, text:"He was simply Efren or EQ.",                               type:"line"},
+  {t:13.5, text:"A young boy with big dreams,\nand a heart full of determination.", type:"line"},
+
+  // ── CHAPTER 2 ─────────────────────────────────
+  {t:16.5, text:"THE MAKING OF A MAN",                                       type:"chapter"},
+  {t:19.5, text:"As a young man, he learned the values\nthat would guide him through his life.", type:"line"},
+  {t:22.5, text:"Faith",                                                     type:"line"},
+  {t:25.5, text:"Family",                                                    type:"line"},
+  {t:28.5, text:"Discipline",                                                type:"line"},
+  {t:31.5, text:"And integrity",                                             type:"line"},
+  {t:34.5, text:"These values would shape the man,\nthe husband,\nthe father,", type:"line"},
+  {t:37.5, text:"and the leader he would become",                            type:"line"},
+  {t:40.5, text:"",  type:"blank"},
+  {t:43.5, text:"",  type:"blank"},
+  {t:46.5, text:"",  type:"blank"},
+
+  // ── CHAPTER 3 ─────────────────────────────────
+  {t:49.5, text:"WHEN TWO HEARTS BECAME ONE",                                type:"chapter"},
+  {t:52.5, text:"Then, life brought him his forever … VANGIE",               type:"line"},
+  {t:55.5, text:"Together,\nthey built a life founded on love,\nfaith,",     type:"line"},
+  {t:58.5, text:"trust,\nand unwavering support",                            type:"line"},
+  {t:61.5, text:"Through every challenge\nand every triumph,\nthey stood side by side", type:"line"},
+  {t:64.5, text:"",  type:"blank"},
+  {t:67.5, text:"",  type:"blank"},
+  {t:70.5, text:"",  type:"blank"},
+  {t:73.5, text:"",  type:"blank"},
+
+  // ── CHAPTER 4 ─────────────────────────────────
+  {t:76.5, text:"BUILDING A FAMILY",                                         type:"chapter"},
+  {t:79.5, text:"Together,\nthey built a wonderful family",                  type:"line"},
+  {t:82.5, text:"Che ….",                                                    type:"name"},
+  {t:85.5, text:"",  type:"blank"},
+  {t:88.5, text:"Ren … then Drew ….",                                        type:"name"},
+  {t:91.5, text:"Their home became a place filled with love,\nguidance,\nlaughter,", type:"line"},
+  {t:94.5, text:"and unforgettable memories",                                type:"line"},
+  {t:97.5, text:"",  type:"blank"},
+  {t:100.5,text:"",  type:"blank"},
+  {t:103.5,text:"",  type:"blank"},
+  {t:106.5,text:"",  type:"blank"},
+
+  // ── CHAPTER 5 ─────────────────────────────────
+  {t:109.5,text:"LOVE MULTIPLIED",                                           type:"chapter"},
+  {t:112.5,text:"As the years passed,\nthe family continued to grow",        type:"line"},
+  {t:115.5,text:"",  type:"blank"},
+  {t:118.5,text:"",  type:"blank"},
+  {t:121.5,text:"",  type:"blank"},
+  {t:124.5,text:"",  type:"blank"},
+  {t:127.5,text:"",  type:"blank"},
+  {t:130.5,text:"",  type:"blank"},
+  {t:133.5,text:"And with every new blessing,\ntheir hearts grew fuller",    type:"line"},
+  {t:136.5,text:"Carlo",                                                     type:"name"},
+  {t:139.5,text:"",  type:"blank"},
+  {t:142.5,text:"",  type:"blank"},
+  {t:145.5,text:"",  type:"blank"},
+  {t:148.5,text:"Angel",                                                     type:"name"},
+  {t:151.5,text:"",  type:"blank"},
+  {t:154.5,text:"",  type:"blank"},
+  {t:157.5,text:"Evette",                                                    type:"name"},
+  {t:160.5,text:"",  type:"blank"},
+  {t:163.5,text:"",  type:"blank"},
+  {t:166.5,text:"Ev",                                                        type:"name"},
+  {t:169.5,text:"",  type:"blank"},
+  {t:172.5,text:"Inna",                                                      type:"name"},
+  {t:175.5,text:"",  type:"blank"},
+  {t:178.5,text:"",  type:"blank"},
+  {t:181.5,text:"Five grandchildren\nwho brought endless joy,\nlaughter,",   type:"line"},
+  {t:184.5,text:"and happiness into their lives",                            type:"line"},
+
+  // ── CHAPTER 6 ─────────────────────────────────
+  {t:187.5,text:"YEARS OF STRENGTH & SERVICE",                               type:"chapter"},
+  {t:190.5,text:"While family remained his greatest treasure,\nEQ also dedicated many years of his life\nto serving others", type:"line"},
+  {t:193.5,text:"",  type:"blank"},
+  {t:196.5,text:"",  type:"blank"},
+  {t:199.5,text:"Through hard work,\ncommitment,\nand integrity,",           type:"line"},
+  {t:202.5,text:"",  type:"blank"},
+  {t:205.5,text:"he rose through the ranks of the Philippine National Police,\nearning the respect of colleagues\nand the admiration of those he served alongside", type:"line"},
+  {t:208.5,text:"",  type:"blank"},
+  {t:211.5,text:"",  type:"blank"},
+  {t:214.5,text:"His career reflected the same values\nthat guided him throughout his life", type:"line"},
+  {t:217.5,text:"",  type:"blank"},
+  {t:220.5,text:"Honor",                                                     type:"line"},
+  {t:223.5,text:"",  type:"blank"},
+  {t:226.5,text:"",  type:"blank"},
+  {t:229.5,text:"Discipline",                                                type:"line"},
+  {t:232.5,text:"",  type:"blank"},
+  {t:235.5,text:"Leadership",                                                type:"line"},
+  {t:238.5,text:"",  type:"blank"},
+  {t:241.5,text:"",  type:"blank"},
+  {t:244.5,text:"And service",                                               type:"line"},
+
+  // ── CHAPTER 7 ─────────────────────────────────
+  {t:247.5,text:"A LEGACY OF LOVE",                                          type:"chapter"},
+  {t:250.5,text:"For EQ,\nsome of life's most precious moments\nwere not found in titles,", type:"line"},
+  {t:253.5,text:"",  type:"blank"},
+  {t:256.5,text:"",  type:"blank"},
+  {t:259.5,text:"",  type:"blank"},
+  {t:262.5,text:"ranks,\nor accomplishments",                                type:"line"},
+  {t:265.5,text:"",  type:"blank"},
+  {t:268.5,text:"",  type:"blank"},
+  {t:271.5,text:"",  type:"blank"},
+  {t:274.5,text:"They were found in family",                                 type:"line"},
+  {t:277.5,text:"",  type:"blank"},
+  {t:280.5,text:"",  type:"blank"},
+  {t:283.5,text:"",  type:"blank"},
+  {t:286.5,text:"In birthdays celebrated together",                          type:"line"},
+  {t:289.5,text:"",  type:"blank"},
+  {t:292.5,text:"",  type:"blank"},
+  {t:295.5,text:"",  type:"blank"},
+  {t:298.5,text:"In holiday gatherings",                                     type:"line"},
+  {t:301.5,text:"",  type:"blank"},
+  {t:304.5,text:"",  type:"blank"},
+  {t:307.5,text:"",  type:"blank"},
+  {t:310.5,text:"",  type:"blank"},
+  {t:313.5,text:"In family vacations",                                       type:"line"},
+  {t:316.5,text:"",  type:"blank"},
+  {t:319.5,text:"",  type:"blank"},
+  {t:322.5,text:"",  type:"blank"},
+  {t:325.5,text:"In simple dinners around the table",                        type:"line"},
+  {t:328.5,text:"",  type:"blank"},
+  {t:331.5,text:"",  type:"blank"},
+  {t:334.5,text:"",  type:"blank"},
+  {t:337.5,text:"In long conversations,\nshared stories,\nand moments filled with laughter", type:"line"},
+  {t:340.5,text:"",  type:"blank"},
+  {t:343.5,text:"",  type:"blank"},
+  {t:346.5,text:"",  type:"blank"},
+  {t:349.5,text:"These were the moments he treasured most",                  type:"line"},
+  {t:352.5,text:"",  type:"blank"},
+  {t:355.5,text:"",  type:"blank"},
+  {t:358.5,text:"",  type:"blank"},
+  {t:361.5,text:"Whether it was a special occasion\nor an ordinary day spent together,\nEQ found happiness in the presence of family", type:"line"},
+  {t:364.5,text:"",  type:"blank"},
+  {t:367.5,text:"",  type:"blank"},
+  {t:370.5,text:"",  type:"blank"},
+  {t:373.5,text:"The photographs we see today\ntell the story of a life filled with love", type:"line"},
+  {t:376.5,text:"",  type:"blank"},
+  {t:379.5,text:"",  type:"blank"},
+  {t:382.5,text:"",  type:"blank"},
+  {t:385.5,text:"Each photograph captures more than a moment",               type:"line"},
+  {t:388.5,text:"",  type:"blank"},
+  {t:391.5,text:"",  type:"blank"},
+  {t:394.5,text:"",  type:"blank"},
+  {t:397.5,text:"It captures a bond",                                        type:"line"},
+  {t:400.5,text:"",  type:"blank"},
+  {t:403.5,text:"",  type:"blank"},
+  {t:406.5,text:"",  type:"blank"},
+  {t:409.5,text:"",  type:"blank"},
+  {t:412.5,text:"A memory",                                                  type:"line"},
+  {t:415.5,text:"",  type:"blank"},
+  {t:418.5,text:"",  type:"blank"},
+  {t:421.5,text:"",  type:"blank"},
+  {t:424.5,text:"A story",                                                   type:"line"},
+  {t:427.5,text:"",  type:"blank"},
+  {t:430.5,text:"",  type:"blank"},
+  {t:433.5,text:"",  type:"blank"},
+  {t:436.5,text:"A reminder of the love\nthat has always been at the center of his life", type:"line"},
+  {t:439.5,text:"",  type:"blank"},
+  {t:442.5,text:"",  type:"blank"},
+  {t:445.5,text:"",  type:"blank"},
+  {t:448.5,text:"Yet through every chapter of life,\none thing never changed", type:"line"},
+  {t:451.5,text:"",  type:"blank"},
+  {t:454.5,text:"",  type:"blank"},
+  {t:457.5,text:"",  type:"blank"},
+  {t:460.5,text:"His love for family",                                       type:"line"},
+
+  // ── CHAPTER 8 ─────────────────────────────────
+  {t:463.5,text:"CELEBRATING 80 WONDERFUL YEARS",                            type:"chapter"},
+  {t:466.5,text:"Today,\nas we celebrate 80 remarkable years,\nwe celebrate more than a distinguished career", type:"line"},
+  {t:469.5,text:"We celebrate a life well lived",                            type:"line"},
+  {t:472.5,text:"A life filled with faith",                                  type:"line"},
+  {t:475.5,text:"A life filled with service",                                type:"line"},
+  {t:478.5,text:"A life filled with leadership",                             type:"line"},
+  {t:481.5,text:"And above all,\na life filled with love",                   type:"line"},
+  {t:484.5,text:"Happy 80th Birthday,\nPMGEN Efren \"EQ\" Fernandez",        type:"line"},
+  {t:487.5,text:"May God continue to bless you\nwith good health,\nabundant happiness,", type:"line"},
+  {t:490.5,text:"and many more years surrounded by\nthe love of family and friends", type:"line"},
+
+  // ── CLOSING ───────────────────────────────────
+  {t:493.5,text:"We love you!",                                              type:"name"},
+  {t:497.5,text:"Happy Birthday!",                                           type:"name"},
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let currentIdx = 0;
+let playing    = false;
+let speed      = 1.0;
+let startTime  = null;
+let elapsed    = 0;
+let rafId      = null;
+let totalDur   = SCRIPT[SCRIPT.length - 1].t + 5;
+
+// ─────────────────────────────────────────────
+// BUILD DOM
+// ─────────────────────────────────────────────
+function buildScript() {
+  const scroll = document.getElementById('script-scroll');
+  SCRIPT.forEach((item, i) => {
+    if (item.type === 'chapter' && i > 0) {
+      const div = document.createElement('div');
+      div.className = 'chapter-divider';
+      scroll.appendChild(div);
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'line ' + item.type + '-line';
+    wrap.dataset.idx = i;
+    wrap.innerHTML = `<span class="text">${item.text || '·'}</span>`;
+    wrap.addEventListener('click', () => { jumpTo(i); });
+    scroll.appendChild(wrap);
+  });
+}
+
+// ─────────────────────────────────────────────
+// HIGHLIGHT
+// ─────────────────────────────────────────────
+function updateHighlight(idx) {
+  const lines = document.querySelectorAll('.line');
+  lines.forEach(el => {
+    const i = parseInt(el.dataset.idx);
+    el.classList.remove('active', 'past', 'near');
+    if (i === idx)      el.classList.add('active');
+    else if (i < idx)  el.classList.add('past');
+    else if (i <= idx+2) el.classList.add('near');
+  });
+  // Scroll active line to center
+  const active = document.querySelector('.line.active');
+  if (active) {
+    const wrap   = document.getElementById('script-inner');
+    const scroll = document.getElementById('script-scroll');
+    const wrapH  = wrap.clientHeight;
+    const offset = active.offsetTop - wrapH/2 + active.clientHeight/2;
+    scroll.style.transform = `translateY(-${offset}px)`;
+  }
+  // Progress
+  const t = SCRIPT[idx].t;
+  document.getElementById('progress-fill').style.width = (t / totalDur * 100) + '%';
+  document.getElementById('time-label').textContent = fmt(t) + ' / ' + fmt(totalDur);
+}
+
+function fmt(s) {
+  const m = Math.floor(s/60), ss = Math.floor(s%60);
+  return m + ':' + String(ss).padStart(2,'0');
+}
+
+// ─────────────────────────────────────────────
+// PLAYBACK
+// ─────────────────────────────────────────────
+function tick(now) {
+  if (!playing) return;
+  const delta = (now - startTime) / 1000 * speed;
+  const t     = elapsed + delta;
+
+  // Find current index by time
+  let idx = 0;
+  for (let i = 0; i < SCRIPT.length; i++) {
+    if (SCRIPT[i].t <= t) idx = i;
+    else break;
+  }
+  if (idx !== currentIdx) {
+    currentIdx = idx;
+    updateHighlight(currentIdx);
+  }
+
+  if (t >= totalDur) {
+    pause();
+    return;
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+function play() {
+  if (playing) return;
+  playing   = true;
+  startTime = performance.now();
+  document.getElementById('playbtn').textContent = '⏸ Pause';
+  document.getElementById('playbtn').classList.add('playing');
+  rafId = requestAnimationFrame(tick);
+}
+
+function pause() {
+  if (!playing) return;
+  playing = false;
+  elapsed += (performance.now() - startTime) / 1000 * speed;
+  cancelAnimationFrame(rafId);
+  document.getElementById('playbtn').textContent = '▶ Play';
+  document.getElementById('playbtn').classList.remove('playing');
+}
+
+function togglePlay() { playing ? pause() : play(); }
+
+function jumpTo(idx) {
+  pause();
+  currentIdx = Math.max(0, Math.min(idx, SCRIPT.length-1));
+  elapsed = SCRIPT[currentIdx].t;
+  updateHighlight(currentIdx);
+}
+
+function jump(dir) { jumpTo(currentIdx + dir); }
+
+function setSpeed(v) {
+  if (playing) {
+    elapsed += (performance.now() - startTime) / 1000 * speed;
+    startTime = performance.now();
+  }
+  speed = parseFloat(v);
+}
+
+function seekProgress(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct  = (e.clientX - rect.left) / rect.width;
+  const t    = pct * totalDur;
+  let idx = 0;
+  for (let i = 0; i < SCRIPT.length; i++) {
+    if (SCRIPT[i].t <= t) idx = i;
+  }
+  jumpTo(idx);
+}
+
+function resetShow() {
+  pause();
+  elapsed    = 0;
+  currentIdx = 0;
+  updateHighlight(0);
+}
+
+function startShow() {
+  const ov = document.getElementById('opening');
+  ov.style.opacity = '0';
+  setTimeout(() => ov.style.display = 'none', 1000);
+  updateHighlight(0);
+  play();
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space')       { e.preventDefault(); togglePlay(); }
+  if (e.code === 'ArrowRight')  { jump(1); }
+  if (e.code === 'ArrowLeft')   { jump(-1); }
+  if (e.code === 'ArrowUp')     { jump(-3); }
+  if (e.code === 'ArrowDown')   { jump(3); }
+  if (e.code === 'Home')        { jumpTo(0); }
+  if (e.code === 'End')         { jumpTo(SCRIPT.length-1); }
+});
+
+// Init
+buildScript();
+updateHighlight(0);
+</script>
+</body>
+</html>
