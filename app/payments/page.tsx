@@ -11,12 +11,7 @@ const FALLBACK_TO_PHP: Record<string, number> = {
 };
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: "$",
-  PHP: "₱",
-  GBP: "£",
-  AUD: "A$",
-  EUR: "€",
-  SGD: "S$",
+  USD: "$", PHP: "₱", GBP: "£", AUD: "A$", EUR: "€", SGD: "S$",
 };
 
 const PRESETS: Record<string, string[]> = {
@@ -133,12 +128,13 @@ function PaymentsForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] py-24 px-4">
+    <div className="min-h-screen bg-[#06060c] py-24 px-4">
+      {/* Background glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-30"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] rounded-full opacity-20"
           style={{
-            background: "radial-gradient(ellipse, rgba(139,92,246,0.15), transparent 70%)",
+            background: "radial-gradient(ellipse, rgba(212,175,55,0.12), transparent 70%)",
             filter: "blur(80px)",
           }}
         />
@@ -149,13 +145,13 @@ function PaymentsForm() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 mb-4">
             <Image src="/bvn-logo.png" alt="BVN" width={44} height={44} />
-            <span className="font-heading font-extrabold text-white text-xl">BVN</span>
+            <span className="font-heading font-extrabold text-white text-xl tracking-widest">BVN</span>
           </Link>
           <h1 className="font-heading font-extrabold text-3xl md:text-4xl text-white mb-2">
             {urlPlan ? `${urlPlan} — Secure Payment` : "Secure Payment"}
           </h1>
-          <p className="text-white/40 text-sm">
-            Powered by Plisio · Pay by card · Settled in USDT
+          <p className="text-white/30 text-sm tracking-widest uppercase font-sans text-xs">
+            Encrypted · Secure · Instant Settlement
           </p>
         </div>
 
@@ -166,19 +162,19 @@ function PaymentsForm() {
             <div className="lg:col-span-1 space-y-4">
 
               {/* Currency + Amount */}
-              <div className="bg-[#111827] border border-white/8 rounded-2xl p-5">
+              <div className="bg-[#0e0e1a] border border-white/8 rounded-2xl p-5">
 
                 {/* Currency selector */}
                 <div className="mb-4">
-                  <p className="text-white/30 text-xs uppercase tracking-widest mb-2 font-accent font-bold">Currency</p>
+                  <p className="text-white/30 text-xs uppercase tracking-widest mb-2 font-sans font-bold">Currency</p>
                   <div className="relative">
                     <button
                       type="button"
                       onClick={() => setCurrencyOpen(!currencyOpen)}
-                      className="w-full flex items-center justify-between px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm font-body hover:border-violet-500/40 transition"
+                      className="w-full flex items-center justify-between px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm hover:border-[#d4af37]/40 transition"
                     >
                       <span className="flex items-center gap-2">
-                        <span className="text-violet-400 font-bold font-mono">{sym}</span>
+                        <span className="text-[#d4af37] font-bold font-mono">{sym}</span>
                         <span>{currency}</span>
                         {currency !== "PHP" && (
                           <span className="text-white/30 text-xs flex items-center gap-1">
@@ -196,20 +192,20 @@ function PaymentsForm() {
                       />
                     </button>
                     {currencyOpen && (
-                      <div className="absolute top-full mt-1 left-0 right-0 bg-[#1a2235] border border-white/10 rounded-xl overflow-hidden z-20 shadow-xl">
+                      <div className="absolute top-full mt-1 left-0 right-0 bg-[#12121e] border border-white/10 rounded-xl overflow-hidden z-20 shadow-xl">
                         {CURRENCIES.map((c) => (
                           <button
                             key={c}
                             type="button"
                             onClick={() => selectCurrency(c)}
                             className={`w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-white/5 transition text-left
-                              ${currency === c ? "text-violet-400 font-bold" : "text-white/70"}`}
+                              ${currency === c ? "text-[#d4af37] font-bold" : "text-white/70"}`}
                           >
                             <span className="flex items-center gap-2">
                               <span className="font-mono w-6">{CURRENCY_SYMBOLS[c]}</span>
                               <span>{c}</span>
                             </span>
-                            {currency === c && <CheckCircle size={12} className="text-violet-400" />}
+                            {currency === c && <CheckCircle size={12} className="text-[#d4af37]" />}
                           </button>
                         ))}
                       </div>
@@ -218,16 +214,16 @@ function PaymentsForm() {
                 </div>
 
                 {/* Amount presets */}
-                <p className="text-white/30 text-xs uppercase tracking-widest mb-2 font-accent font-bold">Amount</p>
+                <p className="text-white/30 text-xs uppercase tracking-widest mb-2 font-sans font-bold">Amount</p>
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {presets.map((v) => (
                     <button
                       key={v}
                       type="button"
                       onClick={() => setSelectedAmt(v)}
-                      className={`py-2.5 rounded-xl text-sm font-bold font-accent border transition-all
+                      className={`py-2.5 rounded-xl text-sm font-bold border transition-all
                         ${selectedAmt === v
-                          ? "bg-violet-600 text-white border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.4)]"
+                          ? "bg-[#d4af37] text-black border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.35)]"
                           : "bg-white/4 border-white/8 text-white/50 hover:border-white/20"}`}
                     >
                       {fmt(v, currency)}
@@ -236,9 +232,9 @@ function PaymentsForm() {
                   <button
                     type="button"
                     onClick={() => setSelectedAmt("custom")}
-                    className={`py-2.5 rounded-xl text-sm font-bold font-accent border transition-all
+                    className={`py-2.5 rounded-xl text-sm font-bold border transition-all
                       ${selectedAmt === "custom"
-                        ? "bg-violet-600 text-white border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.4)]"
+                        ? "bg-[#d4af37] text-black border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.35)]"
                         : "bg-white/4 border-white/8 text-white/50 hover:border-white/20"}`}
                   >
                     Custom
@@ -254,7 +250,7 @@ function PaymentsForm() {
                       value={customAmt}
                       onChange={(e) => setCustomAmt(e.target.value)}
                       min="1"
-                      className="w-full bg-white/6 border border-white/15 rounded-xl pl-8 pr-4 py-2.5 text-white text-sm font-body outline-none focus:border-violet-500/60 transition"
+                      className="w-full bg-white/6 border border-white/15 rounded-xl pl-8 pr-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]/50 transition"
                     />
                   </div>
                 )}
@@ -262,7 +258,7 @@ function PaymentsForm() {
                 <div className="pt-3 border-t border-white/8 space-y-1">
                   <div className="flex justify-between items-center">
                     <span className="text-white/40 text-sm">Total</span>
-                    <span className="text-violet-400 font-heading font-black text-2xl">{displayAmount}</span>
+                    <span className="text-[#d4af37] font-heading font-black text-2xl">{displayAmount}</span>
                   </div>
                   {currency !== "PHP" && rawAmount && (
                     <div className="flex justify-between items-center">
@@ -274,8 +270,8 @@ function PaymentsForm() {
               </div>
 
               {/* Payment for */}
-              <div className="bg-[#111827] border border-white/8 rounded-2xl p-5">
-                <label className="block text-white/30 text-xs uppercase tracking-widest mb-3 font-accent font-bold">
+              <div className="bg-[#0e0e1a] border border-white/8 rounded-2xl p-5">
+                <label className="block text-white/30 text-xs uppercase tracking-widest mb-3 font-sans font-bold">
                   Payment For
                 </label>
                 <input
@@ -283,43 +279,48 @@ function PaymentsForm() {
                   placeholder="e.g. Social Media Package, Web Dev Deposit..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 font-body outline-none focus:border-violet-500/50 transition"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#d4af37]/40 transition"
                 />
                 {urlPlan && !description && (
-                  <p className="mt-1.5 text-violet-400/60 text-xs font-accent">{urlPlan}</p>
+                  <p className="mt-1.5 text-[#d4af37]/60 text-xs">{urlPlan}</p>
                 )}
               </div>
 
               {/* Accepted payments */}
-              <div className="bg-[#111827] border border-white/8 rounded-2xl p-5">
+              <div className="bg-[#0e0e1a] border border-white/8 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-lg">₿</span>
-                  <span className="text-white/40 text-xs font-bold font-accent uppercase tracking-widest">
+                  <span className="text-[#d4af37] text-lg">₿</span>
+                  <span className="text-white/40 text-xs font-bold font-sans uppercase tracking-widest">
                     Accepted Payments
                   </span>
                 </div>
                 <div className="flex gap-2 flex-wrap">
                   {[
-                    { label: "Visa / Mastercard", icon: "💳" },
                     { label: "USDT (ERC-20)", icon: "🔷" },
+                    { label: "BTC", icon: "₿" },
+                    { label: "ETH", icon: "⟠" },
                   ].map((m) => (
                     <div key={m.label} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg">
                       <span className="text-sm">{m.icon}</span>
-                      <span className="text-white/60 text-xs font-accent font-semibold">{m.label}</span>
+                      <span className="text-white/60 text-xs font-sans font-semibold">{m.label}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Security */}
-              <div className="bg-[#111827] border border-white/8 rounded-2xl p-5">
+              <div className="bg-[#0e0e1a] border border-white/8 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <Shield size={14} className="text-emerald-400" />
-                  <span className="text-emerald-400 text-xs font-bold font-accent uppercase tracking-widest">
+                  <span className="text-emerald-400 text-xs font-bold font-sans uppercase tracking-widest">
                     Secure Checkout
                   </span>
                 </div>
-                {["256-bit TLS encryption", "Powered by Plisio", "USDT settled to GCash GCrypto"].map((t) => (
+                {[
+                  "256-bit TLS encryption",
+                  "Crypto settled instantly to USDT",
+                  "Funds received in GCash via GCrypto",
+                ].map((t) => (
                   <div key={t} className="flex items-center gap-2 py-1.5">
                     <CheckCircle size={11} className="text-emerald-400 shrink-0" />
                     <span className="text-white/40 text-xs">{t}</span>
@@ -332,8 +333,8 @@ function PaymentsForm() {
             <div className="lg:col-span-2 space-y-4">
 
               {/* Contact Info */}
-              <div className="bg-[#111827] border border-white/8 rounded-2xl p-6">
-                <p className="text-white/30 text-xs uppercase tracking-widest mb-5 font-accent font-bold">
+              <div className="bg-[#0e0e1a] border border-white/8 rounded-2xl p-6">
+                <p className="text-white/30 text-xs uppercase tracking-widest mb-5 font-sans font-bold">
                   Contact Information
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -344,7 +345,7 @@ function PaymentsForm() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Juan Dela Cruz"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 font-body outline-none focus:border-violet-500/55 transition"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-[#d4af37]/45 transition"
                     />
                   </div>
                   <div>
@@ -355,27 +356,27 @@ function PaymentsForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="juan@email.com"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 font-body outline-none focus:border-violet-500/55 transition"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-[#d4af37]/45 transition"
                     />
                   </div>
                 </div>
               </div>
 
               {/* What happens next */}
-              <div className="bg-[#111827] border border-white/8 rounded-2xl p-6">
-                <p className="text-white/30 text-xs uppercase tracking-widest mb-4 font-accent font-bold">
+              <div className="bg-[#0e0e1a] border border-white/8 rounded-2xl p-6">
+                <p className="text-white/30 text-xs uppercase tracking-widest mb-4 font-sans font-bold">
                   What Happens Next
                 </p>
                 <div className="space-y-3">
                   {[
-                    { step: "1", text: "Click Pay — you'll be redirected to Plisio's secure checkout" },
-                    { step: "2", text: "Pay by credit or debit card (Visa / Mastercard)" },
-                    { step: "3", text: "Payment converts to USDT and settles instantly" },
+                    { step: "1", text: "Click Pay — you'll be taken to the secure checkout page" },
+                    { step: "2", text: "Choose your preferred crypto (USDT, BTC, ETH and more)" },
+                    { step: "3", text: "Send the exact amount shown — payment confirms automatically" },
                     { step: "4", text: "BVN team will contact you within 24 hours to begin your project" },
                   ].map((item) => (
                     <div key={item.step} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-violet-500/15 border border-violet-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-violet-400 text-[10px] font-black">{item.step}</span>
+                      <div className="w-6 h-6 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/30 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-[#d4af37] text-[10px] font-black">{item.step}</span>
                       </div>
                       <p className="text-white/50 text-sm leading-relaxed">{item.text}</p>
                     </div>
@@ -387,7 +388,7 @@ function PaymentsForm() {
               {errMsg && (
                 <div className="flex items-center gap-2.5 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
                   <AlertCircle size={15} className="text-red-400 shrink-0" />
-                  <p className="text-red-300 text-sm font-body">{errMsg}</p>
+                  <p className="text-red-300 text-sm">{errMsg}</p>
                 </div>
               )}
 
@@ -395,26 +396,29 @@ function PaymentsForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 py-4 bg-violet-600 text-white font-heading font-extrabold text-base rounded-2xl
-                  shadow-[0_0_30px_rgba(139,92,246,0.45)] hover:bg-violet-500 hover:shadow-[0_0_50px_rgba(139,92,246,0.65)]
+                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-heading font-extrabold text-base text-black
                   disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                style={{
+                  background: loading ? "#555" : "#d4af37",
+                  boxShadow: loading ? "none" : "0 0 30px rgba(212,175,55,0.4)",
+                }}
               >
                 {loading ? (
                   <>
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Redirecting to Plisio...
+                    <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                    Processing...
                   </>
                 ) : (
                   <>
                     <Lock size={16} />
-                    Pay {displayAmount} via Plisio
+                    Pay {displayAmount} Securely
                     <ChevronRight size={16} />
                   </>
                 )}
               </button>
 
-              <p className="text-center text-white/20 text-xs pb-2">
-                🔒 Your payment is processed securely by Plisio · USDT (ERC-20)
+              <p className="text-center text-white/20 text-xs pb-2 tracking-widest uppercase font-sans">
+                🔒 256-bit encrypted · crypto settlement
               </p>
             </div>
           </div>
@@ -428,8 +432,8 @@ export default function PaymentsPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0A0F1E] flex items-center justify-center">
-          <div className="w-10 h-10 border-2 border-violet-500/20 border-t-violet-500 rounded-full animate-spin" />
+        <div className="min-h-screen bg-[#06060c] flex items-center justify-center">
+          <div className="w-10 h-10 border-2 border-[#d4af37]/20 border-t-[#d4af37] rounded-full animate-spin" />
         </div>
       }
     >

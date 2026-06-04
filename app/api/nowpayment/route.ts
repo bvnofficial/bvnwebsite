@@ -12,39 +12,37 @@ export async function POST(req: Request) {
     const baseUrl = "https://www.bvnofficial.com";
     const orderId = `bvn_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
 
-    const params = new URLSearchParams({
-      api_key: process.env.PLISIO_SECRET_KEY ?? "",
-      order_name: description || "BVN Digital Agency Services",
-      order_number: orderId,
-      amount: String(amount),
-      source_currency: (currency || "USD").toUpperCase(),
-      currency: "USDT_ETH",
-      callback_url: `${baseUrl}/api/nowpayment/webhook`,
-      success_url: `${baseUrl}/payments/success?method=crypto&order=${orderId}`,
-      cancel_url: `${baseUrl}/payments`,
-      email: email,
-      name: name,
+    const res = await fetch("https://api.nowpayments.io/v1/invoice", {
+      method: "POST",
+      headers: {
+        "x-api-key": process.env.NOWPAYMENTS_API_KEY ?? "",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        price_amount: Number(amount),
+        price_currency: (currency || "USD").toLowerCase(),
+        pay_currency: "usdterc20",
+        ipn_callback_url: `${baseUrl}/api/nowpayment/webhook`,
+        success_url: `${baseUrl}/payments/success?method=crypto&order=${orderId}`,
+        cancel_url: `${baseUrl}/payments`,
+        order_id: orderId,
+        order_description: description || "BVN Digital Agency Services",
+        is_fixed_rate: false,
+        is_fee_paid_by_user: false,
+      }),
     });
-
-    const res = await fetch(`https://plisio.net/api/v1/invoices/new?${params.toString()}`);
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      console.error("Plisio error:", JSON.stringify(err));
-      return NextResponse.json({ error: err?.data?.message || "Plisio error" }, { status: 500 });
+      console.error("Payment gateway error:", JSON.stringify(err));
+      return NextResponse.json({ error: err?.message || "Payment gateway error" }, { status: 500 });
     }
 
     const data = await res.json();
-
-    if (data?.status !== "success") {
-      console.error("Plisio error:", JSON.stringify(data));
-      return NextResponse.json({ error: data?.data?.message || "Failed to create invoice" }, { status: 500 });
-    }
-
-    const invoiceUrl: string = data?.data?.invoice_url;
+    const invoiceUrl: string = data?.invoice_url;
 
     if (!invoiceUrl) {
-      return NextResponse.json({ error: "No invoice URL returned" }, { status: 500 });
+      return NextResponse.json({ error: "Could not create payment. Please try again." }, { status: 500 });
     }
 
     // Notify BVN of new payment initiated
@@ -63,13 +61,13 @@ export async function POST(req: Request) {
         html: `
 <!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif">
 <div style="max-width:600px;margin:30px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
-  <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:30px 32px;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:22px;font-weight:800">💳 Payment Initiated</h1>
-    <p style="color:rgba(255,255,255,.85);margin:6px 0 0;font-size:14px">Customer redirected to Plisio checkout</p>
+  <div style="background:linear-gradient(135deg,#0a0a14,#1a1a2e);padding:30px 32px;text-align:center;border-bottom:2px solid #d4af37">
+    <h1 style="color:#d4af37;margin:0;font-size:22px;font-weight:800;letter-spacing:2px">💳 PAYMENT INITIATED</h1>
+    <p style="color:rgba(255,255,255,.6);margin:6px 0 0;font-size:14px">Customer redirected to secure checkout</p>
   </div>
   <div style="padding:32px">
-    <div style="background:#f5f3ff;border:2px solid #7c3aed;border-radius:12px;padding:20px;text-align:center;margin-bottom:24px">
-      <p style="color:#7c3aed;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 6px">Amount</p>
+    <div style="background:#fffbeb;border:2px solid #d4af37;border-radius:12px;padding:20px;text-align:center;margin-bottom:24px">
+      <p style="color:#92400e;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 6px">Amount</p>
       <p style="font-size:36px;font-weight:900;color:#0A0F1E;margin:0">${amount} ${currency?.toUpperCase()}</p>
       <p style="color:#666;font-size:13px;margin:8px 0 0">${description || "BVN Services"}</p>
     </div>
@@ -88,7 +86,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ invoiceUrl, orderId });
   } catch (err) {
-    console.error("Plisio route error:", err);
+    console.error("Payment route error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
