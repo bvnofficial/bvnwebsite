@@ -260,12 +260,6 @@ function PaymentsForm() {
                     <span className="text-white/40 text-sm">Total</span>
                     <span className="text-[#d4af37] font-heading font-black text-2xl">{displayAmount}</span>
                   </div>
-                  {currency !== "PHP" && rawAmount && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-white/25 text-xs">PHP equivalent</span>
-                      <span className="text-white/40 text-xs font-mono">{phpDisplay}</span>
-                    </div>
-                  )}
                 </div>
               </div>
 
