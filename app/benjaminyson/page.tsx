@@ -532,7 +532,7 @@ export default function BenjaminYsonPage() {
             viewport={{ once: true, margin: "-80px" }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-10"
           >
-            {certificates.map(({ title, issuer, logo, date, expiry, id, color }) => (
+            {certificates.map(({ title, issuer, logo, date, id, color }) => (
               <motion.div
                 key={title}
                 variants={childVariant}
@@ -552,16 +552,6 @@ export default function BenjaminYsonPage() {
                   <span className="bg-white/5 border border-white/10 text-white/50 px-2.5 py-0.5 rounded-md text-xs font-accent">
                     Issued: {date}
                   </span>
-                  {expiry && (
-                    <span className={`px-2.5 py-0.5 rounded-md text-xs font-accent border ${
-                      color === "orange" ? "bg-orange/10 border-orange/20 text-orange" :
-                      color === "blue" ? "bg-blue-500/10 border-blue-500/20 text-blue-400" :
-                      color === "green" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" :
-                      "bg-purple-500/10 border-purple-500/20 text-purple-400"
-                    }`}>
-                      Valid until {expiry}
-                    </span>
-                  )}
                 </div>
                 {id && (
                   <p className="text-white/25 text-xs mt-2 font-mono">ID: {id}</p>
