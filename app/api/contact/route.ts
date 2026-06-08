@@ -66,7 +66,30 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`;
 
-    // ── Send via Nodemailer (GoDaddy SMTP) ────────────────────────
+    // ── Primary: Resend API (works on Vercel — HTTP, not SMTP) ───────
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
+        body: JSON.stringify({
+          from: "BVN Website <bvn@bvnofficial.com>",
+          to: ["bvn@bvnofficial.com"],
+          reply_to: email,
+          subject: `New Inquiry: ${service} — ${name}${company ? ` (${company})` : ""}`,
+          html: htmlBody,
+          text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || "—"}\nCompany: ${company || "—"}\nService: ${service}\nMessage:\n${message}`,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Resend error:", err);
+        return NextResponse.json({ error: "Failed to send email. Please try again or email us directly at bvn@bvnofficial.com." }, { status: 500 });
+      }
+      return NextResponse.json({ success: true, message: "Message sent successfully." });
+    }
+
+    // ── Fallback: Nodemailer SMTP ─────────────────────────────────
     const smtpHost = process.env.SMTP_HOST;
     const smtpUser = process.env.EMAIL_ADDRESS;
     const smtpPass = process.env.EMAIL_PASSWORD;
@@ -77,10 +100,9 @@ export async function POST(req: NextRequest) {
       const transporter = nodemailer.createTransport({
         host: smtpHost,
         port: smtpPort,
-        secure: smtpPort === 465, // port 465 = SSL, 587 = STARTTLS
+        secure: smtpPort === 465,
         auth: { user: smtpUser, pass: smtpPass },
       });
-
       await transporter.sendMail({
         from: `"BVN Website" <${smtpUser}>`,
         to: "bvn@bvnofficial.com",
@@ -89,46 +111,15 @@ export async function POST(req: NextRequest) {
         html: htmlBody,
         text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || "—"}\nCompany: ${company || "—"}\nService: ${service}\nMessage:\n${message}`,
       });
-
       return NextResponse.json({ success: true, message: "Message sent successfully." });
     }
 
-    // ── Fallback: Resend API ───────────────────────────────────────
-    const resendKey = process.env.RESEND_API_KEY;
-    if (resendKey) {
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
-        body: JSON.stringify({
-          from: "BVN Website <noreply@bvnofficial.com>",
-          to: ["bvn@bvnofficial.com"],
-          reply_to: email,
-          subject: `New Inquiry: ${service} — ${name}`,
-          html: htmlBody,
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Resend error:", err);
-        return NextResponse.json({ error: "Failed to send email." }, { status: 500 });
-      }
-      return NextResponse.json({ success: true, message: "Message sent successfully." });
-    }
-
-    // ── Dev fallback: log to console ──────────────────────────────
-    console.log("\n=== BVN Contact Form Submission ===");
-    console.log(`To: bvn@bvnofficial.com`);
-    console.log(`Name: ${name}`);
-    console.log(`Email: ${email}`);
-    console.log(`Phone: ${phone || "—"}`);
-    console.log(`Company: ${company || "—"}`);
-    console.log(`Service: ${service}`);
-    console.log(`Message: ${message}`);
-    console.log("===================================\n");
-    console.log("⚠️  No SMTP_HOST or RESEND_API_KEY set. Add to .env.local to send real emails.");
-
-    // Still return success so UX works during development
-    return NextResponse.json({ success: true, message: "Message received (dev mode — check console)." });
+    // ── No provider configured ────────────────────────────────────
+    console.error("⚠️  Contact form: no RESEND_API_KEY or SMTP credentials set in environment variables.");
+    return NextResponse.json(
+      { error: "Email service not configured. Please contact us directly at bvn@bvnofficial.com." },
+      { status: 503 }
+    );
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "An unexpected error occurred." }, { status: 500 });
