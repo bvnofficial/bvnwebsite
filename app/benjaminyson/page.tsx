@@ -146,7 +146,6 @@ const certificates = [
     issuer: "Google",
     logo: "🔍",
     date: "Sep 2024",
-    expiry: "Sep 2025",
     id: "12c99f413",
     color: "blue",
   },
@@ -155,7 +154,6 @@ const certificates = [
     issuer: "HubSpot Academy",
     logo: "🟠",
     date: "Mar 2024",
-    expiry: "Apr 2026",
     color: "orange",
   },
   {

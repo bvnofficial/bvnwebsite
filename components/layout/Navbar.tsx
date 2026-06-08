@@ -301,6 +301,22 @@ export default function Navbar() {
               width="520px"
             />
 
+            {/* Courses */}
+            <li>
+              <Link
+                href="/courses"
+                className={cn(
+                  "relative px-4 py-2 text-sm font-accent font-semibold transition-colors duration-200 rounded-md",
+                  pathname.startsWith("/courses") ? "text-orange" : "text-white/80 hover:text-white"
+                )}
+              >
+                Courses
+                {pathname.startsWith("/courses") && (
+                  <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-orange rounded-full" />
+                )}
+              </Link>
+            </li>
+
             {/* Pricing */}
             <li>
               <Link
@@ -336,12 +352,6 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-2">
-            <Link
-              href="/login"
-              className="px-4 py-2 text-sm font-accent font-semibold text-white/70 hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-all duration-200"
-            >
-              Login
-            </Link>
             <Link
               href="/contact"
               className="px-5 py-2.5 bg-orange text-white text-sm font-heading font-semibold rounded-lg
@@ -537,7 +547,7 @@ export default function Navbar() {
             </div>
 
             {/* Pricing + Contact */}
-            {[{ label: "Pricing", href: "/pricing" }, { label: "Contact", href: "/contact" }].map((link) => {
+            {[{ label: "Courses", href: "/courses" }, { label: "Pricing", href: "/pricing" }, { label: "Contact", href: "/contact" }].map((link) => {
               const isActive = pathname.startsWith(link.href);
               return (
                 <Link
@@ -555,12 +565,6 @@ export default function Navbar() {
 
             {/* CTA */}
             <div className="pt-2 pb-1 px-2 flex flex-col gap-2">
-              <Link
-                href="/login"
-                className="block text-center px-5 py-3 border border-white/10 text-white/70 text-sm font-accent font-semibold rounded-lg hover:bg-white/5 transition-all"
-              >
-                Login / Dashboard
-              </Link>
               <Link
                 href="/contact"
                 className="block text-center px-5 py-3 bg-orange text-white text-sm font-heading font-semibold rounded-lg
