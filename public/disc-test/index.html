@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DISC Profile — Benjamin Yson</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1117;
+      color: #e2e8f0;
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: #0a0e14;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .label {
+      color: #f59e0b;
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    .meta {
+      color: #475569;
+      font-size: 13px;
+      margin-bottom: 40px;
+    }
+
+    /* Donut chart */
+    .chart-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 40px;
+    }
+
+    svg.donut {
+      transform: rotate(-90deg);
+      width: 220px;
+      height: 220px;
+    }
+
+    .donut-bg {
+      fill: none;
+      stroke: #1e293b;
+      stroke-width: 36;
+    }
+
+    .donut-seg {
+      fill: none;
+      stroke-width: 36;
+      stroke-linecap: butt;
+      transition: stroke-width 0.2s;
+    }
+
+    .chart-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .chart-center .dominant {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ef4444;
+      line-height: 1;
+    }
+
+    .chart-center .dominant-label {
+      font-size: 10px;
+      color: #64748b;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Score grid */
+    .scores {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .score-item {
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 18px 14px;
+      background: rgba(30,41,59,0.4);
+      transition: border-color 0.15s;
+    }
+
+    .score-item:hover { border-color: #334155; }
+
+    .score-letter {
+      font-size: 11px;
+      font-family: monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .score-pct {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .score-name {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .bar-track {
+      height: 4px;
+      background: #1e293b;
+      border-radius: 2px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 1s ease;
+    }
+
+    /* D */
+    .d .score-letter { color: #ef4444; }
+    .d .score-pct    { color: #ef4444; }
+    .d .bar-fill     { background: #ef4444; }
+
+    /* I */
+    .i .score-letter { color: #f59e0b; }
+    .i .score-pct    { color: #f59e0b; }
+    .i .bar-fill     { background: #f59e0b; }
+
+    /* S */
+    .s .score-letter { color: #22c55e; }
+    .s .score-pct    { color: #22c55e; }
+    .s .bar-fill     { background: #22c55e; }
+
+    /* C */
+    .c .score-letter { color: #38bdf8; }
+    .c .score-pct    { color: #38bdf8; }
+    .c .bar-fill     { background: #38bdf8; }
+
+    .insight {
+      border-left: 3px solid #f59e0b;
+      background: rgba(120,53,15,0.15);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 13px;
+      color: #fde68a;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #64748b;
+      font-size: 12px;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: #f59e0b; }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #f59e0b;
+      color: #0a0e14;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(245,158,11,0.3);
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 32px 20px; }
+      .scores { gap: 10px; }
+      .score-pct { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="label">Personal Assessment</div>
+  <h1>Benjamin Yson</h1>
+  <p class="meta">DISC Profile · Male · Age 38</p>
+
+  <!-- Donut chart -->
+  <div class="chart-wrap">
+    <svg class="donut" viewBox="0 0 220 220">
+      <circle class="donut-bg" cx="110" cy="110" r="80" />
+      <!-- circumference = 2 * pi * 80 ≈ 502.65 -->
+      <!-- D: 48% = 241.27, offset 0 -->
+      <circle class="donut-seg" cx="110" cy="110" r="80"
+        stroke="#ef4444"
+        stroke-dasharray="241.27 261.38"
+        stroke-dashoffset="0" />
+      <!-- S: 26% = 130.69, offset = -(502.65 - 241.27) = -261.38 → dashoffset = -241.27 -->
+      <circle class="donut-seg" cx="110" cy="110" r="80"
+        stroke="#22c55e"
+        stroke-dasharray="130.69 371.96"
+        stroke-dashoffset="-241.27" />
+      <!-- C: 19% = 95.50, offset = -(241.27+130.69) = -371.96 -->
+      <circle class="donut-seg" cx="110" cy="110" r="80"
+        stroke="#38bdf8"
+        stroke-dasharray="95.50 407.15"
+        stroke-dashoffset="-371.96" />
+      <!-- I: 7% = 35.19, offset = -(371.96+95.50) = -467.46 -->
+      <circle class="donut-seg" cx="110" cy="110" r="80"
+        stroke="#f59e0b"
+        stroke-dasharray="35.19 467.46"
+        stroke-dashoffset="-467.46" />
+    </svg>
+    <div class="chart-center">
+      <div class="dominant">D</div>
+      <div class="dominant-label">Dominant</div>
+    </div>
+  </div>
+
+  <!-- Score cards -->
+  <div class="scores">
+    <div class="score-item d">
+      <div class="score-letter">D — Dominance</div>
+      <div class="score-pct">48%</div>
+      <div class="score-name">Results-driven</div>
+      <div class="bar-track"><div class="bar-fill" style="width:48%"></div></div>
+    </div>
+    <div class="score-item i">
+      <div class="score-letter">I — Influence</div>
+      <div class="score-pct">7%</div>
+      <div class="score-name">Communicative</div>
+      <div class="bar-track"><div class="bar-fill" style="width:7%"></div></div>
+    </div>
+    <div class="score-item s">
+      <div class="score-letter">S — Steadiness</div>
+      <div class="score-pct">26%</div>
+      <div class="score-name">Reliable</div>
+      <div class="bar-track"><div class="bar-fill" style="width:26%"></div></div>
+    </div>
+    <div class="score-item c">
+      <div class="score-letter">C — Compliance</div>
+      <div class="score-pct">19%</div>
+      <div class="score-name">Detail-oriented</div>
+      <div class="bar-track"><div class="bar-fill" style="width:19%"></div></div>
+    </div>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight">
+    High Dominance (48%) paired with Steadiness (26%) — direct, decisive, and dependable. Gets things done without drama, pushes for results while staying consistent under pressure.
+  </div>
+
+  <a class="cta" href="mailto:bvn@bvnofficial.com?subject=Let's Connect — Benjamin Yson">
+    ✉ Email me to connect
+  </a>
+
+  <div class="footer-links">
+    <a href="https://www.bvnofficial.com/benjaminyson">Full CV</a>
+    <a href="https://www.bvnofficial.com">bvnofficial.com</a>
+    <a href="https://wa.me/639816556555">WhatsApp</a>
+  </div>
+</div>
+
+</body>
+</html>
