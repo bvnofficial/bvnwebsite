@@ -6,6 +6,7 @@ import { BookOpen, Clock, PlayCircle, ChevronRight, Award, Users, Zap } from "lu
 import HeroSection from "@/components/ui/HeroSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { courses, colorStyles } from "@/lib/courses";
+import { CourseProgressBadge } from "@/components/ui/CourseProgressBadge";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 32 },
@@ -136,8 +137,11 @@ export default function CoursesPage() {
                         )}
                       </div>
 
+                      {/* Progress (only visible if started) */}
+                      <CourseProgressBadge slug={course.slug} totalLessons={course.lessons} />
+
                       {/* Meta row */}
-                      <div className="flex items-center justify-between pt-4 border-t border-white/8">
+                      <div className="flex items-center justify-between pt-4 border-t border-white/8 mt-4">
                         <div className="flex items-center gap-4 text-white/40 text-xs">
                           <span className="flex items-center gap-1">
                             <PlayCircle size={12} />

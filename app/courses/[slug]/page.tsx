@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { getCourse, colorStyles } from "@/lib/courses";
+import { useProgress } from "@/lib/useProgress";
 import GlowButton from "@/components/ui/GlowButton";
 
 const sectionVariants = {
@@ -38,11 +39,24 @@ export default function CoursePage() {
   const course = getCourse(slug);
 
   const [openModule, setOpenModule] = useState<number | null>(0);
+  const { isCompleted, loaded } = useProgress(slug ?? "");
 
   if (!course) return notFound();
 
   const styles = colorStyles[course.color];
   const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
+
+  // Find the first incomplete lesson for "Continue" CTA
+  const allLessons: { mIdx: number; lIdx: number }[] = [];
+  course.modules.forEach((mod, mIdx) =>
+    mod.lessons.forEach((_, lIdx) => allLessons.push({ mIdx, lIdx }))
+  );
+  const completedCount = loaded ? allLessons.filter((l) => isCompleted(l.mIdx, l.lIdx)).length : 0;
+  const firstIncomplete = allLessons.find((l) => !isCompleted(l.mIdx, l.lIdx)) ?? allLessons[0];
+  const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+  const startHref = firstIncomplete
+    ? `/courses/${slug}/learn?m=${firstIncomplete.mIdx}&l=${firstIncomplete.lIdx}`
+    : `/courses/${slug}/learn?m=0&l=0`;
 
   return (
     <>
@@ -106,8 +120,16 @@ export default function CoursePage() {
                 ))}
               </div>
 
-              <GlowButton href="#curriculum" variant="filled" showArrow className="text-base px-8 py-4">
-                Start Learning — It&apos;s Free
+              {loaded && completedCount > 0 && (
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex-1 h-1.5 bg-white/8 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full transition-all ${styles.bar}`} style={{ width: `${progressPct}%` }} />
+                  </div>
+                  <span className="text-white/40 text-xs font-accent shrink-0">{completedCount}/{totalLessons} lessons</span>
+                </div>
+              )}
+              <GlowButton href={startHref} variant="filled" showArrow className="text-base px-8 py-4">
+                {loaded && completedCount > 0 ? "Continue Learning" : "Start Learning — It's Free"}
               </GlowButton>
             </motion.div>
 
@@ -154,9 +176,19 @@ export default function CoursePage() {
                 ))}
               </div>
 
+              {loaded && completedCount > 0 && (
+                <div className="mt-4 mb-2">
+                  <div className="flex items-center justify-between text-xs text-white/40 font-accent mb-1.5">
+                    <span>Progress</span><span>{progressPct}%</span>
+                  </div>
+                  <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full transition-all ${styles.bar}`} style={{ width: `${progressPct}%` }} />
+                  </div>
+                </div>
+              )}
               <div className="mt-6">
-                <GlowButton href="#curriculum" variant="filled" showArrow className="w-full justify-center">
-                  Start This Course Free
+                <GlowButton href={startHref} variant="filled" showArrow className="w-full justify-center">
+                  {loaded && completedCount > 0 ? "Continue Course" : "Start This Course Free"}
                 </GlowButton>
               </div>
             </motion.div>
@@ -236,20 +268,31 @@ export default function CoursePage() {
                       transition={{ duration: 0.3 }}
                       className="border-t border-white/8 divide-y divide-white/5"
                     >
-                      {module.lessons.map((lesson, lIdx) => (
-                        <div
-                          key={lIdx}
-                          className="flex items-center justify-between px-5 py-3.5 hover:bg-white/[0.04] transition-colors"
-                        >
-                          <div className="flex items-center gap-3">
-                            <PlayCircle size={14} className="text-white/30 shrink-0" />
-                            <span className="text-white/70 text-sm">{lesson.title}</span>
-                          </div>
-                          <span className="text-white/30 text-xs font-accent shrink-0 ml-4">
-                            {lesson.duration}
-                          </span>
-                        </div>
-                      ))}
+                      {module.lessons.map((lesson, lIdx) => {
+                        const done = loaded && isCompleted(idx, lIdx);
+                        return (
+                          <Link
+                            key={lIdx}
+                            href={`/courses/${slug}/learn?m=${idx}&l=${lIdx}`}
+                            className="flex items-center justify-between px-5 py-3.5 hover:bg-white/[0.06] transition-colors group"
+                          >
+                            <div className="flex items-center gap-3">
+                              {done ? (
+                                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                              ) : (
+                                <PlayCircle size={14} className={`text-white/30 shrink-0 group-hover:${styles.heading?.replace("text-", "text-")}`} />
+                              )}
+                              <span className={`text-sm ${done ? "text-white/45 line-through" : "text-white/70 group-hover:text-white"} transition-colors`}>
+                                {lesson.title}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0 ml-4">
+                              <span className="text-white/30 text-xs font-accent">{lesson.duration}</span>
+                              <ChevronRight size={12} className="text-white/20 group-hover:text-white/50 transition-colors" />
+                            </div>
+                          </Link>
+                        );
+                      })}
                     </motion.div>
                   )}
                 </motion.div>
@@ -353,8 +396,8 @@ export default function CoursePage() {
           <p className="text-white/60 text-lg mb-8">
             This course is free. No sign-up required. Just click start and begin learning.
           </p>
-          <GlowButton href="#curriculum" variant="filled" showArrow className="text-base px-8 py-4">
-            Begin {course.title} Course
+          <GlowButton href={startHref} variant="filled" showArrow className="text-base px-8 py-4">
+            {loaded && completedCount > 0 ? "Continue Course" : `Begin ${course.title} Course`}
           </GlowButton>
         </div>
       </motion.section>
