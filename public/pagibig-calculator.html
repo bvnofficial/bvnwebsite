@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pag-IBIG (HDMF) Contribution Calculator 2026 Philippines — BVN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:24px}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:16px;max-width:680px;margin-left:auto;margin-right:auto}
+.card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:14px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:6px;margin-top:14px}
+label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.95rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(16,185,129,.5);background:rgba(255,255,255,.1)}
+input[type=range]{padding:4px 0;accent-color:#10b981}
+input[type=checkbox]{width:auto;margin-right:8px;accent-color:#10b981}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;background:#10b981;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:16px;transition:.2s}
+.btn:hover{background:#34d399;box-shadow:0 0 24px rgba(16,185,129,.4)}
+.results{display:none;max-width:680px;margin:0 auto}
+.result-hero{background:linear-gradient(135deg,#0d1e16,#081410);border:1px solid rgba(16,185,129,.25);border-radius:16px;padding:24px;text-align:center;margin-bottom:14px}
+.result-hero .label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(110,231,183,.8);margin-bottom:6px}
+.result-hero .amount{font-size:2.4rem;font-weight:900;color:#6ee7b7}
+.result-hero .sub{font-size:.8rem;color:rgba(255,255,255,.35);margin-top:4px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.mini-card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.mini-card .ml{font-size:.68rem;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.mini-card .mv{font-size:1.1rem;font-weight:800}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.breakdown-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:16px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border-bottom:none}
+.row .name{font-size:.85rem;color:rgba(255,255,255,.7)}
+.row .name small{display:block;font-size:.72rem;color:rgba(255,255,255,.35);margin-top:1px}
+.row .val{font-size:.9rem;font-weight:700}
+.row.total{padding-top:14px;margin-top:4px;border-top:2px solid rgba(255,255,255,.1);border-bottom:none}
+.row.total .name{font-weight:700;color:#fff;font-size:.9rem}
+.row.total .val{font-size:1.05rem;font-weight:900}
+.green{color:#6ee7b7}.yellow{color:#fbbf24}.white{color:#fff}.blue{color:#93c5fd}.orange{color:#fb923c}
+.savings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sav-card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.sav-card .sl{font-size:.68rem;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em}
+.sav-card .sv{font-size:1rem;font-weight:800;color:#6ee7b7}
+.loan-card{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:16px;padding:20px;margin-bottom:14px}
+.loan-card h3{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#6ee7b7;margin-bottom:14px}
+.loan-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.85rem}
+.loan-row:last-child{border-bottom:none;font-weight:700;color:#fff;padding-top:12px;margin-top:4px;border-top:1px solid rgba(255,255,255,.1)}
+.recalc{width:100%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:16px;transition:.2s;max-width:680px;display:block}
+.recalc:hover{background:rgba(255,255,255,.1)}
+.info-box{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:.8rem;color:rgba(255,255,255,.6);line-height:1.6;max-width:680px;margin-left:auto;margin-right:auto}
+.info-box strong{color:#6ee7b7}
+.checkbox-row{display:flex;align-items:center;margin-top:14px;font-size:.85rem;color:rgba(255,255,255,.7)}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;line-height:1.6;max-width:580px;margin:0 auto 20px;padding:0 8px}
+.bvn-footer{text-align:center;margin-top:24px;font-size:.75rem;color:rgba(255,255,255,.25)}
+.bvn-footer a{color:#10b981;text-decoration:none}
+@media(max-width:480px){.row2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.savings-grid{grid-template-columns:1fr 1fr}.result-hero .amount{font-size:2rem}}
+</style>
+</head>
+<body>
+<h1>🏠 Pag-IBIG / HDMF Contribution Calculator</h1>
+<p class="subtitle">Compute mandatory &amp; voluntary Pag-IBIG contributions + savings projection · 2026</p>
+
+<div class="card" id="inputCard">
+  <div class="card-title">Your Details</div>
+  <label>Monthly Basic Salary (₱)</label>
+  <input type="number" id="salary" value="25000" min="1000" max="999999" placeholder="e.g. 25000" oninput="syncSlider()"/>
+  <input type="range" id="slider" min="3000" max="100000" step="500" value="25000" oninput="syncInput()"/>
+
+  <div class="row2">
+    <div>
+      <label>Member Type</label>
+      <select id="memberType">
+        <option value="employed">Employed</option>
+        <option value="self">Self-Employed / Freelancer</option>
+        <option value="ofw">OFW</option>
+      </select>
+    </div>
+    <div>
+      <label>Voluntary Top-Up (₱/mo)</label>
+      <input type="number" id="voluntary" value="0" min="0" max="999999" placeholder="e.g. 500"/>
+    </div>
+  </div>
+
+  <label>Years of membership (for savings projection)</label>
+  <select id="years">
+    <option value="1">1 year</option>
+    <option value="2" selected>2 years</option>
+    <option value="5">5 years</option>
+    <option value="10">10 years</option>
+    <option value="20">20 years</option>
+    <option value="30">30 years</option>
+  </select>
+
+  <button class="btn" onclick="calculate()">Calculate My Pag-IBIG Contributions →</button>
+</div>
+
+<div class="results" id="results">
+  <button class="recalc" onclick="reset()">← Edit Details</button>
+
+  <div class="result-hero">
+    <div class="label">Monthly Employee Contribution</div>
+    <div class="amount" id="heroAmount">₱0</div>
+    <div class="sub" id="heroSub"></div>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="ml">Employee (Mandatory)</div>
+      <div class="mv green" id="empMand">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Employer Match</div>
+      <div class="mv yellow" id="emplMatch">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Total Monthly</div>
+      <div class="mv blue" id="totalMonthly">₱0</div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="breakdown-title">Contribution Breakdown</div>
+    <div class="row">
+      <div class="name">Monthly Basic Salary</div>
+      <div class="val white" id="bSalary">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Computation Base <small>Capped at ₱5,000 for mandatory rate</small></div>
+      <div class="val blue" id="bBase">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Employee Rate <small id="rateLabel">2% of base (max ₱100 mandatory)</small></div>
+      <div class="val white" id="bRate">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Employee Mandatory Contribution</div>
+      <div class="val green" id="bEmpMand">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Voluntary Top-Up</div>
+      <div class="val green" id="bVoluntary">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Total Employee Contribution</div>
+      <div class="val green" id="bEmpTotal">₱0</div>
+    </div>
+    <div class="row" id="emplRow">
+      <div class="name">Employer Contribution <small>2% of base (max ₱100), employer pays this</small></div>
+      <div class="val yellow" id="bEmpl">₱0</div>
+    </div>
+    <div class="row total">
+      <div class="name">TOTAL MONTHLY PAIDIN TO FUND</div>
+      <div class="val blue" id="bGrandTotal">₱0</div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="breakdown-title" id="savingsTitle">Pag-IBIG Savings Projection</div>
+    <div class="savings-grid">
+      <div class="sav-card">
+        <div class="sl">Your Contributions</div>
+        <div class="sv" id="savEmp">₱0</div>
+      </div>
+      <div class="sav-card">
+        <div class="sl">Employer Contributions</div>
+        <div class="sv" style="color:#fbbf24" id="savEmpl">₱0</div>
+      </div>
+      <div class="sav-card">
+        <div class="sl">Estimated Dividends (~5%/yr)</div>
+        <div class="sv" style="color:#fb923c" id="savDiv">₱0</div>
+      </div>
+      <div class="sav-card">
+        <div class="sl">Projected Total Fund</div>
+        <div class="sv" style="color:#93c5fd" id="savTotal">₱0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loan-card">
+    <h3>🏠 Housing Loan Eligibility</h3>
+    <div class="loan-row"><span>Minimum contributions required</span><span>24 months</span></div>
+    <div class="loan-row"><span>Maximum loan amount</span><span id="maxLoan">–</span></div>
+    <div class="loan-row"><span>Loan term options</span><span>Up to 30 years</span></div>
+    <div class="loan-row"><span>Interest rate (as of 2026)</span><span>6.375% – 10% depending on term</span></div>
+    <div class="loan-row"><span>Status after <span id="yearsLabel">–</span></span><span id="loanStatus">–</span></div>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Pag-IBIG Benefits You Should Know</strong><br/>
+    • <strong>Multi-Purpose Loan:</strong> Borrow up to 80% of your total savings after 24 months<br/>
+    • <strong>Calamity Loan:</strong> Up to 80% of savings during declared calamities<br/>
+    • <strong>Annual dividends:</strong> ~5–7% historically — your savings grow even if you don't add voluntary contributions<br/>
+    • <strong>Death/total disability benefits:</strong> Full refund of contributions + dividends to beneficiaries<br/>
+    • <strong>Tip:</strong> Adding ₱200–₱1,000/mo voluntary top-up significantly boosts your housing loan eligibility
+  </div>
+</div>
+
+<p class="note">Based on Pag-IBIG / HDMF Republic Act 9679. Mandatory employee rate: 1% for salary ≤₱1,500; 2% for salary above ₱1,500, capped at ₱100/month. Employer always contributes 2% of salary capped at ₱100. Voluntary contributions above the mandatory cap are allowed and earn the same dividend rate. Savings projection assumes ~5% annual dividend. For official loan computations, visit pagibigfund.gov.ph.</p>
+<div class="bvn-footer">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Business Automation Agency</a></div>
+
+<script>
+const fmt = n => '₱' + Math.round(n).toLocaleString('en-PH');
+
+function syncSlider(){document.getElementById('slider').value=Math.min(parseFloat(document.getElementById('salary').value)||0,100000);}
+function syncInput(){document.getElementById('salary').value=document.getElementById('slider').value;}
+
+function calcMandatory(salary){
+  if(salary <= 1500) return Math.round(Math.min(salary,5000)*0.01);
+  return 100; // 2% of base capped at ₱5,000 = max ₱100
+}
+
+function calculate(){
+  const salary = parseFloat(document.getElementById('salary').value)||0;
+  const voluntary = parseFloat(document.getElementById('voluntary').value)||0;
+  const type = document.getElementById('memberType').value;
+  const years = parseInt(document.getElementById('years').value);
+
+  const base = Math.min(salary, 5000);
+  const empRate = salary <= 1500 ? 0.01 : 0.02;
+  const empMand = calcMandatory(salary);
+  const empTotal = empMand + voluntary;
+  const emplMand = type === 'self' || type === 'ofw' ? 0 : 100;
+  const grandTotal = empTotal + emplMand;
+
+  document.getElementById('heroAmount').textContent = fmt(empTotal);
+  document.getElementById('heroSub').textContent = voluntary > 0
+    ? `₱${empMand} mandatory + ₱${voluntary} voluntary top-up`
+    : `Mandatory only · Employer also contributes ${fmt(emplMand)}/mo`;
+
+  document.getElementById('empMand').textContent = fmt(empMand);
+  document.getElementById('emplMatch').textContent = type === 'employed' ? fmt(emplMand) : 'N/A';
+  document.getElementById('totalMonthly').textContent = fmt(grandTotal);
+
+  document.getElementById('bSalary').textContent = fmt(salary);
+  document.getElementById('bBase').textContent = fmt(base);
+  document.getElementById('bRate').textContent = (empRate*100).toFixed(0)+'%';
+  document.getElementById('rateLabel').textContent = salary<=1500 ? '1% of base (salary ≤₱1,500)' : '2% of base (max ₱100 mandatory)';
+  document.getElementById('bEmpMand').textContent = fmt(empMand);
+  document.getElementById('bVoluntary').textContent = fmt(voluntary);
+  document.getElementById('bEmpTotal').textContent = fmt(empTotal);
+  document.getElementById('bEmpl').textContent = fmt(emplMand);
+  document.getElementById('bGrandTotal').textContent = fmt(grandTotal);
+  if(type!=='employed') document.getElementById('emplRow').style.display='none';
+  else document.getElementById('emplRow').style.display='';
+
+  // Savings projection with ~5% annual dividend (compounded monthly)
+  const monthlyRate = 0.05/12;
+  const months = years * 12;
+  let fund = 0;
+  let totalEmpPaid = 0;
+  let totalEmplPaid = 0;
+  for(let m=0;m<months;m++){
+    fund += grandTotal;
+    totalEmpPaid += empTotal;
+    totalEmplPaid += emplMand;
+    fund *= (1+monthlyRate);
+  }
+  const dividends = fund - totalEmpPaid - totalEmplPaid;
+
+  document.getElementById('savingsTitle').textContent = `Pag-IBIG Savings Projection (${years} year${years>1?'s':''})`;
+  document.getElementById('savEmp').textContent = fmt(totalEmpPaid);
+  document.getElementById('savEmpl').textContent = fmt(totalEmplPaid);
+  document.getElementById('savDiv').textContent = fmt(dividends);
+  document.getElementById('savTotal').textContent = fmt(fund);
+
+  // Housing loan
+  const maxLoan = Math.min(Math.max(fund * 1.5, 500000), 6000000);
+  document.getElementById('maxLoan').textContent = `~${fmt(maxLoan)}`;
+  document.getElementById('yearsLabel').textContent = `${years} year${years>1?'s':''}`;
+  document.getElementById('loanStatus').textContent = years >= 2
+    ? `✅ Eligible (${years*12} months active)`
+    : `⏳ Not yet eligible (need 24 months, have ${years*12})`;
+  document.getElementById('yearsLabel').textContent = `${years} yr${years>1?'s':''}`;
+
+  document.getElementById('inputCard').style.display='none';
+  document.getElementById('results').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function reset(){
+  document.getElementById('inputCard').style.display='block';
+  document.getElementById('results').style.display='none';
+}
+</script>
+</body>
+</html>

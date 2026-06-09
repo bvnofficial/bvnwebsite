@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SSS Contribution Calculator 2026 Philippines — BVN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:24px}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:16px;max-width:680px;margin-left:auto;margin-right:auto}
+.card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:14px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:6px;margin-top:14px}
+label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.95rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(59,130,246,.6);background:rgba(255,255,255,.1)}
+input[type=range]{padding:4px 0;accent-color:#3b82f6}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;background:#3b82f6;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:16px;transition:.2s;letter-spacing:.02em}
+.btn:hover{background:#60a5fa;box-shadow:0 0 24px rgba(59,130,246,.4)}
+.results{display:none;max-width:680px;margin:0 auto}
+.result-hero{background:linear-gradient(135deg,#1a1f2e,#0d1428);border:1px solid rgba(59,130,246,.25);border-radius:16px;padding:24px;text-align:center;margin-bottom:14px}
+.result-hero .label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(147,197,253,.8);margin-bottom:6px}
+.result-hero .amount{font-size:2.4rem;font-weight:900;color:#93c5fd}
+.result-hero .sub{font-size:.8rem;color:rgba(255,255,255,.35);margin-top:4px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.mini-card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.mini-card .ml{font-size:.68rem;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.mini-card .mv{font-size:1.1rem;font-weight:800}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.breakdown-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:16px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border-bottom:none}
+.row .name{font-size:.85rem;color:rgba(255,255,255,.7)}
+.row .name small{display:block;font-size:.72rem;color:rgba(255,255,255,.35);margin-top:1px}
+.row .val{font-size:.9rem;font-weight:700}
+.row.total{padding-top:14px;margin-top:4px;border-top:2px solid rgba(255,255,255,.1);border-bottom:none}
+.row.total .name{font-weight:700;color:#fff;font-size:.9rem}
+.row.total .val{font-size:1.05rem;font-weight:900}
+.blue{color:#93c5fd}.green{color:#34d399}.red{color:#f87171}.yellow{color:#fbbf24}.white{color:#fff}
+.msc-badge{display:inline-block;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:99px;margin-left:8px;vertical-align:middle}
+.table-wrap{overflow-x:auto;max-width:680px;margin:0 auto 16px}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead tr{background:rgba(59,130,246,.1)}
+th{padding:9px 12px;text-align:left;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(147,197,253,.7);border-bottom:1px solid rgba(255,255,255,.08)}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
+tr.active-row td{background:rgba(59,130,246,.12);color:#fff;font-weight:700}
+tr.active-row td:first-child{border-left:3px solid #3b82f6}
+.recalc{width:100%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:16px;transition:.2s;max-width:680px;display:block}
+.recalc:hover{background:rgba(255,255,255,.1)}
+.info-box{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:.8rem;color:rgba(255,255,255,.6);line-height:1.6;max-width:680px;margin-left:auto;margin-right:auto}
+.info-box strong{color:#93c5fd}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;line-height:1.6;max-width:580px;margin:0 auto 20px;padding:0 8px}
+.bvn-footer{text-align:center;margin-top:24px;font-size:.75rem;color:rgba(255,255,255,.25)}
+.bvn-footer a{color:#3b82f6;text-decoration:none}
+@media(max-width:480px){.row2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.result-hero .amount{font-size:2rem}}
+</style>
+</head>
+<body>
+<h1>🇵🇭 SSS Contribution Calculator</h1>
+<p class="subtitle">Compute your exact SSS contribution — employee, employer &amp; self-employed rates · 2026</p>
+
+<div class="card" id="inputCard">
+  <div class="card-title">Your Details</div>
+  <label>Monthly Basic Salary (₱)</label>
+  <input type="number" id="salary" value="25000" min="1000" max="999999" placeholder="e.g. 25000" oninput="syncSlider()"/>
+  <input type="range" id="slider" min="3000" max="80000" step="500" value="25000" oninput="syncInput()"/>
+
+  <label>Employment Type</label>
+  <select id="empType">
+    <option value="private">Private Employee</option>
+    <option value="gov">Government Employee (GSIS — not SSS)</option>
+    <option value="self">Self-Employed / Freelancer</option>
+    <option value="voluntary">Voluntary Member (OFW / separated)</option>
+  </select>
+
+  <button class="btn" onclick="calculate()">Calculate My SSS Contribution →</button>
+</div>
+
+<div class="results" id="results">
+  <button class="recalc" onclick="reset()">← Edit Details</button>
+
+  <div class="result-hero">
+    <div class="label">Your Monthly SSS Contribution</div>
+    <div class="amount" id="heroAmount">₱0</div>
+    <div class="sub" id="heroSub"></div>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="ml">Monthly Salary Credit</div>
+      <div class="mv blue" id="mscVal">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Employee Share</div>
+      <div class="mv green" id="empShare">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Employer Share</div>
+      <div class="mv yellow" id="emplShare">₱0</div>
+    </div>
+  </div>
+
+  <div class="breakdown" id="breakdownCard">
+    <div class="breakdown-title">Full Contribution Breakdown</div>
+    <div class="row">
+      <div class="name">Monthly Basic Salary</div>
+      <div class="val white" id="bSalary">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Monthly Salary Credit (MSC) <span class="msc-badge" id="mscBracket">–</span></div>
+      <div class="val blue" id="bMSC">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Employee SSS Contribution <small id="empRateLabel">5% of MSC</small></div>
+      <div class="val green" id="bEmpSSS">₱0</div>
+    </div>
+    <div class="row" id="emplRow">
+      <div class="name">Employer SSS Contribution <small>10% of MSC</small></div>
+      <div class="val yellow" id="bEmplSSS">₱0</div>
+    </div>
+    <div class="row" id="ecRow">
+      <div class="name">Employer EC (Employee Compensation) <small>₱10 or ₱30 depending on MSC</small></div>
+      <div class="val yellow" id="bEC">₱0</div>
+    </div>
+    <div class="row total">
+      <div class="name" id="totalLabel">TOTAL MONTHLY CONTRIBUTION</div>
+      <div class="val blue" id="bTotal">₱0</div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="breakdown-title">Annual Summary</div>
+    <div class="row">
+      <div class="name">Annual Employee Contribution</div>
+      <div class="val green" id="annEmp">₱0</div>
+    </div>
+    <div class="row" id="annEmplRow">
+      <div class="name">Annual Employer Contribution (your benefit)</div>
+      <div class="val yellow" id="annEmpl">₱0</div>
+    </div>
+    <div class="row total">
+      <div class="name">Total Annual SSS Fund</div>
+      <div class="val blue" id="annTotal">₱0</div>
+    </div>
+  </div>
+
+  <div class="info-box" id="infoBox"></div>
+
+  <div class="card-title" style="max-width:680px;margin:0 auto 10px;padding-left:4px">2026 SSS Contribution Table</div>
+  <div class="table-wrap">
+    <table id="contribTable">
+      <thead>
+        <tr>
+          <th>Monthly Salary Range</th>
+          <th>MSC</th>
+          <th>Employee (5%)</th>
+          <th>Employer (10%)</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<p class="note">Based on SSS Circular 2023-002. Rates: employee 5%, employer 10%, self-employed/voluntary 15%. MSC range: ₱4,000–₱35,000. Government employees are covered by GSIS, not SSS. For official amounts, consult SSS or your HR department.</p>
+<div class="bvn-footer">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Business Automation Agency</a></div>
+
+<script>
+const fmt = n => '₱' + Math.round(n).toLocaleString('en-PH');
+
+// MSC brackets: [minSalary, maxSalary, MSC]
+const MSC_TABLE = [
+  [0,4249,4000],[4250,4749,4500],[4750,5249,5000],[5250,5749,5500],
+  [5750,6249,6000],[6250,6749,6500],[6750,7249,7000],[7250,7749,7500],
+  [7750,8249,8000],[8250,8749,8500],[8750,9249,9000],[9250,9749,9500],
+  [9750,10249,10000],[10250,10749,10500],[10750,11249,11000],[11250,11749,11500],
+  [11750,12249,12000],[12250,12749,12500],[12750,13249,13000],[13250,13749,13500],
+  [13750,14249,14000],[14250,14749,14500],[14750,15249,15000],[15250,15749,15500],
+  [15750,16249,16000],[16250,16749,16500],[16750,17249,17000],[17250,17749,17500],
+  [17750,18249,18000],[18250,18749,18500],[18750,19249,19000],[19250,19749,19500],
+  [19750,20249,20000],[20250,20749,20500],[20750,21249,21000],[21250,21749,21500],
+  [21750,22249,22000],[22250,22749,22500],[22750,23249,23000],[23250,23749,23500],
+  [23750,24249,24000],[24250,24749,24500],[24750,25249,25000],[25250,25749,25500],
+  [25750,26249,26000],[26250,26749,26500],[26750,27249,27000],[27250,27749,27500],
+  [27750,28249,28000],[28250,28749,28500],[28750,29249,29000],[29250,29749,29500],
+  [29750,30249,30000],[30250,30749,30500],[30750,31249,31000],[31250,31749,31500],
+  [31750,32249,32000],[32250,32749,32500],[32750,33249,33000],[33250,33749,33500],
+  [33750,34249,34000],[34250,34749,34500],[34750,999999,35000]
+];
+
+function getMSC(salary) {
+  for (const [lo, hi, msc] of MSC_TABLE) {
+    if (salary >= lo && salary <= hi) return msc;
+  }
+  return 35000;
+}
+
+function syncSlider(){document.getElementById('slider').value=Math.min(parseFloat(document.getElementById('salary').value)||0,80000);}
+function syncInput(){document.getElementById('salary').value=document.getElementById('slider').value;}
+
+function calculate() {
+  const salary = parseFloat(document.getElementById('salary').value)||0;
+  const type = document.getElementById('empType').value;
+
+  if (type === 'gov') {
+    alert('Government employees are covered by GSIS (Government Service Insurance System), not SSS.');
+    return;
+  }
+
+  const msc = getMSC(salary);
+  const empRate = 0.05;
+  const emplRate = 0.10;
+  const selfRate = 0.15;
+
+  const empContrib = Math.round(msc * empRate);
+  const emplContrib = Math.round(msc * emplRate);
+  const ec = msc <= 14750 ? 10 : 30;
+  const selfContrib = Math.round(msc * selfRate);
+
+  const isSelf = type === 'self' || type === 'voluntary';
+
+  document.getElementById('heroAmount').textContent = fmt(isSelf ? selfContrib : empContrib);
+  document.getElementById('heroSub').textContent = isSelf
+    ? `${type === 'voluntary' ? 'Voluntary' : 'Self-employed'} rate: 15% of MSC (${fmt(msc)})`
+    : `Employee share only · Employer also pays ${fmt(emplContrib + ec)}/mo`;
+
+  document.getElementById('mscVal').textContent = fmt(msc);
+  document.getElementById('empShare').textContent = fmt(isSelf ? selfContrib : empContrib);
+  document.getElementById('emplShare').textContent = isSelf ? 'N/A' : fmt(emplContrib);
+
+  document.getElementById('bSalary').textContent = fmt(salary);
+  document.getElementById('bMSC').textContent = fmt(msc);
+  document.getElementById('mscBracket').textContent = 'MSC';
+
+  if (isSelf) {
+    document.getElementById('bEmpSSS').textContent = fmt(selfContrib);
+    document.getElementById('empRateLabel').textContent = '15% of MSC (both shares)';
+    document.getElementById('emplRow').style.display = 'none';
+    document.getElementById('ecRow').style.display = 'none';
+    document.getElementById('bTotal').textContent = fmt(selfContrib);
+    document.getElementById('totalLabel').textContent = 'TOTAL MONTHLY CONTRIBUTION';
+    document.getElementById('annEmplRow').style.display = 'none';
+    document.getElementById('annEmp').textContent = fmt(selfContrib * 12);
+    document.getElementById('annTotal').textContent = fmt(selfContrib * 12);
+  } else {
+    document.getElementById('bEmpSSS').textContent = fmt(empContrib);
+    document.getElementById('empRateLabel').textContent = '5% of MSC';
+    document.getElementById('emplRow').style.display = '';
+    document.getElementById('ecRow').style.display = '';
+    document.getElementById('bEmplSSS').textContent = fmt(emplContrib);
+    document.getElementById('bEC').textContent = fmt(ec);
+    document.getElementById('bTotal').textContent = fmt(empContrib + emplContrib + ec);
+    document.getElementById('totalLabel').textContent = 'TOTAL (EMPLOYEE + EMPLOYER + EC)';
+    document.getElementById('annEmplRow').style.display = '';
+    document.getElementById('annEmp').textContent = fmt(empContrib * 12);
+    document.getElementById('annEmpl').textContent = fmt((emplContrib + ec) * 12);
+    document.getElementById('annTotal').textContent = fmt((empContrib + emplContrib + ec) * 12);
+  }
+
+  // Info box
+  const loan = msc * 2;
+  document.getElementById('infoBox').innerHTML = `
+    <strong>💡 Your SSS Benefits at This Contribution Level</strong><br/>
+    Monthly salary credit of ${fmt(msc)} qualifies you for:<br/>
+    • <strong>Salary loan:</strong> Up to ${fmt(Math.min(salary * 2, 32000))} (2 months average MSC, after 6 months contributions)<br/>
+    • <strong>Sickness benefit:</strong> ${fmt(Math.round(msc / 180 * 90))} for 90 days (based on daily benefit rate)<br/>
+    • <strong>Maternity benefit:</strong> ${fmt(Math.round(msc / 180 * 105))} for normal delivery (105 days)<br/>
+    • <strong>Retirement pension:</strong> Based on total credited years of service and average MSC
+  `;
+
+  // Build table (show ±10 brackets around current)
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  const currentIdx = MSC_TABLE.findIndex(([lo,hi,m]) => m === msc);
+  const start = Math.max(0, currentIdx - 5);
+  const end = Math.min(MSC_TABLE.length - 1, currentIdx + 5);
+
+  for (let i = start; i <= end; i++) {
+    const [lo, hi, m] = MSC_TABLE[i];
+    const e = Math.round(m * 0.05);
+    const er = Math.round(m * 0.10);
+    const tr = document.createElement('tr');
+    if (m === msc) tr.className = 'active-row';
+    const hiLabel = i === MSC_TABLE.length - 1 ? 'and above' : `– ₱${hi.toLocaleString('en-PH')}`;
+    tr.innerHTML = `<td>₱${lo.toLocaleString('en-PH')} ${hiLabel}</td><td>${fmt(m)}</td><td class="green">${fmt(e)}</td><td class="yellow">${fmt(er)}</td><td class="blue">${fmt(e+er)}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('inputCard').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function reset(){
+  document.getElementById('inputCard').style.display='block';
+  document.getElementById('results').style.display='none';
+}
+</script>
+</body>
+</html>

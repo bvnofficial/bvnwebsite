@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PhilHealth Contribution Calculator 2026 Philippines — BVN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:24px}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:16px;max-width:680px;margin-left:auto;margin-right:auto}
+.card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:14px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:6px;margin-top:14px}
+label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.95rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(244,63,94,.5);background:rgba(255,255,255,.1)}
+input[type=range]{padding:4px 0;accent-color:#f43f5e}
+.btn{width:100%;background:#f43f5e;color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:16px;transition:.2s}
+.btn:hover{background:#fb7185;box-shadow:0 0 24px rgba(244,63,94,.4)}
+.results{display:none;max-width:680px;margin:0 auto}
+.result-hero{background:linear-gradient(135deg,#1e1020,#120810);border:1px solid rgba(244,63,94,.25);border-radius:16px;padding:24px;text-align:center;margin-bottom:14px}
+.result-hero .label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(253,164,175,.8);margin-bottom:6px}
+.result-hero .amount{font-size:2.4rem;font-weight:900;color:#fda4af}
+.result-hero .sub{font-size:.8rem;color:rgba(255,255,255,.35);margin-top:4px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.mini-card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.mini-card .ml{font-size:.68rem;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.mini-card .mv{font-size:1.1rem;font-weight:800}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.breakdown-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:16px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border-bottom:none}
+.row .name{font-size:.85rem;color:rgba(255,255,255,.7)}
+.row .name small{display:block;font-size:.72rem;color:rgba(255,255,255,.35);margin-top:1px}
+.row .val{font-size:.9rem;font-weight:700}
+.row.total{padding-top:14px;margin-top:4px;border-top:2px solid rgba(255,255,255,.1);border-bottom:none}
+.row.total .name{font-weight:700;color:#fff;font-size:.9rem}
+.row.total .val{font-size:1.05rem;font-weight:900}
+.rose{color:#fda4af}.green{color:#34d399}.yellow{color:#fbbf24}.white{color:#fff}.blue{color:#93c5fd}
+.bar-section{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.6);margin-bottom:5px}
+.bar-track{height:10px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.table-wrap{overflow-x:auto;max-width:680px;margin:0 auto 16px}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead tr{background:rgba(244,63,94,.1)}
+th{padding:9px 12px;text-align:left;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(253,164,175,.7);border-bottom:1px solid rgba(255,255,255,.08)}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
+tr.active-row td{background:rgba(244,63,94,.1);color:#fff;font-weight:700}
+tr.active-row td:first-child{border-left:3px solid #f43f5e}
+.recalc{width:100%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:16px;transition:.2s;max-width:680px;display:block}
+.recalc:hover{background:rgba(255,255,255,.1)}
+.info-box{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:.8rem;color:rgba(255,255,255,.6);line-height:1.6;max-width:680px;margin-left:auto;margin-right:auto}
+.info-box strong{color:#fda4af}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;line-height:1.6;max-width:580px;margin:0 auto 20px;padding:0 8px}
+.bvn-footer{text-align:center;margin-top:24px;font-size:.75rem;color:rgba(255,255,255,.25)}
+.bvn-footer a{color:#f43f5e;text-decoration:none}
+@media(max-width:480px){.grid3{grid-template-columns:1fr 1fr}.result-hero .amount{font-size:2rem}}
+</style>
+</head>
+<body>
+<h1>🏥 PhilHealth Contribution Calculator</h1>
+<p class="subtitle">Compute your exact PhilHealth monthly premium — employee &amp; employer shares · 2026</p>
+
+<div class="card" id="inputCard">
+  <div class="card-title">Your Details</div>
+  <label>Monthly Basic Salary (₱)</label>
+  <input type="number" id="salary" value="25000" min="1000" max="999999" placeholder="e.g. 25000" oninput="syncSlider()"/>
+  <input type="range" id="slider" min="5000" max="150000" step="500" value="25000" oninput="syncInput()"/>
+
+  <label>Member Type</label>
+  <select id="memberType">
+    <option value="employed">Employed (Private or Government)</option>
+    <option value="self">Self-Employed / Professional</option>
+    <option value="voluntary">Voluntary / Overseas</option>
+  </select>
+
+  <button class="btn" onclick="calculate()">Calculate PhilHealth Premium →</button>
+</div>
+
+<div class="results" id="results">
+  <button class="recalc" onclick="reset()">← Edit Details</button>
+
+  <div class="result-hero">
+    <div class="label">Your Monthly PhilHealth Deduction</div>
+    <div class="amount" id="heroAmount">₱0</div>
+    <div class="sub" id="heroSub"></div>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="ml">Premium Base</div>
+      <div class="mv blue" id="baseVal">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Employee Share</div>
+      <div class="mv rose" id="empShare">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Employer Share</div>
+      <div class="mv yellow" id="emplShare">₱0</div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="breakdown-title">Premium Breakdown</div>
+    <div class="row">
+      <div class="name">Monthly Basic Salary</div>
+      <div class="val white" id="bSalary">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Premium Base (salary, capped at ₱100,000) <small>Floor: ₱10,000</small></div>
+      <div class="val blue" id="bBase">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Total Premium (5% of base)</div>
+      <div class="val white" id="bTotal">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Employee Share <small>2.5% of base (deducted from your pay)</small></div>
+      <div class="val rose" id="bEmp">₱0</div>
+    </div>
+    <div class="row" id="emplRow">
+      <div class="name">Employer Share <small>2.5% of base (employer pays this)</small></div>
+      <div class="val yellow" id="bEmpl">₱0</div>
+    </div>
+    <div class="row total">
+      <div class="name">TOTAL PREMIUM (EMPLOYEE + EMPLOYER)</div>
+      <div class="val rose" id="bGrandTotal">₱0</div>
+    </div>
+  </div>
+
+  <div class="bar-section">
+    <div class="breakdown-title">Annual PhilHealth Summary</div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Annual Employee Premium</span><span id="annEmpVal">₱0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barEmp" style="background:#f43f5e;width:60%"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Annual Employer Premium</span><span id="annEmplVal">₱0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barEmpl" style="background:#fbbf24;width:60%"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Total Annual Premium</span><span id="annTotalVal">₱0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barTotal" style="background:#93c5fd;width:100%"></div></div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>🏥 What Your PhilHealth Covers</strong><br/>
+    With an active PhilHealth membership, you and your qualified dependents are entitled to:<br/>
+    • <strong>Inpatient care:</strong> Room and board, professional fees, medicines, lab tests during hospital confinement<br/>
+    • <strong>Day surgeries &amp; outpatient procedures:</strong> Hemodialysis, chemotherapy, radiotherapy<br/>
+    • <strong>Z-benefit packages:</strong> Full coverage for catastrophic illnesses (cancer, rare diseases)<br/>
+    • <strong>Maternity care:</strong> Normal delivery, caesarean section, prenatal care<br/>
+    • <strong>Free preventive care:</strong> Annual check-up package for members and dependents
+  </div>
+
+  <div class="card-title" style="max-width:680px;margin:0 auto 10px;padding-left:4px">2026 PhilHealth Premium Table</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Monthly Basic Salary</th><th>Premium Base</th><th>Employee (2.5%)</th><th>Employer (2.5%)</th><th>Total Premium (5%)</th></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<p class="note">Based on PhilHealth Circular No. 2023-0016. Premium rate: 5% of monthly basic salary. Employee and employer each pay 2.5%. Salary floor: ₱10,000 (₱250/share). Salary ceiling: ₱100,000 (₱2,500/share). For self-employed, the full 5% premium is personally shouldered.</p>
+<div class="bvn-footer">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Business Automation Agency</a></div>
+
+<script>
+const fmt = n => '₱' + Math.round(n).toLocaleString('en-PH');
+
+const RATE = 0.05;
+const FLOOR = 10000;
+const CEIL = 100000;
+
+function getBase(salary){ return Math.min(Math.max(salary, FLOOR), CEIL); }
+
+function syncSlider(){document.getElementById('slider').value=Math.min(parseFloat(document.getElementById('salary').value)||0,150000);}
+function syncInput(){document.getElementById('salary').value=document.getElementById('slider').value;}
+
+function calculate(){
+  const salary = parseFloat(document.getElementById('salary').value)||0;
+  const type = document.getElementById('memberType').value;
+  const base = getBase(salary);
+  const total = Math.round(base * RATE);
+  const half = Math.round(total / 2);
+  const isSelf = type !== 'employed';
+
+  document.getElementById('heroAmount').textContent = fmt(half);
+  document.getElementById('heroSub').textContent = isSelf
+    ? `Self-pay: full 5% = ${fmt(total)}/mo · Base: ${fmt(base)}`
+    : `2.5% deducted from pay · Employer matches ${fmt(half)}/mo`;
+
+  document.getElementById('baseVal').textContent = fmt(base);
+  document.getElementById('empShare').textContent = fmt(isSelf ? total : half);
+  document.getElementById('emplShare').textContent = isSelf ? 'N/A' : fmt(half);
+
+  document.getElementById('bSalary').textContent = fmt(salary);
+  document.getElementById('bBase').textContent = fmt(base);
+  document.getElementById('bTotal').textContent = fmt(total);
+  document.getElementById('bEmp').textContent = fmt(isSelf ? total : half);
+  if (!isSelf) {
+    document.getElementById('emplRow').style.display='';
+    document.getElementById('bEmpl').textContent = fmt(half);
+    document.getElementById('bGrandTotal').textContent = fmt(total);
+  } else {
+    document.getElementById('emplRow').style.display='none';
+    document.getElementById('bGrandTotal').textContent = fmt(total);
+  }
+
+  // Annual
+  const annEmp = (isSelf ? total : half) * 12;
+  const annEmpl = isSelf ? 0 : half * 12;
+  const annTotal = total * 12;
+
+  document.getElementById('annEmpVal').textContent = fmt(annEmp);
+  document.getElementById('annEmplVal').textContent = fmt(annEmpl);
+  document.getElementById('annTotalVal').textContent = fmt(annTotal);
+  document.getElementById('barEmp').style.width = (annEmp/annTotal*100)+'%';
+  document.getElementById('barEmpl').style.width = (annEmpl/annTotal*100)+'%';
+  document.getElementById('barTotal').style.width = '100%';
+
+  // Build table — fixed brackets
+  const brackets = [
+    [0,10000,10000],[10001,20000,null],[20001,30000,null],[30001,40000,null],
+    [40001,50000,null],[50001,60000,null],[60001,70000,null],[70001,80000,null],
+    [80001,90000,null],[90001,100000,null],[100001,999999,100000]
+  ];
+  const LABELS = [
+    '₱10,000 and below','₱10,001–₱20,000','₱20,001–₱30,000','₱30,001–₱40,000',
+    '₱40,001–₱50,000','₱50,001–₱60,000','₱60,001–₱70,000','₱70,001–₱80,000',
+    '₱80,001–₱90,000','₱90,001–₱100,000','Above ₱100,000'
+  ];
+  const BASES = [10000,15000,25000,35000,45000,55000,65000,75000,85000,95000,100000];
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML='';
+  BASES.forEach((b,i)=>{
+    const tot = Math.round(b*RATE);
+    const sh = Math.round(tot/2);
+    const isActive = base === b || (salary <= FLOOR && b===FLOOR) || (salary >= CEIL && b===CEIL) || (salary>brackets[i][0] && salary<=brackets[i][1]);
+    const tr = document.createElement('tr');
+    if(isActive) tr.className='active-row';
+    tr.innerHTML=`<td>${LABELS[i]}</td><td>${fmt(b)}</td><td class="rose">${fmt(sh)}</td><td class="yellow">${fmt(sh)}</td><td class="blue">${fmt(tot)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('inputCard').style.display='none';
+  document.getElementById('results').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function reset(){
+  document.getElementById('inputCard').style.display='block';
+  document.getElementById('results').style.display='none';
+}
+</script>
+</body>
+</html>

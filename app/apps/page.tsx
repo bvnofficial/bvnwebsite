@@ -1,12 +1,48 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag, ShieldCheck, HeartPulse, Home, FileText } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ShareButtons from "@/components/ui/ShareButtons";
 
 const apps = [
+  {
+    icon: ShieldCheck,
+    title: "SSS Contribution Calculator",
+    description:
+      "Compute your exact SSS contribution based on your monthly salary. Shows employee share, employer share, Monthly Salary Credit, EC contribution, and a full 2026 bracket table.",
+    href: "/apps/sss-calculator",
+    badge: "🔥 Popular",
+    color: "blue",
+  },
+  {
+    icon: HeartPulse,
+    title: "PhilHealth Contribution Calculator",
+    description:
+      "Calculate your exact PhilHealth monthly premium. Shows employee and employer shares (2.5% each), the full premium table by salary range, and your annual PhilHealth coverage summary.",
+    href: "/apps/philhealth-calculator",
+    badge: "🔥 Popular",
+    color: "rose",
+  },
+  {
+    icon: Home,
+    title: "Pag-IBIG Contribution Calculator",
+    description:
+      "Compute mandatory and voluntary Pag-IBIG contributions with savings projections. Includes employer match, housing loan eligibility check, and long-term fund growth estimate.",
+    href: "/apps/pagibig-calculator",
+    badge: "🔥 Popular",
+    color: "green",
+  },
+  {
+    icon: FileText,
+    title: "BIR Withholding Tax Calculator",
+    description:
+      "Compute your exact income tax under the TRAIN Law. Step-by-step breakdown of taxable income, tax bracket, effective rate, and annual tax liability. SSS/PhilHealth/Pag-IBIG auto-deducted.",
+    href: "/apps/bir-calculator",
+    badge: "🔥 Popular",
+    color: "yellow",
+  },
   {
     icon: DollarSign,
     title: "Salary Calculator Philippines",

@@ -8,6 +8,10 @@ const BASE_URL = "https://www.bvnofficial.com";
 
 // All free tools — keep in sync with /apps directory
 const ALL_APPS = [
+  "sss-calculator",
+  "philhealth-calculator",
+  "pagibig-calculator",
+  "bir-calculator",
   "salary-calculator",
   "13th-month-calculator",
   "loan-calculator",

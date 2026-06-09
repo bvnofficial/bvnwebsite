@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BIR Withholding Tax Calculator 2026 Philippines — TRAIN Law — BVN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:24px}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:16px;max-width:680px;margin-left:auto;margin-right:auto}
+.card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:14px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:6px;margin-top:14px}
+label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.95rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(245,158,11,.5);background:rgba(255,255,255,.1)}
+input[type=range]{padding:4px 0;accent-color:#f59e0b}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:16px;transition:.2s}
+.btn:hover{background:#fbbf24;box-shadow:0 0 24px rgba(245,158,11,.4)}
+.results{display:none;max-width:680px;margin:0 auto}
+.result-hero{background:linear-gradient(135deg,#1e1800,#120f00);border:1px solid rgba(245,158,11,.25);border-radius:16px;padding:24px;text-align:center;margin-bottom:14px}
+.result-hero .label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(253,211,77,.8);margin-bottom:6px}
+.result-hero .amount{font-size:2.4rem;font-weight:900;color:#fcd34d}
+.result-hero .sub{font-size:.8rem;color:rgba(255,255,255,.35);margin-top:4px}
+.exempt-hero{background:linear-gradient(135deg,#0d1e16,#081410);border:1px solid rgba(52,211,153,.25);}
+.exempt-hero .label{color:rgba(110,231,183,.8)}
+.exempt-hero .amount{color:#6ee7b7}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.mini-card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.mini-card .ml{font-size:.68rem;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.mini-card .mv{font-size:1.1rem;font-weight:800}
+.breakdown{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.breakdown-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:16px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border-bottom:none}
+.row .name{font-size:.85rem;color:rgba(255,255,255,.7);flex:1;padding-right:12px}
+.row .name small{display:block;font-size:.72rem;color:rgba(255,255,255,.35);margin-top:1px}
+.row .val{font-size:.9rem;font-weight:700;white-space:nowrap}
+.row.total{padding-top:14px;margin-top:4px;border-top:2px solid rgba(255,255,255,.1);border-bottom:none}
+.row.total .name{font-weight:700;color:#fff;font-size:.9rem}
+.row.total .val{font-size:1.05rem;font-weight:900}
+.row.subtotal{background:rgba(255,255,255,.03);padding:8px 10px;border-radius:8px;margin:4px 0}
+.amber{color:#fcd34d}.green{color:#34d399}.red{color:#f87171}.white{color:#fff}.blue{color:#93c5fd}.orange{color:#fb923c}
+.bracket-card{border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:16px;margin-bottom:14px;background:rgba(245,158,11,.05)}
+.bracket-card h3{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(253,211,77,.8);margin-bottom:12px}
+.bracket-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.83rem}
+.bracket-item:last-child{border-bottom:none}
+.bracket-item.active{color:#fcd34d;font-weight:700}
+.bracket-item.active .bracket-rate{background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.4);color:#fcd34d}
+.bracket-rate{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5)}
+.bar-section{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.6);margin-bottom:5px}
+.bar-track{height:10px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.annual-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ann-card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.ann-card .al{font-size:.68rem;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em}
+.ann-card .av{font-size:1rem;font-weight:800}
+.table-wrap{overflow-x:auto;max-width:680px;margin:0 auto 16px}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+thead tr{background:rgba(245,158,11,.1)}
+th{padding:9px 12px;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(253,211,77,.7);border-bottom:1px solid rgba(255,255,255,.08)}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
+tr.active-row td{background:rgba(245,158,11,.1);color:#fff;font-weight:700}
+tr.active-row td:first-child{border-left:3px solid #f59e0b}
+.recalc{width:100%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px;font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:16px;transition:.2s;max-width:680px;display:block}
+.recalc:hover{background:rgba(255,255,255,.1)}
+.toggle-row{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:.83rem;color:rgba(255,255,255,.6)}
+.toggle-row input[type=checkbox]{width:auto;accent-color:#f59e0b}
+.note{font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;line-height:1.6;max-width:580px;margin:0 auto 20px;padding:0 8px}
+.bvn-footer{text-align:center;margin-top:24px;font-size:.75rem;color:rgba(255,255,255,.25)}
+.bvn-footer a{color:#f59e0b;text-decoration:none}
+@media(max-width:480px){.row2{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}.annual-grid{grid-template-columns:1fr 1fr}.result-hero .amount{font-size:2rem}}
+</style>
+</head>
+<body>
+<h1>📋 BIR Withholding Tax Calculator</h1>
+<p class="subtitle">Compute your exact income tax under the TRAIN Law (RA 10963) — updated 2026 rates</p>
+
+<div class="card" id="inputCard">
+  <div class="card-title">Salary & Deduction Details</div>
+  <label>Monthly Basic Salary (₱)</label>
+  <input type="number" id="salary" value="35000" min="0" max="9999999" placeholder="e.g. 35000" oninput="syncSlider()"/>
+  <input type="range" id="slider" min="0" max="300000" step="1000" value="35000" oninput="syncInput()"/>
+
+  <div class="row2">
+    <div>
+      <label>Non-Taxable Allowances (₱/mo)</label>
+      <input type="number" id="allowance" value="0" min="0" placeholder="Rice, transport, etc."/>
+    </div>
+    <div>
+      <label>Other Deductions (₱/mo)</label>
+      <input type="number" id="other" value="0" min="0" placeholder="Loan, etc."/>
+    </div>
+  </div>
+
+  <div class="toggle-row">
+    <input type="checkbox" id="autoContrib" checked/>
+    <label style="margin:0;color:rgba(255,255,255,.7)">Auto-compute SSS, PhilHealth &amp; Pag-IBIG deductions</label>
+  </div>
+
+  <div id="manualContribFields" style="display:none">
+    <div class="row2">
+      <div>
+        <label>SSS Contribution (₱/mo)</label>
+        <input type="number" id="manSSS" value="0" min="0"/>
+      </div>
+      <div>
+        <label>PhilHealth (₱/mo)</label>
+        <input type="number" id="manPH" value="0" min="0"/>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Pag-IBIG (₱/mo)</label>
+        <input type="number" id="manPI" value="0" min="0"/>
+      </div>
+      <div></div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="calculate()">Calculate My Withholding Tax →</button>
+</div>
+
+<div class="results" id="results">
+  <button class="recalc" onclick="reset()">← Edit Salary Details</button>
+
+  <div class="result-hero" id="heroCard">
+    <div class="label">Monthly Withholding Tax</div>
+    <div class="amount" id="heroAmount">₱0</div>
+    <div class="sub" id="heroSub"></div>
+  </div>
+
+  <div class="grid4">
+    <div class="mini-card">
+      <div class="ml">Gross Salary</div>
+      <div class="mv white" id="mgGross">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Taxable Income</div>
+      <div class="mv amber" id="mgTaxable">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Monthly Tax</div>
+      <div class="mv red" id="mgTax">₱0</div>
+    </div>
+    <div class="mini-card">
+      <div class="ml">Effective Rate</div>
+      <div class="mv amber" id="mgEffRate">0%</div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="breakdown-title">Step-by-Step Tax Computation</div>
+    <div class="row">
+      <div class="name">Monthly Basic Salary</div>
+      <div class="val white" id="bGross">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Non-Taxable Allowances <small>De minimis / fringe benefits</small></div>
+      <div class="val green" id="bAllowance">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">SSS Contribution (employee share)</div>
+      <div class="val red" id="bSSS">−₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">PhilHealth Premium (employee share)</div>
+      <div class="val red" id="bPH">−₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Pag-IBIG Contribution</div>
+      <div class="val red" id="bPI">−₱0</div>
+    </div>
+    <div class="row subtotal">
+      <div class="name" style="color:rgba(255,255,255,.5);font-size:.8rem">Total Gov't Contributions (deducted before tax)</div>
+      <div class="val" style="color:rgba(248,113,113,.8)" id="bTotalContrib">−₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Taxable Compensation Income <small>Basis for TRAIN Law tax table</small></div>
+      <div class="val amber" id="bTaxable">₱0</div>
+    </div>
+    <div class="row">
+      <div class="name">Withholding Tax <small id="bracketLabel">–</small></div>
+      <div class="val red" id="bTax">₱0</div>
+    </div>
+    <div class="row total">
+      <div class="name">MONTHLY TAKE-HOME PAY</div>
+      <div class="val green" id="bTakeHome">₱0</div>
+    </div>
+  </div>
+
+  <div class="bracket-card">
+    <h3>Your TRAIN Law Tax Bracket</h3>
+    <div id="bracketList"></div>
+  </div>
+
+  <div class="bar-section">
+    <div class="breakdown-title">Where Your Salary Goes</div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Take-Home Pay</span><span id="pTakeHome">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barTH" style="background:#34d399"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Gov't Contributions (SSS+PhilHealth+Pag-IBIG)</span><span id="pContrib">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barC" style="background:#60a5fa"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Withholding Tax (BIR)</span><span id="pTax">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barT" style="background:#f87171"></div></div>
+    </div>
+  </div>
+
+  <div class="annual-grid">
+    <div class="ann-card">
+      <div class="al">Annual Gross</div>
+      <div class="av white" id="annGross">₱0</div>
+    </div>
+    <div class="ann-card">
+      <div class="al">Annual Take-Home</div>
+      <div class="av" style="color:#34d399" id="annTakeHome">₱0</div>
+    </div>
+    <div class="ann-card">
+      <div class="al">Annual Tax Paid</div>
+      <div class="av" style="color:#f87171" id="annTax">₱0</div>
+    </div>
+    <div class="ann-card">
+      <div class="al">13th Month Pay</div>
+      <div class="av" style="color:#fbbf24" id="ann13th">₱0</div>
+    </div>
+    <div class="ann-card">
+      <div class="al">Total Contribs (annual)</div>
+      <div class="av" style="color:#60a5fa" id="annContrib">₱0</div>
+    </div>
+    <div class="ann-card">
+      <div class="al">Effective Tax Rate</div>
+      <div class="av amber" id="annEffRate">0%</div>
+    </div>
+  </div>
+
+  <div class="card-title" style="max-width:680px;margin:0 auto 10px;padding-left:4px">TRAIN Law Monthly Tax Table (2023 onwards)</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Monthly Taxable Income</th><th>Tax on Excess</th><th>Fixed Amount</th><th>Rate on Excess</th></tr></thead>
+      <tbody id="taxTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<p class="note">Based on TRAIN Law (Republic Act 10963), BIR Revenue Regulations 8-2018. Withholding tax is computed after deducting mandatory SSS, PhilHealth, and Pag-IBIG contributions. 13th month pay up to ₱90,000 is tax-exempt. De minimis benefits (rice subsidy, clothing, medical) are exempt from income tax within BIR-prescribed limits. Consult a licensed tax professional or your company HR for exact computations.</p>
+<div class="bvn-footer">Built free by <a href="https://www.bvnofficial.com" target="_blank">BVN — Philippine Business Automation Agency</a></div>
+
+<script>
+const fmt = n => '₱' + Math.round(n).toLocaleString('en-PH');
+const pct = (a,b) => b===0?'0%':(a/b*100).toFixed(1)+'%';
+
+// MSC for SSS
+function getMSC(s){
+  if(s<4250)return 4000; if(s>=34750)return 35000;
+  return Math.round(s/500)*500;
+}
+function calcSSS(s){ return Math.round(getMSC(s)*0.05); }
+function calcPH(s){ return Math.round(Math.min(Math.max(s,10000),100000)*0.025); }
+function calcPI(s){ return s<=1500?Math.round(s*0.01):100; }
+
+// TRAIN Law monthly tax table
+const BRACKETS = [
+  {lo:0,     hi:20833,  fixed:0,      rate:0,    label:'₱0 – ₱20,833'},
+  {lo:20833, hi:33332,  fixed:0,      rate:0.20, label:'₱20,833 – ₱33,332'},
+  {lo:33332, hi:66666,  fixed:2500,   rate:0.25, label:'₱33,332 – ₱66,666'},
+  {lo:66666, hi:166666, fixed:10833,  rate:0.30, label:'₱66,666 – ₱166,666'},
+  {lo:166666,hi:666666, fixed:40833,  rate:0.32, label:'₱166,666 – ₱666,666'},
+  {lo:666666,hi:Infinity,fixed:200833,rate:0.35, label:'Above ₱666,666'},
+];
+
+const TAX_TABLE_DATA = [
+  ['₱20,833 and below','₱0','₱0','Exempt'],
+  ['₱20,834 – ₱33,332','₱20,833','₱0','20%'],
+  ['₱33,333 – ₱66,666','₱33,333','₱2,500','25%'],
+  ['₱66,667 – ₱166,666','₱66,667','₱10,833','30%'],
+  ['₱166,667 – ₱666,666','₱166,667','₱40,833','32%'],
+  ['Above ₱666,667','₱666,667','₱200,833','35%'],
+];
+
+function calcTax(ti){
+  for(const b of BRACKETS){
+    if(ti>=b.lo && ti<b.hi){
+      return Math.round(b.fixed + (ti-b.lo)*b.rate);
+    }
+  }
+  return 0;
+}
+function getBracket(ti){
+  return BRACKETS.find(b=>ti>=b.lo && ti<b.hi)||BRACKETS[0];
+}
+
+function syncSlider(){document.getElementById('slider').value=Math.min(parseFloat(document.getElementById('salary').value)||0,300000);}
+function syncInput(){document.getElementById('salary').value=document.getElementById('slider').value;}
+
+document.getElementById('autoContrib').addEventListener('change',function(){
+  document.getElementById('manualContribFields').style.display=this.checked?'none':'block';
+});
+
+function calculate(){
+  const salary = parseFloat(document.getElementById('salary').value)||0;
+  const allowance = parseFloat(document.getElementById('allowance').value)||0;
+  const other = parseFloat(document.getElementById('other').value)||0;
+  const auto = document.getElementById('autoContrib').checked;
+
+  const sss = auto ? calcSSS(salary) : (parseFloat(document.getElementById('manSSS').value)||0);
+  const ph  = auto ? calcPH(salary)  : (parseFloat(document.getElementById('manPH').value)||0);
+  const pi  = auto ? calcPI(salary)  : (parseFloat(document.getElementById('manPI').value)||0);
+
+  const totalContrib = sss + ph + pi;
+  const taxable = Math.max(0, salary - totalContrib);
+  const tax = calcTax(taxable);
+  const takeHome = salary + allowance - totalContrib - tax - other;
+  const effRate = salary > 0 ? (tax/salary*100).toFixed(2) : 0;
+
+  const bracket = getBracket(taxable);
+  const isExempt = tax === 0;
+
+  // Hero
+  const hero = document.getElementById('heroCard');
+  hero.className = 'result-hero' + (isExempt ? ' exempt-hero' : '');
+  document.getElementById('heroAmount').textContent = isExempt ? '₱0 — Tax Exempt' : fmt(tax);
+  document.getElementById('heroSub').textContent = isExempt
+    ? `Taxable income ₱${taxable.toLocaleString()} is below the ₱20,833/mo threshold — no income tax due`
+    : `${bracket.rate*100}% bracket · ${effRate}% effective rate on gross salary`;
+
+  // Mini cards
+  document.getElementById('mgGross').textContent = fmt(salary);
+  document.getElementById('mgTaxable').textContent = fmt(taxable);
+  document.getElementById('mgTax').textContent = fmt(tax);
+  document.getElementById('mgEffRate').textContent = effRate+'%';
+
+  // Breakdown
+  document.getElementById('bGross').textContent = fmt(salary);
+  document.getElementById('bAllowance').textContent = allowance>0?'+'+fmt(allowance):'₱0';
+  document.getElementById('bSSS').textContent = '−'+fmt(sss);
+  document.getElementById('bPH').textContent = '−'+fmt(ph);
+  document.getElementById('bPI').textContent = '−'+fmt(pi);
+  document.getElementById('bTotalContrib').textContent = '−'+fmt(totalContrib);
+  document.getElementById('bTaxable').textContent = fmt(taxable);
+  document.getElementById('bTax').textContent = tax===0?'₱0 (Exempt)':'−'+fmt(tax);
+  document.getElementById('bTax').style.color = tax===0?'#34d399':'#f87171';
+  document.getElementById('bTakeHome').textContent = fmt(takeHome);
+  document.getElementById('bracketLabel').textContent = isExempt
+    ? '0% — income is tax-exempt under TRAIN Law'
+    : `${bracket.rate*100}% bracket — ${bracket.label}`;
+
+  // Bracket list
+  const bl = document.getElementById('bracketList');
+  bl.innerHTML='';
+  BRACKETS.forEach(b=>{
+    const isActive = taxable>=b.lo && taxable<b.hi;
+    const div=document.createElement('div');
+    div.className='bracket-item'+(isActive?' active':'');
+    const rateLabel = b.rate===0?'Exempt':b.rate*100+'%';
+    div.innerHTML=`<span>${b.label}</span><span class="bracket-rate">${rateLabel}</span>`;
+    bl.appendChild(div);
+  });
+
+  // Bars
+  const base = salary||1;
+  const pTH = Math.max(0,takeHome/base*100);
+  const pC = totalContrib/base*100;
+  const pT = tax/base*100;
+  document.getElementById('barTH').style.width=pTH+'%';
+  document.getElementById('barC').style.width=pC+'%';
+  document.getElementById('barT').style.width=pT+'%';
+  document.getElementById('pTakeHome').textContent=pTH.toFixed(1)+'%';
+  document.getElementById('pContrib').textContent=pC.toFixed(1)+'%';
+  document.getElementById('pTax').textContent=pT.toFixed(1)+'%';
+
+  // Annual
+  document.getElementById('annGross').textContent = fmt(salary*12);
+  document.getElementById('annTakeHome').textContent = fmt(takeHome*12);
+  document.getElementById('annTax').textContent = fmt(tax*12);
+  document.getElementById('ann13th').textContent = fmt(salary)+' (tax-exempt up to ₱90k)';
+  document.getElementById('annContrib').textContent = fmt(totalContrib*12);
+  document.getElementById('annEffRate').textContent = effRate+'%';
+
+  // Tax table
+  const tb = document.getElementById('taxTable');
+  tb.innerHTML='';
+  TAX_TABLE_DATA.forEach((row,i)=>{
+    const bracket = getBracket(taxable);
+    const isAct = BRACKETS[i] && taxable>=BRACKETS[i].lo && taxable<BRACKETS[i].hi;
+    const tr=document.createElement('tr');
+    if(isAct) tr.className='active-row';
+    tr.innerHTML=`<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td>`;
+    tb.appendChild(tr);
+  });
+
+  document.getElementById('inputCard').style.display='none';
+  document.getElementById('results').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function reset(){
+  document.getElementById('inputCard').style.display='block';
+  document.getElementById('results').style.display='none';
+}
+</script>
+</body>
+</html>
