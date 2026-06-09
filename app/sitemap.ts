@@ -1,65 +1,179 @@
 import { MetadataRoute } from "next";
 import { blogPosts } from "@/lib/blog-posts";
+import { courses } from "@/lib/courses";
+import { marketingServices } from "@/lib/marketing-services";
+import { operationsServices } from "@/lib/operations-services";
 
 const BASE_URL = "https://www.bvnofficial.com";
 
-const ALL_COURSES = [
-  "va-quick-start",
-  "ai-automation-va",
-  "social-media-management-va",
-  "gohighlevel-va",
-  "ecommerce-va",
-  "executive-operations-va",
-  "content-writing-seo-va",
-  "paid-ads-va",
-];
-
+// All free tools — keep in sync with /apps directory
 const ALL_APPS = [
-  "salary-calculator","13th-month-calculator","qr-code-generator",
-  "loan-calculator","vat-calculator","hashtag-generator","password-generator",
-  "chb-calculator","paint-calculator","utm-builder","break-even-calculator",
-  "meta-tag-generator","solar-calculator","tile-calculator","floor-plan-designer",
-  "image-compressor","invoice-generator","tracker-detector",
+  "salary-calculator",
+  "13th-month-calculator",
+  "loan-calculator",
+  "vat-calculator",
+  "chb-calculator",
+  "paint-calculator",
+  "solar-calculator",
+  "tile-calculator",
+  "break-even-calculator",
+  "invoice-generator",
+  "qr-code-generator",
+  "hashtag-generator",
+  "password-generator",
+  "meta-tag-generator",
+  "utm-builder",
+  "image-compressor",
+  "floor-plan-designer",
+  "tracker-detector",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
-    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/marketing`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/operations`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/pricing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/apps`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    // Courses
-    { url: `${BASE_URL}/courses`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    ...ALL_COURSES.map(slug => ({
-      url: `${BASE_URL}/courses/${slug}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.8,
-    })),
-    // Marketing service pages
-    ...["social-media-management","digital-marketing","seo","email-marketing",
-        "content-marketing","video-marketing","influencer-marketing",
-        "web-development","app-development","crm-solutions"].map(s => ({
-      url: `${BASE_URL}/marketing/${s}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7,
-    })),
-    // Operations service pages
-    ...["ai-agents","crm-automation","hr-payroll","operations-automation",
-        "time-tracking","admin-automation","analytics","integrations"].map(s => ({
-      url: `${BASE_URL}/operations/${s}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7,
-    })),
-    // All apps
-    ...ALL_APPS.map(app => ({
-      url: `${BASE_URL}/apps/${app}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7,
-    })),
+  // ─── Core pages ─────────────────────────────────────────────────────────────
+  const corePages: MetadataRoute.Sitemap = [
+    {
+      url: BASE_URL,
+      lastModified: new Date("2026-06-10"),
+      changeFrequency: "weekly",
+      priority: 1.0,
+    },
+    {
+      url: `${BASE_URL}/about`,
+      lastModified: new Date("2026-06-01"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/get-started`,
+      lastModified: new Date("2026-06-01"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/pricing`,
+      lastModified: new Date("2026-06-01"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${BASE_URL}/contact`,
+      lastModified: new Date("2026-06-01"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/benjaminyson`,
+      lastModified: new Date("2026-06-01"),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${BASE_URL}/business-ideas/sarsa-republika`,
+      lastModified: new Date("2026-06-01"),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
   ];
 
-  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+  // ─── Service hubs ───────────────────────────────────────────────────────────
+  const serviceHubs: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/marketing`,
+      lastModified: new Date("2026-06-10"),
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
+      url: `${BASE_URL}/operations`,
+      lastModified: new Date("2026-06-10"),
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+  ];
+
+  // ─── Marketing service pages (driven from data) ─────────────────────────────
+  const marketingPages: MetadataRoute.Sitemap = marketingServices.map((s) => ({
+    url: `${BASE_URL}/marketing/${s.slug}`,
+    lastModified: new Date("2026-06-01"),
+    changeFrequency: "monthly" as const,
+    priority: 0.85,
+  }));
+
+  // ─── Operations service pages (driven from data) ────────────────────────────
+  const operationsPages: MetadataRoute.Sitemap = operationsServices.map((s) => ({
+    url: `${BASE_URL}/operations/${s.slug}`,
+    lastModified: new Date("2026-06-01"),
+    changeFrequency: "monthly" as const,
+    priority: 0.85,
+  }));
+
+  // ─── Blog ───────────────────────────────────────────────────────────────────
+  // Sort by date descending so Google sees the newest post first in the sitemap
+  const sortedPosts = [...blogPosts].sort(
+    (a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime()
+  );
+
+  const blogHub: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: new Date(sortedPosts[0]?.dateISO ?? "2026-06-01"),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+  ];
+
+  const blogPages: MetadataRoute.Sitemap = sortedPosts.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,
     lastModified: new Date(post.dateISO),
     changeFrequency: "monthly" as const,
     priority: 0.8,
   }));
 
-  return [...staticPages, ...blogPages];
+  // ─── Courses ─────────────────────────────────────────────────────────────────
+  const coursesHub: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/courses`,
+      lastModified: new Date("2026-06-10"),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+  ];
+
+  const coursePages: MetadataRoute.Sitemap = courses.map((c) => ({
+    url: `${BASE_URL}/courses/${c.slug}`,
+    lastModified: new Date("2026-06-10"),
+    changeFrequency: "monthly" as const,
+    priority: 0.85,
+  }));
+
+  // ─── Free tools / apps ────────────────────────────────────────────────────────
+  const appsHub: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/apps`,
+      lastModified: new Date("2026-06-01"),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+  ];
+
+  const appPages: MetadataRoute.Sitemap = ALL_APPS.map((app) => ({
+    url: `${BASE_URL}/apps/${app}`,
+    lastModified: new Date("2026-06-01"),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  // ─── Assemble — priority order matters for crawl budget ────────────────────
+  return [
+    ...corePages,
+    ...serviceHubs,
+    ...marketingPages,
+    ...operationsPages,
+    ...blogHub,
+    ...blogPages,
+    ...coursesHub,
+    ...coursePages,
+    ...appsHub,
+    ...appPages,
+  ];
 }
