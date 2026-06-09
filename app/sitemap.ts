@@ -3,6 +3,17 @@ import { blogPosts } from "@/lib/blog-posts";
 
 const BASE_URL = "https://www.bvnofficial.com";
 
+const ALL_COURSES = [
+  "va-quick-start",
+  "ai-automation-va",
+  "social-media-management-va",
+  "gohighlevel-va",
+  "ecommerce-va",
+  "executive-operations-va",
+  "content-writing-seo-va",
+  "paid-ads-va",
+];
+
 const ALL_APPS = [
   "salary-calculator","13th-month-calculator","qr-code-generator",
   "loan-calculator","vat-calculator","hashtag-generator","password-generator",
@@ -21,6 +32,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/apps`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    // Courses
+    { url: `${BASE_URL}/courses`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    ...ALL_COURSES.map(slug => ({
+      url: `${BASE_URL}/courses/${slug}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.8,
+    })),
     // Marketing service pages
     ...["social-media-management","digital-marketing","seo","email-marketing",
         "content-marketing","video-marketing","influencer-marketing",
