@@ -167,23 +167,18 @@ function LearnPageInner() {
   const abortRef = useRef<AbortController | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  if (!course) {
-    return (
-      <div className="min-h-screen bg-navy-dark flex items-center justify-center text-white/50">
-        Course not found. <Link href="/courses" className="text-orange ml-2">Back to courses</Link>
-      </div>
-    );
-  }
-
-  const styles = colorStyles[course.color];
-  const currentModule = course.modules[moduleIdx];
+  // Derive values safely — hooks must all run before any early return
+  const styles = course ? colorStyles[course.color] : colorStyles["orange"];
+  const currentModule = course?.modules[moduleIdx];
   const currentLesson = currentModule?.lessons[lessonIdx];
 
   // Flat list of all lessons for prev/next
   const allLessons: { mIdx: number; lIdx: number }[] = [];
-  course.modules.forEach((mod, mIdx) =>
-    mod.lessons.forEach((_, lIdx) => allLessons.push({ mIdx, lIdx }))
-  );
+  if (course) {
+    course.modules.forEach((mod, mIdx) =>
+      mod.lessons.forEach((_, lIdx) => allLessons.push({ mIdx, lIdx }))
+    );
+  }
   const currentFlatIdx = allLessons.findIndex(
     (l) => l.mIdx === moduleIdx && l.lIdx === lessonIdx
   );
@@ -196,7 +191,7 @@ function LearnPageInner() {
 
   // Navigate to a lesson
   const goTo = (mIdx: number, lIdx: number) => {
-    setOpenModules((prev) => new Set([...prev, mIdx]));
+    setOpenModules((prev) => { const next = new Set(prev); next.add(mIdx); return next; });
     router.push(`/courses/${slug}/learn?m=${mIdx}&l=${lIdx}`);
     setSidebarOpen(false);
     if (contentRef.current) contentRef.current.scrollTop = 0;
@@ -269,6 +264,15 @@ function LearnPageInner() {
       return next;
     });
   };
+
+  // Early return AFTER all hooks
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-navy-dark flex items-center justify-center text-white/50">
+        Course not found. <Link href="/courses" className="text-orange ml-2">Back to courses</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#080C18] flex flex-col">

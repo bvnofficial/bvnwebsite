@@ -21,7 +21,7 @@ export function useProgress(slug: string) {
     setCompleted((prev) => {
       const next = new Set(prev);
       next.add(key);
-      try { localStorage.setItem(storageKey, JSON.stringify([...next])); } catch {}
+      try { localStorage.setItem(storageKey, JSON.stringify(Array.from(next))); } catch {}
       return next;
     });
   }, [storageKey]);
@@ -32,7 +32,7 @@ export function useProgress(slug: string) {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
       else next.add(key);
-      try { localStorage.setItem(storageKey, JSON.stringify([...next])); } catch {}
+      try { localStorage.setItem(storageKey, JSON.stringify(Array.from(next))); } catch {}
       return next;
     });
   }, [storageKey]);
