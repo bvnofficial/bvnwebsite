@@ -7,7 +7,8 @@ export async function middleware(request: NextRequest) {
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    // Env vars not set — block /dashboard but let everything else through
+    // Env vars not set — block /dashboard but let everything else through.
+    // (/leads has its own password gate inside the page, not Supabase auth.)
     if (request.nextUrl.pathname.startsWith("/dashboard")) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
