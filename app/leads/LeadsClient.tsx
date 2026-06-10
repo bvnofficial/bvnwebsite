@@ -4,13 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, Search, Mail, MapPin, Clock, CheckCircle2, XCircle,
-  Send, Copy, Check, AlertCircle, Inbox, RefreshCw,
+  Send, Check, AlertCircle, Inbox, RefreshCw, MessageCircle, Loader2, Phone,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────
 export type SentLead = {
   business: string;
+  contactName?: string;
   email: string;
+  phone?: string;
   dateSent: string;
   batch: string;
   service: string;
@@ -23,6 +25,7 @@ export type SentLead = {
 export type PendingLead = {
   business: string;
   email: string;
+  phone?: string;
   service: string;
   serviceUrl: string;
   location: string;
@@ -51,21 +54,15 @@ const STATUS_META: Record<Status, { label: string; cls: string }> = {
 };
 
 const today = () => new Date().toISOString().slice(0, 10);
+const serviceLabel = (s: string) => (s ? s.split("/").pop()!.replace(/-/g, " ") : "what we discussed");
+const waDigits = (phone: string) => (phone || "").replace(/[^\d]/g, "");
 
-function followUpEmail(l: SentLead, name: string) {
-  const who = name || "there";
-  const svc = l.service ? l.service.split("/").pop()?.replace(/-/g, " ") : "what we discussed";
-  return `Subject: Just checking in — did you see this?
-
-Hi ${who},
-
-I reached out last week about ${l.business} and ${svc}. Just making sure it didn't get buried in the inbox.
-
-No pressure at all — if it's useful, I'd still love a quick 15-minute call. If now's not the time, just let me know.
-
-Cheers,
-Bevin
-BVN — www.bvnofficial.com`;
+function waLink(phone: string, business: string, contactName: string | undefined, service: string) {
+  const who = contactName ? ` ${contactName}` : "";
+  const msg =
+    `Hi${who}, this is Bevin from BVN (bvnofficial.com). I emailed you about ${serviceLabel(service)} for ${business} — ` +
+    `happy to share a quick example if useful. Worth a short chat?`;
+  return `https://wa.me/${waDigits(phone)}?text=${encodeURIComponent(msg)}`;
 }
 
 // ── Component ─────────────────────────────────────────────────────
@@ -73,9 +70,7 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
   const [statuses, setStatuses] = useState<StatusMap>({});
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "due" | "replied" | "closed" | "pending">("all");
-  const [copied, setCopied] = useState<string | null>(null);
 
-  // Load + persist per-lead status in the browser.
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORE_KEY);
@@ -93,7 +88,7 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
 
   const isDue = (l: SentLead) => {
     const s = statusOf(l.email);
-    return (s === "new") && !!l.followUpDue && l.followUpDue <= today();
+    return s === "new" && !!l.followUpDue && l.followUpDue <= today();
   };
 
   const counts = useMemo(() => {
@@ -120,10 +115,6 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.sent, query, filter, statuses]);
-
-  const copy = async (key: string, text: string) => {
-    try { await navigator.clipboard.writeText(text); setCopied(key); setTimeout(() => setCopied(null), 1800); } catch {}
-  };
 
   const tabs: { id: typeof filter; label: string; n: number }[] = [
     { id: "all", label: "All sent", n: counts.sent },
@@ -155,7 +146,7 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
         <h1 className="font-heading font-extrabold text-2xl md:text-3xl mb-1">Sent &amp; Follow-up Emails</h1>
         <p className="text-white/45 text-sm mb-6">
-          Every cold email BVN has sent, with follow-up due {data.followUpDays} days after send. Status is saved in your browser.
+          Every cold email BVN has sent. Send a follow-up or message on WhatsApp in one click. Status is saved in your browser.
         </p>
 
         {/* Stats */}
@@ -214,6 +205,12 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
                   <span className="inline-flex items-center gap-1 text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/25 rounded-full px-2 py-0.5">
                     <AlertCircle size={11} /> email needed
                   </span>
+                  {l.phone && (
+                    <a href={waLink(l.phone, l.business, "", l.service)} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-2 py-0.5 hover:bg-emerald-500/20 transition-colors">
+                      <MessageCircle size={11} /> WhatsApp
+                    </a>
+                  )}
                 </div>
                 {l.location && <div className="flex items-center gap-1 text-white/40 text-xs mb-1"><MapPin size={11} /> {l.location}</div>}
                 <p className="text-white/55 text-sm mb-1">{l.signal}</p>
@@ -225,7 +222,7 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
           /* SENT table */
           <div className="rounded-2xl border border-white/10 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-sm min-w-[820px]">
+              <table className="w-full text-sm min-w-[900px]">
                 <thead>
                   <tr className="bg-white/[0.04] text-white/40 text-[11px] uppercase tracking-wider font-accent">
                     <th className="text-left font-semibold px-4 py-3">Business</th>
@@ -250,6 +247,11 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
                           <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-white/45 text-xs hover:text-orange transition-colors">
                             <Mail size={11} /> {l.email}
                           </a>
+                          {l.phone && (
+                            <a href={`tel:${l.phone}`} className="flex items-center gap-1 text-white/30 text-xs mt-0.5 hover:text-white/60 transition-colors">
+                              <Phone size={10} /> {l.phone}
+                            </a>
+                          )}
                           {l.location && <div className="flex items-center gap-1 text-white/30 text-xs mt-0.5"><MapPin size={10} /> {l.location}</div>}
                         </td>
                         <td className="px-4 py-3 align-top"><ServiceChip service={l.service} url={l.serviceUrl} /></td>
@@ -277,14 +279,17 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
                             <option value="closed">Closed</option>
                           </select>
                         </td>
-                        <td className="px-4 py-3 align-top text-right">
-                          <button
-                            onClick={() => copy(l.email, followUpEmail(l, ""))}
-                            className="inline-flex items-center gap-1.5 text-xs font-accent font-semibold text-white/60 hover:text-orange border border-white/10 hover:border-orange/40 rounded-lg px-2.5 py-1.5 transition-colors"
-                            title="Copy a follow-up email to clipboard"
-                          >
-                            {copied === l.email ? <><Check size={12} /> Copied</> : <><Copy size={12} /> Follow-up</>}
-                          </button>
+                        <td className="px-4 py-3 align-top">
+                          <div className="flex items-center justify-end gap-2">
+                            {l.phone && (
+                              <a href={waLink(l.phone, l.business, l.contactName, l.service)} target="_blank" rel="noopener noreferrer"
+                                title="Message on WhatsApp"
+                                className="inline-flex items-center gap-1.5 text-xs font-accent font-semibold text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 hover:border-emerald-400/60 bg-emerald-500/10 rounded-lg px-2.5 py-1.5 transition-colors">
+                                <MessageCircle size={13} /> WhatsApp
+                              </a>
+                            )}
+                            <FollowUpButton lead={l} onSent={() => setStatus(l.email, "followed-up")} />
+                          </div>
                         </td>
                       </tr>
                     );
@@ -296,10 +301,78 @@ export default function LeadsClient({ data }: { data: LeadsData }) {
         )}
 
         <p className="text-white/25 text-xs mt-5">
-          Data synced from the lead engine. To refresh after new sends, run <code className="text-white/40">node leads/engine/sync_dashboard.js</code> and reload.
+          Follow-ups send from bvn@bvnofficial.com (cc&apos;d to bvn@) and are recorded in your Sent folder. WhatsApp opens a pre-filled chat — you hit send.
         </p>
       </div>
     </div>
+  );
+}
+
+// ── Send-follow-up button with inline confirm ─────────────────────
+function FollowUpButton({ lead, onSent }: { lead: SentLead; onSent: () => void }) {
+  const [state, setState] = useState<"idle" | "confirm" | "sending" | "sent" | "error">("idle");
+  const [err, setErr] = useState("");
+
+  async function send() {
+    setState("sending");
+    setErr("");
+    try {
+      const res = await fetch("/api/leads-followup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: lead.email, business: lead.business, contactName: lead.contactName || "", service: lead.service }),
+      });
+      if (res.ok) {
+        setState("sent");
+        onSent();
+      } else {
+        const j = await res.json().catch(() => ({}));
+        setErr(j.error || "Send failed");
+        setState("error");
+      }
+    } catch {
+      setErr("Network error");
+      setState("error");
+    }
+  }
+
+  if (state === "sent") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs font-accent font-semibold text-emerald-300 border border-emerald-500/30 bg-emerald-500/10 rounded-lg px-2.5 py-1.5">
+        <Check size={13} /> Follow-up sent
+      </span>
+    );
+  }
+  if (state === "sending") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs font-accent font-semibold text-white/60 border border-white/10 rounded-lg px-2.5 py-1.5">
+        <Loader2 size={13} className="animate-spin" /> Sending…
+      </span>
+    );
+  }
+  if (state === "confirm") {
+    return (
+      <span className="inline-flex items-center gap-1">
+        <button onClick={send}
+          className="inline-flex items-center gap-1.5 text-xs font-accent font-semibold text-white bg-orange hover:bg-orange/90 rounded-lg px-2.5 py-1.5 transition-colors">
+          <Send size={12} /> Confirm send
+        </button>
+        <button onClick={() => setState("idle")} title="Cancel"
+          className="text-white/40 hover:text-white border border-white/10 rounded-lg px-2 py-1.5 transition-colors">
+          <XCircle size={13} />
+        </button>
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex flex-col items-end gap-0.5">
+      <button onClick={() => setState("confirm")}
+        title="Send a follow-up email now"
+        className="inline-flex items-center gap-1.5 text-xs font-accent font-semibold text-white/70 hover:text-orange border border-white/10 hover:border-orange/40 rounded-lg px-2.5 py-1.5 transition-colors">
+        <Send size={13} /> Send follow-up
+      </button>
+      {state === "error" && <span className="text-rose-400 text-[10px] max-w-[160px] text-right">{err}</span>}
+    </span>
   );
 }
 
