@@ -8,6 +8,7 @@ import {
   ChevronLeft, PlayCircle, Clock, Menu, X, BookOpen, Award,
 } from "lucide-react";
 import { getCourse, colorStyles } from "@/lib/courses";
+import { getLessonContent } from "@/lib/course-content";
 import { useProgress } from "@/lib/useProgress";
 
 // ── Simple markdown renderer ──────────────────────────────────────────────
@@ -204,13 +205,22 @@ function LearnPageInner() {
 
     setLessonText("");
 
-    // Static content: render instantly, no API needed
+    // 1. Inline static content on the lesson object — render instantly
     if (currentLesson.content) {
       setLessonText(currentLesson.content);
       setIsLoading(false);
       return;
     }
 
+    // 2. Pre-written static content from the course-content registry
+    const staticBody = getLessonContent(slug, moduleIdx, lessonIdx);
+    if (staticBody) {
+      setLessonText(staticBody);
+      setIsLoading(false);
+      return;
+    }
+
+    // 3. Optional AI fallback (only if configured) — fails gracefully
     const ac = new AbortController();
     abortRef.current = ac;
     setIsLoading(true);
@@ -244,12 +254,14 @@ function LearnPageInner() {
       }
     } catch (e: unknown) {
       if ((e as Error).name !== "AbortError") {
-        setLessonText((e as Error).message || "Failed to load lesson. Please try again.");
+        setLessonText(
+          "The written guide for this lesson is being finalized and will be available here shortly. The lesson title, duration, and objectives above outline exactly what this lesson covers — check back soon for the full walkthrough."
+        );
       }
     } finally {
       setIsLoading(false);
     }
-  }, [course, currentModule, currentLesson]);
+  }, [course, currentModule, currentLesson, slug, moduleIdx, lessonIdx]);
 
   useEffect(() => {
     loadLesson();
