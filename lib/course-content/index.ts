@@ -7,9 +7,11 @@
 // gracefully in the player, so a partially-written course always works.
 
 import aiAutomationVa from "./ai-automation-va";
+import gohighlevelVa from "./gohighlevel-va";
 
 export const courseContent: Record<string, string[][]> = {
   "ai-automation-va": aiAutomationVa,
+  "gohighlevel-va": gohighlevelVa,
 };
 
 export function getLessonContent(
