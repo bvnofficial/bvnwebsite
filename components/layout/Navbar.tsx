@@ -181,12 +181,23 @@ export default function Navbar() {
   const [mobileApps, setMobileApps] = useState(false);
   const [mobileBlog, setMobileBlog] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+
+  // On the homepage, the light ContactHero owns the top of the page with its
+  // own navbar. Hide the global (dark) navbar until the user scrolls past it.
+  const isHome = pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setPastHero(window.scrollY > window.innerHeight * 0.9);
+    };
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const hiddenForHero = isHome && !pastHero;
 
   useEffect(() => {
     setMobileOpen(false);
@@ -209,7 +220,8 @@ export default function Navbar() {
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
           ? "bg-navy-dark/80 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20"
-          : "bg-transparent"
+          : "bg-transparent",
+        hiddenForHero && "-translate-y-full opacity-0 pointer-events-none"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">

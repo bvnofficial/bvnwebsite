@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import {
   Megaphone, Settings2, Wrench, Bot, Target, Users, Mail, Phone, Zap, Globe, TrendingUp, Shield,
 } from "lucide-react";
+import ContactHero from "@/components/ui/ContactHero";
 import HeroSection from "@/components/ui/HeroSection";
 import BranchCard from "@/components/ui/BranchCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
@@ -84,6 +85,9 @@ export default function HomePage() {
   return (
     <>
       {!hasEntered && <ParticleTextEffect onEnter={handleEnter} />}
+
+      {/* ── SECTION 0: Contact Hero (light, full-screen, BVN®) ─ */}
+      <ContactHero />
 
       {/* ── SECTION 1: Hero ─────────────────────────────────── */}
       <HeroSection
