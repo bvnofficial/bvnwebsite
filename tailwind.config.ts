@@ -20,7 +20,6 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
         body: ["Open Sans", "sans-serif"],
         accent: ["Raleway", "sans-serif"],
