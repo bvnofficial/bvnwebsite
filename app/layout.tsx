@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ogImage } from "@/lib/og";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
@@ -22,12 +23,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_PH",
     images: [
-      {
-        url: "https://www.bvnofficial.com/bvn-logo.png",
-        width: 600,
-        height: 600,
-        alt: "BVN — Global Marketing & Operations Automation Agency",
-      },
+      ogImage({
+        title: "Elevate Your Business. Dominate Your Market.",
+        eyebrow: "Marketing × Operations Automation",
+        theme: "orange",
+      }),
     ],
   },
   twitter: {
@@ -36,6 +36,13 @@ export const metadata: Metadata = {
     description:
       "High-impact digital marketing + intelligent business automation. Trusted by 238+ clients worldwide — now serving local and international businesses.",
     site: "@bvnofficial",
+    images: [
+      ogImage({
+        title: "Elevate Your Business. Dominate Your Market.",
+        eyebrow: "Marketing × Operations Automation",
+        theme: "orange",
+      }).url,
+    ],
   },
   metadataBase: new URL("https://www.bvnofficial.com"),
   robots: {

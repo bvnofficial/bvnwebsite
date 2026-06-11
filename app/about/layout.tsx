@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "About BVN — Global Digital Marketing & Automation Agency",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
       "BVN combines marketing excellence and intelligent business automation to help Philippine businesses grow faster.",
     url: "https://www.bvnofficial.com/about",
     type: "website",
+    images: [ogImage({ title: "Marketing + Automation, Under One Roof", eyebrow: "About BVN", theme: "orange" })],
   },
   alternates: {
     canonical: "https://www.bvnofficial.com/about",

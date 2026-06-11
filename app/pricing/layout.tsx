@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Pricing — Digital Marketing & Automation Plans | BVN Philippines",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
       "Transparent pricing for digital marketing and business automation. Find the right plan for your business.",
     url: "https://www.bvnofficial.com/pricing",
     type: "website",
+    images: [ogImage({ title: "Transparent Plans for Every Stage", eyebrow: "Pricing", theme: "orange" })],
   },
   alternates: {
     canonical: "https://www.bvnofficial.com/pricing",

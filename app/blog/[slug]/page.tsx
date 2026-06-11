@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag, ArrowRight } from "lucide-react";
 import { blogPosts, getBlogPost, type ContentSection } from "@/lib/blog-posts";
+import { ogImage } from "@/lib/og";
 import GlowButton from "@/components/ui/GlowButton";
 import ShareButtons from "@/components/ui/ShareButtons";
 
@@ -32,11 +33,13 @@ export async function generateMetadata({
       publishedTime: post.dateISO,
       authors: ["BVN Agency"],
       siteName: "BVN",
+      images: [ogImage({ title: post.title, eyebrow: post.category, theme: post.category === "Operations" ? "blue" : "orange" })],
     },
     twitter: {
       card: "summary_large_image",
       title: post.metaTitle,
       description: post.metaDescription,
+      images: [ogImage({ title: post.title, eyebrow: post.category, theme: post.category === "Operations" ? "blue" : "orange" }).url],
     },
     alternates: {
       canonical: `https://www.bvnofficial.com/blog/${post.slug}`,

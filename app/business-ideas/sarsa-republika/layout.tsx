@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Sarsa Republika — Filipino Rotisserie Chicken Business Concept",
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
     description: "Full business concept: branding, menu, marketing, operations & financials for a Filipino rotisserie chicken brand.",
     url: "https://www.bvnofficial.com/business-ideas/sarsa-republika",
     type: "website",
+    images: [ogImage({ title: "Filipino Rotisserie Chicken Concept", eyebrow: "Business Concept", theme: "yellow" })],
   },
 };
 

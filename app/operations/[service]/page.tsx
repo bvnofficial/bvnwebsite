@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { operationsServices, getOperationsService } from "@/lib/operations-services";
+import { ogImage } from "@/lib/og";
 import ServicePageClient from "./ServicePageClient";
 
 export async function generateStaticParams() {
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: { params: { service: string }
       description: service.heroSubtext,
       url: canonical,
       type: "website",
+      images: [ogImage({ title: service.title, eyebrow: "Operations Service", theme: "blue" })],
     },
     alternates: {
       canonical,

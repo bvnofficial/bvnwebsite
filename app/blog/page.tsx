@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Clock, Tag } from "lucide-react";
 import { blogPosts } from "@/lib/blog-posts";
+import { ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Blog — Marketing & Automation Insights | BVN Philippines",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
       "Expert insights on digital marketing, business automation, SEO, and operations for Philippine businesses.",
     url: "https://www.bvnofficial.com/blog",
     type: "website",
+    images: [ogImage({ title: "Marketing & Automation Insights", eyebrow: "BVN Blog", theme: "green" })],
   },
   alternates: {
     canonical: "https://www.bvnofficial.com/blog",

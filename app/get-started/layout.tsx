@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Claim Your Free Website — BVN Digital",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
       "BVN builds your first business page for free. No upfront cost, no contracts. Live in 7 days.",
     url: "https://www.bvnofficial.com/get-started",
     type: "website",
+    images: [ogImage({ title: "Claim Your Free Business Website", eyebrow: "Free Website Offer", theme: "green" })],
   },
   alternates: {
     canonical: "https://www.bvnofficial.com/get-started",

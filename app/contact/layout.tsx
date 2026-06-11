@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Contact BVN — Book a Free Consultation",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
       "Ready to grow your business? Contact BVN for a free consultation on digital marketing or business automation.",
     url: "https://www.bvnofficial.com/contact",
     type: "website",
+    images: [ogImage({ title: "Let's Build Something Together", eyebrow: "Get in Touch", theme: "orange" })],
   },
   alternates: {
     canonical: "https://www.bvnofficial.com/contact",
