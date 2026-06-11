@@ -25,7 +25,9 @@ export async function POST(req: NextRequest) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    path: "/leads",
+    // Must be site-wide so the cookie is also sent to /api/leads-followup
+    // (a /leads-scoped cookie is withheld from /api/* → 401 "Not authorized").
+    path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
   });
   return res;
