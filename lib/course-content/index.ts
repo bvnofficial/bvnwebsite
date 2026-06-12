@@ -9,11 +9,13 @@
 import aiAutomationVa from "./ai-automation-va";
 import gohighlevelVa from "./gohighlevel-va";
 import paidAdsVa from "./paid-ads-va";
+import socialMediaManagementVa from "./social-media-management-va";
 
 export const courseContent: Record<string, string[][]> = {
   "ai-automation-va": aiAutomationVa,
   "gohighlevel-va": gohighlevelVa,
   "paid-ads-va": paidAdsVa,
+  "social-media-management-va": socialMediaManagementVa,
 };
 
 export function getLessonContent(
