@@ -17,6 +17,7 @@ export default function robots(): MetadataRoute.Robots {
           // Payment flow pages (no SEO value)
           "/payment",
           "/payments",
+          "/remitly-payment",
           // Private / one-off pages (noindex in metadata too)
           "/eqf",
           "/eqf-prompter",
