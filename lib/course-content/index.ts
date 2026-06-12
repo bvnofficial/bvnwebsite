@@ -8,10 +8,12 @@
 
 import aiAutomationVa from "./ai-automation-va";
 import gohighlevelVa from "./gohighlevel-va";
+import paidAdsVa from "./paid-ads-va";
 
 export const courseContent: Record<string, string[][]> = {
   "ai-automation-va": aiAutomationVa,
   "gohighlevel-va": gohighlevelVa,
+  "paid-ads-va": paidAdsVa,
 };
 
 export function getLessonContent(
