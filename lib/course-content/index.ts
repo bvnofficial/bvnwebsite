@@ -11,6 +11,7 @@ import gohighlevelVa from "./gohighlevel-va";
 import paidAdsVa from "./paid-ads-va";
 import socialMediaManagementVa from "./social-media-management-va";
 import ecommerceVa from "./ecommerce-va";
+import executiveOperationsVa from "./executive-operations-va";
 
 export const courseContent: Record<string, string[][]> = {
   "ai-automation-va": aiAutomationVa,
@@ -18,6 +19,7 @@ export const courseContent: Record<string, string[][]> = {
   "paid-ads-va": paidAdsVa,
   "social-media-management-va": socialMediaManagementVa,
   "ecommerce-va": ecommerceVa,
+  "executive-operations-va": executiveOperationsVa,
 };
 
 export function getLessonContent(
