@@ -401,6 +401,24 @@ function LearnPageInner() {
             {/* Content */}
             <LessonContent text={lessonText} isLoading={isLoading} />
 
+            {/* Certificate banner — shown at the end of the course (final lesson)
+                and on any lesson once every lesson is complete */}
+            {loaded && (!nextLesson || progressPct === 100) && (
+              <Link
+                href={`/courses/${slug}/certificate`}
+                className="mt-10 flex items-center gap-4 rounded-2xl border border-orange/30 bg-gradient-to-r from-orange/15 to-yellow/5 p-5 hover:border-orange/50 transition-all group"
+              >
+                <div className="w-11 h-11 shrink-0 rounded-xl bg-orange/15 border border-orange/30 flex items-center justify-center">
+                  <Award className="text-orange" size={22} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-heading font-bold text-white text-sm">🎉 Course complete — claim your certificate</p>
+                  <p className="text-white/50 text-xs mt-0.5">Official Certificate of Completion · ₱60 / $1 · downloadable PDF</p>
+                </div>
+                <ChevronRight className="text-orange shrink-0 group-hover:translate-x-0.5 transition-transform" size={18} />
+              </Link>
+            )}
+
             {/* Bottom nav */}
             <div className="mt-12 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               {/* Mark complete */}
@@ -443,10 +461,11 @@ function LearnPageInner() {
                   <button
                     onClick={() => {
                       if (!isCompleted(moduleIdx, lessonIdx)) markComplete(moduleIdx, lessonIdx);
+                      router.push(`/courses/${slug}/certificate`);
                     }}
                     className="flex items-center gap-1.5 px-5 py-3 rounded-xl font-heading font-semibold text-sm bg-emerald-500 text-white hover:bg-emerald-400 active:scale-95 transition-all"
                   >
-                    <Award size={15} /> Finish Course
+                    <Award size={15} /> Finish &amp; Get Certificate
                   </button>
                 )}
               </div>

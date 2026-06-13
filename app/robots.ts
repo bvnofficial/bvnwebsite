@@ -23,6 +23,9 @@ export default function robots(): MetadataRoute.Robots {
           "/eqf-prompter",
           // Lesson player — interactive, no unique crawlable content
           "/courses/*/learn",
+          // Certificate checkout + issued certificates — transactional / personal
+          "/courses/*/certificate",
+          "/certificate/",
         ],
       },
     ],

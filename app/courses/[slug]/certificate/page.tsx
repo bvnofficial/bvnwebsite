@@ -1,0 +1,208 @@
+"use client";
+
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { Award, Lock, ArrowLeft, Loader2, QrCode } from "lucide-react";
+import { getCourse } from "@/lib/courses";
+import { useProgress } from "@/lib/useProgress";
+import PayPalCheckout from "@/app/payments/PayPalCheckout";
+
+export default function CertificateClaimPage() {
+  const params = useParams();
+  const router = useRouter();
+  const slug = typeof params.slug === "string" ? params.slug : "";
+  const course = getCourse(slug);
+
+  const { isCompleted, loaded } = useProgress(slug);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-[#080C18] flex items-center justify-center text-white/50">
+        Course not found.
+        <Link href="/courses" className="text-orange ml-2">Back to courses</Link>
+      </div>
+    );
+  }
+
+  // Completion check (client-side, from saved progress)
+  let total = 0;
+  let done = 0;
+  course.modules.forEach((mod, mIdx) =>
+    mod.lessons.forEach((_, lIdx) => {
+      total += 1;
+      if (isCompleted(mIdx, lIdx)) done += 1;
+    })
+  );
+  const allComplete = total > 0 && done === total;
+
+  const formValid = name.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
+  // ── PayMongo QR Ph ──
+  const payWithQR = async () => {
+    if (!formValid) {
+      setError("Please enter your full name and a valid email.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/certificate/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), courseSlug: slug }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.checkoutUrl) throw new Error(data.error || "Could not start payment.");
+      window.location.href = data.checkoutUrl;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+      setLoading(false);
+    }
+  };
+
+  // ── PayPal success → record + redirect ──
+  const onPaypalSuccess = async (d: { captureId: string }) => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/certificate/paypal-complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          captureId: d.captureId,
+          courseSlug: slug,
+          name: name.trim(),
+          email: email.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.id) throw new Error(data.error || "Could not issue certificate.");
+      router.push(`/certificate/${data.id}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Payment recorded but certificate failed. Contact bvn@bvnofficial.com.");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#080C18] py-12 px-4">
+      <div className="max-w-lg mx-auto">
+        <Link
+          href={`/courses/${slug}`}
+          className="inline-flex items-center gap-1.5 text-white/40 hover:text-white text-sm font-accent mb-6 transition-colors"
+        >
+          <ArrowLeft size={14} /> Back to course
+        </Link>
+
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange/10 border border-orange/30 mb-4">
+            <Award className="text-orange" size={26} />
+          </div>
+          <h1 className="font-heading font-extrabold text-2xl md:text-3xl text-white mb-2">
+            Get your Certificate
+          </h1>
+          <p className="text-white/50 text-sm leading-relaxed">
+            {course.title} — Certificate of Completion, issued by BVN Digital Agency.
+          </p>
+        </div>
+
+        {/* Not-yet-complete gate */}
+        {loaded && !allComplete ? (
+          <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 text-center">
+            <Lock className="text-white/40 mx-auto mb-4" size={28} />
+            <p className="text-white/80 font-heading font-semibold mb-2">
+              Finish the course first
+            </p>
+            <p className="text-white/45 text-sm leading-relaxed mb-6">
+              You&apos;ve completed <span className="text-white/80 font-semibold">{done} of {total}</span> lessons.
+              Complete all lessons to unlock your certificate.
+            </p>
+            <Link
+              href={`/courses/${slug}/learn?m=0&l=0`}
+              className="inline-block px-5 py-3 rounded-xl bg-orange text-white font-heading font-semibold text-sm hover:bg-orange-light transition-all"
+            >
+              Continue learning
+            </Link>
+          </div>
+        ) : (
+          <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 md:p-8">
+            {/* Name on certificate */}
+            <label className="block text-white/60 text-xs font-accent font-semibold uppercase tracking-wider mb-2">
+              Full name (as it appears on the certificate)
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Juan Dela Cruz"
+              className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/25 focus:outline-none focus:border-orange/50 mb-4"
+            />
+
+            <label className="block text-white/60 text-xs font-accent font-semibold uppercase tracking-wider mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/25 focus:outline-none focus:border-orange/50 mb-6"
+            />
+
+            {error && (
+              <p className="text-red-400 text-sm mb-4 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
+
+            {/* Price */}
+            <div className="flex items-center justify-between bg-white/[0.03] border border-white/8 rounded-xl px-4 py-3 mb-5">
+              <span className="text-white/60 text-sm">Certificate fee</span>
+              <span className="text-white font-heading font-bold">₱60 <span className="text-white/40 font-normal text-sm">/ $1</span></span>
+            </div>
+
+            {/* QR Ph (PayMongo) */}
+            <button
+              onClick={payWithQR}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-orange text-white font-heading font-semibold text-sm shadow-[0_0_24px_rgba(232,96,16,0.3)] hover:bg-orange-light disabled:opacity-50 transition-all mb-3"
+            >
+              {loading ? <Loader2 className="animate-spin" size={16} /> : <QrCode size={16} />}
+              Pay ₱60 with QR Ph
+            </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-white/30 text-xs font-accent">or pay internationally</span>
+              <div className="flex-1 h-px bg-white/10" />
+            </div>
+
+            {/* PayPal / card ($1 USD) */}
+            <div className={!formValid || loading ? "opacity-50 pointer-events-none" : ""}>
+              <PayPalCheckout
+                amount="1.00"
+                currency="USD"
+                name={name.trim()}
+                email={email.trim()}
+                description={`BVN Certificate — ${course.title}`}
+                onSuccess={onPaypalSuccess}
+                onError={(msg) => setError(msg)}
+              />
+            </div>
+            {!formValid && (
+              <p className="text-white/30 text-xs text-center mt-2">
+                Enter your name and email above to enable payment.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
