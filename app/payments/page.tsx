@@ -1,14 +1,21 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Lock, CheckCircle, AlertCircle, ChevronRight, Shield, ChevronDown } from "lucide-react";
-
-const FALLBACK_TO_PHP: Record<string, number> = {
-  USD: 56, PHP: 1, GBP: 72, AUD: 37, EUR: 61, SGD: 42,
-};
+import {
+  Lock,
+  CheckCircle,
+  AlertCircle,
+  ChevronRight,
+  Shield,
+  ChevronDown,
+  CreditCard,
+  Bitcoin,
+  Smartphone,
+} from "lucide-react";
+import PayPalCheckout from "./PayPalCheckout";
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   USD: "$", PHP: "₱", GBP: "£", AUD: "A$", EUR: "€", SGD: "S$",
@@ -25,6 +32,16 @@ const PRESETS: Record<string, string[]> = {
 
 const CURRENCIES = ["USD", "PHP", "GBP", "AUD", "EUR", "SGD"];
 
+type Method = "paymongo" | "card" | "crypto";
+
+interface PaidDetails {
+  amount: string;
+  currency: string;
+  name: string;
+  email: string;
+  captureId: string;
+}
+
 function fmt(amount: string, currency: string) {
   if (!amount || isNaN(Number(amount))) return CURRENCY_SYMBOLS[currency] + "0";
   return CURRENCY_SYMBOLS[currency] + Number(amount).toLocaleString("en-US");
@@ -38,27 +55,15 @@ function PaymentsForm() {
   const urlDescription = searchParams.get("description") || "";
   const urlPlan = searchParams.get("plan") || "";
 
+  // PayMongo (GCash/Card PH) and Crypto are always available. The PayPal tab
+  // only appears once the public client ID is configured (no half-finished
+  // "Card" tab shown to clients).
+  const paypalEnabled = Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+  const [method, setMethod] = useState<Method>("paymongo");
+  const [paid, setPaid] = useState<PaidDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [currencyOpen, setCurrencyOpen] = useState(false);
-  const [toPhp, setToPhp] = useState<Record<string, number>>(FALLBACK_TO_PHP);
-  const [ratesLoading, setRatesLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("https://open.er-api.com/v6/latest/PHP")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data?.rates) {
-          const rates: Record<string, number> = { PHP: 1 };
-          for (const c of CURRENCIES.filter((x) => x !== "PHP")) {
-            if (data.rates[c]) rates[c] = Math.round((1 / data.rates[c]) * 100) / 100;
-          }
-          setToPhp(rates);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setRatesLoading(false));
-  }, []);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -77,9 +82,7 @@ function PaymentsForm() {
   );
 
   const rawAmount = selectedAmt === "custom" ? customAmt.replace(/[^0-9.]/g, "") : selectedAmt;
-  const phpAmount = rawAmount ? Math.round(Number(rawAmount) * (toPhp[currency] ?? FALLBACK_TO_PHP[currency])) : 0;
   const displayAmount = fmt(rawAmount, currency);
-  const phpDisplay = phpAmount ? "₱" + phpAmount.toLocaleString("en-PH") : "₱0";
 
   function selectCurrency(c: string) {
     setCurrency(c);
@@ -88,6 +91,7 @@ function PaymentsForm() {
     setCustomAmt("");
   }
 
+  // ── Redirect checkout: PayMongo (GCash/Card PH) or Crypto (NOWPayments) ──
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrMsg("");
@@ -103,28 +107,109 @@ function PaymentsForm() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/nowpayment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          amount: rawAmount,
-          currency,
-          description: description || urlPlan || undefined,
-        }),
-      });
-      const data = await res.json();
-      if (data.invoiceUrl) {
-        router.push(data.invoiceUrl);
+      if (method === "paymongo") {
+        // PayMongo bills in PHP — charge the exact amount entered (no FX conversion).
+        const amt = Math.round(Number(rawAmount));
+        if (!amt || amt < 1) {
+          setErrMsg("Please enter a valid amount.");
+          setLoading(false);
+          return;
+        }
+        const res = await fetch("/api/payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            amount: amt,
+            description: description || urlPlan || undefined,
+          }),
+        });
+        const data = await res.json();
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } else {
+          setErrMsg(data.error || "Something went wrong. Please try again.");
+        }
       } else {
-        setErrMsg(data.error || "Something went wrong. Please try again.");
+        // Crypto (NOWPayments)
+        const res = await fetch("/api/nowpayment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            amount: rawAmount,
+            currency,
+            description: description || urlPlan || undefined,
+          }),
+        });
+        const data = await res.json();
+        if (data.invoiceUrl) {
+          router.push(data.invoiceUrl);
+        } else {
+          setErrMsg(data.error || "Something went wrong. Please try again.");
+        }
       }
     } catch {
       setErrMsg("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  // ── Inline success (card / PayPal) ──
+  if (paid) {
+    const paidDisplay = paid.amount
+      ? `${paid.currency} ${Number(paid.amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+      : displayAmount;
+    return (
+      <div className="min-h-screen bg-[#06060c] flex items-center justify-center px-4 py-24">
+        <div className="relative w-full max-w-md">
+          <div className="bg-[#0e0e1a] border border-emerald-500/25 rounded-3xl overflow-hidden shadow-2xl shadow-black/50">
+            <div style={{ background: "linear-gradient(135deg,#059669,#10b981)" }} className="px-8 py-10 text-center">
+              <Link href="/" className="inline-flex items-center gap-2 mb-6">
+                <Image src="/bvn-logo.png" alt="BVN" width={32} height={32} />
+                <span className="font-heading font-bold text-white/80 text-sm">BVN Digital Agency</span>
+              </Link>
+              <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <CheckCircle size={48} className="text-white" />
+              </div>
+              <h1 className="text-2xl font-heading font-extrabold text-white mb-1">Payment Successful!</h1>
+              <p className="text-emerald-100 text-sm">Thank you — your payment has been confirmed.</p>
+            </div>
+            <div className="p-8">
+              <div className="bg-[#06060c] rounded-2xl p-5 mb-5 text-center border border-white/8">
+                <p className="text-white/30 text-xs uppercase tracking-widest mb-2">Amount Paid</p>
+                <p className="font-heading font-black text-[#d4af37] text-3xl">{paidDisplay}</p>
+                {description && <p className="text-white/40 text-sm mt-1">{description}</p>}
+              </div>
+              <div className="space-y-3 mb-6">
+                {paid.name && (
+                  <div className="flex justify-between text-sm"><span className="text-white/40">Name</span><span className="text-white">{paid.name}</span></div>
+                )}
+                {paid.email && (
+                  <div className="flex justify-between text-sm"><span className="text-white/40">Email</span><span className="text-white">{paid.email}</span></div>
+                )}
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/40">Transaction</span>
+                  <span className="text-white/60 font-mono text-xs">{paid.captureId?.slice(0, 20)}…</span>
+                </div>
+              </div>
+              <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-xl p-3 mb-6 text-center">
+                <p className="text-white/40 text-xs leading-relaxed">
+                  A receipt has been sent to <span className="text-white">{paid.email}</span>. Our team will reach out
+                  within 24 hours to kick off your project.
+                </p>
+              </div>
+              <Link href="/" className="flex items-center justify-center gap-2 w-full py-3.5 bg-[#d4af37] text-black font-heading font-bold text-sm rounded-xl hover:brightness-110 transition-all">
+                Back to Home <ChevronRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -142,7 +227,7 @@ function PaymentsForm() {
 
       <div className="relative max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <Link href="/" className="inline-flex items-center gap-3 mb-4">
             <Image src="/bvn-logo.png" alt="BVN" width={44} height={44} />
             <span className="font-heading font-extrabold text-white text-xl tracking-widest">BVN</span>
@@ -153,6 +238,34 @@ function PaymentsForm() {
           <p className="text-white/30 text-sm tracking-widest uppercase font-sans text-xs">
             Encrypted · Secure · Instant Settlement
           </p>
+        </div>
+
+        {/* Method toggle — PayMongo + Crypto always available, PayPal when configured */}
+        <div className="max-w-xl mx-auto mb-8">
+          <div className="flex gap-2 p-1.5 bg-[#0e0e1a] border border-white/8 rounded-2xl">
+            {([
+              { id: "paymongo" as Method, label: "GCash / Card", icon: Smartphone, show: true },
+              { id: "card" as Method, label: "PayPal", icon: CreditCard, show: paypalEnabled },
+              { id: "crypto" as Method, label: "Crypto", icon: Bitcoin, show: true },
+            ] as const)
+              .filter((m) => m.show)
+              .map((m) => {
+                const Icon = m.icon;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => { setMethod(m.id); setErrMsg(""); }}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold font-heading transition-all
+                      ${method === m.id
+                        ? "bg-[#d4af37] text-black shadow-[0_0_18px_rgba(212,175,55,0.35)]"
+                        : "text-white/50 hover:text-white/80"}`}
+                  >
+                    <Icon size={16} /> {m.label}
+                  </button>
+                );
+              })}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -176,15 +289,6 @@ function PaymentsForm() {
                       <span className="flex items-center gap-2">
                         <span className="text-[#d4af37] font-bold font-mono">{sym}</span>
                         <span>{currency}</span>
-                        {currency !== "PHP" && (
-                          <span className="text-white/30 text-xs flex items-center gap-1">
-                            ≈ ₱{(toPhp[currency] ?? FALLBACK_TO_PHP[currency]).toLocaleString()}/1
-                            {ratesLoading
-                              ? <span className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
-                              : <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Live rate" />
-                            }
-                          </span>
-                        )}
                       </span>
                       <ChevronDown
                         size={14}
@@ -283,17 +387,36 @@ function PaymentsForm() {
               {/* Accepted payments */}
               <div className="bg-[#0e0e1a] border border-white/8 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-[#d4af37] text-lg">₿</span>
+                  {method === "card"
+                    ? <CreditCard size={15} className="text-[#d4af37]" />
+                    : method === "paymongo"
+                    ? <Smartphone size={15} className="text-[#d4af37]" />
+                    : <span className="text-[#d4af37] text-lg">₿</span>}
                   <span className="text-white/40 text-xs font-bold font-sans uppercase tracking-widest">
                     Accepted Payments
                   </span>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  {[
-                    { label: "USDT (ERC-20)", icon: "🔷" },
-                    { label: "BTC", icon: "₿" },
-                    { label: "ETH", icon: "⟠" },
-                  ].map((m) => (
+                  {(method === "card"
+                    ? [
+                        { label: "Visa", icon: "💳" },
+                        { label: "Mastercard", icon: "💳" },
+                        { label: "Amex", icon: "💳" },
+                        { label: "PayPal", icon: "🅿️" },
+                      ]
+                    : method === "paymongo"
+                    ? [
+                        { label: "GCash", icon: "📱" },
+                        { label: "Visa", icon: "💳" },
+                        { label: "Mastercard", icon: "💳" },
+                        { label: "QR Ph", icon: "🔳" },
+                      ]
+                    : [
+                        { label: "USDT (ERC-20)", icon: "🔷" },
+                        { label: "BTC", icon: "₿" },
+                        { label: "ETH", icon: "⟠" },
+                      ]
+                  ).map((m) => (
                     <div key={m.label} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg">
                       <span className="text-sm">{m.icon}</span>
                       <span className="text-white/60 text-xs font-sans font-semibold">{m.label}</span>
@@ -310,11 +433,24 @@ function PaymentsForm() {
                     Secure Checkout
                   </span>
                 </div>
-                {[
-                  "256-bit TLS encryption",
-                  "Crypto settled instantly to USDT",
-                  "Funds received in GCash via GCrypto",
-                ].map((t) => (
+                {(method === "card"
+                  ? [
+                      "256-bit TLS encryption",
+                      "Card details handled by PayPal — never stored by us",
+                      "No PayPal account required to pay by card",
+                    ]
+                  : method === "paymongo"
+                  ? [
+                      "256-bit TLS encryption",
+                      "Powered by PayMongo — PCI-DSS Level 1 compliant",
+                      "Pay via GCash, debit/credit card or QR Ph",
+                    ]
+                  : [
+                      "256-bit TLS encryption",
+                      "Crypto settled instantly to USDT",
+                      "Funds received in GCash via GCrypto",
+                    ]
+                ).map((t) => (
                   <div key={t} className="flex items-center gap-2 py-1.5">
                     <CheckCircle size={11} className="text-emerald-400 shrink-0" />
                     <span className="text-white/40 text-xs">{t}</span>
@@ -362,12 +498,27 @@ function PaymentsForm() {
                   What Happens Next
                 </p>
                 <div className="space-y-3">
-                  {[
-                    { step: "1", text: "Click Pay — you'll be taken to the secure checkout page" },
-                    { step: "2", text: "Choose your preferred crypto (USDT, BTC, ETH and more)" },
-                    { step: "3", text: "Send the exact amount shown — payment confirms automatically" },
-                    { step: "4", text: "BVN team will contact you within 24 hours to begin your project" },
-                  ].map((item) => (
+                  {(method === "card"
+                    ? [
+                        { step: "1", text: "Enter your name, email and amount above" },
+                        { step: "2", text: "Click PayPal — or 'Debit or Credit Card' to pay by card" },
+                        { step: "3", text: "Payment confirms instantly and you'll see a receipt" },
+                        { step: "4", text: "BVN team will contact you within 24 hours to begin your project" },
+                      ]
+                    : method === "paymongo"
+                    ? [
+                        { step: "1", text: "Enter your name, email and amount above" },
+                        { step: "2", text: "Click Pay — you'll be taken to PayMongo's secure checkout" },
+                        { step: "3", text: "Pay via GCash, card or QR Ph — payment confirms instantly" },
+                        { step: "4", text: "BVN team will contact you within 24 hours to begin your project" },
+                      ]
+                    : [
+                        { step: "1", text: "Click Pay — you'll be taken to the secure checkout page" },
+                        { step: "2", text: "Choose your preferred crypto (USDT, BTC, ETH and more)" },
+                        { step: "3", text: "Send the exact amount shown — payment confirms automatically" },
+                        { step: "4", text: "BVN team will contact you within 24 hours to begin your project" },
+                      ]
+                  ).map((item) => (
                     <div key={item.step} className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/30 flex items-center justify-center shrink-0 mt-0.5">
                         <span className="text-[#d4af37] text-[10px] font-black">{item.step}</span>
@@ -386,34 +537,58 @@ function PaymentsForm() {
                 </div>
               )}
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-heading font-extrabold text-base text-black
-                  disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                style={{
-                  background: loading ? "#555" : "#d4af37",
-                  boxShadow: loading ? "none" : "0 0 30px rgba(212,175,55,0.4)",
-                }}
-              >
-                {loading ? (
-                  <>
-                    <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Lock size={16} />
-                    Pay {displayAmount} Securely
-                    <ChevronRight size={16} />
-                  </>
-                )}
-              </button>
+              {/* Action: Card (PayPal) or Crypto submit.
+                  PayPal stays MOUNTED and is hidden via CSS when on Crypto —
+                  unmounting/remounting the SDK provider corrupts PayPal's global
+                  and crashes the page, so we never tear it down. */}
+              {paypalEnabled && (
+                <div className={method === "card" ? "bg-[#0e0e1a] border border-white/8 rounded-2xl p-5" : "hidden"}>
+                  <PayPalCheckout
+                    amount={rawAmount}
+                    currency={currency}
+                    name={name}
+                    email={email}
+                    description={description || urlPlan}
+                    onError={setErrMsg}
+                    onSuccess={setPaid}
+                  />
+                </div>
+              )}
+              {(method === "crypto" || method === "paymongo") && (
+                <>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-heading font-extrabold text-base text-black
+                      disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    style={{
+                      background: loading ? "#555" : "#d4af37",
+                      boxShadow: loading ? "none" : "0 0 30px rgba(212,175,55,0.4)",
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Lock size={16} />
+                        {method === "paymongo"
+                          ? `Pay ${displayAmount} via GCash / Card`
+                          : `Pay ${displayAmount} Securely`}
+                        <ChevronRight size={16} />
+                      </>
+                    )}
+                  </button>
 
-              <p className="text-center text-white/20 text-xs pb-2 tracking-widest uppercase font-sans">
-                🔒 256-bit encrypted · crypto settlement
-              </p>
+                  <p className="text-center text-white/20 text-xs pb-2 tracking-widest uppercase font-sans">
+                    {method === "paymongo"
+                      ? "🔒 256-bit encrypted · powered by PayMongo"
+                      : "🔒 256-bit encrypted · crypto settlement"}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </form>

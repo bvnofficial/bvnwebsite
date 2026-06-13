@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Minus, Info } from "lucide-react";
+import Link from "next/link";
+import { Check, Minus, Info, ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import PricingCard from "@/components/ui/PricingCard";
 import GlowButton from "@/components/ui/GlowButton";
@@ -29,7 +30,7 @@ const marketingPlans = [
     price: "$500",
     isPopular: false,
     ctaLabel: "Get Started",
-    ctaHref: "/payments?description=Marketing+Starter+Plan+%28%24500%2Fmo%29&plan=Marketing+STARTER",
+    ctaHref: "/payments?description=Marketing+Starter+Plan+%28%24500%2Fmo%29&plan=Marketing+STARTER&amount=500",
     features: [
       { label: "Platforms", value: "2" },
       { label: "Posts/Month", value: "12" },
@@ -52,7 +53,7 @@ const marketingPlans = [
     price: "$1,200",
     isPopular: true,
     ctaLabel: "Get Started",
-    ctaHref: "/payments?description=Marketing+Growth+Plan+%28%241%2C200%2Fmo%29&plan=Marketing+GROWTH",
+    ctaHref: "/payments?description=Marketing+Growth+Plan+%28%241%2C200%2Fmo%29&plan=Marketing+GROWTH&amount=1200",
     features: [
       { label: "Platforms", value: "4" },
       { label: "Posts/Month", value: "20" },
@@ -75,7 +76,7 @@ const marketingPlans = [
     price: "$2,500",
     isPopular: false,
     ctaLabel: "Get Started",
-    ctaHref: "/payments?description=Marketing+Pro+Plan+%28%242%2C500%2Fmo%29&plan=Marketing+PRO",
+    ctaHref: "/payments?description=Marketing+Pro+Plan+%28%242%2C500%2Fmo%29&plan=Marketing+PRO&amount=2500",
     features: [
       { label: "Platforms", value: "6+" },
       { label: "Posts/Month", value: "30+" },
@@ -149,7 +150,7 @@ const operationsPlans = [
     price: "$600",
     isPopular: false,
     ctaLabel: "Get Started",
-    ctaHref: "/payments?description=Operations+Starter+Plan+%28%24600%2Fmo%29&plan=Operations+STARTER",
+    ctaHref: "/payments?description=Operations+Starter+Plan+%28%24600%2Fmo%29&plan=Operations+STARTER&amount=600",
     features: [
       { label: "CRM", value: "Basic (2 pipelines)" },
       { label: "AI Agents", value: "—" },
@@ -170,7 +171,7 @@ const operationsPlans = [
     price: "$1,400",
     isPopular: true,
     ctaLabel: "Get Started",
-    ctaHref: "/payments?description=Operations+Growth+Plan+%28%241%2C400%2Fmo%29&plan=Operations+GROWTH",
+    ctaHref: "/payments?description=Operations+Growth+Plan+%28%241%2C400%2Fmo%29&plan=Operations+GROWTH&amount=1400",
     features: [
       { label: "CRM", value: "Advanced (5 pipelines)" },
       { label: "AI Agents", value: "1 agent" },
@@ -191,7 +192,7 @@ const operationsPlans = [
     price: "$3,000",
     isPopular: false,
     ctaLabel: "Get Started",
-    ctaHref: "/payments?description=Operations+Pro+Plan+%28%243%2C000%2Fmo%29&plan=Operations+PRO",
+    ctaHref: "/payments?description=Operations+Pro+Plan+%28%243%2C000%2Fmo%29&plan=Operations+PRO&amount=3000",
     features: [
       { label: "CRM", value: "Enterprise (unlimited)" },
       { label: "AI Agents", value: "Up to 3 agents" },
@@ -224,6 +225,19 @@ const vaPackages = [
   { name: "Part-Time", hours: "80 hrs/mo", price: "$800–$1,400" },
   { name: "Full-Time", hours: "160 hrs/mo", price: "$1,600–$2,800+" },
 ];
+
+// Builds a prefilled link to the unified payment page (PayMongo / PayPal / Crypto).
+function payHref(plan: string, description: string, amount?: string) {
+  const params = new URLSearchParams({ plan, description });
+  if (amount) params.set("amount", amount);
+  return `/payments?${params.toString()}`;
+}
+
+// Pulls the first whole number out of a price string, e.g. "$1,500" -> "1500".
+function firstNumber(s: string) {
+  const m = s.replace(/,/g, "").match(/\d+/);
+  return m ? m[0] : "";
+}
 
 function Note({ children }: { children: React.ReactNode }) {
   return (
@@ -308,10 +322,10 @@ export default function PricingPage() {
             className="overflow-hidden rounded-2xl border border-white/10"
           >
             {/* Table Header */}
-            <div className="hidden md:grid grid-cols-4 bg-white/8 border-b border-white/10 px-6 py-4">
-              {["Service", "Starting From", "Up To", "Timeline"].map((h) => (
+            <div className="hidden md:grid grid-cols-5 bg-white/8 border-b border-white/10 px-6 py-4">
+              {["Service", "Starting From", "Up To", "Timeline", ""].map((h, hi) => (
                 <span
-                  key={h}
+                  key={hi}
                   className="font-heading font-bold text-white/70 text-xs uppercase tracking-widest"
                 >
                   {h}
@@ -323,8 +337,8 @@ export default function PricingPage() {
               <motion.div
                 key={service}
                 variants={childVariant}
-                className={`grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-0 px-6 py-5 border-b border-white/5
-                  hover:bg-white/5 transition-colors ${i % 2 === 0 ? "bg-white/2" : ""}`}
+                className={`grid grid-cols-1 md:grid-cols-5 gap-2 md:gap-0 px-6 py-5 border-b border-white/5
+                  hover:bg-white/5 transition-colors items-center ${i % 2 === 0 ? "bg-white/2" : ""}`}
               >
                 <div className="font-heading font-semibold text-white text-sm md:text-base">
                   {service}
@@ -345,13 +359,23 @@ export default function PricingPage() {
                   </span>
                   <span className="text-white/55 text-sm">{timeline}</span>
                 </div>
+                <div className="md:text-right">
+                  <Link
+                    href={payHref(service, `${service} — Project Deposit`, firstNumber(from))}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange/10 border border-orange/30
+                      text-orange text-xs font-heading font-bold hover:bg-orange hover:text-white transition-all"
+                  >
+                    Get Started <ArrowRight size={12} />
+                  </Link>
+                </div>
               </motion.div>
             ))}
           </motion.div>
 
           <Note>
             ★ 50% deposit required to begin all projects. Balance due upon
-            delivery. Prices vary based on complexity and requirements.
+            delivery. Prices vary based on complexity and requirements. The
+            “Get Started” button opens secure checkout (GCash · Card · PayPal · Crypto).
           </Note>
         </div>
       </motion.section>
@@ -444,9 +468,10 @@ export default function PricingPage() {
                 Monthly Packages
               </h3>
               {vaPackages.map(({ name, hours, price }) => (
-                <div
+                <Link
                   key={name}
-                  className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-6 py-5
+                  href={payHref(`VA — ${name}`, `Virtual Assistant — ${name} (${hours})`, firstNumber(price))}
+                  className="group flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-6 py-5
                     hover:border-orange/30 hover:bg-white/8 transition-all"
                 >
                   <div>
@@ -459,9 +484,11 @@ export default function PricingPage() {
                     <div className="font-heading font-extrabold text-xl text-gradient">
                       {price}
                     </div>
-                    <div className="text-white/40 text-xs">per month</div>
+                    <div className="flex items-center justify-end gap-1 text-white/40 group-hover:text-orange text-xs transition-colors">
+                      Reserve <ArrowRight size={11} />
+                    </div>
                   </div>
-                </div>
+                </Link>
               ))}
 
               {/* VA Feature Highlights */}

@@ -26,6 +26,17 @@ const marketingDropdown = [
   { label: "CRM Solutions", href: "/marketing/crm-solutions", icon: Database },
 ];
 
+const operationsDropdown = [
+  { label: "AI Agents & Automation", href: "/operations/ai-agents", icon: Bot },
+  { label: "CRM Automation", href: "/operations/crm-automation", icon: Workflow },
+  { label: "HR & Payroll Automation", href: "/operations/hr-payroll", icon: UserCheck },
+  { label: "Operations Automation", href: "/operations/operations-automation", icon: Settings },
+  { label: "Time & Location Tracking", href: "/operations/time-tracking", icon: Clock },
+  { label: "Admin Automation", href: "/operations/admin-automation", icon: Shield },
+  { label: "Analytics & Reporting", href: "/operations/analytics", icon: PieChart },
+  { label: "Integrations", href: "/operations/integrations", icon: Plug },
+];
+
 const appsDropdown = [
   { label: "Salary Calculator PH", href: "/apps/salary-calculator", icon: DollarSign },
   { label: "13th Month Calculator", href: "/apps/13th-month-calculator", icon: Gift },
@@ -51,48 +62,62 @@ const blogDropdown = [
   { label: "SEO Philippines 2025", href: "/blog/seo-philippines-rank-google-2025", icon: Search },
 ];
 
-const operationsDropdown = [
-  { label: "AI Agents & Automation", href: "/operations/ai-agents", icon: Bot },
-  { label: "CRM Automation", href: "/operations/crm-automation", icon: Workflow },
-  { label: "HR & Payroll Automation", href: "/operations/hr-payroll", icon: UserCheck },
-  { label: "Operations Automation", href: "/operations/operations-automation", icon: Settings },
-  { label: "Time & Location Tracking", href: "/operations/time-tracking", icon: Clock },
-  { label: "Admin Automation", href: "/operations/admin-automation", icon: Shield },
-  { label: "Analytics & Reporting", href: "/operations/analytics", icon: PieChart },
-  { label: "Integrations", href: "/operations/integrations", icon: Plug },
-];
+type AccentColor = "orange" | "blue" | "green";
 
-interface DropdownMenuProps {
+interface NavItem {
   label: string;
   href: string;
-  items: { label: string; href: string; icon: LucideIcon }[];
-  accentColor: "orange" | "blue" | "green";
+  icon: LucideIcon;
+}
+
+interface NavGroup {
+  label: string;
+  href: string;
+  accentColor: AccentColor;
+  items: NavItem[];
+}
+
+// ── Top-level menu groups ──────────────────────────────────
+// Services = Marketing + Operations · Media = Apps + Blog
+const servicesGroups: NavGroup[] = [
+  { label: "Marketing", href: "/marketing", accentColor: "orange", items: marketingDropdown },
+  { label: "Operations", href: "/operations", accentColor: "blue", items: operationsDropdown },
+];
+
+const mediaGroups: NavGroup[] = [
+  { label: "Apps", href: "/apps", accentColor: "orange", items: appsDropdown },
+  { label: "Blog", href: "/blog", accentColor: "green", items: blogDropdown },
+];
+
+function accentOf(accentColor: AccentColor) {
+  return accentColor === "orange"
+    ? { text: "text-orange", bg: "bg-orange/10", border: "border-orange/20", icon: "text-orange", hover: "hover:border-orange/40 hover:bg-orange/5", borderL: "border-orange/20" }
+    : accentColor === "green"
+    ? { text: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20", icon: "text-emerald-400", hover: "hover:border-emerald-400/40 hover:bg-emerald-400/5", borderL: "border-emerald-400/20" }
+    : { text: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20", icon: "text-blue-400", hover: "hover:border-blue-400/40 hover:bg-blue-400/5", borderL: "border-blue-400/20" };
+}
+
+interface GroupedDropdownProps {
+  label: string;
+  groups: NavGroup[];
   isActive: boolean;
-  columns?: 1 | 2;
   width?: string;
 }
 
-function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1, width }: DropdownMenuProps) {
+// Desktop mega-menu: one column per sub-group (e.g. Marketing | Operations),
+// each with its own "View all" header and accent-coloured items.
+function GroupedDropdown({ label, groups, isActive, width }: GroupedDropdownProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLLIElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const accent =
-    accentColor === "orange"
-      ? { text: "text-orange", bg: "bg-orange/10", border: "border-orange/20", icon: "text-orange", hover: "hover:border-orange/40 hover:bg-orange/5", underline: "bg-orange" }
-      : accentColor === "green"
-      ? { text: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20", icon: "text-emerald-400", hover: "hover:border-emerald-400/40 hover:bg-emerald-400/5", underline: "bg-emerald-400" }
-      : { text: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20", icon: "text-blue-400", hover: "hover:border-blue-400/40 hover:bg-blue-400/5", underline: "bg-blue-400" };
 
   return (
     <li
@@ -110,7 +135,7 @@ function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1, 
         onClick={() => setOpen((v) => !v)}
         className={cn(
           "relative flex items-center gap-1 px-4 py-2 text-sm font-accent font-semibold transition-colors duration-200 rounded-md",
-          isActive ? accent.text : "text-white/80 hover:text-white"
+          isActive ? "text-orange" : "text-white/80 hover:text-white"
         )}
         aria-expanded={open}
       >
@@ -120,66 +145,128 @@ function DropdownMenu({ label, href, items, accentColor, isActive, columns = 1, 
           className={cn("transition-transform duration-200 mt-0.5", open && "rotate-180")}
         />
         {isActive && (
-          <span className={cn("absolute bottom-0 left-4 right-4 h-0.5 rounded-full", accent.underline)} />
+          <span className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-orange" />
         )}
       </button>
 
       {/* Dropdown Panel — pt-2 fills the gap so mouse never leaves the li */}
       <div
         className={cn(
-          "absolute top-full left-0 pt-2 z-50",
+          "absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50",
           open ? "pointer-events-auto" : "pointer-events-none"
         )}
       >
-      <div
-        className={cn(
-          "rounded-2xl border border-white/10 bg-navy-dark/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden",
-          "transition-all duration-200 origin-top-left",
-          open ? "opacity-100 scale-100" : "opacity-0 scale-95",
-        )}
-        style={{ width: width ?? (columns === 2 ? "480px" : "260px") }}
-      >
-        {/* Header link to parent section */}
-        <div className={cn("px-4 pt-4 pb-3 border-b border-white/5 mb-1")}>
-          <Link
-            href={href}
-            className={cn("text-xs font-accent font-semibold uppercase tracking-widest", accent.text)}
-          >
-            View All {label} →
-          </Link>
+        <div
+          className={cn(
+            "rounded-2xl border border-white/10 bg-navy-dark/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden",
+            "transition-all duration-200 origin-top",
+            open ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          )}
+          style={{ width: width ?? "680px" }}
+        >
+          <div className="grid grid-cols-2 divide-x divide-white/5">
+            {groups.map((group) => {
+              const a = accentOf(group.accentColor);
+              return (
+                <div key={group.label} className="p-2">
+                  <div className="px-3 pt-3 pb-2 mb-1 border-b border-white/5">
+                    <Link
+                      href={group.href}
+                      className={cn("text-xs font-accent font-semibold uppercase tracking-widest", a.text)}
+                    >
+                      {group.label} — View All →
+                    </Link>
+                  </div>
+                  <div className="flex flex-col">
+                    {group.items.map(({ label: itemLabel, href: itemHref, icon: Icon }) => (
+                      <Link
+                        key={itemHref}
+                        href={itemHref}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2 rounded-xl text-white/70 hover:text-white text-xs font-accent font-semibold transition-all",
+                          a.hover
+                        )}
+                      >
+                        <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border", a.bg, a.border)}>
+                          <Icon size={13} className={a.icon} />
+                        </div>
+                        <span className="leading-tight">{itemLabel}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="h-2" />
         </div>
-
-        <div className={cn("p-2", columns === 2 && "grid grid-cols-2 gap-0")}>
-          {items.map(({ label: itemLabel, href: itemHref, icon: Icon }) => (
-            <Link
-              key={itemHref}
-              href={itemHref}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white text-xs font-accent font-semibold transition-all group",
-                accent.hover
-              )}
-            >
-              <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border", accent.bg, accent.border)}>
-                <Icon size={13} className={accent.icon} />
-              </div>
-              <span className="leading-tight">{itemLabel}</span>
-            </Link>
-          ))}
-        </div>
-        <div className="h-2" />
-      </div>
       </div>
     </li>
+  );
+}
+
+// Mobile accordion for a grouped menu (Services / Media).
+function MobileGroupAccordion({
+  label,
+  groups,
+  isActive,
+  open,
+  onToggle,
+}: {
+  label: string;
+  groups: NavGroup[];
+  isActive: boolean;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div>
+      <button
+        onClick={onToggle}
+        className={cn(
+          "w-full flex items-center justify-between px-4 py-3 rounded-lg font-accent font-semibold text-sm transition-colors",
+          isActive ? "text-orange bg-orange/10" : "text-white/80 hover:text-white hover:bg-white/5"
+        )}
+      >
+        {label}
+        <ChevronDown size={14} className={cn("transition-transform duration-200", open && "rotate-180")} />
+      </button>
+      {open && (
+        <div className="mt-1 ml-3 flex flex-col gap-2 border-l border-white/10 pl-3 pb-1">
+          {groups.map((group) => {
+            const a = accentOf(group.accentColor);
+            return (
+              <div key={group.label}>
+                <Link
+                  href={group.href}
+                  className={cn("block px-3 py-2 text-xs font-accent font-bold uppercase tracking-widest", a.text)}
+                >
+                  All {group.label} →
+                </Link>
+                {group.items.map(({ label: itemLabel, href, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
+                  >
+                    <Icon size={12} className={cn("shrink-0", a.icon)} />
+                    {itemLabel}
+                  </Link>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileMarketing, setMobileMarketing] = useState(false);
-  const [mobileOperations, setMobileOperations] = useState(false);
-  const [mobileApps, setMobileApps] = useState(false);
-  const [mobileBlog, setMobileBlog] = useState(false);
+  const [mobileServices, setMobileServices] = useState(false);
+  const [mobileMedia, setMobileMedia] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -190,18 +277,12 @@ export default function Navbar() {
 
   useEffect(() => {
     setMobileOpen(false);
-    setMobileMarketing(false);
-    setMobileOperations(false);
-    setMobileApps(false);
-    setMobileBlog(false);
+    setMobileServices(false);
+    setMobileMedia(false);
   }, [pathname]);
 
-  const simpleLinks = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Contact", href: "/contact" },
-  ];
+  const servicesActive = pathname.startsWith("/marketing") || pathname.startsWith("/operations");
+  const mediaActive = pathname.startsWith("/apps") || pathname.startsWith("/blog");
 
   return (
     <header
@@ -260,45 +341,18 @@ export default function Navbar() {
               </Link>
             </li>
 
-            {/* Marketing Dropdown */}
-            <DropdownMenu
-              label="Marketing"
-              href="/marketing"
-              items={marketingDropdown}
-              accentColor="orange"
-              isActive={pathname.startsWith("/marketing")}
-              columns={2}
+            {/* Services Dropdown (Marketing + Operations) */}
+            <GroupedDropdown
+              label="Services"
+              groups={servicesGroups}
+              isActive={servicesActive}
             />
 
-            {/* Operations Dropdown */}
-            <DropdownMenu
-              label="Operations"
-              href="/operations"
-              items={operationsDropdown}
-              accentColor="blue"
-              isActive={pathname.startsWith("/operations")}
-              columns={1}
-            />
-
-            {/* Apps Dropdown */}
-            <DropdownMenu
-              label="Apps"
-              href="/apps"
-              items={appsDropdown}
-              accentColor="orange"
-              isActive={pathname.startsWith("/apps")}
-              columns={1}
-            />
-
-            {/* Blog Dropdown */}
-            <DropdownMenu
-              label="Blog"
-              href="/blog"
-              items={blogDropdown}
-              accentColor="green"
-              isActive={pathname.startsWith("/blog")}
-              columns={2}
-              width="520px"
+            {/* Media Dropdown (Apps + Blog) */}
+            <GroupedDropdown
+              label="Media"
+              groups={mediaGroups}
+              isActive={mediaActive}
             />
 
             {/* Courses */}
@@ -398,155 +452,25 @@ export default function Navbar() {
               );
             })}
 
-            {/* Marketing Accordion */}
-            <div>
-              <button
-                onClick={() => setMobileMarketing((v) => !v)}
-                className={cn(
-                  "w-full flex items-center justify-between px-4 py-3 rounded-lg font-accent font-semibold text-sm transition-colors",
-                  pathname.startsWith("/marketing") ? "text-orange bg-orange/10" : "text-white/80 hover:text-white hover:bg-white/5"
-                )}
-              >
-                Marketing
-                <ChevronDown
-                  size={14}
-                  className={cn("transition-transform duration-200", mobileMarketing && "rotate-180")}
-                />
-              </button>
-              {mobileMarketing && (
-                <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-orange/20 pl-3">
-                  <Link
-                    href="/marketing"
-                    className="px-3 py-2 text-xs font-accent font-bold text-orange/80 hover:text-orange transition-colors uppercase tracking-widest"
-                  >
-                    All Marketing Services →
-                  </Link>
-                  {marketingDropdown.map(({ label, href, icon: Icon }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
-                    >
-                      <Icon size={12} className="text-orange shrink-0" />
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Services Accordion (Marketing + Operations) */}
+            <MobileGroupAccordion
+              label="Services"
+              groups={servicesGroups}
+              isActive={servicesActive}
+              open={mobileServices}
+              onToggle={() => setMobileServices((v) => !v)}
+            />
 
-            {/* Operations Accordion */}
-            <div>
-              <button
-                onClick={() => setMobileOperations((v) => !v)}
-                className={cn(
-                  "w-full flex items-center justify-between px-4 py-3 rounded-lg font-accent font-semibold text-sm transition-colors",
-                  pathname.startsWith("/operations") ? "text-blue-400 bg-blue-400/10" : "text-white/80 hover:text-white hover:bg-white/5"
-                )}
-              >
-                Operations
-                <ChevronDown
-                  size={14}
-                  className={cn("transition-transform duration-200", mobileOperations && "rotate-180")}
-                />
-              </button>
-              {mobileOperations && (
-                <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-blue-400/20 pl-3">
-                  <Link
-                    href="/operations"
-                    className="px-3 py-2 text-xs font-accent font-bold text-blue-400/80 hover:text-blue-400 transition-colors uppercase tracking-widest"
-                  >
-                    All Operations Services →
-                  </Link>
-                  {operationsDropdown.map(({ label, href, icon: Icon }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
-                    >
-                      <Icon size={12} className="text-blue-400 shrink-0" />
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Media Accordion (Apps + Blog) */}
+            <MobileGroupAccordion
+              label="Media"
+              groups={mediaGroups}
+              isActive={mediaActive}
+              open={mobileMedia}
+              onToggle={() => setMobileMedia((v) => !v)}
+            />
 
-            {/* Apps Accordion */}
-            <div>
-              <button
-                onClick={() => setMobileApps((v) => !v)}
-                className={cn(
-                  "w-full flex items-center justify-between px-4 py-3 rounded-lg font-accent font-semibold text-sm transition-colors",
-                  pathname.startsWith("/apps") ? "text-orange bg-orange/10" : "text-white/80 hover:text-white hover:bg-white/5"
-                )}
-              >
-                Apps
-                <ChevronDown
-                  size={14}
-                  className={cn("transition-transform duration-200", mobileApps && "rotate-180")}
-                />
-              </button>
-              {mobileApps && (
-                <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-orange/20 pl-3">
-                  <Link
-                    href="/apps"
-                    className="px-3 py-2 text-xs font-accent font-bold text-orange/80 hover:text-orange transition-colors uppercase tracking-widest"
-                  >
-                    All Apps →
-                  </Link>
-                  {appsDropdown.map(({ label, href, icon: Icon }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
-                    >
-                      <Icon size={12} className="text-orange shrink-0" />
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Blog Accordion */}
-            <div>
-              <button
-                onClick={() => setMobileBlog((v) => !v)}
-                className={cn(
-                  "w-full flex items-center justify-between px-4 py-3 rounded-lg font-accent font-semibold text-sm transition-colors",
-                  pathname.startsWith("/blog") ? "text-emerald-400 bg-emerald-400/10" : "text-white/80 hover:text-white hover:bg-white/5"
-                )}
-              >
-                Blog
-                <ChevronDown
-                  size={14}
-                  className={cn("transition-transform duration-200", mobileBlog && "rotate-180")}
-                />
-              </button>
-              {mobileBlog && (
-                <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-emerald-400/20 pl-3">
-                  <Link
-                    href="/blog"
-                    className="px-3 py-2 text-xs font-accent font-bold text-emerald-400/80 hover:text-emerald-400 transition-colors uppercase tracking-widest"
-                  >
-                    All Articles →
-                  </Link>
-                  {blogDropdown.map(({ label, href, icon: Icon }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-white/65 hover:text-white hover:bg-white/5 text-xs font-accent font-semibold transition-colors"
-                    >
-                      <Icon size={12} className="text-emerald-400 shrink-0" />
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Pricing + Contact */}
+            {/* Courses + Pricing + Contact */}
             {[{ label: "Courses", href: "/courses" }, { label: "Pricing", href: "/pricing" }, { label: "Contact", href: "/contact" }].map((link) => {
               const isActive = pathname.startsWith(link.href);
               return (
