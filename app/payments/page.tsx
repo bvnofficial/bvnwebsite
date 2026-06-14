@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,6 +16,10 @@ import {
   Smartphone,
 } from "lucide-react";
 import PayPalCheckout from "./PayPalCheckout";
+
+const FALLBACK_TO_PHP: Record<string, number> = {
+  USD: 56, PHP: 1, GBP: 72, AUD: 37, EUR: 61, SGD: 42,
+};
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   USD: "$", PHP: "₱", GBP: "£", AUD: "A$", EUR: "€", SGD: "S$",
@@ -64,6 +68,24 @@ function PaymentsForm() {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [toPhp, setToPhp] = useState<Record<string, number>>(FALLBACK_TO_PHP);
+  const [ratesLoading, setRatesLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://open.er-api.com/v6/latest/PHP")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.rates) {
+          const rates: Record<string, number> = { PHP: 1 };
+          for (const c of CURRENCIES.filter((x) => x !== "PHP")) {
+            if (data.rates[c]) rates[c] = Math.round((1 / data.rates[c]) * 100) / 100;
+          }
+          setToPhp(rates);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setRatesLoading(false));
+  }, []);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -82,7 +104,10 @@ function PaymentsForm() {
   );
 
   const rawAmount = selectedAmt === "custom" ? customAmt.replace(/[^0-9.]/g, "") : selectedAmt;
+  const phpRate = toPhp[currency] ?? FALLBACK_TO_PHP[currency];
+  const phpAmount = rawAmount ? Math.round(Number(rawAmount) * phpRate) : 0;
   const displayAmount = fmt(rawAmount, currency);
+  const phpDisplay = phpAmount ? "₱" + phpAmount.toLocaleString("en-PH") : "₱0";
 
   function selectCurrency(c: string) {
     setCurrency(c);
@@ -108,9 +133,8 @@ function PaymentsForm() {
     setLoading(true);
     try {
       if (method === "paymongo") {
-        // PayMongo bills in PHP — charge the exact amount entered (no FX conversion).
-        const amt = Math.round(Number(rawAmount));
-        if (!amt || amt < 1) {
+        // PayMongo bills in PHP — charge the live-converted peso amount.
+        if (phpAmount < 1) {
           setErrMsg("Please enter a valid amount.");
           setLoading(false);
           return;
@@ -121,7 +145,7 @@ function PaymentsForm() {
           body: JSON.stringify({
             name,
             email,
-            amount: amt,
+            amount: phpAmount,
             description: description || urlPlan || undefined,
           }),
         });
@@ -289,6 +313,15 @@ function PaymentsForm() {
                       <span className="flex items-center gap-2">
                         <span className="text-[#d4af37] font-bold font-mono">{sym}</span>
                         <span>{currency}</span>
+                        {currency !== "PHP" && (
+                          <span className="text-white/30 text-xs flex items-center gap-1">
+                            ≈ ₱{(toPhp[currency] ?? FALLBACK_TO_PHP[currency]).toLocaleString()}/1
+                            {ratesLoading
+                              ? <span className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
+                              : <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Live rate" />
+                            }
+                          </span>
+                        )}
                       </span>
                       <ChevronDown
                         size={14}
@@ -364,6 +397,12 @@ function PaymentsForm() {
                     <span className="text-white/40 text-sm">Total</span>
                     <span className="text-[#d4af37] font-heading font-black text-2xl">{displayAmount}</span>
                   </div>
+                  {method === "paymongo" && currency !== "PHP" && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-white/25 text-xs">Charged as (PHP)</span>
+                      <span className="text-white/45 text-xs">{phpDisplay}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -575,7 +614,7 @@ function PaymentsForm() {
                       <>
                         <Lock size={16} />
                         {method === "paymongo"
-                          ? `Pay ${displayAmount} via GCash / Card`
+                          ? `Pay ${currency === "PHP" ? displayAmount : phpDisplay} via GCash / Card`
                           : `Pay ${displayAmount} Securely`}
                         <ChevronRight size={16} />
                       </>
