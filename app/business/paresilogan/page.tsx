@@ -77,6 +77,19 @@ const staff = [
   { role: "Utility / dishwasher", count: 1, duty: "Dishes, cleaning, stock runs", pay: 11000 },
 ];
 
+// ── Supply chain pricing (base case ~100 cust/day, est. Metro Manila wholesale) ─
+const supplies = [
+  { item: "Beef — brisket / cuts (pares + tapa)", vol: "120 kg", unit: "₱380/kg", cost: 45600, src: "Meat wholesaler (Zapote / Cartimar) or Monterey dealer" },
+  { item: "Rice (well-milled)", vol: "8 sacks · 200 kg", unit: "₱1,400/sack", cost: 11200, src: "Local bigasan / rice dealer" },
+  { item: "Eggs", vol: "65 trays · ~1,950 pcs", unit: "₱210/tray", cost: 13650, src: "Poultry supplier / palengke egg dealer" },
+  { item: "Pork (porksilog, bagnet)", vol: "30 kg", unit: "₱280/kg", cost: 8400, src: "Public market meat vendor" },
+  { item: "Cured meats (tocino, longganisa, hotdog, corned beef)", vol: "mixed", unit: "—", cost: 8500, src: "Pampanga's Best / Purefoods distributor or local maker" },
+  { item: "Bangus (boneless)", vol: "25 kg", unit: "₱180/kg", cost: 4500, src: "Navotas / Dagupan fish dealer" },
+  { item: "Cooking oil", vol: "4 × 17 kg", unit: "₱1,100 ea", cost: 4400, src: "Grocery wholesaler" },
+  { item: "Aromatics & condiments (garlic, onion, soy, vinegar, star anise, sugar, salt)", vol: "monthly", unit: "—", cost: 5000, src: "Palengke + grocery" },
+  { item: "Softdrinks & bottled water", vol: "monthly", unit: "—", cost: 4500, src: "Coca-Cola / Pepsi route dealer (consignment)" },
+];
+
 // ── Risks ────────────────────────────────────────────────────
 const risks = [
   { risk: "Beef / rice price spikes", impact: "Squeezed margins", fix: "Push high-margin silogs, portion control, multiple suppliers, small price tweaks" },
@@ -146,6 +159,127 @@ function Check({ children }: { children: React.ReactNode }) {
       <CheckCircle size={18} style={{ color: C.green, flexShrink: 0, marginTop: 3 }} />
       <span>{children}</span>
     </li>
+  );
+}
+
+// ── Storefront concept drawing ───────────────────────────────
+function StorefrontVisual() {
+  const stripeW = 660 / 18;
+  return (
+    <div className="relative w-full max-w-2xl mx-auto select-none">
+      <svg viewBox="0 0 800 600" className="w-full" style={{ filter: "drop-shadow(0 14px 40px rgba(90,48,24,.30))" }}>
+        <defs>
+          <linearGradient id="ps-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#FFE9C2" /><stop offset="100%" stopColor="#FFF7EC" /></linearGradient>
+          <linearGradient id="ps-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#F3E2C4" /><stop offset="100%" stopColor="#E6CFA6" /></linearGradient>
+          <linearGradient id="ps-sign" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#C8302A" /><stop offset="100%" stopColor="#9A1810" /></linearGradient>
+          <linearGradient id="ps-steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#EAEFF3" /><stop offset="100%" stopColor="#B4BBC6" /></linearGradient>
+          <linearGradient id="ps-counter" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#D9E2EA" /><stop offset="100%" stopColor="#9FB0BD" /></linearGradient>
+          <radialGradient id="ps-bulb" cx="50%" cy="35%" r="65%"><stop offset="0%" stopColor="#FFF6CC" /><stop offset="100%" stopColor="#F4B400" /></radialGradient>
+          <linearGradient id="ps-pot" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#454545" /><stop offset="100%" stopColor="#1C1C1C" /></linearGradient>
+        </defs>
+
+        {/* backdrop + sidewalk */}
+        <rect width="800" height="600" fill="url(#ps-sky)" />
+        <rect y="512" width="800" height="88" fill="#D9C6A2" />
+        <line x1="0" y1="512" x2="800" y2="512" stroke="#C2A878" strokeWidth="2" />
+        <line x1="0" y1="556" x2="800" y2="556" stroke="#C9B68F" strokeWidth="2" />
+
+        {/* building wall */}
+        <rect x="80" y="64" width="640" height="448" fill="url(#ps-wall)" stroke="#C2A878" strokeWidth="2" />
+
+        {/* sign board */}
+        <rect x="66" y="52" width="668" height="80" rx="8" fill="url(#ps-sign)" stroke="#7A0E08" strokeWidth="2" />
+        <rect x="66" y="124" width="668" height="6" fill="#F4B400" />
+        <text x="400" y="98" textAnchor="middle" fontFamily="Arial Black, Arial" fontWeight="900" fontSize="40" letterSpacing="3" fill="#FFD23F" stroke="#5A0A06" strokeWidth="1.4" style={{ paintOrder: "stroke" }}>PARESILOGAN</text>
+        <text x="400" y="118" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="11.5" letterSpacing="2" fill="#FFE9C2">PARES &amp; TAPSILOGAN NG BAYAN</text>
+
+        {/* awning stripes */}
+        {Array.from({ length: 18 }).map((_, i) => (
+          <rect key={i} x={70 + i * stripeW} y="132" width={stripeW + 0.6} height="46" fill={i % 2 === 0 ? "#C8302A" : "#F4B400"} />
+        ))}
+        {/* scalloped edge */}
+        {Array.from({ length: 11 }).map((_, i) => (
+          <path key={i} d={`M ${70 + i * 60} 178 a 30 22 0 0 0 60 0 Z`} fill={i % 2 === 0 ? "#C8302A" : "#F4B400"} />
+        ))}
+        <line x1="70" y1="132" x2="730" y2="132" stroke="#7A0E08" strokeWidth="2" />
+
+        {/* hanging string lights */}
+        <line x1="120" y1="210" x2="680" y2="210" stroke="#6B4A24" strokeWidth="1.5" />
+        {[170, 280, 390, 500, 610].map((x) => (
+          <g key={x}>
+            <line x1={x} y1="210" x2={x} y2="222" stroke="#6B4A24" strokeWidth="1.5" />
+            <circle cx={x} cy="230" r="9" fill="url(#ps-bulb)" stroke="#D89A00" strokeWidth="1" />
+          </g>
+        ))}
+
+        {/* menu chalkboard */}
+        <rect x="108" y="250" width="172" height="186" rx="6" fill="#241B14" stroke="#5A3018" strokeWidth="7" />
+        <text x="194" y="282" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="17" fill="#FFD23F">MENU</text>
+        <line x1="130" y1="292" x2="258" y2="292" stroke="#F4B400" strokeWidth="1" opacity="0.6" />
+        {[
+          ["Pares", "₱75"], ["Tapsilog", "₱90"], ["Tocilog", "₱85"],
+          ["Hotsilog", "₱70"], ["Overload", "₱120"], ["+ Rice", "₱15"],
+        ].map((m, i) => (
+          <g key={m[0]} fontFamily="Arial" fontSize="13" fill="#FFF5E8">
+            <text x="130" y={314 + i * 20}>{m[0]}</text>
+            <text x="258" y={314 + i * 20} textAnchor="end" fill="#FFD23F" fontWeight="bold">{m[1]}</text>
+          </g>
+        ))}
+
+        {/* cook behind counter */}
+        <g>
+          <rect x="556" y="300" width="64" height="48" rx="10" fill="#FAFAFA" stroke="#D8D8D8" strokeWidth="1.5" />
+          <rect x="556" y="300" width="64" height="14" rx="7" fill="#B3261E" />
+          <circle cx="588" cy="284" r="17" fill="#E8B98A" stroke="#C99A6A" strokeWidth="1" />
+          <path d="M 569 276 q 19 -16 38 0 q 2 -16 -19 -16 q -21 0 -19 16 Z" fill="#FFFFFF" stroke="#DADADA" strokeWidth="1" />
+        </g>
+
+        {/* counter */}
+        <rect x="80" y="436" width="640" height="76" fill="url(#ps-counter)" stroke="#8FA0AD" strokeWidth="2" />
+        <rect x="80" y="436" width="640" height="9" fill="rgba(255,255,255,.55)" />
+        <rect x="80" y="450" width="640" height="62" fill="url(#ps-steel)" opacity="0.25" />
+        {/* counter tile lines */}
+        {[160, 240, 320, 400, 480, 560, 640].map((x) => <line key={x} x1={x} y1="445" x2={x} y2="512" stroke="#8FA0AD" strokeWidth="1" opacity="0.5" />)}
+
+        {/* big pares pot (kawa) on counter with steam */}
+        <ellipse cx="180" cy="446" rx="62" ry="13" fill="#2A2A2A" />
+        <path d="M 120 444 Q 180 500 240 444 Z" fill="url(#ps-pot)" stroke="#0E0E0E" strokeWidth="1.5" />
+        <ellipse cx="180" cy="444" rx="58" ry="12" fill="#5A2E14" stroke="#1C1C1C" strokeWidth="2" />
+        <ellipse cx="180" cy="442" rx="48" ry="9" fill="#7A3C18" />
+        {/* steam */}
+        {[150, 180, 210].map((x, i) => (
+          <path key={x} d={`M ${x} 432 q -10 -16 0 -30 q 10 -14 0 -30`} fill="none" stroke="#FFFFFF" strokeWidth="3" opacity={0.5 - i * 0.08} strokeLinecap="round" />
+        ))}
+        <text x="180" y="486" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="11" fill="#3A2410">PARES SABAW</text>
+
+        {/* rice cooker + display */}
+        <rect x="300" y="404" width="70" height="42" rx="8" fill="#EDEDED" stroke="#C4C4C4" strokeWidth="1.5" />
+        <ellipse cx="335" cy="404" rx="35" ry="7" fill="#D4D4D4" />
+        <rect x="318" y="416" width="34" height="6" rx="3" fill="#B3261E" />
+        <text x="335" y="466" textAnchor="middle" fontFamily="Arial" fontSize="10" fill="#3A2410">Rice</text>
+        {/* sneeze-guard glass display */}
+        <rect x="406" y="392" width="150" height="54" rx="4" fill="rgba(180,210,225,.30)" stroke="#9FB6C4" strokeWidth="2" />
+        {[430, 466, 502, 538].map((x, i) => <rect key={x} x={x - 12} y="420" width="24" height="20" rx="3" fill={["#B3261E", "#C97A2A", "#E0A53A", "#7A4A1E"][i]} />)}
+
+        {/* stools */}
+        {[170, 300, 430, 560].map((x) => (
+          <g key={x}>
+            <ellipse cx={x} cy="524" rx="22" ry="7" fill="#B3261E" stroke="#7A0E08" strokeWidth="1.5" />
+            <rect x={x - 4} y="524" width="8" height="42" fill="#7A5230" />
+            <line x1={x - 16} y1="560" x2={x - 22} y2="572" stroke="#7A5230" strokeWidth="4" strokeLinecap="round" />
+            <line x1={x + 16} y1="560" x2={x + 22} y2="572" stroke="#7A5230" strokeWidth="4" strokeLinecap="round" />
+          </g>
+        ))}
+
+        {/* open + gcash signs */}
+        <rect x="610" y="250" width="96" height="34" rx="6" fill="#1D8A4E" stroke="#0F5E33" strokeWidth="2" />
+        <text x="658" y="266" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="12" fill="#fff">BUKAS</text>
+        <text x="658" y="279" textAnchor="middle" fontFamily="Arial" fontSize="9" fill="#D8FFE8">5AM – 11PM</text>
+        <rect x="610" y="294" width="96" height="26" rx="6" fill="#0A66C2" />
+        <text x="658" y="311" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="11" fill="#fff">GCash ✓</text>
+      </svg>
+      <p className="text-center text-xs mt-2" style={{ color: C.muted }}>Concept elevation — a clean, branded carinderia stall front. Final look adapts to your actual unit and signage.</p>
+    </div>
   );
 }
 
@@ -308,6 +442,12 @@ export default function ParesiloganPage() {
             <motion.div key="concept" {...fade}>
               <SectionTitle icon={<Soup size={30} />}>The Concept</SectionTitle>
               <p className="mb-6" style={{ color: C.muted, fontSize: 17 }}>A hybrid <b>pares house + silogan</b> in a clean, branded carinderia format — the warmth and price of a karinderya, with the consistency, signage, and hygiene of a real restaurant.</p>
+
+              <h3 className="font-extrabold mb-3" style={{ color: C.brown, fontSize: 20 }}>What it will look like</h3>
+              <Card className="mb-6">
+                <StorefrontVisual />
+              </Card>
+
               <Card className="mb-4">
                 <h4 className="uppercase font-bold text-sm mb-2" style={{ color: C.red }}>Brand Identity</h4>
                 <p style={{ color: C.ink }}><b>Name:</b> PARESILOGAN &nbsp;·&nbsp; <b>Tagline:</b> Pares &amp; Tapsilogan ng Bayan</p>
@@ -516,28 +656,33 @@ export default function ParesiloganPage() {
                 <Check><b>Cleanliness cadence:</b> hourly wipe-downs, end-of-shift deep clean, daily exhaust + grease check.</Check>
                 <Check><b>Cash control:</b> pay-first model, sequential ORs, daily Z-report, owner reviews sales vs. inventory.</Check>
               </ul>
-              <h3 className="font-extrabold mt-7 mb-2" style={{ color: C.brown, fontSize: 20 }}>Supply chain</h3>
+              <h3 className="font-extrabold mt-7 mb-2" style={{ color: C.brown, fontSize: 20 }}>Supply chain &amp; ingredient costs (per month)</h3>
+              <p className="mb-3 text-sm" style={{ color: C.muted }}>Estimated Metro Manila / Las Piñas wholesale pricing at the base case (~100 customers/day). These add up to your ₱105K monthly food cost (35% of sales) — validate with your own suppliers.</p>
               <Card className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm" style={{ minWidth: 640 }}>
                   <thead><tr style={{ background: C.brown, color: "#fff" }}>
-                    <th className="text-left p-3 rounded-l-lg">Ingredient</th><th className="text-left p-3">Source</th><th className="text-left p-3 rounded-r-lg">Buying tip</th>
+                    <th className="text-left p-3 rounded-l-lg">Ingredient</th><th className="text-left p-3">Est. monthly volume</th><th className="text-right p-3">Unit price</th><th className="text-right p-3">₱ / month</th><th className="text-left p-3 rounded-r-lg">Where to source</th>
                   </tr></thead>
                   <tbody>
-                    {[
-                      ["Beef (pares + tapa)", "Wet market wholesaler", "Negotiate per-kilo at volume; brisket cuts for slow simmer"],
-                      ["Rice", "Rice dealer in sacks", "Buy by sack; lock a reliable dealer for steady price"],
-                      ["Eggs", "Egg supplier / palengke", "Order by tray; daily delivery to keep fresh"],
-                      ["Cured meats", "Local maker or in-house", "In-house tapa/tocino later = higher margin + signature taste"],
-                      ["Drinks & LPG", "Distributor accounts", "Consignment for softdrinks; track gas use per day"],
-                    ].map((r) => (
-                      <tr key={r[0]} style={{ borderBottom: `1px solid ${C.border}` }}>
-                        <td className="p-3 font-semibold">{r[0]}</td><td className="p-3" style={{ color: C.muted }}>{r[1]}</td><td className="p-3" style={{ color: C.muted }}>{r[2]}</td>
+                    {supplies.map((s) => (
+                      <tr key={s.item} style={{ borderBottom: `1px solid ${C.border}` }}>
+                        <td className="p-3 font-semibold">{s.item}</td>
+                        <td className="p-3" style={{ color: C.muted }}>{s.vol}</td>
+                        <td className="p-3 text-right" style={{ color: C.muted }}>{s.unit}</td>
+                        <td className="p-3 text-right font-bold">{s.cost.toLocaleString("en-PH")}</td>
+                        <td className="p-3 text-xs" style={{ color: C.muted }}>{s.src}</td>
                       </tr>
                     ))}
+                    <tr style={{ background: C.cream2, fontWeight: 800 }}>
+                      <td className="p-3" colSpan={3}>Total monthly food cost (~35% of sales)</td>
+                      <td className="p-3 text-right" style={{ color: C.red }}>{peso(supplies.reduce((a, b) => a + b.cost, 0))}</td>
+                      <td className="p-3"></td>
+                    </tr>
                   </tbody>
                 </table>
+                <p className="text-xs mt-3" style={{ color: C.muted }}>Billed separately (not in food cost): <b>LPG / cooking gas</b> ≈ ₱7,500/mo (3 × 50 kg tanks @ ~₱2,500, under utilities) and <b>takeout packaging</b> ≈ ₱9,000/mo (boxes, bags, cups — under supplies). Open distributor accounts for steady pricing; consign softdrinks so you only pay for what sells.</p>
                 <div className="rounded-xl p-4 mt-4" style={{ borderLeft: `5px solid ${C.green}`, background: "#F0FBF4" }}>
-                  <b style={{ color: C.brown }}>Margin upgrade:</b> Once stable, make your own tapa, tocino &amp; longganisa in-house. Cuts cured-meat cost 30–40% and makes your flavor un-copyable.
+                  <b style={{ color: C.brown }}>Margin upgrade:</b> Once stable, make your own tapa, tocino &amp; longganisa in-house — cuts cured-meat cost 30–40% and makes your flavor un-copyable. Buy beef as whole primal cuts and break them down yourself to shave another ₱30–₱50/kg.
                 </div>
               </Card>
               <h3 className="font-extrabold mt-7 mb-2" style={{ color: C.brown, fontSize: 20 }}>Lean tech stack</h3>
