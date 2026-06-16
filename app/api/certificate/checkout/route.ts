@@ -89,6 +89,9 @@ export async function POST(req: Request) {
               quantity: 1,
             },
           ],
+          // QR Ph only. Requires "QR Ph" to be activated in the PayMongo
+          // dashboard (Settings → Payment Methods); otherwise the hosted
+          // checkout shows "No payment methods are available".
           payment_method_types: ["qrph"],
           success_url: `${baseUrl}/certificate/${id}`,
           cancel_url: `${baseUrl}/courses/${course.slug}/certificate`,

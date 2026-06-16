@@ -7,6 +7,13 @@ const nextConfig = {
     return [
     ];
   },
+  async redirects() {
+    return [
+      // Moved the Regal Homes client deliverable under /client/.
+      { source: "/regal-homes", destination: "/client/regal-homes", permanent: true },
+      { source: "/regal-homes/:path*", destination: "/client/regal-homes/:path*", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
