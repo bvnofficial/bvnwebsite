@@ -12,13 +12,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --navy:#14304d; --navy2:#1b3a5b; --navy3:#0f2438;
-    --gold:#c69a44; --gold2:#d9b765; --gold-soft:#f3e9d2;
-    --sage:#5f7d5b; --sage-soft:#e7efe4;
-    --cream:#faf7f1; --cream2:#f3ede1; --white:#ffffff;
-    --ink:#22303c; --muted:#5c6b78; --line:#e4ddcd;
-    --shadow:0 18px 50px -22px rgba(20,48,77,0.45);
-    --shadow-sm:0 8px 24px -14px rgba(20,48,77,0.4);
+    /* Palette matched to Regal Care's brand: royal indigo logo + slate-blue secondary */
+    --navy:#403789; --navy2:#4d43a0; --navy3:#272257;
+    --gold:#2f6df0; --gold2:#6f9bff; --gold-soft:#e6edff;
+    --sage:#2b5672; --sage-soft:#e7edf3;
+    --cream:#f5f6fb; --cream2:#eceef8; --white:#ffffff;
+    --ink:#1f2433; --muted:#586074; --line:#dee1ef;
+    --shadow:0 18px 50px -22px rgba(40,35,90,0.45);
+    --shadow-sm:0 8px 24px -14px rgba(40,35,90,0.4);
     --radius:18px; --radius-sm:12px;
     --serif:"Fraunces",Georgia,"Times New Roman",serif;
     --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -33,7 +34,7 @@
   .eyebrow{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:inline-block}
   .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-weight:600;font-size:16px;
     padding:14px 26px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:.22s ease;white-space:nowrap}
-  .btn-gold{background:var(--gold);color:#1f1606;box-shadow:0 10px 24px -10px rgba(198,154,68,.7)}
+  .btn-gold{background:var(--gold);color:#fff;box-shadow:0 10px 24px -10px rgba(47,109,240,.6)}
   .btn-gold:hover{background:var(--gold2);transform:translateY(-2px)}
   .btn-ghost{background:transparent;color:var(--white);border-color:rgba(255,255,255,.55)}
   .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#fff}
@@ -45,7 +46,7 @@
   /* ============ HEADER ============ */
   header.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.3s ease}
   header.nav .bar{display:flex;align-items:center;gap:24px;padding:18px 24px;max-width:1180px;margin:0 auto;transition:.3s}
-  header.nav.scrolled{background:rgba(15,36,56,.94);backdrop-filter:blur(12px);box-shadow:0 8px 30px -16px rgba(0,0,0,.6)}
+  header.nav.scrolled{background:rgba(39,34,87,.95);backdrop-filter:blur(12px);box-shadow:0 8px 30px -16px rgba(0,0,0,.6)}
   header.nav.scrolled .bar{padding:12px 24px}
   .brand{display:flex;align-items:center;gap:0;margin-right:auto}
   .brand img{height:44px;width:auto;transition:.3s}
@@ -68,7 +69,7 @@
   .hero-slides .slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.06);transition:opacity 1.4s ease,transform 7s ease}
   .hero-slides .slide.on{opacity:1;transform:scale(1)}
   .hero::after{content:"";position:absolute;inset:0;z-index:1;
-    background:linear-gradient(90deg,rgba(12,30,48,.86) 0%,rgba(12,30,48,.62) 45%,rgba(12,30,48,.30) 100%)}
+    background:linear-gradient(90deg,rgba(24,20,58,.88) 0%,rgba(28,23,68,.64) 45%,rgba(28,23,68,.30) 100%)}
   .hero .wrap{position:relative;z-index:2;width:100%;padding-top:90px;padding-bottom:60px}
   .hero-inner{max-width:680px}
   .hero .eyebrow{color:var(--gold2)}
@@ -138,7 +139,7 @@
   .fac-card .body{padding:46px 44px}
   .fac-card .body h3{font-size:30px}
   .fac-card .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px}
-  .fac-card .tag{font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:5px 12px;border-radius:999px;background:var(--gold-soft);color:#8a6a1f}
+  .fac-card .tag{font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:5px 12px;border-radius:999px;background:var(--gold-soft);color:#2f4ba0}
   .fac-card .body p{color:var(--muted);font-size:16.5px}
   .fac-meta{display:grid;gap:12px;margin:24px 0 28px;border-top:1px solid var(--line);padding-top:22px}
   .fac-meta .row{display:flex;align-items:center;gap:12px;font-size:16px}
@@ -162,9 +163,9 @@
   .gallery figure{margin:0;overflow:hidden;border-radius:14px;cursor:pointer;position:relative;background:var(--cream2)}
   .gallery figure img{width:100%;height:100%;object-fit:cover;transition:transform .55s ease}
   .gallery figure::after{content:"⤢";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:26px;
-    background:rgba(15,36,56,.0);opacity:0;transition:.3s}
+    background:rgba(39,34,87,.0);opacity:0;transition:.3s}
   .gallery figure:hover img{transform:scale(1.09)}
-  .gallery figure:hover::after{background:rgba(15,36,56,.45);opacity:1}
+  .gallery figure:hover::after{background:rgba(39,34,87,.5);opacity:1}
   .gallery .tall{grid-row:span 2}
   .gallery .wide{grid-column:span 2}
   /* lightbox */
@@ -180,7 +181,7 @@
 
   /* ============ TESTIMONIALS ============ */
   .testi{background:linear-gradient(160deg,var(--navy3),var(--navy));color:#fff;border-radius:var(--radius);padding:64px 56px;position:relative;overflow:hidden}
-  .testi .qmark{position:absolute;top:18px;left:40px;font-family:var(--serif);font-size:160px;line-height:1;color:rgba(214,154,68,.16)}
+  .testi .qmark{position:absolute;top:18px;left:40px;font-family:var(--serif);font-size:160px;line-height:1;color:rgba(111,155,255,.18)}
   .testi-track{position:relative;min-height:170px}
   .testi-item{position:absolute;inset:0;opacity:0;transform:translateY(16px);transition:.6s ease;pointer-events:none}
   .testi-item.on{opacity:1;transform:none;pointer-events:auto}
@@ -206,7 +207,7 @@
 
   /* ============ CONTACT / VISIT ============ */
   .contact{background:var(--navy);color:#fff;position:relative;overflow:hidden}
-  .contact::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(214,154,68,.18),transparent 70%)}
+  .contact::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(111,155,255,.22),transparent 70%)}
   .contact-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;position:relative;z-index:2}
   .contact h2{color:#fff;font-size:clamp(30px,4vw,42px)}
   .contact .eyebrow{color:var(--gold2)}
@@ -224,7 +225,7 @@
   .field label{display:block;font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:7px;letter-spacing:.02em}
   .field input,.field select,.field textarea{width:100%;font-family:var(--sans);font-size:16px;padding:13px 15px;
     border:1.5px solid var(--line);border-radius:11px;background:var(--cream);color:var(--ink);transition:.2s}
-  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 4px rgba(198,154,68,.12)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 4px rgba(47,109,240,.14)}
   .field textarea{resize:vertical;min-height:92px}
   .field.err input,.field.err select,.field.err textarea{border-color:#d4584b;background:#fdf2f1}
   .field .msg{font-size:12.5px;color:#d4584b;margin-top:5px;display:none}
@@ -254,7 +255,7 @@
   .totop{position:fixed;bottom:26px;right:26px;z-index:90;width:50px;height:50px;border-radius:50%;background:var(--navy);color:#fff;
     border:none;cursor:pointer;font-size:20px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateY(12px);transition:.3s}
   .totop.on{opacity:1;pointer-events:auto;transform:none}
-  .totop:hover{background:var(--gold);color:#1f1606}
+  .totop:hover{background:var(--gold);color:#fff}
 
   /* mobile nav panel */
   .mnav{position:fixed;inset:0;z-index:99;background:var(--navy3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
@@ -294,7 +295,7 @@
 <!-- ============ NAV ============ -->
 <header class="nav" id="nav">
   <div class="bar">
-    <a href="#top" class="brand"><img src="img/logo-white.png" alt="Regal Care" /></a>
+    <a href="#top" class="brand"><img src="/clients/regal-homes/website/img/logo-white.png" alt="Regal Care" /></a>
     <nav class="links">
       <a href="#about">About</a>
       <a href="#facilities">Our Homes</a>
@@ -321,8 +322,8 @@
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
   <div class="hero-slides" id="slides">
-    <div class="slide on" style="background-image:url('img/hero-1.jpg')"></div>
-    <div class="slide" style="background-image:url('img/hero-2.jpg')"></div>
+    <div class="slide on" style="background-image:url('/clients/regal-homes/website/img/hero-1.jpg')"></div>
+    <div class="slide" style="background-image:url('/clients/regal-homes/website/img/hero-2.jpg')"></div>
   </div>
   <div class="wrap">
     <div class="hero-inner">
@@ -375,7 +376,7 @@
         <a href="#facilities" class="btn btn-navy reveal d4" style="margin-top:30px">Meet Our Three Homes</a>
       </div>
       <div class="imgstack reveal d2">
-        <img src="img/g1.jpg" alt="Inside a Regal Care residential home" />
+        <img src="/clients/regal-homes/website/img/g1.jpg" alt="Inside a Regal Care residential home" />
         <div class="pill">
           <div class="ic">🌿</div>
           <div><b>Texas Tract</b><span>Simi Valley, CA 93063</span></div>
@@ -403,7 +404,7 @@
     <!-- Panel 0 -->
     <div class="fac-panel on" data-panel="0">
       <div class="fac-card">
-        <div class="ph" style="background-image:url('img/hero-1.jpg')"></div>
+        <div class="ph" style="background-image:url('/clients/regal-homes/website/img/hero-1.jpg')"></div>
         <div class="body">
           <h3>Regal Care</h3>
           <div class="tagrow"><span class="tag">Flagship Home</span><span class="tag">6 Beds</span><span class="tag">Garden &amp; Patio</span></div>
@@ -425,7 +426,7 @@
     <!-- Panel 1 -->
     <div class="fac-panel" data-panel="1">
       <div class="fac-card">
-        <div class="ph" style="background-image:url('img/g4.jpg')"></div>
+        <div class="ph" style="background-image:url('/clients/regal-homes/website/img/g4.jpg')"></div>
         <div class="body">
           <h3>Regal Residence</h3>
           <div class="tagrow"><span class="tag">Residential Care</span><span class="tag">Personalized</span></div>
@@ -446,7 +447,7 @@
     <!-- Panel 2 -->
     <div class="fac-panel" data-panel="2">
       <div class="fac-card">
-        <div class="ph" style="background-image:url('img/g6.jpg')"></div>
+        <div class="ph" style="background-image:url('/clients/regal-homes/website/img/g6.jpg')"></div>
         <div class="body">
           <h3>The Orchard</h3>
           <div class="tagrow"><span class="tag">Residential Care</span><span class="tag">Tranquil Setting</span></div>
@@ -494,15 +495,15 @@
       <p>Real photos from our Simi Valley residences. Click any image to view it full-size.</p>
     </div>
     <div class="gallery reveal d1" id="gallery">
-      <figure class="wide tall"><img src="img/hero-1.jpg" alt="Regal Care living space" /></figure>
-      <figure><img src="img/g1.jpg" alt="Interior" /></figure>
-      <figure><img src="img/g2.jpg" alt="Bedroom" /></figure>
-      <figure><img src="img/g3.jpg" alt="Common area" /></figure>
-      <figure><img src="img/g5.jpg" alt="Dining" /></figure>
-      <figure class="wide"><img src="img/hero-2.jpg" alt="Garden and patio" /></figure>
-      <figure><img src="img/g6.jpg" alt="Patio" /></figure>
-      <figure><img src="img/g7.jpg" alt="Garden" /></figure>
-      <figure><img src="img/g4.jpg" alt="Living room" /></figure>
+      <figure class="wide tall"><img src="/clients/regal-homes/website/img/hero-1.jpg" alt="Regal Care living space" /></figure>
+      <figure><img src="/clients/regal-homes/website/img/g1.jpg" alt="Interior" /></figure>
+      <figure><img src="/clients/regal-homes/website/img/g2.jpg" alt="Bedroom" /></figure>
+      <figure><img src="/clients/regal-homes/website/img/g3.jpg" alt="Common area" /></figure>
+      <figure><img src="/clients/regal-homes/website/img/g5.jpg" alt="Dining" /></figure>
+      <figure class="wide"><img src="/clients/regal-homes/website/img/hero-2.jpg" alt="Garden and patio" /></figure>
+      <figure><img src="/clients/regal-homes/website/img/g6.jpg" alt="Patio" /></figure>
+      <figure><img src="/clients/regal-homes/website/img/g7.jpg" alt="Garden" /></figure>
+      <figure><img src="/clients/regal-homes/website/img/g4.jpg" alt="Living room" /></figure>
     </div>
   </div>
 </section>
@@ -632,7 +633,7 @@
   <div class="wrap">
     <div class="ft-grid">
       <div class="ft-brand">
-        <img src="img/logo-white.png" alt="Regal Care" />
+        <img src="/clients/regal-homes/website/img/logo-white.png" alt="Regal Care" />
         <p>Family-style residential care homes in Simi Valley, California — where every resident is known, valued, and cared for around the clock.</p>
       </div>
       <div>
