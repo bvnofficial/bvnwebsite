@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Regal Care — Residential Care Homes in Simi Valley, CA</title>
+<meta name="description" content="Regal Care is a flagship six-bed residential care home in Simi Valley's Texas Tract neighborhood. 24-hour awake staff, spacious interiors, and a beautiful garden. Starting at $6,500/month." />
+<meta name="robots" content="noindex, nofollow" />
+<script>document.documentElement.classList.add("js");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#14304d; --navy2:#1b3a5b; --navy3:#0f2438;
+    --gold:#c69a44; --gold2:#d9b765; --gold-soft:#f3e9d2;
+    --sage:#5f7d5b; --sage-soft:#e7efe4;
+    --cream:#faf7f1; --cream2:#f3ede1; --white:#ffffff;
+    --ink:#22303c; --muted:#5c6b78; --line:#e4ddcd;
+    --shadow:0 18px 50px -22px rgba(20,48,77,0.45);
+    --shadow-sm:0 8px 24px -14px rgba(20,48,77,0.4);
+    --radius:18px; --radius-sm:12px;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.12;letter-spacing:-.01em;color:var(--navy)}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+  .eyebrow{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:inline-block}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-weight:600;font-size:16px;
+    padding:14px 26px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:.22s ease;white-space:nowrap}
+  .btn-gold{background:var(--gold);color:#1f1606;box-shadow:0 10px 24px -10px rgba(198,154,68,.7)}
+  .btn-gold:hover{background:var(--gold2);transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:var(--white);border-color:rgba(255,255,255,.55)}
+  .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#fff}
+  .btn-navy{background:var(--navy);color:#fff}
+  .btn-navy:hover{background:var(--navy2);transform:translateY(-2px)}
+  .btn-outline{background:transparent;color:var(--navy);border-color:var(--line)}
+  .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+
+  /* ============ HEADER ============ */
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.3s ease}
+  header.nav .bar{display:flex;align-items:center;gap:24px;padding:18px 24px;max-width:1180px;margin:0 auto;transition:.3s}
+  header.nav.scrolled{background:rgba(15,36,56,.94);backdrop-filter:blur(12px);box-shadow:0 8px 30px -16px rgba(0,0,0,.6)}
+  header.nav.scrolled .bar{padding:12px 24px}
+  .brand{display:flex;align-items:center;gap:0;margin-right:auto}
+  .brand img{height:44px;width:auto;transition:.3s}
+  header.nav.scrolled .brand img{height:38px}
+  nav.links{display:flex;align-items:center;gap:30px}
+  nav.links a{font-weight:500;font-size:15.5px;color:rgba(255,255,255,.86);position:relative;padding:4px 0;transition:.2s}
+  nav.links a::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;width:0;background:var(--gold2);transition:.25s}
+  nav.links a:hover,nav.links a.active{color:#fff}
+  nav.links a:hover::after,nav.links a.active::after{width:100%}
+  .nav-cta{margin-left:6px}
+  .hamburger{display:none;background:none;border:none;cursor:pointer;width:42px;height:42px;flex-direction:column;justify-content:center;gap:5px;padding:8px}
+  .hamburger span{display:block;height:2px;background:#fff;border-radius:2px;transition:.3s}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:center;color:#fff;overflow:hidden}
+  .hero-slides{position:absolute;inset:0;z-index:0}
+  .hero-slides .slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.06);transition:opacity 1.4s ease,transform 7s ease}
+  .hero-slides .slide.on{opacity:1;transform:scale(1)}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg,rgba(12,30,48,.86) 0%,rgba(12,30,48,.62) 45%,rgba(12,30,48,.30) 100%)}
+  .hero .wrap{position:relative;z-index:2;width:100%;padding-top:90px;padding-bottom:60px}
+  .hero-inner{max-width:680px}
+  .hero .eyebrow{color:var(--gold2)}
+  .hero h1{color:#fff;font-size:clamp(40px,6vw,68px);font-weight:600;margin:18px 0 0}
+  .hero h1 em{font-style:italic;color:var(--gold2)}
+  .hero p.lede{font-size:clamp(17px,2.2vw,21px);color:rgba(255,255,255,.92);margin-top:22px;max-width:560px;line-height:1.6}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:28px;margin-top:42px;padding-top:26px;border-top:1px solid rgba(255,255,255,.2)}
+  .hero-meta .m{display:flex;flex-direction:column}
+  .hero-meta .m b{font-family:var(--serif);font-size:24px;color:#fff;font-weight:600}
+  .hero-meta .m span{font-size:13.5px;color:rgba(255,255,255,.78);letter-spacing:.02em}
+  .scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.7);
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .scroll-cue .dot{width:24px;height:38px;border:2px solid rgba(255,255,255,.5);border-radius:14px;position:relative}
+  .scroll-cue .dot::after{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:4px;height:7px;border-radius:2px;background:#fff;animation:scrolly 1.6s infinite}
+  @keyframes scrolly{0%{opacity:0;top:7px}40%{opacity:1}80%{opacity:0;top:18px}100%{opacity:0}}
+  .slide-dots{position:absolute;bottom:30px;right:30px;z-index:3;display:flex;gap:10px}
+  .slide-dots button{width:11px;height:11px;border-radius:50%;border:none;background:rgba(255,255,255,.4);cursor:pointer;transition:.25s;padding:0}
+  .slide-dots button.on{background:var(--gold2);transform:scale(1.25)}
+
+  /* ============ SECTION SHELL ============ */
+  section.block{padding:96px 0}
+  .sec-head{max-width:680px;margin-bottom:48px}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+  .sec-head h2{font-size:clamp(30px,4.2vw,44px);margin-top:14px}
+  .sec-head p{color:var(--muted);font-size:18px;margin-top:16px}
+
+  /* reveal — only hide when JS is active, so no-JS visitors still see everything */
+  .js .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .js .reveal{opacity:1;transform:none;transition:none}
+    .hero-slides .slide{transition:opacity .4s ease}
+  }
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+  /* ============ TRUST STATS ============ */
+  .stats{background:var(--navy);color:#fff;padding:54px 0}
+  .stats .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+  .stats .s b{font-family:var(--serif);font-size:clamp(34px,4vw,46px);font-weight:600;color:var(--gold2);display:block}
+  .stats .s span{font-size:14.5px;color:rgba(255,255,255,.8);letter-spacing:.03em;margin-top:6px;display:block}
+
+  /* ============ ABOUT ============ */
+  .about{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+  .about .imgstack{position:relative}
+  .about .imgstack img{border-radius:var(--radius);box-shadow:var(--shadow)}
+  .about .imgstack .pill{position:absolute;left:-22px;bottom:-22px;background:var(--white);border-radius:var(--radius-sm);
+    box-shadow:var(--shadow);padding:18px 22px;display:flex;align-items:center;gap:14px;border:1px solid var(--line)}
+  .about .imgstack .pill .ic{width:46px;height:46px;border-radius:12px;background:var(--sage-soft);display:grid;place-items:center;font-size:22px}
+  .about .imgstack .pill b{font-family:var(--serif);font-size:17px;color:var(--navy);display:block}
+  .about .imgstack .pill span{font-size:13px;color:var(--muted)}
+  .about ul.checks{list-style:none;margin-top:24px;display:grid;gap:14px}
+  .about ul.checks li{display:flex;gap:13px;align-items:flex-start;font-size:16.5px}
+  .about ul.checks li svg{flex-shrink:0;margin-top:3px}
+
+  /* ============ FACILITIES TABS ============ */
+  .fac-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:38px}
+  .fac-tab{font-family:var(--sans);font-weight:600;font-size:16px;padding:13px 26px;border-radius:999px;border:1.5px solid var(--line);
+    background:#fff;color:var(--navy);cursor:pointer;transition:.22s}
+  .fac-tab:hover{border-color:var(--gold)}
+  .fac-tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .fac-panel{display:none;animation:fade .5s ease}
+  .fac-panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .fac-card{display:grid;grid-template-columns:1.1fr 1fr;gap:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .fac-card .ph{min-height:420px;background-size:cover;background-position:center}
+  .fac-card .body{padding:46px 44px}
+  .fac-card .body h3{font-size:30px}
+  .fac-card .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px}
+  .fac-card .tag{font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:5px 12px;border-radius:999px;background:var(--gold-soft);color:#8a6a1f}
+  .fac-card .body p{color:var(--muted);font-size:16.5px}
+  .fac-meta{display:grid;gap:12px;margin:24px 0 28px;border-top:1px solid var(--line);padding-top:22px}
+  .fac-meta .row{display:flex;align-items:center;gap:12px;font-size:16px}
+  .fac-meta .row b{color:var(--navy)}
+  .fac-meta .row .k{font-size:13px;color:var(--muted);width:74px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .fac-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* ============ AMENITIES ============ */
+  .amen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .amen{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px 28px;transition:.25s;position:relative;overflow:hidden}
+  .amen::before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:.3s}
+  .amen:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:transparent}
+  .amen:hover::before{width:100%}
+  .amen .ic{width:56px;height:56px;border-radius:14px;background:var(--cream2);display:grid;place-items:center;font-size:27px;margin-bottom:18px;transition:.25s}
+  .amen:hover .ic{background:var(--gold-soft)}
+  .amen h3{font-size:20px}
+  .amen p{color:var(--muted);font-size:15.5px;margin-top:8px}
+
+  /* ============ GALLERY ============ */
+  .gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:14px}
+  .gallery figure{margin:0;overflow:hidden;border-radius:14px;cursor:pointer;position:relative;background:var(--cream2)}
+  .gallery figure img{width:100%;height:100%;object-fit:cover;transition:transform .55s ease}
+  .gallery figure::after{content:"⤢";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:26px;
+    background:rgba(15,36,56,.0);opacity:0;transition:.3s}
+  .gallery figure:hover img{transform:scale(1.09)}
+  .gallery figure:hover::after{background:rgba(15,36,56,.45);opacity:1}
+  .gallery .tall{grid-row:span 2}
+  .gallery .wide{grid-column:span 2}
+  /* lightbox */
+  .lb{position:fixed;inset:0;z-index:200;background:rgba(8,18,28,.94);display:none;align-items:center;justify-content:center;padding:40px}
+  .lb.on{display:flex}
+  .lb img{max-width:90vw;max-height:84vh;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .lb .x{position:absolute;top:24px;right:30px;color:#fff;font-size:34px;cursor:pointer;line-height:1;background:none;border:none}
+  .lb .arw{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:none;color:#fff;
+    width:54px;height:54px;border-radius:50%;font-size:26px;cursor:pointer;transition:.2s}
+  .lb .arw:hover{background:rgba(255,255,255,.25)}
+  .lb .prev{left:28px}.lb .next{right:28px}
+  .lb .count{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.8);font-size:14px;letter-spacing:.1em}
+
+  /* ============ TESTIMONIALS ============ */
+  .testi{background:linear-gradient(160deg,var(--navy3),var(--navy));color:#fff;border-radius:var(--radius);padding:64px 56px;position:relative;overflow:hidden}
+  .testi .qmark{position:absolute;top:18px;left:40px;font-family:var(--serif);font-size:160px;line-height:1;color:rgba(214,154,68,.16)}
+  .testi-track{position:relative;min-height:170px}
+  .testi-item{position:absolute;inset:0;opacity:0;transform:translateY(16px);transition:.6s ease;pointer-events:none}
+  .testi-item.on{opacity:1;transform:none;pointer-events:auto}
+  .testi-item p{font-family:var(--serif);font-size:clamp(20px,2.6vw,28px);font-weight:500;line-height:1.4;font-style:italic;max-width:780px}
+  .testi-item .who{margin-top:22px;font-family:var(--sans);font-weight:600;font-style:normal;font-size:16px;color:var(--gold2)}
+  .testi-item .who span{display:block;color:rgba(255,255,255,.65);font-weight:400;font-size:14px}
+  .testi-dots{display:flex;gap:10px;margin-top:30px}
+  .testi-dots button{width:36px;height:5px;border-radius:3px;border:none;background:rgba(255,255,255,.25);cursor:pointer;transition:.25s;padding:0}
+  .testi-dots button.on{background:var(--gold2)}
+  .stars{color:var(--gold2);font-size:18px;letter-spacing:3px;margin-bottom:18px}
+
+  /* ============ FAQ ============ */
+  .faq-list{max-width:840px;margin:0 auto;display:grid;gap:12px}
+  .faq{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;transition:.2s}
+  .faq.open{border-color:var(--gold);box-shadow:var(--shadow-sm)}
+  .faq button.q{width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:22px 26px;
+    display:flex;justify-content:space-between;align-items:center;gap:20px;font-family:var(--serif);font-size:19px;font-weight:600;color:var(--navy)}
+  .faq .ico{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--cream2);display:grid;place-items:center;
+    font-size:20px;color:var(--gold);transition:.3s}
+  .faq.open .ico{background:var(--gold);color:#fff;transform:rotate(45deg)}
+  .faq .a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .faq .a p{padding:0 26px 24px;color:var(--muted);font-size:16.5px}
+
+  /* ============ CONTACT / VISIT ============ */
+  .contact{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+  .contact::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(214,154,68,.18),transparent 70%)}
+  .contact-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;position:relative;z-index:2}
+  .contact h2{color:#fff;font-size:clamp(30px,4vw,42px)}
+  .contact .eyebrow{color:var(--gold2)}
+  .contact .lede{color:rgba(255,255,255,.85);font-size:18px;margin-top:16px;max-width:440px}
+  .contact-info{margin-top:34px;display:grid;gap:20px}
+  .contact-info .ci{display:flex;gap:15px;align-items:flex-start}
+  .contact-info .ci .ic{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.09);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+  .contact-info .ci b{display:block;font-size:16px}
+  .contact-info .ci span{color:rgba(255,255,255,.72);font-size:15px}
+  .contact-info .ci a{color:var(--gold2)}
+  form.visit{background:#fff;border-radius:var(--radius);padding:38px 36px;box-shadow:var(--shadow);color:var(--ink)}
+  form.visit h3{font-size:24px;margin-bottom:6px}
+  form.visit .sub{color:var(--muted);font-size:15px;margin-bottom:24px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:7px;letter-spacing:.02em}
+  .field input,.field select,.field textarea{width:100%;font-family:var(--sans);font-size:16px;padding:13px 15px;
+    border:1.5px solid var(--line);border-radius:11px;background:var(--cream);color:var(--ink);transition:.2s}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 4px rgba(198,154,68,.12)}
+  .field textarea{resize:vertical;min-height:92px}
+  .field.err input,.field.err select,.field.err textarea{border-color:#d4584b;background:#fdf2f1}
+  .field .msg{font-size:12.5px;color:#d4584b;margin-top:5px;display:none}
+  .field.err .msg{display:block}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  form.visit button[type=submit]{width:100%;margin-top:6px;justify-content:center}
+  .form-success{display:none;text-align:center;padding:30px 10px}
+  .form-success.on{display:block;animation:fade .5s ease}
+  .form-success .ck{width:70px;height:70px;border-radius:50%;background:var(--sage-soft);color:var(--sage);display:grid;place-items:center;font-size:38px;margin:0 auto 18px}
+  .form-success h3{color:var(--navy)}
+  .form-success p{color:var(--muted);margin-top:8px}
+
+  /* ============ FOOTER ============ */
+  footer.ft{background:var(--navy3);color:rgba(255,255,255,.72);padding:64px 0 30px}
+  .ft-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+  .ft-brand img{height:46px;margin-bottom:18px}
+  .ft-brand p{font-size:15px;max-width:280px}
+  .ft h4{color:#fff;font-family:var(--sans);font-size:14px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+  .ft a,.ft .li{display:block;font-size:15px;color:rgba(255,255,255,.72);margin-bottom:9px;transition:.2s}
+  .ft a:hover{color:var(--gold2)}
+  .ft .lic{font-size:12.5px;color:rgba(255,255,255,.45);margin-top:4px}
+  .ft-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:48px;padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:13.5px;color:rgba(255,255,255,.5)}
+  .ft-bottom .built{color:rgba(255,255,255,.5)}
+  .ft-bottom .built a{color:var(--gold2)}
+
+  /* back to top */
+  .totop{position:fixed;bottom:26px;right:26px;z-index:90;width:50px;height:50px;border-radius:50%;background:var(--navy);color:#fff;
+    border:none;cursor:pointer;font-size:20px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateY(12px);transition:.3s}
+  .totop.on{opacity:1;pointer-events:auto;transform:none}
+  .totop:hover{background:var(--gold);color:#1f1606}
+
+  /* mobile nav panel */
+  .mnav{position:fixed;inset:0;z-index:99;background:var(--navy3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    opacity:0;pointer-events:none;transition:.3s}
+  .mnav.on{opacity:1;pointer-events:auto}
+  .mnav a{color:#fff;font-family:var(--serif);font-size:26px;padding:10px}
+  .mnav .btn{margin-top:18px}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:980px){
+    .about,.fac-card,.contact-grid{grid-template-columns:1fr}
+    .about .imgstack{order:-1}
+    .fac-card .ph{min-height:280px}
+    .amen-grid{grid-template-columns:repeat(2,1fr)}
+    .gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:170px}
+    .ft-grid{grid-template-columns:1fr 1fr}
+    .stats .grid{grid-template-columns:repeat(2,1fr);gap:34px 20px}
+  }
+  @media(max-width:680px){
+    body{font-size:16px}
+    nav.links,.nav-cta{display:none}
+    .hamburger{display:flex}
+    section.block{padding:64px 0}
+    .amen-grid{grid-template-columns:1fr}
+    .gallery{grid-template-columns:repeat(2,1fr)}
+    .gallery .wide{grid-column:span 2}
+    .testi{padding:44px 26px}
+    .fac-card .body{padding:32px 26px}
+    .two{grid-template-columns:1fr}
+    .ft-grid{grid-template-columns:1fr}
+    .hero-meta{gap:20px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="bar">
+    <a href="#top" class="brand"><img src="img/logo-white.png" alt="Regal Care" /></a>
+    <nav class="links">
+      <a href="#about">About</a>
+      <a href="#facilities">Our Homes</a>
+      <a href="#amenities">Amenities</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#faq">FAQs</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#contact" class="btn btn-gold nav-cta">Schedule a Visit</a>
+    <button class="hamburger" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mnav" id="mnav">
+  <a href="#about">About</a>
+  <a href="#facilities">Our Homes</a>
+  <a href="#amenities">Amenities</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#faq">FAQs</a>
+  <a href="#contact">Contact</a>
+  <a href="#contact" class="btn btn-gold">Schedule a Visit</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-slides" id="slides">
+    <div class="slide on" style="background-image:url('img/hero-1.jpg')"></div>
+    <div class="slide" style="background-image:url('img/hero-2.jpg')"></div>
+  </div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <span class="eyebrow">Residential Care · Simi Valley, California</span>
+      <h1>A place that truly feels like <em>home.</em></h1>
+      <p class="lede">Regal Care is our flagship six-bed residential care home in Simi Valley's Texas Tract neighborhood — spacious interiors, a beautifully maintained garden, and 24-hour awake staff who know every resident by name.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-gold">Schedule a Visit →</a>
+        <a href="#facilities" class="btn btn-ghost">Explore Our Homes</a>
+      </div>
+      <div class="hero-meta">
+        <div class="m"><b>6</b><span>Intimate resident capacity</span></div>
+        <div class="m"><b>24/7</b><span>Awake, on-site care staff</span></div>
+        <div class="m"><b>3</b><span>Licensed care homes</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-dots" id="slideDots">
+    <button class="on" aria-label="Slide 1"></button>
+    <button aria-label="Slide 2"></button>
+  </div>
+  <div class="scroll-cue"><span class="dot"></span>Scroll</div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="stats">
+  <div class="wrap">
+    <div class="grid">
+      <div class="s reveal"><b data-count="6">0</b><span>Private &amp; shared rooms</span></div>
+      <div class="s reveal d1"><b data-count="24" data-suffix="/7">0</b><span>Hours awake supervision</span></div>
+      <div class="s reveal d2"><b data-count="100" data-suffix="%">0</b><span>State-licensed homes</span></div>
+      <div class="s reveal d3"><b data-prefix="$" data-count="6500">0</b><span>Starting per month</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="block" id="about">
+  <div class="wrap">
+    <div class="about">
+      <div>
+        <span class="eyebrow reveal">Welcome to Regal Care</span>
+        <h2 class="reveal d1" style="font-size:clamp(30px,4.2vw,44px);margin-top:14px">Personal care, in a real neighborhood home — not an institution.</h2>
+        <p class="reveal d2" style="color:var(--muted);font-size:18px;margin-top:18px">Tucked into Simi Valley's quiet Texas Tract neighborhood, just east of Tapo Street, Regal Care offers the warmth of a family home with the dependability of professional, around-the-clock care. With only six residents, every person receives attention that larger facilities simply can't match.</p>
+        <ul class="checks reveal d3">
+          <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#e7efe4"/><path d="M7 12.5l3 3 6-6.5" stroke="#5f7d5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Six beds, by design.</b> A small home means familiar faces, consistent caregivers, and genuine relationships.</span></li>
+          <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#e7efe4"/><path d="M7 12.5l3 3 6-6.5" stroke="#5f7d5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Awake staff, day and night.</b> Someone is always up and ready — including throughout the night.</span></li>
+          <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#e7efe4"/><path d="M7 12.5l3 3 6-6.5" stroke="#5f7d5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>A garden to enjoy.</b> A beautifully maintained backyard with a vegetable garden, covered patio, and BBQ.</span></li>
+        </ul>
+        <a href="#facilities" class="btn btn-navy reveal d4" style="margin-top:30px">Meet Our Three Homes</a>
+      </div>
+      <div class="imgstack reveal d2">
+        <img src="img/g1.jpg" alt="Inside a Regal Care residential home" />
+        <div class="pill">
+          <div class="ic">🌿</div>
+          <div><b>Texas Tract</b><span>Simi Valley, CA 93063</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FACILITIES ============ -->
+<section class="block" id="facilities" style="background:var(--cream2)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Our Care Homes</span>
+      <h2>Three homes, one standard of care</h2>
+      <p>Choose the residence that fits your loved one best. Tap each home to see details, licensing, and how to reach the team.</p>
+    </div>
+
+    <div class="fac-tabs reveal d1">
+      <button class="fac-tab on" data-fac="0">Regal Care</button>
+      <button class="fac-tab" data-fac="1">Regal Residence</button>
+      <button class="fac-tab" data-fac="2">The Orchard</button>
+    </div>
+
+    <!-- Panel 0 -->
+    <div class="fac-panel on" data-panel="0">
+      <div class="fac-card">
+        <div class="ph" style="background-image:url('img/hero-1.jpg')"></div>
+        <div class="body">
+          <h3>Regal Care</h3>
+          <div class="tagrow"><span class="tag">Flagship Home</span><span class="tag">6 Beds</span><span class="tag">Garden &amp; Patio</span></div>
+          <p>Our flagship six-bed home features spacious interiors, wheelchair-friendly floors, and a beautifully maintained backyard garden — the heart of daily life here.</p>
+          <div class="fac-meta">
+            <div class="row"><span class="k">Address</span><b>3316 Greenville Drive, Simi Valley, CA 93063</b></div>
+            <div class="row"><span class="k">Phone</span><b><a href="tel:18058421991" style="color:var(--gold)">805-842-1991</a></b></div>
+            <div class="row"><span class="k">Fax</span><b>805-624-4262</b></div>
+            <div class="row"><span class="k">License</span><b>#565802408</b></div>
+          </div>
+          <div class="fac-actions">
+            <a href="#contact" class="btn btn-gold">Visit Regal Care →</a>
+            <a href="tel:18058421991" class="btn btn-outline">Call Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 1 -->
+    <div class="fac-panel" data-panel="1">
+      <div class="fac-card">
+        <div class="ph" style="background-image:url('img/g4.jpg')"></div>
+        <div class="body">
+          <h3>Regal Residence</h3>
+          <div class="tagrow"><span class="tag">Residential Care</span><span class="tag">Personalized</span></div>
+          <p>A warm, well-appointed residence offering the same hands-on, around-the-clock care that defines the Regal name — in a comfortable, home-like setting.</p>
+          <div class="fac-meta">
+            <div class="row"><span class="k">Phone</span><b><a href="tel:18052102154" style="color:var(--gold)">805-210-2154</a></b></div>
+            <div class="row"><span class="k">Fax</span><b>805-624-4262</b></div>
+            <div class="row"><span class="k">License</span><b>#565850605</b></div>
+          </div>
+          <div class="fac-actions">
+            <a href="#contact" class="btn btn-gold">Visit Regal Residence →</a>
+            <a href="tel:18052102154" class="btn btn-outline">Call Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 2 -->
+    <div class="fac-panel" data-panel="2">
+      <div class="fac-card">
+        <div class="ph" style="background-image:url('img/g6.jpg')"></div>
+        <div class="body">
+          <h3>The Orchard</h3>
+          <div class="tagrow"><span class="tag">Residential Care</span><span class="tag">Tranquil Setting</span></div>
+          <p>A peaceful residence designed for comfort and dignity, with attentive caregivers and the quiet, restful atmosphere families look for.</p>
+          <div class="fac-meta">
+            <div class="row"><span class="k">Phone</span><b><a href="tel:18052411555" style="color:var(--gold)">805-241-1555</a></b></div>
+            <div class="row"><span class="k">Fax</span><b>805-624-4262</b></div>
+            <div class="row"><span class="k">License</span><b>#565850585</b></div>
+          </div>
+          <div class="fac-actions">
+            <a href="#contact" class="btn btn-gold">Visit The Orchard →</a>
+            <a href="tel:18052411555" class="btn btn-outline">Call Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AMENITIES ============ -->
+<section class="block" id="amenities">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Comfort &amp; Care</span>
+      <h2>Thoughtful amenities in every home</h2>
+      <p>Everything is designed around safety, dignity, and the small comforts that make a house feel like home.</p>
+    </div>
+    <div class="amen-grid">
+      <div class="amen reveal"><div class="ic">🛏️</div><h3>Furnished Rooms</h3><p>Electric beds and a wireless call system in every furnished room, so help is always one button away.</p></div>
+      <div class="amen reveal d1"><div class="ic">♿</div><h3>Wheelchair-Friendly</h3><p>Level, accessible floors throughout — easy and safe to navigate for every resident.</p></div>
+      <div class="amen reveal d2"><div class="ic">🌱</div><h3>Vegetable Garden</h3><p>A tended vegetable garden residents can enjoy, watch grow, and even help care for.</p></div>
+      <div class="amen reveal"><div class="ic">🍳</div><h3>Modern Appliances</h3><p>A fully equipped, modern kitchen supporting fresh, home-cooked daily meals.</p></div>
+      <div class="amen reveal d1"><div class="ic">🔥</div><h3>Covered Patio &amp; BBQ</h3><p>A shaded outdoor patio with a BBQ — perfect for fresh air, gatherings, and family visits.</p></div>
+      <div class="amen reveal d2"><div class="ic">🌙</div><h3>24-Hour Awake Staff</h3><p>Caregivers stay awake and on duty around the clock, including throughout the night.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="block" id="gallery" style="background:var(--cream2)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Take a Look Around</span>
+      <h2>A glimpse inside our homes</h2>
+      <p>Real photos from our Simi Valley residences. Click any image to view it full-size.</p>
+    </div>
+    <div class="gallery reveal d1" id="gallery">
+      <figure class="wide tall"><img src="img/hero-1.jpg" alt="Regal Care living space" /></figure>
+      <figure><img src="img/g1.jpg" alt="Interior" /></figure>
+      <figure><img src="img/g2.jpg" alt="Bedroom" /></figure>
+      <figure><img src="img/g3.jpg" alt="Common area" /></figure>
+      <figure><img src="img/g5.jpg" alt="Dining" /></figure>
+      <figure class="wide"><img src="img/hero-2.jpg" alt="Garden and patio" /></figure>
+      <figure><img src="img/g6.jpg" alt="Patio" /></figure>
+      <figure><img src="img/g7.jpg" alt="Garden" /></figure>
+      <figure><img src="img/g4.jpg" alt="Living room" /></figure>
+    </div>
+  </div>
+</section>
+
+<!-- lightbox -->
+<div class="lb" id="lb">
+  <button class="x" id="lbX" aria-label="Close">×</button>
+  <button class="arw prev" id="lbPrev" aria-label="Previous">‹</button>
+  <img id="lbImg" src="" alt="" />
+  <button class="arw next" id="lbNext" aria-label="Next">›</button>
+  <div class="count" id="lbCount"></div>
+</div>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="block" id="testimonials">
+  <div class="wrap">
+    <div class="testi reveal">
+      <div class="qmark">"</div>
+      <div class="stars">★★★★★</div>
+      <div class="testi-track" id="testiTrack">
+        <div class="testi-item on">
+          <p>The caregivers know my mother by name and treat her like family. After two years, I still feel like we made the best decision we possibly could have.</p>
+          <div class="who">Daughter of a resident<span>Regal Care, Simi Valley</span></div>
+        </div>
+        <div class="testi-item">
+          <p>It doesn't feel like a facility — it feels like a real home. The garden, the home-cooked meals, the staff who are always awake at night. That peace of mind is everything.</p>
+          <div class="who">Family member<span>Regal Residence</span></div>
+        </div>
+        <div class="testi-item">
+          <p>Small, clean, and personal. With only six residents, my father gets the attention he deserves. I can't recommend the Regal team highly enough.</p>
+          <div class="who">Son of a resident<span>The Orchard</span></div>
+        </div>
+      </div>
+      <div class="testi-dots" id="testiDots">
+        <button class="on" aria-label="Testimonial 1"></button>
+        <button aria-label="Testimonial 2"></button>
+        <button aria-label="Testimonial 3"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="block" id="faq" style="background:var(--cream2)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Good to Know</span>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq-list reveal d1">
+      <div class="faq">
+        <button class="q">How much does Regal Care cost?<span class="ico">+</span></button>
+        <div class="a"><p>Care starts at <b>$6,500 per month</b>. Final pricing depends on the level of care, room type, and the specific home you choose. We're happy to walk you through options during a visit or a quick phone call.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">How many residents live in each home?<span class="ico">+</span></button>
+        <div class="a"><p>Our flagship Regal Care home is a six-bed residence. Keeping homes small and intimate is intentional — it allows our caregivers to build real relationships and provide attentive, personalized care.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">Is there staff awake overnight?<span class="ico">+</span></button>
+        <div class="a"><p>Yes. We maintain <b>24-hour awake staff</b>, including throughout the night. A caregiver is always alert and ready to assist, so families can rest easy.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">What's included in the homes?<span class="ico">+</span></button>
+        <div class="a"><p>Furnished rooms with electric beds and a wireless call system, wheelchair-friendly floors, modern kitchen appliances, a covered patio with BBQ, and a maintained vegetable garden — all in a warm, residential setting.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">Where are you located?<span class="ico">+</span></button>
+        <div class="a"><p>Our flagship Regal Care home is at <b>3316 Greenville Drive, Simi Valley, CA 93063</b>, in the quiet Texas Tract neighborhood just east of Tapo Street. We also operate Regal Residence and The Orchard nearby.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">How do I schedule a visit?<span class="ico">+</span></button>
+        <div class="a"><p>Use the form below, or call our team directly at <b>805-587-2992</b>. We'll arrange a time to tour the home, answer your questions, and help you find the right fit for your loved one.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT / SCHEDULE A VISIT ============ -->
+<section class="block contact" id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="reveal">
+        <span class="eyebrow">Schedule a Visit</span>
+        <h2>Come see it for yourself.</h2>
+        <p class="lede">The best way to understand Regal Care is to walk through the door. Reach out and we'll arrange a personal tour at your convenience.</p>
+        <div class="contact-info">
+          <div class="ci"><div class="ic">📍</div><div><b>Regal Care (Flagship)</b><span>3316 Greenville Drive, Simi Valley, CA 93063</span></div></div>
+          <div class="ci"><div class="ic">📞</div><div><b>Speak with our team</b><span><a href="tel:18055872992">805-587-2992</a> · Don Brodt</span></div></div>
+          <div class="ci"><div class="ic">✉️</div><div><b>Email us</b><span><a href="mailto:Info@regalcare.org">Info@regalcare.org</a></span></div></div>
+        </div>
+      </div>
+
+      <form class="visit reveal d1" id="visitForm" novalidate>
+        <h3>Request a Tour</h3>
+        <p class="sub">Tell us a little about your needs and we'll be in touch within one business day.</p>
+        <div class="two">
+          <div class="field"><label for="fname">First Name</label><input id="fname" name="fname" type="text" required /><div class="msg">Please enter your name.</div></div>
+          <div class="field"><label for="lname">Last Name</label><input id="lname" name="lname" type="text" required /><div class="msg">Please enter your last name.</div></div>
+        </div>
+        <div class="two">
+          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required /><div class="msg">Enter a valid email.</div></div>
+          <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" required /><div class="msg">Enter your phone number.</div></div>
+        </div>
+        <div class="field"><label for="home">Home of Interest</label>
+          <select id="home" name="home">
+            <option value="Regal Care">Regal Care (Flagship)</option>
+            <option value="Regal Residence">Regal Residence</option>
+            <option value="The Orchard">The Orchard</option>
+            <option value="Not sure yet">Not sure yet — help me choose</option>
+          </select>
+        </div>
+        <div class="field"><label for="msg">How can we help?</label><textarea id="msg" name="msg" placeholder="Tell us about your loved one and what you're looking for..."></textarea></div>
+        <button type="submit" class="btn btn-navy">Request My Visit →</button>
+        <div class="form-success" id="formSuccess">
+          <div class="ck">✓</div>
+          <h3>Thank you!</h3>
+          <p>Your request has been prepared. Our team will reach out within one business day to schedule your visit.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <img src="img/logo-white.png" alt="Regal Care" />
+        <p>Family-style residential care homes in Simi Valley, California — where every resident is known, valued, and cared for around the clock.</p>
+      </div>
+      <div>
+        <h4>Regal Care</h4>
+        <a href="tel:18058421991">805-842-1991</a>
+        <span class="li">Fax 805-624-4262</span>
+        <span class="li lic">License #565802408</span>
+      </div>
+      <div>
+        <h4>Regal Residence</h4>
+        <a href="tel:18052102154">805-210-2154</a>
+        <span class="li">Fax 805-624-4262</span>
+        <span class="li lic">License #565850605</span>
+      </div>
+      <div>
+        <h4>The Orchard</h4>
+        <a href="tel:18052411555">805-241-1555</a>
+        <span class="li">Fax 805-624-4262</span>
+        <span class="li lic">License #565850585</span>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© <span id="yr"></span> Regal Care. All rights reserved. · Info@regalcare.org · 805-587-2992</span>
+      <span class="built">Website by <a href="https://www.bvnofficial.com" target="_blank" rel="noopener">BVN</a></span>
+    </div>
+  </div>
+</footer>
+
+<button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- year ---- */
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  /* ---- sticky nav + back to top ---- */
+  var nav = document.getElementById("nav"), totop = document.getElementById("totop");
+  function onScroll(){
+    var y = window.scrollY;
+    nav.classList.toggle("scrolled", y > 40);
+    totop.classList.toggle("on", y > 600);
+    // scroll spy
+    var fromTop = y + 120, current = "";
+    document.querySelectorAll("section[id]").forEach(function(s){
+      if(s.offsetTop <= fromTop) current = s.id;
+    });
+    document.querySelectorAll("nav.links a").forEach(function(a){
+      a.classList.toggle("active", a.getAttribute("href") === "#"+current);
+    });
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+  totop.addEventListener("click", function(){ window.scrollTo({top:0,behavior:"smooth"}); });
+
+  /* ---- mobile nav ---- */
+  var ham = document.getElementById("ham"), mnav = document.getElementById("mnav");
+  function toggleMenu(open){ ham.classList.toggle("open",open); mnav.classList.toggle("on",open); document.body.style.overflow = open ? "hidden":""; }
+  ham.addEventListener("click", function(){ toggleMenu(!mnav.classList.contains("on")); });
+  mnav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", function(){ toggleMenu(false); }); });
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var hasIO = "IntersectionObserver" in window;
+
+  function setCount(el){
+    var target = +el.dataset.count, pre = el.dataset.prefix||"", suf = el.dataset.suffix||"";
+    if(reduceMotion){ el.textContent = pre + target.toLocaleString() + suf; return; }
+    var t0=null, dur=1400;
+    function step(ts){
+      if(!t0) t0=ts;
+      var p = Math.min((ts-t0)/dur,1), ease = 1-Math.pow(1-p,3), val = Math.round(target*ease);
+      el.textContent = pre + val.toLocaleString() + suf;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---- reveal on scroll ---- */
+  if(hasIO){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, {threshold:0.14});
+    document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+
+    /* ---- animated counters ---- */
+    var counted = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        setCount(e.target);
+        counted.unobserve(e.target);
+      });
+    }, {threshold:0.5});
+    document.querySelectorAll("[data-count]").forEach(function(el){ counted.observe(el); });
+  } else {
+    /* Fallback: no IntersectionObserver — reveal everything and show final numbers */
+    document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("in"); });
+    document.querySelectorAll("[data-count]").forEach(setCount);
+  }
+
+  /* ---- hero slideshow ---- */
+  var slides = document.querySelectorAll("#slides .slide"), dots = document.querySelectorAll("#slideDots button"), si=0;
+  function goSlide(n){
+    slides[si].classList.remove("on"); dots[si].classList.remove("on");
+    si = (n+slides.length)%slides.length;
+    slides[si].classList.add("on"); dots[si].classList.add("on");
+  }
+  var heroTimer = setInterval(function(){ goSlide(si+1); }, 6000);
+  dots.forEach(function(d,i){ d.addEventListener("click", function(){ clearInterval(heroTimer); goSlide(i); heroTimer=setInterval(function(){goSlide(si+1);},6000); }); });
+
+  /* ---- facility tabs ---- */
+  var facTabs = document.querySelectorAll(".fac-tab"), facPanels = document.querySelectorAll(".fac-panel");
+  facTabs.forEach(function(tab){
+    tab.addEventListener("click", function(){
+      var idx = tab.dataset.fac;
+      facTabs.forEach(function(t){ t.classList.remove("on"); });
+      facPanels.forEach(function(p){ p.classList.remove("on"); });
+      tab.classList.add("on");
+      document.querySelector('.fac-panel[data-panel="'+idx+'"]').classList.add("on");
+    });
+  });
+
+  /* ---- testimonials carousel ---- */
+  var tItems = document.querySelectorAll(".testi-item"), tDots = document.querySelectorAll("#testiDots button"), ti=0;
+  function goTesti(n){
+    tItems[ti].classList.remove("on"); tDots[ti].classList.remove("on");
+    ti = (n+tItems.length)%tItems.length;
+    tItems[ti].classList.add("on"); tDots[ti].classList.add("on");
+  }
+  var tTimer = setInterval(function(){ goTesti(ti+1); }, 5500);
+  tDots.forEach(function(d,i){ d.addEventListener("click", function(){ clearInterval(tTimer); goTesti(i); tTimer=setInterval(function(){goTesti(ti+1);},5500); }); });
+
+  /* ---- FAQ accordion ---- */
+  document.querySelectorAll(".faq .q").forEach(function(q){
+    q.addEventListener("click", function(){
+      var item = q.parentElement, ans = item.querySelector(".a"), open = item.classList.contains("open");
+      document.querySelectorAll(".faq").forEach(function(f){ f.classList.remove("open"); f.querySelector(".a").style.maxHeight=null; });
+      if(!open){ item.classList.add("open"); ans.style.maxHeight = ans.scrollHeight+"px"; }
+    });
+  });
+
+  /* ---- gallery lightbox ---- */
+  var figs = Array.prototype.slice.call(document.querySelectorAll("#gallery figure img"));
+  var lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"),
+      lbCount = document.getElementById("lbCount"), li = 0;
+  function openLb(i){ li=i; lbImg.src = figs[i].src; lbImg.alt = figs[i].alt; lbCount.textContent=(i+1)+" / "+figs.length; lb.classList.add("on"); document.body.style.overflow="hidden"; }
+  function closeLb(){ lb.classList.remove("on"); document.body.style.overflow=""; }
+  function moveLb(d){ openLb((li+d+figs.length)%figs.length); }
+  figs.forEach(function(img,i){ img.parentElement.addEventListener("click", function(){ openLb(i); }); });
+  document.getElementById("lbX").addEventListener("click", closeLb);
+  document.getElementById("lbPrev").addEventListener("click", function(e){ e.stopPropagation(); moveLb(-1); });
+  document.getElementById("lbNext").addEventListener("click", function(e){ e.stopPropagation(); moveLb(1); });
+  lb.addEventListener("click", function(e){ if(e.target===lb) closeLb(); });
+  document.addEventListener("keydown", function(e){
+    if(!lb.classList.contains("on")) return;
+    if(e.key==="Escape") closeLb(); else if(e.key==="ArrowRight") moveLb(1); else if(e.key==="ArrowLeft") moveLb(-1);
+  });
+
+  /* ---- contact form validation ---- */
+  var form = document.getElementById("visitForm"), success = document.getElementById("formSuccess");
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var ok = true;
+    [["fname",function(v){return v.trim().length>0;}],
+     ["lname",function(v){return v.trim().length>0;}],
+     ["email",validEmail],
+     ["phone",function(v){return v.replace(/[^0-9]/g,"").length>=7;}]
+    ].forEach(function(pair){
+      var el = document.getElementById(pair[0]), field = el.closest(".field"), good = pair[1](el.value);
+      field.classList.toggle("err", !good);
+      if(!good) ok=false;
+    });
+    if(!ok){ form.querySelector(".field.err input").focus(); return; }
+    // Build a mailto so the inquiry actually reaches the team (no backend required)
+    var data = {
+      name: document.getElementById("fname").value+" "+document.getElementById("lname").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      home: document.getElementById("home").value,
+      msg: document.getElementById("msg").value
+    };
+    var body = "Name: "+data.name+"%0D%0AEmail: "+data.email+"%0D%0APhone: "+data.phone+
+               "%0D%0AHome of interest: "+data.home+"%0D%0A%0D%0AMessage:%0D%0A"+encodeURIComponent(data.msg);
+    var mailto = "mailto:Info@regalcare.org?subject="+encodeURIComponent("Tour Request — "+data.name)+"&body="+body;
+    // Show confirmation, then open the user's email client with everything pre-filled
+    form.querySelectorAll(".field,.two,button[type=submit],.sub,h3").forEach(function(n){ n.style.display="none"; });
+    success.classList.add("on");
+    window.location.href = mailto;
+  });
+
+})();
+</script>
+</body>
+</html>
