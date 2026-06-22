@@ -4235,6 +4235,209 @@ export const blogPosts: BlogPost[] = [
     ],
   },
 
+  // ─────────────────────────────────────────────────────────
+  // POST: Local SEO Philippines (Google Maps / Map Pack)
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "local-seo-philippines-google-maps-ranking-guide",
+    title: "Local SEO Philippines: How to Rank on Google Maps and Get Found by Nearby Customers (2026)",
+    metaTitle: "Local SEO Philippines: Rank on Google Maps in 2026 | BVN",
+    metaDescription:
+      "A step-by-step local SEO guide for Philippine businesses. Optimize your Google Business Profile, win the Map Pack, and turn 'near me' searches into paying customers.",
+    category: "Marketing",
+    readTime: "9 min read",
+    date: "June 15, 2026",
+    dateISO: "2026-06-15",
+    excerpt:
+      "When someone in your area searches 'dentist near me' or 'catering Las Piñas', the business that shows up first usually wins the customer. This is the playbook for getting your Philippine business into Google's local Map Pack and keeping it there.",
+    keywords: [
+      "local SEO Philippines",
+      "Google Maps ranking Philippines",
+      "Google Business Profile Philippines",
+      "rank near me searches Philippines",
+      "local SEO guide PH",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "Most local businesses in the Philippines compete for the same handful of customers searching online every day: 'dentist near me', 'catering Las Piñas', 'plumber Quezon City', 'salon open now'. The business that appears in the top three Google Maps results — the 'Map Pack' — captures the overwhelming majority of those clicks and calls. Everyone below it fights over the scraps. This guide shows you exactly how to climb into that Map Pack, even if you have no SEO background.",
+      },
+      { type: "h2", text: "What Local SEO Actually Is" },
+      {
+        type: "paragraph",
+        text: "Local SEO is the practice of getting your business to show up when nearby people search for what you sell. It is different from regular SEO: instead of competing with the whole internet for a keyword, you are competing with other businesses in your city or barangay. Google decides who ranks based on three things — relevance (does your business match the search), distance (how close you are to the searcher), and prominence (how trusted and well-reviewed you are).",
+      },
+      {
+        type: "callout",
+        text: "Roughly half of all Google searches have local intent, and the Map Pack appears above the normal blue-link results. For a local Filipino business, ranking here is often worth more than ranking #1 in the regular results.",
+      },
+      { type: "h2", text: "Step 1: Claim and Fully Optimize Your Google Business Profile" },
+      {
+        type: "paragraph",
+        text: "Your Google Business Profile (formerly Google My Business) is the single most important asset in local SEO. It is the listing that powers your Map Pack appearance, and it is free. If you have not claimed it, that is your first move — search your business name on Google and look for the 'Own this business?' link, then verify it.",
+      },
+      { type: "h3", text: "Get the fundamentals exactly right" },
+      {
+        type: "list",
+        items: [
+          "Business name: use your real name exactly — do not stuff keywords into it, Google penalizes this",
+          "Primary category: pick the most specific category that fits (e.g. 'Dental clinic' not just 'Doctor')",
+          "NAP consistency: your Name, Address, and Phone must be identical everywhere online",
+          "Service area and hours: keep hours accurate, including holidays — wrong hours kill trust",
+          "Photos: add real, well-lit photos of your storefront, team, and work — listings with photos get far more clicks",
+          "Services and products: list them all, with short descriptions, so Google understands what you offer",
+        ],
+      },
+      { type: "h2", text: "Step 2: Win the Review Game" },
+      {
+        type: "paragraph",
+        text: "Reviews are one of the strongest local ranking signals, and they directly influence whether a searcher chooses you over a competitor. The number of reviews, how recent they are, your average rating, and whether you reply all matter. The goal is a steady stream of genuine reviews, not a one-time burst.",
+      },
+      {
+        type: "numbered",
+        items: [
+          "Ask every happy customer for a review — in person, via SMS, or with a QR code at your counter",
+          "Make it frictionless: send a direct link to your review form so it is one tap",
+          "Reply to every review, positive or negative — a calm, helpful reply to a complaint builds more trust than a perfect rating",
+          "Never buy fake reviews — Google detects and penalizes them, and it can get your listing suspended",
+        ],
+      },
+      { type: "h2", text: "Step 3: Build Local Citations and Consistent NAP" },
+      {
+        type: "paragraph",
+        text: "A citation is any mention of your business name, address, and phone number on another website — directories, social profiles, local listings. Google cross-checks these to confirm your business is real and where you say it is. Inconsistent details (an old address here, a different phone there) confuse Google and hurt rankings. List your business on the major Philippine and global directories and keep every detail identical.",
+      },
+      { type: "h2", text: "Step 4: Optimize Your Website for Local Search" },
+      {
+        type: "paragraph",
+        text: "Your Google Business Profile does the heavy lifting, but your website backs it up. Google looks at your site to confirm relevance and prominence. A fast, mobile-friendly website with clear local signals reinforces everything your profile claims.",
+      },
+      {
+        type: "list",
+        items: [
+          "Put your city/area and service in your page titles and headings naturally (e.g. 'Dental Clinic in Las Piñas')",
+          "Create a dedicated page for each location or major service you offer",
+          "Embed a Google Map and show your full address and phone in the footer of every page",
+          "Make the site load fast on mobile — most local searches happen on phones, and slow sites lose customers",
+          "Add structured data (LocalBusiness schema) so Google can read your details cleanly",
+        ],
+      },
+      { type: "h2", text: "Common Local SEO Mistakes That Keep You Off the Map" },
+      {
+        type: "list",
+        items: [
+          "Keyword-stuffing your business name — a fast track to a penalty",
+          "Inconsistent NAP across directories and your website",
+          "Ignoring reviews, or worse, arguing with reviewers in public",
+          "A slow, non-mobile-friendly website that frustrates the people your profile sends",
+          "Setting it up once and never updating photos, posts, or hours",
+        ],
+      },
+      { type: "h2", text: "How Long Does Local SEO Take?" },
+      {
+        type: "paragraph",
+        text: "Local SEO is faster than national SEO but still takes time. Claiming and optimizing your profile can produce visible movement within a few weeks. Building reviews, citations, and website authority to hold a top-three position is a 3 to 6 month effort. The good news: once you are in the Map Pack and maintaining it, the customers come in consistently and the cost per lead is far lower than paid ads.",
+      },
+      {
+        type: "cta",
+        heading: "Want your business in the top 3 of Google Maps?",
+        text: "BVN runs local SEO for Philippine and international businesses — Google Business Profile optimization, review systems, citations, and fast, search-ready websites. Book a free 15-minute call and we'll show you exactly where you rank today and how to climb.",
+      },
+    ],
+  },
+  // ─────────────────────────────────────────────────────────
+  // POST: Accept online payments in the Philippines
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: "accept-online-payments-philippines-gcash-cards-qrph-guide",
+    title: "How to Accept Online Payments in the Philippines: GCash, Cards & QR Ph (2026 Guide)",
+    metaTitle: "Accept Online Payments Philippines: GCash, Cards & QR Ph | BVN",
+    metaDescription:
+      "Set up online payments for your Philippine business. Compare GCash, cards, and QR Ph, understand the fees, and add a secure checkout that converts more customers.",
+    category: "Operations",
+    readTime: "8 min read",
+    date: "June 15, 2026",
+    dateISO: "2026-06-15",
+    excerpt:
+      "Filipino customers increasingly expect to pay with GCash, a card, or a quick QR scan — not cash on delivery. If your business still can't take a digital payment on the spot, you're quietly losing sales. Here's how to set it up properly.",
+    keywords: [
+      "accept online payments Philippines",
+      "GCash for business",
+      "QR Ph payments",
+      "online payment gateway Philippines",
+      "accept card payments Philippines",
+    ],
+    sections: [
+      {
+        type: "paragraph",
+        text: "The way Filipinos pay has changed permanently. E-wallets and QR payments have gone mainstream, the BSP's QR Ph standard is everywhere, and customers now expect to tap or scan instead of handing over cash. For any business — a clinic, a caterer, an online store, a service provider — being able to accept a digital payment the moment a customer is ready to buy is no longer optional. This guide covers the main ways to accept online payments in the Philippines, what they cost, and how to add a proper checkout to your business.",
+      },
+      { type: "h2", text: "Why Digital Payments Matter More Than Ever" },
+      {
+        type: "paragraph",
+        text: "Every extra step between 'I want to buy' and 'payment received' is a chance to lose the sale. When the only option is cash or a manual bank transfer, customers stall, forget, or change their minds. Offering instant digital payment removes that friction, gets you paid faster, reduces no-shows for bookings, and makes your business look modern and trustworthy.",
+      },
+      {
+        type: "callout",
+        text: "A booking that requires a deposit paid online shows up far more reliably than a 'reserved' slot with no payment. Taking payment up front is one of the simplest ways to cut no-shows.",
+      },
+      { type: "h2", text: "The Main Ways to Accept Payments in the Philippines" },
+      { type: "h3", text: "1. GCash" },
+      {
+        type: "paragraph",
+        text: "GCash is the most widely used e-wallet in the country, so accepting it removes a major objection for local customers. Beyond manually sending money to a number, a payment gateway lets you accept GCash inside a proper checkout — the customer taps 'Pay with GCash', approves it in their app, and you get an automatic confirmation and receipt. No screenshots, no manual checking.",
+      },
+      { type: "h3", text: "2. Debit and Credit Cards" },
+      {
+        type: "paragraph",
+        text: "Cards matter for higher-value purchases and for international customers. A gateway lets you accept Visa and Mastercard securely without ever touching the card details yourself — the gateway handles the sensitive data and the compliance. Note that cards usually carry a minimum transaction amount, so for very small charges an e-wallet or QR is the better fit.",
+      },
+      { type: "h3", text: "3. QR Ph" },
+      {
+        type: "paragraph",
+        text: "QR Ph is the national QR standard backed by the BSP. The customer scans one QR code with whichever banking or e-wallet app they already use, and the payment lands directly in your account. It is fast, familiar, and works across providers — ideal for in-person and on-the-spot payments. (Note: QR Ph usually needs to be activated with your payment provider before it appears at checkout.)",
+      },
+      { type: "h3", text: "4. Bank Transfer / InstaPay" },
+      {
+        type: "paragraph",
+        text: "Direct transfers still have their place, especially for larger B2B invoices. They are low-cost but more manual to reconcile. For day-to-day retail and bookings, an automated gateway checkout will serve you better.",
+      },
+      { type: "h2", text: "Payment Gateways: The Easiest Way to Accept Everything at Once" },
+      {
+        type: "paragraph",
+        text: "Rather than wiring up each payment method separately, most businesses use a payment gateway — a service that gives you a single secure checkout supporting GCash, cards, QR Ph and more. The gateway handles security, confirmations, receipts, and settlement to your bank account. Philippine-focused gateways make it straightforward to get set up, and they integrate cleanly into a website or booking flow.",
+      },
+      { type: "h2", text: "What Do Online Payments Cost?" },
+      {
+        type: "paragraph",
+        text: "Most gateways charge a small percentage per transaction rather than a fixed monthly fee, so you only pay when you get paid. Rates vary by method and provider — e-wallet and QR transactions are typically cheaper than card transactions. Always check the per-method rate, any minimum charge, and how quickly funds settle to your bank before committing.",
+      },
+      {
+        type: "list",
+        items: [
+          "Expect a per-transaction percentage that differs by method (e-wallet/QR usually lower than cards)",
+          "Watch for minimum transaction amounts, especially on card payments",
+          "Confirm the settlement schedule — how many days until the money reaches your bank",
+          "Factor fees into your pricing rather than absorbing them silently",
+        ],
+      },
+      { type: "h2", text: "Adding a Secure Checkout to Your Business" },
+      {
+        type: "paragraph",
+        text: "Accepting payments well is more than dropping a 'Pay here' button on a page. A checkout that converts is fast, mobile-first, shows the amount and what it's for clearly, supports the methods your customers actually use, and sends an instant receipt. It should also be secure (encrypted, with card data handled by the gateway, never stored by you) and tied into the rest of your operations so payments, bookings, and follow-ups stay in sync.",
+      },
+      { type: "h2", text: "Stop Losing Sales at the Last Step" },
+      {
+        type: "paragraph",
+        text: "You can do everything right — great product, strong marketing, a customer ready to buy — and still lose the sale if paying is awkward. Making it effortless to pay with GCash, a card, or a QR scan is one of the highest-ROI upgrades a Philippine business can make, and it pays for itself in recovered sales and fewer no-shows.",
+      },
+      {
+        type: "cta",
+        heading: "Want a secure checkout that takes GCash, cards & QR Ph?",
+        text: "BVN builds fast, mobile-first websites and booking flows with payments built in — so your customers can pay the moment they're ready. Book a free 15-minute call and we'll map out the right setup for your business.",
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {

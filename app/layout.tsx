@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ogImage } from "@/lib/og";
+import { organizationSchema, websiteSchema, jsonLdScript } from "@/lib/jsonld";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
@@ -45,6 +46,9 @@ export const metadata: Metadata = {
     ],
   },
   metadataBase: new URL("https://www.bvnofficial.com"),
+  alternates: {
+    canonical: "/",
+  },
   robots: {
     index: true,
     follow: true,
@@ -60,26 +64,6 @@ export const metadata: Metadata = {
     // ← Add your Google Search Console verification token here after connecting
     // google: "YOUR_VERIFICATION_TOKEN",
   },
-};
-
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "BVN",
-  url: "https://www.bvnofficial.com",
-  logo: "https://www.bvnofficial.com/bvn-logo.png",
-  description:
-    "BVN is a global digital marketing and business automation agency trusted by 238+ clients worldwide. We help businesses across the globe — and locally in the Philippines — scale through marketing excellence and intelligent operations automation.",
-  contactPoint: {
-    "@type": "ContactPoint",
-    telephone: "+63-981-655-6555",
-    contactType: "customer service",
-    areaServed: "PH",
-    availableLanguage: ["English", "Filipino"],
-  },
-  sameAs: [
-    "https://www.facebook.com/bvndigital",
-  ],
 };
 
 export default function RootLayout({
@@ -99,7 +83,11 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={jsonLdScript(organizationSchema)}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={jsonLdScript(websiteSchema)}
         />
       </head>
       <body className="bg-navy-dark text-white font-body antialiased">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Tag, ArrowRight } from "lucide-react";
 import { blogPosts, getBlogPost, type ContentSection } from "@/lib/blog-posts";
 import { ogImage } from "@/lib/og";
+import { breadcrumbSchema, jsonLdScript, SITE_URL } from "@/lib/jsonld";
 import GlowButton from "@/components/ui/GlowButton";
 import ShareButtons from "@/components/ui/ShareButtons";
 
@@ -65,37 +66,61 @@ export default function BlogPostPage({
   const accentClass = isMarketing ? "text-orange" : "text-blue-400";
   const accentBg = isMarketing ? "bg-orange/10 border-orange/20" : "bg-blue-400/10 border-blue-400/20";
 
+  // Word count (improves Article richness signals)
+  const wordCount = post.sections.reduce((n, s) => {
+    if (s.type === "paragraph" || s.type === "h2" || s.type === "h3" || s.type === "callout") {
+      return n + (s.text?.split(/\s+/).length ?? 0);
+    }
+    if (s.type === "list" || s.type === "numbered") {
+      return n + s.items.join(" ").split(/\s+/).length;
+    }
+    return n;
+  }, 0);
+
   // JSON-LD structured data for Google
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     description: post.metaDescription,
+    image: ogImage({ title: post.title, eyebrow: post.category }).url,
     datePublished: post.dateISO,
+    dateModified: post.dateISO,
+    articleSection: post.category,
+    wordCount,
+    inLanguage: "en",
     author: {
       "@type": "Organization",
       name: "BVN",
-      url: "https://www.bvnofficial.com",
+      url: SITE_URL,
     },
     publisher: {
       "@type": "Organization",
       name: "BVN",
-      url: "https://www.bvnofficial.com",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/bvn-logo.png`,
+      },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://www.bvnofficial.com/blog/${post.slug}`,
+      "@id": `${SITE_URL}/blog/${post.slug}`,
     },
     keywords: post.keywords.join(", "),
   };
 
+  const breadcrumb = breadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: post.title, path: `/blog/${post.slug}` },
+  ]);
+
   return (
     <>
       {/* JSON-LD structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(jsonLd)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
 
       {/* ── Top bar ─────────────────────────────────────── */}
       <div className="pt-20 md:pt-24 bg-navy-dark" />

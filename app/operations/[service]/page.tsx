@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { operationsServices, getOperationsService } from "@/lib/operations-services";
 import { ogImage } from "@/lib/og";
+import { breadcrumbSchema, serviceSchema, jsonLdScript } from "@/lib/jsonld";
 import ServicePageClient from "./ServicePageClient";
 
 export async function generateStaticParams() {
@@ -31,5 +32,25 @@ export async function generateMetadata({ params }: { params: { service: string }
 export default function OperationsServicePage({ params }: { params: { service: string } }) {
   const service = getOperationsService(params.service);
   if (!service) notFound();
-  return <ServicePageClient service={service} />;
+
+  const path = `/operations/${service.slug}`;
+  const breadcrumb = breadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Operations", path: "/operations" },
+    { name: service.title, path },
+  ]);
+  const serviceLd = serviceSchema({
+    name: service.title,
+    description: service.shortDesc,
+    path,
+    category: "Business Automation",
+  });
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(serviceLd)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
+      <ServicePageClient service={service} />
+    </>
+  );
 }
