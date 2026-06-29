@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TintGard — Window Tinting Specialists in Brisbane</title>
+<meta name="description" content="TintGard are Brisbane's trusted window tinting specialists — car, home, office and commercial tinting. 99% UV protection, heat &amp; glare reduction, and a lifetime warranty. Get an instant quote today." />
+<meta name="robots" content="noindex, nofollow" />
+<script>document.documentElement.classList.add("js");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* TintGard brand: bold red on sleek charcoal — automotive tint aesthetic */
+    --red:#e11d2a; --red2:#ff3340; --red3:#b3121d; --red-soft:rgba(225,29,42,.14);
+    --bg:#0b0d11; --bg2:#10131a; --bg3:#070809;
+    --card:#161a22; --card2:#1c2129; --card3:#222834;
+    --text:#eef1f6; --muted:#99a2b2; --muted2:#727c8c;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --shadow:0 24px 60px -24px rgba(0,0,0,.75);
+    --shadow-sm:0 12px 30px -16px rgba(0,0,0,.7);
+    --radius:18px; --radius-sm:12px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{font-family:var(--disp);font-weight:600;line-height:1.1;letter-spacing:-.015em;color:#fff}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .eyebrow{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red2);display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--red);display:inline-block}
+  .eyebrow.center::before{display:none}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-weight:600;font-size:16px;
+    padding:14px 26px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:.22s ease;white-space:nowrap}
+  .btn-red{background:var(--red);color:#fff;box-shadow:0 12px 28px -12px rgba(225,29,42,.75)}
+  .btn-red:hover{background:var(--red2);transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.32)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:#fff}
+  .btn-dark{background:#fff;color:var(--bg)}
+  .btn-dark:hover{transform:translateY(-2px);background:#e8ebf1}
+  .btn-outline{background:transparent;color:#fff;border-color:var(--line2)}
+  .btn-outline:hover{border-color:var(--red);color:var(--red2)}
+
+  /* ============ HEADER ============ */
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.3s ease}
+  header.nav .bar{display:flex;align-items:center;gap:24px;padding:18px 24px;max-width:1220px;margin:0 auto;transition:.3s}
+  header.nav.scrolled{background:rgba(8,10,14,.86);backdrop-filter:blur(14px);box-shadow:0 8px 30px -16px rgba(0,0,0,.8);border-bottom:1px solid var(--line)}
+  header.nav.scrolled .bar{padding:12px 24px}
+  .brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+  .brand .logo-svg{height:34px;width:auto;transition:.3s}
+  header.nav.scrolled .brand .logo-svg{height:30px}
+  nav.links{display:flex;align-items:center;gap:28px}
+  nav.links a{font-weight:500;font-size:15px;color:rgba(255,255,255,.82);position:relative;padding:4px 0;transition:.2s}
+  nav.links a::after{content:"";position:absolute;left:0;bottom:-3px;height:2px;width:0;background:var(--red2);transition:.25s}
+  nav.links a:hover,nav.links a.active{color:#fff}
+  nav.links a:hover::after,nav.links a.active::after{width:100%}
+  .nav-cta{margin-left:4px}
+  .hamburger{display:none;background:none;border:none;cursor:pointer;width:42px;height:42px;flex-direction:column;justify-content:center;gap:5px;padding:8px}
+  .hamburger span{display:block;height:2px;background:#fff;border-radius:2px;transition:.3s}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:center;color:#fff;overflow:hidden}
+  .hero-slides{position:absolute;inset:0;z-index:0}
+  .hero-slides .slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.07);transition:opacity 1.4s ease,transform 8s ease}
+  .hero-slides .slide.on{opacity:1;transform:scale(1)}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(95deg,rgba(8,9,12,.95) 0%,rgba(8,9,12,.78) 42%,rgba(8,9,12,.30) 100%)}
+  .hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(8,9,12,.9),transparent 38%)}
+  .hero .wrap{position:relative;z-index:2;width:100%;padding-top:96px;padding-bottom:64px}
+  .hero-inner{max-width:700px}
+  .hero .badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.07);border:1px solid var(--line2);
+    padding:7px 15px;border-radius:999px;font-size:13.5px;font-weight:600;color:#fff;margin-bottom:22px}
+  .hero .badge b{color:var(--red2)}
+  .hero h1{color:#fff;font-size:clamp(38px,6.2vw,70px);font-weight:700;margin:0;letter-spacing:-.02em}
+  .hero h1 em{font-style:normal;color:var(--red2)}
+  .hero p.lede{font-size:clamp(17px,2.2vw,20px);color:rgba(255,255,255,.86);margin-top:22px;max-width:560px;line-height:1.6}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:34px;margin-top:46px;padding-top:28px;border-top:1px solid rgba(255,255,255,.16)}
+  .hero-meta .m{display:flex;flex-direction:column}
+  .hero-meta .m b{font-family:var(--disp);font-size:26px;color:#fff;font-weight:700}
+  .hero-meta .m span{font-size:13px;color:rgba(255,255,255,.7);letter-spacing:.02em}
+  .scroll-cue{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.65);
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .scroll-cue .dot{width:24px;height:38px;border:2px solid rgba(255,255,255,.45);border-radius:14px;position:relative}
+  .scroll-cue .dot::after{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:4px;height:7px;border-radius:2px;background:#fff;animation:scrolly 1.6s infinite}
+  @keyframes scrolly{0%{opacity:0;top:7px}40%{opacity:1}80%{opacity:0;top:18px}100%{opacity:0}}
+  .slide-dots{position:absolute;bottom:28px;right:30px;z-index:3;display:flex;gap:10px}
+  .slide-dots button{width:11px;height:11px;border-radius:50%;border:none;background:rgba(255,255,255,.35);cursor:pointer;transition:.25s;padding:0}
+  .slide-dots button.on{background:var(--red2);transform:scale(1.25)}
+
+  /* ============ MARQUEE / TRUST ============ */
+  .marquee{background:var(--red);overflow:hidden;border-top:1px solid rgba(0,0,0,.15)}
+  .marquee .track{display:flex;gap:48px;white-space:nowrap;padding:14px 0;animation:scrollx 26s linear infinite;font-family:var(--disp);font-weight:600;font-size:15px;color:#fff;letter-spacing:.02em}
+  .marquee .track span{display:inline-flex;align-items:center;gap:14px;opacity:.95}
+  .marquee .track span::after{content:"●";font-size:8px;opacity:.6}
+  @keyframes scrollx{to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.marquee .track{animation:none}}
+
+  /* ============ SECTION SHELL ============ */
+  section.block{padding:100px 0;position:relative}
+  .sec-head{max-width:680px;margin-bottom:50px}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+  .sec-head.center .eyebrow{justify-content:center}
+  .sec-head h2{font-size:clamp(30px,4.4vw,46px);margin-top:16px;letter-spacing:-.02em}
+  .sec-head p{color:var(--muted);font-size:18px;margin-top:16px}
+
+  .js .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .js .reveal{opacity:1;transform:none;transition:none}
+    .hero-slides .slide{transition:opacity .4s ease}
+  }
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}.reveal.d5{transition-delay:.4s}
+
+  /* ============ STATS ============ */
+  .stats{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:60px 0}
+  .stats .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+  .stats .s b{font-family:var(--disp);font-size:clamp(34px,4.4vw,50px);font-weight:700;color:#fff;display:block}
+  .stats .s b i{font-style:normal;color:var(--red2)}
+  .stats .s span{font-size:14px;color:var(--muted);letter-spacing:.03em;margin-top:6px;display:block}
+
+  /* ============ SERVICES ============ */
+  .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px 28px;transition:.28s;position:relative;overflow:hidden}
+  .svc::before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--red),var(--red2));transition:.35s}
+  .svc:hover{transform:translateY(-7px);border-color:var(--line2);box-shadow:var(--shadow)}
+  .svc:hover::before{width:100%}
+  .svc .ic{width:54px;height:54px;border-radius:14px;background:var(--red-soft);display:grid;place-items:center;margin-bottom:20px;color:var(--red2)}
+  .svc h3{font-size:20px}
+  .svc p{color:var(--muted);font-size:15px;margin-top:10px}
+  .svc ul{list-style:none;margin-top:16px;display:grid;gap:8px}
+  .svc ul li{font-size:14px;color:var(--text);display:flex;gap:9px;align-items:flex-start}
+  .svc ul li::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--red-soft);flex-shrink:0;margin-top:3px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 12.5l3.2 3.2L18 7' stroke='%23ff3340' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:13px}
+
+  /* ============ TINT SHADE SELECTOR ============ */
+  .shade-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .glass-demo{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line2);aspect-ratio:16/11;background:#000}
+  .glass-scene{position:absolute;inset:0;background:
+     radial-gradient(circle at 72% 30%, #fff7d6 0%, #ffd36b 9%, rgba(255,196,92,0) 26%),
+     linear-gradient(180deg,#7fc4ff 0%,#aeddff 38%,#e9f4ff 60%,#cfe3c4 60%,#7faa63 100%)}
+  .glass-scene::after{content:"";position:absolute;left:0;right:0;bottom:0;height:32%;
+     background:linear-gradient(180deg,#5e8c46,#3c5e2c);opacity:.9}
+  .glass-scene .sky-build{position:absolute;left:8%;bottom:30%;width:84%;height:34%;
+     background:
+       linear-gradient(180deg,#5b6b86,#39435a) ,
+       repeating-linear-gradient(90deg,transparent 0 26px,rgba(0,0,0,.18) 26px 30px);
+     clip-path:polygon(0 60%,9% 60%,9% 20%,18% 20%,18% 45%,30% 45%,30% 5%,42% 5%,42% 40%,55% 40%,55% 22%,68% 22%,68% 55%,80% 55%,80% 30%,92% 30%,92% 50%,100% 50%,100% 100%,0 100%);
+     opacity:.85}
+  .glass-tint{position:absolute;inset:0;background:#0a1f2e;opacity:.5;transition:opacity .5s ease, background .5s ease;mix-blend-mode:multiply}
+  .glass-sheen{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,0) 22%,rgba(255,255,255,0) 70%,rgba(255,255,255,.08) 100%);pointer-events:none}
+  .glass-frame{position:absolute;inset:0;border:14px solid #11131a;border-radius:var(--radius);pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+  .glass-label{position:absolute;top:14px;left:14px;z-index:3;background:rgba(8,10,14,.72);backdrop-filter:blur(6px);
+    border:1px solid var(--line2);border-radius:999px;padding:7px 15px;font-family:var(--disp);font-weight:600;font-size:14px;color:#fff}
+  .glass-label b{color:var(--red2)}
+
+  .shade-panel .eyebrow{margin-bottom:14px}
+  .shade-panel h2{font-size:clamp(28px,3.6vw,40px)}
+  .shade-panel>p{color:var(--muted);font-size:17px;margin-top:14px}
+  .shade-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:26px 0 8px}
+  .shade-btn{background:var(--card);border:1.5px solid var(--line);border-radius:13px;padding:14px 8px;cursor:pointer;transition:.2s;text-align:center;color:var(--text)}
+  .shade-btn:hover{border-color:var(--line2)}
+  .shade-btn.on{border-color:var(--red);background:var(--red-soft)}
+  .shade-btn .sw{height:34px;border-radius:8px;margin-bottom:9px;border:1px solid rgba(255,255,255,.14)}
+  .shade-btn b{display:block;font-family:var(--disp);font-size:15px}
+  .shade-btn span{display:block;font-size:11.5px;color:var(--muted);letter-spacing:.02em;margin-top:1px}
+  .meters{margin-top:24px;display:grid;gap:15px}
+  .meter .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}
+  .meter .top b{font-weight:600}
+  .meter .top .val{font-family:var(--disp);font-weight:600;color:var(--red2)}
+  .meter .bar{height:8px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+  .meter .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--red3),var(--red2));width:0;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+
+  /* ============ BEFORE / AFTER ============ */
+  .ba{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line2);user-select:none;aspect-ratio:16/9;max-width:980px;margin:0 auto;cursor:ew-resize}
+  .ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+  .ba .after{clip-path:inset(0 0 0 50%)}
+  .ba .after-tint{position:absolute;inset:0;clip-path:inset(0 0 0 50%);background:linear-gradient(180deg,rgba(6,14,22,.62),rgba(6,14,22,.72));pointer-events:none}
+  .ba .lbl{position:absolute;top:16px;z-index:4;font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:.04em;
+    padding:6px 13px;border-radius:999px;background:rgba(8,10,14,.7);border:1px solid var(--line2);backdrop-filter:blur(6px)}
+  .ba .lbl.l{left:16px}.ba .lbl.r{right:16px;color:var(--red2)}
+  .ba .divider{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;z-index:5;transform:translateX(-50%);box-shadow:0 0 18px rgba(0,0,0,.6)}
+  .ba .handle{position:absolute;top:50%;left:50%;z-index:6;width:48px;height:48px;border-radius:50%;background:#fff;color:var(--bg);
+    transform:translate(-50%,-50%);display:grid;place-items:center;font-size:18px;box-shadow:0 8px 22px rgba(0,0,0,.5);cursor:ew-resize}
+  .ba-hint{text-align:center;color:var(--muted2);font-size:13.5px;margin-top:16px;letter-spacing:.02em}
+
+  /* ============ BENEFITS ============ */
+  .ben-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .ben{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:.25s}
+  .ben:hover{transform:translateY(-5px);border-color:var(--line2);box-shadow:var(--shadow-sm)}
+  .ben .ic{width:50px;height:50px;border-radius:13px;background:var(--red-soft);color:var(--red2);display:grid;place-items:center;font-size:24px;margin-bottom:16px}
+  .ben h3{font-size:19px}
+  .ben p{color:var(--muted);font-size:15px;margin-top:8px}
+
+  /* ============ GALLERY ============ */
+  .gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:14px}
+  .gallery figure{margin:0;overflow:hidden;border-radius:14px;cursor:pointer;position:relative;background:var(--card2);border:1px solid var(--line)}
+  .gallery figure img{width:100%;height:100%;object-fit:cover;transition:transform .55s ease}
+  .gallery figure::after{content:"⤢";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:26px;background:rgba(8,10,14,0);opacity:0;transition:.3s}
+  .gallery figure:hover img{transform:scale(1.09)}
+  .gallery figure:hover::after{background:rgba(8,10,14,.55);opacity:1}
+  .gallery .tall{grid-row:span 2}
+  .gallery .wide{grid-column:span 2}
+  .lb{position:fixed;inset:0;z-index:200;background:rgba(4,6,9,.95);display:none;align-items:center;justify-content:center;padding:40px}
+  .lb.on{display:flex}
+  .lb img{max-width:90vw;max-height:84vh;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+  .lb .x{position:absolute;top:24px;right:30px;color:#fff;font-size:34px;cursor:pointer;line-height:1;background:none;border:none}
+  .lb .arw{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:none;color:#fff;width:54px;height:54px;border-radius:50%;font-size:26px;cursor:pointer;transition:.2s}
+  .lb .arw:hover{background:rgba(255,255,255,.25)}
+  .lb .prev{left:28px}.lb .next{right:28px}
+  .lb .count{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.8);font-size:14px;letter-spacing:.1em}
+
+  /* ============ QUOTE CALCULATOR ============ */
+  .quote-card{background:linear-gradient(165deg,var(--card2),var(--card));border:1px solid var(--line2);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);display:grid;grid-template-columns:1.25fr 1fr}
+  .quote-form{padding:42px 40px}
+  .quote-form h3{font-size:26px}
+  .quote-form>p{color:var(--muted);font-size:15px;margin:8px 0 26px}
+  .q-step{margin-bottom:22px}
+  .q-step .q-label{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:11px;display:flex;gap:9px;align-items:center}
+  .q-step .q-label .n{width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-size:12px;font-family:var(--disp)}
+  .opts{display:flex;flex-wrap:wrap;gap:9px}
+  .opt{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:11px 16px;cursor:pointer;font-size:14.5px;font-weight:500;transition:.18s;color:var(--text)}
+  .opt:hover{border-color:var(--line2)}
+  .opt.on{border-color:var(--red);background:var(--red-soft);color:#fff}
+  .quote-result{background:var(--bg3);padding:42px 36px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--line)}
+  .quote-result .rl{font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2)}
+  .quote-result .price{font-family:var(--disp);font-weight:700;font-size:clamp(40px,6vw,58px);color:#fff;line-height:1;margin:14px 0 6px;letter-spacing:-.02em}
+  .quote-result .price small{font-size:22px;color:var(--muted);font-weight:500}
+  .quote-result .rsub{color:var(--muted);font-size:14px}
+  .quote-summary{margin:22px 0;display:grid;gap:9px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}
+  .quote-summary .row{display:flex;justify-content:space-between;font-size:14px}
+  .quote-summary .row span{color:var(--muted)}
+  .quote-summary .row b{font-weight:600;color:#fff}
+  .quote-result .note{font-size:12px;color:var(--muted2);margin-top:16px;line-height:1.5}
+  .quote-result .btn{margin-top:18px;justify-content:center}
+
+  /* ============ TESTIMONIALS ============ */
+  .testi{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--line);color:#fff;border-radius:var(--radius);padding:60px 56px;position:relative;overflow:hidden}
+  .testi .qmark{position:absolute;top:8px;left:36px;font-family:var(--disp);font-size:170px;line-height:1;color:rgba(225,29,42,.16)}
+  .testi-track{position:relative;min-height:180px}
+  .testi-item{position:absolute;inset:0;opacity:0;transform:translateY(16px);transition:.6s ease;pointer-events:none}
+  .testi-item.on{opacity:1;transform:none;pointer-events:auto}
+  .testi-item p{font-family:var(--disp);font-size:clamp(20px,2.5vw,27px);font-weight:500;line-height:1.42;max-width:800px;color:#fff}
+  .testi-item .who{margin-top:22px;font-family:var(--sans);font-weight:600;font-size:16px;color:var(--red2)}
+  .testi-item .who span{display:block;color:rgba(255,255,255,.6);font-weight:400;font-size:14px}
+  .testi-dots{display:flex;gap:10px;margin-top:30px}
+  .testi-dots button{width:36px;height:5px;border-radius:3px;border:none;background:rgba(255,255,255,.22);cursor:pointer;transition:.25s;padding:0}
+  .testi-dots button.on{background:var(--red2)}
+  .stars{color:#ffb400;font-size:18px;letter-spacing:3px;margin-bottom:18px}
+  .gscore{position:absolute;top:40px;right:48px;text-align:right}
+  .gscore b{font-family:var(--disp);font-size:30px;color:#fff}
+  .gscore span{display:block;font-size:12.5px;color:var(--muted)}
+
+  /* ============ FAQ ============ */
+  .faq-list{max-width:860px;margin:0 auto;display:grid;gap:12px}
+  .faq{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;transition:.2s}
+  .faq.open{border-color:var(--red);box-shadow:var(--shadow-sm)}
+  .faq button.q{width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:22px 26px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-family:var(--disp);font-size:18px;font-weight:600;color:#fff}
+  .faq .ico{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--card3);display:grid;place-items:center;font-size:20px;color:var(--red2);transition:.3s}
+  .faq.open .ico{background:var(--red);color:#fff;transform:rotate(45deg)}
+  .faq .a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .faq .a p{padding:0 26px 24px;color:var(--muted);font-size:16px}
+
+  /* ============ CONTACT ============ */
+  .contact{background:var(--bg2);border-top:1px solid var(--line);position:relative;overflow:hidden}
+  .contact::before{content:"";position:absolute;right:-140px;top:-140px;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(225,29,42,.18),transparent 70%)}
+  .contact-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:56px;position:relative;z-index:2}
+  .contact h2{font-size:clamp(30px,4vw,44px)}
+  .contact .lede{color:var(--muted);font-size:18px;margin-top:16px;max-width:440px}
+  .contact-info{margin-top:34px;display:grid;gap:18px}
+  .contact-info .ci{display:flex;gap:15px;align-items:flex-start}
+  .contact-info .ci .ic{width:46px;height:46px;border-radius:12px;background:var(--red-soft);color:var(--red2);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+  .contact-info .ci b{display:block;font-size:16px;color:#fff}
+  .contact-info .ci span{color:var(--muted);font-size:15px}
+  .contact-info .ci a{color:var(--red2)}
+  .hours{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px 22px}
+  .hours h4{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-family:var(--sans)}
+  .hours .hr{display:flex;justify-content:space-between;font-size:15px;padding:5px 0}
+  .hours .hr span{color:var(--muted)}
+  .hours .hr b{color:#fff;font-weight:600}
+  .hours .hr.closed b{color:var(--red2)}
+  .socials{display:flex;gap:12px;margin-top:24px}
+  .socials a{width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;color:#fff;transition:.2s}
+  .socials a:hover{background:var(--red);border-color:var(--red);transform:translateY(-2px)}
+
+  form.book{background:var(--card);border:1px solid var(--line2);border-radius:var(--radius);padding:38px 36px;box-shadow:var(--shadow)}
+  form.book h3{font-size:24px;margin-bottom:6px}
+  form.book .sub{color:var(--muted);font-size:15px;margin-bottom:24px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:13px;font-weight:600;color:#fff;margin-bottom:7px;letter-spacing:.02em}
+  .field input,.field select,.field textarea{width:100%;font-family:var(--sans);font-size:16px;padding:13px 15px;
+    border:1.5px solid var(--line);border-radius:11px;background:var(--bg);color:var(--text);transition:.2s}
+  .field input::placeholder,.field textarea::placeholder{color:var(--muted2)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--red);background:var(--bg2);box-shadow:0 0 0 4px rgba(225,29,42,.16)}
+  .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%2399a2b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
+  .field textarea{resize:vertical;min-height:92px}
+  .field.err input,.field.err select,.field.err textarea{border-color:var(--red);background:rgba(225,29,42,.07)}
+  .field .msg{font-size:12.5px;color:var(--red2);margin-top:5px;display:none}
+  .field.err .msg{display:block}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  form.book button[type=submit]{width:100%;margin-top:6px;justify-content:center}
+  .form-note{font-size:12px;color:var(--muted2);text-align:center;margin-top:14px}
+  .form-success{display:none;text-align:center;padding:30px 10px}
+  .form-success.on{display:block;animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .form-success .ck{width:72px;height:72px;border-radius:50%;background:var(--red-soft);color:var(--red2);display:grid;place-items:center;font-size:38px;margin:0 auto 18px}
+  .form-success h3{color:#fff}
+  .form-success p{color:var(--muted);margin-top:8px}
+
+  /* ============ FOOTER ============ */
+  footer.ft{background:var(--bg3);color:var(--muted);padding:64px 0 28px;border-top:1px solid var(--line)}
+  .ft-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.1fr;gap:40px}
+  .ft-brand .logo-svg{height:34px;margin-bottom:18px}
+  .ft-brand p{font-size:15px;max-width:290px}
+  .ft h4{color:#fff;font-family:var(--sans);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+  .ft a,.ft .li{display:block;font-size:15px;color:var(--muted);margin-bottom:9px;transition:.2s}
+  .ft a:hover{color:var(--red2)}
+  .ft-bottom{border-top:1px solid var(--line);margin-top:48px;padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:13.5px;color:var(--muted2)}
+  .ft-bottom .built a{color:var(--red2)}
+
+  .totop{position:fixed;bottom:26px;right:26px;z-index:90;width:50px;height:50px;border-radius:50%;background:var(--red);color:#fff;border:none;cursor:pointer;font-size:20px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateY(12px);transition:.3s}
+  .totop.on{opacity:1;pointer-events:auto;transform:none}
+  .totop:hover{background:var(--red2)}
+
+  .mnav{position:fixed;inset:0;z-index:99;background:var(--bg3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;pointer-events:none;transition:.3s}
+  .mnav.on{opacity:1;pointer-events:auto}
+  .mnav a{color:#fff;font-family:var(--disp);font-size:26px;padding:10px}
+  .mnav .btn{margin-top:18px}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:980px){
+    .shade-wrap,.contact-grid,.quote-card{grid-template-columns:1fr}
+    .quote-result{border-left:none;border-top:1px solid var(--line)}
+    .glass-demo{order:-1}
+    .svc-grid{grid-template-columns:repeat(2,1fr)}
+    .ben-grid{grid-template-columns:repeat(2,1fr)}
+    .gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px}
+    .ft-grid{grid-template-columns:1fr 1fr}
+    .stats .grid{grid-template-columns:repeat(2,1fr);gap:34px 20px}
+    .gscore{position:static;text-align:left;margin-bottom:14px}
+  }
+  @media(max-width:680px){
+    body{font-size:16px}
+    nav.links,.nav-cta{display:none}
+    .hamburger{display:flex}
+    section.block{padding:66px 0}
+    .svc-grid,.ben-grid{grid-template-columns:1fr}
+    .gallery{grid-template-columns:repeat(2,1fr)}
+    .gallery .wide{grid-column:span 2}
+    .testi{padding:44px 24px}
+    .quote-form,.quote-result{padding:30px 24px}
+    .shade-btns{grid-template-columns:repeat(2,1fr)}
+    .two{grid-template-columns:1fr}
+    .ft-grid{grid-template-columns:1fr}
+    .hero-meta{gap:22px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="bar">
+    <a href="#top" class="brand" aria-label="TintGard home">
+      <svg class="logo-svg" viewBox="0 0 230 44" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TintGard">
+        <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 C11 39 3 32 3 21 V8 Z" fill="#e11d2a"/>
+        <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 Z" fill="#b3121d"/>
+        <path d="M11 21 l5.5 5.5 L29 14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="52" y="29" font-family="Space Grotesk, sans-serif" font-size="23" font-weight="700" letter-spacing="-0.5" fill="#ffffff">TINT<tspan fill="#ff3340">GARD</tspan></text>
+      </svg>
+    </a>
+    <nav class="links">
+      <a href="#services">Services</a>
+      <a href="#shade">Tint Shades</a>
+      <a href="#compare">Before / After</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#quote">Instant Quote</a>
+      <a href="#faq">FAQs</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#quote" class="btn btn-red nav-cta">Get a Free Quote</a>
+    <button class="hamburger" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mnav" id="mnav">
+  <a href="#services">Services</a>
+  <a href="#shade">Tint Shades</a>
+  <a href="#compare">Before / After</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#quote">Instant Quote</a>
+  <a href="#faq">FAQs</a>
+  <a href="#contact">Contact</a>
+  <a href="#quote" class="btn btn-red">Get a Free Quote</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-slides" id="slides">
+    <div class="slide on" style="background-image:url('/clients/tintgard/website/img/hero-1.jpg')"></div>
+    <div class="slide" style="background-image:url('/clients/tintgard/website/img/hero-2.jpg')"></div>
+    <div class="slide" style="background-image:url('/clients/tintgard/website/img/hero-3.jpg')"></div>
+  </div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <span class="badge">★ 4.7 / 5 · <b>331 Google reviews</b> · Serving Brisbane since 1999</span>
+      <h1>Brisbane's trusted <em>window tinting</em> specialists.</h1>
+      <p class="lede">Beat the Queensland heat. TintGard fits premium automotive, home and commercial window film that blocks 99% of UV, slashes heat and glare, and adds lasting privacy — all backed by a lifetime warranty.</p>
+      <div class="hero-actions">
+        <a href="#quote" class="btn btn-red">Get an Instant Quote →</a>
+        <a href="#shade" class="btn btn-ghost">Try the Shade Selector</a>
+      </div>
+      <div class="hero-meta">
+        <div class="m"><b>25+</b><span>Years of experience</span></div>
+        <div class="m"><b>99%</b><span>UV rays blocked</span></div>
+        <div class="m"><b>Lifetime</b><span>Film warranty</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-dots" id="slideDots">
+    <button class="on" aria-label="Slide 1"></button>
+    <button aria-label="Slide 2"></button>
+    <button aria-label="Slide 3"></button>
+  </div>
+  <div class="scroll-cue"><span class="dot"></span>Scroll</div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="track" id="marqueeTrack">
+    <span>Car Window Tinting</span><span>Home Window Tinting</span><span>Office &amp; Commercial</span><span>Lifetime Warranty</span><span>99% UV Protection</span><span>Heat &amp; Glare Reduction</span><span>Mobile Service Available</span><span>QLD Legal Tint</span>
+  </div>
+</div>
+
+<!-- ============ STATS ============ -->
+<section class="stats">
+  <div class="wrap">
+    <div class="grid">
+      <div class="s reveal"><b data-count="25" data-suffix="+">0</b><span>Years tinting in Brisbane</span></div>
+      <div class="s reveal d1"><b data-count="12000" data-suffix="+">0</b><span>Vehicles &amp; properties done</span></div>
+      <div class="s reveal d2"><b data-count="99" data-suffix="%">0</b><span>Harmful UV rays blocked</span></div>
+      <div class="s reveal d3"><b data-count="331">0</b><span>5★-worthy Google reviews</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="block" id="services">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow center">What We Tint</span>
+      <h2>One specialist, every kind of glass</h2>
+      <p>From the family car to a full commercial fit-out, our certified installers use premium film for a flawless, bubble-free finish that lasts.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc reveal">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 13l2-5a3 3 0 0 1 2.8-2h8.4A3 3 0 0 1 19 8l2 5M5 13h14M5 13v4m14-4v4M7 17h2m6 0h2M3 13h18v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Car Window Tinting</h3>
+        <p>Premium automotive film cut to your vehicle for a sleek, factory-look finish — fully QLD-legal shades.</p>
+        <ul><li>Sedans, SUVs, utes &amp; vans</li><li>Ceramic &amp; carbon options</li><li>Same-day fitting available</li></ul>
+      </div>
+      <div class="svc reveal d1">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9M10 20v-5h4v5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Home Window Tinting</h3>
+        <p>Keep rooms cooler and protect floors and furniture from fading, without losing your view or natural light.</p>
+        <ul><li>Heat &amp; glare control</li><li>Daytime privacy films</li><li>Fade protection</li></ul>
+      </div>
+      <div class="svc reveal d2">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 21V9h4a1 1 0 0 1 1 1v11M3 21h18M7 8h2m-2 4h2m-2 4h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Office Tinting</h3>
+        <p>A more comfortable, energy-efficient workspace — reduce screen glare and cooling costs across the building.</p>
+        <ul><li>Lower energy bills</li><li>Glare-free screens</li><li>Uniform exterior look</li></ul>
+      </div>
+      <div class="svc reveal d3">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 9h.01M12 9h.01M15 9h.01M9 13h.01M12 13h.01M15 13h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Commercial Films</h3>
+        <p>Whiteboard, decorative, frosted, safety and security films for shopfronts, fit-outs and storefront branding.</p>
+        <ul><li>Frosting &amp; decorative</li><li>Safety &amp; security film</li><li>Whiteboard wall film</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TINT SHADE SELECTOR ============ -->
+<section class="block" id="shade" style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="shade-wrap">
+      <div class="glass-demo reveal" aria-hidden="true">
+        <div class="glass-scene"><div class="sky-build"></div></div>
+        <div class="glass-tint" id="glassTint"></div>
+        <div class="glass-sheen"></div>
+        <div class="glass-frame"></div>
+        <div class="glass-label">Preview · <b id="glassLabel">VLT 35% — Medium</b></div>
+      </div>
+      <div class="shade-panel reveal d1">
+        <span class="eyebrow">Interactive Demo</span>
+        <h2>Choose your shade</h2>
+        <p>See exactly how each tint level looks and performs. Tap a shade and watch the glass — and the protection — change in real time.</p>
+        <div class="shade-btns" id="shadeBtns">
+          <button class="shade-btn" data-vlt="50"><span class="sw" style="background:rgba(10,31,46,.35)"></span><b>50%</b><span>Light</span></button>
+          <button class="shade-btn on" data-vlt="35"><span class="sw" style="background:rgba(10,31,46,.55)"></span><b>35%</b><span>Medium</span></button>
+          <button class="shade-btn" data-vlt="20"><span class="sw" style="background:rgba(10,31,46,.72)"></span><b>20%</b><span>Dark</span></button>
+          <button class="shade-btn" data-vlt="5"><span class="sw" style="background:rgba(10,31,46,.9)"></span><b>5%</b><span>Limo</span></button>
+        </div>
+        <div class="meters" id="meters">
+          <div class="meter" data-key="heat"><div class="top"><b>Heat Rejection</b><span class="val">0%</span></div><div class="bar"><div class="fill"></div></div></div>
+          <div class="meter" data-key="uv"><div class="top"><b>UV Protection</b><span class="val">0%</span></div><div class="bar"><div class="fill"></div></div></div>
+          <div class="meter" data-key="glare"><div class="top"><b>Glare Reduction</b><span class="val">0%</span></div><div class="bar"><div class="fill"></div></div></div>
+          <div class="meter" data-key="privacy"><div class="top"><b>Daytime Privacy</b><span class="val">0%</span></div><div class="bar"><div class="fill"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BEFORE / AFTER ============ -->
+<section class="block" id="compare">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow center">See the Difference</span>
+      <h2>Before &amp; after, side by side</h2>
+      <p>Drag the slider to compare untinted glass with a TintGard finish — less glare, less heat, more comfort.</p>
+    </div>
+    <div class="ba reveal d1" id="ba">
+      <img class="before" src="/clients/tintgard/website/img/compare.jpg" alt="Vehicle before tinting" />
+      <img class="after" src="/clients/tintgard/website/img/compare.jpg" alt="Vehicle after tinting" />
+      <div class="after-tint"></div>
+      <span class="lbl l">Before</span>
+      <span class="lbl r">After · TintGard</span>
+      <div class="divider" id="baDivider"></div>
+      <div class="handle" id="baHandle">⇄</div>
+    </div>
+    <p class="ba-hint">↔ Drag the handle to reveal the tinted side</p>
+  </div>
+</section>
+
+<!-- ============ BENEFITS ============ -->
+<section class="block" id="benefits" style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow center">Why Tint?</span>
+      <h2>Real protection you'll feel from day one</h2>
+    </div>
+    <div class="ben-grid">
+      <div class="ben reveal"><div class="ic">☀️</div><h3>Beat the Heat</h3><p>Reject a huge share of solar heat so cabins and rooms stay cooler and cooling costs drop.</p></div>
+      <div class="ben reveal d1"><div class="ic">🛡️</div><h3>99% UV Block</h3><p>Block over 99% of harmful UV rays — protecting your skin, dashboard, floors and furniture.</p></div>
+      <div class="ben reveal d2"><div class="ic">😎</div><h3>Less Glare</h3><p>Cut harsh glare on the road and on screens for safer driving and easier work.</p></div>
+      <div class="ben reveal"><div class="ic">🔒</div><h3>More Privacy</h3><p>Darker shades keep prying eyes out while you still see clearly from the inside.</p></div>
+      <div class="ben reveal d1"><div class="ic">🎨</div><h3>Fade Protection</h3><p>Keep upholstery, timber and artwork looking new by stopping sun-driven fading.</p></div>
+      <div class="ben reveal d2"><div class="ic">♾️</div><h3>Lifetime Warranty</h3><p>Premium film backed by a lifetime warranty against bubbling, peeling and discolouration.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="block" id="gallery">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow center">Our Work</span>
+      <h2>Recent TintGard jobs</h2>
+      <p>A look at some recent fittings across Brisbane, Ipswich and the Gold Coast. Click any image to enlarge.</p>
+    </div>
+    <div class="gallery reveal d1" id="galleryGrid">
+      <figure class="wide tall"><img src="/clients/tintgard/website/img/hero-1.jpg" alt="Tinted sports car" /></figure>
+      <figure><img src="/clients/tintgard/website/img/car-det.jpg" alt="Car window tint detailing" /></figure>
+      <figure><img src="/clients/tintgard/website/img/g1.jpg" alt="Vehicle interior after tint" /></figure>
+      <figure><img src="/clients/tintgard/website/img/office.jpg" alt="Office window tinting" /></figure>
+      <figure><img src="/clients/tintgard/website/img/house.jpg" alt="Home window tinting" /></figure>
+      <figure class="wide"><img src="/clients/tintgard/website/img/hero-3.jpg" alt="Commercial glass building tint" /></figure>
+      <figure><img src="/clients/tintgard/website/img/g2.jpg" alt="Tinted car on the road" /></figure>
+      <figure><img src="/clients/tintgard/website/img/g3.jpg" alt="Car detail close up" /></figure>
+      <figure><img src="/clients/tintgard/website/img/g4.jpg" alt="Vehicle profile" /></figure>
+    </div>
+  </div>
+</section>
+
+<!-- lightbox -->
+<div class="lb" id="lb">
+  <button class="x" id="lbX" aria-label="Close">×</button>
+  <button class="arw prev" id="lbPrev" aria-label="Previous">‹</button>
+  <img id="lbImg" src="" alt="" />
+  <button class="arw next" id="lbNext" aria-label="Next">›</button>
+  <div class="count" id="lbCount"></div>
+</div>
+
+<!-- ============ QUOTE CALCULATOR ============ -->
+<section class="block" id="quote" style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow center">Instant Quote</span>
+      <h2>Get a ballpark price in seconds</h2>
+      <p>Build your job below and watch the estimate update live. Like what you see? Send it through and we'll confirm an exact price.</p>
+    </div>
+    <div class="quote-card reveal d1">
+      <div class="quote-form">
+        <h3>Build your quote</h3>
+        <p>Choose the options that fit your job.</p>
+
+        <div class="q-step">
+          <div class="q-label"><span class="n">1</span> What are we tinting?</div>
+          <div class="opts" data-group="service">
+            <button class="opt on" data-val="car">Vehicle</button>
+            <button class="opt" data-val="home">Home</button>
+            <button class="opt" data-val="office">Office</button>
+            <button class="opt" data-val="commercial">Commercial</button>
+          </div>
+        </div>
+
+        <div class="q-step" data-show="car">
+          <div class="q-label"><span class="n">2</span> Vehicle type</div>
+          <div class="opts" data-group="vehicle">
+            <button class="opt on" data-val="sedan">Sedan</button>
+            <button class="opt" data-val="suv">SUV / 4WD</button>
+            <button class="opt" data-val="ute">Ute</button>
+            <button class="opt" data-val="van">Van</button>
+          </div>
+        </div>
+
+        <div class="q-step" data-show="property">
+          <div class="q-label"><span class="n">2</span> How many windows?</div>
+          <div class="opts" data-group="windows">
+            <button class="opt on" data-val="s">1–5 windows</button>
+            <button class="opt" data-val="m">6–12 windows</button>
+            <button class="opt" data-val="l">13+ windows</button>
+          </div>
+        </div>
+
+        <div class="q-step">
+          <div class="q-label"><span class="n">3</span> Film type</div>
+          <div class="opts" data-group="film">
+            <button class="opt on" data-val="standard">Standard</button>
+            <button class="opt" data-val="carbon">Carbon</button>
+            <button class="opt" data-val="ceramic">Ceramic (premium)</button>
+          </div>
+        </div>
+
+        <div class="q-step">
+          <div class="q-label"><span class="n">4</span> Shade</div>
+          <div class="opts" data-group="shade">
+            <button class="opt" data-val="50">50% Light</button>
+            <button class="opt on" data-val="35">35% Medium</button>
+            <button class="opt" data-val="20">20% Dark</button>
+            <button class="opt" data-val="5">5% Limo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-result">
+        <div class="rl">Estimated price</div>
+        <div class="price"><small>$</small><span id="priceLow">0</span><small> – $</small><span id="priceHigh">0</span></div>
+        <div class="rsub" id="priceJob">Sedan · Standard film · 35% shade</div>
+        <div class="quote-summary" id="quoteSummary"></div>
+        <a href="#contact" class="btn btn-red" id="quoteToContact">Book this job →</a>
+        <p class="note">Indicative estimate only, based on typical jobs. Final pricing is confirmed after a quick measure-up. Mobile fitting may vary.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="block" id="testimonials">
+  <div class="wrap">
+    <div class="testi reveal">
+      <div class="qmark">"</div>
+      <div class="gscore"><b>4.7★</b><span>331 Google reviews</span></div>
+      <div class="stars">★★★★★</div>
+      <div class="testi-track" id="testiTrack">
+        <div class="testi-item on">
+          <p>Had my 4WD done and the difference is night and day — the car stays so much cooler in the Brisbane sun. Clean, bubble-free job and friendly crew.</p>
+          <div class="who">Mark T.<span>Car tint · Springfield</span></div>
+        </div>
+        <div class="testi-item">
+          <p>TintGard tinted the western-facing windows of our home and the lounge is finally usable in the afternoon. Professional from quote to finish.</p>
+          <div class="who">Sarah L.<span>Home tint · Ipswich</span></div>
+        </div>
+        <div class="testi-item">
+          <p>We had frosting and privacy film done across our office. Great communication, tidy install, and the team worked around our staff. Highly recommend.</p>
+          <div class="who">Daniel K.<span>Office fit-out · Brisbane CBD</span></div>
+        </div>
+        <div class="testi-item">
+          <p>Booked online, got a quick quote, and they came to me. Twenty-plus years of experience really shows in the finish. Worth every dollar.</p>
+          <div class="who">Priya N.<span>Car tint · Gold Coast</span></div>
+        </div>
+      </div>
+      <div class="testi-dots" id="testiDots">
+        <button class="on" aria-label="Testimonial 1"></button>
+        <button aria-label="Testimonial 2"></button>
+        <button aria-label="Testimonial 3"></button>
+        <button aria-label="Testimonial 4"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="block" id="faq" style="background:var(--bg2);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow center">Good to Know</span>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq-list reveal d1">
+      <div class="faq">
+        <button class="q">What's the legal tint limit in Queensland?<span class="ico">+</span></button>
+        <div class="a"><p>For most vehicles, QLD law requires front side windows to allow at least <b>35% VLT</b> (visible light transmission), while rear side and back windows can be darker. Our installers fit every job to the current legal standard, so you're always road-legal.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">How long does a car tint take?<span class="ico">+</span></button>
+        <div class="a"><p>A typical full-car fitting takes around <b>2–4 hours</b> depending on the vehicle. We'll give you a clear time when you book, and same-day appointments are often available.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">Is there a warranty on the film?<span class="ico">+</span></button>
+        <div class="a"><p>Yes. Our premium films come with a <b>lifetime warranty</b> against bubbling, peeling, cracking and discolouration, backed by over 25 years of TintGard workmanship.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">Do you offer mobile or on-site tinting?<span class="ico">+</span></button>
+        <div class="a"><p>For many home, office and commercial jobs we come to you across Brisbane, Ipswich, Logan, the Gold Coast and surrounds. Let us know your location in the booking form and we'll confirm availability.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">How soon can I wind my windows down after tinting?<span class="ico">+</span></button>
+        <div class="a"><p>We recommend leaving windows up for <b>3–5 days</b> while the film cures. A little haze or small water pockets during curing are normal and clear on their own.</p></div>
+      </div>
+      <div class="faq">
+        <button class="q">Which areas do you service?<span class="ico">+</span></button>
+        <div class="a"><p>We service <b>Brisbane City, Ipswich, Logan, Gold Coast, Moreton Bay, Redland City and the Scenic Rim</b>. Our workshop is in Augustine Heights — drop in or book a mobile visit.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT / BOOKING ============ -->
+<section class="block contact" id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="reveal">
+        <span class="eyebrow">Get In Touch</span>
+        <h2>Book your tint today.</h2>
+        <p class="lede">Send us your details and we'll get back to you fast with an exact quote and a time that suits you. Prefer to talk? Give us a call.</p>
+        <div class="contact-info">
+          <div class="ci"><div class="ic">📍</div><div><b>Workshop</b><span>8 Success Circuit, Augustine Heights QLD 4300</span></div></div>
+          <div class="ci"><div class="ic">📞</div><div><b>Call us</b><span><a href="tel:0731331969">07 3133 1969</a> · Mobile <a href="tel:0431320770">0431 320 770</a></span></div></div>
+          <div class="ci"><div class="ic">✉️</div><div><b>Email</b><span><a href="mailto:info@tintgard.com.au">info@tintgard.com.au</a></span></div></div>
+        </div>
+        <div class="hours">
+          <h4>Opening Hours</h4>
+          <div class="hr"><span>Monday – Friday</span><b>8:00 AM – 4:00 PM</b></div>
+          <div class="hr"><span>Saturday</span><b>9:00 AM – 1:00 PM</b></div>
+          <div class="hr closed"><span>Sunday</span><b>Closed</b></div>
+        </div>
+        <div class="socials">
+          <a href="https://www.facebook.com/tintgard/" target="_blank" rel="noopener" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H7v3h3v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg></a>
+          <a href="https://www.instagram.com/tintgard/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+
+      <div class="reveal d1">
+        <form class="book" id="bookForm" novalidate>
+          <div id="formBody">
+            <h3>Request a quote &amp; booking</h3>
+            <p class="sub">Fill in a few details and we'll confirm your price and time.</p>
+            <div class="two">
+              <div class="field"><label for="bf-name">Full name</label><input id="bf-name" name="name" type="text" placeholder="Your name" /><div class="msg">Please enter your name.</div></div>
+              <div class="field"><label for="bf-phone">Phone</label><input id="bf-phone" name="phone" type="tel" placeholder="04xx xxx xxx" /><div class="msg">Please enter a valid phone number.</div></div>
+            </div>
+            <div class="field"><label for="bf-email">Email</label><input id="bf-email" name="email" type="email" placeholder="you@email.com" /><div class="msg">Please enter a valid email address.</div></div>
+            <div class="two">
+              <div class="field"><label for="bf-service">Service</label>
+                <select id="bf-service" name="service">
+                  <option value="">Select a service…</option>
+                  <option>Car window tinting</option>
+                  <option>Home window tinting</option>
+                  <option>Office window tinting</option>
+                  <option>Commercial / decorative film</option>
+                </select>
+                <div class="msg">Please choose a service.</div>
+              </div>
+              <div class="field"><label for="bf-date">Preferred date</label><input id="bf-date" name="date" type="date" /><div class="msg">Please pick a date.</div></div>
+            </div>
+            <div class="field"><label for="bf-detail">Vehicle / property details <span style="color:var(--muted2);font-weight:400">(optional)</span></label><textarea id="bf-detail" name="detail" placeholder="e.g. 2021 Toyota RAV4, ceramic film, 20% rear — or your suburb for mobile service"></textarea></div>
+            <button type="submit" class="btn btn-red">Send my request →</button>
+            <p class="form-note">This is a demo form — no details are stored or sent.</p>
+          </div>
+          <div class="form-success" id="formSuccess">
+            <div class="ck">✓</div>
+            <h3>Thanks, <span id="successName">there</span>!</h3>
+            <p>Your request has been received. A TintGard team member will be in touch shortly to confirm your quote and booking time.</p>
+            <button type="button" class="btn btn-outline" id="resetForm" style="margin-top:22px">Send another request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <svg class="logo-svg" viewBox="0 0 230 44" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TintGard">
+          <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 C11 39 3 32 3 21 V8 Z" fill="#e11d2a"/>
+          <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 Z" fill="#b3121d"/>
+          <path d="M11 21 l5.5 5.5 L29 14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="52" y="29" font-family="Space Grotesk, sans-serif" font-size="23" font-weight="700" letter-spacing="-0.5" fill="#ffffff">TINT<tspan fill="#ff3340">GARD</tspan></text>
+        </svg>
+        <p>Brisbane's trusted window tinting specialists since 1999 — car, home, office and commercial film with a lifetime warranty.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <a href="#services">Car Tinting</a>
+        <a href="#services">Home Tinting</a>
+        <a href="#services">Office Tinting</a>
+        <a href="#services">Commercial Film</a>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="#shade">Shade Selector</a>
+        <a href="#compare">Before / After</a>
+        <a href="#quote">Instant Quote</a>
+        <a href="#faq">FAQs</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="tel:0731331969">07 3133 1969</a>
+        <a href="mailto:info@tintgard.com.au">info@tintgard.com.au</a>
+        <span class="li">8 Success Circuit,<br>Augustine Heights QLD 4300</span>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© <span id="yr"></span> TintGard. All rights reserved. · Serving Brisbane, Ipswich, Logan &amp; the Gold Coast.</span>
+      <span class="built">Demo site by <a href="https://www.bvnofficial.com" target="_blank" rel="noopener">BVN</a></span>
+    </div>
+  </div>
+</footer>
+
+<button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- year ---- */
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  /* ---- duplicate marquee for seamless loop ---- */
+  var mt = document.getElementById("marqueeTrack");
+  if(mt){ mt.innerHTML += mt.innerHTML; }
+
+  /* ---- sticky nav + back to top + scroll spy ---- */
+  var nav = document.getElementById("nav"), totop = document.getElementById("totop");
+  function onScroll(){
+    var y = window.scrollY;
+    nav.classList.toggle("scrolled", y > 40);
+    totop.classList.toggle("on", y > 600);
+    var fromTop = y + 130, current = "";
+    document.querySelectorAll("section[id]").forEach(function(s){
+      if(s.offsetTop <= fromTop) current = s.id;
+    });
+    document.querySelectorAll("nav.links a").forEach(function(a){
+      a.classList.toggle("active", a.getAttribute("href") === "#"+current);
+    });
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+  totop.addEventListener("click", function(){ window.scrollTo({top:0,behavior:"smooth"}); });
+
+  /* ---- mobile nav ---- */
+  var ham = document.getElementById("ham"), mnav = document.getElementById("mnav");
+  function toggleMenu(open){ ham.classList.toggle("open",open); mnav.classList.toggle("on",open); document.body.style.overflow = open ? "hidden":""; }
+  ham.addEventListener("click", function(){ toggleMenu(!mnav.classList.contains("on")); });
+  mnav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", function(){ toggleMenu(false); }); });
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var hasIO = "IntersectionObserver" in window;
+
+  /* ---- counters ---- */
+  function setCount(el){
+    var target = +el.dataset.count, pre = el.dataset.prefix||"", suf = el.dataset.suffix||"";
+    el.textContent = pre + target.toLocaleString() + suf; // guaranteed final value (fallback if rAF is throttled)
+    if(reduceMotion || document.hidden){ return; }
+    var t0=null, dur=1500;
+    function step(ts){
+      if(!t0) t0=ts;
+      var p = Math.min((ts-t0)/dur,1), ease = 1-Math.pow(1-p,3), val = Math.round(target*ease);
+      el.textContent = pre + val.toLocaleString() + suf;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---- reveal + counters ---- */
+  if(hasIO){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, {threshold:0.14});
+    document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+    var counted = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(!e.isIntersecting) return; setCount(e.target); counted.unobserve(e.target); });
+    }, {threshold:0.5});
+    document.querySelectorAll("[data-count]").forEach(function(el){ counted.observe(el); });
+  } else {
+    document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("in"); });
+    document.querySelectorAll("[data-count]").forEach(setCount);
+  }
+
+  /* ---- hero slideshow ---- */
+  var slides = document.querySelectorAll("#slides .slide"), dots = document.querySelectorAll("#slideDots button"), si=0;
+  function goSlide(n){
+    slides[si].classList.remove("on"); dots[si].classList.remove("on");
+    si = (n+slides.length)%slides.length;
+    slides[si].classList.add("on"); dots[si].classList.add("on");
+  }
+  var heroTimer = setInterval(function(){ goSlide(si+1); }, 6000);
+  dots.forEach(function(d,i){ d.addEventListener("click", function(){ clearInterval(heroTimer); goSlide(i); heroTimer=setInterval(function(){goSlide(si+1);},6000); }); });
+
+  /* ---- TINT SHADE SELECTOR ---- */
+  var shadeData = {
+    "50": {label:"VLT 50% — Light", op:0.34, heat:45, uv:99, glare:52, privacy:32},
+    "35": {label:"VLT 35% — Medium", op:0.55, heat:56, uv:99, glare:66, privacy:58},
+    "20": {label:"VLT 20% — Dark", op:0.72, heat:70, uv:99, glare:80, privacy:80},
+    "5":  {label:"VLT 5% — Limo",  op:0.90, heat:82, uv:99, glare:93, privacy:97}
+  };
+  var glassTint = document.getElementById("glassTint"),
+      glassLabel = document.getElementById("glassLabel"),
+      meterEls = document.querySelectorAll("#meters .meter");
+  function applyShade(vlt){
+    var d = shadeData[vlt];
+    glassTint.style.opacity = d.op;
+    glassLabel.textContent = d.label;
+    meterEls.forEach(function(m){
+      var key = m.dataset.key, v = d[key];
+      m.querySelector(".fill").style.width = v + "%";
+      m.querySelector(".val").textContent = v + "%";
+    });
+  }
+  document.querySelectorAll("#shadeBtns .shade-btn").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll("#shadeBtns .shade-btn").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      applyShade(b.dataset.vlt);
+    });
+  });
+  // animate meters in when section enters view
+  if(hasIO){
+    var shadeIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ applyShade("35"); shadeIO.disconnect(); } });
+    }, {threshold:0.4});
+    shadeIO.observe(document.getElementById("shade"));
+  } else { applyShade("35"); }
+
+  /* ---- BEFORE / AFTER slider ---- */
+  var ba = document.getElementById("ba"), baAfter = ba.querySelector(".after"),
+      baTint = ba.querySelector(".after-tint"), baDiv = document.getElementById("baDivider"),
+      baHandle = document.getElementById("baHandle"), dragging = false;
+  function setBA(pct){
+    pct = Math.max(2, Math.min(98, pct));
+    baAfter.style.clipPath = "inset(0 0 0 "+pct+"%)";
+    baTint.style.clipPath = "inset(0 0 0 "+pct+"%)";
+    baDiv.style.left = pct+"%";
+    baHandle.style.left = pct+"%";
+  }
+  function baFromEvent(clientX){
+    var r = ba.getBoundingClientRect();
+    setBA(((clientX - r.left)/r.width)*100);
+  }
+  ba.addEventListener("mousedown", function(e){ dragging=true; baFromEvent(e.clientX); });
+  window.addEventListener("mousemove", function(e){ if(dragging) baFromEvent(e.clientX); });
+  window.addEventListener("mouseup", function(){ dragging=false; });
+  ba.addEventListener("touchstart", function(e){ dragging=true; baFromEvent(e.touches[0].clientX); }, {passive:true});
+  ba.addEventListener("touchmove", function(e){ if(dragging) baFromEvent(e.touches[0].clientX); }, {passive:true});
+  ba.addEventListener("touchend", function(){ dragging=false; });
+  setBA(50);
+
+  /* ---- testimonials carousel ---- */
+  var tItems = document.querySelectorAll(".testi-item"), tDots = document.querySelectorAll("#testiDots button"), tIdx=0;
+  function goTesti(n){
+    tItems[tIdx].classList.remove("on"); tDots[tIdx].classList.remove("on");
+    tIdx = (n+tItems.length)%tItems.length;
+    tItems[tIdx].classList.add("on"); tDots[tIdx].classList.add("on");
+  }
+  var tTimer = setInterval(function(){ goTesti(tIdx+1); }, 5500);
+  tDots.forEach(function(d,i){ d.addEventListener("click", function(){ clearInterval(tTimer); goTesti(i); tTimer=setInterval(function(){goTesti(tIdx+1);},5500); }); });
+
+  /* ---- FAQ accordion ---- */
+  document.querySelectorAll(".faq .q").forEach(function(q){
+    q.addEventListener("click", function(){
+      var item = q.parentElement, ans = item.querySelector(".a"), open = item.classList.contains("open");
+      document.querySelectorAll(".faq").forEach(function(f){ f.classList.remove("open"); f.querySelector(".a").style.maxHeight=null; });
+      if(!open){ item.classList.add("open"); ans.style.maxHeight = ans.scrollHeight+"px"; }
+    });
+  });
+
+  /* ---- gallery lightbox ---- */
+  var figs = Array.prototype.slice.call(document.querySelectorAll("#galleryGrid figure img"));
+  var lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"),
+      lbCount = document.getElementById("lbCount"), lbi = 0;
+  function openLb(i){ lbi=i; lbImg.src = figs[i].src; lbImg.alt = figs[i].alt; lbCount.textContent=(i+1)+" / "+figs.length; lb.classList.add("on"); document.body.style.overflow="hidden"; }
+  function closeLb(){ lb.classList.remove("on"); document.body.style.overflow=""; }
+  function moveLb(d){ openLb((lbi+d+figs.length)%figs.length); }
+  figs.forEach(function(img,i){ img.parentElement.addEventListener("click", function(){ openLb(i); }); });
+  document.getElementById("lbX").addEventListener("click", closeLb);
+  document.getElementById("lbPrev").addEventListener("click", function(e){ e.stopPropagation(); moveLb(-1); });
+  document.getElementById("lbNext").addEventListener("click", function(e){ e.stopPropagation(); moveLb(1); });
+  lb.addEventListener("click", function(e){ if(e.target===lb) closeLb(); });
+  document.addEventListener("keydown", function(e){
+    if(!lb.classList.contains("on")) return;
+    if(e.key==="Escape") closeLb(); else if(e.key==="ArrowRight") moveLb(1); else if(e.key==="ArrowLeft") moveLb(-1);
+  });
+
+  /* ---- QUOTE CALCULATOR ---- */
+  var q = { service:"car", vehicle:"sedan", windows:"s", film:"standard", shade:"35" };
+  var priceData = {
+    base: { car:{sedan:[290,360], suv:[360,460], ute:[260,330], van:[420,560]},
+            property:{ home:{s:[350,650], m:[650,1300], l:[1300,2600]},
+                       office:{s:[450,800], m:[800,1700], l:[1700,3400]},
+                       commercial:{s:[550,1000], m:[1000,2200], l:[2200,4800]} } },
+    film: { standard:1, carbon:1.25, ceramic:1.6 },
+    shade: { "50":1, "35":1, "20":1.04, "5":1.08 },
+    labels: { car:"Vehicle", home:"Home", office:"Office", commercial:"Commercial",
+              sedan:"Sedan", suv:"SUV / 4WD", ute:"Ute", van:"Van",
+              s:"1–5 windows", m:"6–12 windows", l:"13+ windows",
+              standard:"Standard film", carbon:"Carbon film", ceramic:"Ceramic film" }
+  };
+  var priceLow = document.getElementById("priceLow"), priceHigh = document.getElementById("priceHigh"),
+      priceJob = document.getElementById("priceJob"), quoteSummary = document.getElementById("quoteSummary");
+  var lastLow=0, lastHigh=0;
+
+  function animPrice(el, from, to){
+    el.textContent = Math.round(to).toLocaleString(); // guaranteed final value (fallback if rAF is throttled)
+    if(reduceMotion || document.hidden){ return; }
+    var t0=null, dur=600;
+    function step(ts){ if(!t0) t0=ts; var p=Math.min((ts-t0)/dur,1), ease=1-Math.pow(1-p,3);
+      el.textContent = Math.round((from+(to-from)*ease)).toLocaleString();
+      if(p<1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
+
+  function calc(){
+    var isCar = q.service==="car", range;
+    if(isCar){ range = priceData.base.car[q.vehicle].slice(); }
+    else { range = priceData.base.property[q.service][q.windows].slice(); }
+    var mult = priceData.film[q.film] * priceData.shade[q.shade];
+    var low = Math.round(range[0]*mult/10)*10, high = Math.round(range[1]*mult/10)*10;
+    animPrice(priceLow, lastLow, low); animPrice(priceHigh, lastHigh, high);
+    lastLow=low; lastHigh=high;
+
+    var L = priceData.labels;
+    priceJob.textContent = (isCar?L[q.vehicle]:L[q.service]) + " · " + L[q.film] + " · " + q.shade + "% shade";
+    var rows = [];
+    rows.push(["Job type", isCar?L[q.vehicle]+" tint":L[q.service]+" tint"]);
+    if(!isCar) rows.push(["Windows", L[q.windows]]);
+    rows.push(["Film", L[q.film]]);
+    rows.push(["Shade", q.shade+"% VLT"]);
+    quoteSummary.innerHTML = rows.map(function(r){ return '<div class="row"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'; }).join("");
+  }
+
+  // toggle property/vehicle step visibility
+  function syncSteps(){
+    var isCar = q.service==="car";
+    document.querySelector('[data-show="car"]').style.display = isCar ? "" : "none";
+    document.querySelector('[data-show="property"]').style.display = isCar ? "none" : "";
+  }
+
+  document.querySelectorAll(".opts").forEach(function(group){
+    group.addEventListener("click", function(e){
+      var btn = e.target.closest(".opt"); if(!btn) return;
+      group.querySelectorAll(".opt").forEach(function(o){ o.classList.remove("on"); });
+      btn.classList.add("on");
+      q[group.dataset.group] = btn.dataset.val;
+      if(group.dataset.group==="service") syncSteps();
+      calc();
+    });
+  });
+  syncSteps(); calc();
+
+  /* smooth-scroll the "Book this job" button (also prefills service note) */
+  document.getElementById("quoteToContact").addEventListener("click", function(){
+    var sel = document.getElementById("bf-service");
+    var map = { car:"Car window tinting", home:"Home window tinting", office:"Office window tinting", commercial:"Commercial / decorative film" };
+    if(map[q.service]) sel.value = map[q.service];
+    var detail = document.getElementById("bf-detail");
+    if(!detail.value){
+      detail.value = "Quote build: " + priceJob.textContent + " (est. $" + lastLow.toLocaleString() + "–$" + lastHigh.toLocaleString() + ")";
+    }
+  });
+
+  /* ---- BOOKING FORM (demo, client-side validation only) ---- */
+  var form = document.getElementById("bookForm");
+  function setErr(field, on){ field.classList.toggle("err", on); }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function validPhone(v){ return v.replace(/\D/g,"").length >= 8; }
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var name = document.getElementById("bf-name"), phone = document.getElementById("bf-phone"),
+        email = document.getElementById("bf-email"), service = document.getElementById("bf-service"),
+        date = document.getElementById("bf-date");
+    var ok = true;
+    function check(input, cond){ var f = input.closest(".field"); setErr(f, !cond); if(!cond) ok=false; }
+    check(name, name.value.trim().length >= 2);
+    check(phone, validPhone(phone.value));
+    check(email, validEmail(email.value.trim()));
+    check(service, service.value !== "");
+    check(date, date.value !== "");
+    if(!ok){
+      var firstErr = form.querySelector(".field.err input, .field.err select");
+      if(firstErr) firstErr.focus();
+      return;
+    }
+    document.getElementById("successName").textContent = name.value.trim().split(" ")[0] || "there";
+    document.getElementById("formBody").style.display = "none";
+    document.getElementById("formSuccess").classList.add("on");
+    document.getElementById("formSuccess").scrollIntoView({behavior:"smooth", block:"center"});
+  });
+  // clear error styling as the user types
+  form.querySelectorAll("input, select").forEach(function(el){
+    el.addEventListener("input", function(){ el.closest(".field").classList.remove("err"); });
+  });
+  document.getElementById("resetForm").addEventListener("click", function(){
+    form.reset();
+    document.getElementById("formSuccess").classList.remove("on");
+    document.getElementById("formBody").style.display = "";
+  });
+
+})();
+</script>
+</body>
+</html>
