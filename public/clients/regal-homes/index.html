@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Regal Care Homes — GoHighLevel CRM Build | BVN</title>
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0d1320; --panel:rgba(30,41,59,0.45); --panel2:rgba(30,41,59,0.7);
+    --border:#1e293b; --border2:#334155; --text:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+    --amber:#f59e0b; --amber2:#fbbf24; --green:#34d399; --blue:#60a5fa; --purple:#a78bfa;
+    --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:radial-gradient(1200px 600px at 70% -10%,rgba(245,158,11,0.08),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+  a{color:var(--amber2);text-decoration:none}
+
+  /* sticky progress */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(10,14,20,0.82);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border)}
+  .topbar .inner{max-width:980px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
+  .topbar .label{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .pbar{flex:1;height:8px;border-radius:99px;background:#1e293b;overflow:hidden}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--amber2));transition:width .35s ease}
+  .ppct{font-family:var(--mono);font-weight:700;color:var(--amber2);font-size:13px;min-width:40px;text-align:right}
+
+  /* hero */
+  header.hero{padding:54px 0 26px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:14px}
+  h1{font-size:34px;line-height:1.15;font-weight:800;letter-spacing:-.02em}
+  h1 span{color:var(--amber2)}
+  .sub{color:var(--muted);font-size:16px;margin-top:12px;max-width:640px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .badge{font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding:5px 11px;border-radius:99px;
+    border:1px solid var(--border2);color:var(--muted);background:var(--panel)}
+  .badge.on{border-color:var(--green);color:var(--green)}
+
+  /* stat cards */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 8px}
+  .stat{background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius);padding:16px 16px 14px}
+  .stat .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-size:22px;font-weight:800;color:var(--amber2);margin-top:6px}
+  .stat .v small{font-size:12px;color:var(--dim);font-weight:600}
+
+  /* section */
+  section{margin-top:36px}
+  .sec-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .sec-h h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .sec-h .num{font-family:var(--mono);color:var(--amber);font-size:13px;font-weight:700}
+  .sec-h .mini{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  /* filter tabs */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 4px}
+  .tab{cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:7px 14px;border-radius:99px;
+    border:1px solid var(--border2);background:var(--panel);color:var(--muted);transition:.15s}
+  .tab:hover{color:var(--text);border-color:#475569}
+  .tab.active{background:var(--amber);color:#0a0e14;border-color:var(--amber);font-weight:700}
+
+  /* checklist card */
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .card .head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;
+    border-bottom:1px solid transparent;transition:.15s}
+  .card .head:hover{background:rgba(51,65,85,0.25)}
+  .card.open .head{border-bottom-color:var(--border)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px;font-weight:700}
+  .chip.req{background:rgba(96,165,250,0.15);color:var(--blue);border:1px solid rgba(96,165,250,0.3)}
+  .chip.p1{background:rgba(245,158,11,0.15);color:var(--amber2);border:1px solid rgba(245,158,11,0.3)}
+  .chip.add{background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.3)}
+  .chip.content{background:rgba(52,211,153,0.13);color:var(--green);border:1px solid rgba(52,211,153,0.3)}
+  .card .head .title{font-weight:700;font-size:15px}
+  .card .head .meta{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .ring{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .ring b{color:var(--amber2)}
+  .chev{color:var(--dim);transition:transform .2s;font-size:13px}
+  .card.open .chev{transform:rotate(90deg)}
+  .items{display:none;padding:6px 18px 14px}
+  .card.open .items{display:block}
+  .item{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(30,41,59,0.6)}
+  .item:last-child{border-bottom:none}
+  .item label{display:flex;gap:12px;align-items:flex-start;cursor:pointer;flex:1}
+  .item input{appearance:none;-webkit-appearance:none;width:19px;height:19px;border:1.5px solid var(--border2);
+    border-radius:5px;margin-top:2px;flex-shrink:0;cursor:pointer;position:relative;transition:.15s;background:#0d1320}
+  .item input:hover{border-color:var(--amber)}
+  .item input:checked{background:var(--amber);border-color:var(--amber)}
+  .item input:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid #0a0e14;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  .item .txt{font-size:14.5px;color:var(--text);transition:.15s}
+  .item .txt .note{display:block;font-size:12.5px;color:var(--dim);margin-top:2px}
+  .item input:checked ~ .txt{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(148,163,184,0.4)}
+  .item input:checked ~ .txt .note{text-decoration:none}
+
+  .cards{display:flex;flex-direction:column;gap:12px}
+  .hidden{display:none!important}
+
+  /* timeline */
+  .tl{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px}
+  .tl .wk{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center}
+  .tl .wk .w{font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700}
+  .tl .wk .d{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.35}
+  .tl-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+  .tl-row .blk{border-radius:8px;padding:10px 12px;font-size:12px;font-weight:600;color:#0a0e14}
+  .b1{background:linear-gradient(135deg,#fbbf24,#f59e0b);grid-column:span 2}
+  .b2{background:linear-gradient(135deg,#fcd34d,#fbbf24);grid-column:span 1}
+  .b3{background:linear-gradient(135deg,#fde68a,#fcd34d);grid-column:span 1}
+  .b4{background:linear-gradient(135deg,#fef3c7,#fde68a);grid-column:span 1}
+  .blk span{display:block;font-size:10px;font-weight:700;opacity:.7;font-family:var(--mono)}
+
+  /* pipeline */
+  .pipe{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .pstage{flex:1 1 160px;background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;position:relative}
+  .pstage .n{font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700}
+  .pstage .s{font-weight:700;font-size:14px;margin-top:4px}
+  .pstage .m{font-size:11.5px;color:var(--muted);margin-top:3px}
+
+  .callout{background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.03));
+    border:1px solid rgba(245,158,11,0.3);border-radius:var(--radius);padding:16px 18px;margin-top:18px;font-size:14px}
+  .callout b{color:var(--amber2)}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .btn{font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:9px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--border2);background:var(--panel);color:var(--text);transition:.15s}
+  .btn:hover{border-color:var(--amber);color:var(--amber2)}
+  .btn.primary{background:var(--amber);color:#0a0e14;border-color:var(--amber);font-weight:700}
+  .btn.primary:hover{background:var(--amber2);color:#0a0e14}
+
+  footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);color:var(--dim);font-size:13px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  footer .who{font-weight:700;color:var(--text)}
+
+  @media(max-width:680px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    h1{font-size:27px}
+    .tl{grid-template-columns:repeat(4,1fr)}
+    .tl-row{grid-template-columns:1fr}
+    .b1,.b2,.b3,.b4{grid-column:span 1}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <span class="label">Build Progress</span>
+    <div class="pbar"><i id="globalBar"></i></div>
+    <span class="ppct" id="globalPct">0%</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">BVN · Client Build Workspace</div>
+    <h1>Regal Care Homes<br><span>GoHighLevel CRM Build</span></h1>
+    <p class="sub">The complete build manifest for the Family Inquiry CRM and the optional Professional Relationship system. Everything required to take Regal from inquiry to move-in, and beyond. Check items off as they are completed; progress is saved in your browser.</p>
+    <div class="badges">
+      <span class="badge on">● Engaged</span>
+      <span class="badge">Phase 1 · $3,000 fixed</span>
+      <span class="badge">Platform · GoHighLevel</span>
+      <span class="badge">3 Homes · Ventura County</span>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Phase 1 Investment</div><div class="v">$3,000 <small>fixed</small></div></div>
+    <div class="stat"><div class="k">Timeline</div><div class="v">8 <small>weeks</small></div></div>
+    <div class="stat"><div class="k">Pipeline</div><div class="v">9 <small>stages</small></div></div>
+    <div class="stat"><div class="k">Workflows</div><div class="v">9 <small>+ 3 add-on</small></div></div>
+  </div>
+
+  <!-- Filter -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-f="all">All</div>
+    <div class="tab" data-f="req">Prerequisites</div>
+    <div class="tab" data-f="p1">Phase 1 ($3,000)</div>
+    <div class="tab" data-f="add">Add-On</div>
+    <div class="tab" data-f="content">Content</div>
+  </div>
+
+  <section>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <div class="callout">
+    <b>Critical path:</b> A2P 10DLC SMS registration and email domain authentication (SPF/DKIM) both have external lead times of one to three weeks. Start them in Week 1 or they become the launch bottleneck.
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
+    <button class="btn" id="expandAll">Expand all</button>
+    <button class="btn" id="collapseAll">Collapse all</button>
+    <button class="btn" id="resetBtn">Reset progress</button>
+  </div>
+
+  <!-- Timeline -->
+  <section>
+    <div class="sec-h"><span class="num">▸</span><h2>8-Week Timeline</h2><span class="mini">quality floor, not a ceiling</span></div>
+    <div class="tl-row">
+      <div class="blk b1"><span>WEEKS 1–2</span>Foundation, pipeline &amp; contact structure</div>
+      <div class="blk b2"><span>WEEKS 3–4</span>Workflows, triggers, lead routing</div>
+      <div class="blk b3"><span>WEEKS 5–6</span>Emails &amp; lead capture integrations</div>
+      <div class="blk b4"><span>WEEK 7</span>Full QA &amp; testing</div>
+      <div class="blk b4" style="background:linear-gradient(135deg,#fffbeb,#fef3c7)"><span>WEEK 8</span>Docs, SOPs &amp; handoff</div>
+    </div>
+  </section>
+
+  <!-- Pipeline -->
+  <section>
+    <div class="sec-h"><span class="num">▸</span><h2>Family Inquiry Pipeline</h2><span class="mini">reduced 14 → 9 stages</span></div>
+    <div class="pipe" id="pipe"></div>
+  </section>
+
+  <footer>
+    <span class="who">Benjamin Yson</span>
+    <span>CRM Strategy &amp; Implementation</span>
+    <span style="margin-left:auto"><a href="mailto:bvn@bvnofficial.com?subject=Regal%20Homes%20CRM">bvn@bvnofficial.com</a></span>
+  </footer>
+
+</div>
+
+<script>
+const SECTIONS = [
+  { id:"access", title:"Access & Accounts (Regal provides)", chip:"req", chipLabel:"Prerequisite", f:"req",
+    items:[
+      ["GoHighLevel account decision — host in BVN agency sub-account (recommended) or client-owned"],
+      ["Business legal name + EIN","required for A2P 10DLC SMS registration"],
+      ["Stripe account connected","for the $2,500 resident deposit, if automating"],
+      ["Google Workspace access","calendars + which staff get booking links"],
+      ["Website / DNS access","to embed the intake form and authenticate email"],
+      ["Sending domain SPF/DKIM records","so sequences avoid spam — most-overlooked prerequisite"],
+      ["Existing contact data export","leads and partners to migrate, if any"],
+      ["Google Business Profile links","one per home, for review-request emails"],
+      ["Phone number","provision new GHL number or port existing"],
+      ["Brand assets","logo, colors, starting prices per home, room types"],
+    ]},
+  { id:"foundation", title:"Phase 1 · Foundation", chip:"p1", chipLabel:"Phase 1", f:"p1",
+    items:[
+      ["GHL sub-account, user roles & permissions"],
+      ["Tagging taxonomy & naming conventions"],
+      ["Family/resident custom fields — Group 1: Contact & Family"],
+      ["Custom fields — Group 2: Resident Care"],
+      ["Custom fields — Group 3: Sales Process"],
+      ["Custom fields — Group 4: Move-In"],
+      ["Custom fields — Group 5: Nurture & Follow-Up"],
+    ]},
+  { id:"pipeline", title:"Phase 1 · Pipeline", chip:"p1", chipLabel:"Phase 1", f:"p1",
+    items:[
+      ["9-stage Family Inquiry Pipeline with entry/exit criteria"],
+      ["Required-field validation per stage"],
+      ["Nurture deal-status tag logic (with reason + next follow-up)"],
+      ["Closed Lost terminal exit with reason codes & automation rules"],
+    ]},
+  { id:"automation", title:"Phase 1 · Automation (9 workflows)", chip:"p1", chipLabel:"Phase 1", f:"p1",
+    items:[
+      ["Workflow 1 — New Lead"],
+      ["Workflow 2 — Urgent / Hot Lead"],
+      ["Workflow 3 — Care Consultation"],
+      ["Workflow 4 — Tour"],
+      ["Workflow 5 — Assessment"],
+      ["Workflow 6 — Deposit & Move-In Prep"],
+      ["Workflow 7 — First 60 Days"],
+      ["Workflow 8 — Cold Lead / Nurture"],
+      ["Workflow 9 — Review / Referral"],
+    ]},
+  { id:"emails", title:"Phase 1 · Email Sequences (Batches 1–5)", chip:"p1", chipLabel:"Phase 1", f:"p1",
+    items:[
+      ["Batch 1 — Sales Process emails (8) loaded & wired"],
+      ["Batch 2 — Move-In Prep emails (6)"],
+      ["Batch 3 — First 60 Days emails (10)"],
+      ["Batch 4 — Cold Lead / Nurture emails (10)"],
+      ["Batch 5 — Review / Referral emails (7)"],
+      ["Family Status Flag check before each post-move-in send"],
+    ]},
+  { id:"capture", title:"Phase 1 · Capture, Alerts & Reporting", chip:"p1", chipLabel:"Phase 1", f:"p1",
+    items:[
+      ["Web intake form (captures Which Home) + lead routing"],
+      ["Native GHL calendar (Care Consultation + Tour) synced to Google"],
+      ["SMS enabled + A2P 10DLC registration submitted"],
+      ["Phone number + call tracking connected"],
+      ["6–7 internal notifications (New Lead, Urgent, Tour, VA Handoff, Deposit, Move-In, Crisis)"],
+      ["Reporting dashboard: pipeline velocity, lead source, conversion, vacancy fill time"],
+    ]},
+  { id:"handoff", title:"Phase 1 · Handoff", chip:"p1", chipLabel:"Phase 1", f:"p1",
+    items:[
+      ["SOP documentation"],
+      ["1-page pipeline stage reference card"],
+      ["End-to-end QA: standard, urgent, no-response, not-a-fit, deposit, move-in"],
+      ["Walkthrough / training call"],
+    ]},
+  { id:"addon", title:"Add-On · Professional Relationship System", chip:"add", chipLabel:"Add-On", f:"add",
+    items:[
+      ["5-stage Professional Relationship Pipeline"],
+      ["Professional contact field groups + 8 sub-type tags"],
+      ["Batch 7 — Partner emails (8) loaded & wired"],
+      ["Workflow 10 — Professional Partner"],
+      ["Workflow 11 — Vacancy Announcement (HIPAA-safe targeting)"],
+      ["Workflow 12 — Broadcast / Newsletter"],
+      ["Quarterly broadcast communication calendar"],
+      ["Professional contact database seeding"],
+    ]},
+  { id:"content", title:"Content to Finalize", chip:"content", chipLabel:"Content", f:"content",
+    items:[
+      ["Philosophy Guide content (for email templates)"],
+      ["Newsletter cadence + content owner confirmed"],
+      ["Family Handbook delivery method (PDF, web, or video)"],
+      ["Future (separate quote): Family Handbook videos"],
+      ["Future (separate quote): GHL AI chatbot for after-hours inquiries"],
+    ]},
+];
+
+const PIPELINE = [
+  ["1","New Inquiry","Lead in, no contact yet"],
+  ["2","Attempting Contact","Outreach made, no reply"],
+  ["3","Care Consultation","Active qualifying"],
+  ["4","Tour","Booked or completed"],
+  ["5","Assessment","Clinical fit review"],
+  ["6","Approved / Deposit","Approved; deposit pending"],
+  ["7","Move-In","Prep & date confirmed"],
+  ["8","Active Resident","First 60 Days active"],
+  ["9","Long-Term Family","Settled; ongoing"],
+];
+
+const STORE = "regal-build-progress-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch(e){ state = {}; }
+function save(){ localStorage.setItem(STORE, JSON.stringify(state)); }
+function key(s,i){ return s+"::"+i; }
+
+const cardsEl = document.getElementById("cards");
+SECTIONS.forEach(sec=>{
+  const card = document.createElement("div");
+  card.className = "card open";
+  card.dataset.f = sec.f;
+  const itemsHtml = sec.items.map((it,i)=>{
+    const k = key(sec.id,i);
+    const checked = state[k] ? "checked" : "";
+    const note = it[1] ? '<span class="note">'+it[1]+'</span>' : '';
+    return `<div class="item"><label><input type="checkbox" data-k="${k}" data-sec="${sec.id}" ${checked}/>
+      <span class="txt">${it[0]}${note}</span></label></div>`;
+  }).join("");
+  card.innerHTML = `
+    <div class="head">
+      <span class="chip ${sec.chip}">${sec.chipLabel}</span>
+      <span class="title">${sec.title}</span>
+      <span class="meta"><span class="ring" id="ring-${sec.id}"></span><span class="chev">▸</span></span>
+    </div>
+    <div class="items">${itemsHtml}</div>`;
+  card.querySelector(".head").addEventListener("click", e=>{
+    if(e.target.tagName==="INPUT") return;
+    card.classList.toggle("open");
+  });
+  cardsEl.appendChild(card);
+});
+
+// pipeline render
+const pipeEl = document.getElementById("pipe");
+PIPELINE.forEach(p=>{
+  const d = document.createElement("div");
+  d.className="pstage";
+  d.innerHTML = `<div class="n">STAGE ${p[0]}</div><div class="s">${p[1]}</div><div class="m">${p[2]}</div>`;
+  pipeEl.appendChild(d);
+});
+
+function updateProgress(){
+  let total=0, done=0;
+  SECTIONS.forEach(sec=>{
+    let st=0, sd=0;
+    sec.items.forEach((it,i)=>{ st++; if(state[key(sec.id,i)]) sd++; });
+    total+=st; done+=sd;
+    const ring = document.getElementById("ring-"+sec.id);
+    if(ring) ring.innerHTML = `<b>${sd}</b>/${st}`;
+  });
+  const pct = total? Math.round(done/total*100):0;
+  document.getElementById("globalBar").style.width = pct+"%";
+  document.getElementById("globalPct").textContent = pct+"%";
+}
+
+cardsEl.addEventListener("change", e=>{
+  if(e.target.matches('input[type="checkbox"]')){
+    state[e.target.dataset.k] = e.target.checked;
+    save(); updateProgress();
+  }
+});
+
+// filter
+document.getElementById("tabs").addEventListener("click", e=>{
+  const t = e.target.closest(".tab"); if(!t) return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  const f = t.dataset.f;
+  document.querySelectorAll("#cards .card").forEach(c=>{
+    c.classList.toggle("hidden", !(f==="all" || c.dataset.f===f));
+  });
+});
+
+document.getElementById("expandAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
+document.getElementById("collapseAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.remove("open"));
+document.getElementById("resetBtn").onclick = ()=>{
+  if(confirm("Reset all checked items?")){ state={}; save();
+    document.querySelectorAll('#cards input[type="checkbox"]').forEach(c=>c.checked=false); updateProgress(); }
+};
+
+updateProgress();
+</script>
+</body>
+</html>

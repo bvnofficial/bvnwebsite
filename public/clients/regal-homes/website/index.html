@@ -302,6 +302,8 @@
       <a href="#amenities">Amenities</a>
       <a href="#gallery">Gallery</a>
       <a href="#faq">FAQs</a>
+      <a href="/clients/regal-homes/website/care-consultation/">Consultation</a>
+      <a href="/clients/regal-homes/website/home-tour/">Tour</a>
       <a href="#contact">Contact</a>
     </nav>
     <a href="#contact" class="btn btn-gold nav-cta">Schedule a Visit</a>
@@ -315,8 +317,10 @@
   <a href="#amenities">Amenities</a>
   <a href="#gallery">Gallery</a>
   <a href="#faq">FAQs</a>
+  <a href="/clients/regal-homes/website/care-consultation/">Care Consultation</a>
+  <a href="/clients/regal-homes/website/home-tour/">Home Tour</a>
   <a href="#contact">Contact</a>
-  <a href="#contact" class="btn btn-gold">Schedule a Visit</a>
+  <a href="/clients/regal-homes/website/care-consultation/" class="btn btn-gold">Book a Consultation</a>
 </div>
 
 <!-- ============ HERO ============ -->
@@ -587,9 +591,9 @@
   <div class="wrap">
     <div class="contact-grid">
       <div class="reveal">
-        <span class="eyebrow">Schedule a Visit</span>
-        <h2>Come see it for yourself.</h2>
-        <p class="lede">The best way to understand Regal Care is to walk through the door. Reach out and we'll arrange a personal tour at your convenience.</p>
+        <span class="eyebrow">Get in Touch</span>
+        <h2>We're here to help.</h2>
+        <p class="lede">Ready to book? Use the <a href="/clients/regal-homes/website/care-consultation/" style="color:var(--gold2);font-weight:600">Care Consultation</a> or <a href="/clients/regal-homes/website/home-tour/" style="color:var(--gold2);font-weight:600">Home Tour</a> pages to pick a time. Or send a quick inquiry with the form and we'll reach out to help.</p>
         <div class="contact-info">
           <div class="ci"><div class="ic">📍</div><div><b>Regal Care (Flagship)</b><span>3316 Greenville Drive, Simi Valley, CA 93063</span></div></div>
           <div class="ci"><div class="ic">📞</div><div><b>Speak with our team</b><span><a href="tel:18055872992">805-587-2992</a> · Don Brodt</span></div></div>
@@ -597,33 +601,14 @@
         </div>
       </div>
 
-      <form class="visit reveal d1" id="visitForm" novalidate>
-        <h3>Request a Tour</h3>
-        <p class="sub">Tell us a little about your needs and we'll be in touch within one business day.</p>
-        <div class="two">
-          <div class="field"><label for="fname">First Name</label><input id="fname" name="fname" type="text" required /><div class="msg">Please enter your name.</div></div>
-          <div class="field"><label for="lname">Last Name</label><input id="lname" name="lname" type="text" required /><div class="msg">Please enter your last name.</div></div>
-        </div>
-        <div class="two">
-          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required /><div class="msg">Enter a valid email.</div></div>
-          <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" required /><div class="msg">Enter your phone number.</div></div>
-        </div>
-        <div class="field"><label for="home">Home of Interest</label>
-          <select id="home" name="home">
-            <option value="Regal Care">Regal Care (Flagship)</option>
-            <option value="Regal Residence">Regal Residence</option>
-            <option value="The Orchard">The Orchard</option>
-            <option value="Not sure yet">Not sure yet — help me choose</option>
-          </select>
-        </div>
-        <div class="field"><label for="msg">How can we help?</label><textarea id="msg" name="msg" placeholder="Tell us about your loved one and what you're looking for..."></textarea></div>
-        <button type="submit" class="btn btn-navy">Request My Visit →</button>
-        <div class="form-success" id="formSuccess">
-          <div class="ck">✓</div>
-          <h3>Thank you!</h3>
-          <p>Your request has been prepared. Our team will reach out within one business day to schedule your visit.</p>
-        </div>
-      </form>
+      <div class="visit reveal d1" id="inquiryCard">
+        <h3>Send us an inquiry</h3>
+        <p class="sub">Tell us a little about your loved one and what you're looking for. We'll get back to you to help you find the right fit.</p>
+        <iframe
+          src="https://api.leadconnectorhq.com/widget/form/NbNQTNP6QTsIKlPasmcw"
+          style="width:100%;min-height:640px;border:none;overflow:hidden;background:transparent;border-radius:12px"
+          scrolling="no" id="regalInquiryForm" title="Regal Care inquiry form"></iframe>
+      </div>
     </div>
   </div>
 </section>
@@ -663,6 +648,9 @@
 </footer>
 
 <button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+<!-- GHL booking widget auto-resize -->
+<script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript"></script>
 
 <script>
 (function(){
@@ -792,38 +780,7 @@
     if(e.key==="Escape") closeLb(); else if(e.key==="ArrowRight") moveLb(1); else if(e.key==="ArrowLeft") moveLb(-1);
   });
 
-  /* ---- contact form validation ---- */
-  var form = document.getElementById("visitForm"), success = document.getElementById("formSuccess");
-  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-  form.addEventListener("submit", function(e){
-    e.preventDefault();
-    var ok = true;
-    [["fname",function(v){return v.trim().length>0;}],
-     ["lname",function(v){return v.trim().length>0;}],
-     ["email",validEmail],
-     ["phone",function(v){return v.replace(/[^0-9]/g,"").length>=7;}]
-    ].forEach(function(pair){
-      var el = document.getElementById(pair[0]), field = el.closest(".field"), good = pair[1](el.value);
-      field.classList.toggle("err", !good);
-      if(!good) ok=false;
-    });
-    if(!ok){ form.querySelector(".field.err input").focus(); return; }
-    // Build a mailto so the inquiry actually reaches the team (no backend required)
-    var data = {
-      name: document.getElementById("fname").value+" "+document.getElementById("lname").value,
-      email: document.getElementById("email").value,
-      phone: document.getElementById("phone").value,
-      home: document.getElementById("home").value,
-      msg: document.getElementById("msg").value
-    };
-    var body = "Name: "+data.name+"%0D%0AEmail: "+data.email+"%0D%0APhone: "+data.phone+
-               "%0D%0AHome of interest: "+data.home+"%0D%0A%0D%0AMessage:%0D%0A"+encodeURIComponent(data.msg);
-    var mailto = "mailto:Info@regalcare.org?subject="+encodeURIComponent("Tour Request — "+data.name)+"&body="+body;
-    // Show confirmation, then open the user's email client with everything pre-filled
-    form.querySelectorAll(".field,.two,button[type=submit],.sub,h3").forEach(function(n){ n.style.display="none"; });
-    success.classList.add("on");
-    window.location.href = mailto;
-  });
+  /* ---- booking is now handled by the embedded GHL calendar widget (#regalTourBooking) ---- */
 
 })();
 </script>

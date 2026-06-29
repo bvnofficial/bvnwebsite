@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Schedule a Home Tour — Regal Care</title>
+<meta name="description" content="Schedule an in-person tour of a Regal Care home in Simi Valley. See the home, meet the team, and picture daily life for your loved one." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#403789; --navy2:#4d43a0; --navy3:#272257;
+    --gold:#2f6df0; --gold2:#6f9bff;
+    --cream:#f5f6fb; --white:#fff; --ink:#1f2433; --muted:#586074; --line:#dee1ef;
+    --shadow:0 18px 50px -22px rgba(40,35,90,0.45);
+    --serif:"Fraunces",Georgia,serif; --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  h1,h2{font-family:var(--serif);font-weight:600;line-height:1.14;letter-spacing:-.01em;color:var(--navy)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+
+  header.nav{background:var(--navy3);position:sticky;top:0;z-index:50}
+  header.nav .bar{display:flex;align-items:center;gap:24px;max-width:1100px;margin:0 auto;padding:14px 24px}
+  .brand img{height:40px;width:auto}
+  nav.links{display:flex;align-items:center;gap:26px;margin-left:auto}
+  nav.links a{font-weight:500;font-size:15px;color:rgba(255,255,255,.82);transition:.2s}
+  nav.links a:hover{color:#fff}
+  nav.links a.active{color:var(--gold2);font-weight:600}
+  @media(max-width:680px){ nav.links{gap:16px} nav.links a.home{display:none} .brand img{height:34px} }
+
+  .hero{background:linear-gradient(160deg,var(--navy),var(--navy3));color:#fff;padding:54px 0 40px;text-align:center}
+  .hero .eyebrow{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2)}
+  .hero h1{color:#fff;font-size:clamp(30px,5vw,44px);margin:14px 0 0}
+  .hero p{color:rgba(255,255,255,.86);font-size:17px;margin:16px auto 0;max-width:560px}
+
+  .booking{margin:-24px auto 60px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px 26px 30px}
+  .card h2{font-size:22px;margin-bottom:4px}
+  .card .sub{color:var(--muted);font-size:15px;margin-bottom:18px}
+  iframe.widget{width:100%;min-height:720px;border:none;overflow:hidden;background:transparent;border-radius:12px}
+  .alt{text-align:center;margin-top:26px;color:var(--muted);font-size:15px}
+  .alt a{color:var(--gold);font-weight:600}
+
+  footer{background:var(--navy3);color:rgba(255,255,255,.6);text-align:center;padding:26px 24px;font-size:13.5px;margin-top:40px}
+  footer a{color:var(--gold2)}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="bar">
+    <a href="/clients/regal-homes/website/" class="brand"><img src="/clients/regal-homes/website/img/logo-white.png" alt="Regal Care" /></a>
+    <nav class="links">
+      <a href="/clients/regal-homes/website/" class="home">Home</a>
+      <a href="/clients/regal-homes/website/care-consultation/">Care Consultation</a>
+      <a href="/clients/regal-homes/website/home-tour/" class="active">Home Tour</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">In-Person Visit</span>
+    <h1>Come see it for yourself</h1>
+    <p>The best way to understand Regal Care is to walk through the door. Pick a time below to tour a home, meet the team, and ask anything you'd like. Let us know which home you're interested in when you book.</p>
+  </div>
+</section>
+
+<section class="booking">
+  <div class="wrap">
+    <div class="card">
+      <h2>Choose your tour time</h2>
+      <p class="sub">You'll receive an instant confirmation by email.</p>
+      <iframe class="widget"
+        src="https://api.leadconnectorhq.com/widget/booking/bhcsxi9LCkMqzkr40Qxg"
+        scrolling="no" id="regalTourBooking" title="Schedule a home tour at Regal Care"></iframe>
+    </div>
+    <p class="alt">Not sure yet? <a href="/clients/regal-homes/website/care-consultation/">Start with a free consultation →</a></p>
+  </div>
+</section>
+
+<footer>
+  © <span id="yr"></span> Regal Care · Simi Valley, CA · <a href="tel:18056002711">(805) 600-2711</a> · <a href="mailto:Info@regalcare.org">Info@regalcare.org</a>
+</footer>
+
+<script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript"></script>
+<script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
+</body>
+</html>
