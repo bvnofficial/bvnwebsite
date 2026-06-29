@@ -30,7 +30,7 @@ const C = {
 
 // ── Editable commercial inputs (CONFIRM BEFORE SHARING) ──────
 const SCOPE_FEE = "£500"; // Phase 0 paid scoping sprint — placeholder, set real figure
-const RETAINER_FROM = "£600/mo"; // ongoing managed-care — placeholder
+const RETAINER_FROM = "£1,000/mo"; // ongoing managed-care
 const LAST_UPDATED = "29 June 2026";
 
 type Status = "done" | "active" | "todo";
@@ -61,7 +61,7 @@ const phases: Phase[] = [
       { label: "Check TikTok Shop store-rating eligibility for API flash-sale scheduling", status: "todo", ref: "#12" },
       { label: "GoHighLevel audit — what you pay for and aren't using (onboarding, nurture, abandoned cart, calendar)", status: "todo", ref: "#31" },
       { label: "Notion audit — current build vs. what it should be doing", status: "todo", ref: "#32" },
-      { label: "Decide comms routing: WhatsApp draft-then-approve vs. moving outbound sequences to GHL SMS/email", status: "todo", ref: "#9 #10" },
+      { label: "Confirm WhatsApp Business API setup for draft-then-approve (routing for now, inbound + outbound)", status: "todo", ref: "#9 #10" },
       { label: "Reimbursement investigation — manual recovery vs. tool, in £ (found-money check before optimising)", status: "todo", ref: "#23" },
       { label: "Quick win live: invoice filing / auto-sort (easiest build on the list, unblocks reimbursements)", status: "todo", ref: "#21" },
       { label: "Deliver costed, dependency-ordered build plan + fixed quotes for Phases 1–4", status: "todo" },
@@ -372,17 +372,17 @@ export default function HypersonicMilestones() {
         {/* Communications approach — OPEN decision */}
         <Section title="Communications approach" Icon={MessageSquare} accent={C.purple}>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 18 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: C.amber, background: C.amber + "1A", padding: "4px 10px", borderRadius: 99 }}>
-              <TriangleAlert size={13} /> Open decision — to settle in Phase 0
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: C.green, background: C.green + "1A", padding: "4px 10px", borderRadius: 99 }}>
+              <CircleCheck size={13} /> Decided — WhatsApp for now
             </div>
             <p style={{ fontSize: 14, color: C.ink, lineHeight: 1.6, marginTop: 14, marginBottom: 12 }}>
-              Working assumption is <strong>WhatsApp, draft-then-approve</strong>: AI writes the reply in Adam&apos;s voice, the VA
-              or setter sends with one tap. Inbound 1:1 support stays on the channel the customer chose.
+              <strong>WhatsApp, draft-then-approve</strong> is the routing for now, inbound and outbound: AI writes the message
+              in Adam&apos;s voice, the VA or setter sends with one tap. Inbound 1:1 support stays on the channel the customer chose.
             </p>
             <p style={{ fontSize: 14, color: C.sub, lineHeight: 1.6, margin: 0 }}>
-              Still to decide, as part of the GoHighLevel audit: whether structured <em>outbound</em> sequences (affiliate
-              nurture, reminders, flash-sale alerts) run through WhatsApp templates or shift to <strong>GHL SMS / email</strong>,
-              which you already pay for. We weigh native reach against per-message cost and channel fit before committing.
+              GHL SMS / email stays on the table as a later optimisation. The GoHighLevel audit will flag where structured
+              <em> outbound</em> sequences (affiliate nurture, reminders, flash-sale alerts) could move once we see what
+              you&apos;re already paying for, but nothing changes channel until you decide it should.
             </p>
           </div>
         </Section>
