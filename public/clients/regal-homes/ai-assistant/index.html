@@ -12,75 +12,30 @@
   :root{
     --indigo:#403789; --indigo2:#4d43a0; --indigo3:#272257;
     --blue:#2f6df0; --blue2:#6f9bff; --blue-soft:#e6edff;
-    --cream:#f5f6fb; --cream2:#eceef8; --ink:#1f2433; --muted:#586074; --line:#dee1ef;
-    --ok:#3f9e6b;
+    --cream:#f5f6fb; --ink:#1f2433; --muted:#586074; --line:#dee1ef; --ok:#3f9e6b;
     --serif:"Fraunces",Georgia,serif; --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;}
-  body{font-family:var(--sans);color:var(--ink);background:var(--indigo3);overflow:hidden;}
-
-  /* ---------- Mock site backdrop ---------- */
-  .site{position:fixed;inset:0;overflow:hidden;color:#eef0fb;padding:52px clamp(24px,7vw,110px);
-    background:radial-gradient(1100px 560px at 82% -12%, rgba(111,155,255,.22), transparent 60%),
-      linear-gradient(158deg,#403789,#272257 72%);}
-  .brandline{display:flex;align-items:center;gap:12px;margin-bottom:58px;}
-  .crest{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.09);
-    border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;}
-  .crest svg{width:25px;height:25px;}
-  .brandname{font-family:var(--serif);font-weight:600;font-size:21px;letter-spacing:.2px;}
-  .brandname small{display:block;font-family:var(--sans);font-size:10.5px;letter-spacing:2.4px;
-    color:var(--blue2);font-weight:700;margin-top:1px;}
-  .nav{margin-left:auto;display:flex;gap:26px;font-size:14.5px;color:#c9cef1;font-weight:500;}
-  .hero{max-width:600px;}
-  .kicker{color:var(--blue2);letter-spacing:.18em;font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:16px;}
-  .hero h1{font-family:var(--serif);font-size:clamp(34px,5vw,58px);line-height:1.08;font-weight:600;letter-spacing:-.01em;}
-  .hero h1 em{font-style:italic;color:var(--blue2);}
-  .hero p{margin-top:20px;font-size:17.5px;line-height:1.6;color:#cdd2f0;max-width:500px;}
-  .trust{margin-top:40px;display:flex;gap:34px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.18);padding-top:26px;}
-  .trust b{font-family:var(--serif);display:block;font-size:28px;color:#fff;font-weight:600;}
-  .trust span{font-size:13px;color:#b7bdea;}
-
-  .hint{position:fixed;right:26px;bottom:104px;background:#fff;color:var(--ink);padding:13px 16px;
-    border-radius:16px 16px 4px 16px;box-shadow:0 18px 46px rgba(20,18,60,.32);font-size:14px;max-width:238px;
-    line-height:1.45;opacity:0;transform:translateY(8px);transition:.35s;z-index:40;cursor:pointer;}
-  .hint.show{opacity:1;transform:translateY(0);}
-  .hint b{color:var(--indigo);font-family:var(--serif);}
-  .hint .x{position:absolute;top:6px;right:10px;color:#b3bcc4;cursor:pointer;font-size:14px;}
-
-  /* ---------- Launcher ---------- */
-  .launcher{position:fixed;right:26px;bottom:26px;width:62px;height:62px;border-radius:50%;
-    background:linear-gradient(135deg,var(--indigo),var(--blue));color:#fff;border:none;cursor:pointer;
-    box-shadow:0 16px 36px rgba(40,35,90,.55);display:flex;align-items:center;justify-content:center;z-index:50;
-    transition:transform .25s;}
-  .launcher:hover{transform:scale(1.06);}
-  .launcher svg{width:28px;height:28px;}
-  .launcher .pulse{position:absolute;top:-2px;right:-2px;width:15px;height:15px;border-radius:50%;
-    background:var(--blue2);border:2px solid var(--indigo3);}
-  .launcher.hidden{transform:scale(0);pointer-events:none;}
-
-  /* ---------- Widget ---------- */
-  .panel{position:fixed;right:24px;bottom:24px;width:min(410px,calc(100vw - 32px));
-    height:min(660px,calc(100vh - 40px));background:#fff;border-radius:22px;overflow:hidden;
-    box-shadow:0 34px 90px rgba(20,18,60,.5);display:flex;flex-direction:column;z-index:60;
-    transform:translateY(24px) scale(.96);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.2,.8,.2,1);}
-  .panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto;}
-  .phead{background:linear-gradient(135deg,var(--indigo),var(--indigo2));color:#fff;padding:15px 16px;
-    display:flex;align-items:center;gap:12px;}
-  .phead .ava{width:42px;height:42px;border-radius:50%;flex:0 0 auto;
-    background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;
-    justify-content:center;font-weight:700;font-size:17px;font-family:var(--serif);color:#fff;}
-  .phead .meta{flex:1;min-width:0;}
-  .phead .nm{font-weight:600;font-size:16px;font-family:var(--serif);}
-  .phead .st{font-size:12px;color:#c9cef1;display:flex;align-items:center;gap:6px;margin-top:1px;}
-  .phead .st i{width:8px;height:8px;border-radius:50%;background:#57e08e;box-shadow:0 0 0 3px rgba(87,224,142,.25);font-style:normal;}
-  .phead .acts{display:flex;gap:6px;}
-  .phead .acts a,.phead .acts button{width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;
-    background:rgba(255,255,255,.13);color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;}
-  .phead .acts a:hover,.phead .acts button:hover{background:rgba(255,255,255,.26);}
-  .phead .acts svg{width:17px;height:17px;}
-
-  .chat{flex:1;overflow-y:auto;padding:18px 15px;background:var(--cream);}
+  body{font-family:var(--sans);color:var(--ink);
+    background:radial-gradient(900px 500px at 50% -10%, rgba(111,155,255,.18), transparent 60%), linear-gradient(160deg,#403789,#272257 75%);
+    display:flex;align-items:center;justify-content:center;padding:18px;}
+  .app{width:min(460px,100%);height:min(760px,96vh);background:#fff;border-radius:22px;overflow:hidden;
+    box-shadow:0 34px 90px rgba(20,18,60,.5);display:flex;flex-direction:column;}
+  .head{background:linear-gradient(135deg,var(--indigo),var(--indigo2));color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;}
+  .head .ava{width:44px;height:44px;border-radius:50%;flex:0 0 auto;background:linear-gradient(135deg,var(--blue),var(--blue2));
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;font-family:var(--serif);}
+  .head .meta{flex:1;min-width:0;}
+  .head .nm{font-weight:600;font-size:17px;font-family:var(--serif);}
+  .head .st{font-size:12px;color:#c9cef1;display:flex;align-items:center;gap:6px;margin-top:1px;}
+  .head .st i{width:8px;height:8px;border-radius:50%;background:#57e08e;box-shadow:0 0 0 3px rgba(87,224,142,.25);font-style:normal;}
+  .head .badge{font-size:10.5px;color:#fff;background:rgba(255,255,255,.16);padding:4px 9px;border-radius:999px;font-weight:700;letter-spacing:.4px;}
+  .head .acts{display:flex;gap:6px;}
+  .head .acts a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;
+    display:flex;align-items:center;justify-content:center;text-decoration:none;}
+  .head .acts a:hover{background:rgba(255,255,255,.28);}
+  .head .acts svg{width:17px;height:17px;}
+  .chat{flex:1;overflow-y:auto;padding:20px 16px;background:var(--cream);}
   .row{display:flex;gap:8px;margin-bottom:12px;align-items:flex-end;animation:pop .3s ease both;}
   .row.user{justify-content:flex-end;}
   @keyframes pop{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
@@ -105,7 +60,7 @@
   .feat .ic svg{width:15px;height:15px;}
   .opt{display:block;width:100%;text-align:left;background:var(--cream);border:1px solid var(--line);border-radius:11px;
     padding:11px 13px;margin-top:8px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink);transition:.15s;}
-  .opt:hover{border-color:var(--blue);background:#fff;transform:translateX(2px);}
+  .opt:hover{border-color:var(--blue);background:#fff;}
   .opt small{display:block;font-weight:500;color:var(--muted);font-size:12px;margin-top:2px;}
   .conf{border:1px solid #cfe6d8;background:#f2fbf6;}
   .conf .top{display:flex;align-items:center;gap:9px;color:var(--ok);font-weight:700;font-size:14px;margin-bottom:9px;font-family:var(--serif);}
@@ -117,53 +72,25 @@
   .typing span{width:7px;height:7px;border-radius:50%;background:#a7adcf;animation:b 1.2s infinite;}
   .typing span:nth-child(2){animation-delay:.2s;}.typing span:nth-child(3){animation-delay:.4s;}
   @keyframes b{0%,60%,100%{opacity:.3;transform:translateY(0);}30%{opacity:1;transform:translateY(-4px);}}
-  .composer{padding:11px 12px;border-top:1px solid var(--line);background:#fff;display:flex;gap:9px;align-items:center;}
-  .composer input{flex:1;border:1px solid var(--line);border-radius:999px;padding:11px 15px;font-size:14.5px;
-    outline:none;background:var(--cream);font-family:var(--sans);}
+  .composer{padding:12px 13px;border-top:1px solid var(--line);background:#fff;display:flex;gap:9px;align-items:center;}
+  .composer input{flex:1;border:1px solid var(--line);border-radius:999px;padding:12px 16px;font-size:14.5px;outline:none;background:var(--cream);font-family:var(--sans);}
   .composer input:focus{border-color:var(--blue);background:#fff;}
-  .send{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;background:var(--indigo);color:#fff;
+  .send{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;background:var(--indigo);color:#fff;
     display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
   .send:hover{background:var(--blue);}
   .send svg{width:18px;height:18px;}
-  .pfoot{text-align:center;font-size:10.5px;color:#9aa1bd;padding:6px;background:#fff;border-top:1px solid #f0f0f5;}
-  @media (max-width:520px){.nav{display:none;}.panel{right:8px;bottom:8px;height:calc(100vh - 16px);}
-    .launcher{right:16px;bottom:16px;}.hint{right:16px;}}
+  .foot{text-align:center;font-size:10.5px;color:#9aa1bd;padding:7px;background:#fff;border-top:1px solid #f0f0f5;}
 </style>
 </head>
 <body>
-  <div class="site">
-    <div class="brandline">
-      <div class="crest"><svg viewBox="0 0 24 24" fill="none" stroke="#6f9bff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l3 3 3-5 3 5 3-5 3 5 3-3v8H3z"/><path d="M3 20h18"/></svg></div>
-      <div class="brandname">Regal Care<small>RESIDENTIAL CARE HOMES</small></div>
-      <div class="nav"><span>Our Homes</span><span>Care</span><span>Amenities</span><span>Contact</span></div>
-    </div>
-    <div class="hero">
-      <div class="kicker">Residential Care · Simi Valley, California</div>
-      <h1>A place that truly feels like <em>home.</em></h1>
-      <p>Small, six-bed residential care homes in Simi Valley, with 24-hour awake staff and caregivers who know every resident by name.</p>
-      <div class="trust">
-        <div><b>6</b><span>Intimate resident capacity</span></div>
-        <div><b>24/7</b><span>Awake, on-site care staff</span></div>
-        <div><b>3</b><span>Licensed care homes</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="hint" id="hint"><span class="x" id="hintx">&times;</span><b>Hi, I'm Grace 👋</b><br>Looking for care for someone you love? I'm happy to help.</div>
-
-  <button class="launcher" id="launcher" aria-label="Open chat">
-    <span class="pulse"></span>
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.2 1 4.2 2.6 5.7-.1 1.2-.6 2.6-1.4 3.6 1.7-.2 3.3-.8 4.5-1.7 1.3.5 2.8.8 4.3.8 5.5 0 10-3.9 10-8.7S17.5 3 12 3z"/></svg>
-  </button>
-
-  <div class="panel" id="panel">
-    <div class="phead">
+  <div class="app">
+    <div class="head">
       <div class="ava">G</div>
       <div class="meta"><div class="nm">Grace</div><div class="st"><i></i> Regal Care Assistant · online</div></div>
+      <div class="badge">SAMPLE</div>
       <div class="acts">
         <a href="tel:18055872992" title="Call"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1l-2.3 2.2z"/></svg></a>
         <a href="mailto:Info@regalcare.org" title="Email"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 7L4 6.2V6l8 5 8-5v.2L12 11z"/></svg></a>
-        <button id="close" title="Minimize"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 13h12v-2H6z"/></svg></button>
       </div>
     </div>
     <div class="chat" id="chat"></div>
@@ -171,187 +98,169 @@
       <input id="input" type="text" placeholder="Ask Grace anything..." autocomplete="off" />
       <button class="send" id="send" aria-label="Send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5l19-8.5L3 3.5V10l13 2-13 2z"/></svg></button>
     </div>
-    <div class="pfoot">Sample AI assistant · Built by BVN for Regal Care</div>
+    <div class="foot">Sample AI assistant · Built by BVN for Regal Care</div>
   </div>
 
 <script>
-const PHONE="805-587-2992", TEL="+18055872992", EMAIL="Info@regalcare.org";
-const chat=document.getElementById("chat"), input=document.getElementById("input");
-let started=false;
-const ctx={pending:null,topics:[],flow:null,lead:{}};
+var PHONE="805-587-2992", TEL="+18055872992", EMAIL="Info@regalcare.org";
+var chat=document.getElementById("chat"), input=document.getElementById("input");
+var ctx={pending:null, flow:null};
 
-const el=h=>{const d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild;};
-const scroll=()=>chat.scrollTop=chat.scrollHeight;
-const now=()=>{const d=new Date();let h=d.getHours(),m=d.getMinutes();const ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(m<10?"0":"")+m+" "+ap;};
-const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const first=n=>String(n||"").trim().split(/\s+/)[0]||n;
+function el(h){var d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild;}
+function scroll(){chat.scrollTop=chat.scrollHeight;}
+function nowt(){var d=new Date(),h=d.getHours(),m=d.getMinutes(),ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(m<10?"0":"")+m+" "+ap;}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
+function firstName(n){return String(n||"").trim().split(/\s+/)[0]||n;}
 
-function addUser(t){chat.appendChild(el(`<div class="row user"><div class="bubble">${esc(t)}</div><div class="av" style="background:#dbe0f2;color:#4a4f74">You</div></div>`));chat.appendChild(el(`<div class="time user">${now()}</div>`));scroll();}
-function addBot(html,chips){chat.appendChild(el(`<div class="row bot"><div class="av">G</div><div class="bubble">${html}</div></div>`));chat.appendChild(el(`<div class="time">Grace · ${now()}</div>`));if(chips&&chips.length)addChips(chips);scroll();}
-function addChips(chips){const c=el(`<div class="chips"></div>`);chips.forEach(t=>{const b=el(`<button class="chip"></button>`);b.textContent=t;b.onclick=()=>{c.remove();addUser(t);route(t);};c.appendChild(b);});chat.appendChild(c);scroll();}
-function typing(cb,d){const t=el(`<div class="row bot"><div class="av">G</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>`);chat.appendChild(t);scroll();setTimeout(()=>{t.remove();cb();},d||Math.min(1400,720+Math.random()*560));}
-const say=(html,chips,d)=>typing(()=>addBot(html,chips),d);
+function addUser(t){chat.appendChild(el('<div class="row user"><div class="bubble">'+esc(t)+'</div><div class="av" style="background:#dbe0f2;color:#4a4f74">You</div></div>'));chat.appendChild(el('<div class="time user">'+nowt()+'</div>'));scroll();}
+function addBot(html,chips){chat.appendChild(el('<div class="row bot"><div class="av">G</div><div class="bubble">'+html+'</div></div>'));chat.appendChild(el('<div class="time">Grace · '+nowt()+'</div>'));if(chips&&chips.length)addChips(chips);scroll();}
+function addChips(chips){var c=el('<div class="chips"></div>');chips.forEach(function(t){var b=el('<button class="chip"></button>');b.textContent=t;b.onclick=function(){c.remove();addUser(t);route(t);};c.appendChild(b);});chat.appendChild(c);scroll();}
+function typing(cb,d){var t=el('<div class="row bot"><div class="av">G</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>');chat.appendChild(t);scroll();setTimeout(function(){t.remove();cb();},d||Math.min(1400,720+Math.random()*560));}
+function say(html,chips,d){typing(function(){addBot(html,chips);},d);}
 function pushCard(html){chat.appendChild(el(html));scroll();}
 
 function careCard(){
-  const items=[
-    ["Personal care & help with daily living","M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0z"],
+  var items=[
+    ["Personal care and help with daily living","M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0z"],
     ["Medication management","M10 3h4v4h4v4h-4v4h-4v-4H6V7h4z"],
     ["Fresh, home cooked meals every day","M4 3h16v2H4zm2 4h12l-1 13H7z"],
     ["24-hour awake staff, day and night","M12 3a9 9 0 109 9 7 7 0 01-9-9z"],
-    ["A vegetable garden, patio & BBQ to enjoy","M12 3l3 6 6 .9-4.5 4.3 1 6L12 17l-5.5 3.2 1-6L3 9.9 9 9z"],
+    ["A garden, patio and BBQ to enjoy","M12 3l3 6 6 .9-4.5 4.3 1 6L12 17l-5.5 3.2 1-6L3 9.9 9 9z"],
     ["Hospice coordination when it is needed","M12 21C7 17 3 13.4 3 8.8A4.8 4.8 0 0112 6a4.8 4.8 0 019 2.8C21 13.4 17 17 12 21z"]
   ];
-  const rows=items.map(([t,p])=>`<div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="${p}"/></svg></div><div>${t}</div></div>`).join("");
-  return `<div class="card"><h4>The care in every Regal Care home</h4>${rows}</div>`;
+  var rows=items.map(function(it){return '<div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="'+it[1]+'"/></svg></div><div>'+it[0]+'</div></div>';}).join("");
+  return '<div class="card"><h4>The care in every Regal Care home</h4>'+rows+'</div>';
 }
 function options(title,opts){
-  const rows=opts.map(o=>`<button class="opt" data-v="${esc(o.v)}">${esc(o.t)}${o.s?`<small>${esc(o.s)}</small>`:""}</button>`).join("");
-  const card=el(`<div class="card"><h4>${esc(title)}</h4>${rows}</div>`);
-  card.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const v=b.dataset.v;card.querySelectorAll(".opt").forEach(x=>x.disabled=true);addUser(b.textContent.split("\n")[0]);route(v);});
+  var rows=opts.map(function(o){return '<button class="opt" data-v="'+esc(o.v)+'">'+esc(o.t)+(o.s?'<small>'+esc(o.s)+'</small>':"")+'</button>';}).join("");
+  var card=el('<div class="card"><h4>'+esc(title)+'</h4>'+rows+'</div>');
+  card.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){var v=b.dataset.v;card.querySelectorAll(".opt").forEach(function(x){x.disabled=true;});addUser(b.textContent.split("\n")[0]);route(v);};});
   chat.appendChild(card);scroll();
 }
 
-/* ---------- knowledge base (accurate to regalcare.org) ---------- */
-const KB=[
- {id:"about",kw:{about:3,"who are you":3,"what is regal":3,"tell me":2,regal:1,philosophy:2},
-  r:()=>({t:"Regal Care is a family of small, licensed residential care homes in Simi Valley, California. Rather than a large facility, your loved one lives in a real neighborhood home with just six residents, so our caregivers come to know everyone by name and truly feel like family. Our belief is simple, that every resident deserves to feel known, valued, and cared for around the clock.",c:["The care you provide","See your homes","How much does it cost?"]})},
- {id:"care",kw:{care:2,service:3,provide:3,offer:2,"assisted living":3,"daily living":3,"help with":2,bathing:2,adl:3},
-  r:()=>{pushCard(careCard());return{t:"Every resident receives personal, attentive care in a warm home setting, from caregivers who are awake and on duty around the clock. Would you like to talk with our team, or come see a home for yourself?",c:["Book a visit","Do you offer memory care?","How much does it cost?"]};}},
- {id:"homes",kw:{home:2,homes:3,residence:3,"where are you":2,location:2,facility:2,located:2,orchard:3,neighborhood:1},
-  r:()=>({t:"We have three licensed care homes in Simi Valley, each a small, intimate six-bed residence with 24-hour awake staff, our flagship Regal Care home on Greenville Drive in the quiet Texas Tract neighborhood, plus Regal Residence and The Orchard nearby. Keeping our homes small is intentional, it lets our caregivers build real relationships. The best way to feel the difference is to visit. Shall I set up a tour?",c:["Book a tour","What amenities do you have?","How much does it cost?"]})},
- {id:"cost",kw:{cost:3,price:3,pricing:3,"how much":3,expensive:2,afford:2,rate:2,monthly:2,fee:2,budget:2,"6500":2,"6,500":2},
-  r:()=>({t:"Care at Regal Care starts at <b>$6,500 per month</b>. Your final price depends on the level of care, the room type, and the home you choose, so we prepare a personalized quote. The easiest way is a short visit or call where we learn about your loved one and give you clear numbers, with no obligation.",c:["Book a visit","What's included?","See your homes"]})},
- {id:"amenities",kw:{ameniti:3,room:2,garden:3,patio:2,bbq:2,furnish:2,bed:2,"what's included":3,"whats included":3,kitchen:2,wheelchair:2,accessible:2,included:2},
-  r:()=>({t:"Every home is thoughtfully appointed, with furnished rooms that include an electric bed and a wireless call system, wheelchair-friendly floors throughout, a modern kitchen for fresh home cooked meals, a covered patio with a BBQ, and a lovingly maintained vegetable garden that residents can enjoy. And always, 24-hour awake staff.",c:["See your homes","Book a visit","The care you provide"]})},
- {id:"awake",kw:{awake:3,overnight:3,"at night":3,night staff:3,nighttime:2,"24 hour":2,"24-hour":2,"around the clock":2},
-  r:()=>({t:"Yes. We keep <b>24-hour awake staff</b>, including all through the night. A caregiver is always alert and ready to help, so your family can truly rest easy.",c:["The care you provide","Book a visit"]})},
- {id:"tour",kw:{tour:3,visit:3,"see the home":3,"come by":2,"in person":2,"look around":2,"stop by":2},
-  r:()=>({start:"tour",t:"I would love to arrange a visit for you. Seeing a home in person is the best way to feel its warmth."})},
- {id:"consult",kw:{consult:3,consultation:3,"talk to":2,"speak with":2,"get started":3,assessment:2,"where do i start":3,"book a visit":3},
-  r:()=>({start:"consultation",t:"A short consultation is a lovely place to begin. Let me ask a few quick questions so we can point you the right way."})},
- {id:"avail",kw:{availab:3,opening:3,"room available":3,vacancy:3,space:2,spot:2,"any openings":3},
-  r:()=>({start:"availability",t:"Availability can change from week to week, and we do sometimes have an opening. Let me take a few details so our team can share what is currently available."})},
- {id:"memory",kw:{memory:3,dementia:3,alzheimer:3,cognitive:2,"memory care":3},
-  r:()=>({t:"Many of the families we serve are caring for a loved one with memory loss. In our small homes, with awake staff and consistent caregivers, residents with memory needs are gently supervised in a calm, familiar setting. Our team can walk you through the right fit. Would you like to talk it through?",c:["Book a visit","The care you provide"]})},
- {id:"meals",kw:{meal:3,food:3,eat:2,cook:2,diet:2,nutrition:2},
-  r:()=>({t:"Our residents enjoy fresh, home cooked meals made in our own kitchen each day, with care for dietary needs and personal preferences. Families often tell us it is one of the things that makes our homes feel like home.",c:["What amenities do you have?","Book a visit"]})},
- {id:"meds",kw:{medication:3,medicine:2,meds:3,pills:2,prescription:2},
-  r:()=>({t:"Yes, medication management is part of the care we provide, handled safely by our caregivers as part of each resident's personal care plan.",c:["The care you provide","Book a visit"]})},
- {id:"pay",kw:{insurance:3,medicaid:3,"medi-cal":3,medicare:2,"private pay":3,va:2,benefits:2,financial:2,payment:2},
-  r:()=>({t:"Regal Care is private pay, with care starting at $6,500 a month. Our team is glad to walk you through exactly what is included and help make the financial side feel clear and simple. Would you like to talk it through?",c:["Book a visit","How much does it cost?"]})},
- {id:"hospice",kw:{hospice:3,"end of life":3,palliative:3,"comfort care":3},
-  r:()=>({t:"Yes, we coordinate closely with hospice providers so residents can remain comfortable and cared for in a familiar home, surrounded by people who know them well. Our team can explain how that works.",c:["Book a visit","The care you provide"]})},
- {id:"staff",kw:{staff:2,caregiver:3,nurse:2,ratio:3,"who takes care":3,team:2},
-  r:()=>({t:"Because each home holds just six residents with 24-hour awake staff, your loved one receives close, personal attention day and night, from caregivers who know them by name. Would you like to meet the team on a visit?",c:["Book a tour","Book a visit"]})},
- {id:"contact",kw:{contact:3,phone:3,call:2,number:2,email:3,reach:2},
-  r:()=>({t:`You can reach our team anytime at <a href="tel:${TEL}">${PHONE}</a> or <a href="mailto:${EMAIL}">${EMAIL}</a>. Would you prefer that someone reaches out to you instead?`,c:["Yes, have someone reach out","Book a tour"]})},
- {id:"hours",kw:{hour:2,"when can":2,weekend:2,evening:2,schedule:1},
-  r:()=>({t:"We are glad to arrange visits and calls at a time that suits you, including evenings and weekends. Shall I set one up?",c:["Book a tour","Book a visit"]})},
- {id:"thanks",kw:{thank:3,thanks:3,appreciate:2},
-  r:()=>({t:"You are so very welcome. Choosing care for someone you love is a tender decision, and we are honored to help. Is there anything else I can do for you?",c:["Book a visit","No, that is all"]})},
- {id:"bye",kw:{"that is all":3,"no thanks":2,goodbye:2,bye:2,"nothing else":3},
-  r:()=>({t:`Thank you for spending time with us today. Whenever you are ready, we are here for you at <a href="tel:${TEL}">${PHONE}</a>. Take good care.`,c:["Book a visit"]})}
+var KB=[
+ {id:"about", kw:{"about":3,"who are you":3,"what is regal":3,"tell me":2,"regal":1,"philosophy":2},
+  r:function(){return {t:"Regal Care is a family of small, licensed residential care homes in Simi Valley, California. Rather than a large facility, your loved one lives in a real neighborhood home with just six residents, so our caregivers come to know everyone by name and truly feel like family. Our belief is simple, that every resident deserves to feel known, valued, and cared for around the clock.", c:["The care you provide","See your homes","How much does it cost?"]};}},
+ {id:"care", kw:{"care":2,"service":3,"provide":3,"offer":2,"assisted living":3,"daily living":3,"help with":2,"bathing":2},
+  r:function(){pushCard(careCard());return {t:"Every resident receives personal, attentive care in a warm home setting, from caregivers who are awake and on duty around the clock. Would you like to talk with our team, or come see a home for yourself?", c:["Book a visit","Do you offer memory care?","How much does it cost?"]};}},
+ {id:"homes", kw:{"home":2,"homes":3,"residence":3,"where are you":2,"location":2,"facility":2,"located":2,"orchard":3},
+  r:function(){return {t:"We have three licensed care homes in Simi Valley, each a small, intimate six-bed residence with 24-hour awake staff, our flagship Regal Care home on Greenville Drive in the quiet Texas Tract neighborhood, plus Regal Residence and The Orchard nearby. Keeping our homes small is intentional, it lets our caregivers build real relationships. The best way to feel the difference is to visit. Shall I set up a tour?", c:["Book a tour","What amenities do you have?","How much does it cost?"]};}},
+ {id:"cost", kw:{"cost":3,"price":3,"pricing":3,"how much":3,"expensive":2,"afford":2,"rate":2,"monthly":2,"fee":2,"budget":2},
+  r:function(){return {t:"Care at Regal Care starts at <b>$6,500 per month</b>. Your final price depends on the level of care, the room type, and the home you choose, so we prepare a personalized quote. The easiest way is a short visit or call where we learn about your loved one and give you clear numbers, with no obligation.", c:["Book a visit","What's included?","See your homes"]};}},
+ {id:"amenities", kw:{"amenit":3,"room":2,"garden":3,"patio":2,"bbq":2,"furnish":2,"bed":2,"what's included":3,"whats included":3,"kitchen":2,"wheelchair":2,"accessible":2,"included":2},
+  r:function(){return {t:"Every home is thoughtfully appointed, with furnished rooms that include an electric bed and a wireless call system, wheelchair friendly floors throughout, a modern kitchen for fresh home cooked meals, a covered patio with a BBQ, and a lovingly maintained vegetable garden that residents can enjoy. And always, 24-hour awake staff.", c:["See your homes","Book a visit","The care you provide"]};}},
+ {id:"awake", kw:{"awake":3,"overnight":3,"at night":3,"nighttime":2,"night":2,"24 hour":2,"24-hour":2,"around the clock":2},
+  r:function(){return {t:"Yes. We keep <b>24-hour awake staff</b>, including all through the night. A caregiver is always alert and ready to help, so your family can truly rest easy.", c:["The care you provide","Book a visit"]};}},
+ {id:"tour", kw:{"tour":3,"visit":3,"see the home":3,"come by":2,"in person":2,"look around":2,"stop by":2},
+  r:function(){return {start:"tour", t:"I would love to arrange a visit for you. Seeing a home in person is the best way to feel its warmth."};}},
+ {id:"consult", kw:{"consult":3,"consultation":3,"talk to":2,"speak with":2,"get started":3,"assessment":2,"book a visit":3},
+  r:function(){return {start:"consultation", t:"A short consultation is a lovely place to begin. Let me ask a few quick questions so we can point you the right way."};}},
+ {id:"avail", kw:{"availab":3,"opening":3,"room available":3,"vacancy":3,"space":2,"spot":2,"any openings":3},
+  r:function(){return {start:"availability", t:"Availability can change from week to week, and we do sometimes have an opening. Let me take a few details so our team can share what is currently available."};}},
+ {id:"memory", kw:{"memory":3,"dementia":3,"alzheimer":3,"cognitive":2,"memory care":3},
+  r:function(){return {t:"Many of the families we serve are caring for a loved one with memory loss. In our small homes, with awake staff and consistent caregivers, residents with memory needs are gently supervised in a calm, familiar setting. Our team can walk you through the right fit. Would you like to talk it through?", c:["Book a visit","The care you provide"]};}},
+ {id:"meals", kw:{"meal":3,"food":3,"eat":2,"cook":2,"diet":2,"nutrition":2},
+  r:function(){return {t:"Our residents enjoy fresh, home cooked meals made in our own kitchen each day, with care for dietary needs and personal preferences. Families often tell us it is one of the things that makes our homes feel like home.", c:["What amenities do you have?","Book a visit"]};}},
+ {id:"meds", kw:{"medication":3,"medicine":2,"meds":3,"pills":2,"prescription":2},
+  r:function(){return {t:"Yes, medication management is part of the care we provide, handled safely by our caregivers as part of each resident's personal care plan.", c:["The care you provide","Book a visit"]};}},
+ {id:"pay", kw:{"insurance":3,"medicaid":3,"medi-cal":3,"medicare":2,"private pay":3,"benefits":2,"financial":2,"payment":2},
+  r:function(){return {t:"Regal Care is private pay, with care starting at $6,500 a month. Our team is glad to walk you through exactly what is included and help make the financial side feel clear and simple. Would you like to talk it through?", c:["Book a visit","How much does it cost?"]};}},
+ {id:"hospice", kw:{"hospice":3,"end of life":3,"palliative":3,"comfort care":3},
+  r:function(){return {t:"Yes, we coordinate closely with hospice providers so residents can remain comfortable and cared for in a familiar home, surrounded by people who know them well. Our team can explain how that works.", c:["Book a visit","The care you provide"]};}},
+ {id:"staff", kw:{"staff":2,"caregiver":3,"nurse":2,"ratio":3,"who takes care":3,"team":2},
+  r:function(){return {t:"Because each home holds just six residents with 24-hour awake staff, your loved one receives close, personal attention day and night, from caregivers who know them by name. Would you like to meet the team on a visit?", c:["Book a tour","Book a visit"]};}},
+ {id:"contact", kw:{"contact":3,"phone":3,"call":2,"number":2,"email":3,"reach":2},
+  r:function(){return {t:'You can reach our team anytime at <a href="tel:'+TEL+'">'+PHONE+'</a> or <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>. Would you prefer that someone reaches out to you instead?', c:["Yes, have someone reach out","Book a tour"]};}},
+ {id:"hours", kw:{"hour":2,"when can":2,"weekend":2,"evening":2,"schedule":1},
+  r:function(){return {t:"We are glad to arrange visits and calls at a time that suits you, including evenings and weekends. Shall I set one up?", c:["Book a tour","Book a visit"]};}},
+ {id:"thanks", kw:{"thank":3,"thanks":3,"appreciate":2},
+  r:function(){return {t:"You are so very welcome. Choosing care for someone you love is a tender decision, and we are honored to help. Is there anything else I can do for you?", c:["Book a visit","No, that is all"]};}},
+ {id:"bye", kw:{"that is all":3,"no thanks":2,"goodbye":2,"bye":2,"nothing else":3},
+  r:function(){return {t:'Thank you for spending time with us today. Whenever you are ready, we are here for you at <a href="tel:'+TEL+'">'+PHONE+'</a>. Take good care.', c:["Book a visit"]};}}
 ];
 
-const isUrgent=t=>/(urgent|emergency|hospital|discharg|right away|asap|immediately|this week|as soon as|crisis|desperate)/.test(t);
-const yes=t=>/^(yes|yeah|yep|sure|ok|okay|please|sounds good|go ahead|yes please|definitely)\b/.test(t.trim());
-function scoreIntent(t){let best=null,bs=0;for(const it of KB){let s=0;for(const k in it.kw){if(t.includes(k))s+=it.kw[k];}if(s>bs){bs=s;best=it;}}return bs>=2?best:null;}
+function isUrgent(t){return /(urgent|emergency|hospital|discharg|right away|asap|immediately|this week|as soon as|crisis|desperate)/.test(t);}
+function yesish(t){return /^(yes|yeah|yep|sure|ok|okay|please|sounds good|go ahead|yes please|definitely)\b/.test(t.trim());}
+function scoreIntent(t){var best=null,bs=0;for(var i=0;i<KB.length;i++){var it=KB[i],s=0;for(var k in it.kw){if(t.indexOf(k)!==-1)s+=it.kw[k];}if(s>bs){bs=s;best=it;}}return bs>=2?best:null;}
 
-/* ---------- guided intake ---------- */
 function startFlow(kind){
-  ctx.flow={kind,step:0,data:{}};
+  ctx.flow={kind:kind,step:0,data:{}};
   say("To point you to the right home and care, may I ask who we would be helping?",null,600);
-  setTimeout(()=>options("Who are we caring for?",[
+  setTimeout(function(){options("Who are we caring for?",[
     {v:"__rel:my parent",t:"My parent"},{v:"__rel:my spouse",t:"My spouse"},
     {v:"__rel:a relative or friend",t:"A relative or friend"},{v:"__rel:myself",t:"Myself"}
-  ]),700);
+  ]);},700);
 }
 function flowStep(text){
-  const f=ctx.flow;
-  if(text.startsWith("__rel:")){f.data.who=text.slice(6);f.step=1;
+  var f=ctx.flow;
+  if(text.indexOf("__rel:")===0){f.data.who=text.slice(6);f.step=1;
     say("Thank you. What kind of support are they needing right now?",null,500);
-    setTimeout(()=>options("Level of support",[
+    setTimeout(function(){options("Level of support",[
       {v:"__need:help with daily activities",t:"Help with daily activities",s:"Bathing, dressing, meals, mobility"},
-      {v:"__need:memory care",t:"Memory support",s:"Dementia or memory loss"},
+      {v:"__need:memory support",t:"Memory support",s:"Dementia or memory loss"},
       {v:"__need:around-the-clock care",t:"Around the clock care",s:"Higher, full support needs"},
       {v:"__need:hospice comfort care",t:"Hospice comfort care"},
       {v:"__need:not sure yet",t:"Not sure yet",s:"Help me figure it out"}
-    ]),650);return;}
-  if(text.startsWith("__need:")){f.data.need=text.slice(7);f.step=2;
+    ]);},650);return;}
+  if(text.indexOf("__need:")===0){f.data.need=text.slice(7);f.step=2;
     say("That helps. And when are you hoping to move forward?",null,500);
-    setTimeout(()=>options("Timeframe",[
+    setTimeout(function(){options("Timeframe",[
       {v:"__time:just exploring",t:"Just exploring"},{v:"__time:within a month",t:"Within a month"},
       {v:"__time:as soon as possible",t:"As soon as possible"},{v:"__time:urgent, a hospital discharge",t:"Urgent, a hospital discharge"}
-    ]),650);return;}
-  if(text.startsWith("__time:")){f.data.time=text.slice(7);f.step=3;
-    const urgent=/urgent|as soon/.test(f.data.time);
-    const rec=f.data.need==="memory care"?"Our small homes with awake staff are a caring fit for memory support, in a calm and familiar setting."
+    ]);},650);return;}
+  if(text.indexOf("__time:")===0){f.data.time=text.slice(7);f.step=3;
+    var urgent=/urgent|as soon/.test(f.data.time);
+    var rec=f.data.need==="memory support"?"Our small homes with awake staff are a caring fit for memory support, in a calm and familiar setting."
       :f.data.need==="hospice comfort care"?"We coordinate hospice with great tenderness, so your loved one stays comfortable in a real home."
       :"Based on what you shared, our intimate six-bed homes are a wonderful fit, with close, personal care.";
-    say(`${rec} ${urgent?"I can see timing matters, so let me get someone to reach you quickly.":"Let me connect you with our team."} May I have your name?`,null,700);return;}
+    say(rec+" "+(urgent?"I can see timing matters, so let me get someone to reach you quickly.":"Let me connect you with our team.")+" May I have your name?",null,700);return;}
   if(f.step===3){f.data.name=text.trim();f.step=4;
-    say(`Thank you, ${esc(first(f.data.name))}. What is the best phone number or email to reach you?`,null,500);return;}
-  if(f.step===4){const v=text.trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)&&v.replace(/\D/g,"").length<7){say("I want to be sure our team can reach you. Could you share a phone number or an email address?",null,450);return;}
+    say("Thank you, "+esc(firstName(f.data.name))+". What is the best phone number or email to reach you?",null,500);return;}
+  if(f.step===4){var v=text.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) && v.replace(/\D/g,"").length<7){say("I want to be sure our team can reach you. Could you share a phone number or an email address?",null,450);return;}
     f.data.contact=v;finishFlow();}
 }
 function finishFlow(){
-  const f=ctx.flow,urgent=/urgent|as soon/.test(f.data.time||"");
-  const who=f.kind==="tour"?"Don, our owner, will personally reach out"
+  var f=ctx.flow, urgent=/urgent|as soon/.test(f.data.time||"");
+  var who=f.kind==="tour"?"Don, our owner, will personally reach out"
     :f.kind==="availability"?"our care team will reach out with current availability"
     :"Mel from our care team will reach out";
-  ctx.lead=f.data;ctx.flow=null;
-  typing(()=>{
-    pushCard(`<div class="card conf">
-      <div class="top"><span class="ck"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20 8l-1.4-1.4z"/></svg></span> Request received</div>
-      <div class="kv"><b>Name</b> ${esc(f.data.name||"")}</div>
-      ${f.data.who?`<div class="kv"><b>Caring for</b> ${esc(f.data.who)}</div>`:""}
-      ${f.data.need?`<div class="kv"><b>Support</b> ${esc(f.data.need)}</div>`:""}
-      ${f.data.time?`<div class="kv"><b>Timeframe</b> ${esc(f.data.time)}</div>`:""}
-      <div class="kv"><b>Contact</b> ${esc(f.data.contact||"")}</div>
-      <div class="note">This is a sample assistant, so nothing was actually booked. In the live version, this request would flow straight into the Regal Care team's system and calendar automatically.</div>
-    </div>`);
-    addBot(`You're all set, ${esc(first(f.data.name))}. ${who} ${urgent?"right away":"very soon"} to arrange a time and answer every question you have. You can also reach us anytime at <a href="tel:${TEL}">${PHONE}</a>.`,["Ask another question","No, that is all"]);
+  ctx.flow=null;
+  typing(function(){
+    pushCard('<div class="card conf"><div class="top"><span class="ck"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20 8l-1.4-1.4z"/></svg></span> Request received</div>'
+      +'<div class="kv"><b>Name</b> '+esc(f.data.name||"")+'</div>'
+      +(f.data.who?'<div class="kv"><b>Caring for</b> '+esc(f.data.who)+'</div>':"")
+      +(f.data.need?'<div class="kv"><b>Support</b> '+esc(f.data.need)+'</div>':"")
+      +(f.data.time?'<div class="kv"><b>Timeframe</b> '+esc(f.data.time)+'</div>':"")
+      +'<div class="kv"><b>Contact</b> '+esc(f.data.contact||"")+'</div>'
+      +'<div class="note">This is a sample assistant, so nothing was actually booked. In the live version, this request would flow straight into the Regal Care team\'s system and calendar automatically.</div></div>');
+    addBot("You're all set, "+esc(firstName(f.data.name))+". "+who+" "+(urgent?"right away":"very soon")+" to arrange a time and answer every question you have. You can also reach us anytime at <a href=\"tel:"+TEL+"\">"+PHONE+"</a>.",["Ask another question","No, that is all"]);
   },900);
 }
 
-/* ---------- router ---------- */
 function route(text){
-  const t=text.toLowerCase().trim();
-  if(text.startsWith("__")){if(ctx.flow)flowStep(text);return;}
-  if(ctx.flow){typing(()=>flowStep(text),600);return;}
-  if(isUrgent(t)&&!/just exploring/.test(t)){ctx.pending=null;
-    say(`I understand this may be a stressful, urgent time, and we are here to help quickly. The fastest step is to speak with our team at <a href="tel:${TEL}">${PHONE}</a>. I can also take a few details so someone reaches you right away.`,null,700);
-    setTimeout(()=>startFlow("availability"),1100);return;}
-  if(ctx.pending&&(yes(t)||/reach out|call me/.test(t))){const p=ctx.pending;ctx.pending=null;startFlow(p);return;}
+  var t=text.toLowerCase().trim();
+  if(text.indexOf("__")===0){if(ctx.flow)flowStep(text);return;}
+  if(ctx.flow){typing(function(){flowStep(text);},600);return;}
+  if(isUrgent(t) && !/just exploring/.test(t)){ctx.pending=null;
+    say('I understand this may be a stressful, urgent time, and we are here to help quickly. The fastest step is to speak with our team at <a href="tel:'+TEL+'">'+PHONE+'</a>. I can also take a few details so someone reaches you right away.',null,700);
+    setTimeout(function(){startFlow("availability");},1100);return;}
+  if(ctx.pending && (yesish(t) || /reach out|call me/.test(t))){var p=ctx.pending;ctx.pending=null;startFlow(p);return;}
   if(/ask another|another question/.test(t)){say("Of course. What else can I tell you?",["The care you provide","How much does it cost?","See your homes"]);return;}
-  const intent=scoreIntent(t);
-  if(intent){ctx.topics.push(intent.id);const out=intent.r();
-    if(out.start){say(out.t);setTimeout(()=>startFlow(out.start),900);return;}
+  var intent=scoreIntent(t);
+  if(intent){var out=intent.r();
+    if(out.start){say(out.t);setTimeout(function(){startFlow(out.start);},900);return;}
     if(/shall i set|would you like|set one up|reaches out to you|talk it through/i.test(out.t))ctx.pending=(intent.id==="cost"||intent.id==="pay")?"consultation":"tour";
     say(out.t,out.c);return;}
-  say(`That is a thoughtful question, and I want to be sure you get the right answer. The best step is a quick word with our team, who can help with anything specific. You can reach us at <a href="tel:${TEL}">${PHONE}</a> or <a href="mailto:${EMAIL}">${EMAIL}</a>, or I can have someone reach out to you.`,["Yes, have someone reach out","The care you provide","Book a tour"]);
+  say('That is a thoughtful question, and I want to be sure you get the right answer. The best step is a quick word with our team, who can help with anything specific. You can reach us at <a href="tel:'+TEL+'">'+PHONE+'</a> or <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>, or I can have someone reach out to you.',["Yes, have someone reach out","The care you provide","Book a tour"]);
 }
 
-function submit(){const raw=input.value.trim();if(!raw)return;input.value="";addUser(raw);route(raw);}
+function submit(){var raw=input.value.trim();if(!raw)return;input.value="";addUser(raw);route(raw);}
 document.getElementById("send").onclick=submit;
-input.addEventListener("keydown",e=>{if(e.key==="Enter")submit();});
+input.addEventListener("keydown",function(e){if(e.key==="Enter")submit();});
 
-/* ---------- launcher ---------- */
-const panel=document.getElementById("panel"),launcher=document.getElementById("launcher"),hint=document.getElementById("hint");
-function open(){
-  panel.classList.add("open");launcher.classList.add("hidden");hint.classList.remove("show");input.focus();
-  if(!started){started=true;
-    setTimeout(()=>addBot("Hello, I'm Grace, the Regal Care assistant. I'm here to help you find a warm, caring home for someone you love."),300);
-    setTimeout(()=>addBot("Whether you are just beginning to look or you're ready to visit, I can answer your questions and set up a consultation or a tour. What can I help you with today?",["Tell me about Regal Care","The care you provide","Book a tour","How much does it cost?"]),1150);
-  }
-}
-function close(){panel.classList.remove("open");launcher.classList.remove("hidden");}
-launcher.onclick=open;document.getElementById("close").onclick=close;
-document.getElementById("hintx").onclick=e=>{e.stopPropagation();hint.classList.remove("show");};
-hint.onclick=open;
-setTimeout(()=>{if(!panel.classList.contains("open"))hint.classList.add("show");},1800);
+setTimeout(function(){addBot("Hello, I'm Grace, the Regal Care assistant. I'm here to help you find a warm, caring home for someone you love.");},450);
+setTimeout(function(){addBot("Whether you are just beginning to look or you're ready to visit, I can answer your questions and set up a consultation or a tour. What can I help you with today?",["Tell me about Regal Care","The care you provide","Book a tour","How much does it cost?"]);},1400);
 </script>
 </body>
 </html>
