@@ -34,6 +34,11 @@ input:focus,select:focus{border-color:rgba(232,96,16,.6)}
 .result .t{font-weight:700;color:#34d399;font-size:.85rem;margin-bottom:4px}
 .result .d{font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.6}
 .extra-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.wf-list{display:flex;flex-direction:column;gap:2px}
+.wf-opt{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid rgba(255,255,255,.1);border-radius:10px;cursor:pointer;transition:.2s}
+.wf-opt:hover{border-color:rgba(232,96,16,.4)}
+.wf-opt input{width:auto;accent-color:#E86010}
+.wf-opt span{font-size:.85rem;color:rgba(255,255,255,.75)}
 .hidden{display:none}
 .ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25);margin-top:16px}.ft a{color:#E86010;text-decoration:none}
 @media(max-width:700px){.metrics{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
@@ -46,17 +51,31 @@ input:focus,select:focus{border-color:rgba(232,96,16,.6)}
 <div class="wrap">
   <div class="tabs">
     <button class="tab active" id="tab-dash" onclick="showTab('dash')">Health dashboard</button>
+    <button class="tab" id="tab-add" onclick="showTab('add')">New client</button>
     <button class="tab" id="tab-dup" onclick="showTab('dup')">Duplicate workflow</button>
   </div>
 
   <div id="view-dash">
-    <div class="metrics">
-      <div class="metric"><div class="n">4</div><div class="l">Subaccounts</div></div>
-      <div class="metric"><div class="n" style="color:#34d399">2</div><div class="l">Healthy</div></div>
-      <div class="metric"><div class="n" style="color:#F5A623">1</div><div class="l">Needs attention</div></div>
-      <div class="metric"><div class="n" style="color:#ef4444">1</div><div class="l">Errors</div></div>
-    </div>
+    <div class="metrics" id="metrics"></div>
     <div class="grid2" id="acc-grid"></div>
+  </div>
+
+  <div id="view-add" class="hidden">
+    <div class="info">Creates a new subaccount card on the dashboard and enrolls it into whichever automations you check below. In production this would call the GHL API to store the location's credentials and add the enrollment tags.</div>
+    <div class="card">
+      <div class="ct">Client details</div>
+      <label>Client name</label>
+      <input id="new-name" type="text" placeholder="Client E — CRM build"/>
+      <label>GHL location ID <em style="font-weight:400;color:rgba(255,255,255,.3)">(optional for now)</em></label>
+      <input id="new-location" type="text" placeholder="loc_xxxxxxxxxxxx"/>
+      <label>Automations / workflows to enroll into</label>
+      <div class="wf-list" id="wf-checklist"></div>
+      <button class="abtn primary" onclick="createClient()">Create client</button>
+      <div class="result" id="add-result">
+        <div class="t">Client created</div>
+        <div class="d" id="add-result-text"></div>
+      </div>
+    </div>
   </div>
 
   <div id="view-dup" class="hidden">
@@ -64,9 +83,9 @@ input:focus,select:focus{border-color:rgba(232,96,16,.6)}
     <div class="card">
       <div class="ct">Event details</div>
       <label>Subaccount</label>
-      <select id="f-account"><option>Client A — CRM build</option><option>Client B — automation retainer</option><option>Client C — pending</option></select>
+      <select id="f-account"></select>
       <label>Base workflow (unchanged)</label>
-      <select id="f-workflow"><option>Home tour reminder + confirmation</option><option>Care consultation follow up</option><option>Webinar registration sequence</option></select>
+      <select id="f-workflow"></select>
       <div class="row2">
         <div><label>Event name</label><input id="f-name" type="text" placeholder="Home tour, July batch"/></div>
         <div><label>Place</label><input id="f-place" type="text" placeholder="Main office"/></div>
@@ -87,12 +106,23 @@ input:focus,select:focus{border-color:rgba(232,96,16,.6)}
 <script>
 function showTab(t){
   document.getElementById('view-dash').classList.toggle('hidden', t!=='dash');
+  document.getElementById('view-add').classList.toggle('hidden', t!=='add');
   document.getElementById('view-dup').classList.toggle('hidden', t!=='dup');
   document.getElementById('tab-dash').classList.toggle('active', t==='dash');
+  document.getElementById('tab-add').classList.toggle('active', t==='add');
   document.getElementById('tab-dup').classList.toggle('active', t==='dup');
 }
 
-const accounts=[
+const workflowOptions=[
+  "Home tour reminder + confirmation",
+  "Care consultation follow up",
+  "Webinar registration sequence",
+  "Urgent lead alert",
+  "Nurture re-engagement",
+  "VA handoff notification"
+];
+
+let accounts=[
   {name:"Client A — CRM build",status:"ok",checked:"3 min ago",checks:[
     ["API connection","ok"],["13 workflows published","ok"],["Calendars staffed","ok"],["Custom field placeholders clear","ok"]]},
   {name:"Client B — automation retainer",status:"warn",checked:"12 min ago",checks:[
@@ -103,14 +133,39 @@ const accounts=[
     ["API connection","ok"],["6 workflows published","ok"],["No staff assigned","warn"],["Custom field placeholders clear","ok"]]}
 ];
 const statusLabel={ok:"Healthy",warn:"Needs attention",error:"Error"};
-const grid=document.getElementById('acc-grid');
-accounts.forEach(acc=>{
-  const el=document.createElement('div');
-  el.className='acc-card';
-  const checksHtml=acc.checks.map(c=>`<div class="chk"><span class="dot ${c[1]}"></span>${c[0]}</div>`).join('');
-  el.innerHTML=`<div class="acc-head"><div class="name">${acc.name}</div><span class="badge ${acc.status}">${statusLabel[acc.status]}</span></div>${checksHtml}<div class="checked">Checked ${acc.checked}</div>`;
-  grid.appendChild(el);
-});
+
+function renderMetrics(){
+  const counts={ok:0,warn:0,error:0};
+  accounts.forEach(a=>counts[a.status]++);
+  document.getElementById('metrics').innerHTML=`
+    <div class="metric"><div class="n">${accounts.length}</div><div class="l">Subaccounts</div></div>
+    <div class="metric"><div class="n" style="color:#34d399">${counts.ok}</div><div class="l">Healthy</div></div>
+    <div class="metric"><div class="n" style="color:#F5A623">${counts.warn}</div><div class="l">Needs attention</div></div>
+    <div class="metric"><div class="n" style="color:#ef4444">${counts.error}</div><div class="l">Errors</div></div>`;
+}
+
+function renderAccounts(){
+  renderMetrics();
+  const grid=document.getElementById('acc-grid');
+  grid.innerHTML='';
+  accounts.forEach(acc=>{
+    const el=document.createElement('div');
+    el.className='acc-card';
+    const checksHtml=acc.checks.map(c=>`<div class="chk"><span class="dot ${c[1]}"></span>${c[0]}</div>`).join('');
+    el.innerHTML=`<div class="acc-head"><div class="name">${acc.name}</div><span class="badge ${acc.status}">${statusLabel[acc.status]}</span></div>${checksHtml}<div class="checked">Checked ${acc.checked}</div>`;
+    grid.appendChild(el);
+  });
+}
+
+function renderAccountSelect(){
+  document.getElementById('f-account').innerHTML=accounts.map(a=>`<option>${a.name}</option>`).join('');
+}
+
+function renderWorkflowUI(){
+  document.getElementById('f-workflow').innerHTML=workflowOptions.map(w=>`<option>${w}</option>`).join('');
+  document.getElementById('wf-checklist').innerHTML=workflowOptions.map((w,i)=>
+    `<label class="wf-opt"><input type="checkbox" value="${w}" id="wf-${i}"/><span>${w}</span></label>`).join('');
+}
 
 function addField(){
   const row=document.createElement('div');
@@ -129,5 +184,47 @@ function createInstance(){
   document.getElementById('result-text').textContent=`${name} on ${date} at ${time}, ${place} — enrolled into "${wf}" for ${acc} via custom fields, workflow logic untouched.`;
   document.getElementById('result').style.display='block';
 }
+
+function createClient(){
+  const nameInput=document.getElementById('new-name');
+  const name=nameInput.value.trim();
+  const resultBox=document.getElementById('add-result');
+  if(!name){
+    resultBox.style.display='block';
+    resultBox.style.background='rgba(239,68,68,.1)';
+    resultBox.style.borderColor='rgba(239,68,68,.25)';
+    document.querySelector('#add-result .t').textContent='Client name required';
+    document.querySelector('#add-result .t').style.color='#ef4444';
+    document.getElementById('add-result-text').textContent='Enter a client name before creating the subaccount.';
+    return;
+  }
+  const selected=workflowOptions.filter((w,i)=>document.getElementById('wf-'+i).checked);
+  const checks=[
+    ["API connection pending","warn"],
+    [selected.length ? `${selected.length} workflow${selected.length>1?'s':''} enrolled` : "No workflows selected","ok"],
+    ["Calendars not yet configured","warn"],
+    ["Custom fields not yet mapped","warn"]
+  ];
+  accounts.push({name:name,status:"warn",checked:"just now",checks:checks});
+  renderAccounts();
+  renderAccountSelect();
+
+  resultBox.style.display='block';
+  resultBox.style.background='rgba(52,211,153,.1)';
+  resultBox.style.borderColor='rgba(52,211,153,.25)';
+  document.querySelector('#add-result .t').textContent='Client created';
+  document.querySelector('#add-result .t').style.color='#34d399';
+  document.getElementById('add-result-text').textContent=selected.length
+    ? `${name} added to the dashboard, enrolled into: ${selected.join(', ')}.`
+    : `${name} added to the dashboard. No automations were selected yet.`;
+
+  nameInput.value='';
+  document.getElementById('new-location').value='';
+  workflowOptions.forEach((w,i)=>document.getElementById('wf-'+i).checked=false);
+}
+
+renderWorkflowUI();
+renderAccountSelect();
+renderAccounts();
 </script>
 </body></html>
