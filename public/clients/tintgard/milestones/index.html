@@ -282,9 +282,7 @@
       <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 3 L38 9 V22 C38 32 30 39 22 42 C14 39 6 32 6 22 V9 Z" fill="#e11d2a"/><path d="M13 22 l6 6 L31 15" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       TintGard <span style="color:var(--muted2);font-weight:500">× BVN</span>
     </span>
-    <span class="label">Project 1 Progress</span>
-    <div class="pbar"><i id="pbar"></i></div>
-    <span class="ppct" id="ppct">0%</span>
+    <span class="label" style="margin-left:auto">CRM + AI &amp; Growth Roadmap</span>
   </div>
 </div>
 
@@ -900,17 +898,6 @@
   /* safety net: never leave headline numbers blank if the observer never fires (e.g. tab loaded in background) */
   setTimeout(function(){ document.querySelectorAll("[data-count]").forEach(setCount); }, 1600);
 
-  /* progress bar — Project 1 at kickoff stage */
-  var pct=12;
-  function fillBar(){
-    var pbar=document.getElementById("pbar"),ppct=document.getElementById("ppct");
-    if(document.hidden){ pbar.style.width=pct+"%"; ppct.textContent=pct+"%"; return; }
-    var t0=null,dur=1100;
-    function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1),e=1-Math.pow(1-p,3);
-      pbar.style.width=(pct*e)+"%"; ppct.textContent=Math.round(pct*e)+"%"; if(p<1)requestAnimationFrame(step); }
-    requestAnimationFrame(step);
-  }
-  setTimeout(fillBar,300);
 
   /* milestone accordion */
   document.querySelectorAll("#timeline .head").forEach(function(h){
