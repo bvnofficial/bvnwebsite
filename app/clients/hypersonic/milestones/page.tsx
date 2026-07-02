@@ -215,7 +215,6 @@ function statusIcon(s: Status, accent: string) {
 }
 
 export default function HypersonicMilestones() {
-  notFound();
   const [open, setOpen] = useState<string>("Phase 0");
 
   const { pct, done, total } = useMemo(() => {
