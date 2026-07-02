@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Client Workflows — GHL Ops Console — BVN</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0A0F1E;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;padding:24px 16px 40px}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:4px}.sub{text-align:center;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:8px}
+.demo-note{text-align:center;font-size:.72rem;color:#F5A623;background:rgba(232,96,16,.08);border:1px solid rgba(232,96,16,.2);border-radius:8px;padding:8px 12px;max-width:700px;margin:0 auto 20px}
+.wrap{max-width:900px;margin:0 auto}
+.tabs{display:flex;gap:8px;max-width:700px;margin:0 auto 20px}
+.tab{flex:1;padding:10px;border-radius:10px;font-size:.85rem;font-weight:700;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);cursor:pointer;transition:.2s}
+.tab.active{background:#E86010;border-color:#E86010;color:#fff}
+.card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-bottom:14px}
+.ct{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.4);margin-bottom:12px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.metric{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px}
+.metric .n{font-size:1.5rem;font-weight:800}.metric .l{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.acc-card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px}
+.acc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.acc-head .name{font-weight:700;font-size:.95rem}
+.badge{font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:8px}
+.badge.ok{background:rgba(52,211,153,.15);color:#34d399}
+.badge.warn{background:rgba(245,166,35,.15);color:#F5A623}
+.badge.error{background:rgba(239,68,68,.15);color:#ef4444}
+.chk{display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(255,255,255,.6);padding:3px 0}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.ok{background:#34d399}.dot.warn{background:#F5A623}.dot.error{background:#ef4444}
+.checked{font-size:.7rem;color:rgba(255,255,255,.3);margin-top:8px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;margin-top:12px}label:first-of-type{margin-top:0}
+input,select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;font-size:.9rem;outline:none;transition:.2s}
+input:focus,select:focus{border-color:rgba(232,96,16,.6)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.abtn{padding:10px 16px;border-radius:10px;font-size:.82rem;font-weight:700;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);cursor:pointer;transition:.2s}
+.abtn.primary{width:100%;background:#E86010;border-color:#E86010;color:#fff;margin-top:14px}.abtn.primary:hover{background:#F5A623}
+.info{background:rgba(232,96,16,.06);border:1px solid rgba(232,96,16,.2);border-radius:12px;padding:12px 14px;font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:16px;line-height:1.6}
+.result{display:none;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:12px;padding:14px;margin-top:14px}
+.result .t{font-weight:700;color:#34d399;font-size:.85rem;margin-bottom:4px}
+.result .d{font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.6}
+.extra-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.hidden{display:none}
+.ft{text-align:center;font-size:.75rem;color:rgba(255,255,255,.25);margin-top:16px}.ft a{color:#E86010;text-decoration:none}
+@media(max-width:700px){.metrics{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+</style></head>
+<body>
+<h1>Client Workflows</h1>
+<p class="sub">GoHighLevel ops console — subaccount health checks and event workflow duplication</p>
+<p class="demo-note">Example interface — placeholder data, not connected to a live GHL account yet.</p>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" id="tab-dash" onclick="showTab('dash')">Health dashboard</button>
+    <button class="tab" id="tab-dup" onclick="showTab('dup')">Duplicate workflow</button>
+  </div>
+
+  <div id="view-dash">
+    <div class="metrics">
+      <div class="metric"><div class="n">4</div><div class="l">Subaccounts</div></div>
+      <div class="metric"><div class="n" style="color:#34d399">2</div><div class="l">Healthy</div></div>
+      <div class="metric"><div class="n" style="color:#F5A623">1</div><div class="l">Needs attention</div></div>
+      <div class="metric"><div class="n" style="color:#ef4444">1</div><div class="l">Errors</div></div>
+    </div>
+    <div class="grid2" id="acc-grid"></div>
+  </div>
+
+  <div id="view-dup" class="hidden">
+    <div class="info">This reuses one existing workflow through the official GHL API. It does not clone workflow logic — it creates a new event record with your custom field values and enrolls contacts into the existing automation.</div>
+    <div class="card">
+      <div class="ct">Event details</div>
+      <label>Subaccount</label>
+      <select id="f-account"><option>Client A — CRM build</option><option>Client B — automation retainer</option><option>Client C — pending</option></select>
+      <label>Base workflow (unchanged)</label>
+      <select id="f-workflow"><option>Home tour reminder + confirmation</option><option>Care consultation follow up</option><option>Webinar registration sequence</option></select>
+      <div class="row2">
+        <div><label>Event name</label><input id="f-name" type="text" placeholder="Home tour, July batch"/></div>
+        <div><label>Place</label><input id="f-place" type="text" placeholder="Main office"/></div>
+        <div><label>Date</label><input id="f-date" type="date"/></div>
+        <div><label>Time</label><input id="f-time" type="time"/></div>
+      </div>
+      <div id="extra-fields" style="margin-top:12px"></div>
+      <button class="abtn" onclick="addField()">+ Add custom field</button>
+      <button class="abtn primary" onclick="createInstance()">Create event instance</button>
+      <div class="result" id="result">
+        <div class="t">Event instance created</div>
+        <div class="d" id="result-text"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ft">Internal tool — <a href="https://www.bvnofficial.com" target="_blank">BVN</a></div>
+<script>
+function showTab(t){
+  document.getElementById('view-dash').classList.toggle('hidden', t!=='dash');
+  document.getElementById('view-dup').classList.toggle('hidden', t!=='dup');
+  document.getElementById('tab-dash').classList.toggle('active', t==='dash');
+  document.getElementById('tab-dup').classList.toggle('active', t==='dup');
+}
+
+const accounts=[
+  {name:"Client A — CRM build",status:"ok",checked:"3 min ago",checks:[
+    ["API connection","ok"],["13 workflows published","ok"],["Calendars staffed","ok"],["Custom field placeholders clear","ok"]]},
+  {name:"Client B — automation retainer",status:"warn",checked:"12 min ago",checks:[
+    ["API connection","ok"],["2 workflows still draft","warn"],["Calendars staffed","ok"],["4 unfilled placeholders","warn"]]},
+  {name:"Client C — pending",status:"error",checked:"1 hr ago",checks:[
+    ["API token expired","error"],["Workflows unreachable","error"],["Calendars staffed","ok"],["Last sync failed","error"]]},
+  {name:"Client D — CRM build",status:"ok",checked:"8 min ago",checks:[
+    ["API connection","ok"],["6 workflows published","ok"],["No staff assigned","warn"],["Custom field placeholders clear","ok"]]}
+];
+const statusLabel={ok:"Healthy",warn:"Needs attention",error:"Error"};
+const grid=document.getElementById('acc-grid');
+accounts.forEach(acc=>{
+  const el=document.createElement('div');
+  el.className='acc-card';
+  const checksHtml=acc.checks.map(c=>`<div class="chk"><span class="dot ${c[1]}"></span>${c[0]}</div>`).join('');
+  el.innerHTML=`<div class="acc-head"><div class="name">${acc.name}</div><span class="badge ${acc.status}">${statusLabel[acc.status]}</span></div>${checksHtml}<div class="checked">Checked ${acc.checked}</div>`;
+  grid.appendChild(el);
+});
+
+function addField(){
+  const row=document.createElement('div');
+  row.className='extra-row';
+  row.innerHTML='<input type="text" placeholder="Field name"/><input type="text" placeholder="Value"/>';
+  document.getElementById('extra-fields').appendChild(row);
+}
+
+function createInstance(){
+  const acc=document.getElementById('f-account').value;
+  const wf=document.getElementById('f-workflow').value;
+  const name=document.getElementById('f-name').value||'Untitled event';
+  const place=document.getElementById('f-place').value||'not set';
+  const date=document.getElementById('f-date').value||'not set';
+  const time=document.getElementById('f-time').value||'not set';
+  document.getElementById('result-text').textContent=`${name} on ${date} at ${time}, ${place} — enrolled into "${wf}" for ${acc} via custom fields, workflow logic untouched.`;
+  document.getElementById('result').style.display='block';
+}
+</script>
+</body></html>
