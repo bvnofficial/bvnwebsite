@@ -54,17 +54,23 @@
   .client .badge{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:20px;color:#fff;flex-shrink:0}
   .client.regal .badge{background:linear-gradient(135deg,#fbbf24,#d97706)}
   .client.tintgard .badge{background:linear-gradient(135deg,#ff3340,#b3121d)}
+  .client.hypersonic .badge{background:linear-gradient(135deg,#5b8cff,#3f6fe0)}
+  .client.warmup .badge{background:linear-gradient(135deg,#f7a93b,#d97706)}
   .client .info{flex:1;min-width:220px}
   .client .name{font-family:var(--disp);font-size:20px;font-weight:600;color:#fff;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
   .client .name .st{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;font-weight:700}
   .st.won{background:rgba(46,193,107,.14);color:var(--green);border:1px solid rgba(46,193,107,.3)}
   .st.pitch{background:rgba(245,166,35,.14);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+  .st.active{background:rgba(91,140,255,.14);color:var(--accent2);border:1px solid rgba(91,140,255,.3)}
+  .st.task{background:rgba(179,157,251,.16);color:#b39dfb;border:1px solid rgba(179,157,251,.3)}
   .client .desc{color:var(--muted);font-size:14.5px;margin-top:6px;max-width:560px}
   .client .meta{margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted2)}
   .client .meta b{color:var(--text);font-weight:600}
   .open-ws{margin-left:auto;align-self:center;font-family:var(--sans);font-weight:600;font-size:14px;color:#fff;background:var(--card3);border:1px solid var(--line2);border-radius:99px;padding:10px 18px;white-space:nowrap;transition:.18s}
   .client.regal .open-ws:hover{background:rgba(245,166,35,.16);border-color:rgba(245,166,35,.4);color:#fbbf24}
   .client.tintgard .open-ws:hover{background:rgba(225,29,42,.16);border-color:rgba(225,29,42,.4);color:#ff5560}
+  .client.hypersonic .open-ws:hover{background:rgba(91,140,255,.16);border-color:rgba(91,140,255,.4);color:#7ea6ff}
+  .client.warmup .open-ws:hover{background:rgba(179,157,251,.16);border-color:rgba(179,157,251,.4);color:#c9b8ff}
 
   .links{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 20px}
   .lchip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--text);background:var(--bg2);border:1px solid var(--line2);border-radius:9px;padding:9px 13px;transition:.16s}
@@ -100,10 +106,10 @@
   </header>
 
   <div class="stats">
-    <div class="stat"><div class="k">Clients</div><div class="v">2</div></div>
-    <div class="stat"><div class="k">Live Workspaces</div><div class="v">2</div></div>
-    <div class="stat"><div class="k">Won</div><div class="v">1</div></div>
-    <div class="stat"><div class="k">In Proposal</div><div class="v">1</div></div>
+    <div class="stat"><div class="k">Clients</div><div class="v">4</div></div>
+    <div class="stat"><div class="k">Live Workspaces</div><div class="v">4</div></div>
+    <div class="stat"><div class="k">Active Builds</div><div class="v">2</div></div>
+    <div class="stat"><div class="k">Prospects</div><div class="v">2</div></div>
   </div>
 
   <section>
@@ -128,6 +134,22 @@
         </div>
       </div>
 
+      <!-- Hypersonic Wholesale -->
+      <div class="client hypersonic">
+        <div class="row">
+          <div class="badge">HW</div>
+          <div class="info">
+            <div class="name">Hypersonic Wholesale <span class="st active">Active Build</span></div>
+            <div class="desc">Amazon FBA operator (Riverside Pet &amp; 90 Day Amazon Freedom). Phased automation and operations build with a live roadmap, day-one kickoff and feasibility verdicts.</div>
+            <div class="meta"><span>Engagement · <b>Automation &amp; Ops</b></span><span>Contact · <b>Adam Pearson</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/hypersonic/milestones">Open workspace →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/hypersonic/milestones"><span class="e">🗺️</span> Milestones &amp; Live Status</a>
+        </div>
+      </div>
+
       <!-- Regal Care Homes -->
       <div class="client regal">
         <div class="row">
@@ -144,6 +166,22 @@
           <a class="lchip" href="/clients/regal-homes/checklist-and-milestones/"><span class="e">✅</span> Checklist &amp; Milestones</a>
           <a class="lchip" href="/clients/regal-homes/website/"><span class="e">🌐</span> Website</a>
           <a class="lchip" href="/clients/regal-homes/ai-assistant/"><span class="e">🤖</span> AI Assistant</a>
+        </div>
+      </div>
+
+      <!-- Warm Up Guys -->
+      <div class="client warmup">
+        <div class="row">
+          <div class="badge">WG</div>
+          <div class="info">
+            <div class="name">Warm Up Guys <span class="st task">Paid Task</span></div>
+            <div class="desc">Paid task response: turning inbound SMS conversations into complete GoHighLevel contact records, capturing location naturally with no forms.</div>
+            <div class="meta"><span>Scope · <b>GHL SMS workflow</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/warmupguys/smsworkflow-paidtask">Open task →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/warmupguys/smsworkflow-paidtask"><span class="e">💬</span> SMS Workflow Task</a>
         </div>
       </div>
 
