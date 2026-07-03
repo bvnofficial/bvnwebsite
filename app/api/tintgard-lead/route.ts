@@ -38,6 +38,71 @@ const TAGS: Record<Service, string> = {
   Residential: "lead-residential",
 };
 
+// Instant-response emails (approved copy, M2-M3 content draft). Sent via GHL so
+// they land as real email AND log in the contact's conversation timeline.
+const EMAILS: Record<Service, { subject: string; intro: string; bulletsIntro: string; bullets: string[]; outro: string }> = {
+  Automotive: {
+    subject: "Your TintGard quote is on its way",
+    intro: "Thanks for getting in touch. TintGard has been tinting cars across Brisbane since 1999, and we'll have a proper quote to you shortly based on your vehicle and the film you're after.",
+    bulletsIntro: "A few options to know about while you wait:",
+    bullets: [
+      "<b>X FACTOR</b> — budget-friendly, still blocks harmful UV",
+      "<b>FUSION</b> — signal-friendly, won't interfere with your phone, GPS or toll tag",
+      "<b>COOLSHADES</b> — our best UV and heat performance",
+      "<b>NIGHT RIDER</b> — the darkest legal tint available, in three legal levels",
+    ],
+    outro: "Full vehicle tinting starts from $295. If you're not near Augustine Heights, we also run a Brisbane-wide mobile service for an extra $50.",
+  },
+  Commercial: {
+    subject: "TintGard — free site visit for your window tinting quote",
+    intro: "Thanks for reaching out. TintGard has been fitting out offices and shopfronts across Brisbane since 1999, WFAANZ certified, and known for turning quotes into installs fast, usually within 3 days of a site visit.",
+    bulletsIntro: "Beyond standard solar control film, we also do:",
+    bullets: [
+      "Whiteboard films",
+      "Protective films",
+      "Decorative films",
+      "Frosting films (great for meeting rooms and privacy)",
+    ],
+    outro: "Solar films can block up to 80% of heat and 99% of UV, which usually shows up directly in your air-con costs. We'll get exact numbers to you after a quick site visit.",
+  },
+  Residential: {
+    subject: "Your TintGard home tinting quote",
+    intro: "Thanks for getting in touch. We've been keeping Brisbane homes cooler and more private since 1999, blocking over 99% of UV while still letting natural light in.",
+    bulletsIntro: "A few things homeowners usually ask about:",
+    bullets: [
+      "Pricing starts from $399 for an average bedroom, we'll give you an exact number after seeing your windows",
+      "We install about 5 window panes an hour, a full home is usually a single day",
+      "Films are safe for rental properties too, no damage, fully removable if needed",
+      "All backed by warranty against bubbling, peeling, fading and cracking from manufacturing or installation defects",
+    ],
+    outro: "",
+  },
+};
+
+function esc(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderEmail(service: Service, first: string) {
+  const e = EMAILS[service];
+  const bullets = e.bullets.map((b) => `<li style="margin:7px 0">${b}</li>`).join("");
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;background:#0b0d11;color:#eef1f6;border-radius:12px;overflow:hidden">
+  <div style="background:#e11d2a;padding:20px 28px"><span style="font-size:22px;font-weight:800;letter-spacing:2px;color:#ffffff">TINTGARD</span></div>
+  <div style="padding:28px">
+    <p style="margin:0 0 14px">Hi ${esc(first)},</p>
+    <p style="margin:0 0 14px;line-height:1.6;color:#c7cdda">${e.intro}</p>
+    <p style="margin:0 0 8px;line-height:1.6;color:#c7cdda">${e.bulletsIntro}</p>
+    <ul style="margin:0 0 14px;padding-left:20px;color:#c7cdda;line-height:1.6">${bullets}</ul>
+    ${e.outro ? `<p style="margin:0 0 18px;line-height:1.6;color:#c7cdda">${e.outro}</p>` : ""}
+    <p style="margin:0;color:#c7cdda">Talk soon,<br><b style="color:#ffffff">The TintGard Team</b></p>
+  </div>
+  <div style="padding:16px 28px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:#8b93a3">
+    TintGard &middot; 8 Success Circuit, Augustine Heights QLD 4300 &middot; 07 3133 1969 &middot; info@tintgard.com.au
+  </div>
+</div>`;
+  return { subject: e.subject, html };
+}
+
 // 04xx xxx xxx / 07 xxxx xxxx → +61 E.164 so GHL dedupes and can text.
 function normalizeAuPhone(raw: string): string {
   const s = raw.replace(/[^\d+]/g, "");
@@ -135,6 +200,32 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // 3) Fire the instant-response email (real send + logged in GHL conversation).
+    let emailSent = false;
+    if (contactId && email) {
+      const { subject, html } = renderEmail(service, firstName || "there");
+      const mailRes = await fetch(GHL + "/conversations/messages", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Version: "2021-04-15",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          type: "Email",
+          contactId,
+          subject,
+          html,
+          emailFrom: "TintGard <info@tintgard.com.au>",
+        }),
+      });
+      emailSent = mailRes.ok;
+      if (!mailRes.ok) {
+        console.error("tintgard-lead instant email failed:", mailRes.status, await mailRes.text().catch(() => ""));
+      }
+    }
+
     // Note the free-text message where the team will see it.
     if (contactId && message) {
       await ghl(`/contacts/${contactId}/notes`, token, {
@@ -142,7 +233,7 @@ export async function POST(req: NextRequest) {
       }).catch(() => {});
     }
 
-    return NextResponse.json({ success: true, service, contactId, opportunityId });
+    return NextResponse.json({ success: true, service, contactId, opportunityId, emailSent });
   } catch (err) {
     console.error("tintgard-lead error:", err);
     return NextResponse.json({ error: "unexpected" }, { status: 500 });
