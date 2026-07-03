@@ -4,8 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
-<title>TintGard × BVN — CRM + AI & Growth Roadmap</title>
-<meta name="description" content="Your two-part BVN engagement: an AI-powered GoHighLevel CRM that turns leads into booked jobs across automotive, commercial and residential customers — connected to ServiceM8, with AI voice, SMS and an affiliate partner program. Growth & Marketing to follow." />
+<title>TintGard × BVN — Roadmap & Live Build Status</title>
+<meta name="description" content="Your two-part BVN engagement: an AI-powered GoHighLevel CRM that turns leads into booked jobs across automotive, commercial and residential customers, plus a live, honest view of exactly what's built so far." />
 <script>document.documentElement.classList.add("js");</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -42,39 +42,48 @@
   .reveal.d1{transition-delay:.07s}.reveal.d2{transition-delay:.14s}.reveal.d3{transition-delay:.21s}.reveal.d4{transition-delay:.28s}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
-  /* ===== sticky progress ===== */
-  .topbar{position:sticky;top:0;z-index:50;background:rgba(8,10,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  /* ===== sticky live progress ===== */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(8,10,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
   .topbar .inner{max-width:1080px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:14px}
-  .topbar .brand{display:flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;font-size:15px;color:#fff}
-  .topbar .brand svg{height:22px;width:auto}
-  .topbar .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-left:6px}
+  .topbar .back{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+  .topbar .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
   .pbar{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;min-width:80px}
-  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red3),var(--red2));transition:width 1s ease}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red3),var(--red2));transition:width .8s ease}
   .ppct{font-family:var(--disp);font-weight:700;color:var(--red2);font-size:13px;min-width:42px;text-align:right}
 
   /* ===== hero ===== */
   header.hero{padding:52px 0 8px}
-  .hero h1{font-size:clamp(30px,5vw,46px);font-weight:700;margin-top:14px}
+  .hero h1{font-size:clamp(28px,4.6vw,42px);font-weight:700;margin-top:14px}
   .hero h1 span{color:var(--red2)}
-  .hero .sub{color:var(--muted);font-size:18px;margin-top:16px;max-width:720px}
+  .hero .sub{color:var(--muted);font-size:17px;margin-top:16px;max-width:720px}
   .live{display:inline-flex;align-items:center;gap:9px;margin-top:20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
   .dot{width:9px;height:9px;border-radius:99px;background:var(--green);box-shadow:0 0 0 0 rgba(46,193,107,.6);animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,193,107,.5)}70%{box-shadow:0 0 0 8px rgba(46,193,107,0)}100%{box-shadow:0 0 0 0 rgba(46,193,107,0)}}
 
-  /* ===== snapshot cards ===== */
-  .snap{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 6px}
-  .scard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px}
-  .scard.hi{background:linear-gradient(135deg,var(--red-soft),rgba(225,29,42,.02));border-color:rgba(225,29,42,.35)}
-  .scard .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-  .scard .v{font-family:var(--disp);font-size:25px;font-weight:700;color:#fff;margin-top:7px;line-height:1.1}
-  .scard .v small{font-size:13px;color:var(--muted);font-weight:500}
-  .scard .when{font-size:12.5px;color:var(--muted);margin-top:4px}
+  /* ===== payment band ===== */
+  .payband{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px;margin:30px 0 6px}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px;position:relative}
+  .pcard.total{background:linear-gradient(135deg,var(--red-soft),rgba(225,29,42,.02));border-color:rgba(225,29,42,.35)}
+  .pcard.paid{border-color:rgba(46,193,107,.4)}
+  .pcard .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .pcard .v{font-family:var(--disp);font-size:25px;font-weight:700;color:#fff;margin-top:7px;line-height:1.1}
+  .pcard .v small{font-size:13px;color:var(--muted);font-weight:500}
+  .pcard .when{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .pstat{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:99px}
+  .pstat.paid{background:var(--green-soft);color:var(--green);border:1px solid rgba(46,193,107,.35)}
+  .pstat.active{background:var(--amber-soft);color:var(--amber);border:1px solid rgba(245,166,35,.35)}
+  .pstat.pending{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--line2)}
+  .pcard .paidline{font-family:var(--mono);font-size:11px;margin-top:9px}
+  .pcard .paidline b{color:var(--green)}
 
   /* ===== section shell ===== */
   section{margin-top:58px}
   .sec-head{margin-bottom:26px}
-  .sec-head h2{font-size:clamp(24px,3.4vw,32px);margin-top:12px}
-  .sec-head p{color:var(--muted);font-size:16.5px;margin-top:12px;max-width:760px}
+  .sec-head h2{font-size:clamp(22px,3.2vw,30px);margin-top:12px}
+  .sec-head p{color:var(--muted);font-size:16px;margin-top:12px;max-width:760px}
+  .sec-h{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .sec-h h2{font-size:19px;font-weight:700;margin-top:0}
+  .sec-h .mini{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
 
   /* ===== two-project overview ===== */
   .projects{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -99,39 +108,72 @@
   .proj.p2 ul li{color:var(--muted)}
   .proj .soon-stamp{position:absolute;top:20px;right:-42px;transform:rotate(38deg);background:var(--card3);color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.14em;padding:5px 52px;border:1px solid var(--line2)}
 
-  /* ===== MILESTONE TIMELINE ===== */
-  .timeline{position:relative;margin-left:8px}
-  .timeline::before{content:"";position:absolute;left:15px;top:6px;bottom:6px;width:2px;background:var(--line2)}
-  .ms{position:relative;padding:0 0 16px 52px}
-  .ms .node{position:absolute;left:5px;top:2px;width:22px;height:22px;border-radius:50%;background:var(--bg);border:2px solid var(--line2);display:grid;place-items:center;z-index:2;font-size:11px;color:var(--muted);font-family:var(--mono)}
-  .ms.done .node{background:var(--green);border-color:var(--green);color:#04180d}
-  .ms.active .node{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 0 5px var(--red-soft)}
-  .ms .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.2s}
-  .ms.active .card{border-color:rgba(225,29,42,.4)}
-  .ms .card:hover{border-color:var(--line2)}
-  .ms .head{display:flex;align-items:center;gap:13px;padding:17px 20px;cursor:pointer;flex-wrap:wrap}
-  .ms .ph{font-family:var(--mono);font-size:10.5px;color:var(--muted2);font-weight:700}
-  .ms .ttl{font-family:var(--disp);font-size:18px;font-weight:600;color:#fff}
-  .ms .stat{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;font-weight:700}
-  .ms .stat.pay{background:var(--red-soft);color:var(--red2);border:1px solid rgba(225,29,42,.35)}
-  .ms .stat.inc{background:var(--green-soft);color:var(--green);border:1px solid rgba(46,193,107,.35)}
-  .ms .stat.free{background:var(--amber-soft);color:var(--amber);border:1px solid rgba(245,166,35,.35)}
-  .ms .dur{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
-  .ms .chev{width:26px;height:26px;border-radius:50%;background:var(--card3);display:grid;place-items:center;color:var(--red2);font-size:18px;transition:.3s;flex-shrink:0}
-  .ms.open .chev{transform:rotate(45deg)}
-  .ms .body{max-height:0;overflow:hidden;transition:max-height .45s ease}
-  .ms.open .body{max-height:900px}
-  .ms .body-in{padding:2px 20px 22px;display:grid;grid-template-columns:1.5fr 1fr;gap:22px}
-  .ms .body-in h5{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-  .ms ul.steps{list-style:none;display:grid;gap:9px}
-  .ms ul.steps li{display:flex;gap:11px;font-size:14.5px;color:var(--text);align-items:flex-start}
-  .ms ul.steps li::before{content:"";width:18px;height:18px;border-radius:50%;background:var(--red-soft);flex-shrink:0;margin-top:2px;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 12.5l3.2 3.2L18 7' stroke='%23ff3340' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:13px}
-  .ms .aside{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px}
-  .ms .aside .deliver{font-size:14px;color:var(--text);margin-bottom:12px}
-  .ms .aside .deliver b{color:#fff}
-  .ms .aside .amt{font-family:var(--disp);font-size:24px;font-weight:700;color:var(--red2)}
-  .ms .aside .amt small{font-size:12px;color:var(--muted);font-weight:500;display:block;font-family:var(--sans)}
+  /* ===== payment milestones (live) ===== */
+  .ms{display:flex;flex-direction:column;gap:14px}
+  .m{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden}
+  .m::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line2)}
+  .m.reached::before{background:var(--green)}
+  .m.active::before{background:var(--amber)}
+  .m.pending::before{background:var(--muted2)}
+  .m-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .m-no{font-family:var(--mono);font-size:11px;color:var(--muted2);font-weight:700}
+  .m-title{font-size:16px;font-weight:700;font-family:var(--disp)}
+  .m-amt{margin-left:auto;font-size:20px;font-weight:700;color:var(--red2);white-space:nowrap;font-family:var(--disp)}
+  .m-stat{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;font-weight:700}
+  .m-stat.reached{background:var(--green-soft);color:var(--green);border:1px solid rgba(46,193,107,.35)}
+  .m-stat.active{background:var(--amber-soft);color:var(--amber);border:1px solid rgba(245,166,35,.35)}
+  .m-stat.pending{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--line2)}
+  .m-trig{color:var(--muted);font-size:13.5px;margin-top:8px}
+  .m-bar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:14px}
+  .m-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red3),var(--red2));transition:width .8s ease}
+  .m.reached .m-bar i{background:linear-gradient(90deg,#189656,var(--green))}
+  .m-foot{display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--muted2)}
+  .m-foot b{color:var(--red2)}
+
+  /* ===== live build checklist ===== */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .card .head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:.15s}
+  .card .head:hover{background:rgba(255,255,255,.03)}
+  .card.open .head{border-bottom:1px solid var(--line)}
+  .card .head .title{font-weight:600;font-size:15px;font-family:var(--disp)}
+  .card .head .meta{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .secbar{width:80px;height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+  .secbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red3),var(--red2));transition:width .6s ease}
+  .secbar.full i{background:linear-gradient(90deg,#189656,var(--green))}
+  .ring{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .ring b{color:var(--red2)}
+  .ring.done b{color:var(--green)}
+  .chev{color:var(--muted2);transition:transform .2s;font-size:13px}
+  .card.open .chev{transform:rotate(90deg)}
+  .items{display:none;padding:6px 18px 14px}
+  .card.open .items{display:block}
+  .item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .item:last-child{border-bottom:none}
+  .ic{width:20px;height:20px;border-radius:6px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:800;font-family:var(--mono)}
+  .ic.done{background:var(--green);color:#04180d}
+  .ic.active{background:rgba(245,166,35,.18);color:var(--amber);border:1.5px solid var(--amber)}
+  .ic.todo{background:var(--bg2);border:1.5px solid var(--line2);color:transparent}
+  .item .txt{font-size:14px;color:var(--text)}
+  .item.done .txt{color:var(--muted)}
+  .item .txt .note{display:block;font-size:12.5px;color:var(--muted2);margin-top:2px}
+  .item .st{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 8px;border-radius:6px;font-weight:700;white-space:nowrap;align-self:center}
+  .st.done{color:var(--green);background:rgba(46,193,107,.12)}
+  .st.active{color:var(--amber);background:rgba(245,166,35,.12)}
+  .st.todo{color:var(--muted2);background:rgba(255,255,255,.05)}
+  .cards{display:flex;flex-direction:column;gap:12px}
+
+  .callout{background:linear-gradient(135deg,rgba(245,166,35,.12),rgba(245,166,35,.03));
+    border:1px solid rgba(245,166,35,.3);border-radius:var(--radius);padding:16px 18px;margin-top:18px;font-size:14px;color:var(--muted)}
+  .callout b{color:var(--amber)}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .btn{font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:9px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--line2);background:var(--card);color:var(--text);transition:.15s}
+  .btn:hover{border-color:var(--red);color:var(--red2)}
+  .btn.primary{background:var(--red);color:#fff;border-color:var(--red);font-weight:700}
+  .btn.primary:hover{background:var(--red2)}
 
   /* ===== chips ===== */
   .chip{font-family:var(--mono);font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:7px;background:var(--card3);color:var(--muted);border:1px solid var(--line2);white-space:nowrap}
@@ -162,15 +204,6 @@
   .jstage h4 .t{font-family:var(--mono);font-size:10.5px;color:var(--muted2);font-weight:700;margin-left:8px}
   .jstage p{font-size:14px;color:var(--muted);margin-top:6px}
   .jstage .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
-
-  /* ===== generic flow (build/loop) ===== */
-  .flow{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
-  .fnode{position:relative;padding:0 14px;min-width:135px}
-  .fnode:not(:last-child)::before{content:"›";position:absolute;top:15px;right:-8px;color:var(--red2);font-size:24px;font-family:var(--disp);z-index:2}
-  .fnode .ic{width:52px;height:52px;border-radius:14px;background:var(--card);border:1px solid var(--line2);display:grid;place-items:center;color:var(--red2);margin:0 auto 12px;font-size:21px}
-  .fnode .fn{font-family:var(--mono);font-size:9.5px;color:var(--muted2);text-align:center;font-weight:700}
-  .fnode h4{font-size:14.5px;text-align:center;margin-top:4px}
-  .fnode p{font-size:12px;color:var(--muted);text-align:center;margin-top:5px}
 
   /* ===== swimlanes (GHL <-> ServiceM8) ===== */
   .lanes{display:grid;gap:14px}
@@ -205,18 +238,6 @@
   .lp h4{font-size:15.5px}
   .lp p{font-size:13px;color:var(--muted);margin-top:6px}
 
-  /* ===== investment ===== */
-  .pay{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;position:relative}
-  .pcard.first{border-color:rgba(225,29,42,.4);background:linear-gradient(135deg,var(--red-soft),rgba(225,29,42,.02))}
-  .pcard .step{font-family:var(--mono);font-size:10.5px;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase}
-  .pcard .amt{font-family:var(--disp);font-size:34px;font-weight:700;color:#fff;line-height:1;margin:8px 0 2px}
-  .pcard .amt span{color:var(--red2)}
-  .pcard h4{font-size:15px;margin-top:8px}
-  .pcard p{font-size:13px;color:var(--muted);margin-top:6px}
-  .pnote{margin-top:16px;font-size:13px;color:var(--muted);background:var(--bg2);border:1px dashed var(--line2);border-radius:var(--radius-sm);padding:14px 16px}
-  .pnote b{color:#fff}
-
   /* ===== Xero freebie band ===== */
   .freebie{background:linear-gradient(135deg,rgba(245,166,35,.12),rgba(245,166,35,.02));border:1px solid rgba(245,166,35,.4);border-radius:var(--radius);padding:28px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
   .freebie .badge{width:64px;height:64px;border-radius:16px;background:var(--amber-soft);color:var(--amber);display:grid;place-items:center;font-size:30px}
@@ -227,11 +248,13 @@
   .freebie .mini-flow .b{background:var(--bg2);border:1px solid var(--line2);border-radius:8px;padding:7px 12px;font-family:var(--mono);font-size:12px}
   .freebie .mini-flow .ar{color:var(--amber)}
 
+  /* ===== ownership grid reuses .ai-grid/.ai-card ===== */
+
   /* ===== CTA ===== */
   .cta{background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--line2);border-radius:22px;padding:44px 40px;text-align:center;box-shadow:var(--shadow)}
   .cta h2{font-size:clamp(24px,3.4vw,34px)}
   .cta p{color:var(--muted);font-size:17px;margin:14px auto 26px;max-width:560px}
-  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-weight:600;font-size:16px;padding:15px 28px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:.22s}
+  .btn-cta{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-weight:600;font-size:16px;padding:15px 28px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:.22s}
   .btn-red{background:var(--red);color:#fff;box-shadow:0 12px 28px -12px rgba(225,29,42,.75)}
   .btn-red:hover{background:var(--red2);transform:translateY(-2px)}
   .btn-outline{background:transparent;color:#fff;border-color:var(--line2)}
@@ -240,6 +263,7 @@
 
   footer{margin-top:50px;border-top:1px solid var(--line);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted2)}
   footer a{color:var(--red2)}
+  footer .who{font-weight:700;color:#fff;font-family:var(--disp)}
 
   /* ===== embedded workflow diagrams ===== */
   .dgwrap{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;overflow-x:auto}
@@ -258,15 +282,16 @@
   .dg-cap{fill:var(--text);font-size:13px;text-anchor:middle;opacity:.85}
 
   @media(max-width:860px){
-    .snap{grid-template-columns:repeat(2,1fr)}
+    .payband{grid-template-columns:1fr 1fr}
+    .payband .pcard.total{grid-column:1/-1}
     .projects{grid-template-columns:1fr}
-    .ai-grid,.loop,.pay{grid-template-columns:1fr}
-    .ms .body-in{grid-template-columns:1fr}
-    .ms.open .body{max-height:1300px}
+    .ai-grid,.loop{grid-template-columns:1fr}
     .lane{grid-template-columns:1fr}
     .lane .lname{flex-direction:row;align-items:center;gap:11px;border-right:none;border-bottom:1px solid var(--line)}
     .lane .lname .badge{margin-bottom:0}
     .freebie{grid-template-columns:1fr}
+    .m-amt{margin-left:0;width:100%}
+    .secbar{display:none}
   }
   @media(max-width:560px){
     .topbar .label{display:none}
@@ -275,14 +300,13 @@
 </head>
 <body>
 
-<!-- ===== sticky progress ===== -->
+<!-- ===== sticky live progress ===== -->
 <div class="topbar">
   <div class="inner">
-    <span class="brand">
-      <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 3 L38 9 V22 C38 32 30 39 22 42 C14 39 6 32 6 22 V9 Z" fill="#e11d2a"/><path d="M13 22 l6 6 L31 15" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      TintGard <span style="color:var(--muted2);font-weight:500">× BVN</span>
-    </span>
-    <span class="label" style="margin-left:auto">CRM + AI &amp; Growth Roadmap</span>
+    <a class="back" href="/clients/tintgard/">← TintGard workspace</a>
+    <span class="label">Overall Build</span>
+    <div class="pbar"><i id="globalBar"></i></div>
+    <span class="ppct" id="globalPct">0%</span>
   </div>
 </div>
 
@@ -290,20 +314,15 @@
 <header class="hero">
   <div class="wrap">
     <span class="eyebrow reveal">Engagement Roadmap · 2 Projects</span>
-    <h1 class="reveal d1">An <span>AI-powered CRM</span> that turns every lead into a booked tint job — then a growth engine on top.</h1>
-    <p class="sub reveal d2">This is your full plan with BVN, in two projects. First we build the brains: a GoHighLevel CRM with AI that captures, responds to and converts leads across your three customer types — wired straight into ServiceM8 so no job or old lead ever goes cold. Then, Project 2 turns up the volume with growth &amp; marketing.</p>
-    <div class="live reveal d3"><span class="dot"></span> Project 1 ready to begin. Milestone based, you see and approve each stage before you pay.</div>
+    <h1 class="reveal d1">An <span>AI-powered CRM</span> that turns every lead into a booked tint job — with a live, honest view of exactly what's built.</h1>
+    <p class="sub reveal d2">This is your full plan with BVN, in two projects, plus a real-time build tracker underneath it. First we build the brains: a GoHighLevel CRM with AI that captures, responds to and converts leads across your three customer types — wired straight into ServiceM8 so no job or old lead ever goes cold. Then, Project 2 turns up the volume with growth &amp; marketing.</p>
+    <div class="live reveal d3"><span class="dot"></span> Live status · last updated <b id="updated" style="color:var(--text);margin-left:4px"></b></div>
   </div>
 </header>
 
-<!-- ===== snapshot ===== -->
+<!-- ===== payment band (rendered from PAYMENTS) ===== -->
 <div class="wrap">
-  <div class="snap">
-    <div class="scard hi reveal"><div class="k">Project 1 Investment</div><div class="v"><small>A$</small><span data-count="2500">0</span></div><div class="when">CRM + AI build</div></div>
-    <div class="scard reveal d1"><div class="k">First Milestone</div><div class="v"><small>A$</small><span data-count="1000">0</span></div><div class="when">Paid on demonstrated setup</div></div>
-    <div class="scard reveal d2"><div class="k">Customer Journeys</div><div class="v" data-count="3">0</div><div class="when">Auto · Commercial · Residential</div></div>
-    <div class="scard reveal d3"><div class="k">Milestones</div><div class="v" data-count="6">0</div><div class="when">Approval-based stages</div></div>
-  </div>
+  <div class="payband reveal d1" id="paybandEl"></div>
 </div>
 
 <!-- ===== TWO PROJECT OVERVIEW ===== -->
@@ -347,185 +366,26 @@
   </div>
 </section>
 
-<!-- ===== PROJECT 1 MILESTONES ===== -->
+<!-- ===== LIVE PAYMENT MILESTONES ===== -->
 <section id="milestones">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Project 1 · Milestones</span>
-      <h2>How the CRM + AI build runs</h2>
-      <p>Six clear milestones from kickoff to go-live. Tap any stage to see exactly what's built, what you get, and the payment tied to it.</p>
+    <div class="sec-h reveal"><span class="eyebrow" style="margin:0">Live Status</span><h2 style="margin-left:8px">Payment Milestones</h2><span class="mini">progress toward each, updated as we build</span></div>
+    <div class="ms reveal d1" id="milestonesEl"></div>
+  </div>
+</section>
+
+<!-- ===== LIVE BUILD CHECKLIST ===== -->
+<section id="checklist">
+  <div class="wrap">
+    <div class="sec-h reveal"><h2>Live Build Checklist</h2><span class="mini" id="liveCount"></span></div>
+    <div class="cards reveal d1" id="cards"></div>
+    <div class="callout reveal d2">
+      <b>On the critical path:</b> Alex has chosen to be the only GoHighLevel login for the account. Foundation work (fields, pipelines, calendars) was built directly through the API, which needs no dashboard login. Everything from here (Workflows, Forms, the AI chat widget, SMS/phone setup) is dashboard-only, so it moves at the pace Alex is able to sit down and build it, with BVN providing exact click-by-click specs and copy for each piece.
     </div>
-
-    <div class="timeline reveal d1" id="timeline">
-
-      <div class="ms active open">
-        <div class="node">1</div>
-        <div class="card">
-          <div class="head">
-            <span class="ph">M1</span>
-            <span class="ttl">Foundation &amp; Setup</span>
-            <span class="stat pay">A$1,000 · on setup demo</span>
-            <span class="dur">Week 1</span>
-            <span class="chev">+</span>
-          </div>
-          <div class="body"><div class="body-in">
-            <div>
-              <h5>What we build</h5>
-              <ul class="steps">
-                <li>GoHighLevel account created in TintGard's name so you own it, with BVN added as admin to build</li>
-                <li>Account branding, users &amp; roles configured</li>
-                <li>Business phone number, SMS registration &amp; email sending domain</li>
-                <li>Calendars, lead forms and the website AI chat widget connected</li>
-                <li>ServiceM8 connection authenticated and mapped, ready to sync</li>
-              </ul>
-            </div>
-            <div class="aside">
-              <div class="amt">A$1,000<small>Paid once the setup is built and shown to you</small></div>
-              <div class="deliver" style="margin-top:12px"><b>You get:</b> A live, branded CRM foundation with numbers, domains and integrations ready.</div>
-            </div>
-          </div></div>
-        </div>
-      </div>
-
-      <div class="ms">
-        <div class="node">2</div>
-        <div class="card">
-          <div class="head">
-            <span class="ph">M2</span>
-            <span class="ttl">Customer Journeys — Leads → Sales</span>
-            <span class="stat inc">Included</span>
-            <span class="dur">Week 1–2</span>
-            <span class="chev">+</span>
-          </div>
-          <div class="body"><div class="body-in">
-            <div>
-              <h5>What we build</h5>
-              <ul class="steps">
-                <li>Three sales pipelines: Automotive, Commercial &amp; Residential</li>
-                <li>Every stage from lead capture to booked job, with automations</li>
-                <li>Instant-response SMS &amp; email the second a lead comes in</li>
-                <li>Smart nurture sequences for leads that don't book right away</li>
-              </ul>
-            </div>
-            <div class="aside">
-              <div class="deliver"><b>You get:</b> Three complete, automated journeys (detailed below) that move people from enquiry to booking on autopilot.</div>
-            </div>
-          </div></div>
-        </div>
-      </div>
-
-      <div class="ms">
-        <div class="node">3</div>
-        <div class="card">
-          <div class="head">
-            <span class="ph">M3</span>
-            <span class="ttl">AI &amp; Voice Layer</span>
-            <span class="stat inc">Included</span>
-            <span class="dur">Week 2</span>
-            <span class="chev">+</span>
-          </div>
-          <div class="body"><div class="body-in">
-            <div>
-              <h5>What we build</h5>
-              <ul class="steps">
-                <li>Missed-call text-back — every unanswered call gets an instant SMS</li>
-                <li>AI voice agent that answers, qualifies and books 24/7</li>
-                <li>Website AI chat (GHL AI) that answers questions and captures leads</li>
-                <li>2-way SMS conversations and an automated review-request engine</li>
-              </ul>
-            </div>
-            <div class="aside">
-              <div class="deliver"><b>You get:</b> A team that never sleeps — no missed call, no unanswered enquiry, no lost lead.</div>
-            </div>
-          </div></div>
-        </div>
-      </div>
-
-      <div class="ms">
-        <div class="node">4</div>
-        <div class="card">
-          <div class="head">
-            <span class="ph">M4</span>
-            <span class="ttl">GHL ↔ ServiceM8 Integration</span>
-            <span class="stat pay">A$1,000 on approval</span>
-            <span class="dur">Week 2–3</span>
-            <span class="chev">+</span>
-          </div>
-          <div class="body"><div class="body-in">
-            <div>
-              <h5>What we build</h5>
-              <ul class="steps">
-                <li>Booked lead in GHL → job auto-created in ServiceM8</li>
-                <li>ServiceM8 job status (scheduled / completed) syncs back to trigger follow-ups</li>
-                <li>Completed jobs feed a reactivation database for future recapture</li>
-                <li>"Win-back" campaigns to re-engage quotes that never booked</li>
-              </ul>
-            </div>
-            <div class="aside">
-              <div class="amt">A$1,000<small>Due when journeys, AI &amp; integration are approved</small></div>
-              <div class="deliver" style="margin-top:12px"><b>You get:</b> CRM and field jobs in perfect sync — plus a goldmine of old leads working again.</div>
-            </div>
-          </div></div>
-        </div>
-      </div>
-
-      <div class="ms">
-        <div class="node">5</div>
-        <div class="card">
-          <div class="head">
-            <span class="ph">M5</span>
-            <span class="ttl">Affiliate Partner Program</span>
-            <span class="stat inc">Included</span>
-            <span class="dur">Week 3</span>
-            <span class="chev">+</span>
-          </div>
-          <div class="body"><div class="body-in">
-            <div>
-              <h5>What we build</h5>
-              <ul class="steps">
-                <li>A separate nurture workflow just for referral partners</li>
-                <li>Partner onboarding, referral links/codes and lead tracking</li>
-                <li>Automated check-ins, updates and reward/commission tracking</li>
-                <li>Re-engagement flow to wake up inactive partners</li>
-              </ul>
-            </div>
-            <div class="aside">
-              <div class="deliver"><b>You get:</b> A steady stream of warm referrals from detailers, dealers, agents and builders — on autopilot.</div>
-            </div>
-          </div></div>
-        </div>
-      </div>
-
-      <div class="ms">
-        <div class="node">6</div>
-        <div class="card">
-          <div class="head">
-            <span class="ph">M6</span>
-            <span class="ttl">Test, Train, Handover + Xero Bonus</span>
-            <span class="stat pay">A$500 on go-live</span>
-            <span class="dur">Week 3–4</span>
-            <span class="chev">+</span>
-          </div>
-          <div class="body"><div class="body-in">
-            <div>
-              <h5>What we build</h5>
-              <ul class="steps">
-                <li>End-to-end testing of every journey, automation and sync</li>
-                <li>Live team training plus a walk-through of your reporting dashboards</li>
-                <li>Full documentation: workflow &amp; pipeline maps, automation inventory, GHL snapshot, integration &amp; AI prompt docs</li>
-                <li>Ownership handover, remove BVN's admin access anytime and it all stays yours</li>
-                <li>Go-live and 2 weeks of close support</li>
-                <li><b>Free bonus:</b> your existing customers pulled from Xero and loaded into GHL</li>
-              </ul>
-            </div>
-            <div class="aside">
-              <div class="amt">A$500<small>Final payment on go-live</small></div>
-              <div class="deliver" style="margin-top:12px"><b>You get:</b> A fully live system, a trained team, and your whole customer history ready to remarket to.</div>
-            </div>
-          </div></div>
-        </div>
-      </div>
-
+    <div class="actions reveal d3">
+      <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
+      <button class="btn" id="expandAll">Expand all</button>
+      <button class="btn" id="collapseAll">Collapse all</button>
     </div>
   </div>
 </section>
@@ -781,27 +641,10 @@
       <p>TintGard OS is built to be a long-term asset that belongs entirely to you, not something you rent from us.</p>
     </div>
     <div class="ai-grid reveal d1">
-      <div class="ai-card"><div class="ic">🔑</div><h4>You own everything</h4><p>The GoHighLevel account is created in TintGard's name, so you own it from day one. BVN is simply added as an admin to build. Every workflow, automation, AI setup, integration, dashboard and all your data belongs to you.</p></div>
-      <div class="ai-card"><div class="ic">🔄</div><h4>Fully transferable</h4><p>Because the account is yours, transfer is instant. When the project is complete you can remove BVN's admin access and everything stays exactly where it is, ready for you or any other GHL specialist to continue.</p></div>
+      <div class="ai-card"><div class="ic">🔑</div><h4>You own everything</h4><p>The GoHighLevel account is created in TintGard's name, so you own it from day one. Every workflow, automation, AI setup, integration, dashboard and all your data belongs to you.</p></div>
+      <div class="ai-card"><div class="ic">🔄</div><h4>Fully transferable</h4><p>Because the account is yours, transfer is instant, and admin access can be added or removed on your terms at any time.</p></div>
       <div class="ai-card"><div class="ic">📚</div><h4>Documented to hand over</h4><p>You receive workflow and pipeline maps, an automation inventory, naming conventions, a GHL snapshot, API and ServiceM8 integration docs, the AI prompt library and dashboard definitions. Nothing to reverse-engineer.</p></div>
     </div>
-  </div>
-</section>
-
-<!-- ===== INVESTMENT ===== -->
-<section id="investment">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Project 1 · Investment</span>
-      <h2>A$2,500 total — paid across the build</h2>
-      <p>No upfront deposit. Every payment is tied to a deliverable you see and approve, so you only ever pay for proven work.</p>
-    </div>
-    <div class="pay reveal d1">
-      <div class="pcard first"><div class="step">On setup demo · M1</div><div class="amt"><span>A$1,000</span></div><h4>Setup &amp; Foundation</h4><p>Built first, then demonstrated live to you before this milestone is due.</p></div>
-      <div class="pcard"><div class="step">On approval · M4</div><div class="amt"><span>A$1,000</span></div><h4>Journeys, AI &amp; Integration</h4><p>Due once the customer journeys, AI layer and ServiceM8 sync are approved.</p></div>
-      <div class="pcard"><div class="step">On go-live · M6</div><div class="amt"><span>A$500</span></div><h4>Launch &amp; Handover</h4><p>Final payment when everything is tested, trained and live.</p></div>
-    </div>
-    <div class="pnote reveal d2">💡 <b>Milestone based, no upfront deposit.</b> A$1,000 once the setup is built and shown to you, A$1,000 when the journeys, AI and ServiceM8 integration are approved, A$500 at go-live = <b>A$2,500 total</b>. Every payment follows work you can see. Project 2 (Growth &amp; Marketing) is scoped and quoted separately once Project 1 is live.</div>
   </div>
 </section>
 
@@ -852,59 +695,186 @@
 <section id="cta">
   <div class="wrap">
     <div class="cta reveal">
-      <h2>Let's start Project 1</h2>
-      <p>A A$1,000 deposit kicks off the build. Within about four weeks you'll have an AI-powered CRM turning leads into booked jobs — automatically.</p>
+      <h2>Milestone 1 is underway</h2>
+      <p>Foundation, pipelines and calendars are already live. A handful of quick answers from you keeps the momentum going.</p>
       <div class="cta-row">
-        <a href="mailto:bvnyson@gmail.com?subject=TintGard%20CRM%20%2B%20AI%20-%20Let's%20Start" class="btn btn-red">Start Project 1 →</a>
-        <a href="/clients/tintgard/website/" target="_blank" class="btn btn-outline">See the demo site</a>
+        <a href="mailto:bvn@bvnofficial.com?subject=TintGard%20CRM%20%2B%20AI" class="btn-cta btn-red">Message BVN →</a>
+        <a href="/clients/tintgard/website/" target="_blank" class="btn-cta btn-outline">See the demo site</a>
       </div>
     </div>
     <footer>
-      <span>TintGard × BVN — CRM + AI &amp; Growth Roadmap. Prepared {DATE}.</span>
+      <span class="who">TintGard × BVN</span>
       <span>Prepared by <a href="https://www.bvnofficial.com" target="_blank" rel="noopener">BVN</a></span>
     </footer>
   </div>
 </section>
 
 <script>
+const LAST_UPDATED = "July 4, 2026";
+
+// status: "done" | "active" | "todo"
+const SECTIONS = [
+  { id:"m1", title:"M1 — Foundation & Setup", items:[
+    ["GoHighLevel account created, TintGard owns it","done"],
+    ["Business info — ABN, address, service areas","done"],
+    ["Account branding — logo, colours, font","active","real logo pulled from your live site, colours already match, font TBD"],
+    ["Custom fields, folders, tags & custom values","done","4 folders, 15 fields, 20 tags, 8 custom values, live in the account"],
+    ["3 calendars — Automotive, Commercial, Residential","done"],
+    ["Business phone number","done","decided: keeping your existing office line 07 3133 1969 as the business number. Set across the system for all automations"],
+    ["Lead capture forms","done","live lead form built and embedded, demonstrated on the demo site; feeds straight into the CRM. Consent wording being finalised before the real-site version"],
+    ["Website AI chat widget","done","AI chat widget built and live on the demo site (bottom-right); real-site install reuses the same snippet once you're ready"],
+    ["ServiceM8 connection","todo","needs Alex's ServiceM8 login"],
+  ]},
+  { id:"m2", title:"M2 — Customer Journeys (Leads → Sales)", items:[
+    ["3 sales pipelines with stages — Automotive, Commercial, Residential","done","built and live, full 7-stage funnel each"],
+    ["Instant-response SMS & email","done","3 workflows built (Automotive, Commercial, Residential), each fires an instant SMS + email on lead capture, using your real film brands and pricing. In draft, ready to switch on after your review"],
+    ["Automations per pipeline stage","done","stage-triggered automations live: instant response on new lead, and a full nurture drip the moment a lead enters the Nurturing stage, per pipeline. Booked-job and completed-job stage automations come with the ServiceM8 connection (M4) and review engine (M3)"],
+    ["Nurture sequences","done","3 timed SMS drips built (Automotive 3+7 day, Commercial 7+11 day, Residential 3+6 day), each triggered when a lead enters the Nurturing stage, with your real pricing and booking links. In draft"],
+    ["SMS / compliance registration","todo","number decided, ready to register when you are"],
+    ["Email sending domain (info@tintgard.com.au)","todo","needs DNS access to tintgard.com.au"],
+  ]},
+  { id:"m3", title:"M3 — AI & Voice Layer", items:[
+    ["Missed-call text-back","todo"],
+    ["AI voice agent","active","persona brief + knowledge base drafted from TintGard's real FAQs, not yet built"],
+    ["Website AI chat (GHL AI)","todo"],
+    ["2-way SMS & automated review requests","active","review request copy drafted"],
+  ]},
+  { id:"m4", title:"M4 — GHL ↔ ServiceM8 Integration", items:[
+    ["ServiceM8 connection authenticated","todo","blocked on Alex's ServiceM8 login"],
+    ["Booked lead → job auto-created","todo"],
+    ["Job status syncs back to GHL","todo"],
+    ["Win-back / reactivation campaigns","todo"],
+  ]},
+  { id:"m5", title:"M5 — Affiliate Partner Program", items:[
+    ["Affiliate Partner pipeline — Recruit through Re-engage","done","built and live, 6 stages"],
+    ["Partner nurture workflow","todo"],
+    ["Referral tracking & links","todo"],
+    ["Reward / commission automation","todo"],
+  ]},
+  { id:"m6", title:"M6 — Test, Train, Handover + Xero Bonus", items:[
+    ["End-to-end testing","todo"],
+    ["Live team training","todo"],
+    ["Documentation & handover pack","todo"],
+    ["Xero customers migrated into GHL (free bonus)","todo"],
+  ]},
+];
+
+const MILESTONES = [
+  { no:"M1", amount:"A$1,000", title:"Foundation & Setup", status:"active",
+    trigger:"CRM foundation, pipelines and calendars are live. Branding, phone, SMS, forms, chat widget and ServiceM8 still need Alex's input or dashboard access.",
+    covers:["m1"] },
+  { no:"M4", amount:"A$1,000", title:"Journeys, AI & Integration", status:"pending",
+    trigger:"Due once the customer journeys, AI layer and ServiceM8 sync are approved.",
+    covers:["m2","m3","m4"] },
+  { no:"M6", amount:"A$500", title:"Launch & Handover", status:"pending",
+    trigger:"Final payment when everything is tested, trained and live.",
+    covers:["m5","m6"] },
+];
+
+function secStats(id){
+  const s = SECTIONS.find(x=>x.id===id); let t=0,d=0,a=0;
+  s.items.forEach(it=>{ t++; if(it[1]==="done") d++; else if(it[1]==="active") a++; });
+  return {t,d,a};
+}
+function pctOf(d,a,t){ return t?Math.round((d+0.5*a)/t*100):0; }
+
+const msEl = document.getElementById("milestonesEl");
+MILESTONES.forEach(m=>{
+  let t=0,d=0,a=0; m.covers.forEach(c=>{ const s=secStats(c); t+=s.t; d+=s.d; a+=s.a; });
+  const pct = pctOf(d,a,t);
+  const statLabel = {reached:"Reached",active:"In Progress",pending:"Upcoming"}[m.status];
+  const el = document.createElement("div");
+  el.className = "m "+m.status;
+  el.innerHTML = `
+    <div class="m-top">
+      <span class="m-no">${m.no}</span>
+      <span class="m-title">${m.title}</span>
+      <span class="m-stat ${m.status}">${statLabel}</span>
+      <span class="m-amt">${m.amount}</span>
+    </div>
+    <div class="m-trig">${m.trigger}</div>
+    <div class="m-bar"><i style="width:${pct}%"></i></div>
+    <div class="m-foot"><span>Build progress for this milestone</span><span><b>${pct}%</b></span></div>`;
+  msEl.appendChild(el);
+});
+
+/* ===== payment band — stays in sync with MILESTONES ===== */
+const amtNum = s => Number(String(s).replace(/[^0-9.]/g,"")) || 0;
+const PSTAT = {reached:["paid","Paid"], active:["active","Current"], pending:["pending","Upcoming"]};
+const totalAmt = MILESTONES.reduce((a,m)=>a+amtNum(m.amount),0);
+const paidAmt  = MILESTONES.filter(m=>m.status==="reached").reduce((a,m)=>a+amtNum(m.amount),0);
+const fmt = n => "A$"+n.toLocaleString("en-AU");
+const pbEl = document.getElementById("paybandEl");
+if(pbEl){
+  const pct = totalAmt ? Math.round(paidAmt/totalAmt*100) : 0;
+  let html = `<div class="pcard total"><div class="k">Total · Project 1</div>`
+    + `<div class="v"><small>A$</small>${totalAmt.toLocaleString("en-AU")}</div>`
+    + `<div class="when">Milestone based, no upfront deposit</div>`
+    + `<div class="paidline"><b>${fmt(paidAmt)}</b> paid · ${fmt(totalAmt-paidAmt)} remaining</div></div>`;
+  MILESTONES.forEach(m=>{
+    const [cls,label] = PSTAT[m.status] || PSTAT.pending;
+    html += `<div class="pcard ${m.status==="reached"?"paid":""}">`
+      + `<div class="k">${m.no} · ${m.title}</div>`
+      + `<div class="v"><small>A$</small>${amtNum(m.amount).toLocaleString("en-AU")}</div>`
+      + `<span class="pstat ${cls}">${label}</span></div>`;
+  });
+  pbEl.innerHTML = html;
+}
+
+const ICON = {done:"✓", active:"●", todo:""};
+const STLAB = {done:"Done", active:"In progress", todo:"To do"};
+const cardsEl = document.getElementById("cards");
+SECTIONS.forEach(sec=>{
+  const {t,d,a} = secStats(sec.id);
+  const pct = pctOf(d,a,t);
+  const full = d===t ? "full":"";
+  const ringDone = d===t ? "done":"";
+  const card = document.createElement("div");
+  card.className = "card "+ (d>0 ? "open" : "");
+  const itemsHtml = sec.items.map(it=>{
+    const status = it[1];
+    const note = it[2] ? '<span class="note">'+it[2]+'</span>' : '';
+    return `<div class="item ${status}">
+      <span class="ic ${status}">${ICON[status]}</span>
+      <span class="txt">${it[0]}${note}</span>
+      <span class="st ${status}">${STLAB[status]}</span>
+    </div>`;
+  }).join("");
+  card.innerHTML = `
+    <div class="head">
+      <span class="title">${sec.title}</span>
+      <span class="meta">
+        <span class="secbar ${full}"><i style="width:${pct}%"></i></span>
+        <span class="ring ${ringDone}"><b>${d}</b>/${t}</span>
+        <span class="chev">▸</span>
+      </span>
+    </div>
+    <div class="items">${itemsHtml}</div>`;
+  card.querySelector(".head").addEventListener("click", ()=> card.classList.toggle("open"));
+  cardsEl.appendChild(card);
+});
+
+let T=0,D=0,A=0; SECTIONS.forEach(s=>{ const x=secStats(s.id); T+=x.t; D+=x.d; A+=x.a; });
+const overall = pctOf(D,A,T);
+document.getElementById("globalBar").style.width = overall+"%";
+document.getElementById("globalPct").textContent = overall+"%";
+document.getElementById("liveCount").textContent = D+" done · "+A+" in progress · "+T+" total";
+document.getElementById("updated").textContent = LAST_UPDATED;
+
+document.getElementById("expandAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
+document.getElementById("collapseAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.remove("open"));
+
 (function(){
   "use strict";
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-
-  /* date (replace token in footer only) */
-  var d=new Date(), months=["January","February","March","April","May","June","July","August","September","October","November","December"];
-  document.querySelectorAll("footer span").forEach(function(s){ s.innerHTML = s.innerHTML.replace("{DATE}", months[d.getMonth()]+" "+d.getFullYear()); });
-
-  /* reveal + counters */
-  function setCount(el){
-    var target=+el.dataset.count, suf=el.dataset.suffix||"";
-    el.textContent = target.toLocaleString()+suf; // guaranteed final value
-    if(reduceMotion || document.hidden){ return; }
-    var t0=null,dur=1300;
-    function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1),e=1-Math.pow(1-p,3);
-      el.textContent=Math.round(target*e).toLocaleString()+suf; if(p<1)requestAnimationFrame(step); }
-    requestAnimationFrame(step);
-  }
   var hasIO="IntersectionObserver" in window;
   if(hasIO){
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.12});
     document.querySelectorAll(".reveal").forEach(function(el){io.observe(el);});
-    var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){setCount(e.target);cio.unobserve(e.target);}});},{threshold:.6});
-    document.querySelectorAll("[data-count]").forEach(function(el){cio.observe(el);});
   } else {
     document.querySelectorAll(".reveal").forEach(function(el){el.classList.add("in");});
-    document.querySelectorAll("[data-count]").forEach(setCount);
   }
-  /* safety net: never leave headline numbers blank if the observer never fires (e.g. tab loaded in background) */
-  setTimeout(function(){ document.querySelectorAll("[data-count]").forEach(setCount); }, 1600);
 
-
-  /* milestone accordion */
-  document.querySelectorAll("#timeline .head").forEach(function(h){
-    h.addEventListener("click",function(){ h.closest(".ms").classList.toggle("open"); });
-  });
-
-  /* customer journey tabs */
   var jtabs=document.querySelectorAll("#jtabs .jtab"), jpanels=document.querySelectorAll(".jpanel");
   jtabs.forEach(function(tab){
     tab.addEventListener("click",function(){
@@ -914,7 +884,6 @@
       tab.classList.add("on");
       var panel=document.querySelector('.jpanel[data-jp="'+key+'"]');
       panel.classList.add("on");
-      // ensure reveals inside the newly shown panel are visible
       panel.querySelectorAll(".reveal").forEach(function(el){el.classList.add("in");});
     });
   });

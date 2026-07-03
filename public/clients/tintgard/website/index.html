@@ -369,12 +369,7 @@
 <header class="nav" id="nav">
   <div class="bar">
     <a href="#top" class="brand" aria-label="TintGard home">
-      <svg class="logo-svg" viewBox="0 0 230 44" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TintGard">
-        <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 C11 39 3 32 3 21 V8 Z" fill="#e11d2a"/>
-        <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 Z" fill="#b3121d"/>
-        <path d="M11 21 l5.5 5.5 L29 14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-        <text x="52" y="29" font-family="Space Grotesk, sans-serif" font-size="23" font-weight="700" letter-spacing="-0.5" fill="#ffffff">TINT<tspan fill="#ff3340">GARD</tspan></text>
-      </svg>
+      <img class="logo-svg" src="img/logo.png" alt="TintGard" />
     </a>
     <nav class="links">
       <a href="#services">Services</a>
@@ -761,39 +756,19 @@
       </div>
 
       <div class="reveal d1">
-        <form class="book" id="bookForm" novalidate>
-          <div id="formBody">
-            <h3>Request a quote &amp; booking</h3>
-            <p class="sub">Fill in a few details and we'll confirm your price and time.</p>
-            <div class="two">
-              <div class="field"><label for="bf-name">Full name</label><input id="bf-name" name="name" type="text" placeholder="Your name" /><div class="msg">Please enter your name.</div></div>
-              <div class="field"><label for="bf-phone">Phone</label><input id="bf-phone" name="phone" type="tel" placeholder="04xx xxx xxx" /><div class="msg">Please enter a valid phone number.</div></div>
-            </div>
-            <div class="field"><label for="bf-email">Email</label><input id="bf-email" name="email" type="email" placeholder="you@email.com" /><div class="msg">Please enter a valid email address.</div></div>
-            <div class="two">
-              <div class="field"><label for="bf-service">Service</label>
-                <select id="bf-service" name="service">
-                  <option value="">Select a service…</option>
-                  <option>Car window tinting</option>
-                  <option>Home window tinting</option>
-                  <option>Office window tinting</option>
-                  <option>Commercial / decorative film</option>
-                </select>
-                <div class="msg">Please choose a service.</div>
-              </div>
-              <div class="field"><label for="bf-date">Preferred date</label><input id="bf-date" name="date" type="date" /><div class="msg">Please pick a date.</div></div>
-            </div>
-            <div class="field"><label for="bf-detail">Vehicle / property details <span style="color:var(--muted2);font-weight:400">(optional)</span></label><textarea id="bf-detail" name="detail" placeholder="e.g. 2021 Toyota RAV4, ceramic film, 20% rear — or your suburb for mobile service"></textarea></div>
-            <button type="submit" class="btn btn-red">Send my request →</button>
-            <p class="form-note">This is a demo form — no details are stored or sent.</p>
-          </div>
-          <div class="form-success" id="formSuccess">
-            <div class="ck">✓</div>
-            <h3>Thanks, <span id="successName">there</span>!</h3>
-            <p>Your request has been received. A TintGard team member will be in touch shortly to confirm your quote and booking time.</p>
-            <button type="button" class="btn btn-outline" id="resetForm" style="margin-top:22px">Send another request</button>
-          </div>
-        </form>
+        <div class="book" style="padding:14px 14px 8px;overflow:hidden">
+          <h3 style="margin:6px 4px 2px">Request a quote &amp; booking</h3>
+          <p class="sub" style="margin:0 4px 14px">Fill in a few details and we'll be in touch fast. This form feeds straight into our booking system.</p>
+          <!-- Live GoHighLevel lead capture form (feeds the TintGard CRM) -->
+          <iframe
+            src="https://api.leadconnectorhq.com/widget/form/WJNx6elBKGQvyua436vh"
+            style="width:100%;height:600px;border:none;border-radius:12px;background:transparent"
+            id="inline-WJNx6elBKGQvyua436vh"
+            data-layout="{'id':'INLINE'}"
+            data-form-id="WJNx6elBKGQvyua436vh"
+            data-form-name="TintGard Website Enquiry"
+            title="TintGard Website Enquiry"></iframe>
+        </div>
       </div>
     </div>
   </div>
@@ -804,12 +779,7 @@
   <div class="wrap">
     <div class="ft-grid">
       <div class="ft-brand">
-        <svg class="logo-svg" viewBox="0 0 230 44" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TintGard">
-          <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 C11 39 3 32 3 21 V8 Z" fill="#e11d2a"/>
-          <path d="M20 2 L37 8 V21 C37 32 29 39 20 42 Z" fill="#b3121d"/>
-          <path d="M11 21 l5.5 5.5 L29 14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="52" y="29" font-family="Space Grotesk, sans-serif" font-size="23" font-weight="700" letter-spacing="-0.5" fill="#ffffff">TINT<tspan fill="#ff3340">GARD</tspan></text>
-        </svg>
+        <img class="logo-svg" src="img/logo.png" alt="TintGard" />
         <p>Brisbane's trusted window tinting specialists since 1999 — car, home, office and commercial film with a lifetime warranty.</p>
       </div>
       <div>
@@ -1091,45 +1061,15 @@
     }
   });
 
-  /* ---- BOOKING FORM (demo, client-side validation only) ---- */
-  var form = document.getElementById("bookForm");
-  function setErr(field, on){ field.classList.toggle("err", on); }
-  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-  function validPhone(v){ return v.replace(/\D/g,"").length >= 8; }
-
-  form.addEventListener("submit", function(e){
-    e.preventDefault();
-    var name = document.getElementById("bf-name"), phone = document.getElementById("bf-phone"),
-        email = document.getElementById("bf-email"), service = document.getElementById("bf-service"),
-        date = document.getElementById("bf-date");
-    var ok = true;
-    function check(input, cond){ var f = input.closest(".field"); setErr(f, !cond); if(!cond) ok=false; }
-    check(name, name.value.trim().length >= 2);
-    check(phone, validPhone(phone.value));
-    check(email, validEmail(email.value.trim()));
-    check(service, service.value !== "");
-    check(date, date.value !== "");
-    if(!ok){
-      var firstErr = form.querySelector(".field.err input, .field.err select");
-      if(firstErr) firstErr.focus();
-      return;
-    }
-    document.getElementById("successName").textContent = name.value.trim().split(" ")[0] || "there";
-    document.getElementById("formBody").style.display = "none";
-    document.getElementById("formSuccess").classList.add("on");
-    document.getElementById("formSuccess").scrollIntoView({behavior:"smooth", block:"center"});
-  });
-  // clear error styling as the user types
-  form.querySelectorAll("input, select").forEach(function(el){
-    el.addEventListener("input", function(){ el.closest(".field").classList.remove("err"); });
-  });
-  document.getElementById("resetForm").addEventListener("click", function(){
-    form.reset();
-    document.getElementById("formSuccess").classList.remove("on");
-    document.getElementById("formBody").style.display = "";
-  });
+  /* ---- BOOKING FORM: now a live GoHighLevel embed (see #contact), no client-side JS needed ---- */
 
 })();
 </script>
+
+<!-- GoHighLevel form auto-resize helper -->
+<script src="https://link.msgsndr.com/js/form_embed.js"></script>
+
+<!-- GoHighLevel AI chat widget (TintGard) -->
+<script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="6a47d3210fa9255697d036a2"></script>
 </body>
 </html>
