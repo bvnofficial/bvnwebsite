@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>TintGard × BVN — Client Workspace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --red:#e11d2a; --red2:#ff3340; --red3:#b3121d; --red-soft:rgba(225,29,42,.14);
+    --bg:#0b0d11; --bg2:#10131a; --card:#161a22; --card2:#1c2129; --card3:#222834;
+    --text:#eef1f6; --muted:#99a2b2; --muted2:#727c8c;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --green:#2ec16b; --amber:#f5a623;
+    --radius:16px; --radius-sm:11px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1100px 560px at 78% -8%,rgba(225,29,42,.10),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:var(--disp);color:#fff;letter-spacing:-.015em}
+
+  .top{border-bottom:1px solid var(--line)}
+  .top .inner{max-width:1000px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:10px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:16px;color:#fff}
+  .brand svg{height:24px}
+  .top .cc{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .top .cc:hover{color:var(--red2)}
+
+  header.hero{padding:48px 0 10px}
+  .eyebrow{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--red2);font-weight:700;margin-bottom:12px;display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--red)}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:700;line-height:1.1}
+  h1 span{color:var(--red2)}
+  .sub{color:var(--muted);font-size:17px;margin-top:14px;max-width:620px}
+  .status{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--line2);padding:7px 14px;border-radius:99px}
+  .dot{width:9px;height:9px;border-radius:99px;background:var(--amber);box-shadow:0 0 0 0 rgba(245,166,35,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(245,166,35,.5)}70%{box-shadow:0 0 0 8px rgba(245,166,35,0)}100%{box-shadow:0 0 0 0 rgba(245,166,35,0)}}
+
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 8px}
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px}
+  .fact .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fact .v{font-family:var(--disp);font-size:22px;font-weight:700;color:#fff;margin-top:6px}
+  .fact .v small{font-size:12px;color:var(--muted);font-weight:500}
+
+  section{margin-top:44px}
+  .sec-h{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);font-weight:700;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .tile{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;transition:.22s;position:relative;overflow:hidden}
+  .tile::before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--red),var(--red2));transition:.35s}
+  .tile.live{cursor:pointer}
+  .tile.live:hover{transform:translateY(-5px);border-color:var(--line2);box-shadow:0 24px 50px -26px rgba(0,0,0,.75)}
+  .tile.live:hover::before{width:100%}
+  .tile.soon{opacity:.6}
+  .tile .ic{width:50px;height:50px;border-radius:13px;background:var(--red-soft);color:var(--red2);display:grid;place-items:center;font-size:23px;margin-bottom:16px}
+  .tile h3{font-size:20px;display:flex;align-items:center;gap:10px}
+  .tile p{color:var(--muted);font-size:14.5px;margin-top:8px}
+  .tile .go{margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--red2);font-weight:700}
+  .tile.soon .go{color:var(--muted2)}
+  .pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;font-weight:700}
+  .pill.ready{background:rgba(46,193,107,.14);color:var(--green);border:1px solid rgba(46,193,107,.3)}
+  .pill.soon{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--line2)}
+
+  footer{margin-top:52px;border-top:1px solid var(--line);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted2)}
+  footer a{color:var(--red2)}
+
+  @media(max-width:760px){
+    .facts{grid-template-columns:repeat(2,1fr)}
+    .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="inner">
+    <span class="brand">
+      <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 3 L38 9 V22 C38 32 30 39 22 42 C14 39 6 32 6 22 V9 Z" fill="#e11d2a"/><path d="M13 22 l6 6 L31 15" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      TintGard <span style="color:var(--muted2);font-weight:500">× BVN</span>
+    </span>
+    <a class="cc" href="/clients/">← BVN Command Center</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Client Workspace</div>
+    <h1>Welcome to your <span>TintGard OS</span> workspace</h1>
+    <p class="sub">Everything for your project lives here, the plan, the demo, and what we need to get started. One link, always up to date.</p>
+    <div class="status"><span class="dot"></span> Status: Proposal, ready to kick off</div>
+  </header>
+
+  <div class="facts">
+    <div class="fact"><div class="k">Project 1</div><div class="v"><small>A$</small>2,500</div></div>
+    <div class="fact"><div class="k">Payments</div><div class="v">Milestone <small>based</small></div></div>
+    <div class="fact"><div class="k">Milestones</div><div class="v">6</div></div>
+    <div class="fact"><div class="k">Ownership</div><div class="v">100% <small>yours</small></div></div>
+  </div>
+
+  <section>
+    <div class="sec-h">Your pages</div>
+    <div class="grid">
+      <a class="tile live" href="/clients/tintgard/milestones/">
+        <div class="ic">🗺️</div>
+        <h3>Roadmap &amp; Milestones <span class="pill ready">Live</span></h3>
+        <p>The full 2-project plan, milestones, payments, customer journey and affiliate workflow diagrams, and how ownership works.</p>
+        <span class="go">Open the roadmap →</span>
+      </a>
+      <a class="tile live" href="/clients/tintgard/checklist/">
+        <div class="ic">✅</div>
+        <h3>Onboarding Checklist <span class="pill ready">Live</span></h3>
+        <p>Everything we need from you to build the system. Tick items off as you go, your progress saves automatically.</p>
+        <span class="go">Open the checklist →</span>
+      </a>
+      <a class="tile live" href="/clients/tintgard/website/">
+        <div class="ic">🌐</div>
+        <h3>Demo Website <span class="pill ready">Live</span></h3>
+        <p>The interactive tinting site demo, shade selector, before and after slider, instant quote and booking form.</p>
+        <span class="go">View the demo →</span>
+      </a>
+      <div class="tile soon">
+        <div class="ic">💳</div>
+        <h3>Payments <span class="pill soon">Soon</span></h3>
+        <p>Milestone invoices and payment history will appear here once the project kicks off.</p>
+        <span class="go">Coming soon</span>
+      </div>
+      <div class="tile soon">
+        <div class="ic">📦</div>
+        <h3>Works &amp; Deliverables <span class="pill soon">Soon</span></h3>
+        <p>Completed milestones, documentation and handover files will be collected here as we build.</p>
+        <span class="go">Coming soon</span>
+      </div>
+      <div class="tile soon">
+        <div class="ic">🚀</div>
+        <h3>Project 2 · Growth <span class="pill soon">Soon</span></h3>
+        <p>Growth and marketing, scoped after Project 1 is live and capturing leads.</p>
+        <span class="go">Coming soon</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>TintGard × BVN — Client Workspace</span>
+    <span>Managed by <a href="https://www.bvnofficial.com" target="_blank" rel="noopener">BVN</a> · <a href="mailto:bvn@bvnofficial.com">bvn@bvnofficial.com</a></span>
+  </footer>
+</div>
+</body>
+</html>

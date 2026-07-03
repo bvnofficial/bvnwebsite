@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>TintGard OS — Onboarding Checklist | BVN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --red:#e11d2a; --red2:#ff3340; --red3:#b3121d; --red-soft:rgba(225,29,42,.14);
+    --bg:#0b0d11; --bg2:#10131a; --card:#161a22; --card2:#1c2129; --card3:#222834;
+    --text:#eef1f6; --muted:#99a2b2; --muted2:#727c8c;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --green:#2ec16b; --blue:#5aa2ff; --purple:#b39dfb; --amber:#f5a623;
+    --radius:14px; --radius-sm:10px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:radial-gradient(1100px 560px at 78% -8%,rgba(225,29,42,.10),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+  .wrap{max-width:940px;margin:0 auto;padding:0 20px}
+  a{color:var(--red2);text-decoration:none}
+  h1,h2,h3{font-family:var(--disp);color:#fff;letter-spacing:-.015em}
+
+  /* sticky progress */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(8,10,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar .inner{max-width:940px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:14px}
+  .topbar .back{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+  .topbar .label{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-left:auto}
+  .pbar{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;max-width:320px}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red3),var(--red2));transition:width .35s ease}
+  .ppct{font-family:var(--disp);font-weight:700;color:var(--red2);font-size:13px;min-width:42px;text-align:right}
+
+  header.hero{padding:44px 0 22px}
+  .eyebrow{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--red2);font-weight:700;margin-bottom:12px;display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--red)}
+  h1{font-size:clamp(28px,4.5vw,38px);line-height:1.12;font-weight:700}
+  h1 span{color:var(--red2)}
+  .sub{color:var(--muted);font-size:16px;margin-top:12px;max-width:660px}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 4px}
+  .tab{cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:8px 15px;border-radius:99px;
+    border:1px solid var(--line2);background:var(--card);color:var(--muted);transition:.15s}
+  .tab:hover{color:#fff;border-color:#475569}
+  .tab.active{background:var(--red);color:#fff;border-color:var(--red);font-weight:700}
+
+  section{margin-top:22px}
+  .cards{display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.15s}
+  .card.open{border-color:var(--line2)}
+  .card .head{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;user-select:none}
+  .card .head:hover{background:rgba(255,255,255,.03)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px;font-weight:700;white-space:nowrap}
+  .chip.start{background:var(--red-soft);color:var(--red2);border:1px solid rgba(225,29,42,.3)}
+  .chip.access{background:rgba(90,162,255,.14);color:var(--blue);border:1px solid rgba(90,162,255,.3)}
+  .chip.content{background:rgba(46,193,107,.14);color:var(--green);border:1px solid rgba(46,193,107,.3)}
+  .chip.tech{background:rgba(179,157,251,.16);color:var(--purple);border:1px solid rgba(179,157,251,.3)}
+  .chip.req{background:rgba(245,166,35,.14);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+  .card .head .title{font-family:var(--disp);font-weight:600;font-size:16px}
+  .card .head .meta{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .ring{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .ring b{color:var(--red2)}
+  .chev{color:var(--muted2);transition:transform .2s;font-size:13px}
+  .card.open .chev{transform:rotate(90deg)}
+  .items{display:none;padding:4px 18px 14px}
+  .card.open .items{display:block}
+  .item{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+  .item:last-child{border-bottom:none}
+  .item label{display:flex;gap:12px;align-items:flex-start;cursor:pointer;flex:1}
+  .item input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:1.5px solid var(--line2);
+    border-radius:6px;margin-top:1px;flex-shrink:0;cursor:pointer;position:relative;transition:.15s;background:var(--bg)}
+  .item input:hover{border-color:var(--red)}
+  .item input:checked{background:var(--red);border-color:var(--red)}
+  .item input:checked::after{content:"";position:absolute;left:6.5px;top:2.5px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  .item .txt{font-size:14.5px;color:var(--text);transition:.15s}
+  .item .txt .note{display:block;font-size:12.5px;color:var(--muted2);margin-top:2px}
+  .item input:checked ~ .txt{color:var(--muted2);text-decoration:line-through;text-decoration-color:rgba(148,163,184,.4)}
+  .item input:checked ~ .txt .note{text-decoration:none}
+  .hidden{display:none!important}
+
+  .callout{background:linear-gradient(135deg,rgba(245,166,35,.12),rgba(245,166,35,.03));
+    border:1px solid rgba(245,166,35,.3);border-radius:var(--radius);padding:16px 18px;margin-top:18px;font-size:14px;color:var(--muted)}
+  .callout b{color:var(--amber)}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .btn{font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:10px 16px;border-radius:9px;cursor:pointer;
+    border:1px solid var(--line2);background:var(--card);color:var(--text);transition:.15s}
+  .btn:hover{border-color:var(--red);color:var(--red2)}
+  .btn.primary{background:var(--red);color:#fff;border-color:var(--red);font-weight:700}
+  .btn.primary:hover{background:var(--red2);color:#fff}
+
+  footer{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted2);font-size:13px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  footer .who{font-weight:700;color:#fff;font-family:var(--disp)}
+  footer a{color:var(--red2)}
+
+  @media print{
+    .topbar,.tabs,.actions,.callout{display:none}
+    body{background:#fff;color:#000}
+    .card{border:1px solid #ccc;break-inside:avoid}
+    .items{display:block}
+  }
+  @media(max-width:600px){ .topbar .back{display:none} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <a class="back" href="/clients/tintgard/">← TintGard workspace</a>
+    <div class="pbar"><i id="globalBar"></i></div>
+    <span class="ppct" id="globalPct">0%</span>
+    <span class="label">Onboarding</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">TintGard OS · Getting Started</div>
+    <h1>What we need <span>from you</span></h1>
+    <p class="sub">Everything needed to build your system, across all six milestones. Most of it is quick. BVN handles all the technical setup, you just point us to the accounts and give us the details below. Start with the "Get moving" items and we will gather the rest as we go. Your progress saves automatically in this browser.</p>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-f="all">All</div>
+    <div class="tab" data-f="start">⭐ Get moving</div>
+    <div class="tab" data-f="access">Accounts &amp; access</div>
+    <div class="tab" data-f="details">Details</div>
+  </div>
+
+  <section><div class="cards" id="cards"></div></section>
+
+  <div class="callout">
+    <b>Heads up:</b> the SMS registration (needed for text and AI voice features) and email setup can take a few days to approve on the provider side. Getting the "Get moving" items to us early keeps everything on track.
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
+    <button class="btn" id="expandAll">Expand all</button>
+    <button class="btn" id="collapseAll">Collapse all</button>
+    <button class="btn" id="resetBtn">Reset progress</button>
+  </div>
+
+  <footer>
+    <span class="who">Benjamin Yson · BVN</span>
+    <span>TintGard OS build</span>
+    <span style="margin-left:auto"><a href="mailto:bvn@bvnofficial.com?subject=TintGard%20OS%20Onboarding">bvn@bvnofficial.com</a></span>
+  </footer>
+</div>
+
+<script>
+const SECTIONS = [
+  { id:"start", title:"To get moving", chip:"start", chipLabel:"Start here", f:"start",
+    items:[
+      ["GoHighLevel account created, with BVN added as admin","email: bvn@bvnofficial.com — you create it, so you own it"],
+      ["Logo files","PNG, plus vector or SVG if you have it"],
+      ["Brand colours and preferred font","if any"],
+      ["Business name, ABN, address and the areas you service"],
+      ["Phone number decision","keep your current one and forward it, or use a fresh number"],
+      ["Website access, or your web person's contact","for the chat widget and email setup"],
+      ["Who should receive new lead notifications, and how","SMS, email, or both"],
+    ]},
+  { id:"accounts", title:"Accounts to connect", chip:"access", chipLabel:"Access", f:"access",
+    items:[
+      ["ServiceM8 login, or the okay to send you the connection request"],
+      ["Google Business Profile access","for reviews, Google messaging and maps"],
+      ["Facebook and Instagram access","for social messaging"],
+      ["Xero access, or a contacts export","for your free customer migration"],
+    ]},
+  { id:"services", title:"Services and pricing", chip:"content", chipLabel:"Details", f:"details",
+    items:[
+      ["Your services, with a short description of each"],
+      ["Pricing or price ranges per service","or how you like to quote"],
+      ["Any packages, offers or promotions you run"],
+      ["Warranty details and your most common FAQs"],
+      ["Booking rules","availability, typical lead times, and any deposit you take"],
+    ]},
+  { id:"sales", title:"Your sales process (the 3 journeys)", chip:"content", chipLabel:"Details", f:"details",
+    items:[
+      ["How leads reach you today, and how you follow up"],
+      ["The questions you ask to quote a car, a commercial, and a residential job"],
+      ["The objections you hear most, and your best responses"],
+      ["Any offer or incentive you'd like used in follow-ups"],
+    ]},
+  { id:"ai", title:"AI and voice", chip:"content", chipLabel:"Details", f:"details",
+    items:[
+      ["Your most common customer questions and the answers","so the AI sounds like you"],
+      ["How you want the AI to come across","friendly, professional, straight to the point"],
+      ["What the AI is allowed to book, and when it should hand over to a person"],
+      ["After-hours and voicemail preferences"],
+      ["Your Google review link"],
+    ]},
+  { id:"servicem8", title:"ServiceM8", chip:"tech", chipLabel:"Integration", f:"details",
+    items:[
+      ["The job types or categories you use"],
+      ["At what point a lead becomes a job","so we trigger it at the right moment"],
+    ]},
+  { id:"affiliate", title:"Affiliate partners", chip:"content", chipLabel:"Details", f:"details",
+    items:[
+      ["The partner types you want","detailers, dealers, agents, builders, others"],
+      ["The reward or commission you'll offer for a referral"],
+      ["Any existing partners you'd like loaded in first"],
+    ]},
+  { id:"compliance", title:"Compliance (for SMS)", chip:"req", chipLabel:"Required", f:"access",
+    items:[
+      ["Confirm you have permission to message your existing customers"],
+      ["A couple of sample messages you're happy to send","needed for SMS registration"],
+    ]},
+  { id:"team", title:"Team", chip:"access", chipLabel:"Access", f:"access",
+    items:[
+      ["Anyone on your team who needs access, and what they should be able to do"],
+    ]},
+];
+
+const STORE = "tintgard-checklist-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch(e){ state = {}; }
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
+function key(s,i){ return s+"::"+i; }
+
+const cardsEl = document.getElementById("cards");
+SECTIONS.forEach(sec=>{
+  const card = document.createElement("div");
+  card.className = "card open";
+  card.dataset.f = sec.f;
+  const itemsHtml = sec.items.map((it,i)=>{
+    const k = key(sec.id,i);
+    const checked = state[k] ? "checked" : "";
+    const note = it[1] ? '<span class="note">'+it[1]+'</span>' : '';
+    return '<div class="item"><label><input type="checkbox" data-k="'+k+'" '+checked+'/>'
+      + '<span class="txt">'+it[0]+note+'</span></label></div>';
+  }).join("");
+  card.innerHTML =
+    '<div class="head">'
+    + '<span class="chip '+sec.chip+'">'+sec.chipLabel+'</span>'
+    + '<span class="title">'+sec.title+'</span>'
+    + '<span class="meta"><span class="ring" id="ring-'+sec.id+'"></span><span class="chev">▸</span></span>'
+    + '</div>'
+    + '<div class="items">'+itemsHtml+'</div>';
+  card.querySelector(".head").addEventListener("click", e=>{
+    if(e.target.tagName==="INPUT") return;
+    card.classList.toggle("open");
+  });
+  cardsEl.appendChild(card);
+});
+
+function updateProgress(){
+  let total=0, done=0;
+  SECTIONS.forEach(sec=>{
+    let st=0, sd=0;
+    sec.items.forEach((it,i)=>{ st++; if(state[key(sec.id,i)]) sd++; });
+    total+=st; done+=sd;
+    const ring = document.getElementById("ring-"+sec.id);
+    if(ring) ring.innerHTML = "<b>"+sd+"</b>/"+st;
+  });
+  const pct = total? Math.round(done/total*100):0;
+  document.getElementById("globalBar").style.width = pct+"%";
+  document.getElementById("globalPct").textContent = pct+"%";
+}
+
+cardsEl.addEventListener("change", e=>{
+  if(e.target.matches('input[type="checkbox"]')){
+    state[e.target.dataset.k] = e.target.checked;
+    save(); updateProgress();
+  }
+});
+
+document.getElementById("tabs").addEventListener("click", e=>{
+  const t = e.target.closest(".tab"); if(!t) return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  const f = t.dataset.f;
+  document.querySelectorAll("#cards .card").forEach(c=>{
+    c.classList.toggle("hidden", !(f==="all" || c.dataset.f===f));
+  });
+});
+
+document.getElementById("expandAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
+document.getElementById("collapseAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.remove("open"));
+document.getElementById("resetBtn").onclick = ()=>{
+  if(confirm("Reset all checked items?")){ state={}; save();
+    document.querySelectorAll('#cards input[type="checkbox"]').forEach(c=>c.checked=false); updateProgress(); }
+};
+
+updateProgress();
+</script>
+</body>
+</html>

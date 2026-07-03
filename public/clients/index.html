@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>BVN — Client Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#080a0f; --bg2:#0d1017; --card:#141821; --card2:#1a1f2a; --card3:#222836;
+    --text:#eef1f6; --muted:#98a2b3; --muted2:#6a7488;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.15);
+    --accent:#5b8cff; --accent2:#7ea6ff; --accent-soft:rgba(91,140,255,.14);
+    --green:#2ec16b; --amber:#f5a623; --red:#e11d2a;
+    --radius:16px; --radius-sm:11px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1200px 620px at 75% -12%,rgba(91,140,255,.10),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:64px}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:var(--disp);color:#fff;letter-spacing:-.015em}
+
+  .top{border-bottom:1px solid var(--line)}
+  .top .inner{max-width:1040px;margin:0 auto;padding:15px 22px;display:flex;align-items:center;gap:12px}
+  .logo{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;font-size:17px;color:#fff}
+  .logo .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#3f6fe0);display:grid;place-items:center;font-size:15px;font-weight:700;color:#fff}
+  .top .env{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted2);border:1px solid var(--line2);border-radius:99px;padding:5px 12px}
+
+  header.hero{padding:50px 0 8px}
+  .eyebrow{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:12px;display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--accent)}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:700;line-height:1.1}
+  .sub{color:var(--muted);font-size:17px;margin-top:14px;max-width:600px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 6px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px}
+  .stat .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-family:var(--disp);font-size:24px;font-weight:700;color:#fff;margin-top:6px}
+
+  section{margin-top:40px}
+  .sec-h{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);font-weight:700;margin-bottom:16px}
+
+  .clients{display:flex;flex-direction:column;gap:16px}
+  .client{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.2s}
+  .client:hover{border-color:var(--line2)}
+  .client .row{display:flex;gap:18px;padding:22px 24px;align-items:flex-start;flex-wrap:wrap}
+  .client .badge{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:20px;color:#fff;flex-shrink:0}
+  .client.regal .badge{background:linear-gradient(135deg,#fbbf24,#d97706)}
+  .client.tintgard .badge{background:linear-gradient(135deg,#ff3340,#b3121d)}
+  .client .info{flex:1;min-width:220px}
+  .client .name{font-family:var(--disp);font-size:20px;font-weight:600;color:#fff;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+  .client .name .st{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;font-weight:700}
+  .st.won{background:rgba(46,193,107,.14);color:var(--green);border:1px solid rgba(46,193,107,.3)}
+  .st.pitch{background:rgba(245,166,35,.14);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+  .client .desc{color:var(--muted);font-size:14.5px;margin-top:6px;max-width:560px}
+  .client .meta{margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted2)}
+  .client .meta b{color:var(--text);font-weight:600}
+  .open-ws{margin-left:auto;align-self:center;font-family:var(--sans);font-weight:600;font-size:14px;color:#fff;background:var(--card3);border:1px solid var(--line2);border-radius:99px;padding:10px 18px;white-space:nowrap;transition:.18s}
+  .client.regal .open-ws:hover{background:rgba(245,166,35,.16);border-color:rgba(245,166,35,.4);color:#fbbf24}
+  .client.tintgard .open-ws:hover{background:rgba(225,29,42,.16);border-color:rgba(225,29,42,.4);color:#ff5560}
+
+  .links{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 20px}
+  .lchip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--text);background:var(--bg2);border:1px solid var(--line2);border-radius:9px;padding:9px 13px;transition:.16s}
+  .lchip:hover{border-color:var(--accent);color:#fff;transform:translateY(-2px)}
+  .lchip .e{font-size:14px}
+
+  .addnew{border:1px dashed var(--line2);border-radius:var(--radius);padding:20px 24px;color:var(--muted2);font-size:14px;display:flex;align-items:center;gap:12px;margin-top:16px}
+  .addnew .plus{width:34px;height:34px;border-radius:10px;background:var(--card);border:1px solid var(--line2);display:grid;place-items:center;font-size:18px;color:var(--muted)}
+
+  footer{margin-top:52px;border-top:1px solid var(--line);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted2)}
+  footer a{color:var(--accent2)}
+
+  @media(max-width:680px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .open-ws{margin-left:0;width:100%;text-align:center}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="inner">
+    <span class="logo"><span class="mark">B</span> BVN</span>
+    <span class="env">Internal · Client Command Center</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">BVN Workspaces</div>
+    <h1>Client Command Center</h1>
+    <p class="sub">Every client has their own workspace with their milestones, payments, works and checklist. Jump into any of them below.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Clients</div><div class="v">2</div></div>
+    <div class="stat"><div class="k">Live Workspaces</div><div class="v">2</div></div>
+    <div class="stat"><div class="k">Won</div><div class="v">1</div></div>
+    <div class="stat"><div class="k">In Proposal</div><div class="v">1</div></div>
+  </div>
+
+  <section>
+    <div class="sec-h">Clients</div>
+    <div class="clients">
+
+      <!-- TintGard -->
+      <div class="client tintgard">
+        <div class="row">
+          <div class="badge">TG</div>
+          <div class="info">
+            <div class="name">TintGard <span class="st pitch">In Proposal</span></div>
+            <div class="desc">Brisbane window-tinting specialist. Two-part GHL CRM + AI build with a lead-to-sales system, ServiceM8 integration and an affiliate program.</div>
+            <div class="meta"><span>Project 1 · <b>A$2,500</b></span><span>Payments · <b>Milestone based</b></span><span>Contact · <b>Alex Seiuli</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/tintgard/">Open workspace →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/tintgard/milestones/"><span class="e">🗺️</span> Roadmap &amp; Milestones</a>
+          <a class="lchip" href="/clients/tintgard/checklist/"><span class="e">✅</span> Onboarding Checklist</a>
+          <a class="lchip" href="/clients/tintgard/website/"><span class="e">🌐</span> Demo Website</a>
+        </div>
+      </div>
+
+      <!-- Regal Care Homes -->
+      <div class="client regal">
+        <div class="row">
+          <div class="badge">RC</div>
+          <div class="info">
+            <div class="name">Regal Care Homes <span class="st won">Won</span></div>
+            <div class="desc">Residential care operator in Simi Valley, CA. Fixed GoHighLevel CRM build, Family Inquiry pipeline, workflows and email sequences, plus an optional partner system.</div>
+            <div class="meta"><span>Phase 1 · <b>$3,000 fixed</b></span><span>Platform · <b>GoHighLevel</b></span><span>Contact · <b>Don Brodt</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/regal-homes/">Open workspace →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/regal-homes/"><span class="e">🗺️</span> Build Workspace</a>
+          <a class="lchip" href="/clients/regal-homes/checklist-and-milestones/"><span class="e">✅</span> Checklist &amp; Milestones</a>
+          <a class="lchip" href="/clients/regal-homes/website/"><span class="e">🌐</span> Website</a>
+          <a class="lchip" href="/clients/regal-homes/ai-assistant/"><span class="e">🤖</span> AI Assistant</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="addnew"><span class="plus">+</span> New clients get a workspace at <span style="font-family:var(--mono);color:var(--muted)">&nbsp;/clients/{name}&nbsp;</span> with their own milestones, payments, works and checklist.</div>
+  </section>
+
+  <footer>
+    <span>BVN — Client Command Center · Internal</span>
+    <span><a href="https://www.bvnofficial.com" target="_blank" rel="noopener">bvnofficial.com</a> · <a href="mailto:bvn@bvnofficial.com">bvn@bvnofficial.com</a></span>
+  </footer>
+</div>
+</body>
+</html>
