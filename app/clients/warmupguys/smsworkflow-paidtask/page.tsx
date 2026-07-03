@@ -342,9 +342,9 @@ export default function WarmUpGuysSmsWorkflow() {
             <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: C.coral }}>The brief, from Nick</span>
           </div>
           <p style={{ fontSize: 14, color: C.ink, lineHeight: 1.65, margin: 0 }}>
-            One client's main CTA is a text number. People text in all sorts of things, mostly about upcoming shows
-            or where they'd like to see the comedian perform. The goal: build a more complete contact record, in
-            particular the person's location (zip ideal), so the client can email and text them when the comedian
+            One client&apos;s main CTA is a text number. People text in all sorts of things, mostly about upcoming shows
+            or where they&apos;d like to see the comedian perform. The goal: build a more complete contact record, in
+            particular the person&apos;s location (zip ideal), so the client can email and text them when the comedian
             is coming to their town, without the experience feeling clunky or forcing anyone through a form.
           </p>
         </div>
@@ -369,9 +369,9 @@ export default function WarmUpGuysSmsWorkflow() {
         {/* Draft workflow diagram */}
         <Section title="The draft workflow, step by step" Icon={GitBranch} accent={C.coral}>
           <p style={{ color: C.sub, fontSize: 13.5, marginTop: -4, marginBottom: 18, lineHeight: 1.6 }}>
-            This is the actual shape of the build, node by node, exactly as it would sit inside GoHighLevel's
+            This is the actual shape of the build, node by node, exactly as it would sit inside GoHighLevel&apos;s
             workflow builder. Green branches are the quiet, low friction paths. Every path ends the same way: the
-            customer's real question still gets answered.
+            customer&apos;s real question still gets answered.
           </p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 20 }}>
             {(Object.keys(kindStyle) as NodeKind[]).map((k) => (
@@ -389,8 +389,8 @@ export default function WarmUpGuysSmsWorkflow() {
             <div style={{ height: 1, flex: 1, background: C.border }} />
           </div>
           <p style={{ color: C.sub, fontSize: 13.5, marginBottom: 18, lineHeight: 1.6 }}>
-            This one doesn't touch the inbound conversation at all. It sits idle until a new stop is booked, then
-            it's the reason the whole exercise above was worth doing.
+            This one doesn&apos;t touch the inbound conversation at all. It sits idle until a new stop is booked, then
+            it&apos;s the reason the whole exercise above was worth doing.
           </p>
           <FlowDiagram nodes={notifyFlow} />
         </Section>
@@ -651,8 +651,8 @@ export default function WarmUpGuysSmsWorkflow() {
           <p style={{ fontSize: 14, color: C.sub, lineHeight: 1.65, margin: 0 }}>
             A simple dashboard view on top of the tags above answers the only questions that matter: what percentage
             of inbound texters have a known location, how often the soft ask actually gets answered, and how many
-            contacts are sitting in Location: Unknown waiting on a human to decide whether it's worth a manual
-            follow up. If the ask rate ever looks low, that's a wording problem to fix, not a system problem.
+            contacts are sitting in Location: Unknown waiting on a human to decide whether it&apos;s worth a manual
+            follow up. If the ask rate ever looks low, that&apos;s a wording problem to fix, not a system problem.
           </p>
         </Section>
 
