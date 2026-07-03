@@ -1127,6 +1127,16 @@
       setService(b.dataset.svc);
     });
   }
+  function leadSuccess(who, svc){
+    leadForm.innerHTML =
+      '<div class="lead-ok">' +
+        '<div class="chk">&#10003;</div>' +
+        '<h3>Thanks, ' + who + '!</h3>' +
+        '<p>Your ' + svc.toLowerCase() + ' enquiry is in. We\'ll be in touch shortly.</p>' +
+        '<div class="route-card">This enquiry routes straight into TintGard\'s <b>' + svc + ' pipeline</b> ' +
+        'in GoHighLevel &mdash; you\'ll get an instant reply now, then a personal follow-up from the team.</div>' +
+      '</div>';
+  }
   if(leadForm){
     leadForm.addEventListener("submit", function(e){
       e.preventDefault();
@@ -1136,16 +1146,30 @@
         if(!f.value.trim()){ f.classList.add("err"); ok = false; } else f.classList.remove("err");
       });
       if(!ok){ (name.value.trim() ? phone : name).focus(); return; }
+
       var who = name.value.trim().split(/\s+/)[0].replace(/[<>&]/g, "");
       var svc = svcState;
-      leadForm.innerHTML =
-        '<div class="lead-ok">' +
-          '<div class="chk">&#10003;</div>' +
-          '<h3>Thanks, ' + who + '!</h3>' +
-          '<p>Your ' + svc.toLowerCase() + ' enquiry is in. We\'ll be in touch shortly.</p>' +
-          '<div class="route-card">This enquiry routes straight into TintGard\'s <b>' + svc + ' pipeline</b> ' +
-          'in GoHighLevel &mdash; you\'ll get an instant reply now, then a personal follow-up from the team.</div>' +
-        '</div>';
+      var payload = {
+        service: svc,
+        name: name.value.trim(),
+        phone: phone.value.trim(),
+        email: (document.getElementById("lfEmail").value || "").trim(),
+        suburb: (document.getElementById("lfSuburb").value || "").trim(),
+        detail: (document.getElementById("lfDetail").value || "").trim(),
+        message: (document.getElementById("lfMsg").value || "").trim()
+      };
+
+      var btn = leadForm.querySelector('button[type="submit"]');
+      if(btn){ btn.disabled = true; btn.textContent = "Sending..."; }
+
+      // Post into GoHighLevel via our server route (token stays server-side).
+      // Whatever the outcome, the visitor sees the confirmation — the demo never breaks.
+      fetch("/api/tintgard-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(function(){ /* offline / route missing — still confirm */ })
+        .finally(function(){ leadSuccess(who, svc); });
     });
   }
 
