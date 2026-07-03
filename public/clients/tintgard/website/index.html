@@ -241,6 +241,40 @@
   .quote-result .note{font-size:12px;color:var(--muted2);margin-top:16px;line-height:1.5}
   .quote-result .btn{margin-top:18px;justify-content:center}
 
+  /* ============ BRANDED LEAD FORM (service type → pipeline) ============ */
+  .lead{background:linear-gradient(165deg,var(--card2),var(--card));border:1px solid var(--line2);border-radius:20px;padding:28px 26px;box-shadow:var(--shadow)}
+  .lead h3{font-size:23px}
+  .lead .lsub{color:var(--muted);font-size:14px;margin:7px 0 20px}
+  .lead .fld{margin-bottom:15px}
+  .lead label{display:block;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .lead label .req{color:var(--red2)}
+  .lead input,.lead textarea{width:100%;background:var(--bg2);border:1.5px solid var(--line2);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:15px;padding:12px 14px;transition:.18s}
+  .lead input::placeholder,.lead textarea::placeholder{color:var(--muted2)}
+  .lead input:focus,.lead textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+  .lead textarea{resize:vertical;min-height:78px}
+  .lead .err{border-color:var(--red2)!important;box-shadow:0 0 0 3px rgba(255,51,64,.15)!important}
+  .svc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .svc button{background:var(--bg2);border:1.5px solid var(--line2);border-radius:13px;padding:15px 8px 12px;cursor:pointer;transition:.18s;text-align:center;font-family:var(--sans)}
+  .svc button .ei{font-size:25px;display:block;margin-bottom:6px;line-height:1}
+  .svc button .en{font-size:13.5px;font-weight:700;color:var(--text);display:block}
+  .svc button .ed{font-size:10.5px;color:var(--muted2);margin-top:2px;display:block}
+  .svc button:hover{border-color:var(--red3);transform:translateY(-2px)}
+  .svc button.on{border-color:var(--red);background:var(--red-soft)}
+  .svc button.on .en{color:var(--red2)}
+  .route-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:var(--bg2);border:1px solid var(--line2);border-radius:99px;padding:6px 12px;margin-top:11px}
+  .route-pill b{color:var(--red2)}
+  .lead-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .lead .consent{display:flex;gap:10px;align-items:flex-start;margin:6px 0 16px;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .lead .consent input{width:auto;margin-top:3px;accent-color:var(--red);flex-shrink:0}
+  .lead .btn{width:100%;justify-content:center}
+  .lead-ok{text-align:center;padding:26px 12px 12px;animation:okin .4s ease}
+  @keyframes okin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .lead-ok .chk{width:66px;height:66px;border-radius:50%;background:var(--red-soft);border:2px solid var(--red);color:var(--red2);display:grid;place-items:center;font-size:32px;margin:0 auto 16px}
+  .lead-ok h3{font-size:25px;margin-bottom:8px}
+  .lead-ok p{color:var(--muted);font-size:15px}
+  .lead-ok .route-card{background:var(--bg2);border:1px solid var(--line2);border-left:3px solid var(--red);border-radius:11px;padding:15px 17px;margin:20px 0 6px;text-align:left;font-size:13.5px;color:var(--muted);line-height:1.6}
+  .lead-ok .route-card b{color:var(--red2)}
+
   /* ============ TESTIMONIALS ============ */
   .testi{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--line);color:#fff;border-radius:var(--radius);padding:60px 56px;position:relative;overflow:hidden}
   .testi .qmark{position:absolute;top:8px;left:36px;font-family:var(--disp);font-size:170px;line-height:1;color:rgba(225,29,42,.16)}
@@ -756,19 +790,37 @@
       </div>
 
       <div class="reveal d1">
-        <div class="book" style="padding:14px 14px 8px;overflow:hidden">
-          <h3 style="margin:6px 4px 2px">Request a quote &amp; booking</h3>
-          <p class="sub" style="margin:0 4px 14px">Fill in a few details and we'll be in touch fast. This form feeds straight into our booking system.</p>
-          <!-- Live GoHighLevel lead capture form (feeds the TintGard CRM) -->
-          <iframe
-            src="https://api.leadconnectorhq.com/widget/form/WJNx6elBKGQvyua436vh"
-            style="width:100%;height:600px;border:none;border-radius:12px;background:transparent"
-            id="inline-WJNx6elBKGQvyua436vh"
-            data-layout="{'id':'INLINE'}"
-            data-form-id="WJNx6elBKGQvyua436vh"
-            data-form-name="TintGard Website Enquiry"
-            title="TintGard Website Enquiry"></iframe>
-        </div>
+        <!-- Branded lead form: service type routes the enquiry into the matching GHL pipeline -->
+        <form class="lead" id="leadForm" novalidate>
+          <h3>Request a quote &amp; booking</h3>
+          <p class="lsub">Tell us what you need and we'll be in touch fast — usually within the hour during business hours.</p>
+
+          <div class="fld">
+            <label>What can we help with? <span class="req">*</span></label>
+            <div class="svc" id="svcPick">
+              <button type="button" data-svc="Automotive" class="on"><span class="ei">🚗</span><span class="en">Automotive</span><span class="ed">Cars · 4WDs · utes</span></button>
+              <button type="button" data-svc="Commercial"><span class="ei">🏢</span><span class="en">Commercial</span><span class="ed">Offices · shopfronts</span></button>
+              <button type="button" data-svc="Residential"><span class="ei">🏠</span><span class="en">Residential</span><span class="ed">Homes · apartments</span></button>
+            </div>
+            <span class="route-pill">Routes to our <b id="routeName">Automotive</b> pipeline</span>
+          </div>
+
+          <div class="lead-row">
+            <div class="fld"><label>Name <span class="req">*</span></label><input id="lfName" type="text" placeholder="Your name" autocomplete="name"></div>
+            <div class="fld"><label>Phone <span class="req">*</span></label><input id="lfPhone" type="tel" placeholder="04xx xxx xxx" autocomplete="tel"></div>
+          </div>
+          <div class="fld"><label>Email</label><input id="lfEmail" type="email" placeholder="you@email.com" autocomplete="email"></div>
+          <div class="lead-row">
+            <div class="fld"><label>Suburb</label><input id="lfSuburb" type="text" placeholder="e.g. Augustine Heights"></div>
+            <div class="fld"><label id="detailLabel">Vehicle make &amp; model</label><input id="lfDetail" type="text" placeholder="e.g. Toyota HiLux"></div>
+          </div>
+          <div class="fld"><label>Anything else?</label><textarea id="lfMsg" placeholder="Tint shade, timing, or any questions..."></textarea></div>
+
+          <label class="consent"><input type="checkbox" id="lfConsent"> <span>I agree to be contacted by TintGard by phone, SMS and email about my enquiry. Reply STOP to opt out of SMS anytime.</span></label>
+
+          <button type="submit" class="btn btn-red">Send my enquiry →</button>
+          <p class="note" style="text-align:center;color:var(--muted2);font-size:12px;margin-top:12px">Feeds straight into TintGard's booking system.</p>
+        </form>
       </div>
     </div>
   </div>
@@ -1050,24 +1102,69 @@
   });
   syncSteps(); calc();
 
-  /* smooth-scroll the "Book this job" button (also prefills service note) */
-  document.getElementById("quoteToContact").addEventListener("click", function(){
-    var sel = document.getElementById("bf-service");
-    var map = { car:"Car window tinting", home:"Home window tinting", office:"Office window tinting", commercial:"Commercial / decorative film" };
-    if(map[q.service]) sel.value = map[q.service];
-    var detail = document.getElementById("bf-detail");
-    if(!detail.value){
-      detail.value = "Quote build: " + priceJob.textContent + " (est. $" + lastLow.toLocaleString() + "–$" + lastHigh.toLocaleString() + ")";
-    }
-  });
+  /* ===== branded lead form: service type routes the enquiry to a pipeline ===== */
+  var leadForm = document.getElementById("leadForm");
+  var svcState = "Automotive";
+  var detailByType = {
+    Automotive:  ["Vehicle make & model", "e.g. Toyota HiLux"],
+    Commercial:  ["Business type", "e.g. cafe, office, warehouse"],
+    Residential: ["Property type", "e.g. house, apartment, townhouse"]
+  };
+  function setService(type){
+    if(!detailByType[type]) return;
+    svcState = type;
+    document.querySelectorAll("#svcPick button").forEach(function(b){
+      b.classList.toggle("on", b.dataset.svc === type);
+    });
+    var rn = document.getElementById("routeName"); if(rn) rn.textContent = type;
+    var dl = document.getElementById("detailLabel"), di = document.getElementById("lfDetail");
+    if(dl && di){ dl.textContent = detailByType[type][0]; di.placeholder = detailByType[type][1]; }
+  }
+  var svcPick = document.getElementById("svcPick");
+  if(svcPick){
+    svcPick.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-svc]"); if(!b) return;
+      setService(b.dataset.svc);
+    });
+  }
+  if(leadForm){
+    leadForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      var name = document.getElementById("lfName"), phone = document.getElementById("lfPhone");
+      var ok = true;
+      [name, phone].forEach(function(f){
+        if(!f.value.trim()){ f.classList.add("err"); ok = false; } else f.classList.remove("err");
+      });
+      if(!ok){ (name.value.trim() ? phone : name).focus(); return; }
+      var who = name.value.trim().split(/\s+/)[0].replace(/[<>&]/g, "");
+      var svc = svcState;
+      leadForm.innerHTML =
+        '<div class="lead-ok">' +
+          '<div class="chk">&#10003;</div>' +
+          '<h3>Thanks, ' + who + '!</h3>' +
+          '<p>Your ' + svc.toLowerCase() + ' enquiry is in. We\'ll be in touch shortly.</p>' +
+          '<div class="route-card">This enquiry routes straight into TintGard\'s <b>' + svc + ' pipeline</b> ' +
+          'in GoHighLevel &mdash; you\'ll get an instant reply now, then a personal follow-up from the team.</div>' +
+        '</div>';
+    });
+  }
 
-  /* ---- BOOKING FORM: now a live GoHighLevel embed (see #contact), no client-side JS needed ---- */
+  /* "Book this job" from the quote calculator preselects the matching pipeline + carries the build over */
+  var bookBtn = document.getElementById("quoteToContact");
+  if(bookBtn){
+    var svcMap = { car:"Automotive", home:"Residential", office:"Commercial", commercial:"Commercial" };
+    bookBtn.addEventListener("click", function(){
+      setService(svcMap[q.service] || "Automotive");
+      var msg = document.getElementById("lfMsg");
+      if(msg && !msg.value){
+        msg.value = "From the quote builder: " + priceJob.textContent +
+          " (est. $" + lastLow.toLocaleString() + "–$" + lastHigh.toLocaleString() + ")";
+      }
+    });
+  }
 
 })();
 </script>
-
-<!-- GoHighLevel form auto-resize helper -->
-<script src="https://link.msgsndr.com/js/form_embed.js"></script>
 
 <!-- GoHighLevel AI chat widget (TintGard) -->
 <script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="6a47d3210fa9255697d036a2"></script>
