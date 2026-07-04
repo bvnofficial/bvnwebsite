@@ -741,9 +741,10 @@ const SECTIONS = [
     ["2-way SMS & automated review requests","active","review request copy drafted"],
   ]},
   { id:"m4", title:"M4 — GHL ↔ ServiceM8 Integration", items:[
-    ["ServiceM8 connection authenticated","todo","blocked on Alex's ServiceM8 login"],
-    ["Booked lead → job auto-created","todo"],
-    ["Job status syncs back to GHL","todo"],
+    ["ServiceM8 connection authenticated","done","connected with your API key; verified read + write on jobs, clients and scheduling"],
+    ["Booked lead → job auto-created","done","when an opportunity reaches Booked, a ServiceM8 job (client + Work Order + contact, correct category) is created automatically and its ID is written back to the CRM. Verified live end to end"],
+    ["Job status syncs back to GHL","done","when the ServiceM8 job is marked Completed, the CRM opportunity moves to Job Completed, the status field updates and the review request is triggered. Verified live end to end"],
+    ["Sync cadence","active","running daily on the current hosting plan; can move to every few minutes with a small plan bump or an external scheduler"],
     ["Win-back / reactivation campaigns","todo"],
   ]},
   { id:"m5", title:"M5 — Affiliate Partner Program", items:[
