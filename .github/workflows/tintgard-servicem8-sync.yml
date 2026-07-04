@@ -1,0 +1,31 @@
+name: TintGard ServiceM8 Sync
+
+# Pings the (CRON_SECRET-protected) sync endpoint on a schedule so the
+# GHL <-> ServiceM8 sync runs near real-time on Vercel's Hobby plan.
+# Requires repo secret: CRON_SECRET (same value as the Vercel env var).
+
+on:
+  schedule:
+    - cron: "*/10 * * * *" # every 10 min (UTC); GitHub may delay under load
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+concurrency:
+  group: tintgard-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger ServiceM8 sync
+        run: |
+          code=$(curl -s -o /tmp/out.txt -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://www.bvnofficial.com/api/tintgard-servicem8-sync")
+          echo "HTTP $code"
+          cat /tmp/out.txt || true
+          echo
+          if [ "$code" != "200" ]; then
+            echo "::error::Sync endpoint returned $code"
+            exit 1
+          fi
