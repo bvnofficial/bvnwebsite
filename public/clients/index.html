@@ -56,6 +56,10 @@
   .client.tintgard .badge{background:linear-gradient(135deg,#ff3340,#b3121d)}
   .client.hypersonic .badge{background:linear-gradient(135deg,#5b8cff,#3f6fe0)}
   .client.warmup .badge{background:linear-gradient(135deg,#f7a93b,#d97706)}
+  .client.referralpro .badge{background:linear-gradient(135deg,#5b8cff,#2ec16b)}
+  .client.smartforms .badge{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
+  .client.efs .badge{background:linear-gradient(135deg,#2ec16b,#0f9d58)}
+  .client.bns .badge{background:linear-gradient(135deg,#f5a623,#d97706)}
   .client .info{flex:1;min-width:220px}
   .client .name{font-family:var(--disp);font-size:20px;font-weight:600;color:#fff;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
   .client .name .st{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;font-weight:700}
@@ -63,6 +67,8 @@
   .st.pitch{background:rgba(245,166,35,.14);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
   .st.active{background:rgba(91,140,255,.14);color:var(--accent2);border:1px solid rgba(91,140,255,.3)}
   .st.task{background:rgba(179,157,251,.16);color:#b39dfb;border:1px solid rgba(179,157,251,.3)}
+  .st.pending{background:rgba(245,166,35,.14);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+  .client.referralpro .open-ws:hover,.client.smartforms .open-ws:hover,.client.efs .open-ws:hover,.client.bns .open-ws:hover{background:rgba(91,140,255,.16);border-color:rgba(91,140,255,.4);color:#7ea6ff}
   .client .desc{color:var(--muted);font-size:14.5px;margin-top:6px;max-width:560px}
   .client .meta{margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted2)}
   .client .meta b{color:var(--text);font-weight:600}
@@ -189,6 +195,79 @@
     </div>
 
     <div class="addnew"><span class="plus">+</span> New clients get a workspace at <span style="font-family:var(--mono);color:var(--muted)">&nbsp;/clients/{name}&nbsp;</span> with their own milestones, payments, works and checklist.</div>
+  </section>
+
+  <section>
+    <div class="sec-h">Pending · Application demos (awaiting client response)</div>
+    <div class="clients">
+
+      <!-- Referral Pro -->
+      <div class="client referralpro">
+        <div class="row">
+          <div class="badge">RP</div>
+          <div class="info">
+            <div class="name">Referral Pro <span class="st pending">Pending · Awaiting reply</span></div>
+            <div class="desc">Application demo for a referral-driven estate planning law firm. A working WordPress agent referral portal: role-based agent and staff dashboards, a Clio-synced status tracker, a 1099 referral-fee dashboard with CSV export, and a Hired &rarr; Twilio SMS automation.</div>
+            <div class="meta"><span>Type · <b>Job application demo</b></span><span>Stack · <b>WordPress · Clio · Twilio</b></span><span>Status · <b>Awaiting client response</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/referral-pro/portal">Open demo →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/referral-pro/portal"><span class="e">🔗</span> Live Portal Demo</a>
+        </div>
+      </div>
+
+      <!-- Smart Forms -->
+      <div class="client smartforms">
+        <div class="row">
+          <div class="badge">SF</div>
+          <div class="info">
+            <div class="name">Smart Forms <span class="st pending">Pending · Awaiting reply</span></div>
+            <div class="desc">Application demo for a WordPress DIY platform. An AI-guided multi-step form flow with Gravity Forms-style conditional logic, validation, and a live AI step that reads every answer and generates a tailored plan.</div>
+            <div class="meta"><span>Type · <b>Job application demo</b></span><span>Stack · <b>WordPress · Gravity Forms · Elementor · OpenAI</b></span><span>Status · <b>Awaiting client response</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/smart-forms/flow">Open demo →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/smart-forms/flow"><span class="e">🔗</span> Live Form Flow Demo</a>
+        </div>
+      </div>
+
+      <!-- Evolving Financial Solutions -->
+      <div class="client efs">
+        <div class="row">
+          <div class="badge">EF</div>
+          <div class="info">
+            <div class="name">Evolving Financial Solutions <span class="st pending">Pending · Awaiting reply</span></div>
+            <div class="desc">Application demo for a financial education company. An interactive GoHighLevel client-journey blueprint: a clickable 10-stage pipeline from lead to member showing the automations, AI, tags and SOP at each stage, plus the AI stack, integrations and a 90-day roadmap.</div>
+            <div class="meta"><span>Type · <b>Job application demo</b></span><span>Stack · <b>GoHighLevel · OpenAI · Zapier/Make · Skool</b></span><span>Status · <b>Awaiting client response</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/efs/blueprint">Open demo →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/efs/blueprint"><span class="e">🔗</span> Live GHL Blueprint</a>
+        </div>
+      </div>
+
+      <!-- The BNS Companies -->
+      <div class="client bns">
+        <div class="row">
+          <div class="badge">BN</div>
+          <div class="info">
+            <div class="name">The BNS Companies <span class="st pending">Pending · Awaiting reply</span></div>
+            <div class="desc">Application demo for a real estate business and digital brand. An interactive GoHighLevel command center: buyer and seller pipelines with stage automations, a webinar registration funnel, and a reporting dashboard for lead source ROI, conversion, and campaign performance.</div>
+            <div class="meta"><span>Type · <b>Job application demo</b></span><span>Stack · <b>GoHighLevel · Funnels · Reporting</b></span><span>Status · <b>Awaiting client response</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/bns/command-center">Open demo →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/bns/command-center"><span class="e">🔗</span> Live Command Center</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="addnew"><span class="plus">⏳</span> Pending demos move up into <b style="color:var(--muted)">&nbsp;Clients&nbsp;</b> once Benjamin confirms the client responded or the deal is won.</div>
   </section>
 
   <footer>
