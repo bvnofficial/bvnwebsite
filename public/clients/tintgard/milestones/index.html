@@ -866,6 +866,12 @@ document.getElementById("updated").textContent = LAST_UPDATED;
 document.getElementById("expandAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
 document.getElementById("collapseAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.remove("open"));
 
+// ?expand — open every card and reveal everything (used for full-page captures/print)
+if(/[?&]expand/.test(location.search)){
+  document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
+  document.querySelectorAll(".reveal").forEach(el=>el.classList.add("in"));
+}
+
 (function(){
   "use strict";
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
