@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "STR AI Operating System (application)",
+    region: "Short term rental, hospitality",
+    scope: "AI Operating System Blueprint",
+    blurb:
+      "Interactive blueprint for an internal AI operating system: 8 department agents over a Supabase knowledge layer with vector search, a live assistant routing demo, role based security and guardrails, and a phased roadmap. Answers the post's how would you build it question.",
+    href: "/clients/str-hospitality/ai-operating-system",
+    status: "pending",
+    accent: C.purple,
+    tags: ["AI agents", "Supabase", "RAG", "Security"],
+  },
+  {
     name: "GHL User (application)",
     region: "GoHighLevel role, Eastern time",
     scope: "GHL Specialty Showcase",
