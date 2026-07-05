@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "GHL User (application)",
+    region: "GoHighLevel role, Eastern time",
+    scope: "GHL Specialty Showcase",
+    blurb:
+      "An interactive resume for a part time GoHighLevel role: years since 2019, full work history, reference ready builds, and a click through explorer of every GHL specialty from branching workflows and pipeline architecture to sub accounts, the GHL CLI, and AI voice.",
+    href: "/clients/ghl-user/specialty-showcase",
+    status: "pending",
+    accent: C.coral,
+    tags: ["GoHighLevel", "Specialty explorer", "Work history", "References"],
+  },
+  {
     name: "Moonstar Media",
     region: "Content agency, UK property",
     scope: "GHL + Meta Lead Funnel",
