@@ -1,0 +1,404 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight, ArrowUpRight, Trophy, Activity, CheckCircle2, Clock,
+  Layers, Globe, MapPin, Sparkles, LayoutDashboard,
+} from "lucide-react";
+
+// Brand tokens (BVN client-proposal palette)
+const C = {
+  bg: "#0A1120",
+  bg2: "#0E1830",
+  card: "#121E3A",
+  cardHi: "#16264A",
+  border: "#22324F",
+  ink: "#EAF1FC",
+  sub: "#9FB1D0",
+  muted: "#647697",
+  cyan: "#22D3EE",
+  green: "#34D399",
+  amber: "#FBBF24",
+  coral: "#FB923C",
+  purple: "#A78BFA",
+  blue: "#3B82F6",
+  rose: "#FB7185",
+  red: "#F87171",
+};
+
+type Status = "won" | "active" | "completed" | "pending";
+
+const STATUS: Record<Status, { label: string; color: string }> = {
+  won: { label: "Won", color: C.green },
+  active: { label: "Active Build", color: C.cyan },
+  completed: { label: "Delivered", color: C.blue },
+  pending: { label: "Pending", color: C.amber },
+};
+
+type Client = {
+  name: string;
+  region: string;
+  scope: string;
+  blurb: string;
+  href: string;
+  status: Status;
+  accent: string;
+  value?: string;
+  tags: string[];
+};
+
+const CLIENTS: Client[] = [
+  {
+    name: "Moonstar Media",
+    region: "Content agency, UK property",
+    scope: "GHL + Meta Lead Funnel",
+    blurb:
+      "Interactive lead funnel: Meta lead form to CRM, a live enquiry to won pipeline, a 5 step follow up sequence, booking flow, and a reporting dashboard for leads, booked calls, show up rate and conversion.",
+    href: "/clients/moonstar-media/lead-funnel",
+    status: "pending",
+    accent: C.blue,
+    tags: ["GoHighLevel", "Meta Lead Forms", "Funnel", "Reporting"],
+  },
+  {
+    name: "TintGard",
+    region: "Window tinting, Brisbane QLD",
+    scope: "GHL Workflow Build",
+    blurb:
+      "Flagship live build. Four pipelines, ServiceM8 to GHL sync via a custom webhook relay, A2P SMS, AI voice agent, review and affiliate engines.",
+    href: "/clients/tintgard/workflow",
+    status: "won",
+    accent: C.cyan,
+    value: "A$2,500 milestone",
+    tags: ["GoHighLevel", "ServiceM8", "Webhook relay", "AI voice"],
+  },
+  {
+    name: "Regal Care Homes",
+    region: "Residential care, Simi Valley CA",
+    scope: "GHL CRM Pitch",
+    blurb:
+      "Won on an interactive React pitch app. A 9 stage family inquiry pipeline, 13 workflows, 7 email batches, partner referral system, and an AI assistant.",
+    href: "/benjaminyson",
+    status: "won",
+    accent: C.green,
+    value: "$3,000 fixed",
+    tags: ["GoHighLevel", "RCFE compliance", "Pitch app"],
+  },
+  {
+    name: "Hypersonic Wholesale",
+    region: "Amazon FBA, Riverside Pet",
+    scope: "Automation Milestones",
+    blurb:
+      "Four automation engines from voice and knowledge capture to pipeline and PO plumbing, on a phased roadmap with a live build checklist.",
+    href: "/clients/hypersonic/milestones",
+    status: "active",
+    accent: C.blue,
+    value: "£500 scope + care",
+    tags: ["GoHighLevel", "Notion", "Fathom", "WhatsApp API"],
+  },
+  {
+    name: "Warm Up Guys",
+    region: "Comedy tour team",
+    scope: "Inbound SMS Workflow",
+    blurb:
+      "Paid task delivered. Inbound texts become complete contact records with location captured naturally, no forms, all inside GoHighLevel.",
+    href: "/clients/warmupguys/smsworkflow-paidtask",
+    status: "completed",
+    accent: C.coral,
+    tags: ["GoHighLevel", "SMS", "Geo capture"],
+  },
+  {
+    name: "Referral Pro",
+    region: "Agent referral network",
+    scope: "Agent Portal Demo",
+    blurb:
+      "A working WordPress agent referral portal: secure per agent dashboards, Clio status sync, year to date 1099 totals, and a Twilio SMS on Hired.",
+    href: "/clients/referral-pro/portal",
+    status: "pending",
+    accent: C.blue,
+    tags: ["WordPress", "Clio", "Twilio"],
+  },
+  {
+    name: "Smart Forms",
+    region: "Lead capture",
+    scope: "AI Guided Form Flow",
+    blurb:
+      "A multi step form flow with conditional logic and a live AI step that generates a tailored plan, built in WordPress with the OpenAI API.",
+    href: "/clients/smart-forms/flow",
+    status: "pending",
+    accent: C.purple,
+    tags: ["WordPress", "Elementor", "OpenAI"],
+  },
+  {
+    name: "Evolving Financial Solutions",
+    region: "Financial services",
+    scope: "GHL Journey Blueprint",
+    blurb:
+      "The full client journey from first lead to long term member, the automations and AI at each stage, a Skool membership flow, and a 90 day roadmap.",
+    href: "/clients/efs/blueprint",
+    status: "pending",
+    accent: C.green,
+    tags: ["GoHighLevel", "Skool", "SOPs"],
+  },
+  {
+    name: "The BNS Companies",
+    region: "Real estate",
+    scope: "Real Estate Command Center",
+    blurb:
+      "Buyer and seller pipelines, an event and webinar registration funnel with reminder automations, and a lead source ROI reporting dashboard.",
+    href: "/clients/bns/command-center",
+    status: "pending",
+    accent: C.amber,
+    tags: ["GoHighLevel", "Funnels", "Reporting"],
+  },
+  {
+    name: "PsyFortis & Advanced Aesthetics",
+    region: "Two brand academy",
+    scope: "Course Experience Demo",
+    blurb:
+      "A sample course and membership learner experience for two brands in one environment: clean brand separation, modules, resources, and progress tracking.",
+    href: "/clients/psyfortis-aaa/courses",
+    status: "pending",
+    accent: C.rose,
+    tags: ["GoHighLevel", "Memberships", "Courses"],
+  },
+];
+
+const FILTERS: { key: Status | "all"; label: string; icon: typeof Trophy }[] = [
+  { key: "all", label: "All", icon: Layers },
+  { key: "won", label: "Won", icon: Trophy },
+  { key: "active", label: "Active", icon: Activity },
+  { key: "completed", label: "Delivered", icon: CheckCircle2 },
+  { key: "pending", label: "Pending", icon: Clock },
+];
+
+export default function CommandCenterClient() {
+  const [filter, setFilter] = useState<Status | "all">("all");
+
+  const stats = useMemo(() => {
+    const by = (s: Status) => CLIENTS.filter((c) => c.status === s).length;
+    return {
+      total: CLIENTS.length,
+      won: by("won"),
+      active: by("active"),
+      pending: by("pending"),
+    };
+  }, []);
+
+  const shown = useMemo(
+    () => (filter === "all" ? CLIENTS : CLIENTS.filter((c) => c.status === filter)),
+    [filter],
+  );
+
+  return (
+    <div style={{ background: C.bg, color: C.ink, minHeight: "100vh" }}>
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "72px 22px 96px" }}>
+        {/* Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              fontSize: 12, fontWeight: 700, letterSpacing: 1.4, textTransform: "uppercase",
+              color: C.coral, background: "rgba(251,146,60,0.10)",
+              border: `1px solid ${C.border}`, borderRadius: 999, padding: "6px 14px",
+            }}
+          >
+            <LayoutDashboard size={14} /> BVN Command Center
+          </div>
+          <h1 style={{ fontSize: 40, fontWeight: 800, lineHeight: 1.08, margin: "18px 0 12px", letterSpacing: -0.5 }}>
+            Every build, in one place.
+          </h1>
+          <p style={{ fontSize: 17, color: C.sub, maxWidth: 660, lineHeight: 1.6 }}>
+            Live builds, paid tasks, and interactive application demos. Each one is a real, working
+            system you can open and click through. Pending items are awaiting the client go ahead.
+          </p>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.08 }}
+          style={{
+            display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+            gap: 14, margin: "34px 0 26px",
+          }}
+        >
+          {[
+            { label: "Total builds", value: stats.total, color: C.ink },
+            { label: "Won", value: stats.won, color: C.green },
+            { label: "Active", value: stats.active, color: C.cyan },
+            { label: "Pending", value: stats.pending, color: C.amber },
+          ].map((s) => (
+            <div
+              key={s.label}
+              style={{
+                background: C.card, border: `1px solid ${C.border}`,
+                borderRadius: 16, padding: "18px 20px",
+              }}
+            >
+              <div style={{ fontSize: 30, fontWeight: 800, color: s.color }}>{s.value}</div>
+              <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{s.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Filters */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 26 }}>
+          {FILTERS.map(({ key, label, icon: Icon }) => {
+            const on = filter === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 7,
+                  fontSize: 13, fontWeight: 700, cursor: "pointer",
+                  color: on ? C.bg : C.sub,
+                  background: on ? C.coral : C.card,
+                  border: `1px solid ${on ? C.coral : C.border}`,
+                  borderRadius: 999, padding: "8px 15px", transition: "all 0.18s",
+                }}
+              >
+                <Icon size={14} /> {label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Grid */}
+        <motion.div
+          layout
+          style={{
+            display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+            gap: 18,
+          }}
+        >
+          <AnimatePresence mode="popLayout">
+            {shown.map((c) => {
+              const st = STATUS[c.status];
+              return (
+                <motion.div
+                  key={c.name}
+                  layout
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.22 }}
+                >
+                  <Link href={c.href} style={{ textDecoration: "none" }}>
+                    <div
+                      className="cc-card"
+                      style={{
+                        position: "relative", height: "100%",
+                        background: C.card, border: `1px solid ${C.border}`,
+                        borderRadius: 18, padding: "20px 20px 18px",
+                        display: "flex", flexDirection: "column",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute", top: 0, left: 0, right: 0, height: 3,
+                          background: c.accent, opacity: 0.9,
+                        }}
+                      />
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
+                        <div>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: c.accent, textTransform: "uppercase", letterSpacing: 0.8 }}>
+                            {c.scope}
+                          </div>
+                          <div style={{ fontSize: 19, fontWeight: 800, color: C.ink, marginTop: 4 }}>
+                            {c.name}
+                          </div>
+                        </div>
+                        <span
+                          style={{
+                            flexShrink: 0, fontSize: 11, fontWeight: 800, color: st.color,
+                            background: "rgba(255,255,255,0.04)",
+                            border: `1px solid ${st.color}`, borderRadius: 999, padding: "4px 10px",
+                          }}
+                        >
+                          {st.label}
+                        </span>
+                      </div>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: 12.5, marginTop: 8 }}>
+                        <MapPin size={13} /> {c.region}
+                      </div>
+
+                      <p style={{ fontSize: 13.5, color: C.sub, lineHeight: 1.55, margin: "12px 0 14px", flexGrow: 1 }}>
+                        {c.blurb}
+                      </p>
+
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+                        {c.tags.map((t) => (
+                          <span
+                            key={t}
+                            style={{
+                              fontSize: 11, fontWeight: 600, color: C.sub,
+                              background: C.cardHi, border: `1px solid ${C.border}`,
+                              borderRadius: 7, padding: "3px 8px",
+                            }}
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${C.border}`, paddingTop: 12 }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: c.value ? C.ink : C.muted }}>
+                          {c.value ?? "Demo"}
+                        </span>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700, color: c.accent }}>
+                          Open <ArrowUpRight size={14} />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Footer note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          style={{
+            marginTop: 40, padding: "20px 22px", borderRadius: 16,
+            background: C.bg2, border: `1px solid ${C.border}`,
+            display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap",
+          }}
+        >
+          <Sparkles size={18} color={C.coral} />
+          <span style={{ fontSize: 13.5, color: C.sub }}>
+            Every demo here was built and deployed by one person, Benjamin Yson, end to end.
+          </span>
+          <Link
+            href="/benjaminyson"
+            style={{
+              marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6,
+              fontSize: 13, fontWeight: 700, color: C.ink, textDecoration: "none",
+              background: C.coral, borderRadius: 999, padding: "9px 16px",
+            }}
+          >
+            View portfolio <ArrowRight size={14} />
+          </Link>
+        </motion.div>
+      </div>
+
+      <style>{`
+        .cc-card { transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease; }
+        .cc-card:hover { transform: translateY(-4px); border-color: ${C.coral}; box-shadow: 0 18px 40px -18px rgba(0,0,0,0.7); }
+      `}</style>
+    </div>
+  );
+}
