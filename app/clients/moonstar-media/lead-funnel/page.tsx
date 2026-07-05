@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Facebook, Zap, GitBranch, CalendarCheck, Repeat, Trophy,
-  MessageSquare, Mail, Phone, ArrowRight, ArrowUpRight, RotateCcw,
+  MessageSquare, Mail, Phone, ArrowRight, RotateCcw,
   Users, PhoneCall, UserCheck, Percent, TrendingUp, MapPin, Building2,
   CheckCircle2, Sparkles, Clock, BarChart3, Send,
 } from "lucide-react";
@@ -371,9 +371,9 @@ export default function MoonstarLeadFunnel() {
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "40px 22px 100px" }}>
         {/* Top bar */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 34 }}>
-          <Link href="/clients" style={{ display: "inline-flex", alignItems: "center", gap: 7, color: C.sub, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
-            <ArrowLeft size={15} /> Command Center
-          </Link>
+          <a href="https://www.bvnofficial.com" style={{ display: "inline-flex", alignItems: "center", gap: 7, color: C.sub, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+            <ArrowLeft size={15} /> BVN Official
+          </a>
           <span style={{ fontSize: 11.5, fontWeight: 700, color: C.coral, background: "rgba(251,146,60,0.10)", border: `1px solid ${C.border}`, borderRadius: 999, padding: "5px 12px" }}>
             Built for your application
           </span>
@@ -457,9 +457,6 @@ export default function MoonstarLeadFunnel() {
             booked call to the report. That is why the first project moves fast and nothing gets lost in translation.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 20 }}>
-            <Link href="/clients/tintgard/workflow" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: C.ink, textDecoration: "none", background: C.card, border: `1px solid ${C.border}`, borderRadius: 999, padding: "10px 16px" }}>
-              See a real live build <ArrowUpRight size={14} />
-            </Link>
             <Link href="/benjaminyson" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: C.bg, textDecoration: "none", background: C.coral, borderRadius: 999, padding: "10px 16px" }}>
               Portfolio and CV <ArrowRight size={14} />
             </Link>
