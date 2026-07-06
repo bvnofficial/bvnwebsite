@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "GHL Specialist (application)",
+    region: "GHL agency role, U.S. founder",
+    scope: "Cross Platform Automation Stack",
+    blurb:
+      "Interactive automation stack: a lead's journey across GHL, n8n, Instantly, Stripe, Google Workspace, and Facebook Lead Ads, an integrations explorer for webhooks, API keys and JSON, and a reliability panel hitting the post's no loops, no double fires success criteria.",
+    href: "/clients/ghl-specialist/automation-stack",
+    status: "pending",
+    accent: C.coral,
+    tags: ["GoHighLevel", "n8n", "Instantly", "Webhooks"],
+  },
+  {
     name: "STR AI Operating System (application)",
     region: "Short term rental, hospitality",
     scope: "AI Operating System Blueprint",
