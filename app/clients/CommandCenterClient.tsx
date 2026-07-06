@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Our Home Care Solutions (application)",
+    region: "Home care agency, GHL",
+    scope: "Recruiting and Onboarding CRM",
+    blurb:
+      "Interactive GHL recruiting and onboarding CRM: a live 13 stage recruitment pipeline board you advance applicants through with automation firing at each stage, the employee management, referral and internal task pipelines, the CRM foundation, and the onboarding and compliance flow, backed by real care operator GHL screenshots.",
+    href: "/clients/our-home-care/recruiting-crm",
+    status: "pending",
+    accent: C.blue,
+    tags: ["GoHighLevel", "Recruitment", "Onboarding", "Healthcare"],
+  },
+  {
     name: "StretchTo.You (application)",
     region: "Mobile stretching startup",
     scope: "SaaS Platform Prototype",
