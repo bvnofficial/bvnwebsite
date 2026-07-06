@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Webinar Ops GHL Specialist (application)",
+    region: "GHL + Claude Code role",
+    scope: "Webinar Operations Command Center",
+    blurb:
+      "Interactive webinar engine: the full GHL sequence from registration to confirmation, reminders, live, the attended and no show branch, and re engagement, plus a performance dashboard. Built with Claude Code, so it answers both the webinar and the AI build questions.",
+    href: "/clients/webinar-ops/command-center",
+    status: "pending",
+    accent: C.purple,
+    tags: ["GoHighLevel", "Webinars", "Claude Code", "Reporting"],
+  },
+  {
     name: "Yorkshire Canine Academy (application)",
     region: "Dog training business, UK",
     scope: "Weekly Ops and Performance Report",
