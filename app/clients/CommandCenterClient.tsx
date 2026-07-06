@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Yorkshire Canine Academy (application)",
+    region: "Dog training business, UK",
+    scope: "Weekly Ops and Performance Report",
+    blurb:
+      "Interactive weekly report and ops dashboard: campaign performance, email sequence open/click/conversion, a closer leaderboard, deliverability flags, plus GHL to Airtable automation health and the Airtable CRM base. Doubles as the sample weekly report the post asked for.",
+    href: "/clients/yorkshire-canine-academy/weekly-ops-report",
+    status: "pending",
+    accent: C.amber,
+    tags: ["GoHighLevel", "Airtable", "Make/Zapier", "Reporting"],
+  },
+  {
     name: "Our Home Care Solutions (application)",
     region: "Home care agency, GHL",
     scope: "Recruiting and Onboarding CRM",
