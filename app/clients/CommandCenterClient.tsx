@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "StretchTo.You (application)",
+    region: "Mobile stretching startup",
+    scope: "SaaS Platform Prototype",
+    blurb:
+      "Interactive product prototype: a live credit based membership dashboard where completing a session deducts a credit, a tap to pay flow tied to memberships, a recommended stack, customer, therapist and admin portals, and the future two app multi city marketplace vision.",
+    href: "/clients/stretchto-you/platform-prototype",
+    status: "pending",
+    accent: C.rose,
+    tags: ["SaaS", "Next.js", "Supabase", "Stripe"],
+  },
+  {
     name: "Business Results Mastery (application)",
     region: "GHL agency, Canada",
     scope: "GHL Build System",
