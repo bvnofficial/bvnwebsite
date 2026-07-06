@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "PRYNT Digital (application)",
+    region: "US marketing agency, PH team",
+    scope: "SEO and AI Search Visibility",
+    blurb:
+      "Interactive SEO showcase: an on page, technical, local, and AI search audit with scores, a monthly SEO reporting dashboard, the full GHL match, and an honest note on Duda. Leans on real AI search optimization work.",
+    href: "/clients/prynt-digital/seo-ai-search",
+    status: "pending",
+    accent: C.green,
+    tags: ["SEO", "AI search", "GoHighLevel", "Reporting"],
+  },
+  {
     name: "Webinar Ops GHL Specialist (application)",
     region: "GHL + Claude Code role",
     scope: "Webinar Operations Command Center",
