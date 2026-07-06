@@ -266,9 +266,9 @@ const GHL = [
 export default function PryntSeoAiSearch() {
   const heroStats = useMemo(
     () => [
+      { k: "Duda", v: "2 years" },
       { k: "GHL since", v: "2019" },
-      { k: "SEO", v: "on page · tech · local" },
-      { k: "Edge", v: "AI search" },
+      { k: "SEO edge", v: "AI search" },
       { k: "Built by", v: "one person" },
     ],
     [],
@@ -340,18 +340,19 @@ export default function PryntSeoAiSearch() {
           </div>
         </Section>
 
-        <Section eyebrow="On the web build" title="Straight about Duda" sub="I want to be upfront, because you value people who show real work.">
+        <Section eyebrow="On the web build" title="Two years on Duda, and a coder underneath" sub="Web is your primary need, so here is exactly where I stand on it.">
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderLeft: `3px solid ${C.blue}`, borderRadius: 14, padding: "20px 20px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
               <Globe size={18} color={C.blue} />
-              <span style={{ fontSize: 15.5, fontWeight: 800, color: C.ink }}>Multi platform builder, quick on a new one</span>
+              <span style={{ fontSize: 15.5, fontWeight: 800, color: C.ink }}>Duda, with a coding toolkit behind it</span>
             </div>
             <p style={{ fontSize: 13.5, color: C.sub, margin: 0, lineHeight: 1.6 }}>
-              I have not built on Duda specifically, so I will not pretend otherwise. What I bring is years of
-              building clean, modern, fast sites on WordPress, React, Next.js, and Shopify, including this page.
-              Duda is a visual builder, and someone who codes sites by hand picks it up in days, not months. You
-              would get a builder who understands what is under the hood, paired with a GHL and SEO skill set
-              that is already exactly what you described.
+              I have built on Duda for two years, informational sites, ecommerce, and custom layouts, with the
+              fast turnaround and clean execution you are after. It is drag and drop, close to WordPress and Wix,
+              so I move quickly in it. What sets me apart is what sits underneath: I also build by hand in
+              WordPress, React, Next.js, and Shopify, including this page, so when a Duda build needs custom code
+              or a tricky fix, I am not stuck. A fast Duda builder who actually understands the web, paired with a
+              GHL and SEO skill set that is already exactly what you described.
             </p>
           </div>
         </Section>
