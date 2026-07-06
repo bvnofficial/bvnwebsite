@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Business Results Mastery (application)",
+    region: "GHL agency, Canada",
+    scope: "GHL Build System",
+    blurb:
+      "Interactive agency build system: empty sub account to live via snapshots, A2P + deliverability, AI booking, list hygiene, conversion tracking, Meta sync and reporting, plus a deliverability and A2P rejection playbook and the real Regal GHL screenshots.",
+    href: "/clients/business-results-mastery/ghl-build-system",
+    status: "pending",
+    accent: C.green,
+    tags: ["GoHighLevel", "Snapshots", "A2P", "Deliverability"],
+  },
+  {
     name: "GHL Specialist (application)",
     region: "GHL agency role, U.S. founder",
     scope: "Cross Platform Automation Stack",
