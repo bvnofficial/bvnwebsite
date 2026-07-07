@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Automation Ops Architect (application)",
+    region: "Workflow automation biz, Australia",
+    scope: "Business Operating System",
+    blurb:
+      "Interactive operating system blueprint for a workflow automation agency: a live ROI and time savings calculator, the sprint delivery pipeline from discovery to QA, an opportunity scoring framework, the company structure and roles, the ops hub, and the B2B setter/closer pipeline.",
+    href: "/clients/automation-ops/operating-system",
+    status: "pending",
+    accent: C.coral,
+    tags: ["Operations", "Systems design", "ROI", "SOPs"],
+  },
+  {
     name: "PRYNT Digital (application)",
     region: "US marketing agency, PH team",
     scope: "SEO and AI Search Visibility",
