@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Land Finance Lead Engine (application)",
+    region: "Real estate finance, US",
+    scope: "GHL Lead Lifecycle Engine",
+    blurb:
+      "Interactive lead lifecycle: cold email from Instantly into GHL, tagging and segmentation, speed to lead, multi step nurture, and three clean exits (converted, disqualified, long term nurture) so no lead hits a dead end, plus a lead flow monitor. Built with Claude Code.",
+    href: "/clients/land-finance/lead-engine",
+    status: "pending",
+    accent: C.green,
+    tags: ["GoHighLevel", "Lead lifecycle", "Instantly", "Claude Code"],
+  },
+  {
     name: "Automation Ops Architect (application)",
     region: "Workflow automation biz, Australia",
     scope: "Business Operating System",
