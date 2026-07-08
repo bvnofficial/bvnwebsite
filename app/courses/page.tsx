@@ -19,6 +19,7 @@ import HeroSection from "@/components/ui/HeroSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { courses, colorStyles } from "@/lib/courses";
 import { CourseProgressBadge } from "@/components/ui/CourseProgressBadge";
+import JobsSlackCTA from "@/components/ui/JobsSlackCTA";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 32 },
@@ -398,6 +399,9 @@ export default function CoursesPage() {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* VA Job Board — Slack invite */}
+      <JobsSlackCTA />
 
       {/* CTA */}
       <motion.section

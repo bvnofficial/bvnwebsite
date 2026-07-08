@@ -129,6 +129,7 @@ function result(){
     <div class="rBlurb">${top.b}</div>
     <a class="rCta" href="https://www.bvnofficial.com/courses/${top.slug}" target="_blank">Start the free course →</a>
     <a class="rCta ghost" href="https://www.bvnofficial.com/courses" target="_blank">Browse all 24 courses</a>
+    <a class="rCta ghost" href="https://join.slack.com/t/bvnofficial/shared_invite/zt-42zfx8bp2-yOPi8uiPCzUb5p~mXrYTmw" target="_blank">💼 Get hired — join our VA Job Board on Slack</a>
     ${runners.length?`<div class="runner"><h3>Also a strong fit</h3>
       ${runners.map(r=>`<a class="rr" href="https://www.bvnofficial.com/courses/${r.slug}" target="_blank"><span>${r.e} ${r.n}</span><span class="go">View →</span></a>`).join("")}</div>`:""}
     <button class="restart" onclick="restart()">↺ Retake quiz</button>

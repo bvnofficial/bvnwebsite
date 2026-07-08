@@ -5,6 +5,7 @@ import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, 
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ShareButtons from "@/components/ui/ShareButtons";
+import JobsSlackCTA from "@/components/ui/JobsSlackCTA";
 
 const apps = [
   {
@@ -381,6 +382,9 @@ export default function AppsPage() {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* VA Job Board — Slack invite */}
+      <JobsSlackCTA />
     </>
   );
 }
