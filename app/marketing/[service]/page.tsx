@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { marketingServices, getMarketingService } from "@/lib/marketing-services";
 import { ogImage } from "@/lib/og";
-import { breadcrumbSchema, serviceSchema, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbSchema, serviceSchema, faqSchema, jsonLdScript } from "@/lib/jsonld";
+import { buildServiceFaqs } from "@/lib/service-faqs";
+import ServiceFAQ from "@/components/ui/ServiceFAQ";
 import ServicePageClient from "./ServicePageClient";
 
 export async function generateStaticParams() {
@@ -45,12 +47,16 @@ export default function MarketingServicePage({ params }: { params: { service: st
     path,
     category: "Digital Marketing",
   });
+  const faqs = buildServiceFaqs(service, "Marketing");
+  const faqLd = faqSchema(faqs);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(serviceLd)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumb)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqLd)} />
       <ServicePageClient service={service} />
+      <ServiceFAQ faqs={faqs} accent="orange" heading={`${service.title} — FAQs`} />
     </>
   );
 }

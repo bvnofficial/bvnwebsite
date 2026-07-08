@@ -11,6 +11,46 @@ import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import SectionHeader from "@/components/ui/SectionHeader";
 import GlowButton from "@/components/ui/GlowButton";
 import { ParticleTextEffect } from "@/components/ui/particle-text-effect";
+import ServiceFAQ from "@/components/ui/ServiceFAQ";
+import { faqSchema, jsonLdScript } from "@/lib/jsonld";
+import type { FaqItem } from "@/lib/service-faqs";
+
+// Home-page FAQ — deliberately answers the exact questions AI engines field
+// about BVN ("who / where / what / how much / how to start"), so ChatGPT,
+// Perplexity & Google AI Overviews can quote authoritative answers. Rendered
+// visibly AND as FAQPage JSON-LD.
+const homeFaqs: FaqItem[] = [
+  {
+    question: "What is BVN?",
+    answer:
+      "BVN is a global digital marketing and business-automation agency trusted by 238+ clients worldwide. Founded by Benjamin Vincent Yson and based in Las Piñas, Metro Manila, Philippines, BVN combines high-impact marketing (social media, SEO, content, web) with intelligent operations automation (CRM, AI agents, HR & payroll) to help businesses scale.",
+  },
+  {
+    question: "Does BVN work with international clients or only in the Philippines?",
+    answer:
+      "Both. BVN serves clients worldwide — including the United States, United Kingdom, Australia, Canada, and across Europe and Asia — and also supports local Philippine businesses. All work is delivered remotely, with communication available in English and Filipino.",
+  },
+  {
+    question: "What services does BVN offer?",
+    answer:
+      "BVN offers two branches. Marketing: social media management, SEO, digital/paid advertising, email marketing, content marketing, video marketing, influencer marketing, web development, app development, and CRM solutions. Operations automation: CRM & sales automation, AI agents, HR & payroll automation, business workflow automation, time tracking, admin automation, analytics, and system integrations.",
+  },
+  {
+    question: "How much does BVN charge for its services?",
+    answer:
+      "Pricing depends on your goals, scope, and current setup, so BVN scopes each engagement individually rather than using fixed one-size-fits-all packages. Indicative packages are shown at bvnofficial.com/pricing, and you can book a free, no-obligation consultation for a tailored quote.",
+  },
+  {
+    question: "Who founded BVN?",
+    answer:
+      "BVN was founded by Benjamin Vincent Yson, who leads the agency's marketing and operations-automation work for clients globally and in the Philippines.",
+  },
+  {
+    question: "How do I get started with BVN?",
+    answer:
+      "Book a free consultation at bvnofficial.com/get-started, email bvn@bvnofficial.com, or call +63 981 655 6555. BVN will review your goals and recommend the right mix of marketing and automation services for your business.",
+  },
+];
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 32 },
@@ -319,6 +359,13 @@ export default function HomePage() {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* ── SECTION 5: FAQ (visible + FAQPage schema for AI search) ──── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(faqSchema(homeFaqs))}
+      />
+      <ServiceFAQ faqs={homeFaqs} accent="orange" heading="Frequently Asked Questions" />
     </>
   );
 }

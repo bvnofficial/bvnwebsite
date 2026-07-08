@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import QRCode from "qrcode";
 import { createAdminClient } from "@/utils/supabase/admin";
 import type { CompletionRow } from "@/lib/certificate";
 import { BVN_LOGO_PNG_BASE64, BVN_LOGO_WIDTH, BVN_LOGO_HEIGHT } from "@/lib/bvn-logo";
@@ -65,6 +66,17 @@ export async function GET(
     x: 34, y: 34, width: W - 68, height: H - 68,
     borderColor: ORANGE, borderWidth: 1,
   });
+
+  // ── Ornamental corner flourishes ──
+  const corner = (cx: number, cy: number, dx: number, dy: number) => {
+    page.drawLine({ start: { x: cx, y: cy }, end: { x: cx + dx * 34, y: cy }, thickness: 2, color: ORANGE });
+    page.drawLine({ start: { x: cx, y: cy }, end: { x: cx, y: cy + dy * 34 }, thickness: 2, color: ORANGE });
+    page.drawCircle({ x: cx, y: cy, size: 3, color: GOLD });
+  };
+  corner(48, H - 48, 1, -1);
+  corner(W - 48, H - 48, -1, -1);
+  corner(48, 48, 1, 1);
+  corner(W - 48, 48, -1, 1);
 
   // ── BVN logo (centered, top) ──
   const logoImg = await pdf.embedPng(Buffer.from(BVN_LOGO_PNG_BASE64, "base64"));
@@ -145,11 +157,37 @@ export async function GET(
   const signRole = "Founder, BVN Digital Agency";
   page.drawText(signRole, { x: W - 130 - helv.widthOfTextAtSize(signRole, 10), y: 128, size: 10, font: helv, color: MUTED });
 
+  // ── Gold seal medallion (center) ──
+  const sealX = W / 2;
+  const sealY = 120;
+  // scalloped edge
+  for (let i = 0; i < 24; i++) {
+    const a = (i / 24) * Math.PI * 2;
+    page.drawCircle({ x: sealX + Math.cos(a) * 34, y: sealY + Math.sin(a) * 34, size: 4, color: GOLD });
+  }
+  page.drawCircle({ x: sealX, y: sealY, size: 33, color: GOLD });
+  page.drawCircle({ x: sealX, y: sealY, size: 33, borderColor: rgb(0.76, 0.25, 0.05), borderWidth: 1.5 });
+  page.drawCircle({ x: sealX, y: sealY, size: 26, color: NAVY });
+  page.drawCircle({ x: sealX, y: sealY, size: 26, borderColor: GOLD, borderWidth: 1 });
+  page.drawText("BVN", { x: sealX - timesBold.widthOfTextAtSize("BVN", 15) / 2, y: sealY - 2, size: 15, font: timesBold, color: GOLD });
+  page.drawText("CERTIFIED", { x: sealX - helvBold.widthOfTextAtSize("CERTIFIED", 6) / 2, y: sealY - 14, size: 6, font: helvBold, color: rgb(1, 1, 1) });
+  // ribbon tails
+  page.drawLine({ start: { x: sealX - 10, y: sealY - 30 }, end: { x: sealX - 16, y: sealY - 52 }, thickness: 8, color: ORANGE });
+  page.drawLine({ start: { x: sealX + 10, y: sealY - 30 }, end: { x: sealX + 16, y: sealY - 52 }, thickness: 8, color: rgb(0.76, 0.25, 0.05) });
+
+  // ── Verification QR (bottom-left, inside frame) ──
+  const verifyLink = `https://www.bvnofficial.com/certificate/${row.id}`;
+  const qrPng = await QRCode.toBuffer(verifyLink, { margin: 0, width: 200, errorCorrectionLevel: "M" });
+  const qrImg = await pdf.embedPng(qrPng);
+  const qrSize = 58;
+  page.drawImage(qrImg, { x: 60, y: 52, width: qrSize, height: qrSize });
+  page.drawText("Scan to verify", { x: 60, y: 42, size: 7, font: helv, color: MUTED });
+
   // ── Footer: verification ──
   const verify = `Certificate ID: ${row.id}`;
   page.drawText(verify, {
     x: center(verify, helv, 9), y: 70,
-    size: 9, font: helv, color: MUTED,
+    size: 9, font: helvBold, color: INK,
   });
   const verifyUrl = `Verify at bvnofficial.com/certificate/${row.id}`;
   page.drawText(verifyUrl, {

@@ -28,8 +28,8 @@ export const organizationSchema = {
   logo: {
     "@type": "ImageObject",
     url: `${SITE_URL}/bvn-logo.png`,
-    width: 512,
-    height: 512,
+    width: 1200,
+    height: 839,
   },
   image: `${SITE_URL}/bvn-logo.png`,
   description:

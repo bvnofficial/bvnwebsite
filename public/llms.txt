@@ -1,0 +1,62 @@
+# BVN — Global Marketing & Operations Automation Agency
+
+> BVN is a global digital marketing and business automation agency trusted by 238+ clients worldwide, founded by Benjamin Vincent Yson and based in Las Piñas, Metro Manila, Philippines. BVN helps businesses scale through marketing excellence (social media, SEO, content, web) and intelligent operations automation (CRM, AI agents, HR & payroll) — serving clients internationally and locally in the Philippines. Contact: bvn@bvnofficial.com | +63-981-655-6555.
+
+## Start here
+
+- [Home](https://www.bvnofficial.com/): Overview of BVN's marketing + operations automation services.
+- [About BVN](https://www.bvnofficial.com/about): Who we are, our story, and the results we deliver.
+- [Get Started](https://www.bvnofficial.com/get-started): How to begin working with BVN.
+- [Pricing](https://www.bvnofficial.com/pricing): Service packages and pricing tiers.
+- [Contact](https://www.bvnofficial.com/contact): Reach the BVN team.
+- [Benjamin Vincent Yson](https://www.bvnofficial.com/benjaminyson): Founder profile and background.
+
+## Marketing services
+
+- [Marketing hub](https://www.bvnofficial.com/marketing): All marketing services overview.
+- [Social Media Management](https://www.bvnofficial.com/marketing/social-media-management): Full-service social media strategy, content, and management.
+- [Digital Marketing](https://www.bvnofficial.com/marketing/digital-marketing): Multi-channel digital marketing campaigns.
+- [SEO](https://www.bvnofficial.com/marketing/seo): Search engine optimization to grow organic traffic.
+- [Email Marketing](https://www.bvnofficial.com/marketing/email-marketing): Email campaigns and automation.
+- [Content Marketing](https://www.bvnofficial.com/marketing/content-marketing): Content strategy and creation.
+- [Video Marketing](https://www.bvnofficial.com/marketing/video-marketing): Video content and campaigns.
+- [Influencer Marketing](https://www.bvnofficial.com/marketing/influencer-marketing): Influencer partnerships and campaigns.
+- [Web Development](https://www.bvnofficial.com/marketing/web-development): Custom website design and development.
+- [App Development](https://www.bvnofficial.com/marketing/app-development): Mobile and web app development.
+- [CRM Solutions](https://www.bvnofficial.com/marketing/crm-solutions): CRM setup and management.
+
+## Operations & automation services
+
+- [Operations hub](https://www.bvnofficial.com/operations): All operations automation services overview.
+- [CRM Automation](https://www.bvnofficial.com/operations/crm-automation): Automated pipelines, follow-up, and lead nurturing.
+- [AI Agents](https://www.bvnofficial.com/operations/ai-agents): Custom AI agents and chatbots for business.
+- [HR & Payroll Automation](https://www.bvnofficial.com/operations/hr-payroll): Automated HR workflows and payroll.
+- [Operations Automation](https://www.bvnofficial.com/operations/operations-automation): Business process automation.
+- [Time Tracking](https://www.bvnofficial.com/operations/time-tracking): Time tracking and productivity systems.
+- [Admin Automation](https://www.bvnofficial.com/operations/admin-automation): Automated administrative workflows.
+- [Analytics](https://www.bvnofficial.com/operations/analytics): Reporting and business analytics.
+- [Integrations](https://www.bvnofficial.com/operations/integrations): Connecting tools and systems.
+
+## Courses (VA training)
+
+- [Courses hub](https://www.bvnofficial.com/courses): Virtual assistant training courses.
+- [VA Quick Start](https://www.bvnofficial.com/courses/va-quick-start)
+- [AI Automation VA](https://www.bvnofficial.com/courses/ai-automation-va)
+- [Social Media Management VA](https://www.bvnofficial.com/courses/social-media-management-va)
+- [GoHighLevel VA](https://www.bvnofficial.com/courses/gohighlevel-va)
+- [E-commerce VA](https://www.bvnofficial.com/courses/ecommerce-va)
+- [Executive Operations VA](https://www.bvnofficial.com/courses/executive-operations-va)
+- [Content Writing & SEO VA](https://www.bvnofficial.com/courses/content-writing-seo-va)
+- [Paid Ads VA](https://www.bvnofficial.com/courses/paid-ads-va)
+
+## Free tools
+
+- [Free tools hub](https://www.bvnofficial.com/apps): Free business, finance, and marketing calculators and generators.
+
+## Blog
+
+- [Blog](https://www.bvnofficial.com/blog): Articles on marketing, automation, and growing a business.
+
+## Optional
+
+- [Sitemap](https://www.bvnofficial.com/sitemap.xml): Full machine-readable list of all indexable pages.
