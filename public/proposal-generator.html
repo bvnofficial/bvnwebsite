@@ -59,6 +59,11 @@
   .d-sign{margin-top:34px;display:flex;justify-content:space-between;gap:30px;}
   .d-sign .s{flex:1;} .d-sign .ln{border-top:1px solid #999;margin-top:34px;padding-top:5px;font-size:11.5px;color:#888;}
   .foot{text-align:center;color:rgba(255,255,255,.4);font-size:11px;margin-top:18px;} .foot a{color:rgba(255,255,255,.6);}
+  .proTag{ display:none; align-items:center; gap:4px; background:linear-gradient(90deg,#E86010,#f5a623); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:.04em; padding:6px 10px; border-radius:20px; }
+  .doc-brand{ text-align:center; font-size:9.5px; color:#b8bcc8; margin-top:26px; padding-top:11px; border-top:1px solid #eee; letter-spacing:.03em; }
+  .doc-brand b{ color:var(--accent); }
+  .paper.premium .d-title,.paper.premium .d-sec h2{ font-family:Georgia,'Times New Roman',serif; }
+  .paper.premium .d-title{ letter-spacing:0; }
   @media(max-width:900px){.app{flex-direction:column;}.editor{width:100%;max-width:none;height:auto;border-right:none;border-bottom:1px solid var(--line);}.preview{height:auto;}.toolbar{position:static;margin:0 0 16px;width:100%;border-radius:10px;border:1px solid var(--line);}.d-pkgs{grid-template-columns:1fr;}}
   @media print{@page{margin:0;}.editor,.toolbar,.foot{display:none !important;}.preview{padding:0;height:auto;overflow:visible;background:#fff;display:block;}.paper{box-shadow:none;border-radius:0;max-width:none;padding:38px 44px;min-height:auto;}}
 </style>
@@ -111,6 +116,8 @@
       <button class="btn primary" onclick="window.print()">⬇ Download PDF</button>
       <button class="btn ghost" onclick="downloadHTML()">⬇ Download HTML</button>
       <button class="btn ghost" onclick="resetAll()">↺ Reset</button>
+      <button class="btn ghost" id="proBtn" onclick="proAction()">✨ Unlock Premium</button>
+      <span class="proTag" id="proTag">PRO ✓</span>
       <span class="saved" id="saved">Saved ✓</span>
     </div>
     <div class="paper" id="paper"></div>
@@ -183,9 +190,21 @@ function render(){
     ${pkg?`<div class="d-sec"><h2>Investment</h2><div class="d-pkgs">${pkg}</div></div>`:""}
     ${state.next?`<div class="d-sec"><h2>Next Steps</h2><p>${esc(state.next)}</p></div>`:""}
     <div class="d-sign"><div class="s"><div class="ln">Client signature &amp; date</div></div><div class="s"><div class="ln">${esc(state.from)}</div></div></div>
+    ${bvnPro()?"":'<div class="doc-brand">Made with <b>BVN</b> · bvnofficial.com</div>'}
   `;
 }
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function bvnPro(){ try{ return localStorage.getItem("bvn_pro")==="1"; }catch(e){ return false; } }
+function proAction(){ if(!bvnPro()){ window.open("/apps/pro","_blank"); return; }
+  const p=document.getElementById("paper"); p.classList.toggle("premium");
+  try{ localStorage.setItem("bvn_prem",p.classList.contains("premium")?"1":"0"); }catch(e){} applyPro(); }
+function applyPro(){ const pro=bvnPro(); const p=document.getElementById("paper");
+  if(pro && localStorage.getItem("bvn_prem")==="1") p.classList.add("premium");
+  if(!pro) p.classList.remove("premium");
+  const tag=document.getElementById("proTag"); if(tag) tag.style.display=pro?"inline-flex":"none";
+  const btn=document.getElementById("proBtn"); if(btn) btn.textContent=pro?(p.classList.contains("premium")?"✨ Premium: On":"✨ Premium: Off"):"✨ Unlock Premium";
+  render(); }
+window.addEventListener("storage",applyPro); window.addEventListener("focus",applyPro);
 let t;function save(){clearTimeout(t);$("saved").textContent="Saving…";t=setTimeout(()=>{localStorage.setItem("bvn_proposal",JSON.stringify(state));$("saved").textContent="Saved ✓";},400);}
 function load(){try{return JSON.parse(localStorage.getItem("bvn_proposal"));}catch(e){return null;}}
 function resetAll(){if(confirm("Clear everything and start fresh?")){localStorage.removeItem("bvn_proposal");location.reload();}}
@@ -197,7 +216,7 @@ function downloadHTML(){
   const blob=new Blob([doc],{type:"text/html"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download=(state.title||"proposal").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+".html";a.click();
 }
-renderDel();renderPh();renderPkg();render();
+renderDel();renderPh();renderPkg();applyPro();
 </script>
 </body>
 </html>

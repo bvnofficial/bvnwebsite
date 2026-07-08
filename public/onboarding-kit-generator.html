@@ -47,6 +47,10 @@
   .o-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;}
   .o-mini{font-size:12.8px;color:#3a3a44;line-height:1.6;} .o-mini b{color:#1c1c26;}
   .foot{text-align:center;color:rgba(255,255,255,.4);font-size:11px;margin-top:18px;} .foot a{color:rgba(255,255,255,.6);}
+  .proTag{ display:none; align-items:center; gap:4px; background:linear-gradient(90deg,#E86010,#f5a623); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:.04em; padding:6px 10px; border-radius:20px; }
+  .doc-brand{ text-align:center; font-size:9.5px; color:#b8bcc8; margin-top:26px; padding-top:11px; border-top:1px solid #eee; letter-spacing:.03em; }
+  .doc-brand b{ color:var(--accent); }
+  .paper.premium .o-head h1,.paper.premium .o-sec h2{ font-family:Georgia,'Times New Roman',serif; }
   @media(max-width:900px){.app{flex-direction:column;}.editor{width:100%;max-width:none;height:auto;border-right:none;border-bottom:1px solid var(--line);}.preview{height:auto;}.toolbar{position:static;margin:0 0 16px;width:100%;border-radius:10px;border:1px solid var(--line);}.o-grid{grid-template-columns:1fr;}}
   @media print{@page{margin:0;}.editor,.toolbar,.foot{display:none !important;}.preview{padding:0;height:auto;overflow:visible;background:#fff;display:block;}.paper{box-shadow:none;border-radius:0;max-width:none;padding:0;min-height:auto;}.o-head{margin:0 0 26px;border-radius:0;}.paper>*:not(.o-head){padding-left:46px;padding-right:46px;}}
 </style>
@@ -97,6 +101,8 @@
       <button class="btn primary" onclick="window.print()">⬇ Download PDF</button>
       <button class="btn ghost" onclick="downloadHTML()">⬇ Download HTML</button>
       <button class="btn ghost" onclick="resetAll()">↺ Reset</button>
+      <button class="btn ghost" id="proBtn" onclick="proAction()">✨ Unlock Premium</button>
+      <span class="proTag" id="proTag">PRO ✓</span>
       <span class="saved" id="saved">Saved ✓</span>
     </div>
     <div class="paper" id="paper"></div>
@@ -131,9 +137,21 @@ function render(){
     ${(state.tools||state.hours)?`<div class="o-sec"><h2>How we'll work together</h2>${state.tools?`<p>${esc(state.tools)}</p>`:""}
       <div class="o-grid" style="margin-top:12px;">${state.hours?`<div class="o-mini"><b>Working hours:</b> ${esc(state.hours)}</div>`:""}${state.resp?`<div class="o-mini"><b>Response time:</b> ${esc(state.resp)}</div>`:""}</div></div>`:""}
     ${miles?`<div class="o-sec"><h2>Your first two weeks</h2>${miles}</div>`:""}
+    ${bvnPro()?"":'<div class="doc-brand">Made with <b>BVN</b> · bvnofficial.com</div>'}
   `;
 }
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function bvnPro(){ try{ return localStorage.getItem("bvn_pro")==="1"; }catch(e){ return false; } }
+function proAction(){ if(!bvnPro()){ window.open("/apps/pro","_blank"); return; }
+  const p=document.getElementById("paper"); p.classList.toggle("premium");
+  try{ localStorage.setItem("bvn_prem",p.classList.contains("premium")?"1":"0"); }catch(e){} applyPro(); }
+function applyPro(){ const pro=bvnPro(); const p=document.getElementById("paper");
+  if(pro && localStorage.getItem("bvn_prem")==="1") p.classList.add("premium");
+  if(!pro) p.classList.remove("premium");
+  const tag=document.getElementById("proTag"); if(tag) tag.style.display=pro?"inline-flex":"none";
+  const btn=document.getElementById("proBtn"); if(btn) btn.textContent=pro?(p.classList.contains("premium")?"✨ Premium: On":"✨ Premium: Off"):"✨ Unlock Premium";
+  render(); }
+window.addEventListener("storage",applyPro); window.addEventListener("focus",applyPro);
 let t;function save(){clearTimeout(t);$("saved").textContent="Saving…";t=setTimeout(()=>{localStorage.setItem("bvn_onboard",JSON.stringify(state));$("saved").textContent="Saved ✓";},400);}
 function load(){try{return JSON.parse(localStorage.getItem("bvn_onboard"));}catch(e){return null;}}
 function resetAll(){if(confirm("Clear everything and start fresh?")){localStorage.removeItem("bvn_onboard");location.reload();}}
@@ -145,7 +163,7 @@ function downloadHTML(){
   const blob=new Blob([doc],{type:"text/html"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download="onboarding-"+(state.client||"client").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+".html";a.click();
 }
-render();
+applyPro();
 </script>
 </body>
 </html>

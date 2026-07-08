@@ -10,7 +10,7 @@ function pmAuth() {
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, amount, description } = await req.json();
+    const { name, email, phone, amount, description, successPath } = await req.json();
 
     if (!name || !email || !amount || Number(amount) < 1) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -18,6 +18,12 @@ export async function POST(req: Request) {
 
     const amountCentavos = Math.round(Number(amount) * 100);
     const baseUrl = "https://www.bvnofficial.com";
+    // Optional custom return path (same-origin only, must start with "/").
+    // Defaults to the standard payments success page.
+    const successUrl =
+      typeof successPath === "string" && /^\/[A-Za-z0-9/_\-?=&]*$/.test(successPath)
+        ? `${baseUrl}${successPath}`
+        : `${baseUrl}/payments/success`;
 
     const body = {
       data: {
@@ -40,7 +46,7 @@ export async function POST(req: Request) {
             },
           ],
           payment_method_types: ["card", "gcash"],
-          success_url: `${baseUrl}/payments/success`,
+          success_url: successUrl,
           cancel_url: `${baseUrl}/payments`,
           metadata: { customer_name: name, customer_email: email },
         },

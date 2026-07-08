@@ -71,6 +71,12 @@
   .p-contact h3{ color:#fff; } .p-contact .lines{ font-size:14.5px; line-height:2; color:rgba(255,255,255,.8); }
   .foot{ text-align:center; color:rgba(255,255,255,.4); font-size:11px; margin-top:18px; }
   .foot a{ color:rgba(255,255,255,.6); }
+  /* BVN Pro */
+  .proTag{ display:none; align-items:center; gap:4px; background:linear-gradient(90deg,#E86010,#f5a623); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:.04em; padding:6px 10px; border-radius:20px; }
+  .doc-brand{ text-align:center; font-size:10px; color:#98a; padding:16px; letter-spacing:.03em; }
+  .doc-brand b{ color:var(--accent); }
+  .site.premium .p-hero h2,.site.premium .p-sec h3,.site.premium .p-card h4,.site.premium .p-proj h4{ font-family:Georgia,'Times New Roman',serif; }
+  .site.premium .p-hero .tag{ font-style:italic; }
   @media (max-width:900px){ .app{ flex-direction:column; } .editor{ width:100%; max-width:none; height:auto; border-right:none; border-bottom:1px solid var(--line); } .preview{ height:auto; } .toolbar{ position:static; margin:0 0 16px; width:100%; border-radius:10px; border:1px solid var(--line); } .p-serv,.p-work{ grid-template-columns:1fr; } }
   @media print{ @page{margin:0;} .editor,.toolbar,.foot{display:none !important;} .preview{padding:0;height:auto;overflow:visible;background:#fff;display:block;} .site{box-shadow:none;border-radius:0;max-width:none;} }
 </style>
@@ -130,6 +136,8 @@
       <button class="btn primary" onclick="downloadHTML()">⬇ Download HTML site</button>
       <button class="btn ghost" onclick="window.print()">⬇ Save as PDF</button>
       <button class="btn ghost" onclick="resetAll()">↺ Reset</button>
+      <button class="btn ghost" id="proBtn" onclick="proAction()">✨ Unlock Premium</button>
+      <span class="proTag" id="proTag">PRO ✓</span>
       <span class="saved" id="saved">Saved ✓</span>
     </div>
     <div class="site" id="site"></div>
@@ -206,9 +214,21 @@ function buildSite(s){
   ${test?`<div class="p-sec"><h3>Testimonials</h3>${test}</div>`:""}
   <div class="p-sec p-contact"><h3>Get in touch</h3><div class="lines">
     ${s.email?`<div>${esc(s.email)}</div>`:""}${s.phone?`<div>${esc(s.phone)}</div>`:""}${links}
-  </div></div>`;
+  </div></div>
+  ${bvnPro()?"":'<div class="doc-brand">Made with <b>BVN</b> · bvnofficial.com</div>'}`;
 }
 function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function bvnPro(){ try{ return localStorage.getItem("bvn_pro")==="1"; }catch(e){ return false; } }
+function proAction(){ if(!bvnPro()){ window.open("/apps/pro","_blank"); return; }
+  const p=document.getElementById("site"); p.classList.toggle("premium");
+  try{ localStorage.setItem("bvn_prem",p.classList.contains("premium")?"1":"0"); }catch(e){} applyPro(); }
+function applyPro(){ const pro=bvnPro(); const p=document.getElementById("site");
+  if(pro && localStorage.getItem("bvn_prem")==="1") p.classList.add("premium");
+  if(!pro) p.classList.remove("premium");
+  const tag=document.getElementById("proTag"); if(tag) tag.style.display=pro?"inline-flex":"none";
+  const btn=document.getElementById("proBtn"); if(btn) btn.textContent=pro?(p.classList.contains("premium")?"✨ Premium: On":"✨ Premium: Off"):"✨ Unlock Premium";
+  render(); }
+window.addEventListener("storage",applyPro); window.addEventListener("focus",applyPro);
 
 let t; function save(){ clearTimeout(t); $("saved").textContent="Saving…";
   t=setTimeout(()=>{ localStorage.setItem("bvn_portfolio",JSON.stringify(state)); $("saved").textContent="Saved ✓"; },400); }
@@ -230,7 +250,7 @@ function downloadHTML(){
   a.download=(state.name||"portfolio").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-portfolio.html"; a.click();
 }
 
-renderServ(); renderWork(); renderTest(); render();
+renderServ(); renderWork(); renderTest(); applyPro();
 </script>
 </body>
 </html>
