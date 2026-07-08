@@ -466,23 +466,7 @@ export default function Navbar() {
               </Link>
             </li>
 
-            {/* Dashboard — only when logged in */}
-            {user && (
-              <li>
-                <Link
-                  href="/dashboard"
-                  className={cn(
-                    "relative px-4 py-2 text-sm font-accent font-semibold transition-colors duration-200 rounded-md",
-                    pathname.startsWith("/dashboard") ? "text-orange" : "text-white/80 hover:text-white"
-                  )}
-                >
-                  Dashboard
-                  {pathname.startsWith("/dashboard") && (
-                    <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-orange rounded-full" />
-                  )}
-                </Link>
-              </li>
-            )}
+            {/* Account link lives in the right-hand chip below (no duplicate here). */}
           </ul>
 
           {/* Desktop CTA / Account */}
@@ -499,13 +483,20 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-lg bg-orange/10 border border-orange/25
-                    hover:bg-orange/15 hover:border-orange/40 transition-all duration-200"
+                  title="Your dashboard"
+                  className={cn(
+                    "flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-lg bg-orange/10 border transition-all duration-200",
+                    pathname.startsWith("/dashboard")
+                      ? "border-orange/50 bg-orange/15"
+                      : "border-orange/25 hover:bg-orange/15 hover:border-orange/40"
+                  )}
                 >
                   <span className="w-7 h-7 rounded-full bg-orange/20 border border-orange/30 flex items-center justify-center">
                     <span className="text-[11px] font-heading font-bold text-orange">{initialsOf(user)}</span>
                   </span>
-                  <span className="text-sm font-accent font-semibold text-orange">Dashboard</span>
+                  <span className="text-sm font-accent font-semibold text-orange max-w-[120px] truncate">
+                    {(user.name?.split(" ")[0]) || user.email.split("@")[0]}
+                  </span>
                 </Link>
               </>
             ) : (
@@ -584,12 +575,11 @@ export default function Navbar() {
               onToggle={() => setMobileMedia((v) => !v)}
             />
 
-            {/* Courses + Pricing + Contact (+ Dashboard when logged in) */}
+            {/* Courses + Pricing + Contact (Dashboard is the account button below) */}
             {[
               { label: "Courses", href: "/courses" },
               { label: "Pricing", href: "/pricing" },
               { label: "Contact", href: "/contact" },
-              ...(user ? [{ label: "Dashboard", href: "/dashboard" }] : []),
             ].map((link) => {
               const isActive = pathname.startsWith(link.href);
               return (
