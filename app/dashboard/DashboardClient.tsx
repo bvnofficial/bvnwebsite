@@ -6,39 +6,61 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import {
-  LogOut, Users, BarChart2, Mail, Globe, TrendingUp,
-  Settings, BookOpen, ShoppingBag, ChevronRight, Bell
+  LogOut, BookOpen, CreditCard, Rocket, LifeBuoy, ChevronRight,
+  User, Lock, Check, AlertCircle, Pencil, Coins, Shield,
 } from "lucide-react";
 
 interface Props {
-  user: { email: string; name?: string };
+  user: { email: string; name?: string; createdAt?: string };
+  credits?: number;
+  admin?: boolean;
 }
 
-const stats = [
-  { label: "Active Clients", value: "238+", change: "+12%", icon: Users, color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20" },
-  { label: "Campaigns Running", value: "14", change: "+3 this month", icon: BarChart2, color: "text-orange", bg: "bg-orange/10", border: "border-orange/20" },
-  { label: "Leads This Week", value: "30", change: "UK · US · AU", icon: Mail, color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20" },
-  { label: "Site Visitors", value: "4.2k", change: "+18% vs last week", icon: Globe, color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20" },
-];
-
+// Customer-facing shortcuts — every destination is a real, live page.
 const quickLinks = [
-  { label: "Marketing Services", href: "/marketing", icon: TrendingUp, desc: "Manage campaigns & services" },
-  { label: "Operations", href: "/operations", icon: Settings, desc: "AI agents & automation" },
-  { label: "Blog", href: "/blog", icon: BookOpen, desc: "Content & articles" },
-  { label: "Shop (x1r)", href: "https://x1r.shop", icon: ShoppingBag, desc: "x1r store management", external: true },
+  { label: "My Courses", href: "/courses", icon: BookOpen, desc: "Browse & continue learning" },
+  { label: "Credits & Wallet", href: "/credits", icon: Coins, desc: "Top up & unlock premium items" },
+  { label: "Make a Payment", href: "/payments", icon: CreditCard, desc: "Pay by card, PayPal or crypto" },
+  { label: "Start a Project", href: "/get-started", icon: Rocket, desc: "Tell us what you need" },
+  { label: "Support", href: "/contact", icon: LifeBuoy, desc: "Get help from the BVN team" },
 ];
 
-export default function DashboardClient({ user }: Props) {
+export default function DashboardClient({ user, credits = 0, admin = false }: Props) {
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const displayName = user.name || user.email.split("@")[0];
+  // Admins get an extra shortcut to the credit-management panel.
+  const links = admin
+    ? [...quickLinks, { label: "Admin Panel", href: "/admin", icon: Shield, desc: "Manually add credits to accounts" }]
+    : quickLinks;
+
+  // Profile (name) editing
+  const [name, setName] = useState(user.name || "");
+  const [editingName, setEditingName] = useState(false);
+  const [savingName, setSavingName] = useState(false);
+  const [nameMsg, setNameMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  // Password change
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [pwMsg, setPwMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  const displayName = name || user.email.split("@")[0];
   const initials = displayName
     .split(" ")
     .map((n: string) => n[0])
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+  const memberSince = user.createdAt
+    ? new Date(user.createdAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -48,11 +70,51 @@ export default function DashboardClient({ user }: Props) {
     router.refresh();
   }
 
+  async function handleSaveName(e: React.FormEvent) {
+    e.preventDefault();
+    setNameMsg(null);
+    setSavingName(true);
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ data: { full_name: name.trim() } });
+    setSavingName(false);
+    if (error) {
+      setNameMsg({ ok: false, text: error.message });
+    } else {
+      setNameMsg({ ok: true, text: "Name updated." });
+      setEditingName(false);
+      router.refresh();
+    }
+  }
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPwMsg(null);
+    if (newPassword.length < 6) {
+      setPwMsg({ ok: false, text: "Password must be at least 6 characters." });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPwMsg({ ok: false, text: "Passwords do not match." });
+      return;
+    }
+    setSavingPassword(true);
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setSavingPassword(false);
+    if (error) {
+      setPwMsg({ ok: false, text: error.message });
+    } else {
+      setPwMsg({ ok: true, text: "Password updated." });
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#0A0F1E] pt-20">
       {/* Top bar */}
       <div className="bg-[#111827]/80 backdrop-blur-xl border-b border-white/10 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-orange/20 border border-orange/30 flex items-center justify-center">
               <span className="text-xs font-heading font-bold text-orange">{initials}</span>
@@ -62,28 +124,23 @@ export default function DashboardClient({ user }: Props) {
               <p className="text-[11px] text-white/40 font-body">{user.email}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors">
-              <Bell size={16} />
-            </button>
-            <button
-              onClick={handleLogout}
-              disabled={loggingOut}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white/50 hover:text-red-400 hover:bg-red-400/10
-                text-xs font-accent font-semibold transition-all disabled:opacity-50"
-            >
-              {loggingOut ? (
-                <span className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <LogOut size={13} />
-              )}
-              Sign Out
-            </button>
-          </div>
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white/50 hover:text-red-400 hover:bg-red-400/10
+              text-xs font-accent font-semibold transition-all disabled:opacity-50"
+          >
+            {loggingOut ? (
+              <span className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <LogOut size={13} />
+            )}
+            Sign Out
+          </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 py-10">
         {/* Welcome */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-2">
@@ -92,28 +149,21 @@ export default function DashboardClient({ user }: Props) {
               <h1 className="text-2xl md:text-3xl font-heading font-bold text-white">
                 Hey, {displayName.split(" ")[0]} 👋
               </h1>
-              <p className="text-sm text-white/40 font-body">BVN Admin Dashboard</p>
+              <p className="text-sm text-white/40 font-body">Welcome to your BVN account</p>
             </div>
           </div>
-        </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className={`bg-[#111827] border ${stat.border} rounded-2xl p-5 flex flex-col gap-3`}
-            >
-              <div className={`w-9 h-9 rounded-xl ${stat.bg} border ${stat.border} flex items-center justify-center`}>
-                <stat.icon size={17} className={stat.color} />
-              </div>
-              <div>
-                <p className="text-2xl font-heading font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-white/50 font-body mt-0.5">{stat.label}</p>
-              </div>
-              <p className={`text-[11px] font-accent font-semibold ${stat.color}`}>{stat.change}</p>
-            </div>
-          ))}
+          {/* Credits balance chip */}
+          <Link
+            href="/credits"
+            className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-orange/10 border border-orange/25
+              hover:bg-orange/15 hover:border-orange/40 transition-all"
+          >
+            <Coins size={15} className="text-orange" />
+            <span className="text-sm font-heading font-bold text-white">{credits}</span>
+            <span className="text-xs font-accent text-white/50">credits</span>
+            <ChevronRight size={13} className="text-orange/60" />
+          </Link>
         </div>
 
         {/* Quick Links */}
@@ -121,13 +171,11 @@ export default function DashboardClient({ user }: Props) {
           <h2 className="text-sm font-accent font-bold text-white/40 uppercase tracking-widest mb-4">
             Quick Access
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {quickLinks.map((link) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {links.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noopener noreferrer" : undefined}
                 className="group bg-[#111827] border border-white/10 rounded-2xl p-5 flex items-center gap-4
                   hover:border-orange/30 hover:bg-orange/5 transition-all"
               >
@@ -145,35 +193,145 @@ export default function DashboardClient({ user }: Props) {
           </div>
         </div>
 
-        {/* Account info */}
-        <div className="bg-[#111827] border border-white/10 rounded-2xl p-6">
-          <h2 className="text-sm font-accent font-bold text-white/40 uppercase tracking-widest mb-4">
-            Account
-          </h2>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-orange/20 border border-orange/30 flex items-center justify-center">
-                <span className="text-lg font-heading font-bold text-orange">{initials}</span>
-              </div>
+        {/* Profile */}
+        <div className="bg-[#111827] border border-white/10 rounded-2xl p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-accent font-bold text-white/40 uppercase tracking-widest flex items-center gap-2">
+              <User size={14} /> Profile
+            </h2>
+            {!editingName && (
+              <button
+                onClick={() => { setEditingName(true); setNameMsg(null); }}
+                className="flex items-center gap-1.5 text-xs font-accent font-semibold text-white/50 hover:text-orange transition-colors"
+              >
+                <Pencil size={12} /> Edit
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 rounded-full bg-orange/20 border border-orange/30 flex items-center justify-center shrink-0">
+              <span className="text-lg font-heading font-bold text-orange">{initials}</span>
+            </div>
+            <div className="min-w-0">
+              <p className="font-heading font-semibold text-white truncate">{displayName}</p>
+              <p className="text-sm text-white/40 font-body truncate">{user.email}</p>
+              {memberSince && (
+                <p className="text-[11px] text-white/30 font-body mt-0.5">Member since {memberSince}</p>
+              )}
+            </div>
+          </div>
+
+          {editingName && (
+            <form onSubmit={handleSaveName} className="space-y-3 border-t border-white/10 pt-4">
               <div>
-                <p className="font-heading font-semibold text-white">{displayName}</p>
-                <p className="text-sm text-white/40 font-body">{user.email}</p>
-                <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-orange/10 border border-orange/20 rounded-full text-[10px] font-accent font-bold text-orange uppercase tracking-wide">
-                  Admin
-                </span>
+                <label className="block text-xs font-accent font-semibold text-white/60 mb-1.5 uppercase tracking-wider">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/30 font-body
+                    focus:outline-none focus:border-orange/50 focus:bg-white/8 transition-all"
+                />
               </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="submit"
+                  disabled={savingName}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-orange text-white font-accent font-semibold text-xs rounded-lg
+                    hover:bg-orange-light disabled:opacity-50 transition-all"
+                >
+                  {savingName ? (
+                    <span className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <Check size={13} />
+                  )}
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setEditingName(false); setName(user.name || ""); setNameMsg(null); }}
+                  className="px-4 py-2 text-white/50 hover:text-white font-accent font-semibold text-xs transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+
+          {nameMsg && (
+            <p className={`flex items-center gap-1.5 text-xs font-body mt-3 ${nameMsg.ok ? "text-emerald-400" : "text-red-400"}`}>
+              {nameMsg.ok ? <Check size={13} /> : <AlertCircle size={13} />} {nameMsg.text}
+            </p>
+          )}
+        </div>
+
+        {/* Security */}
+        <div className="bg-[#111827] border border-white/10 rounded-2xl p-6 mb-6">
+          <h2 className="text-sm font-accent font-bold text-white/40 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <Lock size={14} /> Change Password
+          </h2>
+          <form onSubmit={handleChangePassword} className="space-y-3 max-w-sm">
+            <div>
+              <label className="block text-xs font-accent font-semibold text-white/60 mb-1.5 uppercase tracking-wider">
+                New Password
+              </label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Min. 6 characters"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/30 font-body
+                  focus:outline-none focus:border-orange/50 focus:bg-white/8 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-accent font-semibold text-white/60 mb-1.5 uppercase tracking-wider">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat password"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/30 font-body
+                  focus:outline-none focus:border-orange/50 focus:bg-white/8 transition-all"
+              />
             </div>
             <button
-              onClick={handleLogout}
-              disabled={loggingOut}
-              className="flex items-center gap-2 px-4 py-2.5 border border-red-500/20 rounded-xl text-red-400 hover:bg-red-500/10
-                text-sm font-accent font-semibold transition-all disabled:opacity-50 self-start sm:self-auto"
+              type="submit"
+              disabled={savingPassword}
+              className="flex items-center gap-1.5 px-4 py-2 bg-white/8 border border-white/10 text-white font-accent font-semibold text-xs rounded-lg
+                hover:bg-white/12 disabled:opacity-50 transition-all"
             >
-              <LogOut size={14} />
-              Sign Out
+              {savingPassword ? (
+                <span className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Lock size={13} />
+              )}
+              Update Password
             </button>
-          </div>
+            {pwMsg && (
+              <p className={`flex items-center gap-1.5 text-xs font-body mt-1 ${pwMsg.ok ? "text-emerald-400" : "text-red-400"}`}>
+                {pwMsg.ok ? <Check size={13} /> : <AlertCircle size={13} />} {pwMsg.text}
+              </p>
+            )}
+          </form>
         </div>
+
+        {/* Sign out (footer) */}
+        <button
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="flex items-center gap-2 px-4 py-2.5 border border-red-500/20 rounded-xl text-red-400 hover:bg-red-500/10
+            text-sm font-accent font-semibold transition-all disabled:opacity-50"
+        >
+          <LogOut size={14} />
+          Sign Out
+        </button>
       </div>
     </div>
   );
