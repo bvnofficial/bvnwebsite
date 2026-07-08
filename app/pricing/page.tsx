@@ -239,6 +239,34 @@ function firstNumber(s: string) {
   return m ? m[0] : "";
 }
 
+// ── Display currency: PHP ──────────────────────────────────────────────────
+// PayMongo settles in PHP, so prices display in pesos with a small ≈USD note
+// for international clients. USD stays the source of truth in the data above;
+// these helpers convert it at render time so there's a single conversion rate.
+const USD_TO_PHP = 58;
+
+function roundPhp(v: number) {
+  if (v >= 10000) return Math.round(v / 1000) * 1000;
+  if (v >= 1000) return Math.round(v / 100) * 100;
+  return Math.round(v / 10) * 10;
+}
+
+// Convert every "$N" inside a price string to "₱N", preserving suffixes like
+// "/hr", "/mo", ranges ("–") and "+". e.g. "$8–$12/hr" -> "₱460–₱700/hr".
+function toPhp(usd: string) {
+  return usd.replace(/\$\s?([\d,]+(?:\.\d+)?)/g, (_, n: string) => {
+    const php = roundPhp(parseFloat(n.replace(/,/g, "")) * USD_TO_PHP);
+    return "₱" + php.toLocaleString("en-US");
+  });
+}
+
+// The PHP amount (as a plain string) for the checkout link, from the first
+// number in a USD price — keeps the displayed peso price and checkout in sync.
+function phpAmount(usd: string) {
+  const n = firstNumber(usd);
+  return n ? String(roundPhp(Number(n) * USD_TO_PHP)) : "";
+}
+
 function Note({ children }: { children: React.ReactNode }) {
   return (
     <div className="mt-8 flex items-start gap-3 bg-orange/5 border border-orange/20 rounded-xl p-4">
@@ -286,14 +314,23 @@ export default function PricingPage() {
           >
             {marketingPlans.map((plan) => (
               <motion.div key={plan.tier} variants={childVariant}>
-                <PricingCard {...plan} />
+                <PricingCard
+                  {...plan}
+                  price={toPhp(plan.price)}
+                  subPrice={`≈ ${plan.price}/mo`}
+                  ctaHref={payHref(
+                    `Marketing ${plan.tier}`,
+                    `Marketing ${plan.tier} Plan (${toPhp(plan.price)}/mo)`,
+                    phpAmount(plan.price)
+                  )}
+                />
               </motion.div>
             ))}
           </motion.div>
 
           <Note>
             ★ All packages require a minimum 3-month commitment. One-time setup
-            fee of $150 (waived for Pro plan).
+            fee of {toPhp("$150")} (≈ $150, waived for Pro plan).
           </Note>
         </div>
       </motion.section>
@@ -346,12 +383,16 @@ export default function PricingPage() {
                 <div className="flex md:block items-center gap-2">
                   <span className="text-white/30 text-xs md:hidden">From:</span>
                   <span className="text-orange font-heading font-bold">
-                    {from}
+                    {toPhp(from)}
+                    <span className="block text-white/30 text-[11px] font-body font-normal">≈ {from}</span>
                   </span>
                 </div>
                 <div className="flex md:block items-center gap-2">
                   <span className="text-white/30 text-xs md:hidden">Up to:</span>
-                  <span className="text-orange-light font-semibold">{to}</span>
+                  <span className="text-orange-light font-semibold">
+                    {toPhp(to)}
+                    <span className="block text-white/30 text-[11px] font-normal">≈ {to}</span>
+                  </span>
                 </div>
                 <div className="flex md:block items-center gap-2">
                   <span className="text-white/30 text-xs md:hidden">
@@ -361,7 +402,7 @@ export default function PricingPage() {
                 </div>
                 <div className="md:text-right">
                   <Link
-                    href={payHref(service, `${service} — Project Deposit`, firstNumber(from))}
+                    href={payHref(service, `${service} — Project Deposit`, phpAmount(from))}
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange/10 border border-orange/30
                       text-orange text-xs font-heading font-bold hover:bg-orange hover:text-white transition-all"
                   >
@@ -406,13 +447,22 @@ export default function PricingPage() {
           >
             {operationsPlans.map((plan) => (
               <motion.div key={plan.tier} variants={childVariant}>
-                <PricingCard {...plan} />
+                <PricingCard
+                  {...plan}
+                  price={toPhp(plan.price)}
+                  subPrice={`≈ ${plan.price}/mo`}
+                  ctaHref={payHref(
+                    `Operations ${plan.tier}`,
+                    `Operations ${plan.tier} Plan (${toPhp(plan.price)}/mo)`,
+                    phpAmount(plan.price)
+                  )}
+                />
               </motion.div>
             ))}
           </motion.div>
 
           <Note>
-            ★ One-time system audit & setup fee of $200 (waived for Pro plan).
+            ★ One-time system audit & setup fee of {toPhp("$200")} (≈ $200, waived for Pro plan).
             All plans include onboarding and documentation.
           </Note>
         </div>
@@ -454,8 +504,11 @@ export default function PricingPage() {
                       ${i % 2 === 0 ? "bg-white/2" : ""}`}
                   >
                     <span className="text-white/70 text-sm">{type}</span>
-                    <span className="font-heading font-bold text-orange text-sm">
-                      {rate}
+                    <span className="text-right">
+                      <span className="block font-heading font-bold text-orange text-sm">
+                        {toPhp(rate)}
+                      </span>
+                      <span className="block text-white/30 text-[11px]">≈ {rate}</span>
                     </span>
                   </motion.div>
                 ))}
@@ -470,7 +523,7 @@ export default function PricingPage() {
               {vaPackages.map(({ name, hours, price }) => (
                 <Link
                   key={name}
-                  href={payHref(`VA — ${name}`, `Virtual Assistant — ${name} (${hours})`, firstNumber(price))}
+                  href={payHref(`VA — ${name}`, `Virtual Assistant — ${name} (${hours})`, phpAmount(price))}
                   className="group flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-6 py-5
                     hover:border-orange/30 hover:bg-white/8 transition-all"
                 >
@@ -482,8 +535,9 @@ export default function PricingPage() {
                   </div>
                   <div className="text-right">
                     <div className="font-heading font-extrabold text-xl text-gradient">
-                      {price}
+                      {toPhp(price)}
                     </div>
+                    <div className="text-white/30 text-[11px] mb-0.5">≈ {price}</div>
                     <div className="flex items-center justify-end gap-1 text-white/40 group-hover:text-orange text-xs transition-colors">
                       Reserve <ArrowRight size={11} />
                     </div>

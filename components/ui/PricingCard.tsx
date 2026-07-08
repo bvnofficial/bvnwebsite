@@ -14,6 +14,7 @@ interface PricingCardProps {
   tier: string;
   price: string;
   period?: string;
+  subPrice?: string;
   features: PricingFeature[];
   isPopular?: boolean;
   ctaLabel?: string;
@@ -25,6 +26,7 @@ export default function PricingCard({
   tier,
   price,
   period = "/mo",
+  subPrice,
   features,
   isPopular = false,
   ctaLabel = "Get Started",
@@ -72,6 +74,9 @@ export default function PricingCard({
           </span>
           <span className="text-white/40 text-sm mb-1">{period}</span>
         </div>
+        {subPrice && (
+          <p className="text-white/35 text-xs mt-1.5 font-accent">{subPrice}</p>
+        )}
       </div>
 
       {/* Features */}
