@@ -41,11 +41,12 @@ would have posted (visible in the Actions logs) and posts nothing.
 
 ## Configuration — `config.json`
 
-- `slack.defaultChannel` — where uncategorized ("Other") jobs go, and the
-  fallback when a category's channel is missing/inaccessible (default `#all-jobs`).
-- `slack.channelByCategory` — routes each category to its own channel. Each of
-  the 14 categories maps to a `#jobs-…` channel (e.g. `SEO` → `#jobs-seo`,
-  `Software & AI Development` → `#jobs-software-ai`). **Per-category routing
+- `slack.defaultChannel` — where uncategorized jobs go, and the fallback when a
+  category's channel is missing/inaccessible (default `#job-uncategorized`).
+- `slack.channelByCategory` — routes each category to its own channel. The 14
+  categories map to the `#job-…` channels (e.g. `Development` → `#job-development`,
+  `Paid Ads & Marketing` → `#job-paid-ads`). Each job posts to exactly one
+  channel; there is no cross-posting to a master feed. **Per-category routing
   requires the `SLACK_BOT_TOKEN` (bot) path** — a single incoming webhook can
   only post to one channel. The bot must be able to post to each channel: add
   the `chat:write.public` scope (posts to any public channel without an invite),
