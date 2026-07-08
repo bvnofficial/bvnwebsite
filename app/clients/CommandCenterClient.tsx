@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Wellness Technical Partner (application)",
+    region: "Health and wellness brand",
+    scope: "Full Stack + Integrations + Portal",
+    blurb:
+      "Interactive technical partner showcase for a wellness brand: a website rebuild plan, a live integration hub connecting payments, scheduling, forms, CRM, email, and third party APIs, an automations panel, and a member and client portal (programs, bookings, billing). Built with Claude Code.",
+    href: "/clients/wellness-partner/technical-partner",
+    status: "pending",
+    accent: C.rose,
+    tags: ["Full Stack", "Integrations", "Automation", "Client Portal"],
+  },
+  {
     name: "FB Legacy Implementation Roadmap (application)",
     region: "Ops foundation project, 30 to 60 days",
     scope: "Project Coordinator + SOPs + Google Workspace",
