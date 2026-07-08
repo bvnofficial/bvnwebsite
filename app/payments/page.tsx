@@ -34,7 +34,7 @@ const PRESETS: Record<string, string[]> = {
   SGD: ["100", "300", "500", "1000", "2500"],
 };
 
-const CURRENCIES = ["USD", "PHP", "GBP", "AUD", "EUR", "SGD"];
+const CURRENCIES = ["PHP", "USD", "GBP", "AUD", "EUR", "SGD"];
 
 type Method = "paymongo" | "card" | "crypto";
 
@@ -90,7 +90,7 @@ function PaymentsForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState(urlDescription);
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("PHP");
 
   const presets = PRESETS[currency];
   const sym = CURRENCY_SYMBOLS[currency];
