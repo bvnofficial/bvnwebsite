@@ -22,6 +22,9 @@ const config = JSON.parse(fs.readFileSync(path.join(here, "config.json"), "utf8"
 
 const STATE_FILE = process.env.STATE_FILE || ".state/seen.json";
 const DRY_RUN = process.env.DRY_RUN === "1" || (!process.env.SLACK_BOT_TOKEN && !process.env.SLACK_WEBHOOK_URL);
+// "bot" delivers to each job's category channel; "webhook" ignores the channel
+// and delivers everything to the webhook's single bound channel.
+const AUTH_MODE = process.env.SLACK_BOT_TOKEN ? "bot" : process.env.SLACK_WEBHOOK_URL ? "webhook" : "none";
 const MAX_AGE_MS = (config.maxAgeHours ?? 2) * 3600_000;
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
@@ -255,6 +258,16 @@ function saveSeen(seen) {
 
 // ---------- main ----------
 
+const routingConfigured = Object.keys(config.slack.channelByCategory || {}).length > 0;
+console.log(`Auth mode: ${AUTH_MODE}${DRY_RUN ? " (dry run)" : ""}.`);
+if (AUTH_MODE === "webhook" && routingConfigured && !DRY_RUN) {
+  console.warn(
+    "WARNING: per-category routing is configured, but only SLACK_WEBHOOK_URL is set. " +
+      "A webhook posts to its single bound channel, so ALL jobs will land there regardless of category. " +
+      "Set SLACK_BOT_TOKEN (repository secret) to route jobs to their category channels.",
+  );
+}
+
 const pages = Math.max(1, config.search?.pages ?? 2);
 const all = [];
 for (let p = 0; p < pages; p++) all.push(...await fetchPage(p * 30));
@@ -278,7 +291,9 @@ if (fresh.length) {
   const failures = [];
   for (let i = 0; i < fresh.length; i++) {
     const job = fresh[i], category = categories[i];
-    const channel = channelFor(category);
+    // In webhook mode delivery ignores the category and goes to the webhook's
+    // single channel — reflect that in the tally so it shows real delivery.
+    const channel = AUTH_MODE === "webhook" ? "(single webhook channel)" : channelFor(category);
     tally[channel] = (tally[channel] || 0) + 1;
     if (DRY_RUN) {
       console.log(`[dry-run] ${channel} | ${category} | ${job.title} | ${job.salary} | ${job.url}`);
