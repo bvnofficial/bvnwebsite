@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Ro Movers Growth System (application)",
+    region: "Moving company, US",
+    scope: "GHL + WordPress + Funnel + SEO",
+    blurb:
+      "Interactive growth and ops system for a moving company: a quote to booked move lead funnel in GHL, the owner-operator contractor portal (availability, document uploads with expiry tracking, company updates), the full build stack from WordPress to SEO, and a monthly blog and content engine. Built with Claude Code.",
+    href: "/clients/ro-movers/growth-system",
+    status: "pending",
+    accent: C.blue,
+    tags: ["GoHighLevel", "WordPress", "Funnels", "SEO"],
+  },
+  {
     name: "Land Finance Lead Engine (application)",
     region: "Real estate finance, US",
     scope: "GHL Lead Lifecycle Engine",
