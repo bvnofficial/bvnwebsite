@@ -199,21 +199,34 @@ function channelFor(category) {
   return config.slack.channelByCategory?.[category] || config.slack.defaultChannel;
 }
 
+async function postViaBotToken(channel, text, blocks) {
+  const res = await fetch("https://slack.com/api/chat.postMessage", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+      "Content-Type": "application/json; charset=utf-8",
+    },
+    body: JSON.stringify({ channel, text, blocks, unfurl_links: false }),
+  });
+  const body = await res.json();
+  return body.ok ? null : body.error; // null on success, else Slack's error code
+}
+
 async function postToSlack(job, category) {
   const fallbackText = `${job.title} — ${category} — ${job.url}`;
   const blocks = jobBlocks(job, category);
 
   if (process.env.SLACK_BOT_TOKEN) {
-    const res = await fetch("https://slack.com/api/chat.postMessage", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
-        "Content-Type": "application/json; charset=utf-8",
-      },
-      body: JSON.stringify({ channel: channelFor(category), text: fallbackText, blocks, unfurl_links: false }),
-    });
-    const body = await res.json();
-    if (!body.ok) throw new Error(`chat.postMessage failed for ${channelFor(category)}: ${body.error}`);
+    const target = channelFor(category);
+    let error = await postViaBotToken(target, fallbackText, blocks);
+    // Don't drop a job if its category channel is missing/inaccessible —
+    // fall back to the default channel so nothing is silently lost.
+    const recoverable = ["channel_not_found", "not_in_channel", "is_archived"];
+    if (error && target !== config.slack.defaultChannel && recoverable.includes(error)) {
+      console.warn(`Channel ${target} unavailable (${error}); posting to ${config.slack.defaultChannel} instead.`);
+      error = await postViaBotToken(config.slack.defaultChannel, fallbackText, blocks);
+    }
+    if (error) throw new Error(`chat.postMessage failed for ${target}: ${error}`);
   } else if (process.env.SLACK_WEBHOOK_URL) {
     const res = await fetch(process.env.SLACK_WEBHOOK_URL, {
       method: "POST",
@@ -249,10 +262,12 @@ console.log(`Scraped ${all.length} job(s) across ${pages} page(s).`);
 
 const seen = loadSeen();
 const cutoff = Date.now() - MAX_AGE_MS;
-const fresh = all
+const freshAll = all
   .filter((j) => !seen.has(j.id))
-  .filter((j) => j.postedUtc && j.postedUtc.getTime() >= cutoff)
-  .slice(0, config.maxPostsPerRun ?? 25);
+  .filter((j) => j.postedUtc && j.postedUtc.getTime() >= cutoff);
+// maxPostsPerRun null/0 = no cap (post every fresh job).
+const cap = config.maxPostsPerRun;
+const fresh = cap && cap > 0 ? freshAll.slice(0, cap) : freshAll;
 
 console.log(`${fresh.length} new job(s) after dedup + ${config.maxAgeHours}h freshness filter.`);
 

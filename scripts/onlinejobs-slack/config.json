@@ -4,10 +4,25 @@
     "keyword": ""
   },
   "maxAgeHours": 2,
-  "maxPostsPerRun": 25,
+  "maxPostsPerRun": null,
   "slack": {
     "defaultChannel": "#all-jobs",
-    "channelByCategory": {}
+    "channelByCategory": {
+      "Virtual Assistant & Admin": "#jobs-va-admin",
+      "Customer Service": "#jobs-customer-service",
+      "Sales & Lead Generation": "#jobs-sales",
+      "Digital Marketing": "#jobs-marketing",
+      "SEO": "#jobs-seo",
+      "Social Media": "#jobs-social-media",
+      "Design & Creative": "#jobs-design",
+      "Video Editing": "#jobs-video-editing",
+      "Writing & Content": "#jobs-writing",
+      "Web Development": "#jobs-web-dev",
+      "Software & AI Development": "#jobs-software-ai",
+      "E-commerce": "#jobs-ecommerce",
+      "Accounting & Finance": "#jobs-accounting",
+      "Real Estate": "#jobs-real-estate"
+    }
   },
   "categories": {
     "Virtual Assistant & Admin": ["virtual assistant", " va ", "executive assistant", "admin", "data entry", "appointment setter", "transcription", "research specialist", "back office"],
