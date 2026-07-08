@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VA CV & Resume Builder</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --navy:#0A0F1E; --navy2:#111726; --line:rgba(255,255,255,.08);
+    --orange:#E86010; --orange-l:#ff7a2a; --txt:#e8eaf0; --mut:rgba(255,255,255,.5);
+    --accent:#E86010;
+  }
+  html,body{ background:var(--navy); color:var(--txt);
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  .app{ display:flex; min-height:100vh; }
+  /* ── Editor panel ── */
+  .editor{ width:44%; max-width:560px; border-right:1px solid var(--line);
+    height:100vh; overflow-y:auto; padding:22px 22px 80px; }
+  .brand{ display:flex; align-items:center; gap:9px; margin-bottom:4px; }
+  .brand .dot{ width:26px;height:26px;border-radius:7px;background:rgba(232,96,16,.15);
+    border:1px solid rgba(232,96,16,.3);display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .brand b{ font-size:14px; letter-spacing:.02em; }
+  h1{ font-size:20px; font-weight:800; margin:14px 0 2px; }
+  .sub{ color:var(--mut); font-size:12.5px; margin-bottom:16px; }
+  .grp{ border:1px solid var(--line); border-radius:12px; margin-bottom:12px; background:rgba(255,255,255,.02); }
+  .grp>summary{ cursor:pointer; list-style:none; padding:12px 14px; font-weight:700; font-size:13.5px;
+    display:flex; align-items:center; justify-content:space-between; }
+  .grp>summary::-webkit-details-marker{ display:none; }
+  .grp>summary .chev{ transition:.2s; color:var(--mut); }
+  .grp[open]>summary .chev{ transform:rotate(90deg); }
+  .grp .body{ padding:4px 14px 14px; }
+  label{ display:block; font-size:11.5px; color:var(--mut); margin:10px 0 4px; font-weight:600; }
+  input,textarea,select{ width:100%; background:rgba(255,255,255,.04); border:1px solid var(--line);
+    border-radius:8px; padding:9px 11px; color:var(--txt); font-size:13px; font-family:inherit; }
+  input:focus,textarea:focus,select:focus{ outline:none; border-color:rgba(232,96,16,.5); background:rgba(255,255,255,.06); }
+  textarea{ resize:vertical; min-height:64px; line-height:1.5; }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .item{ border:1px dashed var(--line); border-radius:10px; padding:10px; margin-top:10px; position:relative; }
+  .item .del{ position:absolute; top:8px; right:8px; background:rgba(255,60,60,.12); border:1px solid rgba(255,60,60,.25);
+    color:#ff8a8a; border-radius:6px; width:24px;height:24px; cursor:pointer; font-size:13px; }
+  .addbtn{ margin-top:10px; width:100%; background:rgba(232,96,16,.1); border:1px solid rgba(232,96,16,.3);
+    color:var(--orange-l); border-radius:8px; padding:9px; font-weight:700; font-size:12.5px; cursor:pointer; }
+  .addbtn:hover{ background:rgba(232,96,16,.18); }
+  .accents{ display:flex; gap:8px; flex-wrap:wrap; }
+  .sw{ width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent; }
+  .sw.on{ border-color:#fff; }
+  /* ── Preview panel ── */
+  .preview{ flex:1; height:100vh; overflow-y:auto; background:#525866; padding:28px 20px; display:flex; flex-direction:column; align-items:center; }
+  .toolbar{ position:sticky; top:-28px; z-index:5; margin:-28px -20px 20px; padding:14px 20px;
+    background:rgba(10,15,30,.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap; width:calc(100% + 40px); }
+  .btn{ border:none; border-radius:8px; padding:10px 16px; font-weight:700; font-size:13px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:7px; font-family:inherit; }
+  .btn.primary{ background:var(--orange); color:#fff; }
+  .btn.primary:hover{ background:var(--orange-l); }
+  .btn.ghost{ background:rgba(255,255,255,.08); color:#fff; }
+  .btn.ghost:hover{ background:rgba(255,255,255,.15); }
+  .saved{ color:rgba(255,255,255,.6); font-size:11.5px; margin-left:auto; }
+  /* ── The resume paper ── */
+  .paper{ width:100%; max-width:794px; background:#fff; color:#1a1a22; border-radius:4px;
+    box-shadow:0 18px 50px rgba(0,0,0,.4); padding:46px 50px; min-height:1000px; }
+  .cv-head{ border-bottom:3px solid var(--accent); padding-bottom:16px; margin-bottom:18px; }
+  .cv-name{ font-size:30px; font-weight:800; color:#12141c; letter-spacing:-.01em; }
+  .cv-title{ font-size:15px; color:var(--accent); font-weight:700; margin-top:3px; }
+  .cv-contact{ display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:10px; font-size:12px; color:#555; }
+  .cv-contact span{ display:inline-flex; align-items:center; gap:5px; }
+  .cv-sec{ margin-top:20px; }
+  .cv-sec h2{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.09em; color:var(--accent);
+    border-bottom:1px solid #e5e5ea; padding-bottom:5px; margin-bottom:10px; }
+  .cv-summary{ font-size:12.8px; line-height:1.65; color:#3a3a44; }
+  .cv-entry{ margin-bottom:14px; }
+  .cv-entry .top{ display:flex; justify-content:space-between; gap:10px; }
+  .cv-entry .role{ font-size:13.5px; font-weight:700; color:#1c1c26; }
+  .cv-entry .co{ font-size:12.5px; color:var(--accent); font-weight:600; }
+  .cv-entry .dt{ font-size:11.5px; color:#888; white-space:nowrap; }
+  .cv-entry ul{ margin:6px 0 0 16px; }
+  .cv-entry li{ font-size:12.3px; line-height:1.55; color:#44444e; margin-bottom:3px; }
+  .cv-skills{ display:flex; flex-wrap:wrap; gap:7px; }
+  .cv-skill{ background:#f1f2f6; border:1px solid #e3e4ea; color:#33343c; font-size:11.5px; padding:4px 10px; border-radius:20px; }
+  .cv-two{ display:grid; grid-template-columns:1fr 1fr; gap:6px 22px; }
+  .cv-mini{ font-size:12.3px; color:#3a3a44; margin-bottom:6px; }
+  .cv-mini b{ color:#1c1c26; }
+  .foot{ text-align:center; color:rgba(255,255,255,.4); font-size:11px; margin-top:18px; }
+  .foot a{ color:rgba(255,255,255,.6); }
+  /* mobile */
+  @media (max-width:900px){
+    .app{ flex-direction:column; }
+    .editor{ width:100%; max-width:none; height:auto; border-right:none; border-bottom:1px solid var(--line); }
+    .preview{ height:auto; }
+    .toolbar{ position:static; margin:0 0 16px; width:100%; border-radius:10px; border:1px solid var(--line); }
+  }
+  /* print → only the paper */
+  @media print{
+    @page{ margin:0; }
+    body{ background:#fff; }
+    .editor,.toolbar,.foot{ display:none !important; }
+    .preview{ padding:0; height:auto; overflow:visible; background:#fff; display:block; }
+    .paper{ box-shadow:none; border-radius:0; max-width:none; width:100%; padding:34px 40px; min-height:auto; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- EDITOR -->
+  <div class="editor">
+    <div class="brand"><span class="dot">📄</span><b>BVN · CV Builder</b></div>
+    <h1>Build your VA resume</h1>
+    <div class="sub">Fill in the fields — your resume updates live. Download as PDF or a hostable HTML file. Everything saves in your browser.</div>
+
+    <details class="grp" open><summary>Personal Info <span class="chev">›</span></summary>
+      <div class="body">
+        <label>Full name</label><input id="f_name" placeholder="Maria Santos" />
+        <label>Professional title</label><input id="f_title" placeholder="Virtual Assistant · GoHighLevel Specialist" />
+        <div class="row2">
+          <div><label>Email</label><input id="f_email" placeholder="maria@email.com" /></div>
+          <div><label>Phone</label><input id="f_phone" placeholder="+63 900 000 0000" /></div>
+        </div>
+        <div class="row2">
+          <div><label>Location</label><input id="f_loc" placeholder="Manila, PH · Remote" /></div>
+          <div><label>Website / LinkedIn</label><input id="f_link" placeholder="linkedin.com/in/maria" /></div>
+        </div>
+        <label>Accent color</label>
+        <div class="accents" id="accents"></div>
+      </div>
+    </details>
+
+    <details class="grp" open><summary>Professional Summary <span class="chev">›</span></summary>
+      <div class="body">
+        <textarea id="f_summary" placeholder="2–3 sentences: who you are, your niche, and the value you deliver to clients."></textarea>
+      </div>
+    </details>
+
+    <details class="grp"><summary>Skills <span class="chev">›</span></summary>
+      <div class="body">
+        <label>Skills (comma separated)</label>
+        <textarea id="f_skills" placeholder="GoHighLevel, Cold Email, Canva, Calendar Management, CRM, Lead Gen"></textarea>
+      </div>
+    </details>
+
+    <details class="grp" open><summary>Experience <span class="chev">›</span></summary>
+      <div class="body"><div id="exp_list"></div>
+        <button class="addbtn" onclick="addExp()">+ Add experience</button>
+      </div>
+    </details>
+
+    <details class="grp"><summary>Education <span class="chev">›</span></summary>
+      <div class="body"><div id="edu_list"></div>
+        <button class="addbtn" onclick="addEdu()">+ Add education</button>
+      </div>
+    </details>
+
+    <details class="grp"><summary>Certifications &amp; Languages <span class="chev">›</span></summary>
+      <div class="body">
+        <label>Certifications (one per line)</label>
+        <textarea id="f_certs" placeholder="BVN Certified GoHighLevel VA&#10;HubSpot Email Marketing"></textarea>
+        <label>Languages (comma separated)</label>
+        <input id="f_langs" placeholder="English (Fluent), Filipino (Native)" />
+      </div>
+    </details>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview">
+    <div class="toolbar">
+      <button class="btn primary" onclick="window.print()">⬇ Download PDF</button>
+      <button class="btn ghost" onclick="downloadHTML()">⬇ Download HTML</button>
+      <button class="btn ghost" onclick="resetAll()">↺ Reset</button>
+      <span class="saved" id="saved">Saved ✓</span>
+    </div>
+    <div class="paper" id="paper"></div>
+    <div class="foot">Built free with <a href="https://www.bvnofficial.com/apps" target="_blank">BVN Apps</a> · Level up at <a href="https://www.bvnofficial.com/courses" target="_blank">BVN Academy</a></div>
+  </div>
+</div>
+
+<script>
+const ACCENTS=["#E86010","#2563eb","#0d9488","#7c3aed","#db2777","#0f172a"];
+const $=id=>document.getElementById(id);
+let state=load()||{
+  name:"Maria Santos", title:"Virtual Assistant · GoHighLevel Specialist",
+  email:"maria@email.com", phone:"+63 900 000 0000", loc:"Manila, PH · Remote", link:"linkedin.com/in/maria",
+  accent:"#E86010",
+  summary:"Detail-driven Virtual Assistant specializing in GoHighLevel automation and lead generation. I help agencies and coaches fill their calendars and keep their CRMs clean so they can focus on closing.",
+  skills:"GoHighLevel, Cold Email, Canva, Calendar Management, CRM, Lead Generation, Appointment Setting",
+  exp:[{role:"Virtual Assistant",co:"Regal Senior Living",dt:"2023 — Present",bullets:"Built and managed the full GHL lead pipeline, lifting booked tours by 32%.\nRan multi-step nurture sequences and kept the CRM clean and tagged."}],
+  edu:[{role:"BS Business Administration",co:"University of the Philippines",dt:"2019"}],
+  certs:"BVN Certified GoHighLevel VA\nHubSpot Email Marketing",
+  langs:"English (Fluent), Filipino (Native)"
+};
+
+function bind(id,key){ const el=$(id); el.value=state[key]||""; el.addEventListener("input",()=>{state[key]=el.value; render(); save();}); }
+["name","title","email","phone","loc","link","summary","skills","certs","langs"].forEach(k=>bind("f_"+k,k));
+
+// accents
+const accW=$("accents");
+ACCENTS.forEach(c=>{ const s=document.createElement("div"); s.className="sw"+(c===state.accent?" on":""); s.style.background=c;
+  s.onclick=()=>{ state.accent=c; [...accW.children].forEach(x=>x.classList.remove("on")); s.classList.add("on"); render(); save(); }; accW.appendChild(s); });
+
+function addExp(){ state.exp.push({role:"",co:"",dt:"",bullets:""}); renderExp(); save(); }
+function addEdu(){ state.edu.push({role:"",co:"",dt:""}); renderEdu(); save(); }
+function delItem(arr,i){ state[arr].splice(i,1); (arr==="exp"?renderExp:renderEdu)(); render(); save(); }
+
+function renderExp(){
+  $("exp_list").innerHTML=state.exp.map((e,i)=>`
+    <div class="item">
+      <button class="del" onclick="delItem('exp',${i})">✕</button>
+      <label>Role / Title</label><input value="${esc(e.role)}" oninput="upd('exp',${i},'role',this.value)" placeholder="Virtual Assistant"/>
+      <div class="row2">
+        <div><label>Company</label><input value="${esc(e.co)}" oninput="upd('exp',${i},'co',this.value)" placeholder="Client / Agency"/></div>
+        <div><label>Dates</label><input value="${esc(e.dt)}" oninput="upd('exp',${i},'dt',this.value)" placeholder="2023 — Present"/></div>
+      </div>
+      <label>Achievements (one per line)</label>
+      <textarea oninput="upd('exp',${i},'bullets',this.value)" placeholder="Start each line with an action + result.">${esc(e.bullets)}</textarea>
+    </div>`).join("");
+}
+function renderEdu(){
+  $("edu_list").innerHTML=state.edu.map((e,i)=>`
+    <div class="item">
+      <button class="del" onclick="delItem('edu',${i})">✕</button>
+      <label>Degree / Program</label><input value="${esc(e.role)}" oninput="upd('edu',${i},'role',this.value)" placeholder="BS Business Administration"/>
+      <div class="row2">
+        <div><label>School</label><input value="${esc(e.co)}" oninput="upd('edu',${i},'co',this.value)" placeholder="University"/></div>
+        <div><label>Year</label><input value="${esc(e.dt)}" oninput="upd('edu',${i},'dt',this.value)" placeholder="2019"/></div>
+      </div>
+    </div>`).join("");
+}
+function upd(arr,i,k,v){ state[arr][i][k]=v; render(); save(); }
+
+function render(){
+  document.documentElement.style.setProperty("--accent",state.accent);
+  const contact=[
+    state.email&&`<span>✉ ${esc(state.email)}</span>`,
+    state.phone&&`<span>☎ ${esc(state.phone)}</span>`,
+    state.loc&&`<span>📍 ${esc(state.loc)}</span>`,
+    state.link&&`<span>🔗 ${esc(state.link)}</span>`
+  ].filter(Boolean).join("");
+  const skills=(state.skills||"").split(",").map(s=>s.trim()).filter(Boolean)
+    .map(s=>`<span class="cv-skill">${esc(s)}</span>`).join("");
+  const exp=state.exp.filter(e=>e.role||e.co).map(e=>`
+    <div class="cv-entry"><div class="top"><div><span class="role">${esc(e.role)}</span>
+      ${e.co?` · <span class="co">${esc(e.co)}</span>`:""}</div><span class="dt">${esc(e.dt)}</span></div>
+      ${e.bullets?`<ul>${e.bullets.split("\n").filter(b=>b.trim()).map(b=>`<li>${esc(b)}</li>`).join("")}</ul>`:""}</div>`).join("");
+  const edu=state.edu.filter(e=>e.role||e.co).map(e=>`
+    <div class="cv-mini"><b>${esc(e.role)}</b>${e.co?` — ${esc(e.co)}`:""}${e.dt?` · ${esc(e.dt)}`:""}</div>`).join("");
+  const certs=(state.certs||"").split("\n").map(s=>s.trim()).filter(Boolean).map(c=>`<div class="cv-mini">• ${esc(c)}</div>`).join("");
+  const langs=(state.langs||"").split(",").map(s=>s.trim()).filter(Boolean).map(l=>`<span class="cv-skill">${esc(l)}</span>`).join("");
+
+  $("paper").innerHTML=`
+    <div class="cv-head">
+      <div class="cv-name">${esc(state.name)||"Your Name"}</div>
+      <div class="cv-title">${esc(state.title)}</div>
+      <div class="cv-contact">${contact}</div>
+    </div>
+    ${state.summary?`<div class="cv-sec"><h2>Summary</h2><div class="cv-summary">${esc(state.summary)}</div></div>`:""}
+    ${skills?`<div class="cv-sec"><h2>Skills</h2><div class="cv-skills">${skills}</div></div>`:""}
+    ${exp?`<div class="cv-sec"><h2>Experience</h2>${exp}</div>`:""}
+    <div class="cv-two">
+      ${edu?`<div class="cv-sec"><h2>Education</h2>${edu}</div>`:""}
+      ${certs?`<div class="cv-sec"><h2>Certifications</h2>${certs}</div>`:""}
+    </div>
+    ${langs?`<div class="cv-sec"><h2>Languages</h2><div class="cv-skills">${langs}</div></div>`:""}
+  `;
+}
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// persistence
+let t; function save(){ clearTimeout(t); $("saved").textContent="Saving…";
+  t=setTimeout(()=>{ localStorage.setItem("bvn_cv",JSON.stringify(state)); $("saved").textContent="Saved ✓"; },400); }
+function load(){ try{ return JSON.parse(localStorage.getItem("bvn_cv")); }catch(e){ return null; } }
+function resetAll(){ if(confirm("Clear everything and start fresh?")){ localStorage.removeItem("bvn_cv"); location.reload(); } }
+
+function downloadHTML(){
+  const accent=state.accent;
+  const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${esc(state.name)} — CV</title><style>
+  body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:#eef0f4;color:#1a1a22;padding:24px;}
+  .paper{max-width:794px;margin:0 auto;background:#fff;padding:46px 50px;box-shadow:0 6px 24px rgba(0,0,0,.12);}
+  .cv-head{border-bottom:3px solid ${accent};padding-bottom:16px;margin-bottom:18px;}
+  .cv-name{font-size:30px;font-weight:800;} .cv-title{font-size:15px;color:${accent};font-weight:700;margin-top:3px;}
+  .cv-contact{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12px;color:#555;}
+  .cv-sec{margin-top:20px;} .cv-sec h2{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:${accent};border-bottom:1px solid #e5e5ea;padding-bottom:5px;margin-bottom:10px;}
+  .cv-summary{font-size:12.8px;line-height:1.65;color:#3a3a44;} .cv-entry{margin-bottom:14px;}
+  .cv-entry .top{display:flex;justify-content:space-between;gap:10px;} .cv-entry .role{font-size:13.5px;font-weight:700;}
+  .cv-entry .co{color:${accent};font-weight:600;} .cv-entry .dt{font-size:11.5px;color:#888;} .cv-entry ul{margin:6px 0 0 16px;}
+  .cv-entry li{font-size:12.3px;line-height:1.55;color:#44444e;margin-bottom:3px;}
+  .cv-skills{display:flex;flex-wrap:wrap;gap:7px;} .cv-skill{background:#f1f2f6;border:1px solid #e3e4ea;font-size:11.5px;padding:4px 10px;border-radius:20px;}
+  .cv-two{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;} .cv-mini{font-size:12.3px;color:#3a3a44;margin-bottom:6px;}
+  </style></head><body><div class="paper">${$("paper").innerHTML}</div></body></html>`;
+  const blob=new Blob([doc],{type:"text/html"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=(state.name||"cv").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-cv.html"; a.click();
+}
+
+renderExp(); renderEdu(); render();
+</script>
+</body>
+</html>

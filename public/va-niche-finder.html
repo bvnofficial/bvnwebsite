@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VA Niche Finder Quiz</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--navy:#0A0F1E;--navy2:#111726;--line:rgba(255,255,255,.09);--orange:#E86010;--orange-l:#ff7a2a;--txt:#e8eaf0;--mut:rgba(255,255,255,.55);}
+  html,body{background:var(--navy);color:var(--txt);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;}
+  .wrap{max-width:660px;margin:0 auto;padding:38px 20px 70px;}
+  .head{text-align:center;margin-bottom:26px;}
+  .badge{display:inline-block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);font-weight:700;background:rgba(232,96,16,.1);border:1px solid rgba(232,96,16,.25);padding:5px 12px;border-radius:20px;margin-bottom:14px;}
+  h1{font-size:26px;font-weight:800;}
+  .head p{color:var(--mut);font-size:14px;margin-top:8px;line-height:1.6;}
+  .bar{height:6px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;margin-bottom:22px;}
+  .bar>i{display:block;height:100%;background:var(--orange);width:0;transition:.35s;}
+  .card{background:var(--navy2);border:1px solid var(--line);border-radius:18px;padding:26px;}
+  .qn{font-size:12px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+  .q{font-size:20px;font-weight:800;line-height:1.3;margin-bottom:20px;}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin-bottom:11px;cursor:pointer;color:var(--txt);font-size:14.5px;font-family:inherit;transition:.15s;}
+  .opt:hover{border-color:rgba(232,96,16,.5);background:rgba(232,96,16,.07);transform:translateX(3px);}
+  .opt .em{font-size:20px;}
+  .back{margin-top:6px;background:none;border:none;color:var(--mut);font-size:13px;cursor:pointer;font-family:inherit;}
+  .back:hover{color:#fff;}
+  /* result */
+  .result{text-align:center;}
+  .rIcon{font-size:56px;margin-bottom:8px;}
+  .rKick{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
+  .rName{font-size:28px;font-weight:800;color:#fff;margin:6px 0 12px;}
+  .rBlurb{font-size:14.5px;color:rgba(255,255,255,.75);line-height:1.65;margin-bottom:22px;}
+  .rCta{display:block;background:var(--orange);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:15px;border-radius:12px;margin-bottom:12px;}
+  .rCta:hover{background:var(--orange-l);}
+  .rCta.ghost{background:rgba(255,255,255,.06);color:#fff;font-size:13.5px;padding:12px;}
+  .runner{margin-top:22px;border-top:1px solid var(--line);padding-top:18px;text-align:left;}
+  .runner h3{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:10px;text-align:center;}
+  .rr{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:8px;text-decoration:none;color:var(--txt);font-size:13.5px;}
+  .rr:hover{border-color:rgba(232,96,16,.4);} .rr .go{color:var(--orange);font-weight:700;font-size:12.5px;}
+  .restart{margin-top:16px;background:none;border:none;color:var(--mut);font-size:13px;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <span class="badge">BVN · Free Quiz</span>
+    <h1>Find Your VA Niche</h1>
+    <p>Answer 7 quick questions and discover the Virtual Assistant path that fits you best — plus the free course to start it.</p>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="card" id="card"></div>
+</div>
+
+<script>
+const NICHE={
+  gohighlevel:{n:"GoHighLevel / CRM Automation",e:"🔧",slug:"gohighlevel-va",b:"You love building systems that run themselves. GoHighLevel VAs set up CRMs, pipelines, and automations that agencies pay a premium for."},
+  obm:{n:"Online Business Manager",e:"🎯",slug:"online-business-manager",b:"You're a natural organizer and leader. OBMs run the whole operation for founders — the highest-paid seat a VA can grow into."},
+  social:{n:"Social Media Management",e:"📱",slug:"social-media-management-va",b:"You get social platforms and love creating content. Every brand needs consistent posting — this is high, steady demand."},
+  design:{n:"Graphic Design",e:"🎨",slug:"graphic-design-va",b:"You have an eye for visuals. Design VAs turn Canva skills into steady creative income producing the graphics brands need daily."},
+  video:{n:"Video Editing",e:"🎬",slug:"video-editing-va",b:"You'd rather be behind the edit. Video editing is one of the most in-demand, highest-paid creative VA skills right now."},
+  book:{n:"Bookkeeping & Finance",e:"📊",slug:"bookkeeping-finance-va",b:"You're precise and trustworthy with numbers. Bookkeeping VAs earn a premium because clients only hand their money to people they trust."},
+  appt:{n:"Appointment Setting & Lead Gen",e:"📞",slug:"appointment-setting-lead-gen-va",b:"You're comfortable starting conversations. Setters fill calendars with qualified calls — and get paid per meeting or on retainer."},
+  sales:{n:"Sales & High-Ticket Closing",e:"💰",slug:"sales-high-ticket-closing-va",b:"You're persuasive and love the win. Closers run sales calls for offers and earn the highest commissions in the VA world."},
+  content:{n:"Content Writing & SEO",e:"✍️",slug:"content-writing-seo-va",b:"You'd rather write than talk. Content & SEO VAs create the articles and copy that grow a brand's traffic and authority."},
+  ai:{n:"AI Automation & Agents",e:"🤖",slug:"advanced-ai-agents-va",b:"You love tech and building. AI automation VAs command the highest rates — they build agents and automations with huge ROI."},
+  web:{n:"Web Design",e:"💻",slug:"web-design-va",b:"You like building things that look great and work. Web design VAs build client sites — endless demand, projects plus retainers."}
+};
+const QUESTIONS=[
+  {q:"What kind of work makes you lose track of time?",o:[
+    {t:"Organizing systems & processes",e:"🗂️",p:{obm:2,gohighlevel:2}},
+    {t:"Creating visuals or content",e:"🎨",p:{design:2,video:1,social:1}},
+    {t:"Talking to and persuading people",e:"🗣️",p:{sales:2,appt:2}},
+    {t:"Working with numbers & details",e:"🔢",p:{book:2,content:1}}]},
+  {q:"Pick the compliment you'd most love to hear:",o:[
+    {t:"“You're incredibly organized.”",e:"✅",p:{obm:2,gohighlevel:1}},
+    {t:"“That looks amazing!”",e:"✨",p:{design:2,video:2}},
+    {t:"“You're so persuasive.”",e:"🔥",p:{sales:2,appt:1}},
+    {t:"“You're so accurate and reliable.”",e:"🎯",p:{book:2,content:1}}]},
+  {q:"How do you feel about tech and new tools?",o:[
+    {t:"I love learning new tech",e:"⚡",p:{ai:2,gohighlevel:2,web:1}},
+    {t:"Comfortable — I adapt fast",e:"👍",p:{social:1,video:1,web:1}},
+    {t:"I prefer people over tools",e:"🤝",p:{sales:2,appt:1}},
+    {t:"I prefer structure & numbers",e:"📐",p:{book:2,obm:1}}]},
+  {q:"How do you feel about calls with strangers?",o:[
+    {t:"Love it — it energizes me",e:"📞",p:{sales:2,appt:2}},
+    {t:"Fine now and then",e:"🙂",p:{obm:1,social:1}},
+    {t:"I prefer behind-the-scenes",e:"🎧",p:{design:1,video:1,web:1,book:1}},
+    {t:"I'd rather write than talk",e:"✍️",p:{content:2}}]},
+  {q:"Which would you rather spend a whole day doing?",o:[
+    {t:"Building automations & workflows",e:"🔧",p:{gohighlevel:2,ai:2}},
+    {t:"Designing posts or editing videos",e:"🎬",p:{design:2,video:2,social:1}},
+    {t:"Writing articles & emails",e:"📝",p:{content:2}},
+    {t:"Managing money & reports",e:"📊",p:{book:2}}]},
+  {q:"What's your income ambition as a VA?",o:[
+    {t:"Start earning steadily, ASAP",e:"🌱",p:{social:2,appt:1}},
+    {t:"Premium specialist rates",e:"💎",p:{ai:2,sales:1,gohighlevel:1}},
+    {t:"A creative career I enjoy",e:"🎨",p:{design:2,video:1}},
+    {t:"Trusted long-term retainers",e:"🤝",p:{book:1,obm:2,web:1}}]},
+  {q:"Your most natural strength is…",o:[
+    {t:"Big-picture leadership",e:"🧭",p:{obm:2}},
+    {t:"Creativity & taste",e:"🌈",p:{design:2,video:1}},
+    {t:"Communication & charisma",e:"💬",p:{sales:2,appt:1,social:1}},
+    {t:"Precision & analysis",e:"🔍",p:{book:2,content:1}}]}
+];
+
+let step=0, scores={};
+const $=id=>document.getElementById(id);
+function pick(o){ for(const k in o.p){ scores[k]=(scores[k]||0)+o.p[k]; } step++; render(); }
+function back(){ if(step>0){ step--; render(); } }
+function restart(){ step=0; scores={}; render(); }
+
+function render(){
+  $("bar").style.width=(step/QUESTIONS.length*100)+"%";
+  if(step<QUESTIONS.length){
+    const q=QUESTIONS[step];
+    $("card").innerHTML=`<div class="qn">Question ${step+1} of ${QUESTIONS.length}</div>
+      <div class="q">${q.q}</div>
+      ${q.o.map((o,i)=>`<button class="opt" onclick="pick(QUESTIONS[${step}].o[${i}])"><span class="em">${o.e}</span> ${o.t}</button>`).join("")}
+      ${step>0?`<button class="back" onclick="back()">← Back</button>`:""}`;
+  } else { result(); }
+}
+function result(){
+  const ranked=Object.keys(NICHE).map(k=>[k,scores[k]||0]).sort((a,b)=>b[1]-a[1]);
+  const top=NICHE[ranked[0][0]];
+  const runners=ranked.slice(1,3).filter(r=>r[1]>0).map(r=>NICHE[r[0]]);
+  $("card").innerHTML=`<div class="result">
+    <div class="rIcon">${top.e}</div>
+    <div class="rKick">Your best-fit VA niche</div>
+    <div class="rName">${top.n}</div>
+    <div class="rBlurb">${top.b}</div>
+    <a class="rCta" href="https://www.bvnofficial.com/courses/${top.slug}" target="_blank">Start the free course →</a>
+    <a class="rCta ghost" href="https://www.bvnofficial.com/courses" target="_blank">Browse all 24 courses</a>
+    ${runners.length?`<div class="runner"><h3>Also a strong fit</h3>
+      ${runners.map(r=>`<a class="rr" href="https://www.bvnofficial.com/courses/${r.slug}" target="_blank"><span>${r.e} ${r.n}</span><span class="go">View →</span></a>`).join("")}</div>`:""}
+    <button class="restart" onclick="restart()">↺ Retake quiz</button>
+  </div>`;
+  $("bar").style.width="100%";
+}
+render();
+</script>
+</body>
+</html>

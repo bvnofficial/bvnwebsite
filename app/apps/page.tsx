@@ -1,12 +1,75 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag, ShieldCheck, HeartPulse, Home, FileText } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag, ShieldCheck, HeartPulse, Home, FileText, Briefcase, FileSignature, ScrollText, ClipboardList, Compass } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ShareButtons from "@/components/ui/ShareButtons";
 
 const apps = [
+  {
+    icon: Briefcase,
+    title: "VA Portfolio Builder",
+    description:
+      "Build a professional one-page VA portfolio — services, work samples, testimonials, and contact. Download a hostable HTML page or PDF. Free, no signup.",
+    href: "/apps/portfolio-builder",
+    badge: "✨ For VAs",
+    color: "orange",
+  },
+  {
+    icon: FileText,
+    title: "CV & Resume Builder",
+    description:
+      "Create a polished Virtual Assistant resume with a live preview and accent colors. Download as a designed PDF or a hostable HTML file. Free, no signup.",
+    href: "/apps/cv-builder",
+    badge: "✨ For VAs",
+    color: "blue",
+  },
+  {
+    icon: FileSignature,
+    title: "Proposal Generator",
+    description:
+      "Create a client-winning proposal with overview, deliverables, timeline, and pricing packages. Download as PDF or HTML. Free, no signup.",
+    href: "/apps/proposal-generator",
+    badge: "✨ For VAs",
+    color: "orange",
+  },
+  {
+    icon: ScrollText,
+    title: "Freelance Contract Generator",
+    description:
+      "Generate a clear client agreement — scope, payment, IP, confidentiality, and termination clauses — in minutes. Download as PDF or HTML.",
+    href: "/apps/contract-generator",
+    badge: "✨ For VAs",
+    color: "blue",
+  },
+  {
+    icon: ClipboardList,
+    title: "Client Onboarding Kit",
+    description:
+      "Generate a professional welcome + intake kit for new clients — welcome note, next steps, questionnaire, and first milestones. PDF or HTML.",
+    href: "/apps/onboarding-kit-generator",
+    badge: "✨ For VAs",
+    color: "green",
+  },
+  {
+    icon: Calculator,
+    title: "VA Rate Calculator",
+    description:
+      "Stop guessing what to charge. Get a realistic hourly and monthly rate range based on your niche, experience, and client region. Free.",
+    href: "/apps/va-rate-calculator",
+    badge: "✨ For VAs",
+    color: "orange",
+  },
+  {
+    icon: Compass,
+    title: "VA Niche Finder Quiz",
+    description:
+      "Not sure which VA path fits you? Answer 7 quick questions and discover your best-fit niche — plus the free course to start it.",
+    href: "/apps/va-niche-finder",
+    badge: "✨ For VAs",
+    color: "purple",
+  },
   {
     icon: ShieldCheck,
     title: "SSS Contribution Calculator",
@@ -228,7 +291,7 @@ export default function AppsPage() {
             Free Tools Built for <span className="text-gradient">Your Business</span>
           </h1>
           <p className="text-white/60 text-lg">
-            Practical calculators and tools designed to help you make smarter decisions — no sign-up required.
+            Free tools for Virtual Assistants and freelancers — build your CV, portfolio, proposals and contracts — plus handy business calculators. No sign-up required.
           </p>
         </div>
       </section>
