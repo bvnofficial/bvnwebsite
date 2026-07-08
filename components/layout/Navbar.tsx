@@ -111,7 +111,7 @@ const blogDropdown = [
   { label: "Compress Images Free", href: "/blog/compress-images-free-guide-website-speed", icon: ImageDown },
   { label: "Business Automation Guide", href: "/blog/business-automation-philippines-guide", icon: Settings },
   { label: "Social Media Management PH", href: "/blog/social-media-management-philippines", icon: Share2 },
-  { label: "SEO Philippines 2025", href: "/blog/seo-philippines-rank-google-2025", icon: Search },
+  { label: "SEO Philippines 2026", href: "/blog/seo-philippines-rank-google-2026", icon: Search },
 ];
 
 type AccentColor = "orange" | "blue" | "green";
