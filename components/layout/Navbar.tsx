@@ -9,9 +9,61 @@ import {
   Share2, BarChart2, Search, Mail, FileText, Video, Users, Globe, Smartphone, Database,
   Bot, Workflow, UserCheck, Settings, Clock, Shield, PieChart, Plug,
   Sun, Wrench, TrendingUp, BookOpen, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift,
+  LogIn, Coins,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/utils/supabase/client";
+
+// Lightweight auth-state hook for the navbar. Reads the current Supabase user
+// and subscribes to sign-in/sign-out so the menu updates instantly without a
+// full reload. Safe no-op if Supabase env vars aren't configured.
+function useNavUser() {
+  const [user, setUser] = useState<{ email: string; name?: string } | null>(null);
+
+  useEffect(() => {
+    if (
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    ) {
+      return;
+    }
+
+    let mounted = true;
+    const supabase = createClient();
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (mounted && data.user) {
+        setUser({ email: data.user.email!, name: data.user.user_metadata?.full_name });
+      }
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(
+        session?.user
+          ? { email: session.user.email!, name: session.user.user_metadata?.full_name }
+          : null
+      );
+    });
+
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  return user;
+}
+
+function initialsOf(user: { email: string; name?: string }) {
+  const base = user.name || user.email.split("@")[0];
+  return base
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
 
 const marketingDropdown = [
   { label: "Social Media Management", href: "/marketing/social-media-management", icon: Share2 },
@@ -264,6 +316,7 @@ function MobileGroupAccordion({
 
 export default function Navbar() {
   const pathname = usePathname();
+  const user = useNavUser();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServices, setMobileServices] = useState(false);
   const [mobileMedia, setMobileMedia] = useState(false);
@@ -284,10 +337,20 @@ export default function Navbar() {
   const servicesActive = pathname.startsWith("/marketing") || pathname.startsWith("/operations");
   const mediaActive = pathname.startsWith("/apps") || pathname.startsWith("/blog");
 
+  // Individual /apps/* tool pages are full-screen and ship their own "Back to Apps"
+  // header, so the global fixed navbar would overlap them. We hide it on those
+  // routes (but keep it on the /apps index) by toggling a `hide-navbar` class on
+  // <html> — CSS then hides `.site-navbar`. A pre-paint script in the root layout
+  // sets the same class on first load so there's no flash of the overlapping nav.
+  const isAppToolPage = /^\/apps\/.+/.test(pathname);
+  useEffect(() => {
+    document.documentElement.classList.toggle("hide-navbar", isAppToolPage);
+  }, [isAppToolPage]);
+
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "site-navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
           ? "bg-navy-dark/80 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20"
           : "bg-transparent"
@@ -402,18 +465,69 @@ export default function Navbar() {
                 )}
               </Link>
             </li>
+
+            {/* Dashboard — only when logged in */}
+            {user && (
+              <li>
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    "relative px-4 py-2 text-sm font-accent font-semibold transition-colors duration-200 rounded-md",
+                    pathname.startsWith("/dashboard") ? "text-orange" : "text-white/80 hover:text-white"
+                  )}
+                >
+                  Dashboard
+                  {pathname.startsWith("/dashboard") && (
+                    <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-orange rounded-full" />
+                  )}
+                </Link>
+              </li>
+            )}
           </ul>
 
-          {/* Desktop CTA */}
+          {/* Desktop CTA / Account */}
           <div className="hidden lg:flex items-center gap-2">
-            <Link
-              href="/contact"
-              className="px-5 py-2.5 bg-orange text-white text-sm font-heading font-semibold rounded-lg
-                shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light hover:shadow-[0_0_30px_rgba(232,96,16,0.6)]
-                transition-all duration-200"
-            >
-              Get Started
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/credits"
+                  className="flex items-center gap-1.5 px-3 py-2.5 text-sm font-accent font-semibold text-white/80 hover:text-white
+                    rounded-lg hover:bg-white/5 transition-all duration-200"
+                >
+                  <Coins size={15} className="text-orange" />
+                  Credits
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-lg bg-orange/10 border border-orange/25
+                    hover:bg-orange/15 hover:border-orange/40 transition-all duration-200"
+                >
+                  <span className="w-7 h-7 rounded-full bg-orange/20 border border-orange/30 flex items-center justify-center">
+                    <span className="text-[11px] font-heading font-bold text-orange">{initialsOf(user)}</span>
+                  </span>
+                  <span className="text-sm font-accent font-semibold text-orange">Dashboard</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-accent font-semibold text-white/80 hover:text-white
+                    rounded-lg hover:bg-white/5 transition-all duration-200"
+                >
+                  <LogIn size={15} />
+                  Log In
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-5 py-2.5 bg-orange text-white text-sm font-heading font-semibold rounded-lg
+                    shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light hover:shadow-[0_0_30px_rgba(232,96,16,0.6)]
+                    transition-all duration-200"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Hamburger */}
@@ -470,8 +584,13 @@ export default function Navbar() {
               onToggle={() => setMobileMedia((v) => !v)}
             />
 
-            {/* Courses + Pricing + Contact */}
-            {[{ label: "Courses", href: "/courses" }, { label: "Pricing", href: "/pricing" }, { label: "Contact", href: "/contact" }].map((link) => {
+            {/* Courses + Pricing + Contact (+ Dashboard when logged in) */}
+            {[
+              { label: "Courses", href: "/courses" },
+              { label: "Pricing", href: "/pricing" },
+              { label: "Contact", href: "/contact" },
+              ...(user ? [{ label: "Dashboard", href: "/dashboard" }] : []),
+            ].map((link) => {
               const isActive = pathname.startsWith(link.href);
               return (
                 <Link
@@ -487,15 +606,55 @@ export default function Navbar() {
               );
             })}
 
-            {/* CTA */}
+            {/* CTA / Account */}
             <div className="pt-2 pb-1 px-2 flex flex-col gap-2">
-              <Link
-                href="/contact"
-                className="block text-center px-5 py-3 bg-orange text-white text-sm font-heading font-semibold rounded-lg
-                  shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light transition-all"
-              >
-                Get Started
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href="/credits"
+                    className="flex items-center justify-center gap-2 px-5 py-3 bg-white/8 border border-white/10 text-white text-sm font-accent font-semibold rounded-lg
+                      hover:bg-white/12 transition-all"
+                  >
+                    <Coins size={16} className="text-orange" />
+                    Credits
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center justify-center gap-2 px-5 py-3 bg-orange text-white text-sm font-heading font-semibold rounded-lg
+                      shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light transition-all"
+                  >
+                    <LayoutDashboard size={16} />
+                    Go to Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <Link
+                      href="/login"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 border border-white/15 text-white text-sm font-accent font-semibold rounded-lg
+                        hover:bg-white/5 transition-all"
+                    >
+                      <LogIn size={15} />
+                      Log In
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="flex-1 text-center px-4 py-3 bg-white/8 border border-white/10 text-white text-sm font-accent font-semibold rounded-lg
+                        hover:bg-white/12 transition-all"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                  <Link
+                    href="/contact"
+                    className="block text-center px-5 py-3 bg-orange text-white text-sm font-heading font-semibold rounded-lg
+                      shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light transition-all"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
