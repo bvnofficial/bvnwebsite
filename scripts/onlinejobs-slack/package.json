@@ -1,0 +1,9 @@
+{
+  "name": "onlinejobs-slack",
+  "private": true,
+  "type": "module",
+  "description": "Scrapes onlinejobs.ph, classifies postings, posts them to Slack. Run by .github/workflows/onlinejobs-slack.yml.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1"
+  }
+}
