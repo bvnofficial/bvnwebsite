@@ -41,23 +41,22 @@ would have posted (visible in the Actions logs) and posts nothing.
 
 ## Configuration — `config.json`
 
-- `slack.defaultChannel` — where uncategorized/unmapped jobs go (default `#all-jobs`).
-- `slack.channelByCategory` — route categories to channels, e.g.:
-
-  ```json
-  "channelByCategory": {
-    "Web Development": "#dev-jobs",
-    "Software & AI Development": "#dev-jobs",
-    "Digital Marketing": "#marketing-jobs",
-    "Virtual Assistant & Admin": "#va-jobs"
-  }
-  ```
-
+- `slack.defaultChannel` — where uncategorized ("Other") jobs go, and the
+  fallback when a category's channel is missing/inaccessible (default `#all-jobs`).
+- `slack.channelByCategory` — routes each category to its own channel. Each of
+  the 14 categories maps to a `#jobs-…` channel (e.g. `SEO` → `#jobs-seo`,
+  `Software & AI Development` → `#jobs-software-ai`). **Per-category routing
+  requires the `SLACK_BOT_TOKEN` (bot) path** — a single incoming webhook can
+  only post to one channel. The bot must be able to post to each channel: add
+  the `chat:write.public` scope (posts to any public channel without an invite),
+  or `/invite` the bot into each channel. If a channel doesn't exist yet, that
+  job falls back to `defaultChannel` rather than being dropped.
 - `categories` — the category list and the keywords used by the fallback
   classifier. Claude uses the same category names.
 - `search.keyword` — optionally limit scraping to a search term (empty = all
   latest jobs). `search.pages` — pages of 30 jobs to scan per run.
-- `maxAgeHours` / `maxPostsPerRun` — freshness window and per-run flood cap.
+- `maxAgeHours` — freshness window (only jobs posted within this many hours are
+  considered). `maxPostsPerRun` — per-run cap; set to `null` for no cap.
 
 ## Testing
 
