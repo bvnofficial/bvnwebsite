@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Award, Lock, ArrowLeft, Loader2, QrCode } from "lucide-react";
+import { Award, Lock, ArrowLeft, Loader2, QrCode, Coins } from "lucide-react";
 import { getCourse } from "@/lib/courses";
 import { useProgress } from "@/lib/useProgress";
+import { createClient } from "@/utils/supabase/client";
 import PayPalCheckout from "@/app/payments/PayPalCheckout";
 
 export default function CertificateClaimPage() {
@@ -20,6 +21,31 @@ export default function CertificateClaimPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Wallet: is the visitor signed in, and how many credits do they have?
+  // (1 credit = $1 = ₱60 = exactly the certificate fee.)
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [balance, setBalance] = useState<number | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data }) => {
+      const u = data.user;
+      if (!u) {
+        setLoggedIn(false);
+        return;
+      }
+      setLoggedIn(true);
+      if (u.email && !email) setEmail(u.email);
+      const { data: wallet } = await supabase
+        .from("wallets")
+        .select("balance")
+        .eq("user_id", u.id)
+        .maybeSingle();
+      setBalance(wallet?.balance ?? 0);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!course) {
     return (
@@ -43,6 +69,10 @@ export default function CertificateClaimPage() {
 
   const formValid = name.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
+  // When the user can pay with credits, that becomes the primary (orange) action
+  // and QR Ph drops to a secondary style so there's only ever one primary button.
+  const canUseCredits = loggedIn === true && balance !== null && balance >= 1;
+
   // ── PayMongo QR Ph ──
   const payWithQR = async () => {
     if (!formValid) {
@@ -60,6 +90,29 @@ export default function CertificateClaimPage() {
       const data = await res.json();
       if (!res.ok || !data.checkoutUrl) throw new Error(data.error || "Could not start payment.");
       window.location.href = data.checkoutUrl;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+      setLoading(false);
+    }
+  };
+
+  // ── Pay with 1 wallet credit ──
+  const payWithCredits = async () => {
+    if (!formValid) {
+      setError("Please enter your full name and a valid email.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/certificate/credits-complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseSlug: slug, name: name.trim(), email: email.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.id) throw new Error(data.error || "Could not use credits.");
+      router.push(`/certificate/${data.id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setLoading(false);
@@ -166,11 +219,67 @@ export default function CertificateClaimPage() {
               <span className="text-white font-heading font-bold">₱60 <span className="text-white/40 font-normal text-sm">/ $1</span></span>
             </div>
 
+            {/* Pay with wallet credits (1 credit = the full fee) */}
+            {canUseCredits && (
+              <>
+                <button
+                  onClick={payWithCredits}
+                  disabled={loading || !formValid}
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-orange text-white font-heading font-semibold text-sm shadow-[0_0_24px_rgba(232,96,16,0.3)] hover:bg-orange-light disabled:opacity-50 transition-all mb-2"
+                >
+                  {loading ? <Loader2 className="animate-spin" size={16} /> : <Coins size={16} />}
+                  Use 1 credit
+                </button>
+                <p className="text-white/35 text-xs text-center mb-4">
+                  You have <span className="text-white/70 font-semibold">{balance}</span>{" "}
+                  {balance === 1 ? "credit" : "credits"}. Covers the full fee — no cash needed.
+                </p>
+
+                {/* Divider */}
+                <div className="flex items-center gap-3 my-4">
+                  <div className="flex-1 h-px bg-white/10" />
+                  <span className="text-white/30 text-xs font-accent">or pay directly</span>
+                  <div className="flex-1 h-px bg-white/10" />
+                </div>
+              </>
+            )}
+
+            {/* Logged in but no credits → nudge to top up */}
+            {loggedIn && balance !== null && balance < 1 && (
+              <div className="flex items-center justify-between gap-3 bg-white/[0.03] border border-white/8 rounded-xl px-4 py-3 mb-4">
+                <span className="flex items-center gap-2 text-white/55 text-xs">
+                  <Coins size={14} className="text-orange/70" /> Pay with credits instead
+                </span>
+                <Link href="/credits" className="text-orange text-xs font-accent font-semibold hover:underline">
+                  Top up →
+                </Link>
+              </div>
+            )}
+
+            {/* Not signed in → let them use a wallet if they have one */}
+            {loggedIn === false && (
+              <div className="flex items-center justify-between gap-3 bg-white/[0.03] border border-white/8 rounded-xl px-4 py-3 mb-4">
+                <span className="flex items-center gap-2 text-white/55 text-xs">
+                  <Coins size={14} className="text-orange/70" /> Have credits?
+                </span>
+                <Link
+                  href={`/login?next=/courses/${slug}/certificate`}
+                  className="text-orange text-xs font-accent font-semibold hover:underline"
+                >
+                  Log in to pay with your wallet →
+                </Link>
+              </div>
+            )}
+
             {/* QR Ph (PayMongo) */}
             <button
               onClick={payWithQR}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-orange text-white font-heading font-semibold text-sm shadow-[0_0_24px_rgba(232,96,16,0.3)] hover:bg-orange-light disabled:opacity-50 transition-all mb-3"
+              className={`w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-heading font-semibold text-sm disabled:opacity-50 transition-all mb-3 ${
+                canUseCredits
+                  ? "bg-white/8 border border-white/12 text-white hover:bg-white/12"
+                  : "bg-orange text-white shadow-[0_0_24px_rgba(232,96,16,0.3)] hover:bg-orange-light"
+              }`}
             >
               {loading ? <Loader2 className="animate-spin" size={16} /> : <QrCode size={16} />}
               Pay ₱60 with QR Ph

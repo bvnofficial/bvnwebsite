@@ -46,7 +46,10 @@ function LoginForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      // Honor a safe same-origin ?next= (e.g. returning to certificate checkout).
+      const next = searchParams.get("next");
+      const dest = next && /^\/(?!\/)/.test(next) ? next : "/dashboard";
+      router.push(dest);
       router.refresh();
     }
   }
