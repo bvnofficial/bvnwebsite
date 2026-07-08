@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import {
-  LogOut, BookOpen, CreditCard, Rocket, LifeBuoy, ChevronRight,
+  LogOut, ChevronRight,
   User, Lock, Check, AlertCircle, Pencil, Coins, Shield,
 } from "lucide-react";
 
@@ -16,23 +16,9 @@ interface Props {
   admin?: boolean;
 }
 
-// Customer-facing shortcuts — every destination is a real, live page.
-const quickLinks = [
-  { label: "My Courses", href: "/courses", icon: BookOpen, desc: "Browse & continue learning" },
-  { label: "Credits & Wallet", href: "/credits", icon: Coins, desc: "Top up & unlock premium items" },
-  { label: "Make a Payment", href: "/payments", icon: CreditCard, desc: "Pay by card, PayPal or crypto" },
-  { label: "Start a Project", href: "/get-started", icon: Rocket, desc: "Tell us what you need" },
-  { label: "Support", href: "/contact", icon: LifeBuoy, desc: "Get help from the BVN team" },
-];
-
 export default function DashboardClient({ user, credits = 0, admin = false }: Props) {
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
-
-  // Admins get an extra shortcut to the credit-management panel.
-  const links = admin
-    ? [...quickLinks, { label: "Admin Panel", href: "/admin", icon: Shield, desc: "Manually add credits to accounts" }]
-    : quickLinks;
 
   // Profile (name) editing
   const [name, setName] = useState(user.name || "");
@@ -153,43 +139,30 @@ export default function DashboardClient({ user, credits = 0, admin = false }: Pr
             </div>
           </div>
 
-          {/* Credits balance chip */}
-          <Link
-            href="/credits"
-            className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-orange/10 border border-orange/25
-              hover:bg-orange/15 hover:border-orange/40 transition-all"
-          >
-            <Coins size={15} className="text-orange" />
-            <span className="text-sm font-heading font-bold text-white">{credits}</span>
-            <span className="text-xs font-accent text-white/50">credits</span>
-            <ChevronRight size={13} className="text-orange/60" />
-          </Link>
-        </div>
+          {/* Credits balance chip (+ admin shortcut for the admin account only) */}
+          <div className="flex flex-wrap items-center gap-2 mt-4">
+            <Link
+              href="/credits"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-orange/10 border border-orange/25
+                hover:bg-orange/15 hover:border-orange/40 transition-all"
+            >
+              <Coins size={15} className="text-orange" />
+              <span className="text-sm font-heading font-bold text-white">{credits}</span>
+              <span className="text-xs font-accent text-white/50">credits</span>
+              <ChevronRight size={13} className="text-orange/60" />
+            </Link>
 
-        {/* Quick Links */}
-        <div className="mb-10">
-          <h2 className="text-sm font-accent font-bold text-white/40 uppercase tracking-widest mb-4">
-            Quick Access
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {links.map((link) => (
+            {admin && (
               <Link
-                key={link.label}
-                href={link.href}
-                className="group bg-[#111827] border border-white/10 rounded-2xl p-5 flex items-center gap-4
-                  hover:border-orange/30 hover:bg-orange/5 transition-all"
+                href="/admin"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10
+                  hover:bg-white/10 hover:border-white/20 transition-all"
               >
-                <div className="w-10 h-10 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center shrink-0
-                  group-hover:bg-orange/20 transition-colors">
-                  <link.icon size={18} className="text-orange" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-accent font-semibold text-white group-hover:text-orange transition-colors">{link.label}</p>
-                  <p className="text-xs text-white/40 font-body truncate">{link.desc}</p>
-                </div>
-                <ChevronRight size={14} className="text-white/20 group-hover:text-orange/60 shrink-0 transition-colors" />
+                <Shield size={15} className="text-white/60" />
+                <span className="text-xs font-accent font-semibold text-white/70">Admin Panel</span>
+                <ChevronRight size={13} className="text-white/30" />
               </Link>
-            ))}
+            )}
           </div>
         </div>
 
