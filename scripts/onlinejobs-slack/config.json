@@ -1,0 +1,28 @@
+{
+  "search": {
+    "pages": 2,
+    "keyword": ""
+  },
+  "maxAgeHours": 2,
+  "maxPostsPerRun": 25,
+  "slack": {
+    "defaultChannel": "#job-feed",
+    "channelByCategory": {}
+  },
+  "categories": {
+    "Virtual Assistant & Admin": ["virtual assistant", " va ", "executive assistant", "admin", "data entry", "appointment setter", "transcription", "research specialist", "back office"],
+    "Customer Service": ["customer service", "customer support", "chat support", "email support", "csr", "helpdesk", "call center"],
+    "Sales & Lead Generation": ["sales", "lead generation", "lead manager", "cold call", "business development", "acquisition", "telemarket", "outreach"],
+    "Digital Marketing": ["marketing", "ppc", "google ads", "facebook ads", "meta ads", "media buyer", "email marketing", "funnel", "gohighlevel", "ghl", "crm"],
+    "SEO": ["seo", "search engine optimization", "link building", "backlink", "keyword research"],
+    "Social Media": ["social media", "instagram", "tiktok", "facebook page", "youtube channel", "community manager", "content scheduler"],
+    "Design & Creative": ["graphic design", "designer", "canva", "photoshop", "illustrator", "ui/ux", "ux designer", "branding", "figma", "creative"],
+    "Video Editing": ["video editor", "video editing", "videographer", "premiere", "after effects", "capcut", "motion graphics", "reels editor"],
+    "Writing & Content": ["writer", "writing", "copywriter", "content creator", "blog", "proofread", "editor for articles", "ghostwriter", "scriptwriter"],
+    "Web Development": ["web developer", "wordpress", "webflow", "web design", "frontend", "front-end", "html", "css", "landing page"],
+    "Software & AI Development": ["software", "developer", "programmer", "full stack", "backend", "python", "javascript", "node", "react", "automation developer", "ai ", "machine learning", "zapier", "make.com", "n8n", "api integration"],
+    "E-commerce": ["shopify", "amazon", "ebay", "etsy", "e-commerce", "ecommerce", "dropship", "product listing", "store manager", "walmart"],
+    "Accounting & Finance": ["bookkeep", "accountant", "accounting", "quickbooks", "xero", "payroll", "finance"],
+    "Real Estate": ["real estate", "property management", "realtor", "mls", "wholesaling", "airbnb"]
+  }
+}
