@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "FB Legacy Implementation Roadmap (application)",
+    region: "Ops foundation project, 30 to 60 days",
+    scope: "Project Coordinator + SOPs + Google Workspace",
+    blurb:
+      "Interactive 30 to 60 day operational foundation roadmap for a Project Coordinator role: the three phases from discovery and planning to implementation to training and handover, a sample org skeleton, a Google Drive folder blueprint, and an SOP library. Built with Claude Code.",
+    href: "/clients/fb-legacy/implementation-roadmap",
+    status: "pending",
+    accent: C.purple,
+    tags: ["Operations", "SOPs", "Google Workspace", "Systems"],
+  },
+  {
     name: "Ro Movers Growth System (application)",
     region: "Moving company, US",
     scope: "GHL + WordPress + Funnel + SEO",
