@@ -41,7 +41,7 @@ would have posted (visible in the Actions logs) and posts nothing.
 
 ## Configuration — `config.json`
 
-- `slack.defaultChannel` — where uncategorized/unmapped jobs go (default `#job-feed`).
+- `slack.defaultChannel` — where uncategorized/unmapped jobs go (default `#onlinejobs-ph`).
 - `slack.channelByCategory` — route categories to channels, e.g.:
 
   ```json

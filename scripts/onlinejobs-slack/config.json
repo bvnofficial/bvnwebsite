@@ -6,7 +6,7 @@
   "maxAgeHours": 2,
   "maxPostsPerRun": 25,
   "slack": {
-    "defaultChannel": "#job-feed",
+    "defaultChannel": "#onlinejobs-ph",
     "channelByCategory": {}
   },
   "categories": {
