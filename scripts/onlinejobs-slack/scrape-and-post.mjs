@@ -273,12 +273,15 @@ console.log(`${fresh.length} new job(s) after dedup + ${config.maxAgeHours}h fre
 
 if (fresh.length) {
   const categories = await classifyAll(fresh);
+  const tally = {}; // channel -> count, for a routing summary at the end
   let posted = 0;
   const failures = [];
   for (let i = 0; i < fresh.length; i++) {
     const job = fresh[i], category = categories[i];
+    const channel = channelFor(category);
+    tally[channel] = (tally[channel] || 0) + 1;
     if (DRY_RUN) {
-      console.log(`[dry-run] ${channelFor(category)} | ${category} | ${job.title} | ${job.salary} | ${job.url}`);
+      console.log(`[dry-run] ${channel} | ${category} | ${job.title} | ${job.salary} | ${job.url}`);
       seen.add(job.id);
       continue;
     }
@@ -293,6 +296,8 @@ if (fresh.length) {
     }
   }
   console.log(DRY_RUN ? "Dry run complete — nothing posted to Slack." : `Posted ${posted}/${fresh.length} job(s) to Slack.`);
+  const summary = Object.entries(tally).sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c}: ${n}`).join(", ");
+  console.log(`By channel — ${summary}`);
   if (failures.length === fresh.length && fresh.length > 0) {
     saveSeen(seen);
     throw new Error(`Every Slack post failed:\n${failures.join("\n")}`);
