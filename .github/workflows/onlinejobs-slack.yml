@@ -7,7 +7,20 @@ name: OnlineJobs.ph Slack Job Feed
 on:
   schedule:
     - cron: "7 * * * *" # hourly at :07 UTC; GitHub may delay under load
-  workflow_dispatch: {} # allow manual runs from the Actions tab
+  workflow_dispatch: # manual runs from the Actions tab, with optional overrides
+    inputs:
+      max_age_hours:
+        description: "Freshness window in hours (blank = default 2). Use e.g. 6 for a backfill."
+        required: false
+        default: ""
+      ignore_seen:
+        description: "Set true to post even jobs already recorded (one-off backfill; ignores dedup)."
+        required: false
+        default: "false"
+      max_posts:
+        description: "Max jobs to post this run (blank = no cap). Caps a backfill."
+        required: false
+        default: ""
 
 concurrency:
   group: onlinejobs-slack
@@ -22,6 +35,10 @@ jobs:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      # Empty on scheduled runs (falls back to config defaults); set via manual dispatch.
+      MAX_AGE_HOURS: ${{ github.event.inputs.max_age_hours }}
+      IGNORE_SEEN: ${{ github.event.inputs.ignore_seen == 'true' && '1' || '' }}
+      MAX_POSTS: ${{ github.event.inputs.max_posts }}
     steps:
       - uses: actions/checkout@v4
 

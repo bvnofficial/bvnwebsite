@@ -25,7 +25,12 @@ const DRY_RUN = process.env.DRY_RUN === "1" || (!process.env.SLACK_BOT_TOKEN && 
 // "bot" delivers to each job's category channel; "webhook" ignores the channel
 // and delivers everything to the webhook's single bound channel.
 const AUTH_MODE = process.env.SLACK_BOT_TOKEN ? "bot" : process.env.SLACK_WEBHOOK_URL ? "webhook" : "none";
-const MAX_AGE_MS = (config.maxAgeHours ?? 2) * 3600_000;
+// Freshness window; MAX_AGE_HOURS env (e.g. a manual 6h backfill) overrides config.
+const MAX_AGE_HOURS = Number(process.env.MAX_AGE_HOURS) || config.maxAgeHours || 2;
+const MAX_AGE_MS = MAX_AGE_HOURS * 3600_000;
+// IGNORE_SEEN=1 disables dedup for one run (used for manual backfills) so jobs
+// post even if a prior run already recorded them.
+const IGNORE_SEEN = process.env.IGNORE_SEEN === "1";
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
 // ---------- scrape ----------
@@ -268,21 +273,33 @@ if (AUTH_MODE === "webhook" && routingConfigured && !DRY_RUN) {
   );
 }
 
-const pages = Math.max(1, config.search?.pages ?? 2);
+const cutoff = Date.now() - MAX_AGE_MS;
+// Page through the latest-first listing until we scroll past the freshness
+// window (jobs are sorted newest first), so the window size drives how much we
+// fetch. minPages guarantees a floor; maxPages is a safety ceiling.
+const minPages = Math.max(1, Number(process.env.PAGES) || config.search?.pages || 2);
+const maxPages = Math.max(minPages, Number(process.env.MAX_PAGES) || 20);
 const all = [];
-for (let p = 0; p < pages; p++) all.push(...await fetchPage(p * 30));
-console.log(`Scraped ${all.length} job(s) across ${pages} page(s).`);
+let pagesFetched = 0;
+for (let p = 0; p < maxPages; p++) {
+  const pageJobs = await fetchPage(p * 30);
+  pagesFetched++;
+  if (!pageJobs.length) break;
+  all.push(...pageJobs);
+  const oldest = pageJobs[pageJobs.length - 1].postedUtc;
+  if (p + 1 >= minPages && oldest && oldest.getTime() < cutoff) break; // scrolled past the window
+}
+console.log(`Scraped ${all.length} job(s) across ${pagesFetched} page(s); window ${MAX_AGE_HOURS}h.`);
 
 const seen = loadSeen();
-const cutoff = Date.now() - MAX_AGE_MS;
 const freshAll = all
-  .filter((j) => !seen.has(j.id))
+  .filter((j) => IGNORE_SEEN || !seen.has(j.id))
   .filter((j) => j.postedUtc && j.postedUtc.getTime() >= cutoff);
 // maxPostsPerRun null/0 = no cap (post every fresh job).
-const cap = config.maxPostsPerRun;
+const cap = Number(process.env.MAX_POSTS) || config.maxPostsPerRun; // MAX_POSTS env overrides for one-off runs
 const fresh = cap && cap > 0 ? freshAll.slice(0, cap) : freshAll;
 
-console.log(`${fresh.length} new job(s) after dedup + ${config.maxAgeHours}h freshness filter.`);
+console.log(`${fresh.length} job(s) to post after ${IGNORE_SEEN ? "" : "dedup + "}${MAX_AGE_HOURS}h freshness filter${IGNORE_SEEN ? " (dedup disabled)" : ""}.`);
 
 if (fresh.length) {
   const categories = await classifyAll(fresh);
