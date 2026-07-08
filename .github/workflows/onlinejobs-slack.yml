@@ -16,6 +16,12 @@ concurrency:
 jobs:
   scrape-and-post:
     runs-on: ubuntu-latest
+    # Secrets are mapped to env at the job level so a step-level `if` can gate
+    # on them — the `secrets` context isn't allowed in `if` expressions.
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -34,13 +40,9 @@ jobs:
             onlinejobs-seen-
 
       - name: Install Claude SDK (only when AI classification is enabled)
-        if: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
         working-directory: scripts/onlinejobs-slack
         run: npm install --no-fund --no-audit
 
       - name: Scrape, classify, and post to Slack
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node scripts/onlinejobs-slack/scrape-and-post.mjs
