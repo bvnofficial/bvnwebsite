@@ -43,59 +43,55 @@ const childVariant = {
 
 const specializations = [
   {
-    icon: Code2,
-    title: "WordPress Development",
+    icon: Zap,
+    title: "GoHighLevel & CRM Automation",
     color: "orange",
     items: [
-      "Elementor & Divi page builder",
-      "Custom theme development",
-      "WooCommerce / E-Commerce",
-      "Performance & speed optimization",
-      "SEO-ready structure & markup",
-      "Plugin integration & customization",
-      "Security hardening & maintenance",
-    ],
-  },
-  {
-    icon: Zap,
-    title: "GoHighLevel (GHL)",
-    color: "blue",
-    items: [
-      "Funnel & landing page builds",
-      "CRM pipeline & contact management",
-      "Workflow & automation sequences",
-      "Email & SMS campaign setup",
-      "Calendar & booking systems",
-      "White-label SaaS sub-account setup",
-      "API & third-party integrations",
+      "Full CRM, pipelines & custom fields",
+      "Workflow, email & SMS automation",
+      "A2P 10DLC, calendars & booking",
+      "Lead routing & nurture sequences",
+      "Reporting dashboards & analytics",
+      "SOPs, training & clean handoff",
     ],
   },
   {
     icon: Bot,
-    title: "Marketing Automation",
-    color: "purple",
+    title: "AI Chatbots & Automation",
+    color: "blue",
     items: [
-      "Zapier & Make (Integromat)",
-      "Lead nurture sequences",
-      "AI chatbot development",
-      "n8n workflow automation",
-      "CRM & sales automation",
+      "AI chatbots & conversational agents",
       "Prompt engineering & AI agents",
+      "Zapier, Make & n8n workflows",
+      "CRM & sales automation",
+      "Custom automations & integrations",
       "Analytics & reporting dashboards",
     ],
   },
   {
     icon: Layers,
-    title: "AI & Web Applications",
-    color: "green",
+    title: "Modern Web Development",
+    color: "purple",
     items: [
-      "AI chatbots & conversational agents",
       "Next.js / React web applications",
       "Supabase / PostgreSQL backends",
+      "WordPress, Duda & WooCommerce",
       "Payment & checkout integrations",
-      "Custom dashboards & internal tools",
-      "API & third-party integrations",
+      "APIs & custom internal tools",
       "Cloud deployment on Vercel",
+    ],
+  },
+  {
+    icon: BarChart3,
+    title: "Marketing & Growth",
+    color: "green",
+    items: [
+      "SEO, AI search & content",
+      "Social media & email marketing",
+      "Funnels & landing pages",
+      "Paid ads & cold outreach",
+      "Conversion optimization",
+      "Analytics & KPI tracking",
     ],
   },
 ];
@@ -283,12 +279,12 @@ export default function BenjaminYsonPage() {
               Yson
             </h1>
             <p className="font-accent font-semibold text-xs tracking-[0.2em] uppercase text-white/40 mb-5">
-              WORDPRESS · GOHIGHLEVEL · MARKETING AUTOMATION
+              GOHIGHLEVEL · AI AUTOMATION · MODERN WEB
             </p>
             <p className="text-white/60 text-base leading-relaxed mb-7 max-w-xl">
               22+ years of cross-functional expertise in web development, digital marketing,
-              and business automation. Specializing in WordPress builds and GoHighLevel
-              CRM/funnel systems for businesses that want to scale.
+              and business automation. Specializing in GoHighLevel CRM automation, AI chatbots,
+              and modern web applications for businesses that want to scale.
             </p>
 
             <div className="flex flex-wrap gap-2 mb-8">
@@ -337,7 +333,7 @@ export default function BenjaminYsonPage() {
             className="hidden lg:flex flex-col gap-4"
           >
             {[
-              { label: "Currently Excels In", value: "WordPress + GoHighLevel", sub: "Full builds · Funnels · CRM · Automations", delay: 0 },
+              { label: "Currently Excels In", value: "GoHighLevel + AI Automation", sub: "CRM · Chatbots · Web Apps · Automations", delay: 0 },
               { label: "Latest Role", value: "Operations & Marketing Manager", sub: "Digital Agency · Jan 2020 – Mar 2026", delay: 0.8 },
               { label: "Location", value: "Las Piñas, Philippines 🇵🇭", sub: "Available for remote work worldwide", delay: 1.6 },
             ].map(({ label, value, sub, delay }, i) => (
@@ -367,8 +363,8 @@ export default function BenjaminYsonPage() {
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             label="Core Specializations"
-            title="WordPress, GoHighLevel & AI Web Apps"
-            subtitle="From custom WordPress sites and full GoHighLevel CRM builds to AI chatbots and modern web applications. End to end digital infrastructure."
+            title="GoHighLevel, AI & Modern Web"
+            subtitle="CRM automation, AI chatbots, and modern web applications, backed by full funnel marketing. End to end digital infrastructure."
             centered
           />
           <motion.div
