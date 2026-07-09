@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Property Data Pipeline (application)",
+    region: "AI real estate platform, contract",
+    scope: "API Integration + Web Scraping",
+    blurb:
+      "Interactive property data pipeline architecture: API research and integration, scalable ingestion, a Scrapy/Selenium/Playwright scraping framework, ETL normalization into a unified property data model, automated sync, plus two real shipped projects (AI job scraper, two way API relay) and the tech stack. Built with Claude Code.",
+    href: "/clients/data-pipeline/property-intelligence",
+    status: "pending",
+    accent: C.purple,
+    tags: ["Python", "Web Scraping", "API Integration", "ETL"],
+  },
+  {
     name: "Real Estate CRM Automation (application)",
     region: "Real estate team, CRM buildout",
     scope: "CRM + Zapier + Slack + Geo-fencing",
