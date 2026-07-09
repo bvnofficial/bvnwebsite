@@ -84,6 +84,20 @@ const specializations = [
       "Analytics & reporting dashboards",
     ],
   },
+  {
+    icon: Layers,
+    title: "AI & Web Applications",
+    color: "green",
+    items: [
+      "AI chatbots & conversational agents",
+      "Next.js / React web applications",
+      "Supabase / PostgreSQL backends",
+      "Payment & checkout integrations",
+      "Custom dashboards & internal tools",
+      "API & third-party integrations",
+      "Cloud deployment on Vercel",
+    ],
+  },
 ];
 
 const skills = [
@@ -353,8 +367,8 @@ export default function BenjaminYsonPage() {
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             label="Core Specializations"
-            title="WordPress & GoHighLevel Expert"
-            subtitle="From custom WordPress sites to full GoHighLevel CRM builds — end-to-end digital infrastructure."
+            title="WordPress, GoHighLevel & AI Web Apps"
+            subtitle="From custom WordPress sites and full GoHighLevel CRM builds to AI chatbots and modern web applications. End to end digital infrastructure."
             centered
           />
           <motion.div
@@ -362,7 +376,7 @@ export default function BenjaminYsonPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
             {specializations.map(({ icon: Icon, title, color, items }) => (
               <motion.div
