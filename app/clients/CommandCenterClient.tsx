@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "AI Ops Automation Portfolio (application)",
+    region: "AI ops role, US EST exec support",
+    scope: "AI + Automation Portfolio",
+    blurb:
+      "Interactive AI operations and automation portfolio: four real automations built (GHL conditional onboarding, two way webhook relay, cold email to CRM, AI job scraper to Slack), the vague request to shipped solution process, the weekly AI and automation tool stack, SOP samples, and real GHL proof. Built with Claude Code.",
+    href: "/clients/ai-ops/automation-portfolio",
+    status: "pending",
+    accent: C.cyan,
+    tags: ["Automation", "AI", "n8n/Make/Zapier", "SOPs"],
+  },
+  {
     name: "Business Fuzion Growth Center (application)",
     region: "Marketing agency, GHL + Ads + SEO",
     scope: "Growth Marketing Command Center",
