@@ -342,7 +342,7 @@ export default function TalentAgencyDealOps() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
             <ProofShot src="/proof/regal-04-pipelines-list.png" caption="Three live pipelines I built, including a nine stage Family Inquiry pipeline, the multi stage backbone your deal flow needs." />
             <ProofShot src="/proof/regal-02-family-workflows.png" caption="Seven published workflows, F1 to F7, each one a stage of the lifecycle firing automatically as a contact progresses." />
-            <ProofShot src="/proof/regal-03-workflow-builder-branching.png" caption="Inside one workflow: a branching condition that chases only when a form is still pending, exactly the conditional follow up you described." />
+            <ProofShot src="/proof/regal-01-workflow-library.png" caption="The workflow library, organized into Family and Professional folders, with an intake form router and a booking to pipeline automation feeding the whole system." />
             <ProofShot src="/proof/regal-05-opportunities-kanban.png" caption="The pipeline board, contacts moving stage by stage from first contact to approved, the same shape as your six stage deal journey." />
           </div>
         </Section>
