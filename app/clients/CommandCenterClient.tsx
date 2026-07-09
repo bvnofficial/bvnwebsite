@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Business Fuzion Growth Center (application)",
+    region: "Marketing agency, GHL + Ads + SEO",
+    scope: "Growth Marketing Command Center",
+    blurb:
+      "Interactive growth marketing command center: the full lead gen loop across paid ads, funnels, GHL automation, pipelines, reputation, and reporting, the four disciplines (social, ads, GHL, SEO), an advanced GHL capability grid, the paid advertising framework, and real Regal GHL proof. Built with Claude Code.",
+    href: "/clients/business-fuzion/growth-command-center",
+    status: "pending",
+    accent: C.coral,
+    tags: ["GoHighLevel", "Paid Ads", "SEO", "Social Media"],
+  },
+  {
     name: "Talent Agency Deal Ops (application)",
     region: "Talent management, UK",
     scope: "Deal Lifecycle Automation",
