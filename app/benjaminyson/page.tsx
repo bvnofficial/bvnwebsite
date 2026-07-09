@@ -19,6 +19,9 @@ import {
   Award,
   BadgeCheck,
   Download,
+  Layers,
+  CreditCard,
+  Search,
 } from "lucide-react";
 import GlowButton from "@/components/ui/GlowButton";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -87,32 +90,47 @@ const skills = [
   {
     icon: Code2,
     title: "Web Development",
-    pills: ["HTML", "CSS", "JavaScript", "PHP", "WordPress", "Elementor", "Divi", "Node.js", "Python"],
+    pills: ["HTML", "CSS", "JavaScript", "TypeScript", "PHP", "WordPress", "Elementor", "Divi", "Duda", "Responsive Design"],
+  },
+  {
+    icon: Layers,
+    title: "Modern Web Stack",
+    pills: ["React", "Next.js", "Tailwind CSS", "Node.js", "Python", "Supabase", "PostgreSQL", "Vercel", "REST APIs", "Git"],
   },
   {
     icon: BarChart3,
     title: "Digital Marketing",
-    pills: ["SEO / SEM", "Social Media Mgmt", "Email Marketing", "Video Marketing", "Content Marketing", "Influencer Mktg"],
+    pills: ["SEO / SEM", "Social Media Mgmt", "Email Marketing", "Cold Email Outreach", "Paid Ads (Google / Meta)", "Content Marketing", "Video Marketing", "Copywriting", "Landing Pages", "Influencer Mktg"],
+  },
+  {
+    icon: Search,
+    title: "SEO & AI Search",
+    pills: ["Technical SEO", "On-Page SEO", "Local SEO", "Schema / Structured Data", "AI Search Optimization", "Core Web Vitals", "Google Search Console"],
   },
   {
     icon: ShoppingCart,
-    title: "E-Commerce & CRM",
-    pills: ["GoHighLevel", "HubSpot", "Shopify", "WooCommerce", "Pipeline Mgmt", "Lead Nurturing"],
+    title: "CRM & E-Commerce",
+    pills: ["GoHighLevel", "HubSpot", "Pipeline Mgmt", "CRM Migration", "A2P 10DLC Compliance", "Lead Nurturing", "Shopify", "WooCommerce"],
   },
   {
     icon: Bot,
     title: "AI & Automation",
-    pills: ["Prompt Engineering", "AI Agents", "Zapier", "Make", "n8n", "Power BI", "SQL", "Tableau"],
+    pills: ["AI Chatbots", "AI Agents", "Prompt Engineering", "OpenAI / Claude API", "Zapier", "Make", "n8n", "Workflow Automation"],
+  },
+  {
+    icon: CreditCard,
+    title: "Payments & Billing",
+    pills: ["PayMongo", "PayPal", "Stripe", "GCash / QR Ph", "Crypto (USDT / BTC)", "Gusto", "Subscription Billing"],
   },
   {
     icon: Settings2,
-    title: "Operations",
-    pills: ["Agile / Scrum", "Project Management", "KPI Tracking", "Process Improvement", "Team Leadership"],
+    title: "Operations & PM",
+    pills: ["Agile / Scrum", "Project Management", "SOP Development", "Client Onboarding", "KPI Tracking", "Process Improvement", "Team Leadership"],
   },
   {
     icon: User,
-    title: "Design & UX",
-    pills: ["UX/UI Design", "User Research", "Conversion Optim.", "API Integration", "System Architecture"],
+    title: "Design & Data",
+    pills: ["UX / UI Design", "Conversion Optim.", "User Research", "Power BI", "SQL", "Tableau", "System Architecture"],
   },
 ];
 
@@ -260,7 +278,7 @@ export default function BenjaminYsonPage() {
             </p>
 
             <div className="flex flex-wrap gap-2 mb-8">
-              {["WordPress", "GoHighLevel (GHL)", "Elementor / Divi", "Funnels & Automations", "CRM Setup", "SEO / SEM", "AI Automation", "E-Commerce"].map((tag) => (
+              {["WordPress", "GoHighLevel (GHL)", "Next.js / React", "Supabase", "AI Chatbots", "Funnels & Automations", "CRM Setup", "SEO / SEM", "AI Automation", "E-Commerce"].map((tag) => (
                 <span
                   key={tag}
                   className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-full text-xs font-accent font-medium"
@@ -385,7 +403,7 @@ export default function BenjaminYsonPage() {
           <SectionHeader
             label="Technical Skills"
             title="Full-Stack Skill Set"
-            subtitle="22 years of hands-on expertise across development, marketing, operations, and AI."
+            subtitle="Hands-on expertise spanning modern web development, CRM automation, AI, payment systems, and full-funnel marketing."
             centered
           />
           <motion.div
