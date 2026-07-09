@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Talent Agency Deal Ops (application)",
+    region: "Talent management, UK",
+    scope: "Deal Lifecycle Automation",
+    blurb:
+      "Interactive deal operations command center for a boutique talent agency: the six stage brand deal lifecycle with automatic chasing and escalation, the Monday to Friday weekly rhythm that runs itself, an escalation panel that only surfaces what is stuck, an honest recommended stack (Airtable + Make/n8n), and real GHL branching and pipeline proof. Built with Claude Code.",
+    href: "/clients/talent-agency/deal-ops",
+    status: "pending",
+    accent: C.amber,
+    tags: ["Automation", "Airtable", "Make/n8n", "Deal Ops"],
+  },
+  {
     name: "Wellness Technical Partner (application)",
     region: "Health and wellness brand",
     scope: "Full Stack + Integrations + Portal",
