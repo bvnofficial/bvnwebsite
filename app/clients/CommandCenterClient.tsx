@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Construction n8n Blueprint (application)",
+    region: "Small construction business",
+    scope: "n8n Job Pipeline Automation",
+    blurb:
+      "Interactive n8n automation blueprint for a construction business: the job pipeline from enquiry to invoice automated stage by stage, customer service automations (confirmations, reminders, on the way updates, review requests), an n8n integration map around their existing job management software, and real GHL proof. Built with Claude Code.",
+    href: "/clients/construction-ops/n8n-blueprint",
+    status: "pending",
+    accent: C.amber,
+    tags: ["n8n", "Automation", "Construction", "Customer Service"],
+  },
+  {
     name: "AI Ops Automation Portfolio (application)",
     region: "AI ops role, US EST exec support",
     scope: "AI + Automation Portfolio",
