@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Real Estate CRM Automation (application)",
+    region: "Real estate team, CRM buildout",
+    scope: "CRM + Zapier + Slack + Geo-fencing",
+    blurb:
+      "Interactive real estate CRM and automation command center: lead action plans for online, open house, new construction, and past client leads, Slack channels and alerts, a Zapier integration map (CRM, forms, Slack, Canva, ChatGPT), a geo-fencing and location advertising handoff, and real CRM proof. Leans on real Chime and geo-fencing experience. Built with Claude Code.",
+    href: "/clients/real-estate-ops/crm-automation",
+    status: "pending",
+    accent: C.blue,
+    tags: ["Chime", "Zapier", "Slack", "Geo-fencing"],
+  },
+  {
     name: "Construction n8n Blueprint (application)",
     region: "Small construction business",
     scope: "n8n Job Pipeline Automation",
