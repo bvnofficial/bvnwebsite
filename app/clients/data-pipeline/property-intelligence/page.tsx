@@ -157,8 +157,9 @@ const PROJECTS = [
 // ─────────────────────────────────────────────────────────────
 // 5. Tech stack
 const STACK = [
-  "Python", "Scrapy", "Selenium", "Playwright", "REST APIs",
-  "PostgreSQL / Supabase", "ETL", "Data normalization", "Webhooks", "Scheduled sync",
+  "Python", "Scrapy", "Selenium", "Playwright", "REST + GraphQL APIs",
+  "PostgreSQL / Supabase", "MongoDB", "AWS / Azure", "ETL",
+  "Data normalization", "Webhooks", "Scheduled sync",
 ];
 
 // ─────────────────────────────────────────────────────────────
