@@ -67,3 +67,30 @@ Run manually from the **Actions** tab (“OnlineJobs.ph Slack Job Feed” →
 ```bash
 DRY_RUN=1 node scripts/onlinejobs-slack/scrape-and-post.mjs
 ```
+
+## Reliable scheduling (external cron → GitHub)
+
+GitHub's built-in `schedule:` trigger is best-effort and frequently skips runs
+(observed: zero runs over a 2-hour span at `*/15`). For dependable timing, keep
+the workflow but trigger it from an external cron service that calls GitHub's
+`workflow_dispatch` API. The in-repo `schedule:` is left as a harmless backup —
+dedup prevents any double-posting if both fire.
+
+**1. Create a fine-grained GitHub token**
+- https://github.com/settings/personal-access-tokens/new
+- Resource owner: `bvnofficial`; Repository access: **Only** `bvnwebsite`
+- Repository permissions → **Actions: Read and write**
+- Generate and copy the `github_pat_…` value.
+
+**2. Create a job on a cron service** (e.g. free https://cron-job.org)
+- URL: `https://api.github.com/repos/bvnofficial/bvnwebsite/actions/workflows/onlinejobs-slack.yml/dispatches`
+- Method: **POST**; Schedule: **every 15 minutes**
+- Headers:
+  - `Accept: application/vnd.github+json`
+  - `Authorization: Bearer github_pat_…`
+  - `X-GitHub-Api-Version: 2022-11-28`
+- Body: `{"ref":"main"}`
+- Success response is HTTP **204**.
+
+To pass overrides (backfill) from the cron body, e.g.:
+`{"ref":"main","inputs":{"max_age_hours":"6","max_posts":"100"}}`
