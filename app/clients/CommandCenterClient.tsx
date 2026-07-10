@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Financial Voice AI System (application)",
+    region: "Financial services + luxury brand",
+    scope: "24/7 Voice AI Client Comms",
+    blurb:
+      "Interactive 24/7 voice AI client communication system for a financial services practice: inbound and outbound voice AI that greets on brand, qualifies, and books, the voice AI stack (VAPI, Bland, GHL Voice AI), compliant on brand scripts, a GHL foundation built from scratch, multi channel follow up, and a Phase 2 productization angle, with real GHL proof. Built with Claude Code.",
+    href: "/clients/financial-voice-ai/client-comms",
+    status: "pending",
+    accent: C.purple,
+    tags: ["Voice AI", "GoHighLevel", "VAPI/Bland", "Financial"],
+  },
+  {
     name: "RE Wholesale GHL Command Center (application)",
     region: "Real estate wholesale, GHL",
     scope: "GHL Funnels + Multi-channel Automation",
