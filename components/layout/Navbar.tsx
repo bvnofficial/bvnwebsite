@@ -418,6 +418,22 @@ export default function Navbar() {
               isActive={mediaActive}
             />
 
+            {/* Clients */}
+            <li>
+              <Link
+                href="/case-studies"
+                className={cn(
+                  "relative px-4 py-2 text-sm font-accent font-semibold transition-colors duration-200 rounded-md",
+                  pathname.startsWith("/case-studies") ? "text-orange" : "text-white/80 hover:text-white"
+                )}
+              >
+                Clients
+                {pathname.startsWith("/case-studies") && (
+                  <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-orange rounded-full" />
+                )}
+              </Link>
+            </li>
+
             {/* Courses */}
             <li>
               <Link
@@ -575,8 +591,9 @@ export default function Navbar() {
               onToggle={() => setMobileMedia((v) => !v)}
             />
 
-            {/* Courses + Pricing + Contact (Dashboard is the account button below) */}
+            {/* Clients + Courses + Pricing + Contact (Dashboard is the account button below) */}
             {[
+              { label: "Clients", href: "/case-studies" },
               { label: "Courses", href: "/courses" },
               { label: "Pricing", href: "/pricing" },
               { label: "Contact", href: "/contact" },
