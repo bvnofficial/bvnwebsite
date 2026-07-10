@@ -331,12 +331,12 @@ const CLIENTS: Client[] = [
     region: "Residential care, Simi Valley CA",
     scope: "GHL CRM Pitch",
     blurb:
-      "Won on an interactive React pitch app. A 9 stage family inquiry pipeline, 13 workflows, 7 email batches, partner referral system, and an AI assistant.",
-    href: "/benjaminyson",
+      "Won on an interactive React pitch app. A 9 stage family inquiry pipeline, 13 workflows, 7 email batches, partner referral system, and an AI assistant. The workspace hub links the live build status, checklist, AI assistant, and website.",
+    href: "/clients/regal-homes",
     status: "won",
     accent: C.green,
     value: "$3,000 fixed",
-    tags: ["GoHighLevel", "RCFE compliance", "Pitch app"],
+    tags: ["GoHighLevel", "RCFE compliance", "Live build"],
   },
   {
     name: "Hypersonic Wholesale",
@@ -360,6 +360,17 @@ const CLIENTS: Client[] = [
     status: "completed",
     accent: C.coral,
     tags: ["GoHighLevel", "SMS", "Geo capture"],
+  },
+  {
+    name: "X-1R Philippines",
+    region: "Automotive performance products, PH",
+    scope: "E-Commerce Storefront",
+    blurb:
+      "A complete demo storefront for a performance products brand: product catalog, cart and a multi step checkout (GCash, Maya, card, COD), a dealer locator, and an order confirmation flow, built as a fast React single page store.",
+    href: "/clients/x1r",
+    status: "completed",
+    accent: C.rose,
+    tags: ["React", "E-Commerce", "Checkout", "Storefront"],
   },
   {
     name: "Referral Pro",
