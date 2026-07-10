@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Luxury Chauffeur Price Calculator (application)",
+    region: "Luxury chauffeur service, GHL",
+    scope: "JS · Google Maps API · GHL Custom Code",
+    blurb:
+      "A live, working reservation price calculator for a luxury chauffeur GoHighLevel site: real interactive vehicle selection (Luxury Sedan, SUV, Electric SUV), pickup and drop-off with Google Places Autocomplete, driving distance via Google Routes/Distance Matrix API, the exact pricing formula running live (base fare + miles x $4.80 + tolls + weekend/holiday surcharge), tolls and surcharge handling, mobile responsive, all pricing in one editable block, plus where the Google API key goes and real GHL proof. Built with Claude Code.",
+    href: "/clients/chauffeur-calculator/price-estimator",
+    status: "pending",
+    accent: C.amber,
+    tags: ["JavaScript", "Google Maps API", "GoHighLevel", "Custom Code"],
+  },
+  {
     name: "TCE AI Booking Platform + Automation (application)",
     region: "Luxury entertainment company, part time",
     scope: "AI Agents · Booking Platform · Automation",
