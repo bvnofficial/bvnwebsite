@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "OneMore Pickleball Club GHL Command Center (application)",
+    region: "Membership sports club, remote contract",
+    scope: "GoHighLevel · A2P 10DLC · Membership CRM",
+    blurb:
+      "Interactive GoHighLevel command center for a membership-based pickleball club: the member lifecycle from first lead to renewed member (capture, welcome SMS and email, trial booking, membership conversion with recurring billing, class and event registration, retention and win-back), A2P 10DLC registration plus SMS and WhatsApp messaging, snapshots, social and API integrations, and documented SOPs with team knowledge transfer, on real GHL proof. Built with Claude Code.",
+    href: "/clients/pickleball-club/ghl-command-center",
+    status: "pending",
+    accent: C.green,
+    tags: ["GoHighLevel", "A2P 10DLC", "Membership", "SMS/WhatsApp"],
+  },
+  {
     name: "Luxury Chauffeur Price Calculator (application)",
     region: "Luxury chauffeur service, GHL",
     scope: "JS · Google Maps API · GHL Custom Code",
