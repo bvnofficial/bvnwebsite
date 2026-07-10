@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "RE Wholesale GHL Command Center (application)",
+    region: "Real estate wholesale, GHL",
+    scope: "GHL Funnels + Multi-channel Automation",
+    blurb:
+      "Interactive GHL command center for a real estate wholesale business: the motivated seller journey across email, SMS, RVM, and AI voice, the seller and buyer/investor pipelines, AI assisted workflows (GPT personalization, conversation summary, intent detection, routing), email deliverability and sending health, and real GHL proof. Built with Claude Code.",
+    href: "/clients/re-wholesale/ghl-command-center",
+    status: "pending",
+    accent: C.green,
+    tags: ["GoHighLevel", "Real Estate", "AI Workflows", "Deliverability"],
+  },
+  {
     name: "Property Data Pipeline (application)",
     region: "AI real estate platform, contract",
     scope: "API Integration + Web Scraping",
