@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "TCE AI Booking Platform + Automation (application)",
+    region: "Luxury entertainment company, part time",
+    scope: "AI Agents · Booking Platform · Automation",
+    blurb:
+      "Interactive build plan for an AI-first entertainment company (Troy Curtis Entertainment): the flagship internal AI-powered artist and talent booking platform walked step by step (enquiry, talent match, availability, proposal generation, contract signing, payment tracking, AI booking assistant, team dashboard), the AI agents across sales, operations, production, customer service, and marketing, the no-code to custom stack (Make, Zapier, n8n, Lovable, Base44, Bolt, Replit, Supabase, Firebase, Airtable, GHL, Slack, Twilio, Stripe, Calendly), and a 90-day plan mapped to their success metrics, with real GHL proof. Built with Claude Code.",
+    href: "/clients/tce-entertainment/booking-platform",
+    status: "pending",
+    accent: C.rose,
+    tags: ["AI Agents", "Booking App", "Automation", "No-Code"],
+  },
+  {
     name: "Meta Pixel & Lead Attribution on GHL (application)",
     region: "GoHighLevel + Meta Ads, project based",
     scope: "Meta Pixel · Audiences · Lead Attribution",
