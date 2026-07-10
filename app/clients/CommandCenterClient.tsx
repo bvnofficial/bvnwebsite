@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Meta Pixel & Lead Attribution on GHL (application)",
+    region: "GoHighLevel + Meta Ads, project based",
+    scope: "Meta Pixel · Audiences · Lead Attribution",
+    blurb:
+      "Interactive Meta Pixel and lead attribution setup for GoHighLevel: installing and verifying the Pixel on GHL sites and funnels, connecting Meta Business Manager, wiring Facebook Lead Forms into GHL, building the full custom and retargeting audience library (website visitors, lead form opened, lead form submitted, video viewers, FB and IG engagement), verifying conversion tracking, testing lead flow from Facebook into GHL end to end, and a plain language handover document, with real GHL proof. Built with Claude Code.",
+    href: "/clients/meta-tracking/pixel-attribution",
+    status: "pending",
+    accent: C.blue,
+    tags: ["Meta Pixel", "GoHighLevel", "Retargeting", "Attribution"],
+  },
+  {
     name: "AI Automation Engineer / Senior Programmer (application)",
     region: "US company, full time remote",
     scope: "Python · APIs · AI Automation Systems",
