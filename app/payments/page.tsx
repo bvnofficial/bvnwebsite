@@ -449,6 +449,7 @@ function PaymentsForm() {
                         { label: "Visa", icon: "💳" },
                         { label: "Mastercard", icon: "💳" },
                         { label: "QR Ph", icon: "🔳" },
+                        { label: "BPI / UnionBank", icon: "🏦" },
                       ]
                     : [
                         { label: "USDT (ERC-20)", icon: "🔷" },
@@ -482,7 +483,7 @@ function PaymentsForm() {
                   ? [
                       "256-bit TLS encryption",
                       "Powered by PayMongo — PCI-DSS Level 1 compliant",
-                      "Pay via GCash, debit/credit card or QR Ph",
+                      "Pay via GCash, card, QR Ph, or bank direct debit (BPI, UnionBank)",
                     ]
                   : [
                       "256-bit TLS encryption",

@@ -45,7 +45,9 @@ export async function POST(req: Request) {
               quantity: 1,
             },
           ],
-          payment_method_types: ["card", "gcash"],
+          // GCash, cards, QR Ph, and (PayMongo-approved) BPI + UnionBank direct
+          // debit. PayMongo auto-hides any method below its minimum amount.
+          payment_method_types: ["gcash", "card", "qrph", "dob", "dob_ubp"],
           success_url: successUrl,
           cancel_url: `${baseUrl}/payments`,
           metadata: { customer_name: name, customer_email: email },

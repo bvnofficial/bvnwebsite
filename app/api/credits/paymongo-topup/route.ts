@@ -50,7 +50,9 @@ export async function POST(req: Request) {
               quantity: 1,
             },
           ],
-          payment_method_types: ["card", "gcash"],
+          // GCash, cards, QR Ph, and BPI + UnionBank direct debit. PayMongo
+          // auto-hides any method below its minimum amount.
+          payment_method_types: ["gcash", "card", "qrph", "dob", "dob_ubp"],
           success_url: `${baseUrl}/credits?pm=1`,
           cancel_url: `${baseUrl}/credits`,
           metadata: { user_id: user.id, credits: String(credits), kind: "credit_topup" },
