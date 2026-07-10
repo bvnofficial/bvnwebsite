@@ -233,9 +233,14 @@ export default function TceMilestones() {
           <Link href="/clients/tce-entertainment/booking-platform" style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.sub, fontSize: 13, textDecoration: "none" }}>
             <ArrowLeft size={15} /> Booking platform overview
           </Link>
-          <Link href="/clients/tce-entertainment/portals" style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.rose, fontSize: 13, textDecoration: "none", fontWeight: 700 }}>
-            See the 3 portals <ArrowRight size={14} />
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <Link href="/clients/tce-entertainment/build-stack" style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.sub, fontSize: 13, textDecoration: "none", fontWeight: 700 }}>
+              Build stack <ArrowRight size={14} />
+            </Link>
+            <Link href="/clients/tce-entertainment/portals" style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.rose, fontSize: 13, textDecoration: "none", fontWeight: 700 }}>
+              See the 3 portals <ArrowRight size={14} />
+            </Link>
+          </div>
         </div>
 
         {/* Header */}
