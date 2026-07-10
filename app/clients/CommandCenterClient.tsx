@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "AI Automation Engineer / Senior Programmer (application)",
+    region: "US company, full time remote",
+    scope: "Python · APIs · AI Automation Systems",
+    blurb:
+      "Senior automation engineer systems portfolio: four real systems shipped end to end (an AI job pipeline with LLM classification to Slack, a two way webhook and API relay, a property data ETL pipeline, and a payments and wallet system), the engineering stack (Python, JavaScript/TypeScript, REST and GraphQL, Scrapy/Selenium/Playwright, Postgres/Supabase, MongoDB, AWS/Azure, LLM APIs), an idea to production process, secure work readiness, and real operational proof. Php100k to 160k/mo band. Built with Claude Code.",
+    href: "/clients/automation-engineer/systems",
+    status: "pending",
+    accent: C.blue,
+    tags: ["Python", "APIs", "AI Automation", "Full Time"],
+  },
+  {
     name: "Financial Voice AI System (application)",
     region: "Financial services + luxury brand",
     scope: "24/7 Voice AI Client Comms",
