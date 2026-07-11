@@ -5,6 +5,11 @@
 // When `email` matches a logged-in user's account, the certificate also shows
 // in that user's dashboard ("Your Documents").
 
+export type CoeResponsibilityGroup = {
+  area: string;
+  items: string[];
+};
+
 export type CoeRecord = {
   slug: string;
   refId: string;
@@ -15,6 +20,7 @@ export type CoeRecord = {
   end: string; // e.g. "August 2023"
   issued: string; // ISO date the certificate was issued
   email?: string; // account this certificate belongs to (for the dashboard)
+  responsibilities?: CoeResponsibilityGroup[];
 };
 
 export const COE_RECORDS: CoeRecord[] = [
@@ -28,6 +34,35 @@ export const COE_RECORDS: CoeRecord[] = [
     end: "August 2023",
     issued: "2026-07-11",
     email: "gabrielbalenton@gmail.com",
+    responsibilities: [
+      {
+        area: "Search Engine Optimization (SEO)",
+        items: [
+          "Keyword and search-intent research to guide site structure, content, and priorities",
+          "On-page and technical optimization: titles, meta descriptions, semantic HTML, internal linking, site speed, and indexation",
+          "Structured data and schema markup, plus optimization for answer engines and AI-driven search (AEO)",
+          "Tracking rankings, organic traffic, and search performance, and reporting on outcomes",
+        ],
+      },
+      {
+        area: "Automation & AI",
+        items: [
+          "Designing and building automated workflows that reduce manual, repetitive work",
+          "Integrating AI tools and APIs into content, marketing, and operational processes",
+          "Building automations for lead capture, data enrichment, reporting, and notifications",
+          "Connecting platforms (forms, spreadsheets, CRM, email) into cohesive systems and documenting them as SOPs",
+        ],
+      },
+      {
+        area: "Web Development",
+        items: [
+          "Designing, building, and maintaining the company website end to end",
+          "Implementing responsive, accessible, and performance-optimized layouts",
+          "Managing content updates, page creation, and ongoing site maintenance",
+          "Integrating analytics and marketing tools, troubleshooting issues, and delivering iterative improvements",
+        ],
+      },
+    ],
   },
 ];
 

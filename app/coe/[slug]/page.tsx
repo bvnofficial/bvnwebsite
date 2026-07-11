@@ -75,7 +75,32 @@ export default async function CoeVerifyPage({ params }: { params: { slug: string
               ))}
             </dl>
 
-            <div className="flex items-center gap-2 mt-5 text-emerald-400/90 text-sm">
+            {rec.responsibilities && rec.responsibilities.length > 0 && (
+              <div className="mt-6 pt-5 border-t border-white/8">
+                <p className="text-white/45 text-xs font-accent uppercase tracking-wider mb-4">
+                  Roles &amp; Responsibilities
+                </p>
+                <div className="space-y-4">
+                  {rec.responsibilities.map((g) => (
+                    <div key={g.area}>
+                      <p className="text-orange text-xs font-heading font-bold uppercase tracking-wide mb-1.5">
+                        {g.area}
+                      </p>
+                      <ul className="space-y-1">
+                        {g.items.map((it, i) => (
+                          <li key={i} className="flex gap-2 text-white/60 text-[13px] leading-relaxed">
+                            <span className="text-orange/70 shrink-0">•</span>
+                            <span>{it}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mt-6 text-emerald-400/90 text-sm">
               <CheckCircle2 size={16} />
               This employment record is authentic and published by BVN.
             </div>
