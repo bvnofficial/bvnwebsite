@@ -110,6 +110,16 @@ function ClientView() {
     <div>
       <ViewHead color={C.rose} Icon={UserRound} title="Welcome back, Sarah" sub="Wedding · 14 Feb 2027 · The Grand Ballroom, Miami · 12-piece band" />
 
+      {/* Booking form CTA */}
+      <Link href="/clients/tce-entertainment/booking-form" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, background: C.rose + "14", border: `1px solid ${C.rose}55`, borderRadius: 12, padding: "12px 16px", marginBottom: 14, textDecoration: "none" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 13.5, fontWeight: 700, color: C.ink }}>
+          <ClipboardList size={16} color={C.rose} /> New client? Try the booking form
+        </span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700, color: C.rose }}>
+          Open <ArrowRight size={14} />
+        </span>
+      </Link>
+
       {/* Finance strip */}
       <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", marginBottom: 14 }}>
         <MiniStat Icon={FileSignature} k="Contract" v="Signed" color={C.green} />
