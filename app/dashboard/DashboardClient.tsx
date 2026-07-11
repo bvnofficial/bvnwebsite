@@ -8,15 +8,34 @@ import { createClient } from "@/utils/supabase/client";
 import {
   LogOut, ChevronRight,
   User, Lock, Check, AlertCircle, Pencil, Coins, Shield,
+  BookOpen, CreditCard, Rocket, LifeBuoy, FileText, Download,
 } from "lucide-react";
+
+interface DocItem {
+  kind: string;
+  title: string;
+  refId: string;
+  pdfUrl: string;
+  verifyUrl: string;
+}
 
 interface Props {
   user: { email: string; name?: string; createdAt?: string };
   credits?: number;
   admin?: boolean;
+  documents?: DocItem[];
 }
 
-export default function DashboardClient({ user, credits = 0, admin = false }: Props) {
+// Customer-facing shortcuts — every destination is a real, live page.
+const quickLinks = [
+  { label: "My Courses", href: "/courses", icon: BookOpen, desc: "Browse & continue learning" },
+  { label: "Credits & Wallet", href: "/credits", icon: Coins, desc: "Top up & unlock premium items" },
+  { label: "Make a Payment", href: "/payments", icon: CreditCard, desc: "Pay by card, PayPal or crypto" },
+  { label: "Start a Project", href: "/get-started", icon: Rocket, desc: "Tell us what you need" },
+  { label: "Support", href: "/contact", icon: LifeBuoy, desc: "Get help from the BVN team" },
+];
+
+export default function DashboardClient({ user, credits = 0, admin = false, documents = [] }: Props) {
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -163,6 +182,75 @@ export default function DashboardClient({ user, credits = 0, admin = false }: Pr
                 <ChevronRight size={13} className="text-white/30" />
               </Link>
             )}
+          </div>
+        </div>
+
+        {/* Your Documents — shown when a certificate is issued to this account */}
+        {documents.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-sm font-accent font-bold text-white/40 uppercase tracking-widest mb-4">
+              Your Documents
+            </h2>
+            <div className="grid grid-cols-1 gap-3">
+              {documents.map((doc) => (
+                <div
+                  key={doc.refId}
+                  className="bg-[#111827] border border-white/10 rounded-2xl p-5 flex flex-wrap items-center gap-4"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center shrink-0">
+                    <FileText size={18} className="text-orange" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-accent font-semibold text-white">{doc.kind}</p>
+                    <p className="text-xs text-white/40 font-body truncate">
+                      {doc.title} · Ref {doc.refId}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <a
+                      href={doc.pdfUrl}
+                      download
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-orange text-white text-xs font-accent font-semibold hover:bg-orange-light transition-all"
+                    >
+                      <Download size={13} /> Download PDF
+                    </a>
+                    <Link
+                      href={doc.verifyUrl}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-accent font-semibold hover:bg-white/10 transition-all"
+                    >
+                      View
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Quick Access */}
+        <div className="mb-10">
+          <h2 className="text-sm font-accent font-bold text-white/40 uppercase tracking-widest mb-4">
+            Quick Access
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {quickLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="group bg-[#111827] border border-white/10 rounded-2xl p-5 flex items-center gap-4
+                  hover:border-orange/30 hover:bg-orange/5 transition-all"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center shrink-0
+                  group-hover:bg-orange/20 transition-colors">
+                  <link.icon size={18} className="text-orange" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-accent font-semibold text-white group-hover:text-orange transition-colors">{link.label}</p>
+                  <p className="text-xs text-white/40 font-body truncate">{link.desc}</p>
+                </div>
+                <ChevronRight size={14} className="text-white/20 group-hover:text-orange/60 shrink-0 transition-colors" />
+              </Link>
+            ))}
           </div>
         </div>
 
