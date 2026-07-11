@@ -7,7 +7,7 @@ import {
   ArrowLeft, ChevronDown, CircleCheck, Circle, CircleDashed, Clock,
   Users, Music, ShieldCheck, ListChecks, Workflow, Bot, MapPin,
   FileSignature, CreditCard, LayoutDashboard, Sparkles, Megaphone,
-  HelpCircle, Building2, UserRound, Tag, Wallet, ArrowRight, FileText,
+  HelpCircle, Building2, UserRound, Tag, ArrowRight, FileText,
   ClipboardList, HandCoins, PartyPopper, Repeat, Handshake, Truck,
   FolderOpen, Layers,
 } from "lucide-react";
@@ -21,7 +21,6 @@ const C = {
 };
 
 const LAST_UPDATED = "11 July 2026";
-const FEE = "~$500 / month · part time";
 
 type Status = "done" | "active" | "todo";
 type Item = { label: string; status: Status };
@@ -302,10 +301,10 @@ export default function TceMilestones() {
 
           <div style={{ flex: "1 1 200px", background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 18 }}>
             <div style={{ color: C.sub, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
-              <Wallet size={15} /> Engagement
+              <Layers size={15} /> Scope
             </div>
-            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 8, lineHeight: 1.5 }}>{FEE}</div>
-            <div style={{ color: C.muted, fontSize: 12, marginTop: 6 }}>AI Automation & Applications Engineer</div>
+            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 8, lineHeight: 1.5 }}>Booking platform + AI</div>
+            <div style={{ color: C.muted, fontSize: 12, marginTop: 6 }}>Client · Talent · Admin portals</div>
           </div>
 
           <div style={{ flex: "1 1 200px", background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 18 }}>
