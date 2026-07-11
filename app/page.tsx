@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Megaphone, Settings2, Wrench, Bot, Target, Users, Mail, Phone, Zap, Globe, TrendingUp, Shield,
+  Megaphone, Settings2, Wrench, Bot, Target, Users, Mail, Phone, Zap, Globe, TrendingUp, Shield, ArrowRight,
 } from "lucide-react";
+import Link from "next/link";
 import HeroSection from "@/components/ui/HeroSection";
 import BranchCard from "@/components/ui/BranchCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
@@ -95,6 +96,19 @@ const featurePills = [
   { icon: Users, label: "Proven Expertise", sub: "238+ clients served" },
 ];
 
+// Trusted-by client names (public, safe to show). Links to /case-studies.
+const trustedClients = [
+  "TintGard",
+  "Regal Care Homes",
+  "Hypersonic Wholesale",
+  "Moonstar Media",
+  "Warm Up Guys",
+  "X-1R Philippines",
+  "Referral Pro",
+  "StretchTo.You",
+  "Yorkshire Canine Academy",
+];
+
 // Marquee items for the services strip
 const marqueeItems = [
   { icon: Zap, text: "Social Media Management" },
@@ -132,6 +146,35 @@ export default function HomePage() {
         primaryCta={{ label: "Explore Marketing", href: "/marketing" }}
         secondaryCta={{ label: "Explore Operations", href: "/operations" }}
       />
+
+      {/* ── TRUSTED BY (clients) ────────────────────────────── */}
+      <section className="relative py-12 px-6 bg-[#0A0F1E] border-t border-white/5">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="font-accent font-semibold text-xs tracking-[0.2em] uppercase text-white/40 mb-7">
+            Trusted by 238+ businesses worldwide
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3.5 mb-7">
+            {trustedClients.map((name) => (
+              <Link
+                key={name}
+                href="/case-studies"
+                className="font-heading font-bold text-white/50 text-base md:text-lg hover:text-white/85 transition-colors"
+              >
+                {name}
+              </Link>
+            ))}
+            <Link href="/case-studies" className="font-heading font-bold text-orange/70 text-base md:text-lg hover:text-orange transition-colors">
+              +25 more
+            </Link>
+          </div>
+          <Link
+            href="/case-studies"
+            className="inline-flex items-center gap-1.5 text-orange text-sm font-accent font-semibold hover:gap-2.5 transition-all duration-200"
+          >
+            See our client work <ArrowRight size={14} />
+          </Link>
+        </div>
+      </section>
 
       {/* ── SERVICES MARQUEE STRIP ──────────────────────────── */}
       <div className="relative py-5 border-y border-orange/10 bg-black/30 overflow-hidden">
