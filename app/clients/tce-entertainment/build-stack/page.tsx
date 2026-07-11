@@ -57,8 +57,9 @@ const LAYERS: Layer[] = [
     role: "GHL-native first. Where its portal can't give the polish — the admin command center, the AI matching board — I build a lightweight custom view reading from the GHL API and Supabase.",
   },
   {
-    Icon: MessageSquare, name: "Comms & alerts", app: "Twilio + Slack", color: C.rose,
-    role: "GHL sends client/artist SMS + email natively; Twilio only if we need more. Slack pings the internal team on new bookings and payouts due.",
+    Icon: MessageSquare, name: "Comms & alerts", app: "GoHighLevel SMS/email + Slack", color: C.rose,
+    role: "Native GHL SMS + email handles confirmations, the scheduled reminders, and the announcements that replace WhatsApp — one system, and it runs on Twilio under the hood. Slack pings the internal team on new bookings and payouts due.",
+    also: "A standalone Twilio account only if we ever need voice or WhatsApp at scale. (US SMS needs A2P 10DLC registration in GHL.)",
   },
   {
     Icon: ClipboardList, name: "Project tracking", app: "ClickUp / Notion + this workspace", color: C.coral,
