@@ -9,7 +9,7 @@ import {
   FileSignature, CreditCard, LayoutDashboard, Sparkles, Megaphone,
   HelpCircle, Building2, UserRound, Tag, ArrowRight, FileText,
   ClipboardList, HandCoins, PartyPopper, Repeat, Handshake, Truck,
-  FolderOpen, Layers,
+  FolderOpen, Layers, Bell, Star,
 } from "lucide-react";
 
 // ── Brand tokens (TCE × BVN, rose theme) ─────────────────────
@@ -107,6 +107,69 @@ const EVENTFLOW: EventStep[] = [
     body: "Client, talent, and admin all read the same event record: the client sees their view, the artist sees the gig sheet + resources, and admin sees everything and controls what is artist-facing vs internal." },
 ];
 
+// ── The master workflow (from the dev brief) ─────────────────
+const LIFECYCLE = [
+  "Proposal", "Package selection", "Contract", "E-signature (DocuSign)", "Deposit",
+  "Portal activation", "Questionnaire", "Planning & production", "Final payment",
+  "Event", "Client review",
+];
+
+// ── The 9 modules from the development brief ─────────────────
+type Module = { Icon: typeof FileText; title: string; color: string; points: string[] };
+const MODULES: Module[] = [
+  { Icon: FileText, title: "1 · Customized proposal portal", color: C.rose, points: [
+    "Personalized page: client name, event date, venue, event type",
+    "Proposed package + inclusions, optional upgrades & add-ons, pricing",
+    "Videos, photos, reviews and supporting sales materials",
+    "Client reviews, selects a package, and approves add-ons in the portal",
+  ] },
+  { Icon: FileSignature, title: "2 · Contract + DocuSign e-signature", color: C.coral, points: [
+    "Contract auto-generates when the client selects a package",
+    "Client reviews, completes fields, and signs via DocuSign",
+    "Signed copy delivered and stored in the portal",
+    "On signature the proposal portal becomes the active event portal",
+  ] },
+  { Icon: CreditCard, title: "3 · Payments & billing", color: C.amber, points: [
+    "Deposit, scheduled installments, final balance, add-ons",
+    "Outstanding invoices, receipts, remaining balance",
+    "Due dates shown + automatic reminders before each payment",
+  ] },
+  { Icon: ClipboardList, title: "4 · Event questionnaire", color: C.green, points: [
+    "Ceremony, cocktail, reception, first dance, parent dances, introductions",
+    "Must-play / do-not-play, cultural & religious traditions, special announcements",
+    "Timeline, planner + venue contacts, production requirements, special requests",
+    "Save progress and return later without losing anything",
+  ] },
+  { Icon: FolderOpen, title: "5 · Event information & documents", color: C.cyan, points: [
+    "Signed contract, invoices, receipts, package details, questionnaire",
+    "Timeline, venue info, production docs, stage requirements",
+    "Technical + hospitality riders, certificate of insurance",
+    "Music selections, important contacts, final event details",
+  ] },
+  { Icon: Bell, title: "6 · Notifications, reminders & checklist", color: C.purple, points: [
+    "Reminders: signature, deposit, questionnaire, music deadline, timeline, final payment",
+    "Nudges for missing info, planning meetings, and final confirmation",
+    "A live checklist of completed vs outstanding tasks",
+  ] },
+  { Icon: Users, title: "7 · Production & internal team access", color: C.rose, points: [
+    "On signature the right internal team gets access to the event",
+    "View/manage package, client + venue info, payment status, questionnaire, music, timeline",
+    "Technical requirements, production docs, team assignments, deadlines",
+    "Client changes auto-update the internal event record",
+  ] },
+  { Icon: Music, title: "8 · Talent portal integration", color: C.coral, points: [
+    "Assign musicians, singers, DJs, bandleaders, technicians",
+    "Gig offers to accept/decline, event details, call times, wardrobe, travel",
+    "Music + rehearsal materials, confirm availability, receive updates",
+    "Upload invoices and required documents; same master record, role-based view",
+  ] },
+  { Icon: Star, title: "9 · Event completion & review", color: C.amber, points: [
+    "Thank-you message + automated review request with links to review platforms",
+    "Feedback, photo/video upload and sharing, final receipts",
+    "Request future entertainment and refer another client",
+  ] },
+];
+
 // ── GHL account structure ────────────────────────────────────
 type Sub = { Icon: typeof Building2; name: string; holds: string; color: string; rows: string[] };
 const SUBS: Sub[] = [
@@ -135,56 +198,58 @@ const phases: Phase[] = [
   {
     code: "Phase 0", name: "Discovery & foundation", window: "Week 1",
     Icon: ShieldCheck, accent: C.rose,
-    objective: "Lock the data model and access so nothing is rebuilt later. Map the existing SOP and event Drive onto the two sub-accounts, and confirm the talent database, tags, rates, and gig-sheet fields the whole system runs on.",
+    objective: "Lock the data model and access so nothing is rebuilt later. Map the brief, SOP, and event Drive onto the two sub-accounts, and confirm the talent database, tags, rates, packages, and gig-sheet fields everything runs on.",
     items: [
       { label: "Access to both GHL sub-accounts (or create Client + Talent sub-accounts)", status: "todo" },
       { label: "Import / confirm talent database: name, instrument, role, city/state, travel radius, rate, availability, bio, photos, W-9, direct deposit", status: "todo" },
       { label: "Confirm band names + instrument/role tag taxonomy for tagging every artist", status: "todo" },
-      { label: "Map the current Gig Sheet + Run of Show fields to GHL custom fields (venue, timeline, dances, must/do-not-play, dress code, call time, parking)", status: "todo" },
-      { label: "Confirm Drive folder-per-event convention (EVENT INFO-[date] [location] [type]) + which files are artist-facing vs internal/locked", status: "todo" },
+      { label: "Map Gig Sheet + Run of Show fields to GHL custom fields (venue, timeline, dances, must/do-not-play, dress code, call time, parking)", status: "todo" },
+      { label: "Confirm Drive folder-per-event convention (EVENT INFO-[date] [location] [type]) + artist-facing vs internal/locked files", status: "todo" },
+      { label: "Confirm packages, add-ons + pricing, and the proposal media (videos, photos, reviews)", status: "todo" },
+      { label: "Confirm DocuSign account + the contract templates per package", status: "todo" },
       { label: "Confirm music sources handled: uploaded MP3 files AND Spotify playlist links", status: "todo" },
-      { label: "Confirm packages, pricing, and contract terms from the Sales SOP", status: "todo" },
     ],
   },
   {
-    code: "Phase 1", name: "Client side — Sales, Finance, gig-sheet data", window: "Weeks 1–2",
+    code: "Phase 1", name: "Proposal → contract → deposit", window: "Weeks 1–3",
     Icon: Handshake, accent: C.coral,
-    objective: "SOP Phases 1–2. Package selection to signed contract, the gig-sheet + run-of-show fields on the event record, and the finance automation: deposit invoice, collection, and the 21-day final-payment reminder.",
+    objective: "Brief modules 1–3. The customized proposal portal, package + add-on selection, the DocuSign contract, the automatic switch into the active event portal, and the payments engine.",
     items: [
-      { label: "Package selection + contract generation (name, date, venue, type, package, times, pricing, terms)", status: "todo" },
-      { label: "Client pipeline stages + client file", status: "todo" },
-      { label: "Gig sheet + run of show custom fields on the event record (the single source the portals read)", status: "todo" },
-      { label: "Finance: welcome email, deposit invoice, deposit collection", status: "todo" },
-      { label: "Auto final-payment reminder 21 days before event + payment confirmation to Production", status: "todo" },
+      { label: "Customized proposal portal (client name, date, venue, type, package + inclusions, add-ons, pricing, videos/photos/reviews)", status: "todo" },
+      { label: "Client selects a package and approves add-ons in the portal", status: "todo" },
+      { label: "Contract auto-generates on selection → review + fields + DocuSign e-signature → signed copy stored", status: "todo" },
+      { label: "Proposal portal auto-transitions into the active event portal on signature", status: "todo" },
+      { label: "Payments: deposit, scheduled installments, final balance, add-ons, invoices, receipts, remaining balance", status: "todo" },
+      { label: "Payment due dates + automatic reminders (deposit, installments, 21-day final)", status: "todo" },
     ],
   },
   {
-    code: "Phase 2", name: "Client portal — music planning & their event", window: "Weeks 2–3",
-    Icon: Music, accent: C.purple,
-    objective: "SOP Phases 3–5. Production onboarding docs, the client portal questionnaire + Spotify playlist, and the client's own view of their gig sheet and run of show.",
+    code: "Phase 2", name: "Event portal — questionnaire, documents, reminders", window: "Weeks 3–5",
+    Icon: ClipboardList, accent: C.purple,
+    objective: "Brief modules 4–6 + SOP 3–5. The save-and-resume questionnaire, the central documents hub, and the notifications + client checklist.",
     items: [
-      { label: "Production onboarding: welcome, contact, stage/technical/hospitality riders, electrical + sound, timeline", status: "todo" },
-      { label: "Client portal questionnaire (ceremony → reception, must-play / do-not-play, timeline, name pronunciation, vendor contacts)", status: "todo" },
-      { label: "Song library + Spotify playlist + client music selections capture", status: "todo" },
-      { label: "Client view of their gig sheet + run of show (their side of the shared event record)", status: "todo" },
-      { label: "Venue coordination + COI request / tracking (Phase 4)", status: "todo" },
+      { label: "Questionnaire: ceremony→reception, first dance, parent dances, introductions, must/do-not-play, cultural & religious traditions, timeline, planner/venue contacts, production requirements, special requests", status: "todo" },
+      { label: "Save-and-resume progress on the questionnaire (return later without losing anything)", status: "todo" },
+      { label: "Documents hub: contract, invoices/receipts, package, timeline, venue, production docs, stage requirements, technical + hospitality riders, COI, music selections, contacts", status: "todo" },
+      { label: "Notifications + reminders + a live client checklist (completed vs outstanding)", status: "todo" },
+      { label: "Production onboarding docs + venue coordination + COI request / tracking", status: "todo" },
     ],
   },
   {
-    code: "Phase 3", name: "Talent side — booking, offers, auto-materials", window: "Weeks 3–4",
+    code: "Phase 3", name: "Talent side — booking, offers, auto-materials", window: "Weeks 5–7",
     Icon: Users, accent: C.cyan,
-    objective: "SOP Phases 6–8 plus Troy's ask: when an artist is chosen, the event's materials appear in their portal automatically. Talent search, gig offers, calendar, reminders, and the full talent portal.",
+    objective: "Brief module 8 + SOP 6–8. Assign talent, gig offers with accept/decline, materials that auto-surface on assignment, and talent document uploads — all on the master record.",
     items: [
-      { label: "Talent database search + assemble band from package", status: "todo" },
-      { label: "Gig offer (date, venue, call time, dress code, parking, hotel, travel, pay) with accept / decline", status: "todo" },
+      { label: "Assign talent from the database (musicians, singers, DJs, bandleaders, technicians) based on the package", status: "todo" },
+      { label: "Gig offer (date, venue, call time, wardrobe, parking, hotel, travel, pay) with accept / decline + confirm availability", status: "todo" },
       { label: "On accept: calendar add + confirmation + scheduled SMS & email reminders", status: "todo" },
-      { label: "On assignment: auto-surface the event's gig sheet, run of show, stage plot, and music into the artist's portal", status: "todo" },
-      { label: "Artist-facing vs internal visibility rules (hide locked internal docs like Reminders + Vendor Guidelines)", status: "todo" },
-      { label: "Talent portal: upcoming/past gigs, calendar, payments, contracts, tax docs, charts, set lists, PDFs + video/music links", status: "todo" },
+      { label: "On assignment: auto-surface gig sheet, run of show, stage plot, music + rehearsal materials into the artist's portal", status: "todo" },
+      { label: "Talent uploads: invoices and required documents", status: "todo" },
+      { label: "Artist-facing vs internal visibility (same master record, role-based view)", status: "todo" },
     ],
   },
   {
-    code: "Phase 4", name: "AI layer + music director packet", window: "Weeks 4–5",
+    code: "Phase 4", name: "AI layer + music director packet", window: "Weeks 7–9",
     Icon: Bot, accent: C.green,
     objective: "SOP Phase 9 plus the AI. Nearest-band matching, client-side song suggestions, both-side Q&A, and the finalized music-director packet distribution.",
     items: [
@@ -195,17 +260,16 @@ const phases: Phase[] = [
     ],
   },
   {
-    code: "Phase 5", name: "Command center, PDF, launch", window: "Weeks 5–6",
+    code: "Phase 5", name: "Internal access, command center, completion & review", window: "Weeks 9–12",
     Icon: LayoutDashboard, accent: C.amber,
-    objective: "SOP Phases 10–13. The admin command center over one event record, generated PDFs, the WhatsApp replacement, post-event recap, completed-gig payouts, follow-up, and launch on the TCE website.",
+    objective: "Brief modules 7 & 9 + SOP 10–13. Internal team access on signature, the admin command center, generated PDFs, the WhatsApp replacement, payouts, and the completion + review journey. Then launch on the TCE site.",
     items: [
+      { label: "Production/internal team access granted on signature; client changes auto-update the internal event record", status: "todo" },
       { label: "Admin command center: unified view of every event + assign band + generate proposal/contract", status: "todo" },
       { label: "Generate branded gig-sheet / run-of-show PDF from GHL data, saved to the event + its Drive folder", status: "todo" },
-      { label: "Role-based views verified: client, talent, and admin all read the one event record", status: "todo" },
-      { label: "Move all artist comms into the portal + native GHL SMS/email (replace WhatsApp per Troy)", status: "todo" },
-      { label: "Post-event recap + mark complete (unlocks talent payment)", status: "todo" },
-      { label: "Payout list: per-artist rate, completed-gigs only, manual pay + history to Talent Portal", status: "todo" },
-      { label: "Client follow-up (thank-you, review, referral) + CRM nurture", status: "todo" },
+      { label: "Move all comms into the portal + native GHL SMS/email (replace WhatsApp per Troy)", status: "todo" },
+      { label: "Post-event: mark complete (unlocks payouts) + payout list (per-artist rate, completed-only, manual pay)", status: "todo" },
+      { label: "Completion & review: thank-you, automated review request with links to review platforms, photo/video upload, referral, request future entertainment", status: "todo" },
       { label: "TCE-branded site with Client + Talent logins + Admin entry; end-to-end test + handover", status: "todo" },
     ],
   },
@@ -214,11 +278,13 @@ const phases: Phase[] = [
 // ── Open questions still needed from Troy ────────────────────
 const OPEN: { q: string; why: string }[] = [
   { q: "Do the two GHL sub-accounts exist yet, and is there a talent database to import (or do we build it)?", why: "Decides whether Phase 0 is a migration or a clean build." },
-  { q: "Is the Drive folder-per-event naming consistent across all events (like EVENT INFO-07.11.26 NJ Wedding)?", why: "Consistent naming is what lets the automation map each gig to its folder and auto-surface files." },
-  { q: "For Drive access: link-based sharing to start, or the Google Drive API for tighter per-artist control?", why: "Sets how assigned artists open the gig sheet, stage plot, and media in their portal." },
-  { q: "Payment processor for client deposits + final balance — Stripe, GHL payments, other?", why: "Wires the Finance automation (Phase 2) and the 21-day reminder." },
-  { q: "Talent payouts — bank/direct deposit via the W-9 on file, or another method?", why: "Sets how the completed-gig payout list is actioned (Phase 12)." },
-  { q: "Who owns COI / insurance issuance, and can we trigger the request from the platform?", why: "Automates Phase 4 venue coordination cleanly." },
+  { q: "DocuSign for e-signature — confirm the account, and who provides the contract templates per package?", why: "Module 2 hinges on DocuSign + the templates the contract auto-generates from." },
+  { q: "Payment structure: deposit amount, number and timing of installments, and processor (Stripe / GHL payments)?", why: "Drives the billing schedule and the automatic reminders in module 3." },
+  { q: "Proposal media: where do the videos, photos, and reviews for the proposal page come from?", why: "Module 1 needs the sales assets to build each personalized proposal." },
+  { q: "Which review platforms should the automated review request link to (Google, The Knot, WeddingWire, Yelp)?", why: "Sets up module 9's post-event review automation." },
+  { q: "Is the Drive folder-per-event naming consistent across all events (like EVENT INFO-07.11.26 NJ Wedding)?", why: "Consistent naming lets automation map each gig to its folder and auto-surface files." },
+  { q: "Drive access: link-based sharing to start, or the Google Drive API for tighter per-artist control?", why: "Sets how assigned artists open the gig sheet, stage plot, and media." },
+  { q: "Talent payouts — direct deposit via the W-9 on file, or another method?", why: "Sets how the completed-gig payout list is actioned." },
 ];
 
 function statusIcon(s: Status, accent: string) {
@@ -277,10 +343,10 @@ export default function TceMilestones() {
             Booking platform — workflow, milestones & checklist
           </h1>
           <p style={{ color: C.sub, fontSize: 15, maxWidth: 720, margin: 0, lineHeight: 1.6 }}>
-            Built directly from your Production SOP, Artist Platform SOP, your live event Drive, and Troy&apos;s notes. Two
-            GoHighLevel sub-accounts, three portals reading one shared event record, an AI matching and song layer, and an
-            admin command center — mapped step for step to your existing 13-phase journey across Sales, Finance, Production,
-            and Booking. This is the shared source of truth, updated as each item moves.
+            Built from your development brief, both SOPs, your live event Drive, and Troy&apos;s notes. One connected system
+            from proposal to review: two GoHighLevel sub-accounts, three portals reading one master event record, DocuSign
+            contracts, payments, an AI matching and song layer, and an admin command center. This is the shared source of
+            truth, updated as each item moves.
           </p>
         </div>
 
@@ -315,6 +381,43 @@ export default function TceMilestones() {
             <div style={{ color: C.muted, fontSize: 12, marginTop: 6 }}>Updated as each checklist item moves</div>
           </div>
         </div>
+
+        {/* Full scope from the dev brief */}
+        <Section title="The full scope — one connected system, proposal to review" Icon={Layers} accent={C.rose}>
+          <p style={{ color: C.sub, fontSize: 13.5, marginTop: -4, marginBottom: 18 }}>
+            Straight from your development brief. The whole client journey lives in one system, and both portals connect to a
+            single master event record while showing each person only what they should see.
+          </p>
+          {/* Lifecycle strip */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 20 }}>
+            {LIFECYCLE.map((s, i) => (
+              <span key={s} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: C.ink, background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 999, padding: "6px 12px" }}>{s}</span>
+                {i < LIFECYCLE.length - 1 && <ArrowRight size={13} style={{ color: C.muted }} />}
+              </span>
+            ))}
+          </div>
+          {/* Module cards */}
+          <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+            {MODULES.map((m) => (
+              <div key={m.title} style={{ background: C.card, border: `1px solid ${C.border}`, borderTop: `3px solid ${m.color}`, borderRadius: 14, padding: "16px 18px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
+                  <span style={{ width: 32, height: 32, borderRadius: 9, background: m.color + "1F", display: "grid", placeItems: "center" }}>
+                    <m.Icon size={16} style={{ color: m.color }} />
+                  </span>
+                  <span style={{ fontSize: 14.5, fontWeight: 800, color: C.ink, lineHeight: 1.2 }}>{m.title}</span>
+                </div>
+                <div style={{ display: "grid", gap: 6 }}>
+                  {m.points.map((p, i) => (
+                    <div key={i} style={{ display: "flex", gap: 7, alignItems: "flex-start", fontSize: 12.5, color: C.sub, lineHeight: 1.5 }}>
+                      <CircleCheck size={13} style={{ color: m.color, flexShrink: 0, marginTop: 2 }} /> {p}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
 
         {/* GHL structure */}
         <Section title="How it's structured — 2 GHL sub-accounts, 3 portals" Icon={Building2} accent={C.rose}>
