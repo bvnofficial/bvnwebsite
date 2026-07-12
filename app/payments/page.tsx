@@ -36,6 +36,9 @@ const PRESETS: Record<string, string[]> = {
 
 const CURRENCIES = ["PHP", "USD", "GBP", "AUD", "EUR", "SGD"];
 
+// Transaction fee added on top of every payment (covers gateway processing).
+const FEE_RATE = 0.02;
+
 type Method = "paymongo" | "card" | "crypto";
 
 interface PaidDetails {
@@ -49,6 +52,14 @@ interface PaidDetails {
 function fmt(amount: string, currency: string) {
   if (!amount || isNaN(Number(amount))) return CURRENCY_SYMBOLS[currency] + "0";
   return CURRENCY_SYMBOLS[currency] + Number(amount).toLocaleString("en-US");
+}
+
+// Money with 2 decimals — used for fee and total so cents always show.
+function money(amount: number, currency: string) {
+  return (
+    CURRENCY_SYMBOLS[currency] +
+    (amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  );
 }
 
 function PaymentsForm() {
@@ -104,9 +115,16 @@ function PaymentsForm() {
   );
 
   const rawAmount = selectedAmt === "custom" ? customAmt.replace(/[^0-9.]/g, "") : selectedAmt;
+  // Base (what the client entered) + 2% transaction fee = the amount actually charged.
+  const baseAmount = rawAmount ? Number(rawAmount) : 0;
+  const feeAmount = Math.round(baseAmount * FEE_RATE * 100) / 100;
+  const chargeAmount = Math.round((baseAmount + feeAmount) * 100) / 100;
+  const chargeStr = chargeAmount ? String(chargeAmount) : "";
   const phpRate = toPhp[currency] ?? FALLBACK_TO_PHP[currency];
-  const phpAmount = rawAmount ? Math.round(Number(rawAmount) * phpRate) : 0;
-  const displayAmount = fmt(rawAmount, currency);
+  const phpAmount = chargeAmount ? Math.round(chargeAmount * phpRate) : 0;
+  const subtotalDisplay = fmt(rawAmount, currency);
+  const feeDisplay = money(feeAmount, currency);
+  const totalDisplay = money(chargeAmount, currency);
   const phpDisplay = phpAmount ? "₱" + phpAmount.toLocaleString("en-PH") : "₱0";
 
   function selectCurrency(c: string) {
@@ -163,7 +181,7 @@ function PaymentsForm() {
           body: JSON.stringify({
             name,
             email,
-            amount: rawAmount,
+            amount: chargeAmount,
             currency,
             description: description || urlPlan || undefined,
           }),
@@ -186,7 +204,7 @@ function PaymentsForm() {
   if (paid) {
     const paidDisplay = paid.amount
       ? `${paid.currency} ${Number(paid.amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
-      : displayAmount;
+      : totalDisplay;
     return (
       <div className="min-h-screen bg-[#06060c] flex items-center justify-center px-4 py-24">
         <div className="relative w-full max-w-md">
@@ -392,10 +410,18 @@ function PaymentsForm() {
                   </div>
                 )}
 
-                <div className="pt-3 border-t border-white/8 space-y-1">
+                <div className="pt-3 border-t border-white/8 space-y-1.5">
                   <div className="flex justify-between items-center">
+                    <span className="text-white/40 text-sm">Subtotal</span>
+                    <span className="text-white/70 text-sm font-semibold">{subtotalDisplay}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/40 text-sm">Transaction fee (2%)</span>
+                    <span className="text-white/70 text-sm font-semibold">{feeDisplay}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-1.5 border-t border-white/8">
                     <span className="text-white/40 text-sm">Total</span>
-                    <span className="text-[#d4af37] font-heading font-black text-2xl">{displayAmount}</span>
+                    <span className="text-[#d4af37] font-heading font-black text-2xl">{totalDisplay}</span>
                   </div>
                   {method === "paymongo" && currency !== "PHP" && (
                     <div className="flex justify-between items-center">
@@ -584,7 +610,7 @@ function PaymentsForm() {
               {paypalEnabled && (
                 <div className={method === "card" ? "bg-[#0e0e1a] border border-white/8 rounded-2xl p-5" : "hidden"}>
                   <PayPalCheckout
-                    amount={rawAmount}
+                    amount={chargeStr}
                     currency={currency}
                     name={name}
                     email={email}
@@ -615,8 +641,8 @@ function PaymentsForm() {
                       <>
                         <Lock size={16} />
                         {method === "paymongo"
-                          ? `Pay ${currency === "PHP" ? displayAmount : phpDisplay} via GCash / Card`
-                          : `Pay ${displayAmount} Securely`}
+                          ? `Pay ${currency === "PHP" ? totalDisplay : phpDisplay} via GCash / Card`
+                          : `Pay ${totalDisplay} Securely`}
                         <ChevronRight size={16} />
                       </>
                     )}
