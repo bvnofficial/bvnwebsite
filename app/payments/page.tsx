@@ -37,7 +37,12 @@ const PRESETS: Record<string, string[]> = {
 const CURRENCIES = ["PHP", "USD", "GBP", "AUD", "EUR", "SGD"];
 
 // Transaction fee added on top of every payment (covers gateway processing).
-const FEE_RATE = 0.02;
+// PayPal's international + card fees run higher, so it carries a higher rate.
+const FEE_RATES: Record<Method, number> = {
+  paymongo: 0.02,
+  card: 0.039, // PayPal
+  crypto: 0.02,
+};
 
 type Method = "paymongo" | "card" | "crypto";
 
@@ -115,9 +120,11 @@ function PaymentsForm() {
   );
 
   const rawAmount = selectedAmt === "custom" ? customAmt.replace(/[^0-9.]/g, "") : selectedAmt;
-  // Base (what the client entered) + 2% transaction fee = the amount actually charged.
+  // Base (what the client entered) + transaction fee = the amount actually charged.
+  const feeRate = FEE_RATES[method];
+  const feePct = (feeRate * 100).toLocaleString("en-US", { maximumFractionDigits: 1 });
   const baseAmount = rawAmount ? Number(rawAmount) : 0;
-  const feeAmount = Math.round(baseAmount * FEE_RATE * 100) / 100;
+  const feeAmount = Math.round(baseAmount * feeRate * 100) / 100;
   const chargeAmount = Math.round((baseAmount + feeAmount) * 100) / 100;
   const chargeStr = chargeAmount ? String(chargeAmount) : "";
   const phpRate = toPhp[currency] ?? FALLBACK_TO_PHP[currency];
@@ -416,7 +423,7 @@ function PaymentsForm() {
                     <span className="text-white/70 text-sm font-semibold">{subtotalDisplay}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white/40 text-sm">Transaction fee (2%)</span>
+                    <span className="text-white/40 text-sm">Transaction fee ({feePct}%)</span>
                     <span className="text-white/70 text-sm font-semibold">{feeDisplay}</span>
                   </div>
                   <div className="flex justify-between items-center pt-1.5 border-t border-white/8">
