@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "How I Build — Developer Experience Hub (shareable)",
+    region: "Personal experience hub for warm leads",
+    scope: "Dev Experience · Real Projects · My Role",
+    blurb:
+      "A shareable development-experience hub opening with 'I am not an agency, I built all of this myself': interactive real projects with my exact role in each (TeamTitans UK real estate from scratch, the AI job pipeline, Regal GoHighLevel CRM, X-1R e-commerce storefront, the payments and credits wallet, and this website plus its demos), a recently-enjoyed project story answering the classic interview question, the full stack, and real GHL proof. Send this to interested clients who ask about experience. Built with Claude Code.",
+    href: "/clients/how-i-build/experience",
+    status: "active",
+    accent: C.blue,
+    tags: ["Portfolio", "Developer", "Not An Agency", "Shareable"],
+  },
+  {
     name: "OneMore Pickleball Club GHL Command Center (application)",
     region: "Membership sports club, remote contract",
     scope: "GoHighLevel · A2P 10DLC · Membership CRM",
