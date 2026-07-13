@@ -113,6 +113,29 @@ const PROCESS: { k: string; v: string }[] = [
   { k: "Access I'll need", v: "Both GHL sub-accounts, the talent database, the Google Drive resource folders, and the Stripe account (or whoever owns it)." },
 ];
 
+// ── Alternatives considered ──────────────────────────────────
+const ROUTES: { name: string; stack: string; best: string; trade: string; pick: boolean; color: string }[] = [
+  { name: "GHL-centric", stack: "GoHighLevel + Make/n8n + Claude + Supabase + Stripe", best: "Fastest launch, lowest cost, your team can manage it, one source of truth.", trade: "You work within GHL's UI for most screens.", pick: true, color: C.green },
+  { name: "No-code app builders", stack: "Bubble / Softr / Base44 / Lovable on Airtable or Supabase", best: "More custom look than GHL, still fast, little code.", trade: "Rebuilds what GHL gives free (auth, invoicing, comms); more pieces to maintain.", pick: false, color: C.amber },
+  { name: "Full custom code", stack: "Next.js + Node + Supabase + Stripe + Clerk on Vercel", best: "Total control, fully bespoke, built to scale.", trade: "Most time and money, and needs a developer forever. The $15–30k agency route.", pick: false, color: C.coral },
+  { name: "Off-the-shelf event tool", stack: "HoneyBook / Dubsado / 17hats", best: "Instant client CRM, proposals, contracts, payments.", trade: "Client-side only — no talent portal, band matching, or gig sheets, which is TCE's whole edge.", pick: false, color: C.rose },
+];
+
+const ALTS: { fn: string; opts: string }[] = [
+  { fn: "Backbone / portals", opts: "GoHighLevel · Bubble · Softr · custom Next.js" },
+  { fn: "Data / backend", opts: "Supabase · Firebase · Airtable" },
+  { fn: "Automation", opts: "Make · n8n · Zapier · Pipedream" },
+  { fn: "AI models", opts: "Claude · OpenAI · Gemini" },
+  { fn: "AI search / memory", opts: "Supabase pgvector · Pinecone · Weaviate" },
+  { fn: "E-signature", opts: "GHL native · DocuSign · PandaDoc · Dropbox Sign" },
+  { fn: "Payments", opts: "Stripe · Square · PayPal · GHL payments" },
+  { fn: "Proposals", opts: "GHL · PandaDoc · Qwilr · Better Proposals" },
+  { fn: "Forms / questionnaire", opts: "GHL · Fillout · Typeform · Jotform" },
+  { fn: "Scheduling", opts: "GHL calendars · Calendly · Cal.com" },
+  { fn: "Comms (SMS + email)", opts: "GHL native · Twilio · SendGrid" },
+  { fn: "Files / documents", opts: "Google Drive · Dropbox" },
+];
+
 export default function TceBuildStack() {
   const [flowI, setFlowI] = useState(0);
   const [openLayer, setOpenLayer] = useState<string>("Backbone / CRM & portals");
@@ -236,6 +259,54 @@ export default function TceBuildStack() {
                 <div style={{ fontSize: 13, fontWeight: 800, color: C.amber, textAlign: "right" }}>{r.app}</div>
               </div>
             ))}
+          </div>
+        </Section>
+
+        {/* Alternatives */}
+        <Section title="Alternatives considered — and why this stack" Icon={Layers} accent={C.purple}>
+          <p style={{ color: C.sub, fontSize: 13.5, marginTop: -4, marginBottom: 16 }}>
+            There are four honest ways to build all of this. Here is each one, what it is good for, and the trade-off.
+          </p>
+          <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+            {ROUTES.map((r) => (
+              <div key={r.name} style={{ background: r.pick ? C.cardHi : C.card, border: `1px solid ${r.pick ? r.color + "88" : C.border}`, borderTop: `3px solid ${r.color}`, borderRadius: 14, padding: "16px 18px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: 15.5, fontWeight: 800, color: C.ink }}>{r.name}</span>
+                  {r.pick && (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", color: r.color, background: r.color + "1F", borderRadius: 999, padding: "3px 9px" }}>
+                      <CircleCheck size={11} /> Recommended
+                    </span>
+                  )}
+                </div>
+                <div style={{ fontSize: 12.5, fontWeight: 700, color: r.color, marginBottom: 10, lineHeight: 1.4 }}>{r.stack}</div>
+                <div style={{ fontSize: 12.5, color: C.sub, lineHeight: 1.5, marginBottom: 6 }}>
+                  <span style={{ color: C.green, fontWeight: 700 }}>Best for: </span>{r.best}
+                </div>
+                <div style={{ fontSize: 12.5, color: C.sub, lineHeight: 1.5 }}>
+                  <span style={{ color: C.amber, fontWeight: 700 }}>Trade-off: </span>{r.trade}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ fontSize: 12.5, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", color: C.muted, margin: "22px 0 10px" }}>
+            Component by component
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, overflow: "hidden" }}>
+            {ALTS.map((r, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "0.8fr 1.4fr", gap: 12, padding: "11px 16px", borderTop: i === 0 ? "none" : `1px solid ${C.border}` }}>
+                <div style={{ fontSize: 13, color: C.ink, fontWeight: 700 }}>{r.fn}</div>
+                <div style={{ fontSize: 12.5, color: C.sub, textAlign: "right" }}>{r.opts}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 16, background: C.bg2, border: `1px solid ${C.border}`, borderLeft: `3px solid ${C.green}`, borderRadius: 12, padding: "14px 16px", fontSize: 13, color: C.sub, lineHeight: 1.6 }}>
+            <span style={{ color: C.ink, fontWeight: 700 }}>Bottom line: </span>
+            fully custom is the $15–30k agency route and takes far longer, and off-the-shelf event tools only handle the
+            client side — they can&apos;t do your talent portal or band matching. GoHighLevel already does about 80% of what
+            you need, so we build on that and go custom only where it makes the experience better. Tailored system, without
+            the custom price tag or the fragility of running two tools.
           </div>
         </Section>
 
