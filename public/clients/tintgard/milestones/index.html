@@ -695,8 +695,8 @@
 <section id="cta">
   <div class="wrap">
     <div class="cta reveal">
-      <h2>Milestone 1 is underway</h2>
-      <p>Foundation, pipelines and calendars are already live. A handful of quick answers from you keeps the momentum going.</p>
+      <h2>Milestone 1 is complete</h2>
+      <p>The foundation is built and verified, and your pipelines, instant response email and the ServiceM8 sync are already live on top of it. A handful of quick answers from you unlocks the rest.</p>
       <div class="cta-row">
         <a href="mailto:bvn@bvnofficial.com?subject=TintGard%20CRM%20%2B%20AI" class="btn-cta btn-red">Message BVN →</a>
         <a href="/clients/tintgard/website/" target="_blank" class="btn-cta btn-outline">See the demo site</a>
@@ -710,7 +710,7 @@
 </section>
 
 <script>
-const LAST_UPDATED = "July 4, 2026";
+const LAST_UPDATED = "July 15, 2026";
 
 // status: "done" | "active" | "todo"
 const SECTIONS = [
@@ -744,7 +744,7 @@ const SECTIONS = [
     ["ServiceM8 connection authenticated","done","connected with your API key; verified read + write on jobs, clients and scheduling"],
     ["Booked lead → job auto-created","done","when an opportunity reaches Booked, a ServiceM8 job (client + Work Order + contact, correct category) is created automatically and its ID is written back to the CRM. Verified live end to end"],
     ["Job status syncs back to GHL","done","when the ServiceM8 job is marked Completed, the CRM opportunity moves to Job Completed, the status field updates and the review request is triggered. Verified live end to end"],
-    ["Sync cadence","active","running daily on the current hosting plan; can move to every few minutes with a small plan bump or an external scheduler"],
+    ["Sync cadence","done","live and running every 10 minutes, with a daily run as a safety net on top. Bookings and completed jobs move between the CRM and ServiceM8 on their own, no plan upgrade needed and nobody has to press anything"],
     ["Win-back / reactivation campaigns","todo"],
   ]},
   { id:"m5", title:"M5 — Affiliate Partner Program", items:[
@@ -762,13 +762,13 @@ const SECTIONS = [
 ];
 
 const MILESTONES = [
-  { no:"M1", amount:"A$1,000", title:"Foundation & Setup", status:"active",
+  { no:"M1", amount:"A$500", title:"Foundation & Setup", status:"active",
     trigger:"Complete. All 9 foundation items are built, live and verified — the GoHighLevel account, branding, custom fields, calendars, business phone, lead capture form, AI chat widget and the ServiceM8 connection. Ready for payment.",
     covers:["m1"] },
   { no:"M4", amount:"A$1,000", title:"Journeys, AI & Integration", status:"pending",
     trigger:"Due once the customer journeys, AI layer and ServiceM8 sync are approved.",
     covers:["m2","m3","m4"] },
-  { no:"M6", amount:"A$500", title:"Launch & Handover", status:"pending",
+  { no:"M6", amount:"A$1,000", title:"Launch & Handover", status:"pending",
     trigger:"Final payment when everything is tested, trained and live.",
     covers:["m5","m6"] },
 ];

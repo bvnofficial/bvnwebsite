@@ -343,9 +343,14 @@ export default function Navbar() {
   // <html> — CSS then hides `.site-navbar`. A pre-paint script in the root layout
   // sets the same class on first load so there's no flash of the overlapping nav.
   const isAppToolPage = /^\/apps\/.+/.test(pathname);
+  // Bare client tool pages (e.g. the TintGard CEO dashboard) also ship their own
+  // header and should feel like the client's own product — hide navbar, and via
+  // `bare-page` the global footer + chat widget too.
+  const isBarePage = /^\/clients\/tintgard\/dashboard/.test(pathname);
   useEffect(() => {
-    document.documentElement.classList.toggle("hide-navbar", isAppToolPage);
-  }, [isAppToolPage]);
+    document.documentElement.classList.toggle("hide-navbar", isAppToolPage || isBarePage);
+    document.documentElement.classList.toggle("bare-page", isBarePage);
+  }, [isAppToolPage, isBarePage]);
 
   return (
     <header

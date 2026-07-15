@@ -4,6 +4,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Full-screen /apps/* tool pages ship their own header; hide the global navbar
+   there. Toggled by the pre-paint script in the root layout + the Navbar effect. */
+.hide-navbar .site-navbar {
+  display: none !important;
+}
+
+/* Bare client tool pages (e.g. TintGard CEO dashboard) ship their own header and
+   should feel like the client's own product: hide the global footer + chat too. */
+.bare-page footer,
+.bare-page .bvn-chat {
+  display: none !important;
+}
+
 :root {
   --navy: #1B3060;
   --orange: #E86010;

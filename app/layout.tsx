@@ -72,8 +72,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        {/* Meta (Facebook) Pixel — id 998628699713510 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','998628699713510');fbq('track','PageView');",
+          }}
+        />
+        {/* Pre-paint: hide the global navbar on full-screen /apps/* tool pages so it
+            never flashes over their own header before hydration. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var p=location.pathname;if(/^\\/apps\\/.+/.test(p))document.documentElement.classList.add('hide-navbar');if(/^\\/clients\\/tintgard\\/dashboard/.test(p))document.documentElement.classList.add('hide-navbar','bare-page');}catch(e){}",
+          }}
+        />
         <meta name="facebook-domain-verification" content="aaze7bquq1go6vk1nme86jdh3lf5jz" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -91,6 +106,17 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-navy-dark text-white font-body antialiased">
+        {/* Meta Pixel <noscript> fallback */}
+        <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=998628699713510&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
         <Navbar />
         <main>{children}</main>
         <Footer />

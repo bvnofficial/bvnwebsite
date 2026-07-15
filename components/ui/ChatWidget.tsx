@@ -101,7 +101,7 @@ export default function ChatWidget() {
       {/* ── Floating bubble ── */}
       <button
         onClick={() => { setOpen(true); setMinimized(false); }}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-orange shadow-[0_4px_24px_rgba(232,96,16,0.5)] flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-[0_4px_32px_rgba(232,96,16,0.7)] ${open && !minimized ? "opacity-0 pointer-events-none scale-90" : "opacity-100"}`}
+        className={`bvn-chat fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-orange shadow-[0_4px_24px_rgba(232,96,16,0.5)] flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-[0_4px_32px_rgba(232,96,16,0.7)] ${open && !minimized ? "opacity-0 pointer-events-none scale-90" : "opacity-100"}`}
         aria-label="Open chat"
       >
         <MessageCircle size={24} />
@@ -112,7 +112,7 @@ export default function ChatWidget() {
 
       {/* ── Chat window ── */}
       <div
-        className={`fixed bottom-6 right-6 z-50 w-[370px] max-w-[calc(100vw-1.5rem)] flex flex-col rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)] border border-white/10 transition-all duration-300 origin-bottom-right ${
+        className={`bvn-chat fixed bottom-6 right-6 z-50 w-[370px] max-w-[calc(100vw-1.5rem)] flex flex-col rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)] border border-white/10 transition-all duration-300 origin-bottom-right ${
           open && !minimized
             ? "opacity-100 scale-100 pointer-events-auto"
             : "opacity-0 scale-90 pointer-events-none"
