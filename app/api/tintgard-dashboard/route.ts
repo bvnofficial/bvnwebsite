@@ -70,8 +70,19 @@ function weekBounds() {
 
 type Payload = Record<string, unknown>;
 let CACHE: { t: number; data: Payload } | null = null;
-let REFRESHING = false;
 const TTL_MS = 60_000;
+
+/**
+ * Only cache a build that actually came back with data. A build where every
+ * upstream call failed must never replace a good cache, or the dashboard shows
+ * zeros until the next success.
+ */
+function looksHealthy(d: Payload): boolean {
+  if (d.configured === false) return false;
+  const g = (d.ghl || {}) as Record<string, unknown>;
+  const m = (d.servicem8 || {}) as Record<string, unknown>;
+  return Number(m.total) > 0 || Number(g.totalLeads) > 0;
+}
 
 async function build(): Promise<Payload> {
   const token = process.env.GHL_TINTGARD_TOKEN;
@@ -319,19 +330,21 @@ async function build(): Promise<Payload> {
 }
 
 export async function GET() {
-  // Serve cache instantly; refresh in the background when stale (stale-while-revalidate).
-  if (CACHE) {
-    const fresh = Date.now() - CACHE.t < TTL_MS;
-    if (!fresh && !REFRESHING) {
-      REFRESHING = true;
-      build()
-        .then((d) => { if ((d as Payload).configured !== false) CACHE = { t: Date.now(), data: d }; })
-        .catch(() => {})
-        .finally(() => { REFRESHING = false; });
-    }
-    return NextResponse.json({ ...CACHE.data, cached: fresh });
+  // Serve a fresh cache immediately.
+  if (CACHE && Date.now() - CACHE.t < TTL_MS) {
+    return NextResponse.json({ ...CACHE.data, cached: true });
   }
+
+  // Rebuild inline. We deliberately do NOT refresh in the background: a
+  // serverless instance freezes once the response is sent, which kills any
+  // in-flight fetches and yields an all-errors payload.
   const data = await build();
-  if ((data as Payload).configured !== false) CACHE = { t: Date.now(), data };
+
+  if (looksHealthy(data)) {
+    CACHE = { t: Date.now(), data };
+    return NextResponse.json(data);
+  }
+  // Bad build: keep the last known good data rather than showing zeros.
+  if (CACHE) return NextResponse.json({ ...CACHE.data, cached: true, stale: true });
   return NextResponse.json(data);
 }
