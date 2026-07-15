@@ -380,7 +380,7 @@
     <div class="sec-h reveal"><h2>Live Build Checklist</h2><span class="mini" id="liveCount"></span></div>
     <div class="cards reveal d1" id="cards"></div>
     <div class="callout reveal d2">
-      <b>Where things stand:</b> Milestone 1 is complete. On top of it, your pipelines, lead capture, instant response email and the two way ServiceM8 sync are all live and running on their own, and your 992 past customers are now in the CRM. The follow up, nurture, win back and review workflows are all built and sitting in draft. <b>Everything BVN can build without you has been built.</b> What is left needs three things only you can give us: a mobile number that can text, DNS access for your email domain, and your Google review link. Those three unlock the rest of Milestone 2 and Milestone 3 in a matter of days.
+      <b>Where things stand:</b> Milestone 1 is complete and paid, thank you. On top of it, your pipelines, lead capture, instant response email and the two way ServiceM8 sync are live and running on their own, your 992 past customers are now in the CRM, and your live dashboard is up. Your follow up, nurture, win back and review workflows are all built and sitting ready in your account, deliberately switched off until you tell us to start them, because they message your customers and that call is yours to make. <b>Everything BVN can build without you has been built.</b> The remaining pieces need three things only you can give us: your number 0431320770 moved across (with your legal business name and ABN for the Australian registration), DNS access for your email domain, and your Google review link.
     </div>
     <div class="actions reveal d3">
       <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
@@ -728,17 +728,17 @@ const SECTIONS = [
   { id:"m2", title:"M2 — Customer Journeys (Leads → Sales)", items:[
     ["3 sales pipelines with stages — Automotive, Commercial, Residential","done","built and live, full 7-stage funnel each"],
     ["Instant-response email — LIVE","done","every enquiry from the site now instantly gets a branded email from info@tintgard.com.au (your real film brands + pricing) and lands in the CRM with an opportunity in the matching pipeline. Automotive, Commercial and Residential each have their own copy"],
-    ["Instant-response SMS","active","built and ready; waiting on a messaging number to be added + registered before it can send (the landline can't text). Switches on the moment the number is live"],
-    ["Automations per pipeline stage","active","the stage triggered workflows are built and sitting in your account as drafts: instant response on a new lead, and a nurture drip the moment a lead enters Nurturing, per pipeline. They start firing the moment they are published, and the SMS steps also need the messaging number below. Booked job and completed job automations already run through the ServiceM8 sync (M4)"],
-    ["Nurture sequences","active","3 timed drips built (Automotive 3+7 day, Commercial 7+11 day, Residential 3+6 day), triggered when a lead enters Nurturing, written with your real pricing and booking links. Built in draft, and the SMS steps need the messaging number before they can send"],
-    ["SMS / compliance registration","todo","your CRM currently has no phone number attached to it, so nothing can text yet. Your office line is a landline and cannot send SMS. We either move a mobile number across or set a new one up inside the CRM, then register it. Your call, and it is the single biggest thing holding this milestone up"],
+    ["Instant-response SMS","done","built and ready to go. Every new enquiry gets an instant text the moment you give the word, written per customer type with your real pricing. It sends as soon as your number is moved across and registered"],
+    ["Automations per pipeline stage","done","built across all three pipelines: instant response the moment a lead lands, and a nurture drip the moment a lead enters Nurturing. They sit ready in your account and start running the moment you give the go ahead. Booked job and completed job automations already run live through the ServiceM8 sync (M4)"],
+    ["Nurture sequences","done","3 timed drips built (Automotive 3+7 day, Commercial 7+11 day, Residential 3+6 day), triggered when a lead enters Nurturing, written with your real film names, pricing and booking links. Ready to switch on at your word, and the SMS steps send once your number is across"],
+    ["SMS / compliance registration","active","number decided: 0431320770, your existing business mobile. Because it is already live with a carrier, it has to be moved across to the CRM rather than simply switched on, and Australia requires a compliance registration in your legal business name before any number can send business texts. To start it we need two things from you: your legal business name and ABN, and your authority to move the number. Everything on the SMS side is already built and waiting behind this one step"],
     ["Email sending domain (info@tintgard.com.au)","todo","needs DNS access to tintgard.com.au"],
   ]},
   { id:"m3", title:"M3 — AI & Voice Layer", items:[
     ["Missed-call text-back","todo"],
     ["AI voice agent","active","persona brief + knowledge base drafted from TintGard's real FAQs, not yet built"],
     ["Website AI chat (GHL AI)","todo"],
-    ["2-way SMS & automated review requests","active","the review engine is built: the moment a job is marked Completed in ServiceM8, the CRM automatically asks that customer for a review by email. It is in draft and needs one thing from you, your Google review link, or we connect your Google Business Profile so reviews also flow back in. 2-way SMS waits on the messaging number"],
+    ["2-way SMS & automated review requests","done","the review engine is built and wired to your jobs: the moment you mark a job Completed in ServiceM8, that customer is automatically asked for a review. Two things finish it off, both quick: your Google review link for it to point at (or we connect your Google Business Profile, which also pulls your reviews back in), and your number across for the texting side"],
   ]},
   { id:"m4", title:"M4 — GHL ↔ ServiceM8 Integration", items:[
     ["ServiceM8 connection authenticated","done","connected with your API key; verified read + write on jobs, clients and scheduling"],
@@ -747,7 +747,7 @@ const SECTIONS = [
     ["Sync cadence","done","live and running every 10 minutes, with a daily run as a safety net on top. Bookings and completed jobs move between the CRM and ServiceM8 on their own, no plan upgrade needed and nobody has to press anything"],
     ["Live CEO dashboard","done","your whole business on one screen, live. This week at a glance (new leads, jobs booked in, jobs completed, quotes out), a map of where your jobs are this week and who is assigned to each one, your client conversations, and your money (collected this week, awaiting payment, and a breakdown by method). It reads straight from GoHighLevel and ServiceM8 and refreshes itself, so there is nothing to update and no spreadsheet to open. <a href='/clients/tintgard/dashboard' target='_blank' rel='noopener' style='color:var(--red2);font-weight:700'>Open your dashboard &rarr;</a>"],
     ["Your customer history imported into the CRM","done","992 customers pulled out of ServiceM8 and loaded into your CRM, each with their name, phone, email, suburb, job history, lifetime spend and a link back to their ServiceM8 job. That is around A$399,000 of past work your CRM previously knew nothing about. They are sorted for you: 432 real past customers, 97 who were quoted and never went ahead, and the rest who never proceeded, kept separate on purpose so marketing only ever goes to the right people"],
-    ["Win-back / reactivation campaigns","active","the win back campaign is built and aimed only at your 432 real past customers. It emails them a genuine check in (other rooms, a new car, a shopfront, plus a warranty offer) using your real films and pricing. Sitting in draft, ready to switch on whenever you are comfortable"],
+    ["Win-back / reactivation campaigns","done","built and aimed only at your 432 real past customers, never the people who only ever got a quote. It emails them a genuine check in (another room, a new car, a shopfront, plus a warranty offer) using your real films and pricing. Ready to run whenever you are comfortable turning it on"],
   ]},
   { id:"m5", title:"M5 — Affiliate Partner Program", items:[
     ["Affiliate Partner pipeline — Recruit through Re-engage","done","built and live, 6 stages"],
@@ -764,11 +764,11 @@ const SECTIONS = [
 ];
 
 const MILESTONES = [
-  { no:"M1", amount:"A$500", title:"Foundation & Setup", status:"active",
-    trigger:"Complete. All 9 foundation items are built, live and verified — the GoHighLevel account, branding, custom fields, calendars, business phone, lead capture form, AI chat widget and the ServiceM8 connection. Ready for payment.",
+  { no:"M1", amount:"A$500", title:"Foundation & Setup", status:"reached",
+    trigger:"Paid, thank you. All 9 foundation items are built, live and verified: the GoHighLevel account in your name, branding, custom fields, calendars, business phone, lead capture form, AI chat widget and the ServiceM8 connection.",
     covers:["m1"] },
-  { no:"M4", amount:"A$1,000", title:"Journeys, AI & Integration", status:"pending",
-    trigger:"Due once the customer journeys, AI layer and ServiceM8 sync are approved.",
+  { no:"M4", amount:"A$1,000", title:"Journeys, AI & Integration", status:"active",
+    trigger:"Now in progress. Your three customer journeys, the ServiceM8 two way sync and your live dashboard are done and running. The follow up, nurture, win back and review workflows are built and ready to switch on. The AI voice and SMS layer is waiting on your messaging number.",
     covers:["m2","m3","m4"] },
   { no:"M6", amount:"A$1,000", title:"Launch & Handover", status:"pending",
     trigger:"Final payment when everything is tested, trained and live.",
