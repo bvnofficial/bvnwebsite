@@ -34,21 +34,38 @@ function whenShort(str: string) {
   return `${+D} ${MON[+Mo - 1]} · ${hh}:${Mi} ${ap}`;
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// Minimal structural types for the bits of Leaflet we use (loaded at runtime).
+type LMap = {
+  eachLayer: (fn: (layer: unknown) => void) => void;
+  removeLayer: (layer: unknown) => void;
+  fitBounds: (pts: [number, number][], opts?: Record<string, unknown>) => void;
+  setView: (pt: [number, number], zoom: number) => void;
+  invalidateSize: () => void;
+  remove: () => void;
+};
+type LMarker = { bindPopup: (html: string) => LMarker; addTo: (m: LMap) => LMarker };
+type Leaflet = {
+  map: (el: HTMLElement, opts?: Record<string, unknown>) => LMap;
+  tileLayer: (url: string, opts?: Record<string, unknown>) => { addTo: (m: LMap) => void };
+  circleMarker: (pt: [number, number], opts?: Record<string, unknown>) => LMarker;
+  CircleMarker: new () => unknown;
+};
+
 export default function JobMap({ jobs }: { jobs: MapJob[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<LMap | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    loadLeaflet().then((L: any) => {
+    loadLeaflet().then((lib) => {
+      const L = lib as Leaflet;
       if (cancelled || !ref.current) return;
       if (!mapRef.current) {
         mapRef.current = L.map(ref.current, { scrollWheelZoom: false });
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(mapRef.current);
       }
       const map = mapRef.current;
-      map.eachLayer((layer: any) => { if (layer instanceof L.CircleMarker) map.removeLayer(layer); });
+      map.eachLayer((layer: unknown) => { if (layer instanceof L.CircleMarker) map.removeLayer(layer); });
       const pts: [number, number][] = [];
       jobs.forEach((j) => {
         const mk = L.circleMarker([j.lat, j.lng], { radius: 8, color: "#ffffff", weight: 2, fillColor: j.staffColor || "#E11D2A", fillOpacity: 0.95 });
