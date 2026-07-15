@@ -63,7 +63,7 @@ type Payment = { amount: number; method: string; client: string; date: string; i
 type Pay = { collectedThisWeek: number; collectedCount: number; byMethod: Record<string, number>; recent: Payment[]; awaitingTotal: number; awaitingCount: number };
 type Data = {
   configured?: boolean; generatedAt?: string; weekStart?: string;
-  ghl?: { totalLeads: number; newLeadsThisWeek: number; openOpps: number; openValue: number; wonValue: number; pipelines: Pipe[]; recentLeads: Lead[]; reviewRequested: number | null; conversations: Conv[]; unreadCount: number };
+  ghl?: { totalContacts: number; customers: number | null; newLeadsThisWeek: number; openOpps: number; openValue: number; wonValue: number; pipelines: Pipe[]; recentLeads: Lead[]; reviewRequested: number | null; conversations: Conv[]; unreadCount: number };
   servicem8?: { total: number; byStatus: Record<string, number>; recentJobs: Job[]; scheduledThisWeek: number; completedThisWeek: number; quotesThisWeek: number; schedule: Sched[]; mapJobs: MapJobT[]; staffWeek: StaffWk[]; payments: Pay };
   errors?: string[];
 };
@@ -101,7 +101,8 @@ export default function TintGardDashboard() {
     { label: "Quotes out", value: m ? m.quotesThisWeek : 0, Icon: FileText },
   ];
   const overall = [
-    { label: "Total leads", value: g ? String(g.totalLeads) : "—", Icon: Users },
+    { label: "Total contacts", value: g ? String(g.totalContacts) : "—", Icon: Users },
+    { label: "Past customers", value: g && g.customers != null ? String(g.customers) : "—", Icon: Star },
     { label: "Open opportunities", value: g ? String(g.openOpps) : "—", Icon: Target },
     { label: "Open pipeline value", value: g ? money(g.openValue) : "—", Icon: DollarSign },
     { label: "Won value", value: g ? money(g.wonValue) : "—", Icon: CheckCircle2 },

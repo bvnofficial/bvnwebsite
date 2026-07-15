@@ -42,6 +42,18 @@ function chLabel(t: string) {
 }
 const oneLine = (s: string) => s.replace(/\s+/g, " ").trim();
 
+type SearchFilter = { field: string; operator: string; value: string };
+type SearchSort = { field: string; direction: string };
+async function ghlSearch(token: string, filters: SearchFilter[], pageLimit = 1, sort?: SearchSort[]) {
+  const res = await fetch(`${GHL}/contacts/search`, {
+    method: "POST",
+    headers: { ...ghlHeaders(token), "Content-Type": "application/json" },
+    body: JSON.stringify({ locationId: LOCATION_ID, pageLimit, filters, ...(sort ? { sort } : {}) }),
+  });
+  if (!res.ok) return null;
+  return (await res.json().catch(() => null)) as { contacts?: unknown[]; total?: number } | null;
+}
+
 function ghlHeaders(token: string, version = GHLV) {
   return { Authorization: `Bearer ${token}`, Version: version, Accept: "application/json" };
 }
@@ -81,7 +93,7 @@ function looksHealthy(d: Payload): boolean {
   if (d.configured === false) return false;
   const g = (d.ghl || {}) as Record<string, unknown>;
   const m = (d.servicem8 || {}) as Record<string, unknown>;
-  return Number(m.total) > 0 || Number(g.totalLeads) > 0;
+  return Number(m.total) > 0 || Number(g.totalContacts) > 0;
 }
 
 async function build(): Promise<Payload> {
@@ -93,7 +105,8 @@ async function build(): Promise<Payload> {
   const week = weekBounds();
 
   const ghl: Payload = {
-    totalLeads: 0, newLeadsThisWeek: 0, openOpps: 0, openValue: 0, wonValue: 0,
+    totalContacts: 0, customers: null as number | null, newLeadsThisWeek: 0,
+    openOpps: 0, openValue: 0, wonValue: 0,
     pipelines: [] as Payload[], recentLeads: [] as Payload[], reviewRequested: null as number | null,
     conversations: [] as Payload[], unreadCount: 0,
   };
@@ -138,34 +151,44 @@ async function build(): Promise<Payload> {
     }
   } catch (e) { errors.push("ghl pipelines: " + String(e)); }
 
-  // ================= GoHighLevel: contacts (recent + weekly count) =================
+  // ================= GoHighLevel: contact totals =================
   try {
-    const cRes = await fetch(`${GHL}/contacts/?locationId=${LOCATION_ID}&limit=100`, { headers: ghlHeaders(token), cache: "no-store" });
+    const cRes = await fetch(`${GHL}/contacts/?locationId=${LOCATION_ID}&limit=1`, { headers: ghlHeaders(token), cache: "no-store" });
     const cData = await cRes.json().catch(() => null);
-    const contacts = (cData?.contacts || []) as Record<string, unknown>[];
-    ghl.totalLeads = num(cData?.meta?.total) || contacts.length;
+    ghl.totalContacts = num(cData?.meta?.total);
+  } catch (e) { errors.push("ghl contact total: " + String(e)); }
 
+  // Past customers (imported ServiceM8 history is tagged customer-active).
+  try {
+    const r = await ghlSearch(token, [{ field: "tags", operator: "contains", value: "customer-active" }], 1);
+    if (typeof r?.total === "number") ghl.customers = r.total;
+  } catch { /* optional */ }
+
+  /**
+   * Genuine new leads only. The ServiceM8 history import lands ~990 contacts
+   * all stamped with today's date, so they must be excluded or every imported
+   * customer would be counted as a brand new lead this week.
+   */
+  try {
+    const s = await ghlSearch(token, [{ field: "tags", operator: "not_contains", value: "servicem8-synced" }], 25, [{ field: "dateAdded", direction: "desc" }]);
+    const contacts = (s?.contacts || []) as Record<string, unknown>[];
     const mapped = contacts.map((c) => {
       const cf = cfMap(c);
-      const created = String(c.dateAdded || c.dateUpdated || "");
       return {
         name: String(c.contactName || `${c.firstName || ""} ${c.lastName || ""}`).trim() || "Unnamed lead",
         phone: String(c.phone || ""), email: String(c.email || ""),
         type: cf[F_CUSTOMER_TYPE] || "", suburb: cf[F_SUBURB] || "",
-        tags: (c.tags || []) as string[], createdAt: created,
+        tags: (c.tags || []) as string[], createdAt: String(c.dateAdded || c.dateUpdated || ""),
       };
     });
     ghl.newLeadsThisWeek = mapped.filter((l) => l.createdAt && Date.parse(l.createdAt) >= week.utcMs).length;
-    ghl.recentLeads = mapped.sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1)).slice(0, 12);
-  } catch (e) { errors.push("ghl contacts: " + String(e)); }
+    ghl.recentLeads = mapped.slice(0, 12);
+  } catch (e) { errors.push("ghl leads: " + String(e)); }
 
   // review-requested count (best effort)
   try {
-    const rRes = await fetch(`${GHL}/contacts/search`, {
-      method: "POST", headers: { ...ghlHeaders(token), "Content-Type": "application/json" },
-      body: JSON.stringify({ locationId: LOCATION_ID, pageLimit: 1, filters: [{ field: "tags", operator: "contains", value: "review-requested" }] }),
-    });
-    if (rRes.ok) { const rData = await rRes.json().catch(() => null); const t = rData?.total ?? rData?.meta?.total; if (typeof t === "number") ghl.reviewRequested = t; }
+    const r = await ghlSearch(token, [{ field: "tags", operator: "contains", value: "review-requested" }], 1);
+    if (typeof r?.total === "number") ghl.reviewRequested = r.total;
   } catch { /* leave null */ }
 
   // ================= GoHighLevel: conversations feed =================
