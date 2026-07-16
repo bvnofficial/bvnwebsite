@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "SDR Electric ServiceM8 Operating System (application)",
+    region: "Electrical/plumbing/HVAC, Ontario Canada",
+    scope: "ServiceM8 · Pricebook · Inventory · BI",
+    blurb:
+      "Interactive ServiceM8 operating system plan for a home service company: an audit-first review before touching the account, job workflows and templates, a flat-rate pricebook with Good/Better/Best structure, warehouse and truck inventory, purchasing from quote to receiving, the integration and automation layer (QuickBooks Online, HighLevel, n8n, Zapier, Make, and the ServiceM8 API directly), the weekly owner report and KPIs, and SOPs for technician adoption. Leans on 2 years of real ServiceM8 work including a live CEO BI dashboard. Honest about where ops depth is thinner. $2,500 USD/mo ask. Built with Claude Code.",
+    href: "/clients/sdr-electric/servicem8-operating-system",
+    status: "pending",
+    accent: C.amber,
+    tags: ["ServiceM8", "Pricebook", "Inventory", "KPI Dashboards"],
+  },
+  {
     name: "Alpine Provisions Mountain Creator System (application)",
     region: "Premium body care brand, full time remote",
     scope: "Web Dev · AI Automation · Creator Ops",
