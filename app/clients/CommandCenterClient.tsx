@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Alpine Provisions Mountain Creator System (application)",
+    region: "Premium body care brand, full time remote",
+    scope: "Web Dev · AI Automation · Creator Ops",
+    blurb:
+      "Interactive creator partnership and UGC operations system for Alpine Provisions: the full 11-stage pipeline from creator discovered through AI scoring, personalized outreach, application, agreement, Shopify order, ShipBob fulfillment, delivery confirmation, content upload, manager QC approval, attribution, and auditable commission payment; the Alpine-branded creator portal (auth, profiles, agreements, secure uploads, shipping visibility, commission transparency); account-safe automation with no bots or unauthorized scraping; three systems I personally built with my exact role; and the stack. $2,500/mo ask. Built with Claude Code.",
+    href: "/clients/alpine-provisions/creator-system",
+    status: "pending",
+    accent: C.green,
+    tags: ["Web Dev", "AI Automation", "Shopify/ShipBob", "Creator Ops"],
+  },
+  {
     name: "How I Build — Developer Experience Hub (shareable)",
     region: "Personal experience hub for warm leads",
     scope: "Dev Experience · Real Projects · My Role",
