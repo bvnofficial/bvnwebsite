@@ -9,7 +9,7 @@ import {
   MessageSquare, ArrowDownLeft, ArrowUpRight, Bell, Target, DollarSign,
   Map as MapIcon, Wallet, HandCoins, LayoutDashboard, Megaphone, Radio,
   CalendarX2, AlarmClock, TrendingUp, Inbox, Send,
-  Lock, ShieldCheck, X, CornerUpLeft, ChevronRight,
+  Lock, X, CornerUpLeft, ChevronRight,
 } from "lucide-react";
 
 const JobMap = dynamic(() => import("./JobMap"), { ssr: false, loading: () => <div style={{ height: 340, borderRadius: 12, background: "#EAECEF" }} /> });
@@ -106,17 +106,53 @@ export default function TintGardDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [tab, setTab] = useState<TabKey>("overview");
 
-  // Reply gate: a shared password unlocks replying only. Stored as a header
-  // token (not a cookie) so it survives inside the WordPress iframe embed.
+  // One shared password guards the whole dashboard, and the same token
+  // authorises replying. Held as a header token (not a cookie) so it keeps
+  // working inside the WordPress iframe embed, where cookies would be blocked.
   const [dashPw, setDashPw] = useState("");
   const [pwInput, setPwInput] = useState("");
   const [authErr, setAuthErr] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
+  const [gateRequired, setGateRequired] = useState(false);
+  const [ready, setReady] = useState(false);
   const [activeConv, setActiveConv] = useState<Conv | null>(null);
   const [detail, setDetail] = useState<string | null>(null);
   const authed = !!dashPw;
 
-  useEffect(() => { try { const s = localStorage.getItem("tg_dash_pw"); if (s) setDashPw(s); } catch { /* ignore */ } }, []);
+  // Read any saved password before the first fetch, so an unlocked browser
+  // never flashes the password screen on reload.
+  useEffect(() => {
+    try { const s = localStorage.getItem("tg_dash_pw"); if (s) setDashPw(s); } catch { /* ignore */ }
+    setReady(true);
+  }, []);
+
+  const load = useCallback(async () => {
+    try {
+      setRefreshing(true);
+      const res = await fetch("/api/tintgard-dashboard", {
+        cache: "no-store",
+        headers: dashPw ? { Authorization: `Bearer ${dashPw}` } : undefined,
+      });
+      if (res.status === 401) {
+        // Either no password entered yet, or a saved one that no longer works.
+        setGateRequired(true); setData(null);
+        setDashPw(""); try { localStorage.removeItem("tg_dash_pw"); } catch { /* ignore */ }
+        setErr(null);
+        return;
+      }
+      setGateRequired(false);
+      setData((await res.json()) as Data);
+      setErr(null);
+    } catch { setErr("Reconnecting"); }
+    finally { setLoading(false); setRefreshing(false); }
+  }, [dashPw]);
+
+  useEffect(() => {
+    if (!ready) return;
+    load();
+    const id = setInterval(load, 60_000);
+    return () => clearInterval(id);
+  }, [ready, load]);
 
   const unlock = useCallback(async () => {
     const pw = pwInput.trim();
@@ -124,25 +160,18 @@ export default function TintGardDashboard() {
     setAuthBusy(true); setAuthErr("");
     try {
       const res = await fetch("/api/tintgard-dashboard/auth", { method: "POST", headers: { Authorization: `Bearer ${pw}` } });
-      if (res.ok) { setDashPw(pw); try { localStorage.setItem("tg_dash_pw", pw); } catch { /* ignore */ } setPwInput(""); }
-      else setAuthErr(res.status === 503 ? "Replying is not switched on for this site yet." : "That password did not work.");
+      if (res.ok) {
+        try { localStorage.setItem("tg_dash_pw", pw); } catch { /* ignore */ }
+        setPwInput(""); setLoading(true); setDashPw(pw); // triggers a fresh load
+      } else setAuthErr(res.status === 503 ? "No password is set for this dashboard yet." : "That password did not work.");
     } catch { setAuthErr("Could not reach the server."); }
     finally { setAuthBusy(false); }
   }, [pwInput, authBusy]);
 
-  const lock = useCallback(() => { setDashPw(""); setActiveConv(null); try { localStorage.removeItem("tg_dash_pw"); } catch { /* ignore */ } }, []);
-
-  const load = useCallback(async () => {
-    try {
-      setRefreshing(true);
-      const res = await fetch("/api/tintgard-dashboard", { cache: "no-store" });
-      setData((await res.json()) as Data);
-      setErr(null);
-    } catch { setErr("Reconnecting"); }
-    finally { setLoading(false); setRefreshing(false); }
+  const lock = useCallback(() => {
+    setDashPw(""); setActiveConv(null); setDetail(null); setData(null); setGateRequired(true);
+    try { localStorage.removeItem("tg_dash_pw"); } catch { /* ignore */ }
   }, []);
-
-  useEffect(() => { load(); const id = setInterval(load, 60_000); return () => clearInterval(id); }, [load]);
 
   const g = data?.ghl;
   const m = data?.servicem8;
@@ -170,6 +199,29 @@ export default function TintGardDashboard() {
 
   const winRate = g && g.oppsTotal > 0 ? Math.round((g.wonOpps / g.oppsTotal) * 100) : null;
 
+  // Password screen. Only ever shown when a password is configured server-side.
+  if (ready && gateRequired) {
+    return (
+      <div style={{ minHeight: "100vh", background: C.bg, color: C.ink, fontFamily: "Inter, system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+        <div style={{ height: 4, background: C.red, position: "fixed", top: 0, left: 0, right: 0 }} />
+        <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 18, boxShadow: "0 12px 40px rgba(16,24,40,.12)", padding: "34px 30px", width: "100%", maxWidth: 380 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 7 }}>
+            <span style={{ width: 10, height: 10, borderRadius: 3, background: C.red }} />
+            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-.02em" }}>CEO Dashboard</span>
+          </div>
+          <p style={{ margin: "0 0 22px", fontSize: 13.5, color: C.muted, lineHeight: 1.5 }}>Enter your password to see your live business figures.</p>
+          <input type="password" autoFocus value={pwInput} onChange={(e) => setPwInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") unlock(); }} placeholder="Password"
+            style={{ width: "100%", padding: "12px 14px", border: `1px solid ${C.borderStrong}`, borderRadius: 10, fontSize: 15, outline: "none", fontFamily: "inherit" }} />
+          <button onClick={unlock} disabled={authBusy || !pwInput.trim()}
+            style={{ width: "100%", marginTop: 10, background: C.red, color: "#fff", border: "none", borderRadius: 10, padding: "12px 16px", fontSize: 14.5, fontWeight: 700, cursor: "pointer", opacity: (authBusy || !pwInput.trim()) ? 0.55 : 1 }}>
+            {authBusy ? "Checking…" : "Open dashboard"}
+          </button>
+          {authErr && <div style={{ marginTop: 12, fontSize: 13, color: C.red }}>{authErr}</div>}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.ink, fontFamily: "Inter, system-ui, sans-serif" }}>
       {/* brand stripe */}
@@ -191,6 +243,12 @@ export default function TintGardDashboard() {
               style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 12, color: C.sub, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: "7px 12px", cursor: "pointer", boxShadow: shadow }}>
               <RefreshCw size={13} style={{ animation: refreshing ? "spin 1s linear infinite" : "none" }} /> Refresh
             </button>
+            {authed && (
+              <button onClick={lock} aria-label="Lock dashboard" title="Lock dashboard"
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: C.sub, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: "7px 11px", cursor: "pointer", boxShadow: shadow }}>
+                <Lock size={13} /> Lock
+              </button>
+            )}
           </div>
           <div className="ceo-tabs" style={{ display: "flex", gap: 4, marginTop: 12, overflowX: "auto" }}>
             {TABS.map((t) => {
@@ -498,26 +556,10 @@ export default function TintGardDashboard() {
                   </div>
                 )}
 
-                {!authed ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: "14px 18px", marginBottom: 16, boxShadow: shadow }}>
-                    <span style={{ display: "grid", placeItems: "center", width: 34, height: 34, borderRadius: 9, background: C.redSoft }}><Lock size={16} color={C.red} /></span>
-                    <div style={{ flex: "1 1 220px", minWidth: 0 }}>
-                      <div style={{ fontWeight: 700, fontSize: 14 }}>Reply to customers</div>
-                      <div style={{ fontSize: 12.5, color: C.muted }}>Enter your dashboard password to open a conversation and send a reply.</div>
-                    </div>
-                    <input type="password" value={pwInput} onChange={(e) => setPwInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") unlock(); }} placeholder="Password"
-                      style={{ padding: "9px 12px", border: `1px solid ${C.borderStrong}`, borderRadius: 9, fontSize: 14, outline: "none", minWidth: 150 }} />
-                    <button onClick={unlock} disabled={authBusy}
-                      style={{ background: C.red, color: "#fff", border: "none", borderRadius: 9, padding: "9px 16px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: authBusy ? 0.6 : 1 }}>
-                      {authBusy ? "Checking…" : "Unlock"}
-                    </button>
-                    {authErr && <span style={{ fontSize: 12.5, color: C.red, flexBasis: "100%" }}>{authErr}</span>}
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, background: `${C.green}0d`, border: `1px solid ${C.green}33`, borderRadius: 14, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: C.sub }}>
-                    <ShieldCheck size={16} color={C.green} />
-                    <span><b style={{ color: C.ink }}>Replying unlocked.</b> Click any conversation to open it and reply.</span>
-                    <button onClick={lock} style={{ marginLeft: "auto", fontSize: 12, color: C.sub, background: "transparent", border: `1px solid ${C.border}`, borderRadius: 8, padding: "5px 10px", cursor: "pointer" }}>Lock</button>
+                {!authed && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 16px", marginBottom: 16, fontSize: 13, color: C.sub, boxShadow: shadow }}>
+                    <Lock size={15} color={C.muted} />
+                    <span>Replying is not switched on for this dashboard yet.</span>
                   </div>
                 )}
 

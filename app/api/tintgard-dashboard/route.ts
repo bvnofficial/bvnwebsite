@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkTintgardAuth } from "@/lib/tintgard-auth";
 
 /**
  * TintGard live CEO dashboard feed (read-only).
@@ -474,7 +475,20 @@ async function build(): Promise<Payload> {
   return { configured: true, generatedAt: new Date().toISOString(), weekStart: new Date(week.utcMs).toISOString(), ghl, servicem8, errors };
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  /**
+   * Optional shared-password gate for the whole dashboard.
+   *
+   * When TINTGARD_DASH_PASSWORD is set, this feed (and therefore the dashboard)
+   * requires it, and the same token authorises replying. When it is NOT set we
+   * deliberately stay public and read-only exactly as before, so deploying this
+   * can never black out a working dashboard — the gate simply switches on the
+   * moment the password is configured.
+   */
+  if (process.env.TINTGARD_DASH_PASSWORD && !checkTintgardAuth(req)) {
+    return NextResponse.json({ ok: false, reason: "unauthorized" }, { status: 401 });
+  }
+
   // Serve a fresh cache immediately.
   if (CACHE && Date.now() - CACHE.t < TTL_MS) {
     return NextResponse.json({ ...CACHE.data, cached: true });
