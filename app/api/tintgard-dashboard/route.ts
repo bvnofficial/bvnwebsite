@@ -142,7 +142,8 @@ async function build(): Promise<Payload> {
     mapJobs: [] as Payload[], staffWeek: [] as Payload[],
     unscheduledWorkOrders: { count: 0, list: [] as Payload[] },
     agingWorkOrders: { count: 0, list: [] as Payload[] },
-    payments: { collectedThisWeek: 0, collectedCount: 0, byMethod: {} as Record<string, number>, recent: [] as Payload[], awaitingTotal: 0, awaitingCount: 0 },
+    completedList: [] as Payload[], quotesList: [] as Payload[],
+    payments: { collectedThisWeek: 0, collectedCount: 0, byMethod: {} as Record<string, number>, recent: [] as Payload[], awaitingTotal: 0, awaitingCount: 0, awaitingList: [] as Payload[] },
   };
 
   // ================= GoHighLevel: pipelines + opportunities =================
@@ -322,19 +323,29 @@ async function build(): Promise<Payload> {
 
     const byStatus: Record<string, number> = {};
     let completedThisWeek = 0, quotesThisWeek = 0;
+    const completedList: Payload[] = [], quotesList: Payload[] = [];
     for (const j of jobs) {
       const status = String(j.status || "Unknown");
       byStatus[status] = (byStatus[status] || 0) + 1;
       const edited = String(j.edit_date || "");
       if (edited >= week.sm8Str) {
-        if (/completed/i.test(status)) completedThisWeek++;
-        if (/quote/i.test(status)) quotesThisWeek++;
+        const c = contactByJob[String(j.uuid || "")] || { name: "" };
+        const lite = {
+          jobId: String(j.generated_job_id || String(j.uuid || "").slice(0, 8)),
+          client: c.name || oneLine(String(j.job_description || "")).slice(0, 40) || "Job",
+          address: oneLine(String(j.job_address || j.geo_city || "")),
+          date: edited, amount: num(j.total_invoice_amount),
+        };
+        if (/completed/i.test(status)) { completedThisWeek++; completedList.push(lite); }
+        if (/quote/i.test(status)) { quotesThisWeek++; quotesList.push(lite); }
       }
     }
     servicem8.total = jobs.length;
     servicem8.byStatus = byStatus;
     servicem8.completedThisWeek = completedThisWeek;
     servicem8.quotesThisWeek = quotesThisWeek;
+    servicem8.completedList = completedList.slice(0, 60);
+    servicem8.quotesList = quotesList.slice(0, 60);
     servicem8.recentJobs = jobs.slice().sort((a, b) => String(b.edit_date || b.date || "").localeCompare(String(a.edit_date || a.date || "")))
       .slice(0, 12).map((j) => {
         const c = contactByJob[String(j.uuid || "")] || { name: "", phone: "" };
@@ -442,11 +453,22 @@ async function build(): Promise<Payload> {
       });
 
     let awaitingTotal = 0, awaitingCount = 0;
+    const awaitingList: Payload[] = [];
     for (const j of jobs) {
       const total = num(j.total_invoice_amount);
-      if (total > 0 && !num(j.payment_received) && /completed/i.test(String(j.status || ""))) { awaitingTotal += total; awaitingCount++; }
+      if (total > 0 && !num(j.payment_received) && /completed/i.test(String(j.status || ""))) {
+        awaitingTotal += total; awaitingCount++;
+        const c = contactByJob[String(j.uuid || "")] || { name: "" };
+        awaitingList.push({
+          jobId: String(j.generated_job_id || String(j.uuid || "").slice(0, 8)),
+          client: c.name || oneLine(String(j.job_description || "")).slice(0, 40) || "Job",
+          address: oneLine(String(j.job_address || j.geo_city || "")),
+          amount: total, date: String(j.edit_date || j.date || ""),
+        });
+      }
     }
-    servicem8.payments = { collectedThisWeek, collectedCount, byMethod, recent, awaitingTotal, awaitingCount };
+    awaitingList.sort((a, b) => (b.amount as number) - (a.amount as number));
+    servicem8.payments = { collectedThisWeek, collectedCount, byMethod, recent, awaitingTotal, awaitingCount, awaitingList: awaitingList.slice(0, 60) };
   } catch (e) { errors.push("servicem8 payments: " + String(e)); }
 
   return { configured: true, generatedAt: new Date().toISOString(), weekStart: new Date(week.utcMs).toISOString(), ghl, servicem8, errors };

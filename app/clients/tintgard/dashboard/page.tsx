@@ -9,7 +9,7 @@ import {
   MessageSquare, ArrowDownLeft, ArrowUpRight, Bell, Target, DollarSign,
   Map as MapIcon, Wallet, HandCoins, LayoutDashboard, Megaphone, Radio,
   CalendarX2, AlarmClock, TrendingUp, Inbox, Send,
-  Lock, ShieldCheck, X, CornerUpLeft,
+  Lock, ShieldCheck, X, CornerUpLeft, ChevronRight,
 } from "lucide-react";
 
 const JobMap = dynamic(() => import("./JobMap"), { ssr: false, loading: () => <div style={{ height: 340, borderRadius: 12, background: "#EAECEF" }} /> });
@@ -63,7 +63,8 @@ type Sched = { start: string; end: string; client: string; address: string; stat
 type MapJobT = { client: string; staff: string; staffColor: string; status: string; start: string; lat: number; lng: number; address: string };
 type StaffWk = { name: string; count: number; color: string };
 type Payment = { amount: number; method: string; client: string; date: string; isDeposit: boolean };
-type Pay = { collectedThisWeek: number; collectedCount: number; byMethod: Record<string, number>; recent: Payment[]; awaitingTotal: number; awaitingCount: number };
+type JobDetail = { jobId: string; client: string; address: string; date: string; amount: number };
+type Pay = { collectedThisWeek: number; collectedCount: number; byMethod: Record<string, number>; recent: Payment[]; awaitingTotal: number; awaitingCount: number; awaitingList: JobDetail[] };
 type LeadSrc = { source: string; count: number };
 type ChanMix = { channel: string; count: number };
 type WOLite = { jobId: string; client: string; address: string; date: string };
@@ -80,7 +81,8 @@ type Data = {
   servicem8?: {
     total: number; byStatus: Record<string, number>; recentJobs: Job[];
     scheduledThisWeek: number; completedThisWeek: number; quotesThisWeek: number; schedule: Sched[];
-    mapJobs: MapJobT[]; staffWeek: StaffWk[]; unscheduledWorkOrders: WOGroup; agingWorkOrders: WOGroup; payments: Pay;
+    mapJobs: MapJobT[]; staffWeek: StaffWk[]; unscheduledWorkOrders: WOGroup; agingWorkOrders: WOGroup;
+    completedList: JobDetail[]; quotesList: JobDetail[]; payments: Pay;
   };
   errors?: string[];
 };
@@ -111,6 +113,7 @@ export default function TintGardDashboard() {
   const [authErr, setAuthErr] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
   const [activeConv, setActiveConv] = useState<Conv | null>(null);
+  const [detail, setDetail] = useState<string | null>(null);
   const authed = !!dashPw;
 
   useEffect(() => { try { const s = localStorage.getItem("tg_dash_pw"); if (s) setDashPw(s); } catch { /* ignore */ } }, []);
@@ -146,19 +149,19 @@ export default function TintGardDashboard() {
   const notConfigured = data && data.configured === false;
 
   const week = [
-    { label: "New leads", value: g ? g.newLeadsThisWeek : 0, Icon: Users },
-    { label: "Jobs booked in", value: m ? m.scheduledThisWeek : 0, Icon: CalendarClock },
-    { label: "Jobs completed", value: m ? m.completedThisWeek : 0, Icon: CheckCircle2 },
-    { label: "Quotes out", value: m ? m.quotesThisWeek : 0, Icon: FileText },
+    { k: "leads", label: "New leads", value: g ? g.newLeadsThisWeek : 0, Icon: Users },
+    { k: "booked", label: "Jobs booked in", value: m ? m.scheduledThisWeek : 0, Icon: CalendarClock },
+    { k: "completed", label: "Jobs completed", value: m ? m.completedThisWeek : 0, Icon: CheckCircle2 },
+    { k: "quotes", label: "Quotes out", value: m ? m.quotesThisWeek : 0, Icon: FileText },
   ];
   const overall = [
-    { label: "Total contacts", value: g ? String(g.totalContacts) : "—", Icon: Users },
-    { label: "Past customers", value: g && g.customers != null ? String(g.customers) : "—", Icon: Star },
-    { label: "Open opportunities", value: g ? String(g.openOpps) : "—", Icon: Target },
-    { label: "Open pipeline value", value: g ? money(g.openValue) : "—", Icon: DollarSign },
-    { label: "Won value", value: g ? money(g.wonValue) : "—", Icon: CheckCircle2 },
-    { label: "ServiceM8 jobs", value: m ? String(m.total) : "—", Icon: Wrench },
-    { label: "Reviews requested", value: g && g.reviewRequested != null ? String(g.reviewRequested) : "—", Icon: Star },
+    { k: "contacts", label: "Total contacts", value: g ? String(g.totalContacts) : "—", Icon: Users },
+    { k: "customers", label: "Past customers", value: g && g.customers != null ? String(g.customers) : "—", Icon: Star },
+    { k: "openOpps", label: "Open opportunities", value: g ? String(g.openOpps) : "—", Icon: Target },
+    { k: "openValue", label: "Open pipeline value", value: g ? money(g.openValue) : "—", Icon: DollarSign },
+    { k: "won", label: "Won value", value: g ? money(g.wonValue) : "—", Icon: CheckCircle2 },
+    { k: "sm8jobs", label: "ServiceM8 jobs", value: m ? String(m.total) : "—", Icon: Wrench },
+    { k: "reviews", label: "Reviews requested", value: g && g.reviewRequested != null ? String(g.reviewRequested) : "—", Icon: Star },
   ];
 
   const summary = g && m
@@ -230,13 +233,17 @@ export default function TintGardDashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 14, marginBottom: 30 }}>
                   {week.map((k, i) => (
                     <motion.div key={k.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                      style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, boxShadow: shadow, position: "relative", overflow: "hidden" }}>
+                      onClick={() => setDetail(k.k)}
+                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = C.red)}
+                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.border)}
+                      style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, boxShadow: shadow, position: "relative", overflow: "hidden", cursor: "pointer", transition: "border-color .12s" }}>
                       <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: C.red }} />
                       <div style={{ display: "flex", alignItems: "center", gap: 9, color: C.sub, fontSize: 12.5, fontWeight: 600 }}>
                         <span style={{ width: 30, height: 30, borderRadius: 8, background: C.redSoft, display: "grid", placeItems: "center" }}><k.Icon size={16} color={C.red} /></span>
                         {k.label}
                       </div>
                       <div style={{ fontSize: 34, fontWeight: 800, marginTop: 10, letterSpacing: "-.02em", color: C.ink }}>{k.value}</div>
+                      <span style={{ position: "absolute", right: 12, bottom: 11, fontSize: 11, color: C.muted, display: "inline-flex", alignItems: "center", gap: 2 }}>Details <ChevronRight size={12} /></span>
                     </motion.div>
                   ))}
                 </div>
@@ -250,18 +257,22 @@ export default function TintGardDashboard() {
 
                 <SectionTitle>Money this week</SectionTitle>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 14, margin: "14px 0 30px" }}>
-                  <PayTile Icon={HandCoins} label="Collected this week" value={m ? money(m.payments.collectedThisWeek) : "—"} sub={m ? `${m.payments.collectedCount} ${m.payments.collectedCount === 1 ? "payment" : "payments"}` : ""} accent={C.green} />
-                  <PayTile Icon={Wallet} label="Awaiting payment" value={m ? money(m.payments.awaitingTotal) : "—"} sub={m ? `${m.payments.awaitingCount} completed ${m.payments.awaitingCount === 1 ? "job" : "jobs"}` : ""} accent={C.red} />
+                  <PayTile Icon={HandCoins} label="Collected this week" value={m ? money(m.payments.collectedThisWeek) : "—"} sub={m ? `${m.payments.collectedCount} ${m.payments.collectedCount === 1 ? "payment" : "payments"}` : ""} accent={C.green} onClick={() => setDetail("collected")} />
+                  <PayTile Icon={Wallet} label="Awaiting payment" value={m ? money(m.payments.awaitingTotal) : "—"} sub={m ? `${m.payments.awaitingCount} completed ${m.payments.awaitingCount === 1 ? "job" : "jobs"}` : ""} accent={C.red} onClick={() => setDetail("awaiting")} />
                 </div>
 
                 <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, marginBottom: 16 }}><SectionTitle>The full picture</SectionTitle></div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(165px,1fr))", gap: 14 }}>
                   {overall.map((k) => (
-                    <div key={k.label} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16, boxShadow: shadow }}>
+                    <div key={k.label} onClick={() => setDetail(k.k)}
+                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = C.red)}
+                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.border)}
+                      style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16, boxShadow: shadow, cursor: "pointer", transition: "border-color .12s", position: "relative" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.muted, fontSize: 11.5, textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600 }}>
                         <k.Icon size={15} color={C.red} /> {k.label}
                       </div>
                       <div style={{ fontSize: 24, fontWeight: 800, marginTop: 7, color: C.ink }}>{k.value}</div>
+                      <ChevronRight size={13} color={C.muted} style={{ position: "absolute", right: 11, top: 14 }} />
                     </div>
                   ))}
                 </div>
@@ -569,6 +580,10 @@ export default function TintGardDashboard() {
         <ConversationThread conv={activeConv} token={dashPw} onClose={() => setActiveConv(null)} />
       )}
 
+      {detail && data && (
+        <DetailModal dkey={detail} data={data} onClose={() => setDetail(null)} />
+      )}
+
       <style>{`@keyframes spin{to{transform:rotate(360deg)}} @media(max-width:820px){.ceo-grid{grid-template-columns:1fr !important}}`}</style>
     </div>
   );
@@ -595,15 +610,19 @@ function Row({ children, last, col, onClick, clickable }: { children: React.Reac
 function Empty({ children }: { children: React.ReactNode }) {
   return <div style={{ color: C.muted, fontSize: 13.5, padding: "14px 4px" }}>{children}</div>;
 }
-function PayTile({ Icon, label, value, sub, accent }: { Icon: typeof Car; label: string; value: string; sub?: string; accent: string }) {
+function PayTile({ Icon, label, value, sub, accent, onClick }: { Icon: typeof Car; label: string; value: string; sub?: string; accent: string; onClick?: () => void }) {
   return (
-    <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 18, boxShadow: shadow, position: "relative", overflow: "hidden" }}>
+    <div onClick={onClick}
+      onMouseEnter={onClick ? (e) => (e.currentTarget.style.borderColor = accent) : undefined}
+      onMouseLeave={onClick ? (e) => (e.currentTarget.style.borderColor = C.border) : undefined}
+      style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 18, boxShadow: shadow, position: "relative", overflow: "hidden", cursor: onClick ? "pointer" : "default", transition: "border-color .12s" }}>
       <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: accent }} />
       <div style={{ display: "flex", alignItems: "center", gap: 9, color: C.sub, fontSize: 12.5, fontWeight: 600 }}>
         <span style={{ width: 30, height: 30, borderRadius: 8, background: `${accent}18`, display: "grid", placeItems: "center" }}><Icon size={16} color={accent} /></span>{label}
       </div>
       <div style={{ fontSize: 26, fontWeight: 800, marginTop: 10, color: C.ink }}>{value}</div>
       {sub && <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{sub}</div>}
+      {onClick && <span style={{ position: "absolute", right: 12, bottom: 11, fontSize: 11, color: C.muted, display: "inline-flex", alignItems: "center", gap: 2 }}>Details <ChevronRight size={12} /></span>}
     </div>
   );
 }
@@ -756,5 +775,209 @@ function WorkOrders({ Icon, title, accent, group, empty, aged }: { Icon: typeof 
         </div>
       ))}
     </Card>
+  );
+}
+
+function NoteBlock({ lines }: { lines: string[] }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {lines.map((l, i) => (
+        <p key={i} style={{ margin: 0, fontSize: 14, lineHeight: 1.5, color: i === 0 ? C.ink : C.sub, fontWeight: i === 0 ? 600 : 400 }}>{l}</p>
+      ))}
+    </div>
+  );
+}
+
+function PipelineDetail({ pipelines, mode }: { pipelines: Pipe[]; mode: "open" | "won" }) {
+  if (pipelines.length === 0) return <div style={{ color: C.muted, fontSize: 13.5, padding: "18px 2px" }}>No pipeline data yet.</div>;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      {pipelines.map((p) => {
+        const maxCount = Math.max(1, ...p.stages.map((s) => s.count));
+        return (
+          <div key={p.key}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 9 }}>
+              <span style={{ fontWeight: 700, fontSize: 14 }}>{p.name}</span>
+              <span style={{ marginLeft: "auto", fontSize: 12.5, color: C.sub }}>
+                {mode === "won" ? `${p.wonCount ?? 0} won · ${money(p.wonValue)}` : `${p.openCount} open · ${money(p.openValue)}`}
+              </span>
+            </div>
+            {mode === "open" && (
+              <div style={{ display: "grid", gap: 6 }}>
+                {p.stages.map((s) => (
+                  <div key={s.name}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: C.sub, marginBottom: 3 }}>
+                      <span>{s.name}</span><span style={{ color: C.ink, fontWeight: 700 }}>{s.count}</span>
+                    </div>
+                    <div style={{ height: 6, borderRadius: 99, background: C.soft, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${(s.count / maxCount) * 100}%`, background: C.red, borderRadius: 99 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Drill-down behind every Overview tile: click a number, see what makes it up. */
+function DetailModal({ dkey, data, onClose }: { dkey: string; data: Data; onClose: () => void }) {
+  const g = data.ghl; const m = data.servicem8;
+  const empty = (msg: string) => <div style={{ color: C.muted, fontSize: 13.5, padding: "18px 2px" }}>{msg}</div>;
+
+  const jobRows = (list: JobDetail[], showAmount: boolean, emptyMsg: string) =>
+    list.length === 0 ? empty(emptyMsg) : (
+      <div>
+        {list.map((j, i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 12, alignItems: "center", padding: "11px 2px", borderBottom: i < list.length - 1 ? `1px solid ${C.border}` : "none" }}>
+            <span style={{ fontFamily: "monospace", fontSize: 11.5, color: C.muted }}>#{j.jobId}</span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 13.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.client}</div>
+              {j.address && <div style={{ fontSize: 11.5, color: C.muted, display: "flex", alignItems: "center", gap: 4 }}><MapPin size={10} />{j.address}</div>}
+            </div>
+            <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+              {showAmount && j.amount > 0 && <div style={{ fontSize: 13, fontWeight: 700, color: C.green }}>{money(j.amount)}</div>}
+              <div style={{ fontSize: 11, color: C.muted }}>{ago(j.date)}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+
+  let title = "Details";
+  let node: React.ReactNode = empty("Nothing to show.");
+
+  if (dkey === "leads") {
+    title = "New leads this week";
+    const start = data.weekStart ? Date.parse(data.weekStart) : 0;
+    const list = (g?.recentLeads || []).filter((l) => l.createdAt && Date.parse(l.createdAt) >= start);
+    node = list.length === 0 ? empty("No new leads captured this week.") : (
+      <div>
+        {list.map((l, i) => (
+          <div key={i} style={{ padding: "11px 2px", borderBottom: i < list.length - 1 ? `1px solid ${C.border}` : "none" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontWeight: 600, fontSize: 14 }}>{l.name}</span>
+              {l.type && <span style={{ fontSize: 10.5, color: C.redDark, background: C.redSoft, border: `1px solid ${C.red}22`, borderRadius: 6, padding: "1px 7px" }}>{l.type}</span>}
+              <span style={{ marginLeft: "auto", fontSize: 11, color: C.muted }}>{ago(l.createdAt)}</span>
+            </div>
+            <div style={{ fontSize: 12.5, color: C.sub, marginTop: 3 }}>{[l.phone, l.email, l.suburb].filter(Boolean).join(" · ") || "No contact details captured"}</div>
+          </div>
+        ))}
+      </div>
+    );
+  } else if (dkey === "booked") {
+    title = "Jobs booked in this week";
+    const list = m?.schedule || [];
+    node = list.length === 0 ? empty("Nothing booked in this week yet.") : (
+      <div>
+        {list.map((s, i) => (
+          <div key={i} style={{ padding: "11px 2px", borderBottom: i < list.length - 1 ? `1px solid ${C.border}` : "none" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontWeight: 600, fontSize: 13.5 }}>{s.client}</span>
+              <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.red, fontWeight: 600 }}>{whenSchedule(s.start)}</span>
+            </div>
+            {s.address && <div style={{ fontSize: 12, color: C.muted, marginTop: 3, display: "flex", alignItems: "center", gap: 4 }}><MapPin size={11} />{s.address}</div>}
+            {s.staff && <div style={{ fontSize: 12, color: C.sub, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: 99, background: s.staffColor }} />{s.staff}</div>}
+          </div>
+        ))}
+      </div>
+    );
+  } else if (dkey === "completed") {
+    title = "Jobs completed this week";
+    node = jobRows(m?.completedList || [], true, "No jobs completed this week yet.");
+  } else if (dkey === "quotes") {
+    title = "Quotes sent this week";
+    node = jobRows(m?.quotesList || [], false, "No quotes went out this week yet.");
+  } else if (dkey === "collected") {
+    title = "Collected this week";
+    const recent = m?.payments.recent || [];
+    node = (
+      <div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 20, paddingBottom: 12, marginBottom: 6, borderBottom: `1px solid ${C.border}` }}>
+          {m && Object.keys(m.payments.byMethod).length > 0
+            ? Object.entries(m.payments.byMethod).map(([mt, amt]) => (
+              <div key={mt}><div style={{ fontSize: 12, color: C.sub }}>{mt}</div><div style={{ fontSize: 17, fontWeight: 700 }}>{money(amt)}</div></div>
+            ))
+            : <span style={{ color: C.muted, fontSize: 13 }}>No payments yet this week.</span>}
+        </div>
+        {recent.map((p, i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 12, alignItems: "center", padding: "10px 2px", borderBottom: i < recent.length - 1 ? `1px solid ${C.border}` : "none" }}>
+            <span style={{ fontWeight: 700, color: C.green }}>{money(p.amount)}</span>
+            <span style={{ fontSize: 13 }}>{p.client || "—"}{p.isDeposit && <span style={{ marginLeft: 6, fontSize: 10, color: C.amber }}>deposit</span>}</span>
+            <span style={{ fontSize: 11.5, color: C.muted, textAlign: "right" }}>{p.method} · {ago(p.date)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  } else if (dkey === "awaiting") {
+    title = "Awaiting payment";
+    node = jobRows(m?.payments.awaitingList || [], true, "Nothing is awaiting payment. All clear.");
+  } else if (dkey === "contacts") {
+    title = "Total contacts";
+    node = <NoteBlock lines={[
+      `${g ? g.totalContacts : "—"} contacts are in the CRM in total.`,
+      `${g && g.customers != null ? g.customers : "—"} of them are past customers brought across from ServiceM8, with their jobs, suburbs and lifetime value.`,
+      `${g ? g.newLeadsThisWeek : 0} new ${(g?.newLeadsThisWeek ?? 0) === 1 ? "lead" : "leads"} came in this week.`,
+      "The full contact list lives in GoHighLevel, where you can search and edit any record.",
+    ]} />;
+  } else if (dkey === "customers") {
+    title = "Past customers";
+    node = <NoteBlock lines={[
+      `${g && g.customers != null ? g.customers : "—"} contacts are tagged as customers.`,
+      "These came across from your ServiceM8 history when the system was set up, and new customers are added automatically as jobs complete.",
+    ]} />;
+  } else if (dkey === "openOpps" || dkey === "openValue") {
+    title = dkey === "openValue" ? "Open pipeline value" : "Open opportunities";
+    node = <PipelineDetail pipelines={g?.pipelines || []} mode="open" />;
+  } else if (dkey === "won") {
+    title = "Won value";
+    node = <PipelineDetail pipelines={g?.pipelines || []} mode="won" />;
+  } else if (dkey === "sm8jobs") {
+    title = "ServiceM8 jobs";
+    const recent = (m?.recentJobs || []).slice(0, 10);
+    node = (
+      <div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
+          {m && Object.entries(m.byStatus).map(([st, ct]) => (
+            <div key={st} style={{ background: C.softer, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 12px", minWidth: 108 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: C.sub }}>
+                <span style={{ width: 8, height: 8, borderRadius: 99, background: STATUS_COLOR[st] || C.muted }} />{st}
+              </div>
+              <div style={{ fontSize: 20, fontWeight: 800, marginTop: 4 }}>{ct}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 11.5, color: C.muted, textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600, marginBottom: 4 }}>Most recent</div>
+        {recent.map((j, i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 10, alignItems: "center", padding: "9px 2px", borderBottom: i < recent.length - 1 ? `1px solid ${C.border}` : "none" }}>
+            <span style={{ fontFamily: "monospace", fontSize: 11, color: C.muted }}>#{j.jobId}</span>
+            <span style={{ fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.contactName || j.description || "—"}</span>
+            <span style={{ fontSize: 11.5, color: C.muted, whiteSpace: "nowrap" }}>{j.status} · {ago(j.date)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  } else if (dkey === "reviews") {
+    title = "Reviews requested";
+    const n = g?.reviewRequested ?? 0;
+    node = <NoteBlock lines={[
+      `${n} review ${n === 1 ? "request has" : "requests have"} been sent to customers.`,
+      "Once your Google Business Profile is connected, the reviews actually received and your star rating can show here too.",
+    ]} />;
+  }
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(16,20,26,.5)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, width: "100%", maxWidth: 620, maxHeight: "82vh", borderRadius: 16, display: "flex", flexDirection: "column", boxShadow: "0 20px 60px rgba(16,24,40,.3)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 20px", borderBottom: `1px solid ${C.border}` }}>
+          <span style={{ fontWeight: 800, fontSize: 16 }}>{title}</span>
+          <button onClick={onClose} aria-label="Close" style={{ marginLeft: "auto", background: C.soft, border: "none", borderRadius: 8, width: 32, height: 32, display: "grid", placeItems: "center", cursor: "pointer" }}><X size={16} color={C.sub} /></button>
+        </div>
+        <div style={{ overflowY: "auto", padding: "14px 20px 20px" }}>{node}</div>
+      </div>
+    </div>
   );
 }
