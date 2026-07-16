@@ -7,7 +7,8 @@ import {
   RefreshCw, Users, CalendarClock, CheckCircle2, FileText,
   Wrench, Star, Car, Building2, Home, Phone, Mail, MapPin, Clock,
   MessageSquare, ArrowDownLeft, ArrowUpRight, Bell, Target, DollarSign,
-  Map as MapIcon, Wallet, HandCoins,
+  Map as MapIcon, Wallet, HandCoins, LayoutDashboard, Megaphone, Radio,
+  CalendarX2, AlarmClock, TrendingUp, Inbox, Send,
 } from "lucide-react";
 
 const JobMap = dynamic(() => import("./JobMap"), { ssr: false, loading: () => <div style={{ height: 340, borderRadius: 12, background: "#EAECEF" }} /> });
@@ -52,19 +53,33 @@ function weekLabel(iso?: string) {
   return `Week of ${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`;
 }
 
-type Lead = { name: string; phone: string; email: string; type: string; suburb: string; tags: string[]; createdAt: string };
+type Lead = { name: string; phone: string; email: string; type: string; suburb: string; source?: string; tags: string[]; createdAt: string };
 type Job = { jobId: string; status: string; description: string; address: string; date: string; contactName: string; contactPhone: string };
-type Pipe = { key: string; name: string; openCount: number; openValue: number; wonValue: number; total: number; stages: { name: string; count: number; value: number }[] };
+type Pipe = { key: string; name: string; openCount: number; openValue: number; wonValue: number; wonCount?: number; total: number; stages: { name: string; count: number; value: number }[] };
 type Conv = { name: string; phone: string; channel: string; direction: string; snippet: string; unread: number; when: string };
 type Sched = { start: string; end: string; client: string; address: string; status: string; staff: string; staffColor: string; lat: number; lng: number };
 type MapJobT = { client: string; staff: string; staffColor: string; status: string; start: string; lat: number; lng: number; address: string };
 type StaffWk = { name: string; count: number; color: string };
 type Payment = { amount: number; method: string; client: string; date: string; isDeposit: boolean };
 type Pay = { collectedThisWeek: number; collectedCount: number; byMethod: Record<string, number>; recent: Payment[]; awaitingTotal: number; awaitingCount: number };
+type LeadSrc = { source: string; count: number };
+type ChanMix = { channel: string; count: number };
+type WOLite = { jobId: string; client: string; address: string; date: string };
+type WOGroup = { count: number; list: WOLite[] };
 type Data = {
   configured?: boolean; generatedAt?: string; weekStart?: string;
-  ghl?: { totalContacts: number; customers: number | null; newLeadsThisWeek: number; openOpps: number; openValue: number; wonValue: number; pipelines: Pipe[]; recentLeads: Lead[]; reviewRequested: number | null; conversations: Conv[]; unreadCount: number };
-  servicem8?: { total: number; byStatus: Record<string, number>; recentJobs: Job[]; scheduledThisWeek: number; completedThisWeek: number; quotesThisWeek: number; schedule: Sched[]; mapJobs: MapJobT[]; staffWeek: StaffWk[]; payments: Pay };
+  ghl?: {
+    totalContacts: number; customers: number | null; newLeadsThisWeek: number;
+    openOpps: number; openValue: number; wonValue: number; oppsTotal: number; wonOpps: number;
+    pipelines: Pipe[]; recentLeads: Lead[]; reviewRequested: number | null; leadSources: LeadSrc[];
+    conversations: Conv[]; unreadCount: number;
+    channelMix: ChanMix[]; inboundThisWeek: number; outboundThisWeek: number; missedCallTextbacks: number | null;
+  };
+  servicem8?: {
+    total: number; byStatus: Record<string, number>; recentJobs: Job[];
+    scheduledThisWeek: number; completedThisWeek: number; quotesThisWeek: number; schedule: Sched[];
+    mapJobs: MapJobT[]; staffWeek: StaffWk[]; unscheduledWorkOrders: WOGroup; agingWorkOrders: WOGroup; payments: Pay;
+  };
   errors?: string[];
 };
 
@@ -72,11 +87,20 @@ const PIPE_ICON: Record<string, typeof Car> = { automotive: Car, commercial: Bui
 const STATUS_COLOR: Record<string, string> = { Quote: C.amber, "Work Order": C.blue, Completed: C.green, Unsuccessful: C.muted, Invoiced: C.green };
 const CH_COLOR: Record<string, string> = { SMS: C.blue, Email: C.amber, Call: C.teal, "Web chat": C.purple, WhatsApp: C.green, Facebook: C.blue, Instagram: C.red, "No show": C.muted, Review: C.purple, Google: C.teal, Update: C.muted, Message: C.muted };
 
+type TabKey = "overview" | "operations" | "marketing" | "messaging";
+const TABS: { key: TabKey; label: string; Icon: typeof Car }[] = [
+  { key: "overview", label: "Overview", Icon: LayoutDashboard },
+  { key: "operations", label: "Operations", Icon: Wrench },
+  { key: "marketing", label: "Marketing", Icon: Megaphone },
+  { key: "messaging", label: "Messaging", Icon: Radio },
+];
+
 export default function TintGardDashboard() {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [tab, setTab] = useState<TabKey>("overview");
 
   const load = useCallback(async () => {
     try {
@@ -114,26 +138,46 @@ export default function TintGardDashboard() {
     ? `This week: ${g.newLeadsThisWeek} new ${g.newLeadsThisWeek === 1 ? "lead" : "leads"}, ${m.scheduledThisWeek} ${m.scheduledThisWeek === 1 ? "job" : "jobs"} booked in, ${m.completedThisWeek} completed and ${m.quotesThisWeek} ${m.quotesThisWeek === 1 ? "quote" : "quotes"} out the door.`
     : "";
 
+  const winRate = g && g.oppsTotal > 0 ? Math.round((g.wonOpps / g.oppsTotal) * 100) : null;
+
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.ink, fontFamily: "Inter, system-ui, sans-serif" }}>
       {/* brand stripe */}
       <div style={{ height: 4, background: C.red }} />
 
-      {/* header — CEO Dashboard only */}
+      {/* header + tab bar */}
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(255,255,255,.92)", backdropFilter: "blur(10px)", borderBottom: `1px solid ${C.border}` }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "14px 22px", display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ width: 10, height: 10, borderRadius: 3, background: C.red }} />
-            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-.02em", color: C.ink }}>CEO Dashboard</span>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "14px 22px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 3, background: C.red }} />
+              <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-.02em", color: C.ink }}>CEO Dashboard</span>
+            </div>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 12, color: C.muted, marginLeft: "auto" }}>
+              <span style={{ width: 8, height: 8, borderRadius: 99, background: err ? C.amber : C.green }} />
+              {err ? "Reconnecting" : "Live"}{data?.generatedAt ? ` · ${ago(data.generatedAt)}` : ""}
+            </span>
+            <button onClick={load} disabled={refreshing} aria-label="Refresh"
+              style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 12, color: C.sub, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: "7px 12px", cursor: "pointer", boxShadow: shadow }}>
+              <RefreshCw size={13} style={{ animation: refreshing ? "spin 1s linear infinite" : "none" }} /> Refresh
+            </button>
           </div>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 12, color: C.muted, marginLeft: "auto" }}>
-            <span style={{ width: 8, height: 8, borderRadius: 99, background: err ? C.amber : C.green }} />
-            {err ? "Reconnecting" : "Live"}{data?.generatedAt ? ` · ${ago(data.generatedAt)}` : ""}
-          </span>
-          <button onClick={load} disabled={refreshing} aria-label="Refresh"
-            style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 12, color: C.sub, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: "7px 12px", cursor: "pointer", boxShadow: shadow }}>
-            <RefreshCw size={13} style={{ animation: refreshing ? "spin 1s linear infinite" : "none" }} /> Refresh
-          </button>
+          <div className="ceo-tabs" style={{ display: "flex", gap: 4, marginTop: 12, overflowX: "auto" }}>
+            {TABS.map((t) => {
+              const on = tab === t.key;
+              return (
+                <button key={t.key} onClick={() => setTab(t.key)}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 7, whiteSpace: "nowrap",
+                    fontSize: 13.5, fontWeight: on ? 700 : 600, cursor: "pointer",
+                    color: on ? C.red : C.sub, background: "transparent", border: "none",
+                    padding: "10px 14px", borderBottom: `2px solid ${on ? C.red : "transparent"}`,
+                  }}>
+                  <t.Icon size={15} /> {t.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -146,238 +190,325 @@ export default function TintGardDashboard() {
         )}
 
         {!loading && !notConfigured && data && (
-          <>
-            {/* THIS WEEK */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
-              <SectionTitle>This week</SectionTitle>
-              <span style={{ fontSize: 12.5, color: C.muted }}>{weekLabel(data.weekStart)}</span>
-            </div>
-            {summary && <p style={{ color: C.sub, fontSize: 15, margin: "0 0 16px", maxWidth: 760 }}>{summary}</p>}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 14, marginBottom: 30 }}>
-              {week.map((k, i) => (
-                <motion.div key={k.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                  style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, boxShadow: shadow, position: "relative", overflow: "hidden" }}>
-                  <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: C.red }} />
-                  <div style={{ display: "flex", alignItems: "center", gap: 9, color: C.sub, fontSize: 12.5, fontWeight: 600 }}>
-                    <span style={{ width: 30, height: 30, borderRadius: 8, background: C.redSoft, display: "grid", placeItems: "center" }}><k.Icon size={16} color={C.red} /></span>
-                    {k.label}
-                  </div>
-                  <div style={{ fontSize: 34, fontWeight: 800, marginTop: 10, letterSpacing: "-.02em", color: C.ink }}>{k.value}</div>
-                </motion.div>
-              ))}
-            </div>
+          <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
 
-            {/* JOB MAP */}
-            <Card>
-              <CardHead Icon={MapIcon} title="Where your jobs are this week">
-                <span style={{ marginLeft: "auto", fontSize: 12, color: C.muted }}>{(m?.mapJobs || []).length} on the map</span>
-              </CardHead>
-              {(m?.mapJobs || []).length === 0 ? (
-                <Empty>No located jobs booked in this week yet.</Empty>
-              ) : (
-                <>
-                  <JobMap jobs={m!.mapJobs} />
-                  {(m?.staffWeek || []).length > 0 && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 12 }}>
-                      {m!.staffWeek.map((s) => (
-                        <span key={s.name} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 12.5, color: C.sub }}>
-                          <span style={{ width: 11, height: 11, borderRadius: 99, background: s.color, boxShadow: `0 0 0 1px ${C.border}` }} />
-                          {s.name} <span style={{ color: C.muted }}>· {s.count} {s.count === 1 ? "job" : "jobs"}</span>
-                        </span>
-                      ))}
+            {/* ============================ OVERVIEW ============================ */}
+            {tab === "overview" && (
+              <>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
+                  <SectionTitle>This week</SectionTitle>
+                  <span style={{ fontSize: 12.5, color: C.muted }}>{weekLabel(data.weekStart)}</span>
+                </div>
+                {summary && <p style={{ color: C.sub, fontSize: 15, margin: "0 0 16px", maxWidth: 760 }}>{summary}</p>}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 14, marginBottom: 30 }}>
+                  {week.map((k, i) => (
+                    <motion.div key={k.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                      style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, boxShadow: shadow, position: "relative", overflow: "hidden" }}>
+                      <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: C.red }} />
+                      <div style={{ display: "flex", alignItems: "center", gap: 9, color: C.sub, fontSize: 12.5, fontWeight: 600 }}>
+                        <span style={{ width: 30, height: 30, borderRadius: 8, background: C.redSoft, display: "grid", placeItems: "center" }}><k.Icon size={16} color={C.red} /></span>
+                        {k.label}
+                      </div>
+                      <div style={{ fontSize: 34, fontWeight: 800, marginTop: 10, letterSpacing: "-.02em", color: C.ink }}>{k.value}</div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {g && g.unreadCount > 0 && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.redSoft, border: `1px solid ${C.red}33`, borderRadius: 14, padding: "14px 18px", marginBottom: 30, color: C.sub, fontSize: 14 }}>
+                    <Bell size={17} color={C.red} />
+                    <span><b style={{ color: C.redDark }}>{g.unreadCount} {g.unreadCount === 1 ? "conversation needs" : "conversations need"} a reply.</b> A customer has messaged and is waiting to hear back.</span>
+                  </div>
+                )}
+
+                <SectionTitle>Money this week</SectionTitle>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 14, margin: "14px 0 30px" }}>
+                  <PayTile Icon={HandCoins} label="Collected this week" value={m ? money(m.payments.collectedThisWeek) : "—"} sub={m ? `${m.payments.collectedCount} ${m.payments.collectedCount === 1 ? "payment" : "payments"}` : ""} accent={C.green} />
+                  <PayTile Icon={Wallet} label="Awaiting payment" value={m ? money(m.payments.awaitingTotal) : "—"} sub={m ? `${m.payments.awaitingCount} completed ${m.payments.awaitingCount === 1 ? "job" : "jobs"}` : ""} accent={C.red} />
+                </div>
+
+                <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, marginBottom: 16 }}><SectionTitle>The full picture</SectionTitle></div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(165px,1fr))", gap: 14 }}>
+                  {overall.map((k) => (
+                    <div key={k.label} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16, boxShadow: shadow }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.muted, fontSize: 11.5, textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600 }}>
+                        <k.Icon size={15} color={C.red} /> {k.label}
+                      </div>
+                      <div style={{ fontSize: 24, fontWeight: 800, marginTop: 7, color: C.ink }}>{k.value}</div>
                     </div>
-                  )}
-                </>
-              )}
-            </Card>
-            <div style={{ height: 30 }} />
-
-            {/* CONVERSATIONS + SCHEDULE */}
-            <div className="ceo-grid" style={{ display: "grid", gridTemplateColumns: "1.15fr .85fr", gap: 16, marginBottom: 30 }}>
-              <Card>
-                <CardHead Icon={MessageSquare} title="Client conversations">
-                  {g && g.unreadCount > 0 && (
-                    <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.red, background: C.redSoft, border: `1px solid ${C.red}33`, borderRadius: 99, padding: "2px 9px", fontWeight: 700 }}>{g.unreadCount} unread</span>
-                  )}
-                </CardHead>
-                {(g?.conversations || []).length === 0 && <Empty>No client messages yet.</Empty>}
-                {(g?.conversations || []).map((c, i) => {
-                  const inbound = /in/i.test(c.direction);
-                  const chColor = CH_COLOR[c.channel] || C.muted;
-                  return (
-                    <Row key={i} last={i === (g!.conversations.length - 1)}>
-                      <div style={{ marginTop: 2 }}>{inbound ? <ArrowDownLeft size={16} color={C.green} /> : <ArrowUpRight size={16} color={C.muted} />}</div>
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <span style={{ fontWeight: 600, fontSize: 14 }}>{c.name}</span>
-                          <span style={{ fontSize: 10.5, color: chColor, background: `${chColor}14`, border: `1px solid ${chColor}33`, borderRadius: 6, padding: "1px 7px" }}>{c.channel}</span>
-                          {c.unread > 0 && <span style={{ width: 7, height: 7, borderRadius: 99, background: C.red }} />}
-                          <span style={{ marginLeft: "auto", fontSize: 11, color: C.muted, whiteSpace: "nowrap" }}>{ago(c.when)}</span>
-                        </div>
-                        <div style={{ color: C.sub, fontSize: 13, marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {c.snippet || (inbound ? "Inbound message" : "Message sent")}
-                        </div>
-                      </div>
-                    </Row>
-                  );
-                })}
-              </Card>
-
-              <Card>
-                <CardHead Icon={CalendarClock} title="This week's schedule" />
-                {(m?.schedule || []).length === 0 && <Empty>Nothing booked in this week yet.</Empty>}
-                {(m?.schedule || []).map((s, i) => {
-                  const color = STATUS_COLOR[s.status] || C.muted;
-                  return (
-                    <Row key={i} last={i === (m!.schedule.length - 1)} col>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, width: "100%" }}>
-                        <span style={{ width: 8, height: 8, borderRadius: 99, background: color }} />
-                        <span style={{ fontWeight: 600, fontSize: 13.5 }}>{s.client}</span>
-                        <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.red, fontWeight: 600, whiteSpace: "nowrap" }}>{whenSchedule(s.start)}</span>
-                      </div>
-                      {s.address && <div style={{ color: C.muted, fontSize: 12, marginTop: 3, display: "flex", alignItems: "center", gap: 5 }}><MapPin size={11} />{s.address}</div>}
-                      {s.staff && <div style={{ color: C.sub, fontSize: 12, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: 99, background: s.staffColor }} />{s.staff}</div>}
-                    </Row>
-                  );
-                })}
-              </Card>
-            </div>
-
-            {/* PAYMENTS */}
-            <SectionTitle>Job payments</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 14, margin: "14px 0 14px" }}>
-              <PayTile Icon={HandCoins} label="Collected this week" value={m ? money(m.payments.collectedThisWeek) : "—"} sub={m ? `${m.payments.collectedCount} ${m.payments.collectedCount === 1 ? "payment" : "payments"}` : ""} accent={C.green} />
-              <PayTile Icon={Wallet} label="Awaiting payment" value={m ? money(m.payments.awaitingTotal) : "—"} sub={m ? `${m.payments.awaitingCount} completed ${m.payments.awaitingCount === 1 ? "job" : "jobs"}` : ""} accent={C.red} />
-            </div>
-            <Card>
-              <div style={{ fontSize: 11.5, color: C.muted, textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600, marginBottom: 10 }}>Collected this week by method</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 22, paddingBottom: 14, borderBottom: `1px solid ${C.border}` }}>
-                {m && Object.keys(m.payments.byMethod).length > 0 ? Object.entries(m.payments.byMethod).map(([method, amt]) => (
-                  <div key={method}><div style={{ fontSize: 12.5, color: C.sub }}>{method}</div><div style={{ fontSize: 18, fontWeight: 700, color: C.ink }}>{money(amt)}</div></div>
-                )) : <span style={{ color: C.muted, fontSize: 13 }}>No payments yet this week.</span>}
-              </div>
-              <div style={{ paddingTop: 4 }}>
-                {(m?.payments.recent || []).length === 0 && <Empty>No payments recorded yet.</Empty>}
-                {(m?.payments.recent || []).map((p, i) => (
-                  <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1.4fr 1fr auto", gap: 12, alignItems: "center", padding: "11px 2px", borderBottom: i < (m!.payments.recent.length - 1) ? `1px solid ${C.border}` : "none" }}>
-                    <span style={{ fontWeight: 700, color: C.green }}>{money(p.amount)}</span>
-                    <span style={{ fontSize: 13 }}>{p.client || "—"}{p.isDeposit && <span style={{ marginLeft: 8, fontSize: 10.5, color: C.amber, background: `${C.amber}14`, border: `1px solid ${C.amber}33`, borderRadius: 6, padding: "1px 7px" }}>deposit</span>}</span>
-                    <span style={{ fontSize: 12.5, color: C.sub }}>{p.method}</span>
-                    <span style={{ fontSize: 12, color: C.muted, textAlign: "right", whiteSpace: "nowrap" }}>{whenSchedule(p.date)}</span>
-                  </div>
-                ))}
-              </div>
-            </Card>
-            <div style={{ height: 30 }} />
-
-            {/* NEEDS ATTENTION */}
-            {g && g.unreadCount > 0 && (
-              <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.redSoft, border: `1px solid ${C.red}33`, borderRadius: 14, padding: "14px 18px", marginBottom: 30, color: C.sub, fontSize: 14 }}>
-                <Bell size={17} color={C.red} />
-                <span><b style={{ color: C.redDark }}>{g.unreadCount} {g.unreadCount === 1 ? "conversation needs" : "conversations need"} a reply.</b> A customer has messaged and is waiting to hear back.</span>
-              </div>
+                  ))}
+                </div>
+              </>
             )}
 
-            {/* FULL PICTURE */}
-            <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, marginBottom: 16 }}><SectionTitle>The full picture</SectionTitle></div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(165px,1fr))", gap: 14, marginBottom: 30 }}>
-              {overall.map((k) => (
-                <div key={k.label} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16, boxShadow: shadow }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.muted, fontSize: 11.5, textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600 }}>
-                    <k.Icon size={15} color={C.red} /> {k.label}
-                  </div>
-                  <div style={{ fontSize: 24, fontWeight: 800, marginTop: 7, color: C.ink }}>{k.value}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* PIPELINES */}
-            <SectionTitle>Sales pipelines</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 14, marginBottom: 30 }}>
-              {(g?.pipelines || []).length === 0 && <Empty>No pipeline data yet.</Empty>}
-              {(g?.pipelines || []).map((p) => {
-                const Icon = PIPE_ICON[p.key] || Target;
-                const maxCount = Math.max(1, ...p.stages.map((s) => s.count));
-                return (
-                  <div key={p.key} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 18, boxShadow: shadow }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                      <span style={{ width: 34, height: 34, borderRadius: 9, background: C.redSoft, display: "grid", placeItems: "center" }}><Icon size={18} color={C.red} /></span>
-                      <div><div style={{ fontWeight: 700 }}>{p.name}</div><div style={{ fontSize: 12, color: C.muted }}>{p.openCount} open · {money(p.openValue)}</div></div>
-                    </div>
-                    <div style={{ marginTop: 12, display: "grid", gap: 7 }}>
-                      {p.stages.map((s) => (
-                        <div key={s.name}>
-                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: C.sub, marginBottom: 3 }}>
-                            <span>{s.name}</span><span style={{ color: C.ink, fontWeight: 700 }}>{s.count}</span>
-                          </div>
-                          <div style={{ height: 6, borderRadius: 99, background: C.soft, overflow: "hidden" }}>
-                            <div style={{ height: "100%", width: `${(s.count / maxCount) * 100}%`, background: C.red, borderRadius: 99 }} />
-                          </div>
+            {/* ============================ OPERATIONS ============================ */}
+            {tab === "operations" && (
+              <>
+                <Card>
+                  <CardHead Icon={MapIcon} title="Where your jobs are this week">
+                    <span style={{ marginLeft: "auto", fontSize: 12, color: C.muted }}>{(m?.mapJobs || []).length} on the map</span>
+                  </CardHead>
+                  {(m?.mapJobs || []).length === 0 ? (
+                    <Empty>No located jobs booked in this week yet.</Empty>
+                  ) : (
+                    <>
+                      <JobMap jobs={m!.mapJobs} />
+                      {(m?.staffWeek || []).length > 0 && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 12 }}>
+                          {m!.staffWeek.map((s) => (
+                            <span key={s.name} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 12.5, color: C.sub }}>
+                              <span style={{ width: 11, height: 11, borderRadius: 99, background: s.color, boxShadow: `0 0 0 1px ${C.border}` }} />
+                              {s.name} <span style={{ color: C.muted }}>· {s.count} {s.count === 1 ? "job" : "jobs"}</span>
+                            </span>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                      )}
+                    </>
+                  )}
+                </Card>
+                <div style={{ height: 30 }} />
 
-            {/* JOBS BOARD */}
-            <SectionTitle>ServiceM8 jobs</SectionTitle>
-            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 18, marginBottom: 30, boxShadow: shadow }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-                {m && Object.keys(m.byStatus).length > 0 ? Object.entries(m.byStatus).map(([status, count]) => {
-                  const color = STATUS_COLOR[status] || C.muted;
-                  return (
-                    <div key={status} style={{ flex: "1 1 150px", background: C.softer, border: `1px solid ${C.border}`, borderRadius: 11, padding: 14 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12.5, color: C.sub }}><span style={{ width: 9, height: 9, borderRadius: 99, background: color }} /> {status}</div>
-                      <div style={{ fontSize: 24, fontWeight: 800, marginTop: 6, color: C.ink }}>{count}</div>
-                    </div>
-                  );
-                }) : <Empty>No jobs in ServiceM8 yet.</Empty>}
-              </div>
-            </div>
+                <div className="ceo-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 30 }}>
+                  <Card>
+                    <CardHead Icon={CalendarClock} title="This week's schedule" />
+                    {(m?.schedule || []).length === 0 && <Empty>Nothing booked in this week yet.</Empty>}
+                    {(m?.schedule || []).map((s, i) => {
+                      const color = STATUS_COLOR[s.status] || C.muted;
+                      return (
+                        <Row key={i} last={i === (m!.schedule.length - 1)} col>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, width: "100%" }}>
+                            <span style={{ width: 8, height: 8, borderRadius: 99, background: color }} />
+                            <span style={{ fontWeight: 600, fontSize: 13.5 }}>{s.client}</span>
+                            <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.red, fontWeight: 600, whiteSpace: "nowrap" }}>{whenSchedule(s.start)}</span>
+                          </div>
+                          {s.address && <div style={{ color: C.muted, fontSize: 12, marginTop: 3, display: "flex", alignItems: "center", gap: 5 }}><MapPin size={11} />{s.address}</div>}
+                          {s.staff && <div style={{ color: C.sub, fontSize: 12, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: 99, background: s.staffColor }} />{s.staff}</div>}
+                        </Row>
+                      );
+                    })}
+                  </Card>
 
-            {/* RECENT LEADS */}
-            <SectionTitle>Recent leads</SectionTitle>
-            <Card pad>
-              {(g?.recentLeads || []).length === 0 && <Empty>No leads captured yet.</Empty>}
-              {(g?.recentLeads || []).map((l, i) => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr 1.4fr 1fr auto", gap: 12, alignItems: "center", padding: "12px 4px", borderBottom: i < g!.recentLeads.length - 1 ? `1px solid ${C.border}` : "none" }}>
-                  <div style={{ fontWeight: 600 }}>{l.name}</div>
-                  <div style={{ color: C.sub, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}><Phone size={13} color={C.muted} />{l.phone || "—"}</div>
-                  <div style={{ color: C.sub, fontSize: 13, display: "flex", alignItems: "center", gap: 6, overflow: "hidden", textOverflow: "ellipsis" }}><Mail size={13} color={C.muted} />{l.email || "—"}</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: C.sub }}>
-                    {l.type ? <span style={{ padding: "3px 9px", borderRadius: 99, background: C.redSoft, color: C.redDark, border: `1px solid ${C.red}22` }}>{l.type}</span> : null}
-                    {l.suburb ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: C.muted }}><MapPin size={12} />{l.suburb}</span> : null}
-                  </div>
-                  <div style={{ color: C.muted, fontSize: 12, whiteSpace: "nowrap", textAlign: "right" }}><Clock size={11} style={{ verticalAlign: "-1px" }} /> {ago(l.createdAt)}</div>
+                  <Card>
+                    <CardHead Icon={Users} title="Team workload this week" />
+                    {(m?.staffWeek || []).length === 0 ? <Empty>No jobs assigned this week yet.</Empty> : (
+                      <Bars items={(m?.staffWeek || []).map((s) => ({ label: s.name, count: s.count, color: s.color }))} />
+                    )}
+                  </Card>
                 </div>
-              ))}
-            </Card>
 
-            <div style={{ height: 24 }} />
-            <SectionTitle>Recent ServiceM8 jobs</SectionTitle>
-            <Card pad>
-              {(m?.recentJobs || []).length === 0 && <Empty>No jobs synced yet.</Empty>}
-              {(m?.recentJobs || []).map((j, i) => {
-                const color = STATUS_COLOR[j.status] || C.muted;
-                return (
-                  <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1.2fr 2fr 1fr auto", gap: 12, alignItems: "center", padding: "12px 4px", borderBottom: i < m!.recentJobs.length - 1 ? `1px solid ${C.border}` : "none" }}>
-                    <span style={{ fontFamily: "monospace", fontSize: 12, color: C.muted }}>#{j.jobId}</span>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5 }}><span style={{ width: 9, height: 9, borderRadius: 99, background: color }} />{j.status}</span>
-                    <span style={{ color: C.sub, fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.description || "—"}</span>
-                    <span style={{ fontSize: 12.5 }}>{j.contactName || "—"}{j.contactPhone ? <span style={{ color: C.muted }}> · {j.contactPhone}</span> : null}</span>
-                    <span style={{ color: C.muted, fontSize: 12, whiteSpace: "nowrap", textAlign: "right" }}>{ago(j.date)}</span>
+                <div className="ceo-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 30 }}>
+                  <WorkOrders Icon={CalendarX2} title="Accepted, not yet booked" accent={C.amber}
+                    group={m?.unscheduledWorkOrders} empty="Every accepted job is on the calendar. Nice." />
+                  <WorkOrders Icon={AlarmClock} title="Open 14+ days" accent={C.red}
+                    group={m?.agingWorkOrders} empty="No work orders are running long." aged />
+                </div>
+
+                <SectionTitle>ServiceM8 jobs</SectionTitle>
+                <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 18, margin: "14px 0 30px", boxShadow: shadow }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                    {m && Object.keys(m.byStatus).length > 0 ? Object.entries(m.byStatus).map(([status, count]) => {
+                      const color = STATUS_COLOR[status] || C.muted;
+                      return (
+                        <div key={status} style={{ flex: "1 1 150px", background: C.softer, border: `1px solid ${C.border}`, borderRadius: 11, padding: 14 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12.5, color: C.sub }}><span style={{ width: 9, height: 9, borderRadius: 99, background: color }} /> {status}</div>
+                          <div style={{ fontSize: 24, fontWeight: 800, marginTop: 6, color: C.ink }}>{count}</div>
+                        </div>
+                      );
+                    }) : <Empty>No jobs in ServiceM8 yet.</Empty>}
                   </div>
-                );
-              })}
-            </Card>
+                </div>
 
-            <div style={{ marginTop: 34, paddingTop: 18, borderTop: `1px solid ${C.border}`, fontSize: 12.5, color: C.muted, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-              <span>TintGard · live business dashboard</span>
-              <span>Refreshes every 60 seconds</span>
-            </div>
-          </>
+                <SectionTitle>Job payments</SectionTitle>
+                <div style={{ height: 14 }} />
+                <Card>
+                  <div style={{ fontSize: 11.5, color: C.muted, textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600, marginBottom: 10 }}>Collected this week by method</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 22, paddingBottom: 14, borderBottom: `1px solid ${C.border}` }}>
+                    {m && Object.keys(m.payments.byMethod).length > 0 ? Object.entries(m.payments.byMethod).map(([method, amt]) => (
+                      <div key={method}><div style={{ fontSize: 12.5, color: C.sub }}>{method}</div><div style={{ fontSize: 18, fontWeight: 700, color: C.ink }}>{money(amt)}</div></div>
+                    )) : <span style={{ color: C.muted, fontSize: 13 }}>No payments yet this week.</span>}
+                  </div>
+                  <div style={{ paddingTop: 4 }}>
+                    {(m?.payments.recent || []).length === 0 && <Empty>No payments recorded yet.</Empty>}
+                    {(m?.payments.recent || []).map((p, i) => (
+                      <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1.4fr 1fr auto", gap: 12, alignItems: "center", padding: "11px 2px", borderBottom: i < (m!.payments.recent.length - 1) ? `1px solid ${C.border}` : "none" }}>
+                        <span style={{ fontWeight: 700, color: C.green }}>{money(p.amount)}</span>
+                        <span style={{ fontSize: 13 }}>{p.client || "—"}{p.isDeposit && <span style={{ marginLeft: 8, fontSize: 10.5, color: C.amber, background: `${C.amber}14`, border: `1px solid ${C.amber}33`, borderRadius: 6, padding: "1px 7px" }}>deposit</span>}</span>
+                        <span style={{ fontSize: 12.5, color: C.sub }}>{p.method}</span>
+                        <span style={{ fontSize: 12, color: C.muted, textAlign: "right", whiteSpace: "nowrap" }}>{whenSchedule(p.date)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+                <div style={{ height: 30 }} />
+
+                <SectionTitle>Recent ServiceM8 jobs</SectionTitle>
+                <div style={{ height: 14 }} />
+                <Card pad>
+                  {(m?.recentJobs || []).length === 0 && <Empty>No jobs synced yet.</Empty>}
+                  {(m?.recentJobs || []).map((j, i) => {
+                    const color = STATUS_COLOR[j.status] || C.muted;
+                    return (
+                      <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1.2fr 2fr 1fr auto", gap: 12, alignItems: "center", padding: "12px 4px", borderBottom: i < m!.recentJobs.length - 1 ? `1px solid ${C.border}` : "none" }}>
+                        <span style={{ fontFamily: "monospace", fontSize: 12, color: C.muted }}>#{j.jobId}</span>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5 }}><span style={{ width: 9, height: 9, borderRadius: 99, background: color }} />{j.status}</span>
+                        <span style={{ color: C.sub, fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.description || "—"}</span>
+                        <span style={{ fontSize: 12.5 }}>{j.contactName || "—"}{j.contactPhone ? <span style={{ color: C.muted }}> · {j.contactPhone}</span> : null}</span>
+                        <span style={{ color: C.muted, fontSize: 12, whiteSpace: "nowrap", textAlign: "right" }}>{ago(j.date)}</span>
+                      </div>
+                    );
+                  })}
+                </Card>
+              </>
+            )}
+
+            {/* ============================ MARKETING ============================ */}
+            {tab === "marketing" && (
+              <>
+                <div className="ceo-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 30 }}>
+                  <Card>
+                    <CardHead Icon={TrendingUp} title="Lead to job conversion" />
+                    {g ? (
+                      <>
+                        <Funnel stages={[
+                          { label: "Opportunities created", value: g.oppsTotal, color: C.blue },
+                          { label: "Still open", value: g.openOpps, color: C.amber },
+                          { label: "Won", value: g.wonOpps, color: C.green },
+                        ]} />
+                        <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${C.border}`, display: "flex", alignItems: "baseline", gap: 8 }}>
+                          <span style={{ fontSize: 26, fontWeight: 800, color: C.green }}>{winRate != null ? `${winRate}%` : "—"}</span>
+                          <span style={{ fontSize: 13, color: C.sub }}>win rate · {g ? money(g.wonValue) : "—"} won</span>
+                        </div>
+                      </>
+                    ) : <Empty>No opportunity data yet.</Empty>}
+                  </Card>
+
+                  <Card>
+                    <CardHead Icon={Target} title="Where your leads come from" />
+                    {(g?.leadSources || []).length === 0 ? <Empty>No lead source data captured yet.</Empty> : (
+                      <Bars items={(g?.leadSources || []).map((s) => ({ label: s.source, count: s.count }))} accent={C.purple} />
+                    )}
+                    <div style={{ marginTop: 12, fontSize: 11.5, color: C.muted }}>Based on your most recent leads.</div>
+                  </Card>
+                </div>
+
+                <SectionTitle>Sales pipelines</SectionTitle>
+                <div style={{ height: 14 }} />
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 14, marginBottom: 30 }}>
+                  {(g?.pipelines || []).length === 0 && <Empty>No pipeline data yet.</Empty>}
+                  {(g?.pipelines || []).map((p) => {
+                    const Icon = PIPE_ICON[p.key] || Target;
+                    const maxCount = Math.max(1, ...p.stages.map((s) => s.count));
+                    return (
+                      <div key={p.key} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 18, boxShadow: shadow }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                          <span style={{ width: 34, height: 34, borderRadius: 9, background: C.redSoft, display: "grid", placeItems: "center" }}><Icon size={18} color={C.red} /></span>
+                          <div><div style={{ fontWeight: 700 }}>{p.name}</div><div style={{ fontSize: 12, color: C.muted }}>{p.openCount} open · {money(p.openValue)}</div></div>
+                        </div>
+                        <div style={{ marginTop: 12, display: "grid", gap: 7 }}>
+                          {p.stages.map((s) => (
+                            <div key={s.name}>
+                              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: C.sub, marginBottom: 3 }}>
+                                <span>{s.name}</span><span style={{ color: C.ink, fontWeight: 700 }}>{s.count}</span>
+                              </div>
+                              <div style={{ height: 6, borderRadius: 99, background: C.soft, overflow: "hidden" }}>
+                                <div style={{ height: "100%", width: `${(s.count / maxCount) * 100}%`, background: C.red, borderRadius: 99 }} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <SectionTitle>Recent leads</SectionTitle>
+                <div style={{ height: 14 }} />
+                <Card pad>
+                  {(g?.recentLeads || []).length === 0 && <Empty>No leads captured yet.</Empty>}
+                  {(g?.recentLeads || []).map((l, i) => (
+                    <div key={i} style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr 1.4fr 1fr auto", gap: 12, alignItems: "center", padding: "12px 4px", borderBottom: i < g!.recentLeads.length - 1 ? `1px solid ${C.border}` : "none" }}>
+                      <div style={{ fontWeight: 600 }}>{l.name}</div>
+                      <div style={{ color: C.sub, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}><Phone size={13} color={C.muted} />{l.phone || "—"}</div>
+                      <div style={{ color: C.sub, fontSize: 13, display: "flex", alignItems: "center", gap: 6, overflow: "hidden", textOverflow: "ellipsis" }}><Mail size={13} color={C.muted} />{l.email || "—"}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: C.sub }}>
+                        {l.type ? <span style={{ padding: "3px 9px", borderRadius: 99, background: C.redSoft, color: C.redDark, border: `1px solid ${C.red}22` }}>{l.type}</span> : null}
+                        {l.suburb ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: C.muted }}><MapPin size={12} />{l.suburb}</span> : null}
+                      </div>
+                      <div style={{ color: C.muted, fontSize: 12, whiteSpace: "nowrap", textAlign: "right" }}><Clock size={11} style={{ verticalAlign: "-1px" }} /> {ago(l.createdAt)}</div>
+                    </div>
+                  ))}
+                </Card>
+              </>
+            )}
+
+            {/* ============================ MESSAGING ============================ */}
+            {tab === "messaging" && (
+              <>
+                <SectionTitle>Conversation activity</SectionTitle>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(190px,1fr))", gap: 14, margin: "14px 0 30px" }}>
+                  <PayTile Icon={Inbox} label="Inbound this week" value={g ? String(g.inboundThisWeek) : "—"} sub="messages from customers" accent={C.green} />
+                  <PayTile Icon={Send} label="Sent this week" value={g ? String(g.outboundThisWeek) : "—"} sub="messages out to customers" accent={C.blue} />
+                  {g && g.missedCallTextbacks != null && (
+                    <PayTile Icon={Phone} label="Missed-call text-backs" value={String(g.missedCallTextbacks)} sub="auto-texts after a missed call" accent={C.amber} />
+                  )}
+                </div>
+
+                {g && g.unreadCount > 0 && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.redSoft, border: `1px solid ${C.red}33`, borderRadius: 14, padding: "14px 18px", marginBottom: 30, color: C.sub, fontSize: 14 }}>
+                    <Bell size={17} color={C.red} />
+                    <span><b style={{ color: C.redDark }}>{g.unreadCount} {g.unreadCount === 1 ? "conversation is" : "conversations are"} waiting on a reply.</b></span>
+                  </div>
+                )}
+
+                <div className="ceo-grid" style={{ display: "grid", gridTemplateColumns: "1.3fr .7fr", gap: 16 }}>
+                  <Card>
+                    <CardHead Icon={MessageSquare} title="Client conversations">
+                      {g && g.unreadCount > 0 && (
+                        <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.red, background: C.redSoft, border: `1px solid ${C.red}33`, borderRadius: 99, padding: "2px 9px", fontWeight: 700 }}>{g.unreadCount} unread</span>
+                      )}
+                    </CardHead>
+                    {(g?.conversations || []).length === 0 && <Empty>No client messages yet.</Empty>}
+                    {(g?.conversations || []).map((c, i) => {
+                      const inbound = /in/i.test(c.direction);
+                      const chColor = CH_COLOR[c.channel] || C.muted;
+                      return (
+                        <Row key={i} last={i === (g!.conversations.length - 1)}>
+                          <div style={{ marginTop: 2 }}>{inbound ? <ArrowDownLeft size={16} color={C.green} /> : <ArrowUpRight size={16} color={C.muted} />}</div>
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <span style={{ fontWeight: 600, fontSize: 14 }}>{c.name}</span>
+                              <span style={{ fontSize: 10.5, color: chColor, background: `${chColor}14`, border: `1px solid ${chColor}33`, borderRadius: 6, padding: "1px 7px" }}>{c.channel}</span>
+                              {c.unread > 0 && <span style={{ width: 7, height: 7, borderRadius: 99, background: C.red }} />}
+                              <span style={{ marginLeft: "auto", fontSize: 11, color: C.muted, whiteSpace: "nowrap" }}>{ago(c.when)}</span>
+                            </div>
+                            <div style={{ color: C.sub, fontSize: 13, marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {c.snippet || (inbound ? "Inbound message" : "Message sent")}
+                            </div>
+                          </div>
+                        </Row>
+                      );
+                    })}
+                  </Card>
+
+                  <Card>
+                    <CardHead Icon={Radio} title="Channel mix" />
+                    {(g?.channelMix || []).length === 0 ? <Empty>No conversations to break down yet.</Empty> : (
+                      <Bars items={(g?.channelMix || []).map((c) => ({ label: c.channel, count: c.count, color: CH_COLOR[c.channel] || C.muted }))} />
+                    )}
+                    <div style={{ marginTop: 12, fontSize: 11.5, color: C.muted }}>Recent conversations grouped by how the customer reached you.</div>
+                  </Card>
+                </div>
+              </>
+            )}
+
+          </motion.div>
+        )}
+
+        {!loading && !notConfigured && data && (
+          <div style={{ marginTop: 34, paddingTop: 18, borderTop: `1px solid ${C.border}`, fontSize: 12.5, color: C.muted, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+            <span>TintGard · live business dashboard</span>
+            <span>Refreshes every 60 seconds</span>
+          </div>
         )}
       </div>
 
@@ -415,5 +546,62 @@ function PayTile({ Icon, label, value, sub, accent }: { Icon: typeof Car; label:
       <div style={{ fontSize: 26, fontWeight: 800, marginTop: 10, color: C.ink }}>{value}</div>
       {sub && <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{sub}</div>}
     </div>
+  );
+}
+function Bars({ items, accent = C.red }: { items: { label: string; count: number; color?: string }[]; accent?: string }) {
+  if (items.length === 0) return <Empty>Nothing to show yet.</Empty>;
+  const max = Math.max(1, ...items.map((i) => i.count));
+  return (
+    <div style={{ display: "grid", gap: 11 }}>
+      {items.map((it) => (
+        <div key={it.label}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: C.sub, marginBottom: 4 }}>
+            <span>{it.label}</span><span style={{ color: C.ink, fontWeight: 700 }}>{it.count}</span>
+          </div>
+          <div style={{ height: 8, borderRadius: 99, background: C.soft, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${(it.count / max) * 100}%`, background: it.color || accent, borderRadius: 99 }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+function Funnel({ stages }: { stages: { label: string; value: number; color: string }[] }) {
+  const max = Math.max(1, ...stages.map((s) => s.value));
+  return (
+    <div style={{ display: "grid", gap: 12 }}>
+      {stages.map((s) => (
+        <div key={s.label}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: C.sub, marginBottom: 5 }}>
+            <span>{s.label}</span><span style={{ color: C.ink, fontWeight: 800 }}>{s.value}</span>
+          </div>
+          <div style={{ height: 14, borderRadius: 8, background: C.soft, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${(s.value / max) * 100}%`, background: s.color, borderRadius: 8 }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+function WorkOrders({ Icon, title, accent, group, empty, aged }: { Icon: typeof Car; title: string; accent: string; group?: WOGroup; empty: string; aged?: boolean }) {
+  const list = group?.list || [];
+  const count = group?.count || 0;
+  return (
+    <Card>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <Icon size={16} color={accent} /><span style={{ fontWeight: 700 }}>{title}</span>
+        <span style={{ marginLeft: "auto", fontSize: 12.5, fontWeight: 800, color: count > 0 ? accent : C.muted }}>{count}</span>
+      </div>
+      {list.length === 0 ? <Empty>{empty}</Empty> : list.map((w, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 2px", borderBottom: i < list.length - 1 ? `1px solid ${C.border}` : "none" }}>
+          <span style={{ fontFamily: "monospace", fontSize: 11.5, color: C.muted }}>#{w.jobId}</span>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{w.client}</div>
+            {w.address && <div style={{ fontSize: 11.5, color: C.muted, display: "flex", alignItems: "center", gap: 4 }}><MapPin size={10} />{w.address}</div>}
+          </div>
+          {aged && <span style={{ fontSize: 11.5, color: accent, fontWeight: 600, whiteSpace: "nowrap" }}>{ago(w.date)}</span>}
+        </div>
+      ))}
+    </Card>
   );
 }

@@ -68,6 +68,30 @@ function cfMap(contact: Record<string, unknown>): Record<string, string> {
   return out;
 }
 
+// Human-readable lead source from whatever attribution GHL kept on the contact.
+function leadSourceOf(c: Record<string, unknown>): string {
+  const attr = (c.attributionSource || {}) as Record<string, unknown>;
+  const raw = String(
+    c.source || attr.utmSource || attr.sessionSource || attr.referrer || attr.medium || ""
+  ).trim();
+  if (!raw) return "Direct / unknown";
+  const s = raw.toLowerCase();
+  if (/facebook|fb|instagram|ig|meta/.test(s)) return "Social";
+  if (/google|gmb|organic|search/.test(s)) return "Google";
+  if (/website|web ?form|form|landing|site/.test(s)) return "Website form";
+  if (/call|phone/.test(s)) return "Phone call";
+  if (/chat|widget/.test(s)) return "Website chat";
+  if (/referr?al/.test(s)) return "Referral";
+  return raw.length > 22 ? raw.slice(0, 22) : raw.charAt(0).toUpperCase() + raw.slice(1);
+}
+
+// Brisbane wall-clock date (UTC+10, no DST) as a ServiceM8 "YYYY-MM-DD HH:MM:SS" string.
+function sm8DateStr(ms: number): string {
+  const d = new Date(ms + 10 * 3600 * 1000);
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}`;
+}
+
 // ---- week boundary in Brisbane time (UTC+10, no DST) ----
 function weekBounds() {
   const b = new Date(Date.now() + 10 * 3600 * 1000); // shift so getUTC* reads Brisbane wall clock
@@ -106,14 +130,18 @@ async function build(): Promise<Payload> {
 
   const ghl: Payload = {
     totalContacts: 0, customers: null as number | null, newLeadsThisWeek: 0,
-    openOpps: 0, openValue: 0, wonValue: 0,
+    openOpps: 0, openValue: 0, wonValue: 0, oppsTotal: 0, wonOpps: 0,
     pipelines: [] as Payload[], recentLeads: [] as Payload[], reviewRequested: null as number | null,
+    leadSources: [] as Payload[],
     conversations: [] as Payload[], unreadCount: 0,
+    channelMix: [] as Payload[], inboundThisWeek: 0, outboundThisWeek: 0, missedCallTextbacks: null as number | null,
   };
   const servicem8: Payload = {
     total: 0, byStatus: {} as Record<string, number>, recentJobs: [] as Payload[],
     scheduledThisWeek: 0, completedThisWeek: 0, quotesThisWeek: 0, schedule: [] as Payload[],
     mapJobs: [] as Payload[], staffWeek: [] as Payload[],
+    unscheduledWorkOrders: { count: 0, list: [] as Payload[] },
+    agingWorkOrders: { count: 0, list: [] as Payload[] },
     payments: { collectedThisWeek: 0, collectedCount: 0, byMethod: {} as Record<string, number>, recent: [] as Payload[], awaitingTotal: 0, awaitingCount: 0 },
   };
 
@@ -132,20 +160,22 @@ async function build(): Promise<Payload> {
 
       const stageAgg: Record<string, { name: string; count: number; value: number }> = {};
       for (const s of pipe.stages) stageAgg[s.id] = { name: s.name, count: 0, value: 0 };
-      let openCount = 0, openValue = 0, wonValue = 0;
+      let openCount = 0, openValue = 0, wonValue = 0, wonCount = 0;
       for (const opp of opps) {
         const stageId = String(opp.pipelineStageId || "");
         const value = num(opp.monetaryValue);
         const status = String(opp.status || "open").toLowerCase();
         if (stageAgg[stageId]) { stageAgg[stageId].count++; stageAgg[stageId].value += value; }
-        if (status === "won") wonValue += value;
+        if (status === "won") { wonValue += value; wonCount++; }
         else if (status === "open") { openCount++; openValue += value; }
       }
       (ghl.openOpps as number) += openCount;
       (ghl.openValue as number) += openValue;
       (ghl.wonValue as number) += wonValue;
+      (ghl.wonOpps as number) += wonCount;
+      (ghl.oppsTotal as number) += opps.length;
       (ghl.pipelines as Payload[]).push({
-        key: keyName, name: pipe.name, openCount, openValue, wonValue, total: opps.length,
+        key: keyName, name: pipe.name, openCount, openValue, wonValue, wonCount, total: opps.length,
         stages: pipe.stages.map((s) => ({ name: stageAgg[s.id].name, count: stageAgg[s.id].count, value: stageAgg[s.id].value })),
       });
     }
@@ -170,7 +200,7 @@ async function build(): Promise<Payload> {
    * customer would be counted as a brand new lead this week.
    */
   try {
-    const s = await ghlSearch(token, [{ field: "tags", operator: "not_contains", value: "servicem8-synced" }], 25, [{ field: "dateAdded", direction: "desc" }]);
+    const s = await ghlSearch(token, [{ field: "tags", operator: "not_contains", value: "servicem8-synced" }], 100, [{ field: "dateAdded", direction: "desc" }]);
     const contacts = (s?.contacts || []) as Record<string, unknown>[];
     const mapped = contacts.map((c) => {
       const cf = cfMap(c);
@@ -178,11 +208,20 @@ async function build(): Promise<Payload> {
         name: String(c.contactName || `${c.firstName || ""} ${c.lastName || ""}`).trim() || "Unnamed lead",
         phone: String(c.phone || ""), email: String(c.email || ""),
         type: cf[F_CUSTOMER_TYPE] || "", suburb: cf[F_SUBURB] || "",
+        source: leadSourceOf(c),
         tags: (c.tags || []) as string[], createdAt: String(c.dateAdded || c.dateUpdated || ""),
       };
     });
     ghl.newLeadsThisWeek = mapped.filter((l) => l.createdAt && Date.parse(l.createdAt) >= week.utcMs).length;
     ghl.recentLeads = mapped.slice(0, 12);
+
+    // Lead source mix across the most recent genuine (non-imported) leads.
+    const srcAgg: Record<string, number> = {};
+    for (const l of mapped) srcAgg[l.source] = (srcAgg[l.source] || 0) + 1;
+    ghl.leadSources = Object.entries(srcAgg)
+      .map(([source, count]) => ({ source, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6);
   } catch (e) { errors.push("ghl leads: " + String(e)); }
 
   // review-requested count (best effort)
@@ -191,14 +230,38 @@ async function build(): Promise<Payload> {
     if (typeof r?.total === "number") ghl.reviewRequested = r.total;
   } catch { /* leave null */ }
 
+  // missed-call text-backs sent (best effort — only shows if the workflow tags them)
+  try {
+    const r = await ghlSearch(token, [{ field: "tags", operator: "contains", value: "missed-call" }], 1);
+    if (typeof r?.total === "number" && r.total > 0) ghl.missedCallTextbacks = r.total;
+  } catch { /* leave null */ }
+
   // ================= GoHighLevel: conversations feed =================
   try {
-    const sRes = await fetch(`${GHL}/conversations/search?locationId=${LOCATION_ID}&limit=8`, { headers: ghlHeaders(token, GHLV_CONV), cache: "no-store" });
+    const sRes = await fetch(`${GHL}/conversations/search?locationId=${LOCATION_ID}&limit=100`, { headers: ghlHeaders(token, GHLV_CONV), cache: "no-store" });
     const sData = await sRes.json().catch(() => null);
     const convs = (sData?.conversations || []) as Record<string, unknown>[];
     ghl.unreadCount = convs.reduce((a, c) => a + num(c.unreadCount), 0);
 
-    const feed = await Promise.all(convs.slice(0, 6).map(async (c) => {
+    // Channel mix + inbound/outbound split across all recent conversations.
+    const REAL_CHANNELS = new Set(["SMS", "Email", "Call", "Web chat", "WhatsApp", "Facebook", "Instagram", "Google"]);
+    const chAgg: Record<string, number> = {};
+    let inbound = 0, outbound = 0;
+    for (const c of convs) {
+      const label = chLabel(String(c.lastMessageType || ""));
+      if (REAL_CHANNELS.has(label)) chAgg[label] = (chAgg[label] || 0) + 1;
+      const dir = String(c.lastMessageDirection || "").toLowerCase();
+      const when = num(c.lastMessageDate);
+      if (when >= week.utcMs) {
+        if (/in/.test(dir)) inbound++;
+        else if (/out/.test(dir)) outbound++;
+      }
+    }
+    ghl.channelMix = Object.entries(chAgg).map(([channel, count]) => ({ channel, count })).sort((a, b) => b.count - a.count);
+    ghl.inboundThisWeek = inbound;
+    ghl.outboundThisWeek = outbound;
+
+    const feed = await Promise.all(convs.slice(0, 12).map(async (c) => {
       let snippet = "", channel = chLabel(String(c.lastMessageType || "")), direction = "", when = num(c.lastMessageDate);
       try {
         const mRes = await fetch(`${GHL}/conversations/${c.id}/messages?limit=6`, { headers: ghlHeaders(token, GHLV_CONV), cache: "no-store" });
@@ -314,6 +377,42 @@ async function build(): Promise<Payload> {
     servicem8.staffWeek = Object.entries(staffWeek)
       .map(([name, v]) => ({ name, count: v.count, color: v.color }))
       .sort((a, b) => b.count - a.count);
+
+    // Work orders (accepted jobs) with nothing on the calendar from today on.
+    const todayStr = sm8DateStr(Date.now()).slice(0, 10) + " 00:00:00";
+    const scheduledUuids = new Set<string>();
+    for (const a of acts) {
+      if (num(a.activity_was_scheduled) === 1 && String(a.start_date || "") >= todayStr) {
+        scheduledUuids.add(String(a.job_uuid || ""));
+      }
+    }
+    const isWorkOrder = (j: Record<string, unknown>) => /work\s*order/i.test(String(j.status || ""));
+    const jobLite = (j: Record<string, unknown>) => {
+      const c = contactByJob[String(j.uuid || "")] || { name: "" };
+      return {
+        jobId: String(j.generated_job_id || String(j.uuid || "").slice(0, 8)),
+        client: c.name || oneLine(String(j.job_description || "")).slice(0, 40) || "Job",
+        address: oneLine(String(j.job_address || j.geo_city || "")),
+        date: String(j.date || j.edit_date || ""),
+      };
+    };
+    const unsched = jobs.filter((j) => isWorkOrder(j) && !scheduledUuids.has(String(j.uuid || "")));
+    servicem8.unscheduledWorkOrders = {
+      count: unsched.length,
+      list: unsched
+        .sort((a, b) => String(a.date || a.edit_date || "").localeCompare(String(b.date || b.edit_date || "")))
+        .slice(0, 6).map(jobLite),
+    };
+
+    // Work orders still open 14+ days after they were created.
+    const agingCut = sm8DateStr(Date.now() - 14 * 86400 * 1000);
+    const aging = jobs.filter((j) => isWorkOrder(j) && String(j.date || j.edit_date || "") !== "" && String(j.date || j.edit_date || "") < agingCut);
+    servicem8.agingWorkOrders = {
+      count: aging.length,
+      list: aging
+        .sort((a, b) => String(a.date || a.edit_date || "").localeCompare(String(b.date || b.edit_date || "")))
+        .slice(0, 6).map(jobLite),
+    };
   } catch (e) { errors.push("servicem8 activity: " + String(e)); }
 
   // ================= ServiceM8: payments =================
