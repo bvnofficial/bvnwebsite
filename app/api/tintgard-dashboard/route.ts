@@ -279,6 +279,7 @@ async function build(): Promise<Payload> {
         name: String(c.fullName || c.contactName || "Contact"),
         phone: String(c.phone || ""), channel, direction, snippet,
         unread: num(c.unreadCount), when: when ? new Date(when).toISOString() : "",
+        convId: String(c.id || ""), contactId: String(c.contactId || ""),
       };
     }));
     ghl.conversations = feed.sort((a, b) => (b.when > a.when ? 1 : -1));

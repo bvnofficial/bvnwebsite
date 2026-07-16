@@ -9,6 +9,7 @@ import {
   MessageSquare, ArrowDownLeft, ArrowUpRight, Bell, Target, DollarSign,
   Map as MapIcon, Wallet, HandCoins, LayoutDashboard, Megaphone, Radio,
   CalendarX2, AlarmClock, TrendingUp, Inbox, Send,
+  Lock, ShieldCheck, X, CornerUpLeft,
 } from "lucide-react";
 
 const JobMap = dynamic(() => import("./JobMap"), { ssr: false, loading: () => <div style={{ height: 340, borderRadius: 12, background: "#EAECEF" }} /> });
@@ -56,7 +57,8 @@ function weekLabel(iso?: string) {
 type Lead = { name: string; phone: string; email: string; type: string; suburb: string; source?: string; tags: string[]; createdAt: string };
 type Job = { jobId: string; status: string; description: string; address: string; date: string; contactName: string; contactPhone: string };
 type Pipe = { key: string; name: string; openCount: number; openValue: number; wonValue: number; wonCount?: number; total: number; stages: { name: string; count: number; value: number }[] };
-type Conv = { name: string; phone: string; channel: string; direction: string; snippet: string; unread: number; when: string };
+type Conv = { name: string; phone: string; channel: string; direction: string; snippet: string; unread: number; when: string; convId: string; contactId: string };
+type ThreadMsg = { id: string; direction: string; channel: string; body: string; when: string };
 type Sched = { start: string; end: string; client: string; address: string; status: string; staff: string; staffColor: string; lat: number; lng: number };
 type MapJobT = { client: string; staff: string; staffColor: string; status: string; start: string; lat: number; lng: number; address: string };
 type StaffWk = { name: string; count: number; color: string };
@@ -101,6 +103,31 @@ export default function TintGardDashboard() {
   const [err, setErr] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [tab, setTab] = useState<TabKey>("overview");
+
+  // Reply gate: a shared password unlocks replying only. Stored as a header
+  // token (not a cookie) so it survives inside the WordPress iframe embed.
+  const [dashPw, setDashPw] = useState("");
+  const [pwInput, setPwInput] = useState("");
+  const [authErr, setAuthErr] = useState("");
+  const [authBusy, setAuthBusy] = useState(false);
+  const [activeConv, setActiveConv] = useState<Conv | null>(null);
+  const authed = !!dashPw;
+
+  useEffect(() => { try { const s = localStorage.getItem("tg_dash_pw"); if (s) setDashPw(s); } catch { /* ignore */ } }, []);
+
+  const unlock = useCallback(async () => {
+    const pw = pwInput.trim();
+    if (!pw || authBusy) return;
+    setAuthBusy(true); setAuthErr("");
+    try {
+      const res = await fetch("/api/tintgard-dashboard/auth", { method: "POST", headers: { Authorization: `Bearer ${pw}` } });
+      if (res.ok) { setDashPw(pw); try { localStorage.setItem("tg_dash_pw", pw); } catch { /* ignore */ } setPwInput(""); }
+      else setAuthErr(res.status === 503 ? "Replying is not switched on for this site yet." : "That password did not work.");
+    } catch { setAuthErr("Could not reach the server."); }
+    finally { setAuthBusy(false); }
+  }, [pwInput, authBusy]);
+
+  const lock = useCallback(() => { setDashPw(""); setActiveConv(null); try { localStorage.removeItem("tg_dash_pw"); } catch { /* ignore */ } }, []);
 
   const load = useCallback(async () => {
     try {
@@ -460,6 +487,29 @@ export default function TintGardDashboard() {
                   </div>
                 )}
 
+                {!authed ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: "14px 18px", marginBottom: 16, boxShadow: shadow }}>
+                    <span style={{ display: "grid", placeItems: "center", width: 34, height: 34, borderRadius: 9, background: C.redSoft }}><Lock size={16} color={C.red} /></span>
+                    <div style={{ flex: "1 1 220px", minWidth: 0 }}>
+                      <div style={{ fontWeight: 700, fontSize: 14 }}>Reply to customers</div>
+                      <div style={{ fontSize: 12.5, color: C.muted }}>Enter your dashboard password to open a conversation and send a reply.</div>
+                    </div>
+                    <input type="password" value={pwInput} onChange={(e) => setPwInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") unlock(); }} placeholder="Password"
+                      style={{ padding: "9px 12px", border: `1px solid ${C.borderStrong}`, borderRadius: 9, fontSize: 14, outline: "none", minWidth: 150 }} />
+                    <button onClick={unlock} disabled={authBusy}
+                      style={{ background: C.red, color: "#fff", border: "none", borderRadius: 9, padding: "9px 16px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: authBusy ? 0.6 : 1 }}>
+                      {authBusy ? "Checking…" : "Unlock"}
+                    </button>
+                    {authErr && <span style={{ fontSize: 12.5, color: C.red, flexBasis: "100%" }}>{authErr}</span>}
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, background: `${C.green}0d`, border: `1px solid ${C.green}33`, borderRadius: 14, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: C.sub }}>
+                    <ShieldCheck size={16} color={C.green} />
+                    <span><b style={{ color: C.ink }}>Replying unlocked.</b> Click any conversation to open it and reply.</span>
+                    <button onClick={lock} style={{ marginLeft: "auto", fontSize: 12, color: C.sub, background: "transparent", border: `1px solid ${C.border}`, borderRadius: 8, padding: "5px 10px", cursor: "pointer" }}>Lock</button>
+                  </div>
+                )}
+
                 <div className="ceo-grid" style={{ display: "grid", gridTemplateColumns: "1.3fr .7fr", gap: 16 }}>
                   <Card>
                     <CardHead Icon={MessageSquare} title="Client conversations">
@@ -472,7 +522,9 @@ export default function TintGardDashboard() {
                       const inbound = /in/i.test(c.direction);
                       const chColor = CH_COLOR[c.channel] || C.muted;
                       return (
-                        <Row key={i} last={i === (g!.conversations.length - 1)}>
+                        <Row key={i} last={i === (g!.conversations.length - 1)}
+                          clickable={authed && !!c.convId}
+                          onClick={authed && c.convId ? () => setActiveConv(c) : undefined}>
                           <div style={{ marginTop: 2 }}>{inbound ? <ArrowDownLeft size={16} color={C.green} /> : <ArrowUpRight size={16} color={C.muted} />}</div>
                           <div style={{ minWidth: 0, flex: 1 }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -480,6 +532,7 @@ export default function TintGardDashboard() {
                               <span style={{ fontSize: 10.5, color: chColor, background: `${chColor}14`, border: `1px solid ${chColor}33`, borderRadius: 6, padding: "1px 7px" }}>{c.channel}</span>
                               {c.unread > 0 && <span style={{ width: 7, height: 7, borderRadius: 99, background: C.red }} />}
                               <span style={{ marginLeft: "auto", fontSize: 11, color: C.muted, whiteSpace: "nowrap" }}>{ago(c.when)}</span>
+                              {authed && c.convId && <CornerUpLeft size={13} color={C.red} />}
                             </div>
                             <div style={{ color: C.sub, fontSize: 13, marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                               {c.snippet || (inbound ? "Inbound message" : "Message sent")}
@@ -512,6 +565,10 @@ export default function TintGardDashboard() {
         )}
       </div>
 
+      {activeConv && authed && (
+        <ConversationThread conv={activeConv} token={dashPw} onClose={() => setActiveConv(null)} />
+      )}
+
       <style>{`@keyframes spin{to{transform:rotate(360deg)}} @media(max-width:820px){.ceo-grid{grid-template-columns:1fr !important}}`}</style>
     </div>
   );
@@ -530,8 +587,10 @@ function CardHead({ Icon, title, children }: { Icon: typeof Car; title: string; 
     </div>
   );
 }
-function Row({ children, last, col }: { children: React.ReactNode; last?: boolean; col?: boolean }) {
-  return <div style={{ display: "flex", flexDirection: col ? "column" : "row", gap: col ? 0 : 11, padding: "11px 2px", borderBottom: last ? "none" : `1px solid ${C.border}` }}>{children}</div>;
+function Row({ children, last, col, onClick, clickable }: { children: React.ReactNode; last?: boolean; col?: boolean; onClick?: () => void; clickable?: boolean }) {
+  return <div onClick={onClick} style={{ display: "flex", flexDirection: col ? "column" : "row", gap: col ? 0 : 11, padding: "11px 2px", borderBottom: last ? "none" : `1px solid ${C.border}`, cursor: clickable ? "pointer" : "default", borderRadius: clickable ? 8 : 0, transition: "background .12s" }}
+    onMouseEnter={clickable ? (e) => (e.currentTarget.style.background = C.softer) : undefined}
+    onMouseLeave={clickable ? (e) => (e.currentTarget.style.background = "transparent") : undefined}>{children}</div>;
 }
 function Empty({ children }: { children: React.ReactNode }) {
   return <div style={{ color: C.muted, fontSize: 13.5, padding: "14px 4px" }}>{children}</div>;
@@ -580,6 +639,100 @@ function Funnel({ stages }: { stages: { label: string; value: number; color: str
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+function ConversationThread({ conv, token, onClose }: { conv: Conv; token: string; onClose: () => void }) {
+  const [msgs, setMsgs] = useState<ThreadMsg[] | null>(null);
+  const [loadErr, setLoadErr] = useState("");
+  const [text, setText] = useState("");
+  const [type, setType] = useState<"SMS" | "Email">(/email/i.test(conv.channel) ? "Email" : "SMS");
+  const [sending, setSending] = useState(false);
+  const [sendErr, setSendErr] = useState("");
+  const canSend = !!conv.contactId;
+
+  const loadThread = useCallback(async () => {
+    if (!conv.convId) { setMsgs([]); setLoadErr("This conversation can't be opened."); return; }
+    setLoadErr("");
+    try {
+      const res = await fetch(`/api/tintgard-dashboard/thread?conversationId=${encodeURIComponent(conv.convId)}`, { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
+      const d = await res.json().catch(() => null);
+      if (d?.ok) setMsgs(d.messages as ThreadMsg[]);
+      else { setMsgs([]); setLoadErr("Could not load this conversation."); }
+    } catch { setMsgs([]); setLoadErr("Could not load this conversation."); }
+  }, [conv.convId, token]);
+  useEffect(() => { loadThread(); }, [loadThread]);
+
+  const send = useCallback(async () => {
+    const message = text.trim();
+    if (!message || sending || !canSend) return;
+    setSending(true); setSendErr("");
+    try {
+      const res = await fetch("/api/tintgard-dashboard/send", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ contactId: conv.contactId, conversationId: conv.convId, message, type }),
+      });
+      const d = await res.json().catch(() => null);
+      if (d?.ok) {
+        setText("");
+        setMsgs((m) => [...(m || []), { id: d.messageId || String(Date.now()), direction: "outbound", channel: type, body: message, when: new Date().toISOString() }]);
+      } else setSendErr(d?.reason ? `Not sent — ${d.reason}` : "The message was not sent.");
+    } catch { setSendErr("The message was not sent."); }
+    finally { setSending(false); }
+  }, [text, sending, canSend, token, conv.contactId, conv.convId, type]);
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(16,20,26,.5)", zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, width: "100%", maxWidth: 560, maxHeight: "88vh", borderRadius: "16px 16px 0 0", display: "flex", flexDirection: "column", boxShadow: "0 -8px 40px rgba(16,24,40,.25)" }}>
+        {/* header */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 18px", borderBottom: `1px solid ${C.border}` }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: 15.5 }}>{conv.name}</div>
+            <div style={{ fontSize: 12, color: C.muted }}>{conv.phone || conv.channel}</div>
+          </div>
+          <button onClick={onClose} aria-label="Close" style={{ background: C.soft, border: "none", borderRadius: 8, width: 32, height: 32, display: "grid", placeItems: "center", cursor: "pointer" }}><X size={16} color={C.sub} /></button>
+        </div>
+
+        {/* messages */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "16px 18px", display: "flex", flexDirection: "column", gap: 10, background: C.bg }}>
+          {msgs === null && <div style={{ color: C.muted, fontSize: 13.5, textAlign: "center", padding: "20px 0" }}>Loading conversation…</div>}
+          {msgs !== null && msgs.length === 0 && !loadErr && <div style={{ color: C.muted, fontSize: 13.5, textAlign: "center", padding: "20px 0" }}>No messages in this conversation yet.</div>}
+          {loadErr && <div style={{ color: C.red, fontSize: 13, textAlign: "center", padding: "12px 0" }}>{loadErr}</div>}
+          {(msgs || []).map((m) => {
+            const out = /out/i.test(m.direction);
+            return (
+              <div key={m.id} style={{ alignSelf: out ? "flex-end" : "flex-start", maxWidth: "82%" }}>
+                <div style={{ background: out ? C.red : C.surface, color: out ? "#fff" : C.ink, border: out ? "none" : `1px solid ${C.border}`, borderRadius: 12, padding: "9px 12px", fontSize: 13.5, lineHeight: 1.45, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{m.body}</div>
+                <div style={{ fontSize: 10.5, color: C.muted, marginTop: 3, textAlign: out ? "right" : "left" }}>{m.channel} · {ago(m.when)}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* reply box */}
+        <div style={{ borderTop: `1px solid ${C.border}`, padding: "12px 14px", background: C.surface }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <span style={{ fontSize: 11.5, color: C.muted }}>Send as</span>
+            {(["SMS", "Email"] as const).map((t) => (
+              <button key={t} onClick={() => setType(t)}
+                style={{ fontSize: 12, fontWeight: 600, cursor: "pointer", padding: "4px 10px", borderRadius: 7, border: `1px solid ${type === t ? C.red : C.border}`, background: type === t ? C.redSoft : "transparent", color: type === t ? C.redDark : C.sub }}>{t}</button>
+            ))}
+            <span style={{ marginLeft: "auto", fontSize: 11, color: C.muted }}>{text.length} chars</span>
+          </div>
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+            <textarea value={text} onChange={(e) => setText(e.target.value)} rows={2} placeholder={canSend ? "Write a reply…" : "This contact has no ID — reply in GoHighLevel."} disabled={!canSend}
+              onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) send(); }}
+              style={{ flex: 1, resize: "none", padding: "10px 12px", border: `1px solid ${C.borderStrong}`, borderRadius: 10, fontSize: 14, fontFamily: "inherit", outline: "none", lineHeight: 1.4 }} />
+            <button onClick={send} disabled={sending || !text.trim() || !canSend} aria-label="Send"
+              style={{ background: C.red, color: "#fff", border: "none", borderRadius: 10, width: 44, height: 44, display: "grid", placeItems: "center", cursor: "pointer", opacity: (sending || !text.trim() || !canSend) ? 0.5 : 1 }}>
+              <Send size={17} />
+            </button>
+          </div>
+          {sendErr && <div style={{ fontSize: 12, color: C.red, marginTop: 7 }}>{sendErr}</div>}
+          <div style={{ fontSize: 10.5, color: C.muted, marginTop: 7 }}>This sends a real {type} to the customer. Ctrl/Cmd + Enter to send.</div>
+        </div>
+      </div>
     </div>
   );
 }
