@@ -86,7 +86,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var p=location.pathname;if(/^\\/apps\\/.+/.test(p))document.documentElement.classList.add('hide-navbar');if(/^\\/clients\\/tintgard\\/dashboard/.test(p))document.documentElement.classList.add('hide-navbar','bare-page');}catch(e){}",
+              "try{var p=location.pathname;if(/^\\/apps\\/.+/.test(p))document.documentElement.classList.add('hide-navbar');if(/^\\/clients\\/(tintgard\\/dashboard|progardfilms)/.test(p))document.documentElement.classList.add('hide-navbar','bare-page');}catch(e){}",
           }}
         />
         <meta name="facebook-domain-verification" content="aaze7bquq1go6vk1nme86jdh3lf5jz" />
