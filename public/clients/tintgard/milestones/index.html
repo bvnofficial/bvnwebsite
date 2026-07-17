@@ -114,6 +114,7 @@
   .m::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line2)}
   .m.reached::before{background:var(--green)}
   .m.active::before{background:var(--amber)}
+  .m.complete::before{background:var(--green)}
   .m.pending::before{background:var(--muted2)}
   .m-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .m-no{font-family:var(--mono);font-size:11px;color:var(--muted2);font-weight:700}
@@ -127,6 +128,7 @@
   .m-bar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:14px}
   .m-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red3),var(--red2));transition:width .8s ease}
   .m.reached .m-bar i{background:linear-gradient(90deg,#189656,var(--green))}
+  .m.complete .m-bar i{background:linear-gradient(90deg,#189656,var(--green))}
   .m-foot{display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--muted2)}
   .m-foot b{color:var(--red2)}
 
@@ -710,7 +712,7 @@
 </section>
 
 <script>
-const LAST_UPDATED = "July 15, 2026";
+const LAST_UPDATED = "July 17, 2026";
 
 // status: "done" | "active" | "todo"
 const SECTIONS = [
@@ -767,8 +769,8 @@ const MILESTONES = [
   { no:"M1", amount:"A$500", title:"Foundation & Setup", status:"reached",
     trigger:"Paid, thank you. All 9 foundation items are built, live and verified: the GoHighLevel account in your name, branding, custom fields, calendars, business phone, lead capture form, AI chat widget and the ServiceM8 connection.",
     covers:["m1"] },
-  { no:"M4", amount:"A$1,000", title:"Journeys, AI & Integration", status:"active",
-    trigger:"Now in progress. Your three customer journeys, the ServiceM8 two way sync and your live dashboard are done and running. Your messaging number 0485 080 220 is registered and approved, which clears the whole SMS side. The follow up, nurture, win back, review, missed call and AI voice layers are all built and sitting ready, deliberately switched off until you give the word.",
+  { no:"M4", amount:"A$1,000", title:"Journeys, AI & Integration", status:"complete",
+    trigger:"Complete. All 18 items are built and verified: your three customer journeys, the ServiceM8 two way sync running every 10 minutes, your live CEO dashboard, your full customer history inside the CRM, and the AI chat and voice layers. Your messaging number 0485 080 220 is registered and approved, which clears the whole SMS side. Everything that sends a message to one of your customers is built and deliberately switched off until you give the word. This milestone is finished, so the A$1,000 is now due.",
     covers:["m2","m3","m4"] },
   { no:"M6", amount:"A$1,000", title:"Launch & Handover", status:"pending",
     trigger:"Final payment when everything is tested, trained and live.",
@@ -786,7 +788,7 @@ const msEl = document.getElementById("milestonesEl");
 MILESTONES.forEach(m=>{
   let t=0,d=0,a=0; m.covers.forEach(c=>{ const s=secStats(c); t+=s.t; d+=s.d; a+=s.a; });
   const pct = pctOf(d,a,t);
-  const statLabel = {reached:"Reached",active:"In Progress",pending:"Upcoming"}[m.status];
+  const statLabel = {reached:"Reached",complete:"Complete",active:"In Progress",pending:"Upcoming"}[m.status];
   const el = document.createElement("div");
   el.className = "m "+m.status;
   el.innerHTML = `
@@ -804,7 +806,7 @@ MILESTONES.forEach(m=>{
 
 /* ===== payment band — stays in sync with MILESTONES ===== */
 const amtNum = s => Number(String(s).replace(/[^0-9.]/g,"")) || 0;
-const PSTAT = {reached:["paid","Paid"], active:["active","Current"], pending:["pending","Upcoming"]};
+const PSTAT = {reached:["paid","Paid"], complete:["active","Due now"], active:["active","Current"], pending:["pending","Upcoming"]};
 const totalAmt = MILESTONES.reduce((a,m)=>a+amtNum(m.amount),0);
 const paidAmt  = MILESTONES.filter(m=>m.status==="reached").reduce((a,m)=>a+amtNum(m.amount),0);
 const fmt = n => "A$"+n.toLocaleString("en-AU");
