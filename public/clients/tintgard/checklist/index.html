@@ -159,48 +159,48 @@
 const SECTIONS = [
   { id:"start", title:"To get moving", chip:"start", chipLabel:"Start here", f:"start",
     items:[
-      ["GoHighLevel account created, with BVN added as admin","email: bvn@bvnofficial.com — you create it, so you own it"],
-      ["Logo files","PNG, plus vector or SVG if you have it"],
-      ["Brand colours and preferred font","if any"],
-      ["Business name, ABN, address and the areas you service"],
-      ["Phone number decision","keep your current one and forward it, or use a fresh number"],
-      ["Website access, or your web person's contact","for the chat widget and email setup"],
+      ["GoHighLevel account created, with BVN added as admin","email: bvn@bvnofficial.com — you create it, so you own it", true],
+      ["Logo files","PNG, plus vector or SVG if you have it", true],
+      ["Brand colours and preferred font","if any", true],
+      ["Business name, ABN, address and the areas you service","ABN 50 647 903 697, 8 Success Circuit, Augustine Heights", true],
+      ["Phone number decision","sorted: new number 0485 080 220, your mobile untouched", true],
+      ["Website access, or your web person's contact","for the chat widget and email setup", true],
       ["Who should receive new lead notifications, and how","SMS, email, or both"],
     ]},
   { id:"accounts", title:"Accounts to connect", chip:"access", chipLabel:"Access", f:"access",
     items:[
-      ["ServiceM8 login, or the okay to send you the connection request"],
+      ["ServiceM8 login, or the okay to send you the connection request","connected, syncing every 10 minutes", true],
       ["Google Business Profile access","for reviews, Google messaging and maps"],
       ["Facebook and Instagram access","for social messaging"],
       ["Xero access, or a contacts export","for your free customer migration"],
     ]},
   { id:"services", title:"Services and pricing", chip:"content", chipLabel:"Details", f:"details",
     items:[
-      ["Your services, with a short description of each"],
-      ["Pricing or price ranges per service","or how you like to quote"],
+      ["Your services, with a short description of each","", true],
+      ["Pricing or price ranges per service","received. Your chat and phone AI now quote from your price list", true],
       ["Any packages, offers or promotions you run"],
-      ["Warranty details and your most common FAQs"],
+      ["Warranty details and your most common FAQs","still needed. Until we have these the AI is told not to answer warranty questions"],
       ["Booking rules","availability, typical lead times, and any deposit you take"],
     ]},
   { id:"sales", title:"Your sales process (the 3 journeys)", chip:"content", chipLabel:"Details", f:"details",
     items:[
-      ["How leads reach you today, and how you follow up"],
-      ["The questions you ask to quote a car, a commercial, and a residential job"],
+      ["How leads reach you today, and how you follow up","", true],
+      ["The questions you ask to quote a car, a commercial, and a residential job","", true],
       ["The objections you hear most, and your best responses"],
       ["Any offer or incentive you'd like used in follow-ups"],
     ]},
   { id:"ai", title:"AI and voice", chip:"content", chipLabel:"Details", f:"details",
     items:[
       ["Your most common customer questions and the answers","so the AI sounds like you"],
-      ["How you want the AI to come across","friendly, professional, straight to the point"],
-      ["What the AI is allowed to book, and when it should hand over to a person"],
-      ["After-hours and voicemail preferences"],
-      ["Your Google review link"],
+      ["How you want the AI to come across","friendly, brief and straight talking, never overselling", true],
+      ["What the AI is allowed to book, and when it should hand over to a person","booking your 3 calendars, complaints handed straight to Alex", true],
+      ["After-hours and voicemail preferences","still needed. Your voice agent currently answers 24/7"],
+      ["Your Google review link","still needed. The review requests are built with nowhere to send people"],
     ]},
   { id:"servicem8", title:"ServiceM8", chip:"tech", chipLabel:"Integration", f:"details",
     items:[
-      ["The job types or categories you use"],
-      ["At what point a lead becomes a job","so we trigger it at the right moment"],
+      ["The job types or categories you use","automotive, commercial and residential", true],
+      ["At what point a lead becomes a job","sorted: a booked lead creates the job automatically", true],
     ]},
   { id:"affiliate", title:"Affiliate partners", chip:"content", chipLabel:"Details", f:"details",
     items:[
@@ -225,6 +225,12 @@ try { state = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch(e){ state
 function save(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
 function key(s,i){ return s+"::"+i; }
 
+/* Ticks are saved per browser, so anything BVN has already received would show
+   as outstanding on the client's own device. Items we have in hand are marked
+   supplied in SECTIONS (third value) and render ticked for everyone by default.
+   The viewer's own tick or untick still wins, hence the "in state" check. */
+function got(sec,i){ const k = key(sec.id,i); return (k in state) ? !!state[k] : !!sec.items[i][2]; }
+
 const cardsEl = document.getElementById("cards");
 SECTIONS.forEach(sec=>{
   const card = document.createElement("div");
@@ -232,7 +238,7 @@ SECTIONS.forEach(sec=>{
   card.dataset.f = sec.f;
   const itemsHtml = sec.items.map((it,i)=>{
     const k = key(sec.id,i);
-    const checked = state[k] ? "checked" : "";
+    const checked = got(sec,i) ? "checked" : "";
     const note = it[1] ? '<span class="note">'+it[1]+'</span>' : '';
     return '<div class="item"><label><input type="checkbox" data-k="'+k+'" '+checked+'/>'
       + '<span class="txt">'+it[0]+note+'</span></label></div>';
@@ -255,7 +261,7 @@ function updateProgress(){
   let total=0, done=0;
   SECTIONS.forEach(sec=>{
     let st=0, sd=0;
-    sec.items.forEach((it,i)=>{ st++; if(state[key(sec.id,i)]) sd++; });
+    sec.items.forEach((it,i)=>{ st++; if(got(sec,i)) sd++; });
     total+=st; done+=sd;
     const ring = document.getElementById("ring-"+sec.id);
     if(ring) ring.innerHTML = "<b>"+sd+"</b>/"+st;
