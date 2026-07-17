@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Progard Films",
+    region: "Architectural & automotive window film, Australia",
+    scope: "Brand Website · Full Product Range",
+    blurb:
+      "Complete brand website built entirely from the Progard range sheets, since the business has no web presence yet and progardfilms.com.au does not resolve. Covers both ranges: Architectural (Black, Reflective, Clear, Security and Decorative Series, carrying Vista, NanoBlack, Lumina Silver, Lumina Dual, TrueVue, ShieldVue and FrostVue) and Automotive (XFactor Performance Ceramic, Night Rider HD Nano Ceramic and Fusion Ultra Ceramic) with the full TSER, IRR and UV rejection tables at 35, 20 and 05. Adds an interactive shade comparison that shows how the three automotive films differ at identical darkness, a film finder, and an Australian tint compliance section. Runs as a bare page so it reads as the client's own site. Still needs real photography and contact details. Built with Claude Code.",
+    href: "/clients/progardfilms",
+    status: "active",
+    accent: C.amber,
+    tags: ["Website", "Next.js", "Product Range", "Window Film"],
+  },
+  {
     name: "SDR Electric ServiceM8 Operating System (application)",
     region: "Electrical/plumbing/HVAC, Ontario Canada",
     scope: "ServiceM8 · Pricebook · Inventory · BI",
