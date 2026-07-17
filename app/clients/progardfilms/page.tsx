@@ -50,12 +50,14 @@ type Series = {
   blurb: string;
   accent: string;
   badge: string;
+  img: string;
   products: { name: string; kind: string; body: string }[];
 };
 
 const ARCHITECTURAL: Series[] = [
   {
     id: "black",
+    img: "/clients/progardfilms/black-series.jpg",
     name: "Black Series",
     tag: "Natural black appearance",
     blurb: "Natural black appearance with high performance heat rejection.",
@@ -76,6 +78,7 @@ const ARCHITECTURAL: Series[] = [
   },
   {
     id: "reflective",
+    img: "/clients/progardfilms/reflective-series.jpg",
     name: "Reflective Series",
     tag: "Mirrored appearance",
     blurb: "Mirrored appearance for daytime privacy and superior solar performance.",
@@ -96,6 +99,7 @@ const ARCHITECTURAL: Series[] = [
   },
   {
     id: "clear",
+    img: "/clients/progardfilms/clear-series.jpg",
     name: "Clear Series",
     tag: "Virtually clear",
     blurb: "Virtually clear appearance that lets in natural light while reducing heat.",
@@ -111,6 +115,7 @@ const ARCHITECTURAL: Series[] = [
   },
   {
     id: "security",
+    img: "/clients/progardfilms/security-series.jpg",
     name: "Security Series",
     tag: "Safety and security",
     blurb: "Safety and security films designed to strengthen glass and protect what matters.",
@@ -126,6 +131,7 @@ const ARCHITECTURAL: Series[] = [
   },
   {
     id: "decorative",
+    img: "/clients/progardfilms/decorative-series.jpg",
     name: "Decorative Series",
     tag: "Decorative and frosted",
     blurb: "Decorative and frosted films for privacy, style and design.",
@@ -143,6 +149,7 @@ const ARCHITECTURAL: Series[] = [
 
 type Auto = {
   id: string;
+  img: string;
   name: string;
   sub: string;
   accent: string;
@@ -158,6 +165,7 @@ type Auto = {
 const AUTOMOTIVE: Auto[] = [
   {
     id: "xfactor",
+    img: "/clients/progardfilms/auto-xfactor.jpg",
     name: "XFactor",
     sub: "Performance Ceramic",
     accent: C.red,
@@ -179,6 +187,7 @@ const AUTOMOTIVE: Auto[] = [
   },
   {
     id: "nightrider",
+    img: "/clients/progardfilms/auto-nightrider.jpg",
     name: "Night Rider",
     sub: "HD Nano Ceramic",
     accent: C.purple,
@@ -202,6 +211,7 @@ const AUTOMOTIVE: Auto[] = [
   },
   {
     id: "fusion",
+    img: "/clients/progardfilms/auto-fusion.jpg",
     name: "Fusion",
     sub: "Ultra Ceramic",
     accent: C.amber,
@@ -300,7 +310,18 @@ export default function ProgardFilmsPage() {
   );
 
   return (
-    <div style={{ background: C.bg, color: C.ink, minHeight: "100vh", fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div style={{ background: C.bg, color: C.ink, minHeight: "100vh", fontFamily: "Inter, system-ui, sans-serif", position: "relative" }}>
+      {/* Hero backdrop — the film applied to architectural glass, faded into the page */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 620, overflow: "hidden", pointerEvents: "none" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/clients/progardfilms/black-series.jpg"
+          alt=""
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", opacity: 0.34 }}
+        />
+        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to top, ${C.bg} 4%, ${C.bg}D9 42%, ${C.bg}A6 100%)` }} />
+        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to right, ${C.bg} 0%, ${C.bg}B3 38%, transparent 100%)` }} />
+      </div>
       {/* Top bar */}
       <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(7,8,11,0.9)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}` }}>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "14px 22px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
@@ -327,7 +348,7 @@ export default function ProgardFilmsPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 22px 100px" }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 22px 100px", position: "relative", zIndex: 1 }}>
         {/* Back to BVN */}
         <div style={{ paddingTop: 20 }}>
           <Link href="/clients" style={{ display: "inline-flex", alignItems: "center", gap: 7, color: C.muted, textDecoration: "none", fontSize: 12.5 }}>
@@ -445,6 +466,17 @@ export default function ProgardFilmsPage() {
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 16, minWidth: 0 }}>
                             <div style={{ width: 4, height: 40, borderRadius: 99, background: s.accent, flexShrink: 0 }} />
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={s.img}
+                              alt=""
+                              style={{
+                                width: 62, height: 46, objectFit: "cover", borderRadius: 8,
+                                border: `1px solid ${C.border}`, flexShrink: 0,
+                                filter: open ? "none" : "grayscale(0.5) brightness(0.8)",
+                                transition: "filter .25s",
+                              }}
+                            />
                             <div style={{ minWidth: 0 }}>
                               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                                 <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: -0.3, textTransform: "uppercase" }}>{s.name}</span>
@@ -470,6 +502,21 @@ export default function ProgardFilmsPage() {
                               transition={{ duration: 0.25 }}
                               style={{ overflow: "hidden" }}
                             >
+                              {/* Series hero image */}
+                              <div style={{ padding: "0 22px 16px" }}>
+                                <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", border: `1px solid ${C.border}`, height: 210 }}>
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={s.img}
+                                    alt={`${s.name} film application`}
+                                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                                  />
+                                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to top, ${C.card} 2%, transparent 55%)` }} />
+                                  <div style={{ position: "absolute", left: 16, bottom: 12, fontSize: 10.5, fontWeight: 800, letterSpacing: 1.4, textTransform: "uppercase", color: s.accent }}>
+                                    {s.tag}
+                                  </div>
+                                </div>
+                              </div>
                               <div style={{ padding: "0 22px 22px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
                                 {s.products.map((p) => (
                                   <div key={p.name} style={{ border: `1px solid ${C.border}`, borderRadius: 11, padding: 18, background: C.bg2 }}>
@@ -505,16 +552,25 @@ export default function ProgardFilmsPage() {
                       key={f.id}
                       style={{
                         border: `1px solid ${f.popular ? f.accent + "66" : C.border}`,
-                        borderRadius: 16, background: C.card, padding: 24, position: "relative", overflow: "hidden",
+                        borderRadius: 16, background: C.card, position: "relative", overflow: "hidden",
                       }}
                     >
-                      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(600px 160px at 50% -40px, ${f.accent}22, transparent 70%)`, pointerEvents: "none" }} />
-                      {f.popular && (
-                        <div style={{ position: "absolute", top: 0, right: 0, background: f.accent, color: "#fff", fontSize: 9, fontWeight: 900, letterSpacing: 1.2, padding: "5px 12px", borderBottomLeftRadius: 9, textTransform: "uppercase" }}>
-                          ★ Most Popular
-                        </div>
-                      )}
-                      <div style={{ position: "relative" }}>
+                      {/* Vehicle image */}
+                      <div style={{ position: "relative", height: 190, overflow: "hidden" }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={f.img}
+                          alt={`${f.name} ${f.sub} window film`}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
+                        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to top, ${C.card} 3%, ${f.accent}18 60%, transparent 100%)` }} />
+                        {f.popular && (
+                          <div style={{ position: "absolute", top: 0, right: 0, background: f.accent, color: "#fff", fontSize: 9, fontWeight: 900, letterSpacing: 1.2, padding: "5px 12px", borderBottomLeftRadius: 9, textTransform: "uppercase" }}>
+                            ★ Most Popular
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ position: "relative", padding: "4px 24px 24px", marginTop: -34 }}>
                         <div style={{ fontSize: 9, letterSpacing: 2, color: C.muted, fontWeight: 800, textTransform: "uppercase" }}>
                           Progard Automotive
                         </div>
@@ -831,7 +887,9 @@ export default function ProgardFilmsPage() {
 
         <div style={{ marginTop: 18, fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
           Specifications shown are taken from the Progard range sheets. TSER = Total Solar Energy
-          Rejected, IRR = Infrared Rejection, UVR = UV Rejection. Built by BVN Digital Agency.
+          Rejected, IRR = Infrared Rejection, UVR = UV Rejection. Photography is licensed stock
+          used as placeholder art and does not depict Progard installations; to be replaced with
+          the client&apos;s own images. Built by BVN Digital Agency.
         </div>
       </div>
 
