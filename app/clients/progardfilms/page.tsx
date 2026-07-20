@@ -1,15 +1,12 @@
 "use client";
 
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, ArrowRight, Sun, ShieldCheck, Eye, Leaf, Shield, Building2,
   Award, FileText, CheckCircle2, Car, Home, Sparkles, Thermometer,
   Radio, Gem, Layers, Scale, Phone, Mail, MapPin, ChevronRight, Star,
-  Bot, Send, TrendingUp, Users, Calendar, DollarSign, Instagram, Facebook,
-  Zap, Wrench, Clock, BarChart3, Heart, Share2, Activity, Bell, Megaphone,
-  MessageSquare, LayoutDashboard,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────────────────────
@@ -293,457 +290,6 @@ function Bar({ value, accent }: { value: number; accent: string }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────
-// PROGARD AI ADVISOR — a demo assistant. Responses are matched from the real
-// product data below; it is not a live language model, so nothing it says is
-// invented. Labelled "demo" in the UI.
-type Chip = { name: string; sub: string; accent: string; href?: string };
-type Msg = { role: "user" | "ai"; text: string; chips?: Chip[] };
-
-function advise(qRaw: string): Msg {
-  const q = qRaw.toLowerCase();
-  const has = (...w: string[]) => w.some((x) => q.includes(x));
-  const chip = (name: string, sub: string, accent: string): Chip => ({ name, sub, accent });
-
-  if (has("hello", "hi", "hey", "start"))
-    return {
-      role: "ai",
-      text: "Hi! I'm the Progard advisor. Tell me what you're fitting — a home, an office, or a vehicle — and what matters most (heat, privacy, security, or budget), and I'll point you to the right film.",
-    };
-  if (has("law", "legal", "vlt", "dark enough", "how dark", "allowed"))
-    return {
-      role: "ai",
-      text: "Tint darkness is set by each Australian state, and differs per window. Front side windows usually need at least 35% light transmission; rears can go darker. Because Progard's ceramic films reject heat through the film itself, a legal 35% Fusion or Night Rider still keeps you cool — you don't have to break the rules to be comfortable. Your installer confirms the exact limit for your state before fitting.",
-    };
-  if (has("car", "vehicle", "auto", "windscreen", "windshield") || (has("tint") && !has("home", "house", "office"))) {
-    if (has("best", "max", "most", "ultimate", "premium"))
-      return { role: "ai", text: "For the best automotive performance, Fusion Ultra Ceramic is the top of the range — up to 66% heat rejection and 98% infrared rejection, with lifetime warranty. If you want that balance of comfort and crystal-clear visibility, Night Rider is our most popular pick.", chips: [chip("Fusion", "Ultra Ceramic", C.amber), chip("Night Rider", "HD Nano Ceramic", C.purple)] };
-    if (has("cheap", "budget", "value", "afford", "price", "cost"))
-      return { role: "ai", text: "XFactor Performance Ceramic is our best value — genuine ceramic tech, 99% UV protection and a clean charcoal look, at the sharpest price. A great everyday choice.", chips: [chip("XFactor", "Performance Ceramic", C.red)] };
-    return { role: "ai", text: "For vehicles we have three ceramic films: XFactor for everyday value, Night Rider for the best balance of comfort and clarity (our most popular), and Fusion for maximum performance. What matters most — value, clarity, or absolute heat rejection?", chips: [chip("XFactor", "Value", C.red), chip("Night Rider", "Balance", C.purple), chip("Fusion", "Maximum", C.amber)] };
-  }
-  if (has("security", "safe", "break", "burglar", "intruder", "shatter", "glass hold"))
-    return { role: "ai", text: "ShieldVue is our security film — it helps hold broken glass together, deters break-ins and adds a layer of safety for your home or business. Ideal for ground-floor windows and glass doors.", chips: [chip("ShieldVue", "Security Film", "#60A5FA")] };
-  if (has("privacy", "private", "see in", "frost", "bathroom", "partition"))
-    return { role: "ai", text: "For daytime privacy from outside, the Reflective Series (Lumina Silver / Lumina Dual) gives a mirrored look while cutting heat. For full privacy on bathrooms, offices or partitions, FrostVue adds a frosted, decorative finish to any glass.", chips: [chip("Lumina Dual", "Dual Reflective", C.blue), chip("FrostVue", "Decorative", "#C084FC")] };
-  if (has("home", "house", "office", "building", "window", "residential", "commercial")) {
-    if (has("view", "clear", "natural light", "keep my view"))
-      return { role: "ai", text: "If you want to keep the view and natural light while cutting heat, TrueVue is the one — a virtually clear solar film with strong heat and UV rejection.", chips: [chip("TrueVue", "Clear Series", "#38BDF8")] };
-    return { role: "ai", text: "For homes and offices, NanoBlack is our premium pick — superior heat rejection with a natural black look. Prefer to keep the view? TrueVue stays near-clear. Want privacy too? The Reflective Series adds a mirrored finish.", chips: [chip("NanoBlack", "Ceramic", C.gold), chip("TrueVue", "Near-clear", "#38BDF8")] };
-  }
-  if (has("heat", "hot", "cool", "warm", "temperature", "infrared"))
-    return { role: "ai", text: "Heat rejection comes from the film's construction, not how dark it looks. For a vehicle, Fusion leads at up to 66% heat and 98% infrared rejection. For a home, NanoBlack ceramic delivers superior heat rejection with maximum comfort.", chips: [chip("Fusion", "Vehicle", C.amber), chip("NanoBlack", "Home", C.gold)] };
-  if (has("warranty", "guarantee"))
-    return { role: "ai", text: "Every Progard film is backed by an industry-leading warranty — the automotive ceramic range (XFactor, Night Rider, Fusion) carries a lifetime warranty, and architectural films are backed by their own long-term warranties." };
-  if (has("uv", "skin", "fade", "furniture", "floor"))
-    return { role: "ai", text: "All Progard films block over 99% of UV, protecting skin, furnishings and floors from fading. Every product in both ranges hits that 99% UV mark." };
-  if (has("book", "quote", "install", "buy", "price", "cost", "how much"))
-    return { role: "ai", text: "Pricing depends on the film and the glass or vehicle, so it's quoted per job. Tell me what you're fitting and I'll recommend the film — then hit 'Get a Quote' and a Progard installer will confirm the price.", chips: [chip("Get a quote", "Talk to an installer", C.gold)] };
-  return {
-    role: "ai",
-    text: "I can help you pick the right film for a home, office or vehicle — just tell me what you're fitting and whether you care most about heat, privacy, security, keeping the view, or budget. For example: \"I want the coolest tint that's still legal for my car.\"",
-  };
-}
-
-function AiAdvisor() {
-  const [messages, setMessages] = useState<Msg[]>([
-    { role: "ai", text: "Hi, I'm the Progard advisor 👋 Tell me what you're fitting — a home, office or vehicle — and what matters most. I'll recommend the right film." },
-  ]);
-  const [input, setInput] = useState("");
-  const [typing, setTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, typing]);
-
-  function ask(text: string) {
-    const t = text.trim();
-    if (!t || typing) return;
-    setInput("");
-    setMessages((m) => [...m, { role: "user", text: t }]);
-    setTyping(true);
-    const delay = 500 + Math.min(t.length * 12, 900);
-    setTimeout(() => {
-      setMessages((m) => [...m, advise(t)]);
-      setTyping(false);
-    }, delay);
-  }
-
-  const suggestions = [
-    "Coolest legal tint for my car?",
-    "Best film for a home with a view",
-    "I need privacy for my office",
-    "What's your best value tint?",
-  ];
-
-  return (
-    <div style={{ border: `1px solid ${C.border}`, borderRadius: 18, background: C.card, overflow: "hidden", boxShadow: "0 24px 60px -30px rgba(0,0,0,0.8)" }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "16px 20px", borderBottom: `1px solid ${C.border}`, background: `linear-gradient(90deg, ${C.gold}14, transparent)` }}>
-        <div style={{ width: 38, height: 38, borderRadius: 11, background: `${C.gold}1F`, border: `1px solid ${C.gold}44`, display: "grid", placeItems: "center" }}>
-          <Bot size={19} color={C.gold} />
-        </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14.5, fontWeight: 800, display: "flex", alignItems: "center", gap: 8 }}>
-            Progard AI Advisor
-            <span style={{ fontSize: 8.5, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: C.gold, border: `1px solid ${C.gold}55`, padding: "2px 6px", borderRadius: 99 }}>Demo</span>
-          </div>
-          <div style={{ fontSize: 11.5, color: C.muted, display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
-            <span style={{ width: 6, height: 6, borderRadius: 99, background: C.green, boxShadow: `0 0 8px ${C.green}` }} /> Online · replies instantly
-          </div>
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div ref={scrollRef} style={{ height: 340, overflowY: "auto", padding: 18, display: "flex", flexDirection: "column", gap: 12, background: C.bg2 }}>
-        {messages.map((m, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-            <div style={{ maxWidth: "82%" }}>
-              <div
-                style={{
-                  fontSize: 13.5, lineHeight: 1.6, padding: "11px 14px", borderRadius: 14,
-                  background: m.role === "user" ? C.gold : C.card,
-                  color: m.role === "user" ? "#0A0A0A" : C.ink,
-                  border: m.role === "user" ? "none" : `1px solid ${C.border}`,
-                  borderBottomRightRadius: m.role === "user" ? 4 : 14,
-                  borderBottomLeftRadius: m.role === "user" ? 14 : 4,
-                  fontWeight: m.role === "user" ? 600 : 400,
-                }}
-              >
-                {m.text}
-              </div>
-              {m.chips && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginTop: 8 }}>
-                  {m.chips.map((c) => (
-                    <a
-                      key={c.name}
-                      href="#contact"
-                      style={{ display: "inline-flex", alignItems: "center", gap: 7, textDecoration: "none", border: `1px solid ${c.accent}66`, background: `${c.accent}14`, borderRadius: 10, padding: "7px 11px" }}
-                    >
-                      <span style={{ fontSize: 12.5, fontWeight: 800, color: C.ink }}>{c.name}</span>
-                      <span style={{ fontSize: 10.5, color: c.accent, fontWeight: 700 }}>{c.sub}</span>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-        {typing && (
-          <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "11px 14px", background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, borderBottomLeftRadius: 4, width: "fit-content" }}>
-            {[0, 1, 2].map((d) => (
-              <motion.span
-                key={d}
-                animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
-                transition={{ duration: 1, repeat: Infinity, delay: d * 0.18 }}
-                style={{ width: 6, height: 6, borderRadius: 99, background: C.muted, display: "block" }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Suggestions */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 7, padding: "12px 16px 0" }}>
-        {suggestions.map((s) => (
-          <button key={s} onClick={() => ask(s)} style={{ cursor: "pointer", border: `1px solid ${C.border}`, background: C.bg2, color: C.sub, borderRadius: 99, padding: "6px 12px", fontSize: 11.5, fontWeight: 600 }}>
-            {s}
-          </button>
-        ))}
-      </div>
-
-      {/* Composer */}
-      <form onSubmit={(e) => { e.preventDefault(); ask(input); }} style={{ display: "flex", gap: 9, padding: 16 }}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about heat, privacy, security, price…"
-          style={{ flex: 1, background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 11, padding: "12px 14px", color: C.ink, fontSize: 13.5, outline: "none" }}
-        />
-        <button type="submit" disabled={!input.trim() || typing} style={{ cursor: input.trim() && !typing ? "pointer" : "not-allowed", background: C.gold, color: "#0A0A0A", border: "none", borderRadius: 11, padding: "0 16px", display: "grid", placeItems: "center", opacity: input.trim() && !typing ? 1 : 0.5 }}>
-          <Send size={16} />
-        </button>
-      </form>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// BUSINESS OPERATING SYSTEM — an interactive mock of the CEO dashboard BVN runs
-// behind the brand (GoHighLevel CRM + ServiceM8 jobs + social media marketing).
-// All figures are sample data for demonstration.
-type OpsTab = "ceo" | "pipeline" | "social" | "jobs";
-
-const REVENUE = [22, 31, 28, 44, 39, 52, 61, 58]; // last 8 weeks, sample ($k)
-
-const PIPELINE = [
-  { stage: "New Enquiry", accent: "#38BDF8", cards: [
-    { name: "Sarah M.", job: "Home · NanoBlack", value: "$2,400" },
-    { name: "Coastal Cafe", job: "Shopfront · TrueVue", value: "$3,900" },
-  ]},
-  { stage: "Quoted", accent: C.blue, cards: [
-    { name: "James T.", job: "BMW M4 · Fusion", value: "$780" },
-    { name: "Bayside Dental", job: "Office · FrostVue", value: "$5,200" },
-  ]},
-  { stage: "Booked", accent: C.purple, cards: [
-    { name: "Nguyen L.", job: "Ranger · Night Rider", value: "$650" },
-  ]},
-  { stage: "Installed", accent: C.gold, cards: [
-    { name: "Harper R.", job: "Home · Lumina Dual", value: "$4,100" },
-    { name: "Metro Fitness", job: "Glass wall · ShieldVue", value: "$6,800" },
-  ]},
-  { stage: "Review Sent", accent: C.green, cards: [
-    { name: "Daniel K.", job: "GT-R · Fusion", value: "$920" },
-  ]},
-];
-
-const SOCIAL_POSTS = [
-  { day: "Mon", plat: "ig", title: "Before / after: NanoBlack on a Toorak home", status: "Posted", eng: "1.2k", accent: "#E1306C" },
-  { day: "Tue", plat: "fb", title: "Why ceramic beats dyed tint — 60-sec explainer", status: "Posted", eng: "840", accent: "#1877F2" },
-  { day: "Wed", plat: "ig", title: "Reel: Fusion install on a GT-R", status: "Scheduled", eng: "—", accent: "#E1306C" },
-  { day: "Thu", plat: "fb", title: "Customer review spotlight ★★★★★", status: "Scheduled", eng: "—", accent: "#1877F2" },
-  { day: "Fri", plat: "ig", title: "Tint & the law: WA limits explained", status: "Draft", eng: "—", accent: "#E1306C" },
-];
-
-const JOBS = [
-  { time: "8:00 AM", client: "Sarah M.", job: "NanoBlack — 6 windows", tech: "Ben", status: "In progress", color: C.amber },
-  { time: "10:30 AM", client: "James T.", job: "Fusion — full vehicle", tech: "Alex", status: "Scheduled", color: C.blue },
-  { time: "1:00 PM", client: "Bayside Dental", job: "FrostVue — partitions", tech: "Ben", status: "Scheduled", color: C.blue },
-  { time: "3:30 PM", client: "Metro Fitness", job: "ShieldVue — glass wall", tech: "Priya", status: "Scheduled", color: C.blue },
-];
-
-function StatTile({ Icon, label, value, delta, accent }: { Icon: typeof Sun; label: string; value: string; delta?: string; accent: string }) {
-  return (
-    <div style={{ border: `1px solid ${C.border}`, borderRadius: 13, background: C.bg2, padding: 16 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ width: 30, height: 30, borderRadius: 8, background: `${accent}1A`, display: "grid", placeItems: "center" }}>
-          <Icon size={15} color={accent} />
-        </div>
-        {delta && <span style={{ fontSize: 10.5, fontWeight: 800, color: C.green, display: "flex", alignItems: "center", gap: 2 }}><TrendingUp size={11} /> {delta}</span>}
-      </div>
-      <div style={{ fontSize: 23, fontWeight: 900, marginTop: 11, letterSpacing: -0.5 }}>{value}</div>
-      <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{label}</div>
-    </div>
-  );
-}
-
-function OpsDashboard() {
-  const [tab, setTab] = useState<OpsTab>("ceo");
-  const tabs: { id: OpsTab; label: string; Icon: typeof Sun }[] = [
-    { id: "ceo", label: "CEO Dashboard", Icon: LayoutDashboard },
-    { id: "pipeline", label: "Lead Pipeline", Icon: Users },
-    { id: "social", label: "Social Media", Icon: Megaphone },
-    { id: "jobs", label: "Jobs & Installs", Icon: Wrench },
-  ];
-
-  return (
-    <div style={{ border: `1px solid ${C.border}`, borderRadius: 18, background: C.card, overflow: "hidden", boxShadow: "0 24px 60px -30px rgba(0,0,0,0.8)" }}>
-      {/* Window chrome */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "11px 16px", borderBottom: `1px solid ${C.border}`, background: C.bg2 }}>
-        <span style={{ width: 11, height: 11, borderRadius: 99, background: "#FF5F57" }} />
-        <span style={{ width: 11, height: 11, borderRadius: 99, background: "#FEBC2E" }} />
-        <span style={{ width: 11, height: 11, borderRadius: 99, background: "#28C840" }} />
-        <div style={{ marginLeft: 10, fontSize: 11.5, color: C.muted, display: "flex", alignItems: "center", gap: 7 }}>
-          <Building2 size={12} /> progard.ceo-dashboard.app
-        </div>
-        <span style={{ marginLeft: "auto", fontSize: 9.5, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: C.gold, border: `1px solid ${C.gold}44`, padding: "3px 8px", borderRadius: 99 }}>Live demo</span>
-      </div>
-
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: 4, padding: "10px 12px", borderBottom: `1px solid ${C.border}`, overflowX: "auto" }}>
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 7, whiteSpace: "nowrap",
-              padding: "9px 14px", borderRadius: 9, border: "none", cursor: "pointer",
-              fontSize: 12.5, fontWeight: 800,
-              background: tab === t.id ? C.gold : "transparent",
-              color: tab === t.id ? "#0A0A0A" : C.sub, transition: "all .16s",
-            }}
-          >
-            <t.Icon size={14} /> {t.label}
-          </button>
-        ))}
-      </div>
-
-      <div style={{ padding: 18, minHeight: 360 }}>
-        <AnimatePresence mode="wait">
-          {/* ── CEO OVERVIEW ── */}
-          {tab === "ceo" && (
-            <motion.div key="ceo" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10 }}>
-                <StatTile Icon={Users} label="New leads this week" value="18" delta="+22%" accent="#38BDF8" />
-                <StatTile Icon={Calendar} label="Installs booked" value="11" delta="+9%" accent={C.purple} />
-                <StatTile Icon={DollarSign} label="Revenue MTD" value="$61k" delta="+17%" accent={C.green} />
-                <StatTile Icon={Star} label="Google rating" value="4.9" accent={C.gold} />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 12, marginTop: 12 }}>
-                {/* Revenue chart */}
-                <div style={{ border: `1px solid ${C.border}`, borderRadius: 13, background: C.bg2, padding: 16 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                    <span style={{ fontSize: 12.5, fontWeight: 800 }}>Revenue — last 8 weeks</span>
-                    <BarChart3 size={14} color={C.muted} />
-                  </div>
-                  <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 110 }}>
-                    {REVENUE.map((v, i) => (
-                      <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: `${(v / 61) * 100}%` }}
-                          transition={{ duration: 0.6, delay: i * 0.05 }}
-                          style={{ width: "100%", borderRadius: "5px 5px 0 0", background: i === REVENUE.length - 1 ? C.gold : `${C.gold}55` }}
-                        />
-                        <span style={{ fontSize: 8.5, color: C.muted }}>${v}k</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* Marketing snapshot — social included */}
-                <div style={{ border: `1px solid ${C.border}`, borderRadius: 13, background: C.bg2, padding: 16 }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 800, marginBottom: 12, display: "flex", alignItems: "center", gap: 7 }}>
-                    <Megaphone size={14} color={C.gold} /> Social marketing
-                  </div>
-                  {[
-                    { Icon: Share2, label: "Reach this month", value: "34,900" },
-                    { Icon: Heart, label: "Engagements", value: "2,180" },
-                    { Icon: Calendar, label: "Posts scheduled", value: "12" },
-                    { Icon: Users, label: "Leads from social", value: "7" },
-                  ].map((r) => (
-                    <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 9, padding: "7px 0", borderTop: `1px solid ${C.border}` }}>
-                      <r.Icon size={13} color={C.gold} />
-                      <span style={{ fontSize: 11.5, color: C.sub, flex: 1 }}>{r.label}</span>
-                      <span style={{ fontSize: 12.5, fontWeight: 800 }}>{r.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Activity feed */}
-              <div style={{ border: `1px solid ${C.border}`, borderRadius: 13, background: C.bg2, padding: 16, marginTop: 12 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 800, marginBottom: 10, display: "flex", alignItems: "center", gap: 7 }}><Activity size={14} color={C.muted} /> Live activity</div>
-                {[
-                  { Icon: Bell, txt: "New lead — Sarah M. enquired about home tinting", t: "2m ago", c: "#38BDF8" },
-                  { Icon: MessageSquare, txt: "AI assistant booked James T. for a Fusion quote", t: "18m ago", c: C.gold },
-                  { Icon: Star, txt: "New 5★ Google review from Daniel K.", t: "1h ago", c: C.green },
-                  { Icon: Instagram, txt: "Reel published — 1,204 views so far", t: "3h ago", c: "#E1306C" },
-                ].map((a, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: i === 0 ? "none" : `1px solid ${C.border}` }}>
-                    <div style={{ width: 26, height: 26, borderRadius: 7, background: `${a.c}1A`, display: "grid", placeItems: "center", flexShrink: 0 }}><a.Icon size={13} color={a.c} /></div>
-                    <span style={{ fontSize: 12, color: C.sub, flex: 1 }}>{a.txt}</span>
-                    <span style={{ fontSize: 10.5, color: C.muted, whiteSpace: "nowrap" }}>{a.t}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* ── LEAD PIPELINE (GHL-style) ── */}
-          {tab === "pipeline" && (
-            <motion.div key="pipeline" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}>
-              <div style={{ fontSize: 12, color: C.muted, marginBottom: 12, display: "flex", alignItems: "center", gap: 7 }}>
-                <Zap size={13} color={C.gold} /> GoHighLevel CRM · drag-and-drop pipeline, automations fire at every stage
-              </div>
-              <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 6 }}>
-                {PIPELINE.map((col) => (
-                  <div key={col.stage} style={{ minWidth: 168, flex: "1 0 168px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 9 }}>
-                      <span style={{ width: 7, height: 7, borderRadius: 99, background: col.accent }} />
-                      <span style={{ fontSize: 11.5, fontWeight: 800 }}>{col.stage}</span>
-                      <span style={{ fontSize: 10, color: C.muted, marginLeft: "auto" }}>{col.cards.length}</span>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {col.cards.map((c) => (
-                        <motion.div key={c.name} whileHover={{ y: -2, borderColor: col.accent }} style={{ border: `1px solid ${C.border}`, borderRadius: 10, background: C.bg2, padding: 11, cursor: "grab" }}>
-                          <div style={{ fontSize: 12.5, fontWeight: 800 }}>{c.name}</div>
-                          <div style={{ fontSize: 10.5, color: C.muted, marginTop: 3 }}>{c.job}</div>
-                          <div style={{ fontSize: 12, fontWeight: 800, color: col.accent, marginTop: 7 }}>{c.value}</div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* ── SOCIAL MEDIA MARKETING ── */}
-          {tab === "social" && (
-            <motion.div key="social" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}>
-              <div style={{ fontSize: 12, color: C.muted, marginBottom: 12, display: "flex", alignItems: "center", gap: 7 }}>
-                <Megaphone size={13} color={C.gold} /> Content planned, created and scheduled for you — included in the CEO dashboard
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 14 }}>
-                <StatTile Icon={Share2} label="Reach this month" value="34.9k" delta="+28%" accent={C.gold} />
-                <StatTile Icon={Heart} label="Engagements" value="2,180" delta="+14%" accent="#E1306C" />
-                <StatTile Icon={Users} label="Leads from social" value="7" accent="#38BDF8" />
-              </div>
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 9 }}>This week&apos;s content calendar</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {SOCIAL_POSTS.map((p) => (
-                  <div key={p.title} style={{ display: "flex", alignItems: "center", gap: 12, border: `1px solid ${C.border}`, borderRadius: 11, background: C.bg2, padding: "11px 13px" }}>
-                    <div style={{ width: 38, textAlign: "center" }}>
-                      <div style={{ fontSize: 11, fontWeight: 800, color: C.sub }}>{p.day}</div>
-                    </div>
-                    <div style={{ width: 28, height: 28, borderRadius: 8, background: `${p.accent}1F`, display: "grid", placeItems: "center", flexShrink: 0 }}>
-                      {p.plat === "ig" ? <Instagram size={14} color={p.accent} /> : <Facebook size={14} color={p.accent} />}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.title}</div>
-                    </div>
-                    {p.eng !== "—" && (
-                      <span style={{ fontSize: 10.5, color: C.muted, display: "flex", alignItems: "center", gap: 4 }}><Heart size={11} color="#E1306C" /> {p.eng}</span>
-                    )}
-                    <span style={{
-                      fontSize: 9.5, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", padding: "4px 8px", borderRadius: 99, whiteSpace: "nowrap",
-                      color: p.status === "Posted" ? C.green : p.status === "Scheduled" ? C.gold : C.muted,
-                      border: `1px solid ${p.status === "Posted" ? C.green : p.status === "Scheduled" ? C.gold : C.muted}55`,
-                    }}>{p.status}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* ── JOBS & INSTALLS (ServiceM8-style) ── */}
-          {tab === "jobs" && (
-            <motion.div key="jobs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}>
-              <div style={{ fontSize: 12, color: C.muted, marginBottom: 12, display: "flex", alignItems: "center", gap: 7 }}>
-                <Wrench size={13} color={C.gold} /> ServiceM8 · today&apos;s schedule syncs to the CRM automatically
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10, marginBottom: 14 }}>
-                <StatTile Icon={Wrench} label="Jobs today" value="4" accent={C.gold} />
-                <StatTile Icon={CheckCircle2} label="Completed this week" value="19" delta="+6%" accent={C.green} />
-                <StatTile Icon={DollarSign} label="Awaiting payment" value="$3.2k" accent={C.amber} />
-              </div>
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 9 }}>Today&apos;s installs</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {JOBS.map((j) => (
-                  <div key={j.time} style={{ display: "flex", alignItems: "center", gap: 12, border: `1px solid ${C.border}`, borderRadius: 11, background: C.bg2, padding: "11px 13px" }}>
-                    <div style={{ width: 62, fontSize: 11.5, fontWeight: 800, color: C.sub, display: "flex", alignItems: "center", gap: 5 }}><Clock size={12} color={C.muted} /> {j.time}</div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 800 }}>{j.client}</div>
-                      <div style={{ fontSize: 10.5, color: C.muted, marginTop: 2 }}>{j.job}</div>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: C.sub }}>
-                      <div style={{ width: 22, height: 22, borderRadius: 99, background: `${C.gold}22`, display: "grid", placeItems: "center", fontSize: 9.5, fontWeight: 800, color: C.gold }}>{j.tech[0]}</div>
-                      {j.tech}
-                    </div>
-                    <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", padding: "4px 8px", borderRadius: 99, whiteSpace: "nowrap", color: j.color, border: `1px solid ${j.color}55` }}>{j.status}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}
-
 export default function ProgardFilmsPage() {
   const [range, setRange] = useState<"architectural" | "automotive">("architectural");
   const [shade, setShade] = useState("20%");
@@ -790,8 +336,7 @@ export default function ProgardFilmsPage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 22, fontSize: 13, color: C.sub }}>
             <a href="#range" style={{ color: C.sub, textDecoration: "none" }} className="pg-link">The Range</a>
-            <a href="#finder" style={{ color: C.sub, textDecoration: "none" }} className="pg-link">Ask AI</a>
-            <a href="#system" style={{ color: C.sub, textDecoration: "none" }} className="pg-link">The System</a>
+            <a href="#finder" style={{ color: C.sub, textDecoration: "none" }} className="pg-link">Find My Film</a>
             <a href="#why" style={{ color: C.sub, textDecoration: "none" }} className="pg-link">Why Progard</a>
             <a
               href="#contact"
@@ -1164,20 +709,13 @@ export default function ProgardFilmsPage() {
           </div>
         </Section>
 
-        {/* ── AI ADVISOR + FILM FINDER ── */}
+        {/* ── FILM FINDER ── */}
         <Section
           id="finder"
-          eyebrow="Ask Progard AI"
-          title="Not sure which film? Just ask."
-          sub="Chat with the Progard advisor about heat, privacy, security, the law or budget — for your home, office or vehicle — and get a straight recommendation. Or use the quick picks below."
+          eyebrow="Find my film"
+          title="What matters most to you?"
+          sub="Answer one question and we'll point you to the film in the automotive range that fits best."
         >
-          <div style={{ marginBottom: 22 }}>
-            <AiAdvisor />
-          </div>
-
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
-            Or pick what matters most (automotive)
-          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
             {([
               { id: "value" as const, Icon: Sparkles, title: "Everyday value", body: "Premium ceramic performance at the sharpest price." },
@@ -1270,31 +808,6 @@ export default function ProgardFilmsPage() {
           </div>
         </Section>
 
-        {/* ── BUSINESS OPERATING SYSTEM ── */}
-        <Section
-          id="system"
-          eyebrow="Powered by BVN"
-          title="The system behind the brand."
-          sub="Progard doesn't just get a website. It runs on a complete operating system — a CEO dashboard that unifies the CRM, job scheduling and social media marketing, so every lead, install and post lives in one place. Explore it below."
-        >
-          <OpsDashboard />
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, marginTop: 16 }}>
-            {[
-              { Icon: Users, title: "GoHighLevel CRM", body: "Every enquiry captured and moved through the pipeline, with automations firing at each stage — instant replies, quote follow-ups and review requests." },
-              { Icon: Megaphone, title: "Social media marketing", body: "Content planned, created and scheduled across Instagram and Facebook — built into the same dashboard, turning posts into tracked leads." },
-              { Icon: Wrench, title: "ServiceM8 jobs", body: "Installs scheduled, assigned to technicians and synced back to the CRM, so the office always knows what's booked, done and awaiting payment." },
-              { Icon: Bot, title: "AI assistant", body: "The website advisor answers questions and books quotes around the clock, feeding straight into the pipeline as new leads." },
-            ].map((f) => (
-              <div key={f.title} style={{ border: `1px solid ${C.border}`, borderRadius: 13, background: C.card, padding: 20 }}>
-                <f.Icon size={19} color={C.gold} />
-                <div style={{ fontSize: 13.5, fontWeight: 800, marginTop: 11 }}>{f.title}</div>
-                <div style={{ fontSize: 12.5, color: C.muted, marginTop: 6, lineHeight: 1.6 }}>{f.body}</div>
-              </div>
-            ))}
-          </div>
-        </Section>
-
         {/* ── WHY PROGARD ── */}
         <Section
           id="why"
@@ -1375,9 +888,8 @@ export default function ProgardFilmsPage() {
         <div style={{ marginTop: 18, fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
           Specifications shown are taken from the Progard range sheets. TSER = Total Solar Energy
           Rejected, IRR = Infrared Rejection, UVR = UV Rejection. Photography is licensed stock
-          used as placeholder art and does not depict Progard installations. The AI advisor is a
-          demonstration and the CEO dashboard figures are sample data. To be replaced with the
-          client&apos;s own images and live systems. Built by BVN Digital Agency.
+          used as placeholder art and does not depict Progard installations; to be replaced with
+          the client&apos;s own images. Built by BVN Digital Agency.
         </div>
       </div>
 
