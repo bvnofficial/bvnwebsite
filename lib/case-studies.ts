@@ -33,6 +33,88 @@ export const CATEGORY_ACCENT: Record<CaseCategory, string> = {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
+    title: "Window Film Brand Website",
+    industry: "Window Film · Architectural & Automotive",
+    region: "Australia",
+    summary:
+      "A complete brand website covering two product ranges: architectural films across five series, and three automotive ceramic films with full heat, infrared and UV rejection tables. Includes an interactive shade comparison that shows how films differ at identical darkness, a guided film finder, and a tint compliance section.",
+    tags: ["Next.js", "Product Range", "Interactive Compare", "Brand Site"],
+    href: "/clients/progardfilms",
+    category: "Web & Apps",
+    featured: true,
+  },
+  {
+    title: "AI Talent Booking Platform",
+    industry: "Live Entertainment",
+    region: "United States",
+    summary:
+      "An AI-first booking platform for an entertainment company, walked step by step from enquiry and talent matching through availability, proposal generation, contract signing and payment tracking, plus AI agents across sales, operations, production and customer service, and a 90-day rollout plan.",
+    tags: ["AI Agents", "Booking Platform", "Automation", "Stripe"],
+    href: "/clients/tce-entertainment/booking-platform",
+    category: "AI & Automation",
+    featured: true,
+  },
+  {
+    title: "Creator & UGC Operations Platform",
+    industry: "Personal Care · E-Commerce",
+    region: "United States",
+    summary:
+      "An eleven-stage creator partnership pipeline running from discovery and AI scoring through outreach, agreements, fulfilment, content upload, quality approval and auditable commission payment, paired with a branded creator portal offering secure uploads, shipping visibility and commission transparency.",
+    tags: ["Creator Ops", "AI Automation", "Shopify", "Portal"],
+    href: "/clients/alpine-provisions/creator-system",
+    category: "AI & Automation",
+  },
+  {
+    title: "Field Service Operating System",
+    industry: "Electrical, Plumbing & HVAC",
+    region: "Ontario, Canada",
+    summary:
+      "A ServiceM8 operating system for a home service company: job workflows and templates, a flat-rate pricebook with Good/Better/Best structure, warehouse and truck inventory, purchasing from quote to receiving, an integration layer spanning accounting and automation tools, and a weekly owner report with KPIs.",
+    tags: ["ServiceM8", "Pricebook", "Inventory", "KPI Reporting"],
+    href: "/clients/sdr-electric/servicem8-operating-system",
+    category: "Operations",
+  },
+  {
+    title: "Membership Club Command Center",
+    industry: "Sports & Recreation",
+    region: "United States",
+    summary:
+      "A GoHighLevel command center covering the full member lifecycle: lead capture, welcome sequences, trial booking, membership conversion with recurring billing, class and event registration, and retention and win-back campaigns, with A2P 10DLC registration and documented team SOPs.",
+    tags: ["GoHighLevel", "A2P 10DLC", "Memberships", "SOPs"],
+    href: "/clients/pickleball-club/ghl-command-center",
+    category: "CRM & Automation",
+  },
+  {
+    title: "Chauffeur Price Calculator",
+    industry: "Luxury Transport",
+    region: "United States",
+    summary:
+      "A live reservation price calculator built into a chauffeur booking site: interactive vehicle selection, address autocomplete, real driving distance via mapping APIs, and a transparent pricing formula handling base fare, distance, tolls and weekend surcharges, with all rates in one editable block.",
+    tags: ["JavaScript", "Google Maps API", "Custom Code", "Pricing"],
+    href: "/clients/chauffeur-calculator/price-estimator",
+    category: "Web & Apps",
+  },
+  {
+    title: "Meta Pixel & Lead Attribution",
+    industry: "Paid Social · Lead Generation",
+    region: "Remote",
+    summary:
+      "End-to-end Meta Pixel and attribution setup on GoHighLevel: pixel installation and verification across sites and funnels, lead forms wired into the CRM, a full custom and retargeting audience library, verified conversion tracking, and a plain-language handover document.",
+    tags: ["Meta Pixel", "Attribution", "Retargeting", "GoHighLevel"],
+    href: "/clients/meta-tracking/pixel-attribution",
+    category: "Marketing & SEO",
+  },
+  {
+    title: "Development Experience Hub",
+    industry: "Software & Web Development",
+    region: "Selected works",
+    summary:
+      "An interactive walkthrough of real projects and the exact role played in each, spanning a UK property platform built from scratch, an AI job pipeline, a GoHighLevel CRM, an e-commerce storefront, and a payments and credits wallet, alongside the full technology stack behind them.",
+    tags: ["Portfolio", "Full Stack", "Real Projects", "Interactive"],
+    href: "/clients/how-i-build/experience",
+    category: "Web & Apps",
+  },
+  {
     title: "Window Tinting Automation Build",
     industry: "Automotive Services",
     region: "Brisbane, Australia",
