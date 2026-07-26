@@ -12,6 +12,8 @@ const nextConfig = {
       // Moved the Regal Homes client deliverable under /client/.
       { source: "/regal-homes", destination: "/client/regal-homes", permanent: true },
       { source: "/regal-homes/:path*", destination: "/client/regal-homes/:path*", permanent: true },
+      // Convenience: catch the shortened Discovery & Setup link (missing the phone-and-payments segment).
+      { source: "/clients/regal-homes/discovery-setup", destination: "/clients/regal-homes/phone-and-payments/discovery-setup", permanent: false },
     ];
   },
   async headers() {
