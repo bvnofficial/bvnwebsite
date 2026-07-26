@@ -149,7 +149,7 @@
 
   <div class="payband">
     <div class="pcard total"><div class="k">Bundle · Fixed Price</div><div class="v">$2,500 <small>phone + ACH</small></div><div class="when">Billed in 3 milestones via Gusto · saves $500</div></div>
-    <div class="pcard"><div class="k">Milestone 1 · 40%</div><div class="v">$1,000</div><div class="when">Discovery &amp; setup</div></div>
+    <div class="pcard" style="border-color:rgba(52,211,153,0.45)"><div class="k" style="color:var(--green)">Milestone 1 · 40% · Delivered</div><div class="v">$1,000</div><div class="when">Discovery &amp; setup complete · invoice due</div></div>
     <div class="pcard"><div class="k">Milestone 2 · 30%</div><div class="v">$750</div><div class="when">Pilot &amp; build</div></div>
     <div class="pcard"><div class="k">Milestone 3 · 30%</div><div class="v">$750</div><div class="when">Go live &amp; stabilization</div></div>
   </div>
@@ -187,16 +187,17 @@ const LAST_UPDATED = "July 2026";
 
 const SECTIONS = [
   { id:"prereq", title:"Prerequisites — from Regal", items:[
-    ["Two legal entities and their Bank of America account details","active","needed to set up the two Forte merchant accounts"],
-    ["Choice of the first pilot home","active"],
+    ["Choice of the first pilot home","done","Regal Care"],
+    ["List of existing home numbers to port","done","Regal Care, Regal Residence, The Orchard provided"],
+    ["Two legal entities and their Bank of America account details","active","two Forte accounts being created by Regal now"],
     ["Approval of greetings, call flows, and escalation rules per home","todo"],
     ["GHL HIPAA compliance package enabled (for fax)","todo","Regal to add before any medical documents are stored"],
-    ["List of existing home numbers to port","active"],
   ]},
   { id:"phone", title:"Telephone System — Twilio + AI Receptionist", items:[
-    ["Regal owned Twilio account set up — numbers, billing, E911, porting","todo"],
-    ["Primary Regal Homes number provisioned","todo"],
-    ["Existing home numbers ported in","todo"],
+    ["Regal owned Twilio account set up — numbers, billing, E911, porting","active","account creation started by Regal"],
+    ["Voice and website chat built on one shared knowledge base","active","so a typed website assistant can be added later without a rebuild"],
+    ["Pilot number provisioned and existing line forwarded to the AI","todo","forward first, port later — keeps the current number live"],
+    ["Existing home numbers ported in after a successful pilot","todo"],
     ["Central AI answers as Regal Homes and identifies the home or purpose","todo"],
     ["Each home number answered with that home's name","todo"],
     ["Call screening — solicitations filtered out before staff","todo"],
@@ -205,7 +206,7 @@ const SECTIONS = [
     ["Per home routing, escalation, and transfer rules","todo"],
     ["Dedicated house cellphone and softphone app per home","todo"],
     ["Native cellular 911 plus Twilio emergency addresses","todo"],
-    ["Reversible one home pilot","active","Spectrum stays active during the pilot"],
+    ["Reversible pilot at Regal Care","active","Spectrum stays active during the pilot"],
     ["Rollout to remaining homes after a successful pilot","todo"],
   ]},
   { id:"ach", title:"ACH Payments — CSG Forte", items:[
@@ -231,12 +232,12 @@ const SECTIONS = [
 ];
 
 const MILESTONES = [
-  { no:"M1", amount:"$1,000", title:"Discovery & Setup", status:"active",
-    trigger:"Regal owned Twilio and Forte accounts created, the two entities and banks configured, and the architecture confirmed.",
-    covers:["prereq"] },
-  { no:"M2", amount:"$750", title:"Pilot & Build", status:"pending",
-    trigger:"One home phone pilot live and signed off, and the ACH build complete.",
-    covers:["phone","ach"] },
+  { no:"M1", amount:"$1,000", title:"Discovery & Setup", status:"reached", force:100, statusLabel:"Delivered",
+    trigger:"Complete and delivered. The architecture, ownership and account structure, number and call flow design, payment lifecycle, equipment plan, and setup path are documented and confirmed.",
+    link:"discovery-setup", covers:[] },
+  { no:"M2", amount:"$750", title:"Pilot & Build", status:"active",
+    trigger:"Regal Care phone pilot live and signed off, and the ACH build complete. Twilio and the two Forte accounts are being created by Regal now.",
+    covers:["prereq","phone","ach"] },
   { no:"M3", amount:"$750", title:"Go Live & 90 Day Stabilization", status:"pending",
     trigger:"Both systems fully live, with the 90 day stabilization period underway.",
     covers:["stab"] },
@@ -253,7 +254,9 @@ const msEl = document.getElementById("milestones");
 MILESTONES.forEach(m=>{
   let t=0,d=0,a=0; m.covers.forEach(c=>{ const s=secStats(c); t+=s.t; d+=s.d; a+=s.a; });
   const pct = m.force!=null ? m.force : pctOf(d,a,t);
-  const statLabel = {reached:"Reached",active:"In Progress",pending:"Upcoming"}[m.status];
+  const statLabel = m.statusLabel || {reached:"Reached",active:"In Progress",pending:"Upcoming"}[m.status];
+  const linkHtml = m.link ? `<div style="margin-top:10px"><a href="${m.link}" style="font-family:var(--mono);font-size:12px">View the Discovery &amp; Setup deliverable →</a></div>` : "";
+  const footLabel = m.status==="reached" ? "Deliverable complete" : "Build progress for this milestone";
   const el = document.createElement("div");
   el.className = "m "+m.status;
   el.innerHTML = `
@@ -264,8 +267,9 @@ MILESTONES.forEach(m=>{
       <span class="m-amt">${m.amount}</span>
     </div>
     <div class="m-trig">${m.trigger}</div>
+    ${linkHtml}
     <div class="m-bar"><i style="width:${pct}%"></i></div>
-    <div class="m-foot"><span>Build progress for this milestone</span><span><b>${pct}%</b></span></div>`;
+    <div class="m-foot"><span>${footLabel}</span><span><b>${pct}%</b></span></div>`;
   msEl.appendChild(el);
 });
 
