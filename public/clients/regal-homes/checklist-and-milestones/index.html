@@ -29,6 +29,15 @@
   .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--amber2));transition:width .6s ease}
   .ppct{font-family:var(--mono);font-weight:700;color:var(--amber2);font-size:13px;min-width:40px;text-align:right}
 
+  /* tabs */
+  .tabs{display:flex;gap:8px;margin:22px 0 4px;flex-wrap:wrap}
+  .tab{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:11px 18px;border-radius:10px;
+    cursor:pointer;border:1px solid var(--border2);background:var(--panel);color:var(--muted);font-weight:700;transition:.15s}
+  .tab:hover{border-color:var(--amber);color:var(--amber2)}
+  .tab.active{background:var(--amber);color:#0a0e14;border-color:var(--amber)}
+  .project.hidden{display:none}
+  .project header.hero{padding:26px 0 20px}
+
   /* hero */
   header.hero{padding:50px 0 20px}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:14px}
@@ -37,10 +46,13 @@
   .sub{color:var(--muted);font-size:16px;margin-top:12px;max-width:660px}
   .live{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--muted)}
   .dot{width:9px;height:9px;border-radius:99px;background:var(--green);box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:pulse 2s infinite}
+  .dot.amber{background:var(--amber);box-shadow:0 0 0 0 rgba(245,158,11,.6);animation:pulseA 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 7px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+  @keyframes pulseA{0%{box-shadow:0 0 0 0 rgba(245,158,11,.5)}70%{box-shadow:0 0 0 7px rgba(245,158,11,0)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
 
   /* payment band */
   .payband{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:12px;margin:26px 0 6px}
+  .payband.three{grid-template-columns:1.2fr 1fr 1fr}
   .pcard{background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius);padding:16px}
   .pcard.total{background:linear-gradient(135deg,rgba(245,158,11,0.14),rgba(245,158,11,0.03));border-color:rgba(245,158,11,0.35)}
   .pcard .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -76,6 +88,8 @@
   .m.reached .m-bar i{background:linear-gradient(90deg,#10b981,var(--green))}
   .m-foot{display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--dim)}
   .m-foot b{color:var(--amber2)}
+  .m-pay{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--amber2);background:rgba(245,158,11,0.1);
+    border:1px solid rgba(245,158,11,0.28);border-radius:8px;padding:8px 12px}
 
   /* checklist card */
   .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
@@ -111,9 +125,31 @@
   .st.todo{color:var(--dim);background:rgba(100,116,139,0.1)}
   .cards{display:flex;flex-direction:column;gap:12px}
 
+  /* retainer pillars */
+  .pillar{background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px}
+  .pillar.featured{border-color:rgba(245,158,11,0.4);background:linear-gradient(135deg,rgba(245,158,11,0.07),rgba(30,41,59,0.45))}
+  .pillar-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .pillar-h .pi{font-size:20px}
+  .pillar-h h3{font-size:17px;font-weight:800}
+  .pillar-h .badge{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    padding:4px 10px;border-radius:99px;font-weight:700;background:rgba(96,165,250,0.14);color:var(--blue);border:1px solid rgba(96,165,250,0.3)}
+  .pillar-h .badge.amber{background:rgba(245,158,11,0.14);color:var(--amber2);border-color:rgba(245,158,11,0.3)}
+  .pillar-h .badge.green{background:rgba(52,211,153,0.14);color:var(--green);border-color:rgba(52,211,153,0.3)}
+  .pillar > p{color:var(--muted);font-size:14px;margin-top:10px}
+  .pillar .grp{margin-top:16px}
+  .pillar .grp h4{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:9px}
+  .pillar ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .pillar li{position:relative;padding-left:20px;font-size:14px;color:var(--text);line-height:1.5}
+  .pillar li::before{content:"▸";position:absolute;left:0;color:var(--amber);font-size:12px;top:2px}
+  .pillar li b{color:var(--amber2);font-weight:700}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}}
+
   .callout{background:linear-gradient(135deg,rgba(248,113,113,0.1),rgba(248,113,113,0.03));
     border:1px solid rgba(248,113,113,0.3);border-radius:var(--radius);padding:16px 18px;margin-top:18px;font-size:14px}
   .callout b{color:var(--red)}
+  .callout.info{background:linear-gradient(135deg,rgba(96,165,250,0.1),rgba(96,165,250,0.03));border-color:rgba(96,165,250,0.3)}
+  .callout.info b{color:var(--blue)}
 
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
   .btn{font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:9px 16px;border-radius:8px;cursor:pointer;
@@ -128,6 +164,7 @@
 
   @media(max-width:680px){
     .payband{grid-template-columns:1fr 1fr}
+    .payband.three{grid-template-columns:1fr 1fr}
     h1{font-size:27px}
     .m-amt{margin-left:0;width:100%}
     .secbar{display:none}
@@ -138,7 +175,7 @@
 
 <div class="topbar">
   <div class="inner">
-    <span class="label">Overall Build</span>
+    <span class="label" id="globalLabel">Project 1 · CRM Build</span>
     <div class="pbar"><i id="globalBar"></i></div>
     <span class="ppct" id="globalPct">0%</span>
   </div>
@@ -146,56 +183,296 @@
 
 <div class="wrap">
 
-  <header class="hero">
-    <div class="eyebrow">BVN · Client Build Workspace</div>
-    <h1>Regal Care Homes<br><span>Milestones &amp; Live Build Status</span></h1>
-    <p class="sub">Your payment schedule and a real-time view of exactly where the GoHighLevel CRM build stands. This page reflects the current state of the build, updated as work is completed.</p>
-    <div class="live"><span class="dot"></span> Live status · last updated <b id="updated" style="color:var(--text);margin-left:4px"></b></div>
-  </header>
-
-  <!-- Payment band -->
-  <div class="payband">
-    <div class="pcard total"><div class="k">Total · Fixed Price</div><div class="v">$3,000 <small>all-in</small></div><div class="when">Billed in 3 milestones via Gusto</div></div>
-    <div class="pcard"><div class="k">Milestone 1</div><div class="v">$750</div><div class="when">Kickoff</div></div>
-    <div class="pcard"><div class="k">Milestone 2</div><div class="v">$1,000</div><div class="when">Core foundation</div></div>
-    <div class="pcard"><div class="k">Milestone 3</div><div class="v">$1,250</div><div class="when">Final delivery</div></div>
+  <div class="tabs">
+    <button class="tab active" data-target="project1">PROJECT 1 · CRM Build</button>
+    <button class="tab" data-target="project2">PROJECT 2 · AI Chatbot &amp; Automation</button>
+    <button class="tab" data-target="retainer">MARKETING RETAINER · $1,250/mo</button>
   </div>
 
-  <!-- Milestones -->
-  <section>
-    <div class="sec-h"><span class="num">▸</span><h2>Payment Milestones</h2><span class="mini">progress toward each</span></div>
-    <div class="ms" id="milestones"></div>
-  </section>
+  <!-- ============ PROJECT 1 ============ -->
+  <div class="project" id="project1">
 
-  <!-- Live checklist -->
-  <section>
-    <div class="sec-h"><span class="num">▸</span><h2>Live Build Checklist</h2><span class="mini" id="liveCount"></span></div>
-    <div class="cards" id="cards"></div>
-  </section>
+    <header class="hero">
+      <div class="eyebrow">BVN · Client Build Workspace</div>
+      <h1>Regal Care Homes<br><span>Project 1 · Milestones &amp; Live Build Status</span></h1>
+      <p class="sub">Your payment schedule and a real-time view of exactly where the GoHighLevel CRM build stands. This page reflects the current state of the build, updated as work is completed.</p>
+      <div class="live"><span class="dot"></span> Live status · last updated <b class="updated" style="color:var(--text);margin-left:4px"></b></div>
+    </header>
 
-  <div class="callout">
-    <b>On the critical path:</b> A2P 10DLC SMS registration is built out with Regal's legal name + EIN and awaits the standard carrier review (a one-to-three-week external step) before texting switches on. Email is already authenticated and sending; a dedicated branded sending domain is an optional upgrade for later. Calling on (805) 600-2711 works now.
+    <!-- Payment band -->
+    <div class="payband">
+      <div class="pcard total"><div class="k">Total · Fixed Price</div><div class="v">$3,000 <small>all in</small></div><div class="when">$2,500 paid · $500 due · via Gusto</div></div>
+      <div class="pcard"><div class="k">Milestone 1</div><div class="v">$750</div><div class="when">Kickoff · paid</div></div>
+      <div class="pcard"><div class="k">Milestone 2</div><div class="v">$1,000</div><div class="when">Core foundation · paid</div></div>
+      <div class="pcard"><div class="k">Milestone 3</div><div class="v">$1,250</div><div class="when">Final delivery · $500 due</div></div>
+    </div>
+
+    <!-- Milestones -->
+    <section>
+      <div class="sec-h"><span class="num">▸</span><h2>Payment Milestones</h2><span class="mini">progress toward each</span></div>
+      <div class="ms milestones"></div>
+    </section>
+
+    <!-- Live checklist -->
+    <section>
+      <div class="sec-h"><span class="num">▸</span><h2>Live Build Checklist</h2><span class="mini liveCount"></span></div>
+      <div class="cards"></div>
+    </section>
+
+    <div class="callout">
+      <b>On the critical path:</b> A2P 10DLC SMS registration is built out with Regal's legal name + EIN and awaits the standard carrier review (a one-to-three-week external step) before texting switches on. Email is already authenticated and sending; a dedicated branded sending domain is an optional upgrade for later. Calling on (805) 600-2711 works now.
+    </div>
+
+    <div class="actions">
+      <button class="btn primary btn-print">Print / Save PDF</button>
+      <button class="btn btn-expand">Expand all</button>
+      <button class="btn btn-collapse">Collapse all</button>
+    </div>
+
   </div>
 
-  <div class="actions">
-    <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
-    <button class="btn" id="expandAll">Expand all</button>
-    <button class="btn" id="collapseAll">Collapse all</button>
+  <!-- ============ PROJECT 2 ============ -->
+  <div class="project hidden" id="project2">
+
+    <header class="hero">
+      <div class="eyebrow">BVN · Client Build Workspace</div>
+      <h1>Regal Care Homes<br><span>Project 2 · AI Chatbot &amp; Automation</span></h1>
+      <p class="sub">The AI layer that sits on top of your CRM. An AI assistant that answers families instantly, books tours, and works inside the pipelines already built, plus back office automations that qualify and follow up on every inquiry.</p>
+      <div class="live"><span class="dot amber"></span> Proposed scope · awaiting go ahead · prepared <b class="updated" style="color:var(--text);margin-left:4px"></b></div>
+    </header>
+
+    <!-- Payment band -->
+    <div class="payband three">
+      <div class="pcard total"><div class="k">Total · Fixed Price</div><div class="v">$1,500 <small>total</small></div><div class="when">Fixed build · billed in 2 milestones</div></div>
+      <div class="pcard"><div class="k">Milestone 1</div><div class="v">$750</div><div class="when">Kickoff &amp; core build</div></div>
+      <div class="pcard"><div class="k">Milestone 2</div><div class="v">$750</div><div class="when">Launch &amp; handoff</div></div>
+    </div>
+
+    <!-- Milestones -->
+    <section>
+      <div class="sec-h"><span class="num">▸</span><h2>Payment Milestones</h2><span class="mini">progress toward each</span></div>
+      <div class="ms milestones"></div>
+    </section>
+
+    <!-- Live checklist -->
+    <section>
+      <div class="sec-h"><span class="num">▸</span><h2>Build Scope Checklist</h2><span class="mini liveCount"></span></div>
+      <div class="cards"></div>
+    </section>
+
+    <div class="callout info">
+      <b>Ready when you are:</b> this scope begins the moment Project 2 is approved. Everything here plugs directly into the CRM already built in Project 1, so the AI works inside your existing pipelines, tags, and calendars from day one.
+    </div>
+
+    <div class="actions">
+      <button class="btn primary btn-print">Print / Save PDF</button>
+      <button class="btn btn-expand">Expand all</button>
+      <button class="btn btn-collapse">Collapse all</button>
+    </div>
+
+  </div>
+
+  <!-- ============ MARKETING RETAINER ============ -->
+  <div class="project hidden" id="retainer" data-metric="$1,250 / month">
+
+    <header class="hero">
+      <div class="eyebrow">BVN · Client Growth Partnership</div>
+      <h1>Regal Care Homes<br><span>Marketing Retainer</span></h1>
+      <p class="sub">The ongoing growth engine for Regal. Five specialist roles handled by one partner under one flat monthly fee, keeping your website, CRM, search presence, social media, and email all working together to fill rooms.</p>
+      <div class="live"><span class="dot amber"></span> Ongoing monthly partnership · flat fee, no hours to track</div>
+    </header>
+
+    <div class="payband three">
+      <div class="pcard total"><div class="k">Monthly Retainer</div><div class="v">$1,250 <small>/ month</small></div><div class="when">Flat fee · no hours to track</div></div>
+      <div class="pcard"><div class="k">Coverage</div><div class="v" style="font-size:19px">5 services</div><div class="when">Web · CRM · SEO · Social · Email</div></div>
+      <div class="pcard"><div class="k">Billing</div><div class="v" style="font-size:19px">Monthly</div><div class="when">via Gusto</div></div>
+    </div>
+
+    <div class="callout info" style="margin-top:24px">
+      <b>One partner, not five hires.</b> A social media manager, an SEO specialist, a web developer, a CRM manager, and an email marketer would normally be five separate salaries. This retainer rolls all five into one flat fee, and because I built your CRM I already know your system inside out.
+    </div>
+
+    <section>
+      <div class="sec-h"><span class="num">▸</span><h2>What the retainer covers</h2><span class="mini">5 services · flat monthly</span></div>
+
+      <!-- SOCIAL (featured) -->
+      <div class="pillar featured">
+        <div class="pillar-h"><span class="pi">📱</span><h3>Social Media Management</h3><span class="badge amber">Fully managed</span></div>
+        <p>End to end management of Regal's social presence, from planning and design through posting, engagement, and reporting. You approve the plan, I run everything else.</p>
+
+        <div class="grid2">
+          <div class="grp">
+            <h4>Platforms I manage</h4>
+            <ul>
+              <li><b>Facebook</b> — the primary channel for senior care, where adult children research and share</li>
+              <li><b>Instagram</b> — warm visual storytelling of life inside the homes</li>
+              <li><b>Google Business Profile</b> — weekly posts that drive local discovery and map ranking</li>
+              <li>Optional expansion to <b>LinkedIn</b> for referral partners and professional relationships</li>
+            </ul>
+          </div>
+          <div class="grp">
+            <h4>How often</h4>
+            <ul>
+              <li><b>12 to 16 posts a month</b> across Facebook and Instagram, around 3 to 4 a week</li>
+              <li><b>Weekly Google Business Profile posts</b> to keep local search active</li>
+              <li><b>Stories and quick updates</b> layered in around events and milestones</li>
+              <li>A full <b>monthly content calendar</b> planned ahead and sent to you for approval</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grp">
+          <h4>What I post — the content mix</h4>
+          <ul>
+            <li><b>Life at the homes</b> — activities, celebrations, meals, gardens, the day to day warmth</li>
+            <li><b>Resident and family stories</b> — testimonials and spotlights, always with consent</li>
+            <li><b>Staff and caregiver spotlights</b> — the people who make Regal feel like home</li>
+            <li><b>Educational and helpful content</b> — choosing care, memory care, aging well, and caregiver support that positions Regal as the trusted local expert</li>
+            <li><b>Seasonal and holiday posts</b> — timely, human, and on brand</li>
+            <li><b>Awareness moments</b> — Alzheimer's Awareness, National Assisted Living Week, and similar dates</li>
+            <li><b>Room availability announcements</b> — tasteful and HIPAA aware, tied into the CRM vacancy workflow</li>
+          </ul>
+        </div>
+
+        <div class="grid2">
+          <div class="grp">
+            <h4>How each post is produced</h4>
+            <ul>
+              <li>Written in Regal's voice, caring and professional</li>
+              <li>Branded graphics designed for each post</li>
+              <li>Photos from the homes edited and enhanced, with quality stock where needed</li>
+              <li>Scheduled and posted automatically at the best times</li>
+              <li>Every post checked for privacy and consent before it goes out</li>
+            </ul>
+          </div>
+          <div class="grp">
+            <h4>Engagement and community</h4>
+            <ul>
+              <li>Comments and messages monitored and replied to</li>
+              <li>Reviews responded to, the good and the difficult, with care</li>
+              <li>Any inquiry that comes through social pushed straight into your CRM pipeline</li>
+              <li>A steady, responsive presence so families feel heard</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grp">
+          <h4>Reporting</h4>
+          <ul>
+            <li>A <b>monthly performance report</b> covering reach, engagement, follower growth, and top posts</li>
+            <li>Which posts drove real inquiries, tied back to leads in the CRM</li>
+            <li>The plan for the month ahead, so you always know what is coming</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SEO -->
+      <div class="pillar">
+        <div class="pillar-h"><span class="pi">🔍</span><h3>Search Engine Optimization</h3><span class="badge">Local focus</span></div>
+        <p>Getting Regal found by families searching for care in Simi Valley and the surrounding area, on both Google and the new AI search tools.</p>
+        <div class="grid2">
+          <div class="grp"><h4>Local search</h4><ul>
+            <li>Google Business Profile fully optimized for all three homes</li>
+            <li>Local keywords such as assisted living and memory care near Simi Valley</li>
+            <li>Local directory and citation listings kept consistent</li>
+            <li>Review growth strategy to strengthen local ranking</li>
+          </ul></div>
+          <div class="grp"><h4>Website and content</h4><ul>
+            <li>A dedicated page for each home so each ranks on its own</li>
+            <li>On page optimization of titles, headings, and copy</li>
+            <li>Helpful articles that rank in Google and AI search</li>
+            <li>Technical health checks for speed, mobile, and schema</li>
+          </ul></div>
+        </div>
+        <div class="grp"><h4>Reporting</h4><ul>
+          <li>Monthly ranking, traffic, and visibility report with clear next steps</li>
+        </ul></div>
+      </div>
+
+      <!-- WEB -->
+      <div class="pillar">
+        <div class="pillar-h"><span class="pi">💻</span><h3>Web Development &amp; Website Maintenance</h3><span class="badge green">Always current</span></div>
+        <p>Your website kept fast, current, and converting, with new pages and improvements built as Regal grows.</p>
+        <div class="grid2">
+          <div class="grp"><h4>Ongoing work</h4><ul>
+            <li>New pages and sections built as needed</li>
+            <li>Pricing, availability, and photos kept up to date</li>
+            <li>Design and layout improvements to turn visitors into inquiries</li>
+            <li>Inquiry forms wired straight into your CRM</li>
+          </ul></div>
+          <div class="grp"><h4>Maintenance</h4><ul>
+            <li>Speed and performance monitoring</li>
+            <li>Security, backups, and uptime</li>
+            <li>Fixes and updates handled quickly</li>
+            <li>Mobile experience kept smooth</li>
+          </ul></div>
+        </div>
+      </div>
+
+      <!-- CRM -->
+      <div class="pillar">
+        <div class="pillar-h"><span class="pi">⚙️</span><h3>CRM Maintenance</h3><span class="badge">Built by me</span></div>
+        <p>The GoHighLevel system from Project 1 kept healthy, current, and improving month over month.</p>
+        <div class="grid2">
+          <div class="grp"><h4>Keeping it healthy</h4><ul>
+            <li>Pipelines, workflows, and automations monitored</li>
+            <li>Email and SMS deliverability watched, including A2P and calendars</li>
+            <li>Data kept clean, tags and fields tidy</li>
+            <li>Users added or adjusted as your team changes</li>
+          </ul></div>
+          <div class="grp"><h4>Improving it</h4><ul>
+            <li>New workflows and automations as needs evolve</li>
+            <li>Templates and sequences refined from real results</li>
+            <li>Reporting dashboards kept useful for the team</li>
+            <li>A monthly optimization pass</li>
+          </ul></div>
+        </div>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="pillar">
+        <div class="pillar-h"><span class="pi">✉️</span><h3>Email Marketing</h3><span class="badge">Nurture and retain</span></div>
+        <p>Staying in front of families and referral partners with email that builds trust and keeps Regal top of mind.</p>
+        <div class="grid2">
+          <div class="grp"><h4>Campaigns</h4><ul>
+            <li>A monthly newsletter for families and partners</li>
+            <li>Nurture sequences for inquiries not yet ready to move</li>
+            <li>Announcements for vacancies, events, and updates</li>
+            <li>Referral partner outreach</li>
+          </ul></div>
+          <div class="grp"><h4>Behind the scenes</h4><ul>
+            <li>Written and designed in Regal's brand</li>
+            <li>Lists segmented so the right message reaches the right people</li>
+            <li>Sent through your CRM for full tracking</li>
+            <li>Open and click performance reviewed each month</li>
+          </ul></div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="callout info">
+      <b>How it works each month:</b> I plan the month ahead and share it for your approval, run everything day to day, and send you one clear report covering all five services. You get a single point of contact, no hours to track, and a partner who already knows your entire system.
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
+    </div>
+
   </div>
 
   <footer>
     <span class="who">Benjamin Yson</span>
     <span>CRM Strategy &amp; Implementation</span>
-    <span style="margin-left:auto"><a href="mailto:bvn@bvnofficial.com?subject=Regal%20Homes%20CRM">bvn@bvnofficial.com</a></span>
+    <span style="margin-left:auto"><a href="mailto:bvn@bvnofficial.com?subject=Regal%20Homes%20Build">bvn@bvnofficial.com</a></span>
   </footer>
 
 </div>
 
 <script>
-const LAST_UPDATED = "June 26, 2026";
-
+// ===================== PROJECT 1 DATA =====================
 // status: "done" | "active" | "todo"
-const SECTIONS = [
+const SECTIONS_P1 = [
   { id:"prereq", title:"Prerequisites — from Regal", items:[
     ["GoHighLevel account access","done"],
     ["Google Business Profile review links (all 3 homes)","done"],
@@ -260,91 +537,188 @@ const SECTIONS = [
   ]},
 ];
 
-const MILESTONES = [
+const MILESTONES_P1 = [
   { no:"M1", amount:"$750", title:"Kickoff", status:"reached",
     trigger:"Access provided and build work begun. Foundation underway.",
     covers:["prereq","foundation"], force:100 },
   { no:"M2", amount:"$1,000", title:"Core CRM Foundation", status:"reached",
     trigger:"Custom fields, pipelines, and primary workflows built and demonstrated to Regal. Paid.",
     covers:["foundation","pipelines","workflows"], force:100 },
-  { no:"M3", amount:"$1,250", title:"Final Delivery", status:"reached",
-    trigger:"Walkthrough video, all guides, and full handoff delivered to Regal.",
+  { no:"M3", amount:"$1,250", title:"Final Delivery", status:"active", statusLabel:"Balance Due",
+    trigger:"Walkthrough video, all guides, and full handoff delivered to Regal. Build complete.",
+    pay:"$750 received · $500 remaining to close Project 1.",
     covers:["emails","capture","handoff"], force:100 },
 ];
 
-function secStats(id){
-  const s = SECTIONS.find(x=>x.id===id); let t=0,d=0,a=0;
-  s.items.forEach(it=>{ t++; if(it[1]==="done") d++; else if(it[1]==="active") a++; });
-  return {t,d,a};
-}
-function pctOf(d,a,t){ return t?Math.round((d+0.5*a)/t*100):0; }  // in-progress = half credit
+// ===================== PROJECT 2 DATA =====================
+const SECTIONS_P2 = [
+  { id:"p2-discovery", title:"Discovery & Setup — from Regal", items:[
+    ["Confirm the priority use cases for the AI assistant","todo"],
+    ["Access to knowledge sources such as website, FAQs, pricing and homes info","todo"],
+    ["Brand voice and tone guidelines for the AI","todo"],
+    ["Approve escalation rules for when the AI hands off to a human","todo"],
+    ["Confirm channels to deploy such as website chat, SMS and social","todo"],
+  ]},
+  { id:"p2-knowledge", title:"AI Knowledge Base", items:[
+    ["Ingest Regal content across all 3 homes","todo"],
+    ["Structure pricing, availability, services and FAQ answers","todo"],
+    ["Safety guardrails, HIPAA safe with no medical advice","todo"],
+    ["Fallback and 'talk to a person' handling","todo"],
+  ]},
+  { id:"p2-chatbot", title:"AI Chatbot — Conversations", items:[
+    ["Website chat widget with AI on regalcare.org","todo"],
+    ["Lead capture inside chat into the Family Inquiry pipeline","todo"],
+    ["Book a tour or consultation directly from chat","todo"],
+    ["After hours and weekend coverage","todo"],
+    ["AI SMS responder on (805) 600-2711","todo"],
+    ["Live takeover so staff can jump into any chat","todo"],
+  ]},
+  { id:"p2-automation", title:"AI Automation — Back Office", items:[
+    ["Automatically qualify and route inbound inquiries by intent","todo"],
+    ["AI drafted reply suggestions for the team","todo"],
+    ["Automatically summarize every conversation into the contact record","todo"],
+    ["Missed call text back with AI","todo"],
+    ["Smart follow up timing based on family intent","todo"],
+    ["AI personalized review requests","todo"],
+  ]},
+  { id:"p2-integration", title:"Integration with the Existing CRM", items:[
+    ["Wire the AI into existing tags, fields and pipelines","todo"],
+    ["Trigger the existing F1 to F13 workflows from AI outcomes","todo"],
+    ["Calendar booking from the AI into staff calendars","todo"],
+  ]},
+  { id:"p2-qa", title:"Testing & QA", items:[
+    ["Conversation testing across real family scenarios","todo"],
+    ["Guardrail and safety testing","todo"],
+    ["Escalation and live takeover testing","todo"],
+  ]},
+  { id:"p2-handoff", title:"Training & Handoff", items:[
+    ["Staff guide for the AI and live takeover","todo"],
+    ["Tuning based on the first real conversations","todo"],
+    ["Walkthrough video and handoff","todo"],
+  ]},
+];
 
-// ---- render milestones ----
-const msEl = document.getElementById("milestones");
-MILESTONES.forEach(m=>{
-  let t=0,d=0,a=0; m.covers.forEach(c=>{ const s=secStats(c); t+=s.t; d+=s.d; a+=s.a; });
-  const pct = m.force!=null ? m.force : pctOf(d,a,t);
-  const statLabel = {reached:"Reached",active:"In Progress",pending:"Upcoming"}[m.status];
-  const el = document.createElement("div");
-  el.className = "m "+m.status;
-  el.innerHTML = `
-    <div class="m-top">
-      <span class="m-no">${m.no}</span>
-      <span class="m-title">${m.title}</span>
-      <span class="m-stat ${m.status}">${statLabel}</span>
-      <span class="m-amt">${m.amount}</span>
-    </div>
-    <div class="m-trig">${m.trigger}</div>
-    <div class="m-bar"><i style="width:${pct}%"></i></div>
-    <div class="m-foot"><span>Build progress for this milestone</span><span><b>${pct}%</b></span></div>`;
-  msEl.appendChild(el);
-});
+const MILESTONES_P2 = [
+  { no:"M1", amount:"$750", title:"Kickoff & Core Build", status:"pending",
+    trigger:"Discovery approved, AI knowledge base and the chatbot core built and demonstrated to Regal.",
+    covers:["p2-discovery","p2-knowledge","p2-chatbot"] },
+  { no:"M2", amount:"$750", title:"Automation, Launch & Handoff", status:"pending",
+    trigger:"Automations and CRM integration live, tested, and handed off to the team.",
+    covers:["p2-automation","p2-integration","p2-qa","p2-handoff"] },
+];
 
-// ---- render checklist ----
+// ===================== CONFIG =====================
+const CONFIG = {
+  project1:{ lastUpdated:"June 26, 2026", label:"Project 1 · CRM Build", sections:SECTIONS_P1, milestones:MILESTONES_P1 },
+  project2:{ lastUpdated:"July 10, 2026", label:"Project 2 · AI Chatbot & Automation", sections:SECTIONS_P2, milestones:MILESTONES_P2 },
+};
+
 const ICON = {done:"✓", active:"●", todo:""};
 const STLAB = {done:"Done", active:"In progress", todo:"To do"};
-const cardsEl = document.getElementById("cards");
-SECTIONS.forEach(sec=>{
-  const {t,d,a} = secStats(sec.id);
-  const pct = pctOf(d,a,t);
-  const full = d===t ? "full":"";
-  const ringDone = d===t ? "done":"";
-  const open = (d>0 && d<t) ? "open" : (d===0 ? "open":""); // open in-progress + not-started; collapse finished
-  const card = document.createElement("div");
-  card.className = "card "+ (d===t ? "" : "open");
-  const itemsHtml = sec.items.map(it=>{
-    const status = it[1];
-    const note = it[2] ? '<span class="note">'+it[2]+'</span>' : '';
-    return `<div class="item ${status}">
-      <span class="ic ${status}">${ICON[status]}</span>
-      <span class="txt">${it[0]}${note}</span>
-      <span class="st ${status}">${STLAB[status]}</span>
-    </div>`;
-  }).join("");
-  card.innerHTML = `
-    <div class="head">
-      <span class="title">${sec.title}</span>
-      <span class="meta">
-        <span class="secbar ${full}"><i style="width:${pct}%"></i></span>
-        <span class="ring ${ringDone}"><b>${d}</b>/${t}</span>
-        <span class="chev">▸</span>
-      </span>
-    </div>
-    <div class="items">${itemsHtml}</div>`;
-  card.querySelector(".head").addEventListener("click", ()=> card.classList.toggle("open"));
-  cardsEl.appendChild(card);
-});
+const MSLAB = {reached:"Reached", active:"In Progress", pending:"Upcoming"};
+function pctOf(d,a,t){ return t?Math.round((d+0.5*a)/t*100):0; }  // in-progress = half credit
 
-// ---- overall ----
-let T=0,D=0,A=0; SECTIONS.forEach(s=>{ const x=secStats(s.id); T+=x.t; D+=x.d; A+=x.a; });
-const overall = pctOf(D,A,T);
-document.getElementById("globalBar").style.width = overall+"%";
-document.getElementById("globalPct").textContent = overall+"%";
-document.getElementById("liveCount").textContent = D+" done · "+A+" in progress · "+T+" total";
-document.getElementById("updated").textContent = LAST_UPDATED;
+function renderProject(id){
+  const cfg = CONFIG[id];
+  const root = document.getElementById(id);
+  const byId = {}; cfg.sections.forEach(s=>byId[s.id]=s);
+  const secStats = (sid)=>{ const s=byId[sid]; let t=0,d=0,a=0; s.items.forEach(it=>{ t++; if(it[1]==="done") d++; else if(it[1]==="active") a++; }); return {t,d,a}; };
 
-document.getElementById("expandAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
-document.getElementById("collapseAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.remove("open"));
+  // milestones
+  const msEl = root.querySelector(".milestones");
+  cfg.milestones.forEach(m=>{
+    let t=0,d=0,a=0; m.covers.forEach(c=>{ const s=secStats(c); t+=s.t; d+=s.d; a+=s.a; });
+    const pct = m.force!=null ? m.force : pctOf(d,a,t);
+    const el = document.createElement("div");
+    el.className = "m "+m.status;
+    el.innerHTML = `
+      <div class="m-top">
+        <span class="m-no">${m.no}</span>
+        <span class="m-title">${m.title}</span>
+        <span class="m-stat ${m.status}">${m.statusLabel || MSLAB[m.status]}</span>
+        <span class="m-amt">${m.amount}</span>
+      </div>
+      <div class="m-trig">${m.trigger}</div>
+      ${m.pay ? '<div class="m-pay">'+m.pay+'</div>' : ''}
+      <div class="m-bar"><i style="width:${pct}%"></i></div>
+      <div class="m-foot"><span>Build progress for this milestone</span><span><b>${pct}%</b></span></div>`;
+    msEl.appendChild(el);
+  });
+
+  // checklist
+  const cardsEl = root.querySelector(".cards");
+  cfg.sections.forEach(sec=>{
+    const {t,d,a} = secStats(sec.id);
+    const pct = pctOf(d,a,t);
+    const isFull = (d===t && t>0);
+    const full = isFull ? "full" : "";
+    const ringDone = isFull ? "done" : "";
+    const card = document.createElement("div");
+    card.className = "card " + (isFull ? "" : "open"); // finished sections collapse; the rest stay open
+    const itemsHtml = sec.items.map(it=>{
+      const status = it[1];
+      const note = it[2] ? '<span class="note">'+it[2]+'</span>' : '';
+      return `<div class="item ${status}">
+        <span class="ic ${status}">${ICON[status]}</span>
+        <span class="txt">${it[0]}${note}</span>
+        <span class="st ${status}">${STLAB[status]}</span>
+      </div>`;
+    }).join("");
+    card.innerHTML = `
+      <div class="head">
+        <span class="title">${sec.title}</span>
+        <span class="meta">
+          <span class="secbar ${full}"><i style="width:${pct}%"></i></span>
+          <span class="ring ${ringDone}"><b>${d}</b>/${t}</span>
+          <span class="chev">▸</span>
+        </span>
+      </div>
+      <div class="items">${itemsHtml}</div>`;
+    card.querySelector(".head").addEventListener("click", ()=> card.classList.toggle("open"));
+    cardsEl.appendChild(card);
+  });
+
+  // overall for this project
+  let T=0,D=0,A=0; cfg.sections.forEach(s=>{ const x=secStats(s.id); T+=x.t; D+=x.d; A+=x.a; });
+  const overall = pctOf(D,A,T);
+  root.dataset.overall = overall;
+  root.querySelector(".liveCount").textContent = D+" done · "+A+" in progress · "+T+" total";
+  root.querySelector(".updated").textContent = cfg.lastUpdated;
+
+  // per-project actions
+  root.querySelector(".btn-expand").onclick = ()=> root.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
+  root.querySelector(".btn-collapse").onclick = ()=> root.querySelectorAll(".card").forEach(c=>c.classList.remove("open"));
+  root.querySelector(".btn-print").onclick = ()=> window.print();
+}
+
+renderProject("project1");
+renderProject("project2");
+
+// ===================== TABS =====================
+const globalBar = document.getElementById("globalBar");
+const globalPct = document.getElementById("globalPct");
+const globalLabel = document.getElementById("globalLabel");
+const LABELS = {
+  project1:"Project 1 · CRM Build",
+  project2:"Project 2 · AI Chatbot & Automation",
+  retainer:"Marketing Retainer · $1,250 / month",
+};
+function activate(target){
+  document.querySelectorAll(".project").forEach(p=>p.classList.toggle("hidden", p.id!==target));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.target===target));
+  const root = document.getElementById(target);
+  if(root.dataset.metric){
+    globalBar.style.width = "100%";
+    globalPct.textContent = root.dataset.metric;
+  } else {
+    const overall = root.dataset.overall || 0;
+    globalBar.style.width = overall+"%";
+    globalPct.textContent = overall+"%";
+  }
+  globalLabel.textContent = LABELS[target];
+}
+document.querySelectorAll(".tab").forEach(t=> t.addEventListener("click", ()=> activate(t.dataset.target)));
+activate("project1");
 </script>
 </body>
 </html>
