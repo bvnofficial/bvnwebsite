@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Regal Care Homes — Discovery &amp; Setup | Milestone 1 Deliverable | BVN</title>
+<style>
+  :root{
+    --navy:#1F3A5F; --navy2:#2b4d78; --gold:#b8862f; --gold2:#d8a94a;
+    --ink:#2c3440; --muted:#5c6673; --line:#e5e0d5; --paper:#faf8f3; --card:#ffffff;
+    --serif:Georgia,"Times New Roman",serif; --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 26px 90px}
+
+  header.top{border-bottom:3px solid var(--navy);padding:44px 0 22px;margin-bottom:8px}
+  .brand{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px}
+  h1{font-family:var(--serif);font-size:30px;color:var(--navy);line-height:1.2;font-weight:700}
+  .sub{font-family:var(--serif);font-size:19px;color:var(--gold);margin-top:4px;font-style:italic}
+  .meta{margin-top:16px;font-size:13px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
+  .badge{display:inline-block;background:var(--navy);color:#fff;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    font-weight:700;padding:5px 12px;border-radius:99px;margin-top:16px}
+
+  h2{font-family:var(--serif);font-size:21px;color:var(--navy);margin:34px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  h3{font-size:15px;color:var(--navy);margin:18px 0 7px;font-weight:700}
+  p{margin:0 0 12px;font-size:15px}
+  ul{margin:0 0 14px;padding-left:20px}
+  li{margin-bottom:7px;font-size:15px}
+  li b, p b{color:var(--navy)}
+  .lead{font-size:16px;color:var(--muted)}
+
+  .box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:12px 0 16px}
+  .box.navy{background:#f2f5f9;border-color:#d8e0ea}
+  .box.gold{background:#fbf6ea;border-color:#eaddbf}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  .k{font-family:var(--sans);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px}
+  a{color:var(--navy2);font-weight:600}
+
+  .step{display:flex;gap:12px;margin-bottom:10px}
+  .step .n{flex-shrink:0;width:24px;height:24px;border-radius:99px;background:var(--navy);color:#fff;font-size:13px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif)}
+  .step .t{font-size:14.5px}
+
+  table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--navy);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+  td .s{color:var(--muted);font-size:13px}
+
+  .signoff{margin-top:30px;background:#f2f5f9;border:1px solid #d8e0ea;border-radius:10px;padding:20px 22px}
+  .signoff h2{border:none;margin:0 0 8px}
+
+  footer{margin-top:40px;padding-top:18px;border-top:2px solid var(--navy);font-size:13px;color:var(--muted);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  footer b{color:var(--ink)}
+
+  .btn{font-family:var(--sans);font-size:13px;padding:9px 16px;border-radius:8px;cursor:pointer;border:1px solid var(--navy);
+    background:var(--navy);color:#fff;font-weight:600;margin-top:26px}
+  @media print{
+    body{background:#fff}
+    .btn{display:none}
+    .box,.signoff{break-inside:avoid}
+    h2{break-after:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">BVN · Systems Architecture &amp; Implementation</div>
+    <h1>Regal Care Homes</h1>
+    <div class="sub">Phone &amp; Payments System — Discovery &amp; Setup</div>
+    <div class="badge">Milestone 1 Deliverable · Discovery &amp; Setup</div>
+    <div class="meta">
+      <span>Prepared by Benjamin Yson, BVN</span>
+      <span>July 2026</span>
+      <span>Prepared for Don Brodt, Regal Care Homes</span>
+    </div>
+  </header>
+
+  <p class="lead">This document confirms the completed discovery and setup for the combined telephone and ACH payment system. It records the agreed architecture, the account and ownership structure, the number and call flow design, the payment lifecycle design, the equipment plan, and the setup steps. It represents the work for the first milestone and is the reference we build against through the pilot and rollout.</p>
+
+  <h2>1. Confirmed system architecture</h2>
+  <p>Two systems, both owned by Regal and both connected to the existing CRM, working as one.</p>
+
+  <div class="grid">
+    <div class="box navy">
+      <div class="k">Telephone</div>
+      <p style="margin:0;font-size:14px">Every home number and one new primary Regal Homes number are held in a Regal owned Twilio account. Calls route to a single AI receptionist that screens solicitations, takes messages, directs vendors to email, and captures genuine inquiries into the CRM. Real calls transfer to the home, and each home has its own routing and escalation rules.</p>
+    </div>
+    <div class="box gold">
+      <div class="k">ACH Payments</div>
+      <p style="margin:0;font-size:14px">Resident payments run through CSG Forte, with one merchant account per legal entity settling into that entity's own bank. Families enroll through Forte's secure hosted page. Payment status flows into the CRM through an automation layer, while all bank details stay inside Forte and never enter the CRM.</p>
+    </div>
+  </div>
+  <p>Because the CRM was already built by BVN, both systems plug into the existing pipelines, tags, fields, and calendars rather than sitting beside them.</p>
+
+  <h2>2. Ownership and accounts</h2>
+  <p>Every account is created and owned directly by Regal Homes. BVN holds administrative access only, for building and maintenance, never ownership or billing.</p>
+  <table>
+    <tr><th>Account</th><th>Owner</th><th>BVN access</th></tr>
+    <tr><td><b>Twilio</b><div class="s">Phone carrier layer</div></td><td>Regal Homes<div class="s">Regal email, card, emergency and porting credentials</div></td><td>Administrator</td></tr>
+    <tr><td><b>CSG Forte</b><div class="s">Payments, one account per entity</div></td><td>Regal Homes<div class="s">Applied under each entity's EIN, bank, and signer</div></td><td>Authorized user, dashboard and integration credentials</td></tr>
+    <tr><td><b>Bank accounts</b></td><td>Regal Homes</td><td>None</td></tr>
+    <tr><td><b>GoHighLevel CRM</b></td><td>Regal Homes<div class="s">Existing</div></td><td>Administrator</td></tr>
+  </table>
+
+  <h2>3. Telephone design</h2>
+
+  <h3>Number plan</h3>
+  <ul>
+    <li>One primary <b>Regal Homes</b> number becomes the public facing number for the website, advertising, and referrals</li>
+    <li>The existing home numbers are ported into the Regal owned Twilio account and kept for current families, physicians, hospice, vendors, and printed materials</li>
+    <li>The primary number answers as Regal Homes, with the AI identifying the home or purpose; each home number answers with that home's name</li>
+  </ul>
+
+  <h3>Call flow and escalation, per home</h3>
+  <ul>
+    <li><b>Screen:</b> solicitations and robocalls filtered out before any person is involved</li>
+    <li><b>Route:</b> vendors and care providers have a message taken and are pointed to email for routine notices; simple questions become a task in the CRM for the right person</li>
+    <li><b>Capture:</b> genuine prospective resident inquiries are engaged, logged into the Family Inquiry pipeline, and either booked or handed straight to a person</li>
+    <li><b>Escalate:</b> urgent or person specific calls transfer live to a designated line; if no one answers, a priority message and instant text go out. After hours, urgent calls escalate and the rest arrive as a morning summary</li>
+  </ul>
+
+  <h3>Equipment at each home</h3>
+  <p>A dedicated house cellphone is the recommended primary device. It stays at the home, works during an internet outage, dials 911 natively and reliably, and helps with telehealth. A softphone app on it presents the correct home caller ID for outbound business calls. 911 always goes through the phone's native dialer, and each Twilio number's emergency address is registered as a secondary safeguard.</p>
+  <table>
+    <tr><th>Item</th><th>One time</th><th>Monthly</th></tr>
+    <tr><td>Dedicated home smartphone</td><td>$150 to $250</td><td>—</td></tr>
+    <tr><td>Basic cellular plan (native 911, outage resilience)</td><td>—</td><td>$15 to $40</td></tr>
+    <tr><td>Twilio number and minutes</td><td>—</td><td>$1 to $2 plus usage</td></tr>
+    <tr><td>Softphone app</td><td>—</td><td>$0 to $10</td></tr>
+    <tr><td><b>Per home, approximate</b></td><td><b>$150 to $250</b></td><td><b>$20 to $50</b></td></tr>
+  </table>
+  <p class="s" style="font-size:13px;color:var(--muted)">During a Spectrum internet outage, the numbers and the AI keep working because they live in the cloud, transfers still reach the home cellphone over cellular, and native 911 still works. This is the main reason the cellphone is the backbone rather than a VoIP desk phone.</p>
+
+  <h2>4. ACH payment design</h2>
+
+  <h3>Entities, banks, and settlement</h3>
+  <ul>
+    <li>Two Forte merchant accounts, one per legal entity, each settling into that entity's own bank, currently Bank of America</li>
+    <li>The settlement bank is a setting per entity, so banks can change, an entity can be added or replaced, and a home can move between entities, all without rebuilding the integration</li>
+    <li>All authorization and transaction records export cleanly, so a future move of bank or processor is a configuration and export task, not a rebuild</li>
+  </ul>
+
+  <h3>Payment lifecycle handled</h3>
+  <ul>
+    <li>Secure hosted family enrollment and ACH authorization, stored in Forte</li>
+    <li>Recurring monthly drafts, initial deposits, one time charges, and prorated amounts</li>
+    <li>Rate increases and amount changes, with families notified</li>
+    <li>Credits and refunds, suspended or terminated drafts with authorizations retained</li>
+    <li>Failed payments and ACH returns captured with their codes, retry rules, and family notifications</li>
+    <li>Reconciliation by resident, home, and entity, and export of payment and authorization records</li>
+  </ul>
+
+  <h3>Payment status in the CRM</h3>
+  <p>No money or bank data is native to the CRM. Status appears through a custom field, <b>Payment Status</b>, with the values paid, pending, failed, returned, refunded, and canceled, supported by status tags and by workflows that trigger reminders or staff alerts on a failed or returned payment. Family bank information remains entirely inside Forte.</p>
+
+  <h2>5. The pilot</h2>
+  <p>We begin with a reversible pilot at one home while Spectrum stays active. We forward that home's number to the AI, configure its greeting, call flow, and escalation, and test transfers, messages, family inquiries, after hours calls, and rollback. We expand to the remaining numbers only once the pilot performs well, so there is a safe fallback at every step.</p>
+
+  <h2>6. Setup steps</h2>
+  <p>The accounts are created in Regal's name, and BVN is added for access. Guided written steps or a short screen share are available for each.</p>
+  <div class="grid">
+    <div class="box">
+      <div class="k">Twilio</div>
+      <div class="step"><span class="n">1</span><span class="t">Create the account at <a href="https://www.twilio.com/try-twilio">twilio.com/try-twilio</a> under a Regal email and card</span></div>
+      <div class="step"><span class="n">2</span><span class="t">Verify email and phone</span></div>
+      <div class="step"><span class="n">3</span><span class="t">Add BVN as an administrator</span></div>
+      <div class="step"><span class="n">4</span><span class="t">BVN provisions the primary number and begins porting the home numbers</span></div>
+    </div>
+    <div class="box">
+      <div class="k">CSG Forte</div>
+      <div class="step"><span class="n">1</span><span class="t">Start an application per entity at <a href="https://www.forte.net/get-started">forte.net/get-started</a></span></div>
+      <div class="step"><span class="n">2</span><span class="t">Enter each entity's legal name, EIN, bank, and signer</span></div>
+      <div class="step"><span class="n">3</span><span class="t">BVN reviews the full fee schedule with you before you submit</span></div>
+      <div class="step"><span class="n">4</span><span class="t">On approval, add BVN as an authorized user</span></div>
+    </div>
+  </div>
+
+  <h2>7. What is needed from Regal to proceed</h2>
+  <ul>
+    <li>The two legal entities created on Forte, and Twilio created, with BVN added to each</li>
+    <li>The one home to pilot first</li>
+    <li>The list of existing home numbers to port</li>
+    <li>The GHL HIPAA compliance package enabled before any faxed medical documents are stored</li>
+  </ul>
+
+  <div class="signoff">
+    <h2>Milestone 1 · Discovery &amp; Setup</h2>
+    <p style="margin:0 0 10px">This deliverable completes the discovery and setup milestone: the architecture is confirmed, the account and ownership structure is defined, the number, call flow, and escalation design is set, the payment lifecycle and CRM status design is set, the equipment plan is set, and the setup path is ready to execute.</p>
+    <table style="margin:6px 0 0">
+      <tr><th>Milestone</th><th>Share</th><th>Amount</th><th>Status</th></tr>
+      <tr><td>M1 · Discovery &amp; Setup</td><td>40%</td><td><b>$1,000</b></td><td><b style="color:var(--gold)">Delivered</b></td></tr>
+      <tr><td>M2 · Pilot &amp; Build</td><td>30%</td><td>$750</td><td class="s">Next</td></tr>
+      <tr><td>M3 · Go Live &amp; Stabilization</td><td>30%</td><td>$750</td><td class="s">Upcoming</td></tr>
+    </table>
+  </div>
+
+  <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+
+  <footer>
+    <span><b>Benjamin Yson</b> · BVN · bvn@bvnofficial.com</span>
+    <span>Regal Care Homes · Phone &amp; Payments System</span>
+  </footer>
+
+</div>
+</body>
+</html>
