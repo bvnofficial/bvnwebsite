@@ -159,10 +159,21 @@
   <h3>Payment status in the CRM</h3>
   <p>No money or bank data is native to the CRM. Status appears through a custom field, <b>Payment Status</b>, with the values paid, pending, failed, returned, refunded, and canceled, supported by status tags and by workflows that trigger reminders or staff alerts on a failed or returned payment. Family bank information remains entirely inside Forte.</p>
 
-  <h2>5. The pilot</h2>
-  <p>We begin with a reversible pilot at one home while Spectrum stays active. We forward that home's number to the AI, configure its greeting, call flow, and escalation, and test transfers, messages, family inquiries, after hours calls, and rollback. We expand to the remaining numbers only once the pilot performs well, so there is a safe fallback at every step.</p>
+  <h2>5. Built for voice and website chat, one shared brain</h2>
+  <p>The phone AI receptionist and a future typed assistant on the Regal Homes website are designed as two front ends on one system, not two separate builds. Everything below is built once, at the core, so the website chat can be added later without a rebuild.</p>
+  <ul>
+    <li>One business knowledge base: the homes, services, hours, availability, and the answers to the questions families ask most</li>
+    <li>One set of inquiry questions used to qualify a prospective family, whether they call or type</li>
+    <li>The same CRM fields, pipeline, and tags, so a chat lead and a phone lead land in the same place and are worked the same way</li>
+    <li>The same booking logic and calendars</li>
+    <li>The same escalation and handoff rules to a person</li>
+  </ul>
+  <p>When Regal is ready, adding the website assistant becomes a connect and style task on the brain that already exists, not a new project.</p>
 
-  <h2>6. Setup steps</h2>
+  <h2>6. The pilot</h2>
+  <p>We begin with a reversible pilot at <b>Regal Care</b> while Spectrum stays active. Rather than porting the existing number on day one, we provision a fresh Twilio number and forward Regal Care's line to the AI, configure its greeting, call flow, and escalation, and test transfers, messages, family inquiries, after hours calls, and rollback. Porting the real numbers happens only once the pilot performs well, so the existing line stays live and there is a safe fallback at every step.</p>
+
+  <h2>7. Setup steps</h2>
   <p>The accounts are created in Regal's name, and BVN is added for access. Guided written steps or a short screen share are available for each.</p>
   <div class="grid">
     <div class="box">
@@ -181,7 +192,7 @@
     </div>
   </div>
 
-  <h2>7. What is needed from Regal to proceed</h2>
+  <h2>8. What is needed from Regal to proceed</h2>
   <ul>
     <li>The two legal entities created on Forte, and Twilio created, with BVN added to each</li>
     <li>The one home to pilot first</li>
