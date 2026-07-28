@@ -150,7 +150,7 @@
   <div class="payband">
     <div class="pcard total"><div class="k">Bundle · Fixed Price</div><div class="v">$2,500 <small>phone + ACH</small></div><div class="when">Billed in 3 milestones via Gusto · saves $500</div></div>
     <div class="pcard" style="border-color:rgba(52,211,153,0.55);background:linear-gradient(135deg,rgba(52,211,153,0.12),rgba(52,211,153,0.03))"><div class="k" style="color:var(--green)">Milestone 1 · 40% · Paid</div><div class="v" style="color:var(--green)">$1,000</div><div class="when">Discovery &amp; setup complete · paid, thank you</div></div>
-    <div class="pcard" style="border-color:rgba(52,211,153,0.55);background:linear-gradient(135deg,rgba(52,211,153,0.12),rgba(52,211,153,0.03))"><div class="k" style="color:var(--green)">Milestone 2 · 30% · Complete</div><div class="v" style="color:var(--green)">$750</div><div class="when">AI receptionist live &amp; tested</div></div>
+    <div class="pcard" style="border-color:rgba(245,158,11,0.45)"><div class="k" style="color:var(--amber2)">Milestone 2 · 30% · Awaiting your test</div><div class="v">$750</div><div class="when">AI receptionist live · call 805 600 2711 to test</div></div>
     <div class="pcard"><div class="k">Milestone 3 · 30% · Active</div><div class="v">$750</div><div class="when">Go live on real numbers &amp; payments</div></div>
   </div>
 
@@ -196,7 +196,7 @@ const SECTIONS = [
     ["Every call recorded with a consent announcement","done","satisfies California two party consent"],
     ["Emergency guidance — callers told to hang up and dial 911","done"],
     ["Built voice and website chat ready on one shared knowledge base","done","a typed website assistant can be added later without a rebuild"],
-    ["Pilot tested and signed off by Regal","done","Don tested the live call"],
+    ["Ready for Regal to test — call 805 600 2711","active","give it a call to hear it in action"],
   ]},
   { id:"golive", title:"Go Live on Your Real Numbers", items:[
     ["Twilio account upgraded off the free trial","active","needed from Regal to go live on the real lines"],
@@ -234,8 +234,8 @@ const MILESTONES = [
   { no:"M1", amount:"$1,000", title:"Discovery & Setup", status:"reached", force:100, statusLabel:"Paid",
     trigger:"Complete and delivered, and payment received with thanks. The architecture, ownership and account structure, number and call flow design, payment lifecycle, equipment plan, and setup path are documented and confirmed.",
     link:"discovery-setup", covers:[] },
-  { no:"M2", amount:"$750", title:"AI Receptionist Pilot", status:"reached", force:100, statusLabel:"Complete",
-    trigger:"The Regal Care AI receptionist is built, live, and tested by Regal. It answers as Regal Care, screens solicitors, takes messages, captures family inquiries into the CRM, transfers urgent calls to a real person, and records every call with a consent announcement.",
+  { no:"M2", amount:"$750", title:"AI Receptionist Pilot", status:"active", statusLabel:"Awaiting your test",
+    trigger:"The Regal Care AI receptionist is built and live. It answers as Regal Care, screens solicitors, takes messages, captures family inquiries into the CRM, transfers urgent calls to a real person, and records every call with a consent announcement. Give it a call at 805 600 2711 to hear it, and it is ready to sign off.",
     covers:["pilot"] },
   { no:"M3", amount:"$750", title:"Go Live & Payments", status:"active",
     trigger:"The receptionist live on all your real numbers across the homes, the ACH payment system built on Forte, and the 90 day stabilization underway. Waiting on the Twilio upgrade and the two Forte accounts from Regal.",
