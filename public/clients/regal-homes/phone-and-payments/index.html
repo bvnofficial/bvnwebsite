@@ -196,10 +196,11 @@ const SECTIONS = [
     ["Every call recorded with a consent announcement","done","satisfies California two party consent"],
     ["Emergency guidance — callers told to hang up and dial 911","done"],
     ["Built voice and website chat ready on one shared knowledge base","done","a typed website assistant can be added later without a rebuild"],
+    ["Call summaries emailed to your team after every call","active","to info@regalcare.org and Mel, going live"],
     ["Ready for Regal to test — call 805 600 2711","active","give it a call to hear it in action"],
   ]},
   { id:"golive", title:"Go Live on Your Real Numbers", items:[
-    ["Twilio account upgraded off the free trial","active","needed from Regal to go live on the real lines"],
+    ["Twilio confirmed as the carrier for your real lines","done","upgraded and ready for go live"],
     ["Receptionist placed on the real Regal Care line","todo","805 842 1991"],
     ["Regal Residence and The Orchard lines connected","todo","805 210 2154 and 805 241 1555"],
     ["Each home answered with its own name and routing","todo"],
@@ -209,7 +210,7 @@ const SECTIONS = [
     ["Rollout across all homes","todo"],
   ]},
   { id:"ach", title:"ACH Payments — CSG Forte", items:[
-    ["Two Forte accounts created, one per legal entity, with BVN added","active","needed from Regal"],
+    ["Two Forte accounts approved, one per legal entity, with BVN added","active","first account approved; second and BVN access next"],
     ["Full Forte fee schedule reviewed with Regal before submitting","active"],
     ["Bank and entity flexible — change banks or entities without rebuild","todo"],
     ["Secure hosted family enrollment and ACH authorization","todo"],
@@ -238,7 +239,7 @@ const MILESTONES = [
     trigger:"The Regal Care AI receptionist is built and live. It answers as Regal Care, screens solicitors, takes messages, captures family inquiries into the CRM, transfers urgent calls to a real person, and records every call with a consent announcement. Give it a call at 805 600 2711 to hear it, and it is ready to sign off.",
     covers:["pilot"] },
   { no:"M3", amount:"$750", title:"Go Live & Payments", status:"active",
-    trigger:"The receptionist live on all your real numbers across the homes, the ACH payment system built on Forte, and the 90 day stabilization underway. Waiting on the Twilio upgrade and the two Forte accounts from Regal.",
+    trigger:"The receptionist live on all your real numbers across the homes, the ACH payment system built on Forte, and the 90 day stabilization underway. Twilio is upgraded and ready, and the first Forte account is approved. Next we port the numbers and finish the second Forte account.",
     covers:["golive","ach","stab"] },
 ];
 
