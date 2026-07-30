@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Circle, Boxes, Plug, RefreshCw,
   MessageSquare, Megaphone, LayoutDashboard, Rocket, Trophy, PhoneCall,
-  Clock, ShieldCheck, Database, Sparkles, Flag,
+  Clock, ShieldCheck, Database, Sparkles, Flag, Wallet,
 } from "lucide-react";
 
 /* ── Clean light palette ─────────────────────────────────────── */
@@ -111,6 +111,29 @@ const MILESTONES: Milestone[] = [
 ];
 
 const ALL_TASKS = MILESTONES.reduce((n, m) => n + m.tasks.length, 0);
+
+/* ── Investment (milestone based, 40 / 30 / 30) ──────────────── */
+const TOTAL = 2700;
+const PAYMENTS = [
+  {
+    pct: 40,
+    amount: 1080,
+    when: "To begin",
+    covers: "Milestones 1 and 2: the GoHighLevel foundation and the Pod Play integration.",
+  },
+  {
+    pct: 30,
+    amount: 810,
+    when: "At the halfway point",
+    covers: "Milestones 3 and 4: communication, automation, and the full marketing engine.",
+  },
+  {
+    pct: 30,
+    amount: 810,
+    when: "On launch",
+    covers: "Milestone 5: the central dashboard, team training, testing, and go live.",
+  },
+];
 
 /* ── Split: who does what ────────────────────────────────────── */
 const PODPLAY = [
@@ -286,6 +309,57 @@ export default function PickleballProposal() {
             </motion.section>
           );
         })}
+
+        {/* Investment */}
+        <motion.section
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+          style={{ marginTop: 44 }}
+        >
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: C.green }}>Investment</div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, margin: "8px 0 6px", letterSpacing: -0.4 }}>Milestone based, 40 / 30 / 30</h2>
+          <p style={{ fontSize: 14.5, color: C.sub, lineHeight: 1.58, margin: 0, maxWidth: 720 }}>
+            One flat build, paid across three milestone payments so you only pay as value is delivered and you are never
+            out of pocket ahead of the work.
+          </p>
+
+          {/* total banner */}
+          <div style={{ marginTop: 18, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, background: C.ink, color: "#fff", borderRadius: 16, padding: "20px 24px" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 11 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 11, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.1)", color: "#6EE7B7" }}>
+                <Wallet size={20} />
+              </div>
+              <div>
+                <div style={{ fontSize: 12.5, color: "#A9B4C6", fontWeight: 600 }}>Total project investment</div>
+                <div style={{ fontSize: 13, color: "#CBD5E1" }}>One time build, all five milestones</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 34, fontWeight: 800, letterSpacing: -0.5 }}>
+              ${TOTAL.toLocaleString()}<span style={{ fontSize: 15, fontWeight: 700, color: "#A9B4C6" }}> USD</span>
+            </div>
+          </div>
+
+          {/* payment cards */}
+          <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+            {PAYMENTS.map((p, i) => (
+              <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderTop: `3px solid ${C.green}`, borderRadius: 14, padding: "18px 18px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+                  <span style={{ fontSize: 30, fontWeight: 800, color: C.green, letterSpacing: -0.5 }}>{p.pct}%</span>
+                  <span style={{ fontSize: 17, fontWeight: 800, color: C.ink }}>${p.amount.toLocaleString()}</span>
+                </div>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 800, color: C.ink, background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 999, padding: "4px 10px", margin: "10px 0 10px" }}>
+                  <Flag size={12} color={C.green} /> Payment {i + 1} · {p.when}
+                </div>
+                <p style={{ fontSize: 13, color: C.sub, lineHeight: 1.5, margin: 0 }}>{p.covers}</p>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 12.5, color: C.muted, marginTop: 12 }}>
+            Software subscriptions (GoHighLevel and Pod Play) are billed directly to the club and are separate from this build fee.
+          </p>
+        </motion.section>
 
         {/* What you get */}
         <motion.div
