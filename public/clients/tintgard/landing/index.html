@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>TintGard — Free Window Tint Quote | Brisbane Car, Home &amp; Office Tinting</title>
+<meta name="description" content="Brisbane's trusted window tinting since 1999. Block 99% of UV, cut heat and glare, add privacy. Lifetime warranty. Car tint from $295, home from $399. Get your free quote in 60 seconds." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --red:#e11d2a; --red2:#ff3340; --red3:#b3121d; --red-soft:rgba(225,29,42,.14);
+    --bg:#0b0d11; --bg2:#10131a; --bg3:#070809;
+    --card:#161a22; --card2:#1c2129;
+    --text:#eef1f6; --muted:#99a2b2; --muted2:#727c8c;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --green:#2ec16b; --gold:#ffb400;
+    --shadow:0 30px 70px -30px rgba(0,0,0,.8);
+    --radius:18px; --radius-sm:12px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.6;font-size:17px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{font-family:var(--disp);font-weight:700;line-height:1.08;letter-spacing:-.02em;color:#fff}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+  .eyebrow{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red2)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-family:var(--sans);font-weight:700;font-size:16px;
+    padding:15px 28px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:.2s ease;white-space:nowrap}
+  .btn-red{background:var(--red);color:#fff;box-shadow:0 14px 30px -12px rgba(225,29,42,.8)}
+  .btn-red:hover{background:var(--red2);transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+  /* top bar */
+  header.bar{position:sticky;top:0;z-index:100;background:rgba(8,10,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header.bar .in{display:flex;align-items:center;gap:16px;max-width:1180px;margin:0 auto;padding:12px 22px}
+  header.bar .logo{height:30px;width:auto;margin-right:auto}
+  header.bar .ph{font-family:var(--disp);font-weight:700;font-size:16px;color:#fff;display:flex;align-items:center;gap:8px}
+  header.bar .ph span{color:var(--red2)}
+  @media(max-width:640px){header.bar .ph .lbl{display:none}}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    linear-gradient(100deg,var(--bg) 30%,rgba(11,13,17,.72) 55%,rgba(11,13,17,.4) 100%),
+    url('../website/img/hero-1.jpg') center right/cover no-repeat;z-index:0}
+  .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding-top:56px;padding-bottom:56px}
+  .hero .badges{display:inline-flex;align-items:center;gap:10px;background:rgba(0,0,0,.4);border:1px solid var(--line2);border-radius:99px;padding:8px 15px;font-size:13px;font-weight:600;margin-bottom:20px}
+  .hero .badges .stars{color:var(--gold);letter-spacing:1px}
+  .hero .badges b{color:var(--red2)}
+  .hero .badges .sep{color:var(--muted2)}
+  .hero h1{font-size:clamp(34px,5.4vw,56px)}
+  .hero h1 .r{color:var(--red2)}
+  .hero .sub{color:#d3d8e2;font-size:18px;margin:20px 0 26px;max-width:560px}
+  .hero .ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .hero .ticks{display:flex;gap:20px;flex-wrap:wrap;margin-top:26px}
+  .hero .ticks div{display:flex;align-items:center;gap:8px;font-size:14px;color:#cdd3de;font-weight:600}
+  .hero .ticks .c{width:20px;height:20px;border-radius:50%;background:var(--red-soft);color:var(--red2);display:grid;place-items:center;font-size:12px;flex:none}
+
+  /* lead form */
+  .lead{background:linear-gradient(165deg,var(--card2),var(--card));border:1px solid var(--line2);border-radius:20px;padding:26px 24px;box-shadow:var(--shadow)}
+  .lead .fh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .lead h3{font-size:22px}
+  .lead .free{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:rgba(46,193,107,.13);border:1px solid rgba(46,193,107,.35);padding:5px 11px;border-radius:99px}
+  .lead .lsub{color:var(--muted);font-size:13.5px;margin:2px 0 18px}
+  .lead .fld{margin-bottom:13px}
+  .lead label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .lead label .req{color:var(--red2)}
+  .lead input,.lead textarea{width:100%;background:var(--bg2);border:1.5px solid var(--line2);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:15px;padding:12px 14px;transition:.18s}
+  .lead input::placeholder,.lead textarea::placeholder{color:var(--muted2)}
+  .lead input:focus,.lead textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+  .lead textarea{resize:vertical;min-height:66px}
+  .lead .err{border-color:var(--red2)!important;box-shadow:0 0 0 3px rgba(255,51,64,.15)!important}
+  .svc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .svc button{background:var(--bg2);border:1.5px solid var(--line2);border-radius:12px;padding:13px 6px 11px;cursor:pointer;transition:.18s;text-align:center;font-family:var(--sans)}
+  .svc button .ei{font-size:22px;display:block;margin-bottom:5px;line-height:1}
+  .svc button .en{font-size:12.5px;font-weight:700;color:var(--text);display:block}
+  .svc button:hover{border-color:var(--red3);transform:translateY(-2px)}
+  .svc button.on{border-color:var(--red);background:var(--red-soft)}
+  .svc button.on .en{color:var(--red2)}
+  .lead-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .lead .btn{width:100%;justify-content:center;margin-top:4px}
+  .lead .fine{text-align:center;color:var(--muted2);font-size:11.5px;margin-top:11px}
+  .lead-ok{text-align:center;padding:22px 8px 6px;animation:okin .4s ease}
+  @keyframes okin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .lead-ok .chk{width:62px;height:62px;border-radius:50%;background:var(--red-soft);border:2px solid var(--red);color:var(--red2);display:grid;place-items:center;font-size:30px;margin:0 auto 15px}
+  .lead-ok h3{font-size:23px;margin-bottom:7px}
+  .lead-ok p{color:var(--muted);font-size:14.5px}
+  .lead-ok .rc{background:var(--bg2);border:1px solid var(--line2);border-left:3px solid var(--red);border-radius:10px;padding:13px 15px;margin-top:16px;text-align:left;font-size:13px;color:var(--muted);line-height:1.55}
+  .lead-ok .rc b{color:var(--red2)}
+
+  /* trust strip */
+  .strip{background:var(--bg3);border-bottom:1px solid var(--line)}
+  .strip .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:26px 22px}
+  .stat .n{font-family:var(--disp);font-size:30px;font-weight:700;color:#fff}
+  .stat .n .u{color:var(--red2)}
+  .stat .l{color:var(--muted);font-size:13.5px;margin-top:2px}
+
+  /* sections */
+  section{padding:64px 0}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 40px}
+  .sec-head h2{font-size:clamp(26px,3.6vw,38px);margin-top:10px}
+  .sec-head p{color:var(--muted);font-size:16.5px;margin-top:12px}
+
+  .benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .ben{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;transition:.2s}
+  .ben:hover{border-color:var(--line2);transform:translateY(-4px)}
+  .ben .ic{width:50px;height:50px;border-radius:13px;background:var(--red-soft);color:var(--red2);display:grid;place-items:center;font-size:24px;margin-bottom:15px}
+  .ben h3{font-size:18px}
+  .ben p{color:var(--muted);font-size:14px;margin-top:7px}
+
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .svcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.2s;position:relative}
+  .svcard:hover{border-color:var(--line2);transform:translateY(-4px)}
+  .svcard .img{height:170px;background-size:cover;background-position:center;position:relative}
+  .svcard .img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(22,26,34,1),transparent 60%)}
+  .svcard .body{padding:20px 22px 24px}
+  .svcard .price{font-family:var(--disp);color:var(--red2);font-weight:700;font-size:14px;letter-spacing:.02em;margin-bottom:6px}
+  .svcard h3{font-size:21px}
+  .svcard p{color:var(--muted);font-size:14px;margin:8px 0 14px}
+  .svcard a{font-family:var(--sans);font-size:13.5px;font-weight:700;color:var(--red2)}
+
+  .films{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .film{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px}
+  .film .nm{font-family:var(--disp);font-weight:700;font-size:16px;color:#fff;letter-spacing:.04em}
+  .film p{color:var(--muted);font-size:13px;margin-top:7px}
+
+  /* proof / reviews */
+  .proof{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .revs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rev{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .rev .stars{color:var(--gold);font-size:15px;letter-spacing:2px}
+  .rev p{font-size:14.5px;color:#dce0e8;margin:12px 0 14px;line-height:1.6}
+  .rev .who{font-weight:700;font-size:14px}
+  .rev .who span{display:block;color:var(--muted2);font-weight:500;font-size:12.5px;margin-top:2px}
+  .gbadge{display:inline-flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line2);border-radius:99px;padding:10px 20px;font-size:14px;font-weight:600}
+  .gbadge b{font-size:18px}.gbadge .stars{color:var(--gold);letter-spacing:1px}
+
+  /* final cta */
+  .final{background:linear-gradient(120deg,var(--red3),var(--red));text-align:center;padding:66px 0}
+  .final h2{color:#fff;font-size:clamp(28px,4vw,42px)}
+  .final p{color:rgba(255,255,255,.9);font-size:18px;margin:14px 0 26px}
+  .final .btn-white{background:#fff;color:var(--red3)}
+  .final .btn-white:hover{transform:translateY(-2px);background:#f2f2f2}
+  .final .or{color:rgba(255,255,255,.85);font-size:15px;margin-top:16px;font-weight:600}
+  .final .or a{color:#fff;text-decoration:underline}
+
+  footer{background:var(--bg3);padding:44px 0 30px;border-top:1px solid var(--line)}
+  footer .grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px}
+  footer .logo{height:34px;margin-bottom:14px}
+  footer p{color:var(--muted);font-size:14px}
+  footer h4{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:12px}
+  footer a{display:block;color:var(--muted);font-size:14px;margin-bottom:8px}
+  footer a:hover{color:var(--red2)}
+  footer .foot-b{border-top:1px solid var(--line);margin-top:30px;padding-top:18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--muted2)}
+
+  @media(max-width:920px){
+    .hero .wrap{grid-template-columns:1fr;gap:34px;padding-top:40px}
+    .hero::before{background:linear-gradient(180deg,rgba(11,13,17,.78),rgba(11,13,17,.92)),url('../website/img/hero-1.jpg') center/cover}
+    .strip .wrap{grid-template-columns:1fr 1fr;gap:22px}
+    .benefits,.services,.films,.revs{grid-template-columns:1fr 1fr}
+    footer .grid{grid-template-columns:1fr}
+  }
+  @media(max-width:560px){
+    .benefits,.services,.films,.revs,.svc,.lead-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="in">
+    <img class="logo" src="../website/img/logo.png" alt="TintGard" />
+    <a class="ph" href="tel:0731331969"><span>📞</span> <span class="lbl" style="color:#fff">07 3133 1969</span></a>
+    <a class="btn btn-red" href="#quote" style="padding:11px 20px;font-size:14px">Free Quote</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="badges"><span class="stars">★★★★★</span> <b>4.7/5</b> <span class="sep">·</span> 331 Google reviews <span class="sep">·</span> Since 1999</div>
+      <h1>Beat the Queensland heat with Brisbane's <span class="r">trusted window tint.</span></h1>
+      <p class="sub">Premium automotive, home and commercial window film that blocks 99% of UV, slashes heat and glare, and adds lasting privacy. Every job backed by a lifetime warranty.</p>
+      <div class="ctas">
+        <a class="btn btn-red" href="#quote">Get my free quote →</a>
+        <a class="btn btn-ghost" href="tel:0731331969">Call 07 3133 1969</a>
+      </div>
+      <div class="ticks">
+        <div><span class="c">✓</span> 25+ years experience</div>
+        <div><span class="c">✓</span> Lifetime warranty</div>
+        <div><span class="c">✓</span> Mobile service Brisbane-wide</div>
+      </div>
+    </div>
+
+    <!-- LEAD FORM -->
+    <div id="quote">
+      <form class="lead" id="leadForm" novalidate>
+        <div class="fh"><h3>Get your free quote</h3><span class="free">60 seconds</span></div>
+        <p class="lsub">Tell us what you need and we'll get back to you fast, usually within the hour.</p>
+
+        <div class="fld">
+          <label>What are we tinting? <span class="req">*</span></label>
+          <div class="svc" id="svcPick">
+            <button type="button" data-svc="Automotive" class="on"><span class="ei">🚗</span><span class="en">Automotive</span></button>
+            <button type="button" data-svc="Residential"><span class="ei">🏠</span><span class="en">Home</span></button>
+            <button type="button" data-svc="Commercial"><span class="ei">🏢</span><span class="en">Commercial</span></button>
+          </div>
+        </div>
+
+        <div class="lead-row">
+          <div class="fld"><label>Name <span class="req">*</span></label><input id="lfName" type="text" placeholder="Your name" autocomplete="name"></div>
+          <div class="fld"><label>Phone <span class="req">*</span></label><input id="lfPhone" type="tel" placeholder="04xx xxx xxx" autocomplete="tel"></div>
+        </div>
+        <div class="lead-row">
+          <div class="fld"><label>Email</label><input id="lfEmail" type="email" placeholder="you@email.com" autocomplete="email"></div>
+          <div class="fld"><label>Suburb</label><input id="lfSuburb" type="text" placeholder="e.g. Springfield"></div>
+        </div>
+        <div class="fld"><label id="detailLabel">Vehicle make &amp; model</label><input id="lfDetail" type="text" placeholder="e.g. Toyota HiLux"></div>
+
+        <button type="submit" class="btn btn-red">Send my enquiry →</button>
+        <p class="fine">No obligation. Your details go straight to the TintGard team.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="strip">
+  <div class="wrap">
+    <div class="stat"><div class="n">25<span class="u">+</span></div><div class="l">Years of experience</div></div>
+    <div class="stat"><div class="n">99<span class="u">%</span></div><div class="l">UV rays blocked</div></div>
+    <div class="stat"><div class="n">4.7<span class="u">★</span></div><div class="l">From 331 Google reviews</div></div>
+    <div class="stat"><div class="n">Lifetime</div><div class="l">Warranty on every job</div></div>
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Why tint with TintGard</span><h2>Cooler, safer and more private, from day one.</h2><p>Quality film does far more than darken your glass. Here is what you actually feel.</p></div>
+    <div class="benefits">
+      <div class="ben"><div class="ic">🌡️</div><h3>Beat the heat</h3><p>Reject solar heat and glare so your car and rooms stay comfortable through a Queensland summer.</p></div>
+      <div class="ben"><div class="ic">🛡️</div><h3>Protect your health</h3><p>Block over 99% of harmful UV to protect your skin and stop interiors, floors and furniture from fading.</p></div>
+      <div class="ben"><div class="ic">🔒</div><h3>Privacy &amp; security</h3><p>Keep prying eyes out and hold shattered glass together, adding a real layer of everyday security.</p></div>
+      <div class="ben"><div class="ic">✨</div><h3>Style &amp; value</h3><p>A clean, professional finish that looks sharp and helps protect your vehicle and property value.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">What we tint</span><h2>One team for car, home and commercial.</h2></div>
+    <div class="services">
+      <div class="svcard">
+        <div class="img" style="background-image:url('../website/img/hero-1.jpg')"></div>
+        <div class="body"><div class="price">From $295</div><h3>Automotive</h3><p>Cars, 4WDs, utes and vans. Premium film in every legal shade, fitted by hand for a bubble-free finish.</p><a href="#quote">Get a car quote →</a></div>
+      </div>
+      <div class="svcard">
+        <div class="img" style="background-image:url('../website/img/house.jpg')"></div>
+        <div class="body"><div class="price">From $399</div><h3>Residential</h3><p>Keep your home cooler and more private. Free in-home measure and quote right across Brisbane.</p><a href="#quote">Get a home quote →</a></div>
+      </div>
+      <div class="svcard">
+        <div class="img" style="background-image:url('../website/img/office.jpg')"></div>
+        <div class="body"><div class="price">Custom quote</div><h3>Commercial</h3><p>Offices, shopfronts and warehouses. Solar, frosting, decorative and safety films. WFAANZ certified.</p><a href="#quote">Get a site visit →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILMS -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Our film range</span><h2>The right film for the job.</h2><p>We fit trusted, warranty-backed films to match your budget and your goals.</p></div>
+    <div class="films">
+      <div class="film"><div class="nm">X FACTOR</div><p>Budget-friendly and still blocks harmful UV. A smart entry-level choice.</p></div>
+      <div class="film"><div class="nm">FUSION</div><p>Signal-friendly film that won't interfere with your phone, GPS or toll tag.</p></div>
+      <div class="film"><div class="nm">COOLSHADES</div><p>Our best UV and heat performance for maximum comfort.</p></div>
+      <div class="film"><div class="nm">NIGHT RIDER</div><p>The darkest legal tint available, offered in three legal levels.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="proof">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Trusted across Brisbane</span><h2>Locals love the difference.</h2><div style="margin-top:16px"><span class="gbadge"><span class="stars">★★★★★</span> <b>4.7</b> · 331 Google reviews</span></div></div>
+    <div class="revs">
+      <div class="rev"><div class="stars">★★★★★</div><p>"Had my 4WD done and the difference is night and day. The car stays so much cooler in the Brisbane sun. Clean, bubble-free job and a friendly crew."</p><div class="who">Mark T.<span>Car tint · Springfield</span></div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>"TintGard tinted the western-facing windows of our home and the lounge is finally usable in the afternoon. Professional from quote to finish."</p><div class="who">Sarah L.<span>Home tint · Ipswich</span></div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>"Booked online, got a quick quote, and they came to me. Twenty-plus years of experience really shows in the finish. Worth every dollar."</p><div class="who">Daniel R.<span>Office tint · Brisbane CBD</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="wrap">
+    <h2>Ready to feel the difference?</h2>
+    <p>Get your free, no-obligation quote today. Most enquiries hear back within the hour.</p>
+    <a class="btn btn-white" href="#quote">Get my free quote →</a>
+    <div class="or">or call us on <a href="tel:0731331969">07 3133 1969</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <img class="logo" src="../website/img/logo.png" alt="TintGard" />
+        <p>Brisbane's trusted window tinting specialists since 1999. Car, home, office and commercial film, all backed by a lifetime warranty.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="tel:0731331969">07 3133 1969</a>
+        <a href="tel:0431320770">Mobile 0431 320 770</a>
+        <a href="mailto:info@tintgard.com.au">info@tintgard.com.au</a>
+        <a href="#">8 Success Circuit, Augustine Heights QLD 4300</a>
+      </div>
+      <div>
+        <h4>Hours</h4>
+        <a href="#" style="cursor:default">Mon – Fri · 8:00 AM – 4:00 PM</a>
+        <a href="#" style="cursor:default">Saturday · 9:00 AM – 1:00 PM</a>
+        <a href="#" style="cursor:default">Sunday · Closed</a>
+        <a href="https://www.facebook.com/tintgard/" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://www.instagram.com/tintgard/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-b"><span>© TintGard — Window Tinting Specialists, Brisbane</span><span>Serving Brisbane, Ipswich, Logan &amp; the Gold Coast</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var leadForm = document.getElementById("leadForm");
+  var svcState = "Automotive";
+  var detailByType = {
+    Automotive:  ["Vehicle make & model", "e.g. Toyota HiLux"],
+    Commercial:  ["Business type", "e.g. cafe, office, warehouse"],
+    Residential: ["Property type", "e.g. house, apartment, townhouse"]
+  };
+  function setService(type){
+    if(!detailByType[type]) return;
+    svcState = type;
+    document.querySelectorAll("#svcPick button").forEach(function(b){ b.classList.toggle("on", b.dataset.svc===type); });
+    var dl=document.getElementById("detailLabel"), di=document.getElementById("lfDetail");
+    if(dl&&di){ dl.textContent=detailByType[type][0]; di.placeholder=detailByType[type][1]; }
+  }
+  document.getElementById("svcPick").addEventListener("click", function(e){
+    var b=e.target.closest("button[data-svc]"); if(b) setService(b.dataset.svc);
+  });
+
+  function leadSuccess(who, svc){
+    leadForm.innerHTML =
+      '<div class="lead-ok"><div class="chk">&#10003;</div>'+
+      '<h3>Thanks, '+who+'!</h3>'+
+      '<p>Your '+svc.toLowerCase()+' enquiry is in. We\'ll be in touch shortly.</p>'+
+      '<div class="rc">Keep an eye on your inbox and phone. A member of the <b>TintGard</b> team will get back to you with your quote, usually within the hour during business hours.</div></div>';
+  }
+
+  leadForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    var name=document.getElementById("lfName"), phone=document.getElementById("lfPhone"), ok=true;
+    [name,phone].forEach(function(f){ if(!f.value.trim()){f.classList.add("err");ok=false;} else f.classList.remove("err"); });
+    if(!ok){ (name.value.trim()?phone:name).focus(); return; }
+    var who=name.value.trim().split(/\s+/)[0].replace(/[<>&]/g,"");
+    var svc=svcState;
+    var payload={ service:svc, name:name.value.trim(), phone:phone.value.trim(),
+      email:(document.getElementById("lfEmail").value||"").trim(),
+      suburb:(document.getElementById("lfSuburb").value||"").trim(),
+      detail:(document.getElementById("lfDetail").value||"").trim(), message:"" };
+    var btn=leadForm.querySelector('button[type="submit"]');
+    if(btn){ btn.disabled=true; btn.textContent="Sending..."; }
+    fetch("/api/tintgard-lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
+      .catch(function(){})
+      .finally(function(){ leadSuccess(who,svc); });
+  });
+})();
+</script>
+</body>
+</html>
