@@ -71,6 +71,21 @@
   .confirm-msg strong{font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.03em; display:block; margin-bottom:6px; font-size:17px;}
   .confirm-msg .tick{color:var(--brick); font-weight:700;}
 
+  /* reconnect: reassurance + always-visible form */
+  .reconnect{display:grid; grid-template-columns:.85fr 1.15fr; gap:38px; align-items:start;}
+  @media (max-width:820px){.reconnect{grid-template-columns:1fr; gap:26px;}}
+  .reassure ul{list-style:none;}
+  .reassure li{position:relative; padding-left:30px; margin-bottom:16px; font-size:16px; color:#3d352e; line-height:1.5;}
+  .reassure li::before{content:"✓"; position:absolute; left:0; top:1px; color:var(--brick); font-weight:700; font-size:16px;}
+  .reassure .callme{margin-top:24px; font-size:14.5px; color:#7A6F60;}
+  .reassure .callme a{color:var(--brick); font-weight:600; text-decoration:none; font-family:'Oswald',sans-serif; letter-spacing:.02em;}
+  .reconnect .capture-panel{max-width:none; margin-top:0;}
+  .svc{display:flex; gap:8px; margin-top:8px;}
+  .svc button{flex:1; background:var(--cream); border:1px solid #DCD3C0; border-radius:2px; padding:12px 6px; cursor:pointer;
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.05em; font-size:12.5px; font-weight:600; color:#5A5049; transition:.15s;}
+  .svc button:hover{border-color:var(--brick); color:var(--brick);}
+  .svc button.on{background:var(--brick); color:#fff; border-color:var(--brick);}
+
   .paths{padding:76px 0 40px;}
   .section-head{max-width:620px; margin-bottom:44px;}
   .section-head .eyebrow{color:var(--brick);}
@@ -150,45 +165,46 @@
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Pick up where you left off</p>
-        <h2>What are you after?</h2>
+        <h2>Claim your welcome-back offer</h2>
       </div>
-      <div class="path-grid">
-        <div class="path-card automotive">
-          <span class="tag">Automotive</span>
-          <div class="swatch-row"><div class="swatch s1"></div><div class="swatch s2"></div><div class="swatch s3"></div></div>
-          <h3>Car window tinting</h3>
-          <p>New car, new shade, or a touch-up on your last tint — we'll get you a price and a time that suits.</p>
-          <button type="button" class="btn btn-primary path-trigger" data-intent="automotive">Get my car quote</button>
+      <div class="reconnect">
+        <div class="reassure">
+          <ul>
+            <li>Same TintGard team, now in Augustine Heights</li>
+            <li>Lifetime warranty on every single job</li>
+            <li>Still serving all of Brisbane, mobile service too</li>
+            <li>A welcome-back price, just for past customers</li>
+          </ul>
+          <div class="callme">Prefer to talk? Call <a href="tel:0731331969">07 3133 1969</a></div>
         </div>
-        <div class="path-card residential">
-          <span class="tag">Residential</span>
-          <div class="swatch-row"><div class="swatch s1"></div><div class="swatch s4"></div><div class="swatch s3"></div></div>
-          <h3>Home window tinting</h3>
-          <p>Cut the heat, block the glare, protect your interior — across Brisbane, same as always.</p>
-          <button type="button" class="btn btn-primary path-trigger" data-intent="residential">Get my home quote</button>
-        </div>
-      </div>
 
-      <div class="capture-panel" id="capturePanel" hidden>
-        <h4>Just a few details</h4>
-        <p class="sub" id="captureSub">We'll get back to you with a price and a time that suits.</p>
-        <form id="captureForm" novalidate>
-          <input type="hidden" name="intent" id="intentField">
-          <input type="hidden" name="utm_source" id="utmSource">
-          <input type="hidden" name="utm_campaign" id="utmCampaign">
-          <input type="hidden" name="contact_id" id="contactId">
-          <div class="form-row">
-            <label>Name<input type="text" name="name" required></label>
-            <label>Mobile<input type="tel" name="mobile" required></label>
+        <div class="capture-panel" id="capturePanel">
+          <h4>Get your welcome-back quote</h4>
+          <p class="sub" id="captureSub">Tell us what you need and we'll be in touch with a price and a time that suits.</p>
+          <form id="captureForm" novalidate>
+            <input type="hidden" name="utm_source" id="utmSource">
+            <input type="hidden" name="utm_campaign" id="utmCampaign">
+            <input type="hidden" name="contact_id" id="contactId">
+            <label>What are we tinting?
+              <div class="svc" id="svcPick">
+                <button type="button" data-svc="Automotive" class="on">Car</button>
+                <button type="button" data-svc="Residential">Home</button>
+                <button type="button" data-svc="Commercial">Commercial</button>
+              </div>
+            </label>
+            <div class="form-row">
+              <label>Name<input type="text" name="name" required></label>
+              <label>Mobile<input type="tel" name="mobile" required></label>
+            </div>
+            <label>Email <span style="font-weight:400;color:#9A9084;">(optional)</span><input type="email" name="email"></label>
+            <label class="suburb-field">What suburb are you in?<input type="text" name="suburb" placeholder="e.g. Springfield"></label>
+            <label class="company-field" hidden>Company / business name<input type="text" name="company" placeholder="e.g. Smith Builders"></label>
+            <button type="submit" class="btn btn-primary">Get my welcome-back quote</button>
+          </form>
+          <div class="confirm-msg" id="confirmMsg" hidden>
+            <strong><span class="tick">✓</span> You're back on our radar</strong>
+            Thanks, we've got your details. Someone from the TintGard team will be in touch shortly with your welcome-back quote.
           </div>
-          <label>Email <span style="font-weight:400;color:#9A9084;">(optional)</span><input type="email" name="email"></label>
-          <label class="suburb-field" hidden>What suburb are you in?<input type="text" name="suburb" placeholder="e.g. Springfield"></label>
-          <label class="company-field" hidden>Company / business name<input type="text" name="company" placeholder="e.g. Smith Builders"></label>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        <div class="confirm-msg" id="confirmMsg" hidden>
-          <strong><span class="tick">✓</span> You're back on our radar</strong>
-          Thanks, we've got your details. Someone from the TintGard team will be in touch shortly with your welcome-back quote.
         </div>
       </div>
     </div>
@@ -220,7 +236,7 @@
         <h3>Builder, property manager or architect?</h3>
         <p>We'd love to reconnect on trade pricing, standing arrangements, or our commercial film range.</p>
       </div>
-      <a href="#paths" class="btn btn-ghost path-trigger" data-intent="trade">Talk to the team</a>
+      <a href="#paths" class="btn btn-ghost goto-form">Talk to the team</a>
     </div>
   </section>
 
@@ -238,32 +254,27 @@
     document.getElementById('utmCampaign').value = params.get('utm_campaign') || '';
     document.getElementById('contactId').value = params.get('cid') || '';
 
-    var panel = document.getElementById('capturePanel');
     var form = document.getElementById('captureForm');
-    var intentField = document.getElementById('intentField');
     var suburbField = document.querySelector('.suburb-field');
     var companyField = document.querySelector('.company-field');
     var confirmMsg = document.getElementById('confirmMsg');
-    var captureSub = document.getElementById('captureSub');
+    var svcState = 'Automotive';
 
-    var subCopy = {
-      automotive: "We'll get back to you with a price for your vehicle and a time that suits.",
-      residential: "We'll get back to you with a price for your home and a time that suits.",
-      trade: "We'd love to reconnect — someone from the team will be in touch to talk options."
-    };
-    var INTENT_TO_SERVICE = { automotive:"Automotive", residential:"Residential", trade:"Commercial" };
+    function setService(svc){
+      svcState = svc;
+      document.querySelectorAll('#svcPick button').forEach(function(b){ b.classList.toggle('on', b.dataset.svc===svc); });
+      suburbField.hidden = svc !== 'Automotive';
+      companyField.hidden = svc !== 'Commercial';
+    }
+    document.getElementById('svcPick').addEventListener('click', function(e){
+      var b = e.target.closest('button[data-svc]'); if(b) setService(b.dataset.svc);
+    });
 
-    document.querySelectorAll('.path-trigger').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var intent = btn.dataset.intent;
-        intentField.value = intent;
-        captureSub.textContent = subCopy[intent] || subCopy.automotive;
-        suburbField.hidden = intent !== 'automotive';
-        companyField.hidden = intent !== 'trade';
-        panel.hidden = false;
-        form.hidden = false;
-        confirmMsg.hidden = true;
-        panel.scrollIntoView({behavior:'smooth', block:'center'});
+    // "Talk to the team" (trade strip) preselects Commercial and jumps to the form
+    document.querySelectorAll('.goto-form').forEach(function(el){
+      el.addEventListener('click', function(){
+        setService('Commercial');
+        document.getElementById('capturePanel').scrollIntoView({behavior:'smooth', block:'center'});
       });
     });
 
@@ -275,22 +286,22 @@
       [nameEl, mobEl].forEach(function(el){ if(!el.value.trim()){el.classList.add('err');ok=false;} else el.classList.remove('err'); });
       if(!ok){ (nameEl.value.trim()?mobEl:nameEl).focus(); return; }
 
-      var intent = d.intent || 'automotive';
+      var svc = svcState;
       var attribution = [];
       if(d.utm_campaign) attribution.push('campaign '+d.utm_campaign);
       if(d.utm_source) attribution.push('source '+d.utm_source);
       if(d.contact_id) attribution.push('cid '+d.contact_id);
 
       var payload = {
-        service: INTENT_TO_SERVICE[intent] || 'Automotive',
+        service: svc,
         name: (d.name||'').trim(),
         phone: (d.mobile||'').trim(),
         email: (d.email||'').trim(),
         suburb: (d.suburb||'').trim(),
         detail: (d.company||'').trim(),
-        message: 'Welcome-back reactivation page (intent: '+intent+')'+(attribution.length?'. '+attribution.join(', '):''),
+        message: 'Welcome-back reactivation page (intent: '+svc.toLowerCase()+')'+(attribution.length?'. '+attribution.join(', '):''),
         source: 'Welcome Back Reactivation',
-        tags: ['welcome-back','reactivation-engaged','intent-'+intent]
+        tags: ['welcome-back','reactivation-engaged','intent-'+svc.toLowerCase()]
       };
 
       var btn = form.querySelector('button[type="submit"]');
