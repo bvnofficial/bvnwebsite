@@ -145,6 +145,14 @@ export async function POST(req: NextRequest) {
     const message = String(body.message || "").trim();
     const service = body.service as Service;
 
+    // Optional campaign overrides (e.g. the welcome-back reactivation page).
+    const source = (typeof body.source === "string" && body.source.trim())
+      ? body.source.trim().slice(0, 60)
+      : "Website Demo Form";
+    const extraTags = Array.isArray(body.tags)
+      ? body.tags.filter((t: unknown) => typeof t === "string" && t).map((t: string) => t.slice(0, 40)).slice(0, 8)
+      : ["website-demo"];
+
     if (!name || !phone || !ROUTES[service]) {
       return NextResponse.json({ error: "Missing name, phone, or valid service." }, { status: 400 });
     }
@@ -167,8 +175,8 @@ export async function POST(req: NextRequest) {
       name,
       email: email || undefined,
       phone: normalizeAuPhone(phone),
-      source: "Website Demo Form",
-      tags: ["lead-new", TAGS[service], "website-demo"],
+      source,
+      tags: ["lead-new", TAGS[service], ...extraTags],
       customFields,
     });
 
@@ -190,7 +198,7 @@ export async function POST(req: NextRequest) {
         contactId,
         name: `${name} — ${service}`,
         status: "open",
-        source: "Website Demo Form",
+        source,
       });
       if (oppRes.ok) {
         opportunityId = oppRes.data?.opportunity?.id || oppRes.data?.id;
