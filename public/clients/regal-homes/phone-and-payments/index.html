@@ -183,7 +183,7 @@
 </div>
 
 <script>
-const LAST_UPDATED = "July 2026";
+const LAST_UPDATED = "August 2, 2026";
 
 const SECTIONS = [
   { id:"pilot", title:"AI Receptionist — Regal Care Pilot", items:[
@@ -192,19 +192,21 @@ const SECTIONS = [
     ["Call screening — solicitors filtered out before staff","done"],
     ["Messages taken; vendors and providers directed to email","done"],
     ["Genuine family inquiries captured into the CRM","done","into the existing Family Inquiry pipeline"],
-    ["Urgent and person specific calls transferred to a real person","done"],
-    ["Every call recorded with a consent announcement","done","satisfies California two party consent"],
+    ["AI captures tour requests for your manager to confirm","done","matches your v1 note — the receptionist gathers their preferred day and your manager calls to confirm, no auto booking yet"],
+    ["Urgent and person specific calls transferred to a real person","done","routed to your on call cell first, then a priority message if no one answers"],
+    ["Call recording with a spoken consent notice","active","holding the recording announcement until we confirm the setup meets California two party consent, per your playbook"],
     ["Emergency guidance — callers told to hang up and dial 911","done"],
     ["Built voice and website chat ready on one shared knowledge base","done","a typed website assistant can be added later without a rebuild"],
-    ["Call summaries emailed to your team after every call","done","live to info@regalcare.org and Mel after every call"],
+    ["Call summaries emailed to your team after every call","done","live to info@regalcare.org and Mel after every call, with the AI written summary"],
     ["Regal tested and approved the pilot receptionist","done","signed off and Milestone 2 paid, thank you"],
   ]},
   { id:"golive", title:"Go Live on Your Real Numbers", items:[
-    ["Regal owned Twilio account set up and upgraded","done","numbers, billing, and porting credentials all in Regal's name"],
+    ["Regal owned Twilio account set up, upgraded, and first number provisioned","done","account and porting credentials in Regal's name; the first Regal-owned line is secured, and its 911 emergency address is registered, so there is no per call emergency fee exposure"],
     ["One central Regal Homes number for your website and advertising","todo","answers as Regal Homes and routes to the right home"],
     ["Existing home numbers ported into your Twilio and kept, not abandoned","todo","805 842 1991, 805 210 2154, 805 241 1555"],
     ["Receptionist placed on the real Regal Care line","todo","805 842 1991, forward first now, ported after"],
     ["Regal Residence and The Orchard lines connected","todo","805 210 2154 and 805 241 1555"],
+    ["Shared fax line kept working, untouched by the phone move","todo","805 624 4262 stays on its current service for physician reports and intake forms; the receptionist will point callers to it"],
     ["Each home answered with its own name and routing","todo"],
     ["Per home escalation and transfer rules","todo"],
     ["Dedicated house device, native 911, and emergency addresses per home","todo"],
@@ -221,7 +223,7 @@ const SECTIONS = [
     ["Failed payments, ACH returns, retries, and family notifications","todo"],
     ["Reconciliation by resident, home, and entity","todo"],
     ["Export of payment and authorization records","todo"],
-    ["Payment status in GHL via custom fields, tags, and workflows","active","tracking layer built: 17 payment fields and 12 status tags live in your CRM; follow-up workflows designed and ready to wire once Forte events connect"],
+    ["Payment status in GHL via custom fields, tags, and workflows","active","tracking layer built: 17 payment fields and 12 status tags live; the four follow-up workflows — enrollment invite, authorization confirmed, payment failed, and past due — are now built and staged, ready to activate once Forte events connect"],
     ["Family bank details stay inside Forte, never in GHL","done","by design; the CRM holds status, amounts, dates, and Forte reference IDs only"],
   ]},
   { id:"stab", title:"QA, Training, Docs & 90 Day Stabilization", items:[
