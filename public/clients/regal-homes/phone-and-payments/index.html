@@ -242,7 +242,7 @@ const MILESTONES = [
   { no:"M2", amount:"$750", title:"AI Receptionist Pilot", status:"reached", force:100, statusLabel:"Paid",
     trigger:"Complete and paid, with thanks. The Regal Care AI receptionist is built and live. It answers as Regal Care, screens solicitors, takes messages, captures family inquiries into the CRM, transfers urgent calls to your on call cell, gives clear 911 guidance, and emails a written summary to your team after every call.",
     covers:["pilot"] },
-  { no:"M3", amount:"$750", title:"Go Live & Payments", status:"active",
+  { no:"M3", amount:"$750", title:"Go Live & Payments", status:"active", banner:true, footLabel:"Toward full go-live across the homes",
     trigger:"Well underway. On the phone side the receptionist is live and refined to your playbook, call summaries now reach your team after every call, and your first Regal owned Twilio line is secured with its 911 address registered. On payments, your full tracking layer and all four Forte follow up flows are built and staged inside your CRM, ready to switch on. What remains is the go live sequence that only you can start: your sign off on the Forte fee schedule, then porting the home lines and running the first resident payment end to end, with the 90 day stabilization to follow.",
     covers:["golive","ach","stab"] },
 ];
@@ -260,7 +260,8 @@ MILESTONES.forEach(m=>{
   const pct = m.force!=null ? m.force : pctOf(d,a,t);
   const statLabel = m.statusLabel || {reached:"Reached",active:"In Progress",pending:"Upcoming"}[m.status];
   const linkHtml = m.link ? `<div style="margin-top:10px"><a href="${m.link}" style="font-family:var(--mono);font-size:12px">View the Discovery &amp; Setup deliverable →</a></div>` : "";
-  const footLabel = m.status==="reached" ? "Deliverable complete" : "Build progress for this milestone";
+  const footLabel = m.footLabel || (m.status==="reached" ? "Deliverable complete" : "Build progress for this milestone");
+  const bannerHtml = m.banner ? `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:2px 0 14px;padding:10px 14px;border:1px solid var(--amber);border-left:3px solid var(--amber);border-radius:8px;background:rgba(245,158,11,0.10)"><span style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber2)">Build delivered</span><span style="color:var(--muted);font-size:13px">Go-live pending your sign-off</span></div>` : "";
   const el = document.createElement("div");
   el.className = "m "+m.status;
   el.innerHTML = `
@@ -270,6 +271,7 @@ MILESTONES.forEach(m=>{
       <span class="m-stat ${m.status}">${statLabel}</span>
       <span class="m-amt">${m.amount}</span>
     </div>
+    ${bannerHtml}
     <div class="m-trig">${m.trigger}</div>
     ${linkHtml}
     <div class="m-bar"><i style="width:${pct}%"></i></div>
