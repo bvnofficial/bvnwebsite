@@ -20,7 +20,36 @@ type SR = {
 };
 type SRCtor = new () => SR;
 
-export default function BvnAssistant() {
+// Free, keyless AI via Puter.js ("User Pays" model: no API key, no per-token
+// bill to Benjamin). Loaded lazily, only here on the command center.
+type PuterChatPart = { text?: string };
+type PuterChatResult = AsyncIterable<PuterChatPart> & { message?: { content?: string } };
+type PuterAI = { ai: { chat: (msgs: unknown, opts?: { model?: string; stream?: boolean }) => Promise<PuterChatResult> } };
+
+function ensurePuter(): Promise<PuterAI | null> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve(null);
+    const has = () => (window as unknown as { puter?: PuterAI }).puter;
+    if (has()?.ai?.chat) return resolve(has()!);
+    if (!document.getElementById("puter-js")) {
+      const s = document.createElement("script");
+      s.id = "puter-js";
+      s.src = "https://js.puter.com/v2/";
+      s.async = true;
+      document.head.appendChild(s);
+    }
+    const start = Date.now();
+    const iv = setInterval(() => {
+      const p = has();
+      if (p?.ai?.chat) { clearInterval(iv); resolve(p); }
+      else if (Date.now() - start > 9000) { clearInterval(iv); resolve(null); }
+    }, 120);
+  });
+}
+
+const SYSTEM_BASE = `You are "BVN", Benjamin Vincent Yson's personal command-center assistant. You speak to Benjamin himself, not to clients or website visitors. You are practical, direct, and warm, like a sharp chief of staff who knows his business. Ground every answer in the CURRENT STATE below. If something is not in that state or you are unsure, say so plainly rather than guessing. Keep spoken answers short (1 to 3 sentences) unless he asks for detail. Never use dashes as punctuation.`;
+
+export default function BvnAssistant({ context = "" }: { context?: string }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -113,11 +142,39 @@ export default function BvnAssistant() {
     setMessages(next);
     setInput("");
     setSending(true);
+
+    const history = next.filter((m) => m.content || m.role === "user");
+    const setLast = (content: string) =>
+      setMessages((prev) => {
+        const copy = prev.slice();
+        copy[copy.length - 1] = { role: "assistant", content };
+        return copy;
+      });
+
     try {
+      // 1) FREE path: keyless Puter.js AI, grounded in the command-center state.
+      const puter = await ensurePuter();
+      if (puter) {
+        const system = `${SYSTEM_BASE}\n\nCURRENT STATE:\n${context || "(none provided)"}`;
+        const msgs = [{ role: "system", content: system }, ...history.map((m) => ({ role: m.role, content: m.content }))];
+        let acc = "";
+        try {
+          const resp = await puter.ai.chat(msgs, { model: "gpt-4o-mini", stream: true });
+          for await (const part of resp) { acc += part.text || ""; setLast(acc); }
+        } catch {
+          const r = await puter.ai.chat(msgs, { model: "gpt-4o-mini" });
+          acc = (r?.message?.content || "").toString();
+          setLast(acc);
+        }
+        if (acc.trim()) { speak(acc); return; }
+        // empty reply -> fall through to the server route
+      }
+
+      // 2) FALLBACK: the server route (uses the Anthropic key; needs credits).
       const res = await fetch("/api/command/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next.filter((m) => m.content || m.role === "user") }),
+        body: JSON.stringify({ messages: history }),
       });
       if (!res.ok || !res.body) {
         const d = await res.json().catch(() => ({}));
@@ -130,11 +187,7 @@ export default function BvnAssistant() {
         const { done, value } = await reader.read();
         if (done) break;
         acc += dec.decode(value, { stream: true });
-        setMessages((prev) => {
-          const copy = prev.slice();
-          copy[copy.length - 1] = { role: "assistant", content: acc };
-          return copy;
-        });
+        setLast(acc);
       }
       speak(acc);
     } catch (e) {

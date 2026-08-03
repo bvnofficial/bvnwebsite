@@ -175,6 +175,13 @@ export default function CommandCenterClient({
 
   const highTasks = today.filter((t) => t.priority === "high" && !done[t.id]);
 
+  // Grounding context handed to the BVN assistant (free, client-side model).
+  const bvnContext = useMemo(() => {
+    const clients = pipeline.map((c) => `- ${c.name} [${c.stage}, ${c.health}]: ${c.next}`).join("\n");
+    const tasks = today.map((t) => `- (${t.priority}) ${t.text}${t.client ? ` [${t.client}]` : ""}`).join("\n");
+    return `CLIENTS / PIPELINE:\n${clients}\n\nTODAY'S TASKS:\n${tasks}\n\nTARGET ROLES: ${profile.targetRoles.join("; ")}`;
+  }, [pipeline, today, profile]);
+
   const tabs: { id: TabId; label: string; icon: typeof Home }[] = [
     { id: "home", label: "Home", icon: Home },
     { id: "clients", label: "Clients", icon: Users },
@@ -343,7 +350,7 @@ export default function CommandCenterClient({
 
             {/* BVN assistant — voice + chat, grounded in the command-center state */}
             <div className="lg:col-span-2">
-              <BvnAssistant />
+              <BvnAssistant context={bvnContext} />
             </div>
           </div>
         )}
