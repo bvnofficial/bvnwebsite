@@ -1,0 +1,62 @@
+[
+  {
+    "title": "bvn-command-center",
+    "path": "bvn-command-center.md",
+    "kind": "memory",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "claude-brain-vault",
+    "path": "claude-brain-vault.md",
+    "kind": "memory",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Content",
+    "path": "10-content/Content.md",
+    "kind": "content",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Projects",
+    "path": "30-projects/Projects.md",
+    "kind": "project",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Hannah",
+    "path": "30-projects/People/Hannah.md",
+    "kind": "person",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Alex",
+    "path": "30-projects/People/Alex.md",
+    "kind": "person",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Gabriel Balenton",
+    "path": "30-projects/People/Gabriel Balenton.md",
+    "kind": "person",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Troy Curtis",
+    "path": "30-projects/People/Troy Curtis.md",
+    "kind": "person",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Don",
+    "path": "30-projects/People/Don.md",
+    "kind": "person",
+    "updated": "2026-08-03"
+  },
+  {
+    "title": "Benjamin Vincent Yson",
+    "path": "30-projects/People/Benjamin Vincent Yson.md",
+    "kind": "person",
+    "updated": "2026-08-03"
+  }
+]

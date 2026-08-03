@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sync:jobs": "node scripts/sync-jobs.mjs",
+    "sync:brain": "node scripts/sync-brain.mjs",
+    "sync": "node scripts/sync-jobs.mjs && node scripts/sync-brain.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
