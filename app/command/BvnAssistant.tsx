@@ -26,29 +26,83 @@ export default function BvnAssistant() {
   const [sending, setSending] = useState(false);
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState("");
-  const [speakBack, setSpeakBack] = useState(false);
+  const [speakBack, setSpeakBack] = useState(true); // reply with voice by default
   const [supported, setSupported] = useState(false);
   const [err, setErr] = useState("");
 
   const recogRef = useRef<SR | null>(null);
   const listeningRef = useRef(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const w = window as unknown as { SpeechRecognition?: SRCtor; webkitSpeechRecognition?: SRCtor };
     setSupported(Boolean(w.SpeechRecognition || w.webkitSpeechRecognition));
   }, []);
 
+  // Pick the most "Jarvis"-like voice available (deep British male), falling
+  // back gracefully. getVoices() populates async, so also listen for the event.
+  useEffect(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    // Ordered preference: named calm British/male voices first, then any en-GB
+    // male, then any English male, then anything English.
+    const PREFERRED = [
+      "daniel", "google uk english male", "microsoft ryan", "microsoft george",
+      "arthur", "oliver", "microsoft guy", "alex",
+    ];
+    const pick = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      const byName = (n: string) => voices.find((v) => v.name.toLowerCase().includes(n));
+      const chosen =
+        PREFERRED.map(byName).find(Boolean) ||
+        voices.find((v) => /en-GB/i.test(v.lang) && /male/i.test(v.name)) ||
+        voices.find((v) => /en-GB/i.test(v.lang)) ||
+        voices.find((v) => /^en/i.test(v.lang) && /male/i.test(v.name)) ||
+        voices.find((v) => /^en/i.test(v.lang)) ||
+        voices[0];
+      voiceRef.current = chosen || null;
+    };
+    pick();
+    window.speechSynthesis.onvoiceschanged = pick;
+    return () => { window.speechSynthesis.onvoiceschanged = null; };
+  }, []);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, interim]);
 
-  function speak(text: string) {
-    if (!speakBack || typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  // Browser Web Speech fallback: free and offline, but robotic.
+  function speakLocal(text: string) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = 1.02;
+    if (voiceRef.current) u.voice = voiceRef.current;
+    u.rate = 0.96;  // measured, unhurried Jarvis cadence
+    u.pitch = 0.9;  // a touch deeper
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
+  }
+
+  function stopSpeaking() {
+    try { audioRef.current?.pause(); } catch {}
+    try { window.speechSynthesis?.cancel(); } catch {}
+  }
+
+  // Primary voice: StreamElements free "Brian" TTS — a deep British voice, the
+  // closest free "Jarvis". No API key, no cost. If it fails (offline, blocked,
+  // or text too long) it falls back to the browser voice automatically.
+  function speak(text: string) {
+    if (!speakBack || typeof window === "undefined") return;
+    let clean = text.trim();
+    if (!clean) return;
+    if (clean.length > 550) clean = clean.slice(0, 550).replace(/\s+\S*$/, ""); // endpoint length cap
+    stopSpeaking();
+    const url = `https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=${encodeURIComponent(clean)}`;
+    const audio = new Audio(url);
+    audioRef.current = audio;
+    audio.onerror = () => speakLocal(clean);        // network / blocked -> browser voice
+    audio.play().catch(() => speakLocal(clean));    // autoplay blocked -> browser voice
   }
 
   async function send(text: string) {
@@ -149,8 +203,8 @@ export default function BvnAssistant() {
         </h2>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setSpeakBack((v) => !v)}
-            title="Read replies aloud"
+            onClick={() => setSpeakBack((v) => { if (v) stopSpeaking(); return !v; })}
+            title="Read replies aloud (Jarvis voice)"
             className={`p-2 rounded-lg border transition-colors ${speakBack ? "bg-orange/15 border-orange/30 text-orange" : "bg-white/5 border-white/10 text-white/40 hover:text-white/70"}`}
           >
             {speakBack ? <Volume2 size={15} /> : <VolumeX size={15} />}
