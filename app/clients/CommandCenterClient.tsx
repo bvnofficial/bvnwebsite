@@ -62,6 +62,17 @@ const CLIENTS: Client[] = [
     tags: ["Website", "Next.js", "Product Range", "Window Film"],
   },
   {
+    name: "Kingdom Climate AI GHL + ServiceM8 (application)",
+    region: "HVAC company, Australia, project based",
+    scope: "GHL AI · Speed-to-Lead · ServiceM8",
+    blurb:
+      "Interactive AI-powered GoHighLevel and ServiceM8 system for an Australian HVAC business: the full lead lifecycle (multi-source capture with source tracking, speed-to-lead instant response, AI conversation and qualification, booking, missed call text-back, quote and no-answer follow-up, job handoff to ServiceM8, review automation, lost and past customer reactivation), a clear division of what lives in GoHighLevel versus ServiceM8, the integration methods (CRM Connector, Zapier, Make, webhooks, API), and reporting. Backed by the real TintGard GHL+ServiceM8 build with a custom two-way webhook relay. Built with Claude Code.",
+    href: "/clients/kingdom-climate/ai-ghl-servicem8",
+    status: "pending",
+    accent: C.cyan,
+    tags: ["GoHighLevel", "ServiceM8", "AI Automation", "Speed-to-Lead"],
+  },
+  {
     name: "SDR Electric ServiceM8 Operating System (application)",
     region: "Electrical/plumbing/HVAC, Ontario Canada",
     scope: "ServiceM8 · Pricebook · Inventory · BI",
