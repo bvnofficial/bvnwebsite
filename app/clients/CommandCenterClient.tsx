@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "AI Operator Production Systems (application)",
+    region: "US multi-brand retail & wellness, full time",
+    scope: "Claude · AI Assistants · Automation",
+    blurb:
+      "Interactive walkthrough of a real production AI system for the first-dedicated-AI-hire role at a US retail/wellness company: the unattended crawl-extract-score-route pipeline, the scoring prompt and rubric structure that makes outputs consistent, the phone-ready Slack output, how it is grounded and built with Claude, the language-vs-data-vs-logic split, and an honest reliability approach (test set, error tracking, no perfect-accuracy claims). Answers their 'show the actual work' step. Codeword LEVERAGE, $2,200/mo. Built with Claude Code.",
+    href: "/clients/ai-operator/production-systems",
+    status: "pending",
+    accent: C.purple,
+    tags: ["Claude", "AI Assistants", "Prompt Engineering", "Automation"],
+  },
+  {
     name: "Progard Films",
     region: "Architectural & automotive window film, Australia",
     scope: "Brand Website · Full Product Range",
