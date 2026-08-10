@@ -67,6 +67,7 @@
   .client.aiauto .badge{background:linear-gradient(135deg,#a78bfa,#3b82f6)}
   .client.aisales .badge{background:linear-gradient(135deg,#34d399,#10b981)}
   .client.insurance .badge{background:linear-gradient(135deg,#38bdf8,#3b82f6)}
+  .client.autodev .badge{background:linear-gradient(135deg,#ea4b71,#a78bfa)}
   .client .info{flex:1;min-width:220px}
   .client .name{font-family:var(--disp);font-size:20px;font-weight:600;color:#fff;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
   .client .name .st{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;font-weight:700}
@@ -75,7 +76,7 @@
   .st.active{background:rgba(91,140,255,.14);color:var(--accent2);border:1px solid rgba(91,140,255,.3)}
   .st.task{background:rgba(179,157,251,.16);color:#b39dfb;border:1px solid rgba(179,157,251,.3)}
   .st.pending{background:rgba(245,166,35,.14);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
-  .client.referralpro .open-ws:hover,.client.smartforms .open-ws:hover,.client.efs .open-ws:hover,.client.bns .open-ws:hover,.client.psyfortis .open-ws:hover,.client.lockjaw .open-ws:hover,.client.medirect .open-ws:hover,.client.housing .open-ws:hover,.client.aiauto .open-ws:hover,.client.aisales .open-ws:hover,.client.insurance .open-ws:hover{background:rgba(91,140,255,.16);border-color:rgba(91,140,255,.4);color:#7ea6ff}
+  .client.referralpro .open-ws:hover,.client.smartforms .open-ws:hover,.client.efs .open-ws:hover,.client.bns .open-ws:hover,.client.psyfortis .open-ws:hover,.client.lockjaw .open-ws:hover,.client.medirect .open-ws:hover,.client.housing .open-ws:hover,.client.aiauto .open-ws:hover,.client.aisales .open-ws:hover,.client.insurance .open-ws:hover,.client.autodev .open-ws:hover{background:rgba(91,140,255,.16);border-color:rgba(91,140,255,.4);color:#7ea6ff}
   .client .desc{color:var(--muted);font-size:14.5px;margin-top:6px;max-width:560px}
   .client .meta{margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted2)}
   .client .meta b{color:var(--text);font-weight:600}
@@ -381,6 +382,22 @@
         </div>
         <div class="links">
           <a class="lchip" href="/clients/insurance-agency/quote-to-book"><span class="e">🔗</span> Live Quote-to-Booked Funnel</a>
+        </div>
+      </div>
+
+      <!-- Automation Developer (n8n + Python + Claude Code) -->
+      <div class="client autodev">
+        <div class="row">
+          <div class="badge">N8</div>
+          <div class="info">
+            <div class="name">Automation Developer System <span class="st pending">Pending · Awaiting reply</span></div>
+            <div class="desc">Application demo for a Developer &amp; Automation Expert role (strict n8n + Python + Claude Code). A runnable n8n-style pipeline built with Claude Code: run the workflow node by node with a Python transform node and a Claude step, watch the REST API node hit a 429 and auto-retry, read the production execution log (timestamps, levels, retries, status), and see how n8n, Python, and Claude Code split the work.</div>
+            <div class="meta"><span>Type · <b>Job application demo</b></span><span>Focus · <b>n8n · Python · Claude Code · APIs</b></span><span>Status · <b>Awaiting client response</b></span></div>
+          </div>
+          <a class="open-ws" href="/clients/automation-dev/n8n-pipeline">Open demo →</a>
+        </div>
+        <div class="links">
+          <a class="lchip" href="/clients/automation-dev/n8n-pipeline"><span class="e">🔗</span> Live n8n + Python + Claude Pipeline</a>
         </div>
       </div>
 
