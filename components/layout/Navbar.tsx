@@ -346,7 +346,7 @@ export default function Navbar() {
   // Bare client tool pages (e.g. the TintGard CEO dashboard, the Progard Films
   // brand site) also ship their own header and should feel like the client's own
   // product — hide navbar, and via `bare-page` the global footer + chat widget too.
-  const isBarePage = /^\/clients\/(tintgard\/dashboard|progardfilms)/.test(pathname);
+  const isBarePage = pathname === "/command" || /^\/clients\/(tintgard\/dashboard|progardfilms)/.test(pathname);
   useEffect(() => {
     document.documentElement.classList.toggle("hide-navbar", isAppToolPage || isBarePage);
     document.documentElement.classList.toggle("bare-page", isBarePage);
@@ -450,6 +450,22 @@ export default function Navbar() {
               >
                 Courses
                 {pathname.startsWith("/courses") && (
+                  <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-orange rounded-full" />
+                )}
+              </Link>
+            </li>
+
+            {/* Recommends */}
+            <li>
+              <Link
+                href="/recommends"
+                className={cn(
+                  "relative px-4 py-2 text-sm font-accent font-semibold transition-colors duration-200 rounded-md",
+                  pathname.startsWith("/recommends") ? "text-orange" : "text-white/80 hover:text-white"
+                )}
+              >
+                Recommends
+                {pathname.startsWith("/recommends") && (
                   <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-orange rounded-full" />
                 )}
               </Link>
@@ -600,6 +616,7 @@ export default function Navbar() {
             {[
               { label: "Clients", href: "/case-studies" },
               { label: "Courses", href: "/courses" },
+              { label: "Recommends", href: "/recommends" },
               { label: "Pricing", href: "/pricing" },
               { label: "Contact", href: "/contact" },
             ].map((link) => {
