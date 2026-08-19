@@ -169,6 +169,39 @@ export const RECOMMENDED_TOOLS: RecommendedTool[] = [
       { label: "About me and my stack", href: "/benjaminyson" },
     ],
   },
+  {
+    slug: "gohighlevel-saas-pro",
+    name: "GoHighLevel SaaS Pro",
+    category: "White Label SaaS Plan for Agencies",
+    tagline: "The plan that lets you resell GoHighLevel as your own software and keep the margin.",
+    description:
+      "The SaaS Pro plan unlocks SaaS Mode, so you can rebill GoHighLevel to your own clients under your own brand, set your own prices, and run unlimited sub accounts. It turns an agency from selling hours into selling software with recurring revenue.",
+    take:
+      "This is the plan for people who want to own the software relationship, not just manage ads. I build the sub account snapshots, the rebilling and the client onboarding that make SaaS Mode actually run. If you are an agency or operator who wants recurring software revenue instead of one off projects, this is the tier that gets you there.",
+    bonuses: [
+      {
+        title: "A rebill ready client snapshot",
+        detail:
+          "A sub account snapshot with the core pipeline, follow up automations and onboarding, so every client you add starts on a working system instead of a blank account.",
+      },
+      {
+        title: "A free 45 minute SaaS setup call",
+        detail:
+          "We turn on SaaS Mode, set your plans and rebilling, and load your first client snapshot together on a screen share.",
+      },
+      {
+        title: "My agency onboarding SOP",
+        detail:
+          "The step by step process I use to onboard a new client into a sub account, so you can sign clients and stand them up without reinventing it each time.",
+      },
+    ],
+    tags: ["SaaS Mode", "White Label", "Rebilling", "Unlimited Sub Accounts", "Recurring Revenue"],
+    affiliateUrl: "https://www.gohighlevel.com/pro-trial?fp_ref=benjamin-vincent22", // Supercharged SaaS program, different ref code
+    proof: [
+      { label: "See the builds", href: "/case-studies" },
+      { label: "About me and my stack", href: "/benjaminyson" },
+    ],
+  },
 ];
 
 export function getTool(slug: string): RecommendedTool | undefined {

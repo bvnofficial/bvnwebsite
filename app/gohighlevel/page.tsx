@@ -288,8 +288,8 @@ export default function GoHighLevelReviewPage() {
       </section>
 
       {/* Comparison teaser + proof */}
-      <section className="mx-auto max-w-4xl px-5 py-16">
-        <div className="grid gap-6 md:grid-cols-2">
+      <section className="mx-auto max-w-5xl px-5 py-16">
+        <div className="grid gap-6 md:grid-cols-3">
           <Link
             href="/gohighlevel/vs-hubspot"
             className="group rounded-2xl border border-gray-200 bg-white p-6 transition hover:border-[#E86010]/40 hover:shadow-sm"
@@ -301,6 +301,19 @@ export default function GoHighLevelReviewPage() {
             </p>
             <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#E86010]">
               Read the comparison <ArrowRight size={14} className="transition group-hover:translate-x-0.5" />
+            </span>
+          </Link>
+          <Link
+            href="/gohighlevel/saas-pro"
+            className="group rounded-2xl border border-gray-200 bg-white p-6 transition hover:border-[#E86010]/40 hover:shadow-sm"
+          >
+            <h3 className="font-heading text-lg font-bold text-navy-dark">Reselling it as your own software</h3>
+            <p className="mt-2 text-sm leading-relaxed text-gray-600">
+              Run an agency? The SaaS Pro plan lets you rebill GoHighLevel under your brand and keep the
+              recurring revenue.
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#E86010]">
+              See the SaaS Pro plan <ArrowRight size={14} className="transition group-hover:translate-x-0.5" />
             </span>
           </Link>
           <Link
