@@ -14,6 +14,7 @@ import {
   Globe,
   CheckCircle2,
   Briefcase,
+  PlayCircle,
   GraduationCap,
   User,
   Award,
@@ -308,6 +309,12 @@ export default function BenjaminYsonPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-heading font-semibold text-sm border border-white/30 text-white hover:bg-white/10 hover:border-white/50 active:scale-95 transition-all duration-200"
               >
                 <Download size={15} /> Download CV
+              </a>
+              <a
+                href="/intro"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-heading font-semibold text-sm border border-orange/40 text-orange hover:bg-orange/10 hover:border-orange/70 active:scale-95 transition-all duration-200"
+              >
+                <PlayCircle size={15} /> Watch Intro
               </a>
             </div>
 

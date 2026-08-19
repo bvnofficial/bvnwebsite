@@ -167,12 +167,20 @@ export default function HomePage() {
               +25 more
             </Link>
           </div>
-          <Link
-            href="/case-studies"
-            className="inline-flex items-center gap-1.5 text-orange text-sm font-accent font-semibold hover:gap-2.5 transition-all duration-200"
-          >
-            See our client work <ArrowRight size={14} />
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            <Link
+              href="/case-studies"
+              className="inline-flex items-center gap-1.5 text-orange text-sm font-accent font-semibold hover:gap-2.5 transition-all duration-200"
+            >
+              See our client work <ArrowRight size={14} />
+            </Link>
+            <Link
+              href="/intro"
+              className="inline-flex items-center gap-1.5 text-white/70 text-sm font-accent font-semibold hover:text-white hover:gap-2.5 transition-all duration-200"
+            >
+              Watch my introduction <ArrowRight size={14} />
+            </Link>
+          </div>
         </div>
       </section>
 
