@@ -102,9 +102,9 @@ export default function RecommendsPage() {
             >
               Get {tool.name} + my free bonus <ArrowRight size={16} />
             </Link>
-            <a href="#bonus" className="text-sm font-semibold text-[#E86010] hover:underline">
-              See what you get
-            </a>
+            <Link href="/gohighlevel" className="text-sm font-semibold text-[#E86010] hover:underline">
+              Read the full GoHighLevel review
+            </Link>
           </div>
           <p className="mt-4 text-xs text-gray-400">
             Affiliate link. I may earn a commission at no extra cost to you.
