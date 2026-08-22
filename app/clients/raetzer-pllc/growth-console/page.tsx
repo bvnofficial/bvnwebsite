@@ -8,10 +8,9 @@ export default function RaetzerGrowthConsolePage() {
       title="Raetzer PLLC — Private Capital Growth Console"
       srcDoc={html}
       style={{
-        position: "fixed",
-        inset: 0,
+        display: "block",
         width: "100%",
-        height: "100%",
+        height: "100vh",
         border: "none",
         background: "#EAEDF2",
       }}
