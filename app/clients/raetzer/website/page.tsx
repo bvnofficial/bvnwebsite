@@ -1,13 +1,14 @@
 "use client";
 
-// Embed the client's live site so the preview is always the real, current draft:
-// exact styling, correct sizing, and a fully working menu. A static snapshot is
-// kept at /raetzer-website/index.html as a fallback if the live sandbox is down.
+// Serve the local copy of the client's site: faithful to the live draft, but
+// with the real working Readiness Assessment embedded in the page (every "take
+// the assessment" CTA scrolls to it) and the builder analytics stripped. This
+// also works offline from the Desktop package.
 export default function RaetzerWebsitePage() {
   return (
     <iframe
       title="Raetzer PLLC — Website"
-      src="https://raetzer.marblism.me/"
+      src="/raetzer-website/index.html"
       style={{
         display: "block",
         width: "100%",
