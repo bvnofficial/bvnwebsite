@@ -346,7 +346,7 @@ export default function Navbar() {
   // Bare client tool pages (e.g. the TintGard CEO dashboard, the Progard Films
   // brand site) also ship their own header and should feel like the client's own
   // product — hide navbar, and via `bare-page` the global footer + chat widget too.
-  const isBarePage = pathname === "/command" || /^\/clients\/(tintgard\/dashboard|progardfilms)/.test(pathname);
+  const isBarePage = pathname === "/command" || /^\/clients\/(tintgard\/dashboard|progardfilms|raetzer)/.test(pathname);
   useEffect(() => {
     document.documentElement.classList.toggle("hide-navbar", isAppToolPage || isBarePage);
     document.documentElement.classList.toggle("bare-page", isBarePage);
