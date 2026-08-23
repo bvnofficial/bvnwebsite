@@ -14,6 +14,9 @@ const nextConfig = {
       { source: "/regal-homes/:path*", destination: "/client/regal-homes/:path*", permanent: true },
       // Convenience: catch the shortened Discovery & Setup link (missing the phone-and-payments segment).
       { source: "/clients/regal-homes/discovery-setup", destination: "/clients/regal-homes/phone-and-payments/discovery-setup", permanent: false },
+      // Raetzer client demos moved from /raetzer-pllc to /raetzer.
+      { source: "/clients/raetzer-pllc", destination: "/clients/raetzer", permanent: false },
+      { source: "/clients/raetzer-pllc/:path*", destination: "/clients/raetzer/:path*", permanent: false },
     ];
   },
   async headers() {

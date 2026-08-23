@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     title: "Raetzer PLLC — Private Capital Raise Readiness Assessment | BVN",
     description:
       "A working build of the Wall Street to Main Street Private Capital Raise Readiness Assessment for Raetzer PLLC: 19 questions, a 100-point readiness score across four categories, and hidden fit, complexity, and legal-risk routing across five internal routes.",
-    path: "/clients/raetzer-pllc/assessment",
+    path: "/clients/raetzer/assessment",
     ogTitle: "Private Capital Raise Readiness Assessment",
     eyebrow: "Client Preview",
     theme: "blue",
