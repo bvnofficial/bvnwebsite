@@ -33,6 +33,28 @@ export const CATEGORY_ACCENT: Record<CaseCategory, string> = {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
+    title: "AI Lead Lifecycle for HVAC",
+    industry: "HVAC · Home Services",
+    region: "Australia",
+    summary:
+      "An AI-powered GoHighLevel and ServiceM8 system covering the full lead lifecycle: multi-source capture with source tracking, speed-to-lead instant response, AI qualification and booking, missed call text-back, quote follow-up, job handoff to ServiceM8, review automation and past-customer reactivation.",
+    tags: ["GoHighLevel", "ServiceM8", "AI Qualification", "Speed to Lead"],
+    href: "/clients/kingdom-climate/ai-ghl-servicem8",
+    category: "CRM & Automation",
+    featured: true,
+  },
+  {
+    title: "Production AI Operations System",
+    industry: "Retail & Wellness · Multi-brand",
+    region: "United States",
+    summary:
+      "A production AI system for a dedicated AI operations role: an unattended crawl, extract, score and route pipeline grounded with Claude, a scoring rubric that keeps outputs consistent, phone-ready summaries delivered into Slack, and an honest reliability approach with a test set and error tracking.",
+    tags: ["Claude", "AI Pipeline", "Scoring", "Slack"],
+    href: "/clients/ai-operator/production-systems",
+    category: "AI & Automation",
+    featured: true,
+  },
+  {
     title: "Window Film Brand Website",
     industry: "Window Film · Architectural & Automotive",
     region: "Australia",
