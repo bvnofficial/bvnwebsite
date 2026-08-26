@@ -31,7 +31,7 @@ const C = {
 // ── Editable commercial inputs ───────────────────────────────
 const SCOPE_FEE = "USD 500"; // Phase 0 paid scoping sprint
 const RETAINER_FROM = "USD 1,000/mo"; // active build & growth retainer
-const LAST_UPDATED = "23 August 2026";
+const LAST_UPDATED = "26 August 2026";
 
 type Status = "done" | "active" | "todo";
 
@@ -76,7 +76,8 @@ const phases: Phase[] = [
     Icon: Rocket,
     accent: C.blue,
     items: [
-      { label: "Keystone Voice & Ideal-Customer doc, auto-built from call transcripts (BUILD FIRST)", status: "todo", ref: "#2" },
+      { label: "Trademark Recovery finder: shut-down UK companies that still own a brand live on Amazon UK, weekly review list (Adam's #1, read only)", status: "todo", ref: "NEW" },
+      { label: "Keystone Voice & Ideal-Customer doc, auto-built from call transcripts", status: "todo", ref: "#2" },
       { label: "Daily trend-to-angle engine: overnight scrape → morning brief with the FBA angle", status: "todo", ref: "#1" },
       { label: "Affiliate warm-onboarding sequence, scoped for BOTH Riverside + My Candy Shop (build once, run twice)", status: "todo", ref: "#10" },
       { label: "Amazon customer messages, AI-drafted: Cathrine approves rather than writes", status: "todo", ref: "#19" },
@@ -205,6 +206,12 @@ const feasibility: Verdict[] = [
     status: "amber",
     verdict:
       "Hinges on one answer: does the warehouse software record 'booked in'? If yes, the auto-chase is a clean rules-based build. If status only lives in calls/WhatsApp, capturing it is the real project. Resolved in Phase 0.",
+  },
+  {
+    q: "Trademark Recovery finder — pulling marks by owner",
+    status: "amber",
+    verdict:
+      "Step 1 (Companies House, dead companies) and step 3 (Amazon UK brand match via SP-API) are clean. The middle step is the constraint: the UK IPO has no public trademark API yet (One IPO Search bulk API is slated for 2026, not broadly live). Realistic route is scripted searches against the official owner-search tool, rate limited, with a third-party data API as an optional accelerator. Read only, public data, no actions taken.",
   },
 ];
 
