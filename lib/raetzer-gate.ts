@@ -1,7 +1,8 @@
 // Password gate for the private Raetzer PLLC client preview.
-// Covers /clients/raetzer* (hub, website, assessment, dashboard, model) and the
-// hosted site copy at /raetzer-website*. Server-side only — these constants are
-// never shipped to the browser (middleware + route handler run on the server).
+// Covers /clients/raetzer* (hub, website, assessment, dashboard, model), the
+// hosted site copy at /raetzer-website*, and the hosted strategy PDFs under
+// /raetzer/*. Server-side only — these constants are never shipped to the
+// browser (middleware + route handler run on the server).
 
 export const RAETZER_PW = "Raetzer2027Capital";
 export const RAETZER_TOKEN = "rzk_7f2a9c4e1b8d6035aa10c3";
@@ -10,7 +11,8 @@ export const RAETZER_COOKIE = "raetzer_access";
 export function isRaetzerGated(pathname: string): boolean {
   return (
     pathname.startsWith("/clients/raetzer") ||
-    pathname.startsWith("/raetzer-website")
+    pathname.startsWith("/raetzer-website") ||
+    pathname.startsWith("/raetzer/")
   );
 }
 
