@@ -16,6 +16,8 @@ const DISALLOW = [
   "/clients",
   // Password-gated Raetzer preview and its hosted site copy
   "/raetzer-website",
+  // Raetzer client strategy PDFs (linked from the gated hub)
+  "/raetzer/",
   // Password-gated lead inbox
   "/leads",
   // Payment flow pages (no SEO value)
