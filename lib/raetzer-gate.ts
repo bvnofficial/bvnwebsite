@@ -4,8 +4,8 @@
 // /raetzer/*. Server-side only — these constants are never shipped to the
 // browser (middleware + route handler run on the server).
 
-export const RAETZER_PW = "Raetzer2027Capital";
-export const RAETZER_TOKEN = "rzk_7f2a9c4e1b8d6035aa10c3";
+export const RAETZER_PW = "BvnVault2026!Archive";
+export const RAETZER_TOKEN = "rzk_c41e9a2f7b3d6058ee20a9c4";
 export const RAETZER_COOKIE = "raetzer_access";
 
 export function isRaetzerGated(pathname: string): boolean {
