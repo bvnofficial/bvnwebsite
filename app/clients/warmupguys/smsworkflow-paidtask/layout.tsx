@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Warm Up Guys — Inbound SMS to Complete Contact Record | BVN",
+    title: "Inbound SMS to Complete Contact Record | BVN",
     description:
       "Paid task response for Warm Up Guys: how inbound SMS conversations get turned into complete contact records with location captured naturally, no forms, inside GoHighLevel.",
     path: "/clients/warmupguys/smsworkflow-paidtask",

@@ -4,7 +4,7 @@ import { buildMetadata } from "@/lib/og";
 export const metadata: Metadata = {
   ...buildMetadata({
     title:
-      "Branded Portal Sample | TCE Entertainment × BVN",
+      "Branded Portal Sample | BVN",
     description:
       "A portal sample styled in Troy Curtis Entertainment's own brand — cream, Playfair Display, gold accents — showing the client, artist, and admin experiences as they would look on the TCE website.",
     path: "/clients/tce-entertainment/branded-portal",

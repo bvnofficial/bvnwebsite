@@ -4,7 +4,7 @@ import { buildMetadata } from "@/lib/og";
 export const metadata: Metadata = {
   ...buildMetadata({
     title:
-      "Build Stack & Workflow — How We Build It | TCE Entertainment × BVN",
+      "Build Stack & Workflow — How We Build It | BVN",
     description:
       "The tooling and delivery plan for the Troy Curtis Entertainment booking platform: which app does which job (GoHighLevel, Make.com, n8n, Claude, Supabase, Stripe, Google Workspace, Twilio, Slack), how a single booking flows through the whole stack, and how we work together week to week.",
     path: "/clients/tce-entertainment/build-stack",

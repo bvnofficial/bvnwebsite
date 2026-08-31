@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Evolving Financial Solutions — GHL Client Journey Blueprint | BVN",
+    title: "GHL Client Journey Blueprint | BVN",
     description:
       "An interactive GoHighLevel architecture for Evolving Financial Solutions: the full client journey from first lead to long-term member, the automations and AI that fire at each stage, the Skool membership flow, a 90-day automation roadmap, and the SOP and Loom documentation approach.",
     path: "/clients/efs/blueprint",

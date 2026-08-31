@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "MEDirect 2.0 — Delivery Board Demo | BVN",
+    title: "Delivery Board Demo | BVN",
     description:
       "A sample Jira-style delivery board for MEDirect 2.0: epics for AI report production, intelligent document processing and workflow automation, user stories with acceptance criteria, a sprint board, a dependency and risk tracker, a delivery status report, and a sample BRD.",
     path: "/clients/medirect/delivery-board",

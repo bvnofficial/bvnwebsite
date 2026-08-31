@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Clock, Tag } from "lucide-react";
-import { blogPosts } from "@/lib/blog-posts";
+import { getPublishedPosts } from "@/lib/blog-db";
+import type { BlogPost } from "@/lib/blog-posts";
 import { ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
@@ -23,9 +24,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
-  const marketing = blogPosts.filter((p) => p.category === "Marketing");
-  const operations = blogPosts.filter((p) => p.category === "Operations");
+// Re-read from Supabase at most once an hour, so new posts appear without a redeploy.
+export const revalidate = 3600;
+
+export default async function BlogPage() {
+  const posts = await getPublishedPosts();
+  const featured = posts[0];
+  const marketing = posts.filter((p) => p.category === "Marketing");
+  const operations = posts.filter((p) => p.category === "Operations");
+  const others = posts.filter(
+    (p) => p.category !== "Marketing" && p.category !== "Operations",
+  );
 
   return (
     <>
@@ -59,13 +68,13 @@ export default function BlogPage() {
         <div className="max-w-7xl mx-auto">
 
           {/* Featured / Latest post */}
-          {blogPosts[0] && (
+          {featured && (
             <div className="mb-16">
               <p className="font-accent font-semibold text-xs uppercase tracking-[0.2em] text-orange mb-6">
                 Latest Article
               </p>
               <Link
-                href={`/blog/${blogPosts[0].slug}`}
+                href={`/blog/${featured.slug}`}
                 className="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden
                   hover:border-orange/30 hover:shadow-[0_0_40px_rgba(232,96,16,0.1)] transition-all duration-300"
               >
@@ -73,24 +82,24 @@ export default function BlogPage() {
                   <div className="flex items-center gap-3 mb-4">
                     <span
                       className={`text-xs font-accent font-semibold px-2.5 py-1 rounded-full border
-                        ${blogPosts[0].category === "Marketing"
+                        ${featured.category === "Marketing"
                           ? "bg-orange/10 border-orange/20 text-orange"
                           : "bg-blue-400/10 border-blue-400/20 text-blue-400"
                         }`}
                     >
-                      {blogPosts[0].category}
+                      {featured.category}
                     </span>
                     <span className="flex items-center gap-1.5 text-white/40 text-xs">
-                      <Clock size={11} /> {blogPosts[0].readTime}
+                      <Clock size={11} /> {featured.readTime}
                     </span>
-                    <span className="text-white/30 text-xs">{blogPosts[0].date}</span>
+                    <span className="text-white/30 text-xs">{featured.date}</span>
                   </div>
                   <h2 className="font-heading font-bold text-white text-2xl md:text-3xl mb-3 leading-tight
                     group-hover:text-orange-light transition-colors">
-                    {blogPosts[0].title}
+                    {featured.title}
                   </h2>
                   <p className="text-white/55 text-base leading-relaxed mb-6 max-w-3xl">
-                    {blogPosts[0].excerpt}
+                    {featured.excerpt}
                   </p>
                   <span className="flex items-center gap-1.5 text-orange text-sm font-accent font-semibold
                     group-hover:gap-3 transition-all duration-200">
@@ -102,41 +111,62 @@ export default function BlogPage() {
           )}
 
           {/* Marketing Posts */}
-          <div className="mb-14">
-            <div className="flex items-center gap-3 mb-6">
-              <Tag size={14} className="text-orange" />
-              <p className="font-accent font-semibold text-xs uppercase tracking-[0.2em] text-orange">
-                Marketing
-              </p>
+          {marketing.length > 0 && (
+            <div className="mb-14">
+              <div className="flex items-center gap-3 mb-6">
+                <Tag size={14} className="text-orange" />
+                <p className="font-accent font-semibold text-xs uppercase tracking-[0.2em] text-orange">
+                  Marketing
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {marketing.map((post) => (
+                  <PostCard key={post.slug} post={post} />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {marketing.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
-            </div>
-          </div>
+          )}
 
           {/* Operations Posts */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Tag size={14} className="text-blue-400" />
-              <p className="font-accent font-semibold text-xs uppercase tracking-[0.2em] text-blue-400">
-                Operations &amp; Automation
-              </p>
+          {operations.length > 0 && (
+            <div className="mb-14">
+              <div className="flex items-center gap-3 mb-6">
+                <Tag size={14} className="text-blue-400" />
+                <p className="font-accent font-semibold text-xs uppercase tracking-[0.2em] text-blue-400">
+                  Operations &amp; Automation
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {operations.map((post) => (
+                  <PostCard key={post.slug} post={post} />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {operations.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
+          )}
+
+          {/* Other categories (e.g., Virtual Assistants) */}
+          {others.length > 0 && (
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <Tag size={14} className="text-emerald-400" />
+                <p className="font-accent font-semibold text-xs uppercase tracking-[0.2em] text-emerald-400">
+                  Virtual Assistants &amp; More
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {others.map((post) => (
+                  <PostCard key={post.slug} post={post} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </>
   );
 }
 
-function PostCard({ post }: { post: (typeof blogPosts)[number] }) {
+function PostCard({ post }: { post: BlogPost }) {
   return (
     <Link
       href={`/blog/${post.slug}`}

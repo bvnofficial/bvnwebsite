@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { blogPosts } from "@/lib/blog-posts";
+import { getPublishedPosts } from "@/lib/blog-db";
 import { courses } from "@/lib/courses";
 import { marketingServices } from "@/lib/marketing-services";
 import { operationsServices } from "@/lib/operations-services";
@@ -32,7 +32,10 @@ const ALL_APPS = [
   "tracker-detector",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Refresh hourly so auto-published posts appear in the sitemap without a redeploy.
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ─── Core pages ─────────────────────────────────────────────────────────────
   const corePages: MetadataRoute.Sitemap = [
     {
@@ -134,11 +137,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  // ─── Blog ───────────────────────────────────────────────────────────────────
-  // Sort by date descending so Google sees the newest post first in the sitemap
-  const sortedPosts = [...blogPosts].sort(
-    (a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime()
-  );
+  // ─── Blog (from Supabase; newest first) ─────────────────────────────────────
+  // Pulls published posts from the DB so pipeline-published articles are included.
+  const sortedPosts = await getPublishedPosts();
 
   const blogHub: MetadataRoute.Sitemap = [
     {

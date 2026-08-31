@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     template: "%s | BVN",
   },
   description:
-    "BVN is a global digital marketing and business automation agency serving clients worldwide — now also empowering local Philippine businesses. We deliver social media management, SEO, CRM automation, HR payroll automation, and AI agents.",
+    "Global digital marketing and business automation agency delivering social media, SEO, CRM automation, HR and payroll automation, and AI agents worldwide.",
   keywords:
     "digital marketing agency, business automation agency, social media management, SEO agency, CRM automation, HR payroll automation, AI automation, digital marketing Philippines, international marketing agency",
   openGraph: {

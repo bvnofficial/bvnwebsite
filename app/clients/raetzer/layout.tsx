@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Raetzer — Private Capital Growth System | BVN",
+    title: "Private Capital Growth System | BVN",
     description:
       "The Raetzer private capital marketing system in one place: authority website, the Private Capital Raise Readiness Assessment, the live CEO dashboard, and the growth model.",
     path: "/clients/raetzer",

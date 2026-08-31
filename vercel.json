@@ -1,5 +1,6 @@
 {
   "crons": [
-    { "path": "/api/tintgard-servicem8-sync", "schedule": "0 15 * * *" }
+    { "path": "/api/tintgard-servicem8-sync", "schedule": "0 15 * * *" },
+    { "path": "/api/blog/generate", "schedule": "0 9 * * *" }
   ]
 }

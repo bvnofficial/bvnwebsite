@@ -96,19 +96,6 @@ const featurePills = [
   { icon: Users, label: "Proven Expertise", sub: "238+ clients served" },
 ];
 
-// Trusted-by client names (public, safe to show). Links to /case-studies.
-const trustedClients = [
-  "TintGard",
-  "Regal Care Homes",
-  "Hypersonic Wholesale",
-  "Moonstar Media",
-  "Warm Up Guys",
-  "X-1R Philippines",
-  "Referral Pro",
-  "StretchTo.You",
-  "Yorkshire Canine Academy",
-];
-
 // Marquee items for the services strip
 const marqueeItems = [
   { icon: Zap, text: "Social Media Management" },
@@ -142,7 +129,7 @@ export default function HomePage() {
       {/* ── SECTION 1: Hero ─────────────────────────────────── */}
       <HeroSection
         headline="Elevate Your Business. Dominate Your Market."
-        subtext="BVN is your all-in-one global growth partner — trusted by 238+ clients worldwide. We combine high-impact marketing with intelligent automation to help you scale faster, smarter, and stronger."
+        subtext="BVN is a global digital marketing and business automation agency trusted by 238+ clients worldwide. We combine high-impact marketing with intelligent automation to help you scale faster, smarter, and stronger."
         primaryCta={{ label: "Explore Marketing", href: "/marketing" }}
         secondaryCta={{ label: "Explore Operations", href: "/operations" }}
       />
@@ -153,20 +140,6 @@ export default function HomePage() {
           <p className="font-accent font-semibold text-xs tracking-[0.2em] uppercase text-white/40 mb-7">
             Trusted by 238+ businesses worldwide
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3.5 mb-7">
-            {trustedClients.map((name) => (
-              <Link
-                key={name}
-                href="/case-studies"
-                className="font-heading font-bold text-white/50 text-base md:text-lg hover:text-white/85 transition-colors"
-              >
-                {name}
-              </Link>
-            ))}
-            <Link href="/case-studies" className="font-heading font-bold text-orange/70 text-base md:text-lg hover:text-orange transition-colors">
-              +25 more
-            </Link>
-          </div>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             <Link
               href="/case-studies"

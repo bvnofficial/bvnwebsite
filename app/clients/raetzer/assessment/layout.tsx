@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Raetzer PLLC — Private Capital Raise Readiness Assessment | BVN",
+    title: "Private Capital Raise Readiness Assessment | BVN",
     description:
       "A working build of the Wall Street to Main Street Private Capital Raise Readiness Assessment for Raetzer PLLC: 19 questions, a 100-point readiness score across four categories, and hidden fit, complexity, and legal-risk routing across five internal routes.",
     path: "/clients/raetzer/assessment",

@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "The BNS Companies — Real Estate GHL Command Center | BVN",
+    title: "Real Estate GHL Command Center | BVN",
     description:
       "An interactive GoHighLevel command center for a real estate business: buyer and seller pipelines, an event and webinar registration funnel with reminder automations, and a reporting dashboard for lead source ROI, conversion, and campaign performance.",
     path: "/clients/bns/command-center",

@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Raetzer PLLC — Website Preview | BVN",
+    title: "Website Preview | BVN",
     description:
       "A hosted preview of the Raetzer PLLC authority website, geared around the private capital raise, ahead of the WordPress build.",
     path: "/clients/raetzer/website",

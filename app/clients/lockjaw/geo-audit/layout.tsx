@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Lockjaw Ladder Grip — AI Search (GEO / AEO) Audit | BVN",
+    title: "AI Search (GEO / AEO) Audit | BVN",
     description:
       "An interactive AI-search visibility audit for Lockjaw Ladder Grip: a citation-readiness scorecard, the schema and structured data to add, an answer-content and FAQ strategy for AI tools, and a mock tracker for whether ChatGPT, Perplexity, Google AI Overviews and Gemini cite the brand.",
     path: "/clients/lockjaw/geo-audit",

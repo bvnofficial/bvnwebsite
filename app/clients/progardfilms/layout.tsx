@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Progard Films — Premium Films, Tailored for Australia | BVN",
+    title: "Premium Window Films, Tailored for Australia | BVN",
     description:
       "Premium window film for Australian homes, offices and vehicles. The full Progard range: Architectural (Black, Reflective, Clear, Security, Decorative) and Automotive (XFactor, Night Rider, Fusion) with complete performance specifications.",
     path: "/clients/progardfilms",

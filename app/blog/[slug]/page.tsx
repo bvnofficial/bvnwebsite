@@ -2,15 +2,20 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag, ArrowRight } from "lucide-react";
-import { blogPosts, getBlogPost, type ContentSection } from "@/lib/blog-posts";
+import { getBlogPostBySlug, getRelatedPosts, getPublishedSlugs } from "@/lib/blog-db";
+import { type ContentSection } from "@/lib/blog-posts";
 import { ogImage } from "@/lib/og";
 import { breadcrumbSchema, jsonLdScript, SITE_URL } from "@/lib/jsonld";
 import GlowButton from "@/components/ui/GlowButton";
 import ShareButtons from "@/components/ui/ShareButtons";
 
+// Re-read from Supabase at most once an hour; new slugs render on-demand.
+export const revalidate = 3600;
+
 // ── Static params for all blog posts ─────────────────────────
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+  const slugs = await getPublishedSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 // ── Per-post SEO metadata ─────────────────────────────────────
@@ -19,7 +24,7 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const post = getBlogPost(params.slug);
+  const post = await getBlogPostBySlug(params.slug);
   if (!post) return { title: "Post Not Found | BVN" };
 
   return {
@@ -49,18 +54,16 @@ export async function generateMetadata({
 }
 
 // ── Blog post page ────────────────────────────────────────────
-export default function BlogPostPage({
+export default async function BlogPostPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const post = getBlogPost(params.slug);
+  const post = await getBlogPostBySlug(params.slug);
   if (!post) notFound();
 
   // Related posts — same category, exclude current
-  const related = blogPosts
-    .filter((p) => p.slug !== post.slug && p.category === post.category)
-    .slice(0, 3);
+  const related = await getRelatedPosts(post, 3);
 
   const isMarketing = post.category === "Marketing";
   const accentClass = isMarketing ? "text-orange" : "text-blue-400";

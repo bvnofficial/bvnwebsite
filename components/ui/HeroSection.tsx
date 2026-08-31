@@ -165,7 +165,7 @@ export default function HeroSection({
           variants={itemVariants}
           className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.08] text-white mb-2"
         >
-          <span className="block">{line1}</span>
+          <span className="block">{line1}</span>{" "}
           <span className="block text-gradient">{line2}</span>
         </motion.h1>
 

@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/og";
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "TintGard — Live Business Dashboard",
+    title: "Live Business Dashboard | BVN",
     description:
       "A live view of TintGard's GoHighLevel and ServiceM8 activity: leads, pipelines, jobs and revenue, updated in real time.",
     path: "/clients/tintgard/dashboard",
