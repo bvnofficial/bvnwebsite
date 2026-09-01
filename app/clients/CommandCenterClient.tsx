@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Productised Sales AI Multi-Tenant Build (application)",
+    region: "AI sales/systems consultancy, Australia, milestone contract",
+    scope: "Multi-Tenant · n8n · Retell Voice · Dashboard",
+    blurb:
+      "Interactive architecture demo for productising a proven AI sales stack into a repeatable multi-tenant system: the four layers (daily briefing engine, conversational SMS agent, Retell voice agent over Twilio AU, client dashboard), a CRM abstraction layer so HubSpot, GoHighLevel, Pipedrive, and Salesforce plug in without rewriting the agents, a config-driven provisioning stepper that answers their Q3 (client #40 in hours), a self-hosted n8n stack recommendation answering their Q2, the Milestone 1 foundation, and reliability. ~715hr, 7 milestones, M1 (~140hr) standalone start, paid per milestone on acceptance, paid test task before award. Confirmed honestly: real voice agent at volume (Q1 numbers pending from Benjamin), Twilio SIP + AU numbers, HubSpot API, multi-tenant n8n, live auth dashboards. Q4 AU call-minute cost to be a transparent modeled estimate. Money model fits (milestone fixed-price, no tracker). Built with Claude Code.",
+    href: "/clients/productised-sales-ai/multi-tenant-build",
+    status: "pending",
+    accent: C.purple,
+    tags: ["Multi-Tenant", "n8n", "Retell Voice", "Dashboard"],
+  },
+  {
     name: "GHL Marketing & CRM Operations (application)",
     region: "Marketing/CRM ops, Australian day shift, company unnamed",
     scope: "GoHighLevel · Funnels · Pipelines · Automations",
