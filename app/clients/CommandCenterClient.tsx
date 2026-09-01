@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "GHL Marketing & CRM Operations (application)",
+    region: "Marketing/CRM ops, Australian day shift, company unnamed",
+    scope: "GoHighLevel · Funnels · Pipelines · Automations",
+    blurb:
+      "Interactive GoHighLevel operations demo for a marketing and CRM specialist role: one lead followed from an ad click through a funnel, form capture, missed call text back, booking with reminders, a nurture sequence, and into a KPI dashboard, plus a core-automations explorer, CRM hygiene, an honest Meta/Google Ads support block (support hand, not lead media buyer), and Zapier/Make integrations. Answers their three screening questions with GHL since 2018, several Australian clients across trades/field service, automotive, and professional services (no names shared), and GHL used for full marketing/CRM ops. No codeword required. Money kept open, no rate committed. HARD RULE flagged in email: Benjamin declines time trackers, so the application holds that line honestly and repositions on outcomes. Built with Claude Code.",
+    href: "/clients/ghl-marketing-ops/crm-engine",
+    status: "pending",
+    accent: C.cyan,
+    tags: ["GoHighLevel", "CRM", "Automations", "Reporting"],
+  },
+  {
     name: "AI Operator Production Systems (application)",
     region: "US multi-brand retail & wellness, full time",
     scope: "Claude · AI Assistants · Automation",
