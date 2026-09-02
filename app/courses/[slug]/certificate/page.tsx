@@ -7,7 +7,6 @@ import { Award, Lock, ArrowLeft, Loader2, QrCode, Coins } from "lucide-react";
 import { getCourse } from "@/lib/courses";
 import { useProgress } from "@/lib/useProgress";
 import { createClient } from "@/utils/supabase/client";
-import PayPalCheckout from "@/app/payments/PayPalCheckout";
 
 export default function CertificateClaimPage() {
   const params = useParams();
@@ -130,29 +129,6 @@ export default function CertificateClaimPage() {
       router.push(`/certificate/${data.id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
-      setLoading(false);
-    }
-  };
-
-  // ── PayPal success → record + redirect ──
-  const onPaypalSuccess = async (d: { captureId: string }) => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/certificate/paypal-complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          captureId: d.captureId,
-          courseSlug: slug,
-          name: name.trim(),
-          email: email.trim(),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.id) throw new Error(data.error || "Could not issue certificate.");
-      router.push(`/certificate/${data.id}`);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Payment recorded but certificate failed. Contact bvn@bvnofficial.com.");
       setLoading(false);
     }
   };
@@ -318,25 +294,6 @@ export default function CertificateClaimPage() {
               Pay ₱99 with QR Ph
             </button>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3 my-4">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-white/30 text-xs font-accent">or pay internationally</span>
-              <div className="flex-1 h-px bg-white/10" />
-            </div>
-
-            {/* PayPal / card ($1 USD) */}
-            <div className={!formValid || loading ? "opacity-50 pointer-events-none" : ""}>
-              <PayPalCheckout
-                amount="1.00"
-                currency="USD"
-                name={name.trim()}
-                email={email.trim()}
-                description={`BVN Certificate — ${course.title}`}
-                onSuccess={onPaypalSuccess}
-                onError={(msg) => setError(msg)}
-              />
-            </div>
             {!formValid && (
               <p className="text-white/30 text-xs text-center mt-2">
                 Enter your name and email above to enable payment.
