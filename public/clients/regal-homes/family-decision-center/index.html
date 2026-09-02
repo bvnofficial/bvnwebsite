@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#3f2b91">
+<meta name="robots" content="noindex, nofollow">
+<title>Regal Family Decision Center</title>
+<meta name="description" content="Everything your family needs to make a confident decision about care at Regal Senior Living, gathered in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#f4f2fa; --panel:#faf9fd; --surface:#ffffff; --surface-2:#f5f2fb;
+  --ink:#241d3a; --ink-2:#5f5678; --ink-3:#938aac; --line:#e7e2f2;
+  --brand:#3f2b91; --brand-2:#6a53c0; --brand-soft:#ece7f9;
+  --gold:#a9781f; --gold-soft:#f4ead3;
+  --shadow:0 1px 2px rgba(36,29,58,.05), 0 10px 30px rgba(36,29,58,.08);
+  --shadow-lg:0 30px 70px rgba(36,29,58,.18);
+  --fd:'Fraunces',Georgia,'Times New Roman',serif; --fu:'Hanken Grotesk',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#13111d; --panel:#191527; --surface:#1d1832; --surface-2:#251f40; --ink:#ece9f6; --ink-2:#a79fc4; --ink-3:#7b7397; --line:#2e2850;
+  --brand:#a793f0; --brand-2:#bcaef5; --brand-soft:#241d42; --gold:#dcb063; --gold-soft:#2c2416;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px rgba(0,0,0,.42); --shadow-lg:0 30px 70px rgba(0,0,0,.55);
+}}
+:root[data-theme="dark"]{
+  --ground:#13111d; --panel:#191527; --surface:#1d1832; --surface-2:#251f40; --ink:#ece9f6; --ink-2:#a79fc4; --ink-3:#7b7397; --line:#2e2850;
+  --brand:#a793f0; --brand-2:#bcaef5; --brand-soft:#241d42; --gold:#dcb063; --gold-soft:#2c2416;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px rgba(0,0,0,.42); --shadow-lg:0 30px 70px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--fu);-webkit-font-smoothing:antialiased;line-height:1.6;}
+img{max-width:100%;display:block}
+.wrap{max-width:1000px;margin:0 auto;padding:0 clamp(18px,4vw,32px)}
+.logo-l{display:block}.logo-d{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo-l{display:none}:root:not([data-theme="light"]) .logo-d{display:block}}
+:root[data-theme="dark"] .logo-l{display:none}:root[data-theme="dark"] .logo-d{display:block}
+:root[data-theme="light"] .logo-l{display:block}:root[data-theme="light"] .logo-d{display:none}
+
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ground) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+.top img{height:34px;width:auto}
+.top a.cta{font-family:var(--fu);font-weight:600;font-size:13.5px;text-decoration:none;background:var(--brand);color:#fff;padding:9px 16px;border-radius:999px;white-space:nowrap}
+:root[data-theme="dark"] .top a.cta, :root:not([data-theme="light"]) .top a.cta{color:#13111d}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .top a.cta{color:#13111d}}
+
+.hero{position:relative;overflow:hidden;text-align:center;padding:clamp(48px,9vw,96px) 0 clamp(40px,7vw,72px)}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(680px 340px at 50% -8%, color-mix(in srgb,var(--brand) 18%,transparent), transparent 70%);pointer-events:none}
+.hero .eyebrow{font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--brand-2)}
+.hero h1{font-family:var(--fd);font-weight:500;font-size:clamp(32px,6vw,54px);line-height:1.08;letter-spacing:-.02em;margin:14px auto 16px;max-width:16ch;text-wrap:balance}
+.hero p{font-size:clamp(16px,2.4vw,19px);color:var(--ink-2);max-width:60ch;margin:0 auto 26px}
+.btn{display:inline-block;font-family:var(--fu);font-weight:600;text-decoration:none;border-radius:999px;padding:13px 24px;font-size:15px;transition:.16s;cursor:pointer;border:0}
+.btn.p{background:var(--brand);color:#fff;box-shadow:0 10px 26px color-mix(in srgb,var(--brand) 34%,transparent)}
+:root[data-theme="dark"] .btn.p, :root:not([data-theme="light"]) .btn.p{color:#13111d}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.p{color:#13111d}}
+.btn.g{background:var(--surface);color:var(--brand-2);border:1px solid var(--line);margin-left:8px}
+.btn:hover{transform:translateY(-2px)}
+.heroimg{margin-top:34px;border-radius:22px;overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line);aspect-ratio:16/8}
+.heroimg img{width:100%;height:100%;object-fit:cover}
+
+section{padding:clamp(40px,7vw,72px) 0}
+.eyebrow2{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+h2{font-family:var(--fd);font-weight:500;font-size:clamp(25px,4vw,36px);line-height:1.12;letter-spacing:-.015em;margin:8px 0 14px;text-wrap:balance}
+.lead{font-size:17px;color:var(--ink-2);max-width:64ch}
+
+.note{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:clamp(24px,4vw,40px);box-shadow:var(--shadow);display:grid;gap:22px;grid-template-columns:1fr}
+@media(min-width:720px){.note{grid-template-columns:120px 1fr;align-items:start;gap:30px}}
+.note .who{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.note .mono{width:96px;height:96px;border-radius:50%;background:linear-gradient(150deg,var(--brand),var(--brand-2));display:grid;place-items:center;font-family:var(--fd);font-size:32px;color:#fff;font-weight:600}
+.note .who .nm{font-weight:700;font-size:14px}.note .who .ro{font-size:12px;color:var(--ink-2)}
+.note .body p{margin:0 0 14px;font-size:16.5px}
+.note .body p:last-child{margin-bottom:0}
+.note .sig{font-family:var(--fd);font-size:20px;color:var(--brand-2)}
+
+.feat{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:640px){.feat{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.feat{grid-template-columns:repeat(3,1fr)}}
+.f{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.f .ic{width:42px;height:42px;border-radius:12px;background:var(--brand-soft);color:var(--brand-2);display:grid;place-items:center;margin-bottom:14px}
+.f .ic svg{width:22px;height:22px}
+.f h3{font-family:var(--fd);font-weight:600;font-size:18px;margin:0 0 6px}
+.f p{margin:0;color:var(--ink-2);font-size:14.5px}
+
+.homes{display:grid;gap:20px;grid-template-columns:1fr}
+@media(min-width:820px){.homes{grid-template-columns:repeat(3,1fr)}}
+.home{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.home .ph{aspect-ratio:4/3;overflow:hidden}
+.home .ph img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.home:hover .ph img{transform:scale(1.05)}
+.home .in{padding:18px 20px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
+.home h3{font-family:var(--fd);font-weight:600;font-size:20px;margin:0}
+.home .loc{font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.home .ds{font-size:14px;color:var(--ink-2);flex:1}
+.home .pr{font-weight:700;font-size:14.5px;color:var(--brand-2);margin-top:4px}
+
+.vids{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:720px){.vids{grid-template-columns:repeat(3,1fr)}}
+.vid{position:relative;aspect-ratio:16/10;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;background:linear-gradient(150deg,#6a53c0,#3f2b91)}
+.vid .lbl{position:absolute;left:16px;right:16px;bottom:14px;color:#fff;font-weight:600;font-size:15px;z-index:2;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.vid .play{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;z-index:2}
+.vid .play svg{width:22px;height:22px;color:var(--brand);margin-left:3px}
+.vid::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(20,10,40,.55))}
+.vidnote{margin-top:14px;font-size:13px;color:var(--ink-3);text-align:center}
+
+.res{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:640px){.res{grid-template-columns:1fr 1fr}}
+.rc{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:.16s}
+.rc:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--brand) 30%,transparent)}
+.rc .ic{width:42px;height:42px;border-radius:11px;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;flex:none}
+.rc .ic svg{width:21px;height:21px}
+.rc .t{flex:1}.rc .t .h{font-weight:600;font-size:15px}.rc .t .s{font-size:12.5px;color:var(--ink-2)}
+.rc .ar{color:var(--ink-3)}
+
+.faq{max-width:760px;margin:0 auto}
+.qa{border-bottom:1px solid var(--line)}
+.qa summary{list-style:none;text-align:left;padding:18px 4px;font-family:var(--fu);font-weight:600;font-size:16px;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary .pl{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;color:var(--brand-2);transition:.2s;font-size:16px;line-height:1}
+.qa[open] summary .pl{transform:rotate(45deg);border-color:var(--brand-2)}
+.qa .a{color:var(--ink-2);font-size:15px;padding-bottom:6px}
+.qa .a p{margin:0 0 12px}
+
+.gal{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:700px){.gal{grid-template-columns:repeat(4,1fr)}}
+.gal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.gal .tall{grid-row:span 2;aspect-ratio:auto;height:100%}
+
+.steps{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:760px){.steps{grid-template-columns:repeat(2,1fr)}}
+.step{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.step .n{flex:none;width:32px;height:32px;border-radius:10px;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:var(--fd);font-weight:600}
+:root[data-theme="dark"] .step .n, :root:not([data-theme="light"]) .step .n{color:#13111d}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .step .n{color:#13111d}}
+.step .h{font-weight:600;font-size:15px}.step .s{font-size:13.5px;color:var(--ink-2);margin-top:3px}
+
+.cta-band{background:linear-gradient(150deg,var(--brand),var(--brand-2));border-radius:26px;padding:clamp(30px,5vw,52px);text-align:center;color:#fff;box-shadow:var(--shadow-lg)}
+.cta-band h2{color:#fff;margin-top:0}
+.cta-band p{color:rgba(255,255,255,.9);max-width:52ch;margin:0 auto 22px;font-size:16.5px}
+.cta-band .btn.w{background:#fff;color:var(--brand)}
+.cta-band .contact{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:22px;font-size:14px;color:rgba(255,255,255,.92)}
+.cta-band .contact a{color:#fff;text-decoration:none;font-weight:600}
+
+footer{text-align:center;padding:40px 0 56px;color:var(--ink-3);font-size:12.5px}
+footer img{height:26px;width:auto;margin:0 auto 12px;opacity:.9}
+.priv{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-3);border:1px solid var(--line);border-radius:999px;padding:4px 11px;margin-top:10px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap row">
+  <a href="#top" aria-label="Regal Senior Living"><img class="logo-l" src="/clients/regal-homes/website/img/logo-blue.png" alt="Regal Senior Living"><img class="logo-d" src="/clients/regal-homes/website/img/logo-white.png" alt="Regal Senior Living"></a>
+  <a class="cta" href="#talk">Talk with us</a>
+</div></header>
+
+<a id="top"></a>
+<div class="hero"><div class="wrap">
+  <div class="eyebrow">For your family</div>
+  <h1>Everything you need to decide, in one place.</h1>
+  <p>Choosing care for someone you love is a big decision, and often one you are making together with siblings and family. We gathered the things that help most, our story, our homes, answers to common questions, and how move-in works, so you can share it all with one link.</p>
+  <a class="btn p" href="#homes">See our homes</a><a class="btn g" href="#faq">Common questions</a>
+  <div class="heroimg"><img src="/clients/regal-homes/website/img/hero-1.jpg" alt="Inside a Regal home" loading="lazy"></div>
+</div></div>
+
+<section style="background:var(--panel)"><div class="wrap">
+  <div class="note">
+    <div class="who"><div class="mono">R</div><div class="nm">Don &amp; Ribka Brodt</div><div class="ro">Founders</div></div>
+    <div class="body">
+      <div class="eyebrow2">A note from us</div>
+      <h2 style="margin-top:6px">We treat every resident the way we would want our own parents treated.</h2>
+      <p>We started Regal in 2015 after seeing how impersonal care could be, long waits for help, disposable dishware, places that never felt like home. We believed seniors deserved better, so we built small homes that feel like homes, with people who truly know each resident.</p>
+      <p>We know you may be weighing this with family who are not here to visit in person. Take your time, ask us anything, and share this page with whoever helps you decide. We are always reachable.</p>
+      <div class="sig">Don &amp; Ribka</div>
+    </div>
+  </div>
+</div></section>
+
+<section id="why"><div class="wrap">
+  <div class="eyebrow2">Why families choose us</div>
+  <h2>Small by design, personal by nature.</h2>
+  <p class="lead" style="margin-bottom:30px">Boutique homes of no more than six residents, so care is personal and consistent, never institutional.</p>
+  <div class="feat">
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7M6 10v9h12v-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Six residents, never more</h3><p>A real home, not a facility, so caregivers know every routine and preference.</p></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 5v4l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Awake staff, every night</h3><p>Someone is awake and attentive overnight, every night, in every home.</p></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div><h3>Aging in place</h3><p>Our goal is to help residents stay through changes in health whenever it is safe and appropriate. Every room is hospice approved.</p></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11h16M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4M5 11l1 8h12l1-8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Real, home-cooked meals</h3><p>Fresh meals shared together at the table, three a day plus snacks, with diets accommodated.</p></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6M16 20a6 6 0 0 1 6-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Owners who are reachable</h3><p>Don and Ribka are personally involved in care and admissions. You can reach a real person.</p></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Trained, screened caregivers</h3><p>Every caregiver passes a background check and completes ongoing training in senior care.</p></div>
+  </div>
+</div></section>
+
+<section id="homes" style="background:var(--panel)"><div class="wrap">
+  <div class="eyebrow2">Our homes</div>
+  <h2>Three homes in Ventura County.</h2>
+  <p class="lead" style="margin-bottom:30px">Each with its own character. A visit is the best way to feel which one fits, and we are glad to arrange one.</p>
+  <div class="homes">
+    <div class="home"><div class="ph"><img src="/clients/regal-homes/website/img/g1.jpg" alt="Regal Care" loading="lazy"></div><div class="in"><h3>Regal Care</h3><div class="loc">Simi Valley</div><div class="ds">Our flagship home, with a garden, a covered patio, and comfortable furnished rooms.</div><div class="pr">Starting at $6,500 / month</div></div></div>
+    <div class="home"><div class="ph"><img src="/clients/regal-homes/website/img/g3.jpg" alt="Regal Residence" loading="lazy"></div><div class="in"><h3>Regal Residence</h3><div class="loc">Simi Valley</div><div class="ds">Warm and beautifully appointed, with a pool and lift chair and access for visiting family.</div><div class="pr">Starting at $6,500 / month</div></div></div>
+    <div class="home"><div class="ph"><img src="/clients/regal-homes/website/img/g5.jpg" alt="The Orchard" loading="lazy"></div><div class="in"><h3>The Orchard</h3><div class="loc">Santa Rosa Valley, Camarillo</div><div class="ds">Private en-suite suites on a working lemon orchard, with two living rooms and an elevator.</div><div class="pr">Starting at $9,500 / month</div></div></div>
+  </div>
+</div></section>
+
+<section id="videos"><div class="wrap">
+  <div class="eyebrow2">Watch</div>
+  <h2>A few minutes that say more than words.</h2>
+  <p class="lead" style="margin-bottom:30px">Short videos to share with your family, so everyone gets the same feel for Regal.</p>
+  <div class="vids">
+    <div class="vid"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="lbl">A welcome from Don &amp; Ribka</div></div>
+    <div class="vid" style="background:linear-gradient(150deg,#7c66c9,#4a3699)"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="lbl">A day at Regal</div></div>
+    <div class="vid" style="background:linear-gradient(150deg,#5f47b5,#372a7d)"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="lbl">What is a board and care home?</div></div>
+  </div>
+  <div class="vidnote">Videos to be added.</div>
+</div></section>
+
+<section id="guides" style="background:var(--panel)"><div class="wrap">
+  <div class="eyebrow2">Guides for your family</div>
+  <h2>The information, gathered.</h2>
+  <p class="lead" style="margin-bottom:30px">Download or open these and pass them along to siblings and other decision-makers.</p>
+  <div class="res">
+    <a class="rc" href="#talk"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M7 3h7l4 4v14H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM14 3v4h4" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span><span class="t"><span class="h">Family Handbook</span><span class="s">How life at Regal works, day to day</span></span><span class="ar">&rarr;</span></a>
+    <a class="rc" href="#talk"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t"><span class="h">21 Questions Every Family Should Ask</span><span class="s">A guide to choosing any care home</span></span><span class="ar">&rarr;</span></a>
+    <a class="rc" href="#faq"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 13v.01M12 13c0-2 2.5-2 2.5-4A2.5 2.5 0 0 0 10 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t"><span class="h">Common questions</span><span class="s">Cost, care, hospice, medications, and more</span></span><span class="ar">&rarr;</span></a>
+    <a class="rc" href="#move"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t"><span class="h">How move-in works</span><span class="s">The simple steps, and what we handle for you</span></span><span class="ar">&rarr;</span></a>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="eyebrow2" style="text-align:center">Common questions</div>
+  <h2 style="text-align:center">Answers, in plain language.</h2>
+  <div class="faq" style="margin-top:26px">
+    <details class="qa"><summary>How much does it cost?<span class="pl">+</span></summary><div class="a"><p>Pricing depends on the home, the room, and the level of care needed. Our homes are private pay. Regal Care and Regal Residence start at $6,500 a month, and The Orchard starts at $9,500. We are glad to talk through what would apply to your family's situation.</p></div></details>
+    <details class="qa"><summary>What levels of care do you provide?<span class="pl">+</span></summary><div class="a"><p>We care for a broad range of needs, from residents who simply want the ease of not managing a household, to those who need extensive support. We are not licensed for 24-hour skilled nursing, and a short assessment confirms we can meet your loved one's needs safely.</p></div></details>
+    <details class="qa"><summary>Do you accept residents with dementia?<span class="pl">+</span></summary><div class="a"><p>Yes. Residents with a dementia diagnosis can be accepted and cared for with us, confirmed at assessment.</p></div></details>
+    <details class="qa"><summary>Can someone stay if they go on hospice?<span class="pl">+</span></summary><div class="a"><p>Yes. Every room in all three homes is approved for hospice care, and our goal is to help residents age in place whenever it is safe and legally possible, so moves can be minimized.</p></div></details>
+    <details class="qa"><summary>Who is there overnight?<span class="pl">+</span></summary><div class="a"><p>Every one of our homes has awake staff overnight, every night. We do not rely on staff sleeping on shift.</p></div></details>
+    <details class="qa"><summary>What are meals like?<span class="pl">+</span></summary><div class="a"><p>Real, home-cooked meals served together at the table, three a day plus snacks, with special or prescribed diets accommodated.</p></div></details>
+    <details class="qa"><summary>How do you handle medications?<span class="pl">+</span></summary><div class="a"><p>All medications and any changes require a written order from the physician. We cannot make a change based on a phone call alone, but we are glad to coordinate with your doctor's office.</p></div></details>
+    <details class="qa"><summary>What are visiting hours?<span class="pl">+</span></summary><div class="a"><p>There are no set visiting hours, you are welcome anytime. The one thing we ask is that mealtimes are our busiest window, so during that time we ask visitors not to interrupt the caregivers' routine.</p></div></details>
+    <details class="qa"><summary>Do you take insurance, Medi-Cal, or VA benefits?<span class="pl">+</span></summary><div class="a"><p>Regal is private pay, which means families pay us directly. Some families receive reimbursement or assistance through programs such as long-term-care insurance or veterans benefits, handled directly between the family and the program. We do not bill Medi-Cal directly, and a member of our team can explain how our billing works.</p></div></details>
+  </div>
+</div></section>
+
+<section id="move" style="background:var(--panel)"><div class="wrap">
+  <div class="eyebrow2">Moving in</div>
+  <h2>How it works, step by step.</h2>
+  <p class="lead" style="margin-bottom:30px">We keep it simple, and we handle the parts we can so your family does not have to.</p>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div><div class="h">A conversation</div><div class="s">We talk through your loved one's needs, timing, and which home might fit.</div></div></div>
+    <div class="step"><div class="n">2</div><div><div class="h">A visit</div><div class="s">Come see the home and meet the team, whenever works for your family.</div></div></div>
+    <div class="step"><div class="n">3</div><div><div class="h">A quick assessment</div><div class="s">We confirm we can meet the care needs safely. We take care of our own forms.</div></div></div>
+    <div class="step"><div class="n">4</div><div><div class="h">Physician's report</div><div class="s">Your loved one's own doctor completes a Physician's Report and TB clearance, valid up to a year.</div></div></div>
+    <div class="step"><div class="n">5</div><div><div class="h">Move-in day</div><div class="s">A guided, gentle arrival, with medication and room setup handled for you.</div></div></div>
+    <div class="step"><div class="n">6</div><div><div class="h">The first weeks</div><div class="s">We stay close during settling in, and keep you updated as your loved one adjusts.</div></div></div>
+  </div>
+</div></section>
+
+<section id="gallery"><div class="wrap">
+  <div class="eyebrow2">A look inside</div>
+  <h2>Warm, comfortable, and lived-in.</h2>
+  <div class="gal" style="margin-top:26px">
+    <img src="/clients/regal-homes/website/img/g2.jpg" alt="Inside a Regal home" loading="lazy">
+    <img class="tall" src="/clients/regal-homes/website/img/hero-2.jpg" alt="A Regal living space" loading="lazy">
+    <img src="/clients/regal-homes/website/img/g4.jpg" alt="A Regal room" loading="lazy">
+    <img src="/clients/regal-homes/website/img/g6.jpg" alt="A Regal common area" loading="lazy">
+    <img src="/clients/regal-homes/website/img/g7.jpg" alt="A Regal home detail" loading="lazy">
+    <img src="/clients/regal-homes/website/img/g1.jpg" alt="A Regal home" loading="lazy">
+  </div>
+</div></section>
+
+<section id="talk"><div class="wrap">
+  <div class="cta-band">
+    <h2>Let us help your family decide, together.</h2>
+    <p>Share this page with anyone who is part of the decision, and reach out whenever you are ready. There is no pressure, only answers.</p>
+    <a class="btn w" href="tel:+18058422711">Call us</a>
+    <div class="contact">
+      <span>Email <a href="mailto:info@regalcare.org">info@regalcare.org</a></span>
+      <span>Regal Senior Living &middot; Ventura County, California</span>
+    </div>
+  </div>
+</div></section>
+
+<footer>
+  <img class="logo-l" src="/clients/regal-homes/website/img/logo-blue.png" alt="Regal Senior Living">
+  <img class="logo-d" src="/clients/regal-homes/website/img/logo-white.png" alt="Regal Senior Living">
+  <div>Regal Senior Living &middot; Ventura County, California</div>
+  <div class="priv">Private page &middot; shared with your family</div>
+</footer>
+
+</body>
+</html>
