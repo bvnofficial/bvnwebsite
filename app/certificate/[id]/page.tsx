@@ -38,16 +38,28 @@ async function loadCertificate(id: string): Promise<CompletionRow | null> {
         const status: string =
           attrs?.payment_intent?.attributes?.status ?? attrs?.status ?? "";
         if (status === "succeeded" || status === "paid") {
+          // Atomic flip: only the request that actually transitions the row
+          // from unpaid → paid gets a row back, so the certificate email is
+          // sent EXACTLY ONCE even if several page loads race on confirmation.
           const { data: updated } = await supabase
             .from("course_completions")
             .update({ paid: true, paid_at: new Date().toISOString() })
             .eq("id", id)
+            .eq("paid", false)
             .select("*")
-            .single();
+            .maybeSingle();
           if (updated) {
             row = updated as CompletionRow;
-            // First time this cert is confirmed paid — email it to the student (non-fatal).
+            // First (and only) confirmation — email it to the student (non-fatal).
             await sendCertificateEmail(row);
+          } else {
+            // A concurrent request already flipped it; just show the paid record.
+            const { data: fresh } = await supabase
+              .from("course_completions")
+              .select("*")
+              .eq("id", id)
+              .single();
+            if (fresh) row = fresh as CompletionRow;
           }
         }
       }
