@@ -2,7 +2,7 @@
 // certificate checkout / issue / PDF routes. Server-only utilities live here so
 // the API routes stay thin and consistent with the existing payment routes.
 
-export const CERT_PRICE_PHP = 60; // PayMongo QR Ph
+export const CERT_PRICE_PHP = 99; // PayMongo QR Ph
 export const CERT_PRICE_USD = 1; // PayPal (international + card)
 
 export const PAYMONGO_BASE = "https://api.paymongo.com/v1";
@@ -30,7 +30,7 @@ export type CompletionRow = {
   student_email: string;
   amount: number;
   currency: string;
-  provider: "paymongo" | "paypal";
+  provider: "paymongo" | "paypal" | "credits";
   provider_ref: string | null;
   paid: boolean;
   created_at: string;

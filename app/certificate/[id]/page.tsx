@@ -2,6 +2,8 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { PAYMONGO_BASE, pmAuth, type CompletionRow } from "@/lib/certificate";
+import { sendCertificateEmail } from "@/lib/certificate-email";
+import ResendButton from "./ResendButton";
 
 export const metadata = {
   title: "Your Certificate | BVN",
@@ -42,7 +44,11 @@ async function loadCertificate(id: string): Promise<CompletionRow | null> {
             .eq("id", id)
             .select("*")
             .single();
-          if (updated) row = updated as CompletionRow;
+          if (updated) {
+            row = updated as CompletionRow;
+            // First time this cert is confirmed paid — email it to the student (non-fatal).
+            await sendCertificateEmail(row);
+          }
         }
       }
     } catch (e) {
@@ -280,6 +286,7 @@ export default async function CertificatePage({ params }: { params: { id: string
           >
             in  Add to LinkedIn
           </a>
+          <ResendButton id={cert.id} />
           <Link
             href={`/courses/${cert.course_slug}`}
             className="w-full sm:w-auto text-center px-6 py-3 rounded-xl border border-white/15 text-white/70 font-heading font-semibold text-sm hover:bg-white/5 transition-all"
@@ -287,6 +294,10 @@ export default async function CertificatePage({ params }: { params: { id: string
             Back to course
           </Link>
         </div>
+
+        <p className="text-center text-white/30 text-xs mt-3">
+          A copy was emailed to you when this certificate was issued. Use the button above to resend it.
+        </p>
 
         <p className="text-center text-white/30 text-xs mt-6">
           Save your Certificate ID to verify this certificate any time at{" "}

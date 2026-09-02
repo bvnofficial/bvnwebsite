@@ -3,6 +3,8 @@ import { randomUUID } from "crypto";
 import { getCourse } from "@/lib/courses";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import type { CompletionRow } from "@/lib/certificate";
+import { sendCertificateEmail } from "@/lib/certificate-email";
 
 // Pay for a certificate with 1 wallet credit (1 credit = $1 = ₱60 = the cert fee).
 // Requires login. Spends atomically through the spend_credits RPC, then issues the
@@ -88,18 +90,20 @@ export async function POST(req: Request) {
 
     // Issue the certificate.
     const id = randomUUID();
+    const paidAt = new Date().toISOString();
+    const studentName = String(name).trim().slice(0, 120);
     const { error: insertErr } = await admin.from("course_completions").insert({
       id,
       course_slug: course.slug,
       course_title: course.title,
-      student_name: String(name).trim().slice(0, 120),
+      student_name: studentName,
       student_email: cleanEmail,
       amount: 1,
       currency: "CREDIT",
       provider: "credits",
       provider_ref: user.id,
       paid: true,
-      paid_at: new Date().toISOString(),
+      paid_at: paidAt,
     });
 
     if (insertErr) {
@@ -116,6 +120,22 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+
+    // Email the certificate to the student (non-fatal).
+    await sendCertificateEmail({
+      id,
+      course_slug: course.slug,
+      course_title: course.title,
+      student_name: studentName,
+      student_email: cleanEmail,
+      amount: 1,
+      currency: "CREDIT",
+      provider: "credits",
+      provider_ref: user.id,
+      paid: true,
+      created_at: paidAt,
+      paid_at: paidAt,
+    } as CompletionRow);
 
     const balance = typeof spend?.balance === "number" ? spend.balance : undefined;
     return NextResponse.json({ id, balance });

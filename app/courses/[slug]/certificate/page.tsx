@@ -26,6 +26,8 @@ export default function CertificateClaimPage() {
   // (1 credit = $1 = ₱60 = exactly the certificate fee.)
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
+  // If they already own this course's certificate, show it instead of re-charging.
+  const [existingCertId, setExistingCertId] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -43,6 +45,19 @@ export default function CertificateClaimPage() {
         .eq("user_id", u.id)
         .maybeSingle();
       setBalance(wallet?.balance ?? 0);
+
+      // Already earned this certificate? Skip straight to viewing it.
+      try {
+        const res = await fetch("/api/certificate/mine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ courseSlug: slug }),
+        });
+        const d = await res.json();
+        if (d.found && d.id) setExistingCertId(d.id);
+      } catch {
+        /* non-fatal */
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -164,8 +179,26 @@ export default function CertificateClaimPage() {
           </p>
         </div>
 
-        {/* Not-yet-complete gate */}
-        {loaded && !allComplete ? (
+        {/* Already earned → show it, don't ask to pay again */}
+        {existingCertId ? (
+          <div className="bg-white/[0.04] border border-emerald-500/20 rounded-2xl p-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 mb-4">
+              <Award className="text-emerald-400" size={26} />
+            </div>
+            <p className="text-white font-heading font-bold text-lg mb-2">
+              You already have this certificate
+            </p>
+            <p className="text-white/50 text-sm leading-relaxed mb-6">
+              No need to pay again. View or download it, or re-send it to your email.
+            </p>
+            <Link
+              href={`/certificate/${existingCertId}`}
+              className="inline-block px-6 py-3 rounded-xl bg-orange text-white font-heading font-semibold text-sm hover:bg-orange-light transition-all"
+            >
+              View my certificate →
+            </Link>
+          </div>
+        ) : loaded && !allComplete ? (
           <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 text-center">
             <Lock className="text-white/40 mx-auto mb-4" size={28} />
             <p className="text-white/80 font-heading font-semibold mb-2">
@@ -216,7 +249,7 @@ export default function CertificateClaimPage() {
             {/* Price */}
             <div className="flex items-center justify-between bg-white/[0.03] border border-white/8 rounded-xl px-4 py-3 mb-5">
               <span className="text-white/60 text-sm">Certificate fee</span>
-              <span className="text-white font-heading font-bold">₱60 <span className="text-white/40 font-normal text-sm">/ $1</span></span>
+              <span className="text-white font-heading font-bold">₱99 <span className="text-white/40 font-normal text-sm">/ $1</span></span>
             </div>
 
             {/* Pay with wallet credits (1 credit = the full fee) */}
@@ -282,7 +315,7 @@ export default function CertificateClaimPage() {
               }`}
             >
               {loading ? <Loader2 className="animate-spin" size={16} /> : <QrCode size={16} />}
-              Pay ₱60 with QR Ph
+              Pay ₱99 with QR Ph
             </button>
 
             {/* Divider */}
