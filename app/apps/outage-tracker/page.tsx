@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Waves, Zap, Wifi, TrainFront, Activity } from "lucide-react";
+import { ArrowLeft, Waves, Zap, Wifi, TrainFront, Activity, Droplets } from "lucide-react";
 import OutageMap from "./OutageMap";
 
 const SITE = "https://www.bvnofficial.com";
@@ -17,6 +17,14 @@ const FAQ: { q: string; a: string }[] = [
   {
     q: "Sira ba ang internet? (Converge, PLDT, Globe, DITO, Sky)",
     a: "May ISP status strip ang tracker para sa Converge, PLDT, Globe, DITO, at Sky. Kapag may kamakailang balita ng outage o service disruption sa isang provider, magbabago ang kulay nito mula green (no reports) tungo sa amber (reported) o red (outage). Ginagamit din namin ang IODA (Georgia Tech) para sa overall na internet health ng buong bansa.",
+  },
+  {
+    q: "Walang tubig ba? (Maynilad / Manila Water)",
+    a: "Sinusubaybayan ng tracker ang water service interruptions mula sa Maynilad, Manila Water, at PrimeWater base sa kanilang mga advisory na na-index kamakailan. Lalabas ang mga ito sa ilalim ng Tubig / Water filter, naka-pin sa lungsod na apektado. Para sa eksaktong schedule ng balik-tubig, tingnan pa rin ang opisyal na advisory ng inyong water provider.",
+  },
+  {
+    q: "May lindol ba ngayon?",
+    a: "Kinukuha ng tracker ang real-time na lindol sa loob at paligid ng Pilipinas mula sa USGS (United States Geological Survey), kasama ang magnitude at epicenter. Nasa ilalim ito ng Lindol / Quake filter — pula kapag M6.0 pataas. Para sa opisyal na intensity at tsunami advisories, sumangguni sa PHIVOLCS.",
   },
   {
     q: "Suspended ba ang MRT, LRT, o PNR ngayon?",
@@ -45,8 +53,10 @@ const REGIONS = [
 
 const WHAT = [
   { Icon: Waves, color: "#3b82f6", title: "Baha / Flooding", body: "Live rainfall sa 30+ lungsod mula sa NASA POWER, plus PAGASA-style advisories." },
-  { Icon: Zap, color: "#f59e0b", title: "Kuryente / Power", body: "Meralco scheduled interruptions at NGCP yellow/red alerts para sa 3 grids." },
+  { Icon: Zap, color: "#f59e0b", title: "Kuryente / Power", body: "Meralco scheduled interruptions (per barangay) at NGCP yellow/red alerts para sa 3 grids." },
   { Icon: Wifi, color: "#10b981", title: "Internet", body: "Per-provider status (Converge, PLDT, Globe, DITO, Sky) plus national health mula sa IODA." },
+  { Icon: Droplets, color: "#06b6d4", title: "Tubig / Water", body: "Water service interruptions mula sa Maynilad, Manila Water, at PrimeWater." },
+  { Icon: Activity, color: "#f43f5e", title: "Lindol / Earthquake", body: "Real-time earthquakes sa buong Pilipinas mula sa USGS — magnitude at epicenter." },
   { Icon: TrainFront, color: "#a855f7", title: "Tren / Rail", body: "MRT-3, LRT-1, LRT-2, at PNR advisories — limited ops, glitch, o normal." },
 ];
 
@@ -106,9 +116,11 @@ export default function Page() {
         <p className="text-xs font-semibold uppercase tracking-widest text-orange-400">Live Tracker · Libre</p>
         <h1 className="mt-2 text-3xl font-bold leading-tight md:text-4xl">BVN Philippines Outage Tracker</h1>
         <p className="mt-3 max-w-3xl text-white/70">
-          Baha ba? Walang kuryente? Sira ba ang internet? Isang live map ng <strong>flooding</strong>,{" "}
-          <strong>brownout</strong>, <strong>internet outage</strong>, at <strong>MRT/LRT advisories</strong> sa
-          buong Pilipinas — Luzon, Visayas, at Mindanao. Nag-a-update tuwing 60 segundo. Walang sign-up.
+          Baha ba? Walang kuryente? Walang tubig? Sira ba ang internet? May lindol? Isang live map ng{" "}
+          <strong>flooding</strong>, <strong>brownout</strong>, <strong>walang tubig</strong>,{" "}
+          <strong>internet outage</strong>, <strong>lindol</strong>, at <strong>MRT/LRT advisories</strong> sa buong
+          Pilipinas — Luzon, Visayas, at Mindanao. I-zoom sa inyong lugar (Metro Manila, Rizal, Cebu, Davao…),
+          i-filter, at i-share ang link. Nag-a-update tuwing 60 segundo. Walang sign-up.
         </p>
 
         {/* the app */}
@@ -172,8 +184,8 @@ export default function Page() {
         <div className="mt-12 rounded-xl border border-white/10 bg-white/[0.03] p-5 text-sm text-white/60">
           <p>
             <strong className="text-white/80">Mga pinagkukunan ng datos:</strong> NASA POWER (rainfall), IODA –
-            Georgia Tech (internet), Meralco (power interruptions), NGCP (grid alerts), at Google News (rail at ISP
-            reports).
+            Georgia Tech (internet), Meralco (power interruptions per barangay), NGCP (grid alerts), USGS
+            (earthquakes), at Google News (rail, ISP, at water advisories).
           </p>
           <p className="mt-2">
             <strong className="text-white/80">Paalala:</strong> Hindi ito opisyal na emergency source. Para sa mga

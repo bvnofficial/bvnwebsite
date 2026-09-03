@@ -136,9 +136,10 @@ export async function getPowerLive(sampleFallback: OutageEvent[]): Promise<Outag
       id: `power-meralco-${e.slug}`,
       type: "power",
       title: `Meralco scheduled interruption: ${e.area ? e.area + ", " : ""}${e.city} (${e.date})`,
-      region: e.city,
-      lat: coords[0],
-      lng: coords[1],
+      region: e.area ? `${e.area}, ${e.city}` : e.city,
+      // Jitter within the city so multiple barangays do not stack on one point.
+      lat: coords[0] + (Math.random() - 0.5) * 0.03,
+      lng: coords[1] + (Math.random() - 0.5) * 0.03,
       severity: "warning" as Severity,
       status: "active",
       source_name: "Meralco (live)",
