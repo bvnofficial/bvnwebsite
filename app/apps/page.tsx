@@ -1,13 +1,22 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag, ShieldCheck, HeartPulse, Home, FileText, Briefcase, FileSignature, ScrollText, ClipboardList, Compass } from "lucide-react";
+import { Sun, ArrowRight, Wrench, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift, Landmark, Calculator, Hash, KeyRound, Building2, Paintbrush, Link2, TrendingUp, Tag, ShieldCheck, HeartPulse, Home, FileText, Briefcase, FileSignature, ScrollText, ClipboardList, Compass, Activity } from "lucide-react";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ShareButtons from "@/components/ui/ShareButtons";
 import JobsSlackCTA from "@/components/ui/JobsSlackCTA";
 
 const apps = [
+  {
+    icon: Activity,
+    title: "PH Outage Tracker",
+    description:
+      "Baha ba? Walang kuryente? Sira ba ang internet? Live map ng flooding, brownout, ISP status (Converge, PLDT, Globe, DITO, Sky), at MRT/LRT advisories sa buong Pilipinas. Free.",
+    href: "/apps/outage-tracker",
+    badge: "🌦️ Live",
+    color: "blue",
+  },
   {
     icon: Briefcase,
     title: "VA Portfolio Builder",

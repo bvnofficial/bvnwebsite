@@ -30,6 +30,7 @@ const ALL_APPS = [
   "image-compressor",
   "floor-plan-designer",
   "tracker-detector",
+  "outage-tracker",
 ];
 
 // Refresh hourly so auto-published posts appear in the sitemap without a redeploy.
