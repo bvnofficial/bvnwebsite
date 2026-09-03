@@ -180,6 +180,19 @@ export default function OutageMap() {
       .filter((e) => (q ? (e.title + " " + e.region).toLowerCase().includes(q) : true));
   }, [events, active, issuesOnly, query]);
 
+  // Warnings & disasters: the active, non-routine alerts across every category,
+  // pulled into their own space so they stand out from routine readings.
+  const alerts = useMemo(() => {
+    type A = { key: string; type: EventType; title: string; region: string; severe: boolean; lat: number | null; lng: number | null; url: string; time: string };
+    const ev: A[] = events
+      .filter((e) => e.type !== "internet" && e.severity !== "info" && e.status === "active")
+      .map((e) => ({ key: e.id, type: e.type, title: e.title, region: e.region, severe: e.severity === "severe", lat: e.lat, lng: e.lng, url: e.source_url, time: e.started_at }));
+    const prov: A[] = (data?.providers ?? [])
+      .filter((p) => p.state !== "operational")
+      .map((p) => ({ key: `prov-${p.name}`, type: "internet", title: p.note || `${p.name}: reported issue`, region: p.name, severe: p.state === "outage", lat: null, lng: null, url: p.source_url || "https://news.google.com", time: p.at || new Date().toISOString() }));
+    return [...prov, ...ev].sort((a, b) => Number(b.severe) - Number(a.severe) || +new Date(b.time) - +new Date(a.time));
+  }, [events, data]);
+
   useEffect(() => {
     const L = window.L;
     if (!L || !mapReady || !layerRef.current) return;
@@ -261,6 +274,45 @@ export default function OutageMap() {
           })}
         </div>
       )}
+
+      {/* warnings & disasters space */}
+      <div className="border-b border-white/10 px-4 py-3" style={{ background: alerts.length ? "rgba(239,68,68,0.05)" : "transparent" }}>
+        <div className="mb-2 flex items-center gap-2">
+          <AlertTriangle size={15} className="text-amber-400" />
+          <span className="text-sm font-semibold text-white">Mga Babala at Sakuna · Warnings &amp; Disasters</span>
+          <span className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+            style={{ background: alerts.length ? "rgba(239,68,68,0.2)" : "rgba(34,197,94,0.15)", color: alerts.length ? "#fca5a5" : "#86efac" }}>
+            {alerts.length}
+          </span>
+        </div>
+        {alerts.length === 0 ? (
+          <div className="flex items-center gap-1.5 text-xs text-emerald-300/90">
+            <Check size={13} /> Walang aktibong babala ngayon — normal ang mga sinusubaybayan.
+          </div>
+        ) : (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {alerts.map((a) => {
+              const color = a.type === "internet" ? "#10b981" : TYPE_META[a.type as Exclude<EventType, "internet">].color;
+              const Icon = a.type === "internet" ? Wifi : TYPE_META[a.type as Exclude<EventType, "internet">].Icon;
+              return (
+                <button key={a.key}
+                  onClick={() => (a.lat != null && a.lng != null ? mapRef.current?.setView([a.lat, a.lng], 11, { animate: true }) : a.url && window.open(a.url, "_blank"))}
+                  className="min-w-[210px] max-w-[250px] shrink-0 rounded-xl border px-3 py-2 text-left transition hover:brightness-125"
+                  style={{ borderColor: a.severe ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.12)", background: a.severe ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.03)" }}>
+                  <div className="flex items-center gap-1.5">
+                    <Icon size={13} style={{ color }} />
+                    <span className="text-[11px] font-semibold uppercase" style={{ color }}>{a.type}</span>
+                    {a.severe && <span className="rounded bg-red-500/25 px-1.5 text-[10px] font-bold text-red-300">SEVERE</span>}
+                    <span className="ml-auto text-[10px] text-slate-500">{timeAgo(a.time)}</span>
+                  </div>
+                  <div className="mt-1 line-clamp-2 text-[12px] leading-snug text-slate-100">{a.title}</div>
+                  <div className="mt-0.5 text-[10px] text-slate-400">{a.region}</div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* controls */}
       <div className="flex flex-wrap items-center gap-2 px-4 py-3">
