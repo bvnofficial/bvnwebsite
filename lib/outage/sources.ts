@@ -7,8 +7,9 @@ import { getRailLive } from "./rail";
 import { getProviders, type ProviderStatus } from "./internet";
 import { getWater } from "./water";
 import { getQuakes } from "./quakes";
+import { getStorms } from "./storm";
 
-export type EventType = "flood" | "rail" | "power" | "internet" | "water" | "quake";
+export type EventType = "flood" | "rail" | "power" | "internet" | "water" | "quake" | "storm";
 export type Severity = "info" | "warning" | "severe";
 
 export interface OutageEvent {
@@ -243,17 +244,18 @@ const CACHE_TTL_MS = 60 * 1000;
 let cache: { at: number; data: Payload } | null = null;
 
 async function buildPayload(): Promise<Payload> {
-  const [floods, rail, power, grid, water, quakes, internet, providers] = await Promise.all([
+  const [floods, rail, power, grid, water, quakes, storms, internet, providers] = await Promise.all([
     getFloods(),
     getRail(),
     getPower(),
     getGridAlerts(),
     getWater(),
     getQuakes(),
+    getStorms(),
     getInternetHealth(),
     getProviders(),
   ]);
-  const events = [...floods, ...rail, ...power, ...grid, ...water, ...quakes];
+  const events = [...floods, ...rail, ...power, ...grid, ...water, ...quakes, ...storms];
   return { events, internet, providers, generated_at: new Date().toISOString() };
 }
 

@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Waves, TrainFront, Zap, Wifi, Droplets, Activity, Search, RefreshCw,
+  Waves, TrainFront, Zap, Wifi, Droplets, Activity, Wind, Search, RefreshCw,
   AlertTriangle, MapPin, Link2, Check,
 } from "lucide-react";
 
-type EventType = "flood" | "rail" | "power" | "internet" | "water" | "quake";
+type EventType = "flood" | "rail" | "power" | "internet" | "water" | "quake" | "storm";
 type Severity = "info" | "warning" | "severe";
 
 interface OutageEvent {
@@ -33,8 +33,9 @@ const TYPE_META: Record<Exclude<EventType, "internet">, { label: string; color: 
   power: { label: "Kuryente / Power", color: "#f59e0b", Icon: Zap },
   water: { label: "Tubig / Water", color: "#06b6d4", Icon: Droplets },
   quake: { label: "Lindol / Quake", color: "#f43f5e", Icon: Activity },
+  storm: { label: "Bagyo / Storm", color: "#6366f1", Icon: Wind },
 };
-const PIN_TYPES: Exclude<EventType, "internet">[] = ["flood", "rail", "power", "water", "quake"];
+const PIN_TYPES: Exclude<EventType, "internet">[] = ["flood", "rail", "power", "water", "quake", "storm"];
 
 // Location zoom presets.
 const AREAS: { id: string; name: string; c: [number, number]; z: number }[] = [
@@ -102,6 +103,7 @@ export default function OutageMap() {
   const [mapReady, setMapReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [severeOnly, setSevereOnly] = useState(false);
   const didInit = useRef(false);
 
   // Read deep-link params once on mount.
@@ -193,6 +195,9 @@ export default function OutageMap() {
     return [...prov, ...ev].sort((a, b) => Number(b.severe) - Number(a.severe) || +new Date(b.time) - +new Date(a.time));
   }, [events, data]);
 
+  const severeCount = useMemo(() => alerts.filter((a) => a.severe).length, [alerts]);
+  const shownAlerts = useMemo(() => (severeOnly ? alerts.filter((a) => a.severe) : alerts), [alerts, severeOnly]);
+
   useEffect(() => {
     const L = window.L;
     if (!L || !mapReady || !layerRef.current) return;
@@ -203,6 +208,7 @@ export default function OutageMap() {
       const marker = L.circleMarker([e.lat, e.lng], {
         radius: e.severity === "severe" ? 11 : e.severity === "warning" ? 8 : 6,
         color, fillColor: color, fillOpacity: 0.7, weight: 2,
+        className: e.severity === "severe" ? "bvn-pulse" : "",
       });
       const meta = TYPE_META[e.type as Exclude<EventType, "internet">];
       marker.bindPopup(
@@ -234,6 +240,7 @@ export default function OutageMap() {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+      <style>{`@keyframes bvnpulse{0%,100%{opacity:.85}50%{opacity:.28}}.bvn-pulse{animation:bvnpulse 1.4s ease-in-out infinite}`}</style>
       {/* header */}
       <div className="flex flex-wrap items-center gap-3 border-b border-white/10 px-4 py-3">
         <span className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-3 py-1 text-xs font-semibold text-white">
@@ -282,16 +289,25 @@ export default function OutageMap() {
           <span className="text-sm font-semibold text-white">Mga Babala at Sakuna · Warnings &amp; Disasters</span>
           <span className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
             style={{ background: alerts.length ? "rgba(239,68,68,0.2)" : "rgba(34,197,94,0.15)", color: alerts.length ? "#fca5a5" : "#86efac" }}>
-            {alerts.length}
+            {alerts.length}{severeCount ? ` · ${severeCount} severe` : ""}
           </span>
+          {severeCount > 0 && (
+            <button onClick={() => setSevereOnly((v) => !v)}
+              className={`ml-auto inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition ${severeOnly ? "border-red-500/50 bg-red-500/20 text-red-200" : "border-white/15 bg-white/5 text-slate-300 hover:border-white/30"}`}>
+              {severeOnly ? "Disasters only ✓" : "Disasters only"}
+            </button>
+          )}
         </div>
-        {alerts.length === 0 ? (
+        {shownAlerts.length === 0 ? (
           <div className="flex items-center gap-1.5 text-xs text-emerald-300/90">
-            <Check size={13} /> Walang aktibong babala ngayon — normal ang mga sinusubaybayan.
+            <Check size={13} />
+            {alerts.length === 0
+              ? " Walang aktibong babala ngayon — normal ang mga sinusubaybayan."
+              : " Walang malalang sakuna (severe) ngayon — i-off ang toggle para makita ang mga babala."}
           </div>
         ) : (
           <div className="flex gap-2 overflow-x-auto pb-1">
-            {alerts.map((a) => {
+            {shownAlerts.map((a) => {
               const color = a.type === "internet" ? "#10b981" : TYPE_META[a.type as Exclude<EventType, "internet">].color;
               const Icon = a.type === "internet" ? Wifi : TYPE_META[a.type as Exclude<EventType, "internet">].Icon;
               return (
@@ -331,6 +347,10 @@ export default function OutageMap() {
             </button>
           );
         })}
+        <button onClick={() => setActive(new Set<string>(PIN_TYPES))}
+          className="rounded-full border border-white/10 bg-transparent px-2.5 py-1.5 text-xs font-medium text-slate-400 transition hover:text-white">All</button>
+        <button onClick={() => setActive(new Set<string>())}
+          className="rounded-full border border-white/10 bg-transparent px-2.5 py-1.5 text-xs font-medium text-slate-400 transition hover:text-white">None</button>
         <button onClick={() => setIssuesOnly((v) => !v)}
           className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${issuesOnly ? "border-red-500/40 bg-red-500/15 text-red-300" : "border-white/10 bg-transparent text-slate-500"}`}>
           <AlertTriangle size={13} /> Issues only
