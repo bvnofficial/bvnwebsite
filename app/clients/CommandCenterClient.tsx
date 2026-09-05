@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Voice AI + GHL Call Flow (application)",
+    region: "AI voice + GoHighLevel agency, contract",
+    scope: "Voice AI · GHL · Retell/Vapi · Webhooks",
+    blurb:
+      "Interactive demo for a GHL plus conversational AI role: a full AI voice call clicked from ring to outcome, with language switchover, voicemail detection, SMS to voice fallback, and chat to human handoff, each showing exactly what GoHighLevel records, tags, and triggers. Includes an integrations explorer (Retell, Vapi, ElevenLabs, OpenAI, Twilio, Make wired into GHL) and the conversation design guardrails, sentiment tagging, transcript and drop off analysis, TCPA aware. Leads with the real Retell build. Applied to alanc@polyagt.com. Built with Claude Code.",
+    href: "/clients/poly-agency/voice-ai-flow",
+    status: "pending",
+    accent: C.blue,
+    tags: ["Voice AI", "GoHighLevel", "Retell", "Webhooks"],
+  },
+  {
     name: "Webinar Funnel Upsell Flow (application)",
     region: "Webinar registration funnel build, hourly",
     scope: "GoHighLevel · Funnels · Stripe · One click upsell",
