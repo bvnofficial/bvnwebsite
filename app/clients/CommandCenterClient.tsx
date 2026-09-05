@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Webinar Funnel Upsell Flow (application)",
+    region: "Webinar registration funnel build, hourly",
+    scope: "GoHighLevel · Funnels · Stripe · One click upsell",
+    blurb:
+      "Interactive demo of the exact webinar funnel the brief describes: registration opt in, a one click $27 upsell, a conditional $17 downsell, and a confirmation page every path lands on. The visitor clicks yes or no at each offer and a breadcrumb shows the branch taken, so the conditional GHL logic and the one click Stripe purchase are shown running, not claimed. Includes an honest phase by phase hours estimate of about 18 to 25 hours, framed as a fixed project. Built with Claude Code.",
+    href: "/clients/webinar-funnel/upsell-flow",
+    status: "pending",
+    accent: C.purple,
+    tags: ["GoHighLevel", "Funnels", "Stripe", "Upsell"],
+  },
+  {
     name: "AI Operator Production Systems (application)",
     region: "US multi-brand retail & wellness, full time",
     scope: "Claude · AI Assistants · Automation",
