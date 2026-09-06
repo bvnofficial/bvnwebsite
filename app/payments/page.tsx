@@ -78,7 +78,7 @@ function PaymentsForm() {
   // PayMongo (GCash/Card PH) and Crypto are always available. The PayPal tab
   // only appears once the public client ID is configured (no half-finished
   // "Card" tab shown to clients).
-  const paypalEnabled = Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+  const paypalEnabled = false; // PayPal removed 2026-09-06 — PayMongo only
   const [method, setMethod] = useState<Method>("paymongo");
   const [paid, setPaid] = useState<PaidDetails | null>(null);
   const [loading, setLoading] = useState(false);
