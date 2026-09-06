@@ -74,8 +74,26 @@ export async function GET(req: Request) {
       body: JSON.stringify({ startDate: ymd(start), endDate: ymd(end), dimensions, rowLimit: dimensions.length ? 1000 : 1 }),
     }).then((r) => r.json());
 
-    const [totalsR, byQuery, byPage] = await Promise.all([q([]), q(["query"]), q(["page"])]);
+    const [totalsR, byQuery, byPage, byPageQuery] = await Promise.all([q([]), q(["query"]), q(["page"]), q(["page", "query"])]);
     const t = (totalsR.rows && totalsR.rows[0]) || {};
+
+    // Best query per page (for the "do this next" opportunities list).
+    const bestQ: Record<string, { query: string; impressions: number; position: number }> = {};
+    for (const r of (byPageQuery.rows || []) as Array<{ keys: string[]; impressions: number; position: number }>) {
+      const [pg, qq] = r.keys;
+      if (!bestQ[pg] || r.impressions > bestQ[pg].impressions) bestQ[pg] = { query: qq, impressions: r.impressions, position: r.position };
+    }
+    // Opportunities: enough impressions, within reach (page 1-2), ranked by impressions.
+    const opportunities = ((byPage.rows || []) as Array<{ keys: string[]; clicks: number; impressions: number; ctr: number; position: number }>)
+      .map((r) => ({
+        page: (r.keys[0] || "").replace(/^https?:\/\/[^/]+/, ""),
+        impressions: r.impressions, clicks: r.clicks, ctr: r.ctr, position: r.position,
+        query: (bestQ[r.keys[0]] || {}).query || "",
+      }))
+      .filter((o) => o.impressions >= 30 && o.position <= 20)
+      .sort((a, b) => b.impressions - a.impressions)
+      .slice(0, 12)
+      .map((o) => ({ ...o, action: o.position <= 10 ? (o.ctr < 0.02 ? "Retitle for CTR" : "Add depth + FAQ") : "Optimize to reach page 1" }));
     // Sort by clicks (then impressions) and keep the top 25 — the API's default
     // row order isn't reliably by clicks for domain properties.
     const rowMap = (rows: Array<{ keys: string[]; clicks: number; impressions: number; ctr: number; position: number }> = []) =>
@@ -89,6 +107,7 @@ export async function GET(req: Request) {
       property,
       range: { start: ymd(start), end: ymd(end) },
       totals: { clicks: t.clicks || 0, impressions: t.impressions || 0, ctr: t.ctr || 0, position: t.position || 0 },
+      opportunities,
       topQueries: rowMap(byQuery.rows),
       topPages: rowMap(byPage.rows),
     });
