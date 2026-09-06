@@ -23,26 +23,26 @@ export async function GET(req: Request) {
   // ── Registered users (Supabase auth) ──
   try {
     let total = 0;
-    let recent: Array<{ email: string | undefined; created_at: string | undefined; confirmed: boolean }> = [];
+    const list: Array<{ email: string | undefined; created_at: string | undefined; confirmed: boolean; last_sign_in: string | null }> = [];
     for (let page = 1; page <= 30; page++) {
       const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 200 });
       if (error || !data?.users?.length) break;
       total += data.users.length;
-      if (page === 1) {
-        recent = data.users.slice(0, 20).map((u) => ({ email: u.email, created_at: u.created_at, confirmed: !!u.email_confirmed_at }));
+      for (const u of data.users) {
+        list.push({ email: u.email, created_at: u.created_at, confirmed: !!u.email_confirmed_at, last_sign_in: u.last_sign_in_at || null });
       }
       if (data.users.length < 200) break;
     }
-    report.users = { total, recent };
+    report.users = { total, recent: list.slice(0, 20), list };
   } catch {
-    report.users = { total: 0, recent: [], error: true };
+    report.users = { total: 0, recent: [], list: [], error: true };
   }
 
   // ── Certificates + revenue ──
   try {
     const { data: paid } = await admin
       .from("course_completions")
-      .select("course_title,course_slug,student_name,student_email,amount,currency,provider,paid_at")
+      .select("id,course_title,course_slug,student_name,student_email,amount,currency,provider,paid_at")
       .eq("paid", true)
       .order("paid_at", { ascending: false })
       .limit(2000);
@@ -71,8 +71,8 @@ export async function GET(req: Request) {
       revenuePHP,
       revenueUSD,
       byCourse: Object.values(byCourse).sort((a, b) => b.issued - a.issued),
-      recent: rows.slice(0, 15).map((r) => ({
-        name: r.student_name, email: r.student_email, course: r.course_title,
+      recent: rows.slice(0, 100).map((r) => ({
+        id: r.id, name: r.student_name, email: r.student_email, course: r.course_title,
         amount: r.amount, currency: r.currency, provider: r.provider, paid_at: r.paid_at,
       })),
     };

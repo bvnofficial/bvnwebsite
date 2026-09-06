@@ -47,12 +47,21 @@ export async function POST(req: Request) {
   let body: { id?: string; action?: string } = {};
   try { body = await req.json(); } catch {}
   const id = String(body.id || "");
-  const action = body.action === "reject" ? "reject" : "approve";
+  const action = body.action === "reject" ? "reject" : body.action === "resend" ? "resend" : "approve";
   if (!id) return NextResponse.json({ error: "missing id" }, { status: 400 });
 
   if (action === "reject") {
     await admin.from("course_completions").delete().eq("id", id).eq("paid", false);
     return NextResponse.json({ ok: true, rejected: true });
+  }
+
+  // Re-send an already-issued certificate to the student.
+  if (action === "resend") {
+    const { data: row } = await admin.from("course_completions").select("*").eq("id", id).maybeSingle();
+    if (!row) return NextResponse.json({ error: "not found" }, { status: 404 });
+    let emailed = false;
+    try { emailed = await sendCertificateEmail(row as CompletionRow); } catch (e) { console.error("cert resend email error:", e); }
+    return NextResponse.json({ ok: true, emailed });
   }
 
   // Approve → flip to paid, then issue the certificate by email.
