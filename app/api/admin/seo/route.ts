@@ -26,10 +26,24 @@ export async function POST(req: Request) {
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ ok: false, error: "not configured" }, { status: 503 });
 
-  let body: { action?: string; slug?: string } = {};
+  let body: { action?: string; slug?: string; meta_title?: string; meta_description?: string; title?: string } = {};
   try { body = await req.json(); } catch {}
   const action = body.action || "deploy";
   const slug = String(body.slug || "");
+
+  // Update a post's SEO title/description (CTR harvest), then revalidate it.
+  if (action === "meta") {
+    if (!slug) return NextResponse.json({ ok: false, error: "missing slug" }, { status: 400 });
+    const patch: Record<string, string> = {};
+    if (typeof body.meta_title === "string") patch.meta_title = body.meta_title.slice(0, 180);
+    if (typeof body.meta_description === "string") patch.meta_description = body.meta_description.slice(0, 320);
+    if (typeof body.title === "string") patch.title = body.title.slice(0, 180);
+    if (!Object.keys(patch).length) return NextResponse.json({ ok: false, error: "nothing to update" }, { status: 400 });
+    const { error } = await admin.from("blog_posts").update(patch).eq("slug", slug);
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+    revalidatePath("/blog"); revalidatePath(`/blog/${slug}`);
+    return NextResponse.json({ ok: true, slug, updated: Object.keys(patch) });
+  }
 
   if (action === "publish" || action === "unpublish") {
     if (!slug) return NextResponse.json({ ok: false, error: "missing slug" }, { status: 400 });

@@ -27,12 +27,17 @@ export async function generateMetadata({
   const post = await getBlogPostBySlug(params.slug);
   if (!post) return { title: "Post Not Found | BVN" };
 
+  // Stored metaTitle already ends in "| BVN" AND the root layout template
+  // appends "%s | BVN" — which doubled the brand in the SERP. Normalize to
+  // exactly one "| BVN" and set it absolute so the template can't re-append.
+  const pageTitle = `${post.metaTitle.replace(/\s*\|\s*BVN\s*$/i, "").trim()} | BVN`;
+
   return {
-    title: post.metaTitle,
+    title: { absolute: pageTitle },
     description: post.metaDescription,
     keywords: post.keywords.join(", "),
     openGraph: {
-      title: post.metaTitle,
+      title: pageTitle,
       description: post.metaDescription,
       url: `https://www.bvnofficial.com/blog/${post.slug}`,
       type: "article",
@@ -43,7 +48,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: post.metaTitle,
+      title: pageTitle,
       description: post.metaDescription,
       images: [ogImage({ title: post.title, eyebrow: post.category, theme: post.category === "Operations" ? "blue" : "orange" }).url],
     },
