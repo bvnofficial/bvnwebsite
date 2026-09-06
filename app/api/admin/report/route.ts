@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { courses } from "@/lib/courses";
+import { contentPlan } from "@/lib/content-plan";
 
 // Full bvnofficial.com admin report for the BVN OS "bvnofficial" tab.
 // Aggregates registered users, course certificates + revenue, credits wallet,
@@ -110,12 +111,27 @@ export async function GET(req: Request) {
     report.leads = { total: 0, applied: 0 };
   }
 
-  // ── Blog ──
+  // ── Blog (list + status + plan remaining) ──
   try {
-    const { count } = await admin.from("blog_posts").select("*", { count: "exact", head: true });
-    report.blog = { total: count || 0 };
+    const { data: posts } = await admin
+      .from("blog_posts")
+      .select("slug,title,status,category,published_at,created_at")
+      .order("published_at", { ascending: false, nullsFirst: false })
+      .limit(300);
+    const p = posts || [];
+    const have = new Set(p.map((x) => x.slug));
+    const by = (st: string) => p.filter((x) => x.status === st).length;
+    report.blog = {
+      total: p.length,
+      published: by("published"),
+      drafts: by("draft"),
+      scheduled: by("scheduled"),
+      planTotal: contentPlan.length,
+      planRemaining: contentPlan.filter((pp) => !have.has(pp.slug)).length,
+      posts: p,
+    };
   } catch {
-    report.blog = { total: 0 };
+    report.blog = { total: 0, published: 0, drafts: 0, scheduled: 0, planTotal: contentPlan.length, planRemaining: 0, posts: [] };
   }
 
   // ── On-site SEO ──
