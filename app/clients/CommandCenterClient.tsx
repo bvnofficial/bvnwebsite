@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Agency OS Operating System (application)",
+    region: "Marketing agency, project then ongoing",
+    scope: "Agency OS · GHL · Claude Code · AI agents",
+    blurb:
+      "Interactive agency operating system demo for a highly technical GHL plus AI role that names Claude Code and Agency OS directly. Five clickable modules, client onboarding, delivery pipelines, task and project flow, reporting dashboards, and an SOP library, each showing what it does, what powers it in GHL and in custom code, and the outcome. Plus the technical stack (GHL, Make/n8n, webhooks, Claude Code, AI agents) and the Loom plus SOP handover discipline. Codeword AUTOMATE. Built with Claude Code.",
+    href: "/clients/agency-os/operating-system",
+    status: "pending",
+    accent: C.green,
+    tags: ["Agency OS", "GoHighLevel", "Claude Code", "AI Agents"],
+  },
+  {
     name: "Voice AI + GHL Call Flow (application)",
     region: "AI voice + GoHighLevel agency, contract",
     scope: "Voice AI · GHL · Retell/Vapi · Webhooks",
