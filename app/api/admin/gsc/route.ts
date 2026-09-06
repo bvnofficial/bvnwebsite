@@ -71,13 +71,18 @@ export async function GET(req: Request) {
     const q = (dimensions: string[]) => fetch(api, {
       method: "POST",
       headers: { ...authHeader, "Content-Type": "application/json" },
-      body: JSON.stringify({ startDate: ymd(start), endDate: ymd(end), dimensions, rowLimit: dimensions.length ? 25 : 1 }),
+      body: JSON.stringify({ startDate: ymd(start), endDate: ymd(end), dimensions, rowLimit: dimensions.length ? 1000 : 1 }),
     }).then((r) => r.json());
 
     const [totalsR, byQuery, byPage] = await Promise.all([q([]), q(["query"]), q(["page"])]);
     const t = (totalsR.rows && totalsR.rows[0]) || {};
+    // Sort by clicks (then impressions) and keep the top 25 — the API's default
+    // row order isn't reliably by clicks for domain properties.
     const rowMap = (rows: Array<{ keys: string[]; clicks: number; impressions: number; ctr: number; position: number }> = []) =>
-      rows.map((r) => ({ key: r.keys?.[0] || "", clicks: r.clicks, impressions: r.impressions, ctr: r.ctr, position: r.position }));
+      rows.slice()
+        .sort((a, b) => (b.clicks - a.clicks) || (b.impressions - a.impressions))
+        .slice(0, 25)
+        .map((r) => ({ key: r.keys?.[0] || "", clicks: r.clicks, impressions: r.impressions, ctr: r.ctr, position: r.position }));
 
     return NextResponse.json({
       ok: true,
