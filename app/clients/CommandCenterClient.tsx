@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "GHL Audit & CRM Cleanup (application)",
+    region: "Life insurance agency, project then ongoing",
+    scope: "GHL Audit · CRM Cleanup · Troubleshooting · SOPs",
+    blurb:
+      "Interactive GHL account audit for a life insurance agency that wants an audit first, not a build from scratch. Click through eight real findings, duplicate and conflicting workflows, duplicate communications, leads in the wrong pipeline, fragmented tags, dead triggers, lost lead attribution, orphaned automations, each with the symptom, how it is diagnosed, the fix (repair, consolidate, or remove), and how it is documented in an SOP video. Plus the audit method and the teach-as-I-go approach. Codeword GHL SYSTEMS EXPERT. Built with Claude Code.",
+    href: "/clients/ghl-audit/account-cleanup",
+    status: "pending",
+    accent: C.rose,
+    tags: ["GHL Audit", "CRM Cleanup", "Troubleshooting", "SOPs"],
+  },
+  {
     name: "Agency OS Operating System (application)",
     region: "Marketing agency, project then ongoing",
     scope: "Agency OS · GHL · Claude Code · AI agents",
