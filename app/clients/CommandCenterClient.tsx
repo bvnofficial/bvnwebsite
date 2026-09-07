@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Car Detailing Master Template (application)",
+    region: "Car detailing template, GHL web design",
+    scope: "GHL Web Design · Premium UI · Custom Values",
+    blurb:
+      "Premium car detailing website demo for a GHL website design role. A polished, mobile clean master page (hero, services, gallery, social proof, booking) plus a dedicated section mapping the GoHighLevel Custom Values that keep it duplicatable across client accounts with no rebuild. Honest note that hands on GHL builds are in confidential client accounts; this page is the design showcase. Built with Claude Code.",
+    href: "/clients/car-detailing/premium-template",
+    status: "pending",
+    accent: C.amber,
+    tags: ["GHL Web Design", "Premium UI", "Custom Values", "Templates"],
+  },
+  {
     name: "Tax Service Lead Funnel (application)",
     region: "Tax preparation business, ads + GHL",
     scope: "GHL Funnel · Lead Magnet · Ads · Nurture",
