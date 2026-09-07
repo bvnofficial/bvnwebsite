@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Tax Service Lead Funnel (application)",
+    region: "Tax preparation business, ads + GHL",
+    scope: "GHL Funnel · Lead Magnet · Ads · Nurture",
+    blurb:
+      "Interactive tax service lead funnel for an ads plus GoHighLevel role. Click the full path from ad to lead magnet landing page to GHL to booked consultation, with what GHL records at each step, plus tax-specific lead magnet ideas and the follow up nurture. Honest framing on the ads: Google Ads certified and Facebook Lead Ads into GHL, but no tax-specific ad history claimed. Built with Claude Code.",
+    href: "/clients/tax-services/lead-funnel",
+    status: "pending",
+    accent: C.green,
+    tags: ["GHL Funnel", "Lead Gen", "Ads", "Nurture"],
+  },
+  {
     name: "GHL Audit & CRM Cleanup (application)",
     region: "Life insurance agency, project then ongoing",
     scope: "GHL Audit · CRM Cleanup · Troubleshooting · SOPs",
