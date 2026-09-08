@@ -146,7 +146,65 @@ export function faqSchema(items: { question: string; answer: string }[]) {
   };
 }
 
+/**
+ * SoftwareApplication — for the free tools/calculators under /apps.
+ * Marks each as a free web utility (offers price 0), which makes it eligible
+ * for the app rich result and reinforces "free" in the SERP.
+ */
+export function softwareApplicationSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  category?: string; // e.g. "FinanceApplication", "BusinessApplication", "UtilitiesApplication"
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: opts.name,
+    description: opts.description,
+    url: `${SITE_URL}${opts.path}`,
+    applicationCategory: opts.category ?? "BusinessApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "PHP" },
+    provider: { "@id": ORG_ID },
+    inLanguage: ["en", "fil"],
+  };
+}
+
+/** Course node — for /courses pages. Eligible for the course rich result. */
+export function courseSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  price?: string;
+  priceCurrency?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: opts.name,
+    description: opts.description,
+    url: `${SITE_URL}${opts.path}`,
+    provider: { "@id": ORG_ID },
+    ...(opts.price != null
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: opts.price,
+            priceCurrency: opts.priceCurrency ?? "PHP",
+            category: opts.price === "0" ? "Free" : "Paid",
+          },
+        }
+      : {}),
+  };
+}
+
 /** Render-ready helper: serialize one or more schema objects into a <script> string. */
 export function jsonLdScript(schema: object) {
   return { __html: JSON.stringify(schema) };
+}
+
+/** Combine multiple schema nodes into one @graph document (one <script> tag). */
+export function graphScript(nodes: object[]) {
+  return { __html: JSON.stringify({ "@context": "https://schema.org", "@graph": nodes }) };
 }
