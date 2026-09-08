@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "FAT Karting League Operations Dashboard (deal)",
+    region: "Consumer motorsport, UK/DE/US, retainer",
+    scope: "Ops Dashboard · Paid + Social + HubSpot",
+    blurb:
+      "Live COO operations dashboard preview for the FAT Karting League (Smedley Group, Ross McEwen): one screen showing paid media spend and cost per lead, season passes, organic social reach and growth, HubSpot pipeline and lead follow-up speed, an 8-week leads trend, and a needs-attention list. Part of the £1,500/mo 3-month offshore execution proposal (paid media, organic social, HubSpot CRM) delivered with a full onboarding pack (research, content calendar, plan, signable agreement, invoice). Built with Claude Code.",
+    href: "/clients/fat-karting/ops-dashboard",
+    status: "pending",
+    accent: "#E86010",
+    tags: ["Ops Dashboard", "Paid Media", "HubSpot", "Motorsport"],
+  },
+  {
     name: "Car Detailing Master Template (application)",
     region: "Car detailing template, GHL web design",
     scope: "GHL Web Design · Premium UI · Custom Values",
