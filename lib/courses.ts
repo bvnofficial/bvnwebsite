@@ -8386,6 +8386,189 @@ Plan how you'll build reputation from your first projects: how you'll ask for te
       },
     ],
   },
+  {
+    slug: "medical-billing-coding-va",
+    title: "Medical Billing & Coding VA",
+    tagline: "Become the billing specialist US healthcare practices hire remotely.",
+    description:
+      "Learn the exact skills US clinics and billing companies pay Filipino VAs for: reading superbills, coding with ICD-10 and CPT, verifying insurance, submitting clean claims, and working denials. A high-value healthcare niche you can start from home.",
+    icon: "🧾",
+    color: "cyan",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Healthcare",
+    skills: ["Medical Coding (ICD-10 / CPT)", "Claims Submission", "Insurance Verification", "Denial Management", "HIPAA Compliance", "EHR / EMR"],
+    modules: [
+      {
+        number: 1,
+        title: "The US Healthcare Billing Landscape",
+        lessons: [
+          { title: "What a Medical Billing & Coding VA Does", duration: "12 min" },
+          { title: "How US Health Insurance Works (Payers, Plans, Networks)", duration: "14 min" },
+          { title: "The Revenue Cycle From Visit to Payment", duration: "13 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Medical Coding Foundations",
+        lessons: [
+          { title: "ICD-10 Diagnosis Codes Explained", duration: "15 min" },
+          { title: "CPT & HCPCS Procedure Codes", duration: "15 min" },
+          { title: "Modifiers and the Most Common Coding Errors", duration: "13 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Claims & Insurance Workflow",
+        lessons: [
+          { title: "Insurance Eligibility & Benefit Verification", duration: "14 min" },
+          { title: "Submitting a Clean Claim (CMS-1500)", duration: "15 min" },
+          { title: "Clearinghouses & Practice Management Systems", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Denials, Appeals & Accounts Receivable",
+        lessons: [
+          { title: "Reading an EOB and ERA", duration: "13 min" },
+          { title: "Working Denials and Rejections", duration: "15 min" },
+          { title: "Accounts Receivable Follow-up That Gets Paid", duration: "13 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Compliance & Getting Hired",
+        lessons: [
+          { title: "HIPAA Essentials for Billing VAs", duration: "12 min" },
+          { title: "Tools and Certifications Clients Look For", duration: "12 min" },
+          { title: "Landing Your First Medical Billing Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "amazon-fba-va",
+    title: "Amazon FBA VA",
+    tagline: "Run Amazon seller accounts end to end for busy brand owners.",
+    description:
+      "Amazon sellers pay VAs well to manage the work they hate: product research, listing optimization, PPC, inventory, and customer messages. Learn Seller Central from the inside and become the Amazon VA brands keep on retainer.",
+    icon: "📦",
+    color: "yellow",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "E-Commerce",
+    skills: ["Product Research", "Listing Optimization", "Amazon PPC", "Inventory Management", "Seller Central", "Customer Service"],
+    modules: [
+      {
+        number: 1,
+        title: "Amazon Seller Foundations",
+        lessons: [
+          { title: "What an Amazon FBA VA Does", duration: "12 min" },
+          { title: "Seller Central Tour: Where Everything Lives", duration: "14 min" },
+          { title: "FBA vs FBM and Why It Matters", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Product & Market Research",
+        lessons: [
+          { title: "How to Spot a Winning Product", duration: "15 min" },
+          { title: "Competitor and Keyword Research", duration: "14 min" },
+          { title: "Sourcing and Supplier Basics", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Listing Optimization",
+        lessons: [
+          { title: "Writing Titles, Bullets & Descriptions That Sell", duration: "15 min" },
+          { title: "Backend Keywords and A+ Content", duration: "13 min" },
+          { title: "Images and Conversion Rate", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Amazon PPC & Growth",
+        lessons: [
+          { title: "PPC Campaign Structure for Beginners", duration: "15 min" },
+          { title: "Managing ACoS, Bids and Budgets", duration: "14 min" },
+          { title: "Promotions, Reviews and Ranking", duration: "13 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Operations & Getting Hired",
+        lessons: [
+          { title: "Inventory and Restock Planning", duration: "13 min" },
+          { title: "Customer Messages and Account Health", duration: "12 min" },
+          { title: "Landing Your First Amazon Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "customer-support-va",
+    title: "Customer Support VA",
+    tagline: "Deliver the email, chat, and phone support clients rely on.",
+    description:
+      "Great support is the easiest VA role to start and one of the most in demand. Learn help desks, ticketing, tone, and de-escalation so businesses trust you with their customers on email, chat, and phone.",
+    icon: "💬",
+    color: "green",
+    level: "Beginner",
+    duration: "3 weeks",
+    lessons: 15,
+    category: "Customer Support",
+    skills: ["Email Support", "Live Chat", "Help Desk (Zendesk / Freshdesk)", "Ticketing", "Customer Retention", "Tone & Empathy"],
+    modules: [
+      {
+        number: 1,
+        title: "Customer Support Foundations",
+        lessons: [
+          { title: "What a Customer Support VA Does", duration: "11 min" },
+          { title: "The Channels: Email, Chat, Phone and Social", duration: "13 min" },
+          { title: "Tone, Empathy and Brand Voice", duration: "12 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Help Desk Tools",
+        lessons: [
+          { title: "Zendesk and Freshdesk Basics", duration: "14 min" },
+          { title: "Tickets, Tags and Macros", duration: "13 min" },
+          { title: "Knowledge Bases and Canned Replies", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Handling Real Conversations",
+        lessons: [
+          { title: "Answering the Most Common Questions", duration: "13 min" },
+          { title: "De-escalating Angry Customers", duration: "14 min" },
+          { title: "Refunds, Returns and Policies", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Metrics & Quality",
+        lessons: [
+          { title: "Response Time, CSAT and SLAs", duration: "12 min" },
+          { title: "Writing Clear, Fast Replies", duration: "13 min" },
+          { title: "Escalation and Clean Handoffs", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "Building a Support Portfolio With No Experience", duration: "13 min" },
+          { title: "Where Clients Hire Support VAs", duration: "12 min" },
+          { title: "Landing Your First Support Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
 ];
 
 export function getCourse(slug: string): Course | undefined {
