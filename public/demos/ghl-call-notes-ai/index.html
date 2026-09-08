@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>AI Seller Call Notes into GoHighLevel — Make.com Build Blueprint — BVN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --acc:#1e9bd7; --acc2:#43b6ec; --acc3:#0d6f9c; --acc-soft:rgba(30,155,215,.15);
+    --bg:#070b0e; --card:#101820; --card2:#16212b; --card3:#1d2a36;
+    --text:#eef4f8; --muted:#94a7b5; --muted2:#6a7d8b;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --green:#2ec16b; --amber:#e2a33c; --red:#e2603c;
+    --radius:16px; --radius-sm:11px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1100px 560px at 78% -8%,rgba(30,155,215,.14),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 22px}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:var(--disp);color:#fff;letter-spacing:-.015em}
+
+  .top{border-bottom:1px solid var(--line)}
+  .top .inner{max-width:1020px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:10px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;font-size:16px;color:#fff}
+  .brand .mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--acc2),var(--acc3));display:grid;place-items:center;font-size:12px;color:#fff;font-weight:700}
+  .top .cc{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .top .cc:hover{color:var(--acc2)}
+
+  header.hero{padding:48px 0 6px}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc2);font-weight:700;margin-bottom:12px;display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--acc)}
+  h1{font-size:clamp(29px,5vw,44px);font-weight:700;line-height:1.12}
+  h1 span{color:var(--acc2)}
+  .sub{color:var(--muted);font-size:17px;margin-top:14px;max-width:720px}
+  .status{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--line2);padding:7px 14px;border-radius:99px}
+  .dot{width:9px;height:9px;border-radius:99px;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,193,107,.5)}70%{box-shadow:0 0 0 8px rgba(46,193,107,0)}100%{box-shadow:0 0 0 0 rgba(46,193,107,0)}}
+
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 8px}
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px}
+  .fact .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fact .v{font-family:var(--disp);font-size:20px;font-weight:700;color:#fff;margin-top:6px}
+  .fact .v small{font-size:12px;color:var(--muted);font-weight:500}
+
+  section{margin-top:46px}
+  .sec-h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);font-weight:700;margin-bottom:8px}
+  .sec-t{font-size:24px;margin-bottom:8px}
+  .sec-d{color:var(--muted);font-size:15px;max-width:740px;margin-bottom:20px}
+
+  /* scenario chain */
+  .chain{display:grid;gap:10px}
+  .mod{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;display:grid;grid-template-columns:38px 1fr auto;gap:14px;align-items:start;position:relative}
+  .mod .num{width:34px;height:34px;border-radius:9px;background:var(--acc-soft);color:var(--acc2);display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700}
+  .mod .t{font-family:var(--disp);font-size:15px;font-weight:700;color:#fff}
+  .mod .d{font-size:13.5px;color:var(--muted);margin-top:4px}
+  .mod .app{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);border:1px solid var(--line2);border-radius:99px;padding:4px 10px;white-space:nowrap}
+  .mod.filter{border-left:3px solid var(--amber)}
+  .mod.ai{border-left:3px solid var(--acc)}
+  .mod.write{border-left:3px solid var(--green)}
+
+  .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .card h3{font-size:17px;display:flex;align-items:center;gap:9px}
+  .card .ic{width:34px;height:34px;border-radius:9px;background:var(--acc-soft);color:var(--acc2);display:grid;place-items:center;font-size:15px;font-family:var(--mono);font-weight:700}
+  .card ul{list-style:none;margin-top:13px}
+  .card li{font-size:14px;color:var(--muted);padding:6px 0 6px 20px;position:relative;border-bottom:1px solid rgba(255,255,255,.045)}
+  .card li:last-child{border-bottom:none}
+  .card li::before{content:"→";position:absolute;left:0;color:var(--acc2);font-size:12px}
+  .card li b{color:var(--text);font-weight:600}
+
+  /* note mock */
+  .mock{background:var(--card2);border:1px solid var(--line2);border-radius:var(--radius);overflow:hidden}
+  .mock .bar{background:var(--card3);padding:11px 16px;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+  .mock .bar .lamp{width:8px;height:8px;border-radius:99px;background:var(--green)}
+  .mock .bar .rt{margin-left:auto;color:var(--muted2)}
+  .mock .body{padding:18px 20px}
+  .nrow{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px}
+  .nrow:last-child{border-bottom:none}
+  .nrow .lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--acc2);padding-top:3px}
+  .nrow .vl{color:var(--text)}
+  .nrow .vl em{color:var(--muted);font-style:normal}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10px;border-radius:99px;padding:3px 9px;margin:2px 5px 2px 0;border:1px solid var(--line2);color:var(--muted)}
+  .tag.hot{color:var(--green);border-color:rgba(46,193,107,.4);background:rgba(46,193,107,.1)}
+  .tag.warn{color:var(--amber);border-color:rgba(226,163,60,.4);background:rgba(226,163,60,.1)}
+
+  pre{background:var(--card2);border:1px solid var(--line2);border-radius:var(--radius-sm);padding:18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;color:#cfe3ef;line-height:1.7}
+  pre .k{color:var(--acc2)}
+  pre .s{color:#9fd6a8}
+  pre .c{color:var(--muted2)}
+
+  /* guardrails */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .g{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px}
+  .g .h{font-family:var(--disp);font-size:14.5px;font-weight:700;color:#fff;margin-bottom:6px}
+  .g p{font-size:13px;color:var(--muted)}
+
+  /* timeline */
+  .tl{display:grid;gap:0}
+  .tli{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .tli:last-child{border-bottom:none}
+  .tli .w{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--acc2);padding-top:3px}
+  .tli .b{font-family:var(--disp);font-size:15px;font-weight:700;color:#fff}
+  .tli .p{font-size:13.5px;color:var(--muted);margin-top:3px}
+
+  /* proof gallery */
+  .shots{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .shot{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .shot img{width:100%;display:block;border-bottom:1px solid var(--line)}
+  .shot .cap{padding:13px 16px}
+  .shot .cap b{font-family:var(--disp);font-size:14px;color:#fff;display:block}
+  .shot .cap span{font-size:12.5px;color:var(--muted)}
+
+  .note{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:var(--radius-sm);padding:18px 20px;color:var(--muted);font-size:14.5px}
+  .note b{color:var(--text)}
+
+  footer{margin-top:54px;border-top:1px solid var(--line);padding-top:24px;font-size:13.5px;color:var(--muted2);line-height:1.9}
+  footer a{color:var(--acc2)}
+  footer .who{font-family:var(--disp);color:#fff;font-size:16px;font-weight:700;margin-bottom:8px}
+
+  @media(max-width:900px){.grid3{grid-template-columns:1fr}}
+  @media(max-width:760px){
+    .facts{grid-template-columns:repeat(2,1fr)}
+    .cols,.shots{grid-template-columns:1fr}
+    .mod{grid-template-columns:34px 1fr}
+    .mod .app{grid-column:2;justify-self:start;margin-top:8px}
+    .nrow,.tli{grid-template-columns:1fr;gap:4px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="inner">
+    <span class="brand"><span class="mark">BVN</span> AI Call Notes Blueprint <span style="color:var(--muted2);font-weight:500">· Real Estate</span></span>
+    <a class="cc" href="https://www.bvnofficial.com/case-studies">Case studies →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Demo built for this role</div>
+    <h1>You hang up the seller call. <span>The notes are already in GoHighLevel.</span></h1>
+    <p class="sub">A working blueprint for the exact automation in your post: GoHighLevel native calling fires on every completed call, Make.com filters anything under 20 seconds, the transcript goes to an AI that returns structured seller notes, and those notes land on the right contact record before you have put the phone down. Below is the module chain, the note format, the prompt contract and the failure handling.</p>
+    <div class="status"><span class="dot"></span> Built by Benjamin Vincent Yson, one specialist, no agency</div>
+  </header>
+
+  <div class="facts">
+    <div class="fact"><div class="k">Trigger</div><div class="v">20s <small>minimum</small></div></div>
+    <div class="fact"><div class="k">Make modules</div><div class="v">11 <small>one scenario</small></div></div>
+    <div class="fact"><div class="k">Note fields</div><div class="v">6 <small>structured</small></div></div>
+    <div class="fact"><div class="k">Note on record in</div><div class="v">~60s <small>after hang up</small></div></div>
+  </div>
+
+  <section>
+    <div class="sec-h">Section 01</div>
+    <h2 class="sec-t">The Make.com scenario, module by module</h2>
+    <p class="sec-d">One scenario, eleven modules, no duct tape. Every module below has a job and a reason. This is the chain I would build in your Make account, on your GoHighLevel sub account, with your own API keys.</p>
+    <div class="chain">
+      <div class="mod">
+        <div class="num">01</div>
+        <div><div class="t">Custom webhook, call completed</div><div class="d">A GoHighLevel workflow with the Call Status trigger fires on completed inbound and outbound calls and posts contact id, call id, direction, duration and location id to Make.</div></div>
+        <div class="app">GoHighLevel</div>
+      </div>
+      <div class="mod filter">
+        <div class="num">02</div>
+        <div><div class="t">Filter, duration is 20 seconds or more</div><div class="d">Wrong numbers, voicemail drops and hang ups never reach the AI. This one filter is what keeps the note history clean and the running cost near nothing.</div></div>
+        <div class="app">Make filter</div>
+      </div>
+      <div class="mod">
+        <div class="num">03</div>
+        <div><div class="t">Sleep, then fetch the call recording</div><div class="d">A short delay so the recording finishes writing, then an HTTP call to the GoHighLevel API v2 conversations endpoint to pull the recording for that message id.</div></div>
+        <div class="app">HTTP · GHL API v2</div>
+      </div>
+      <div class="mod">
+        <div class="num">04</div>
+        <div><div class="t">Router, transcript available or not</div><div class="d">If GoHighLevel already has a transcript for the call, use it. If it does not, take the audio file down the second branch instead of failing.</div></div>
+        <div class="app">Make router</div>
+      </div>
+      <div class="mod ai">
+        <div class="num">05</div>
+        <div><div class="t">Transcribe the audio</div><div class="d">Whisper transcription on the recording, with speaker separation so the AI knows which lines are you and which lines are the seller. Only runs on the fallback branch.</div></div>
+        <div class="app">OpenAI</div>
+      </div>
+      <div class="mod">
+        <div class="num">06</div>
+        <div><div class="t">Pull contact context</div><div class="d">Fetch the contact from GoHighLevel so the AI sees the property address, the pipeline stage and any earlier notes. Context is the difference between a summary and a useful note.</div></div>
+        <div class="app">GoHighLevel</div>
+      </div>
+      <div class="mod ai">
+        <div class="num">07</div>
+        <div><div class="t">AI summarise, structured JSON out</div><div class="d">One call to the model with a locked real estate prompt and a strict JSON schema covering motivation, property, price, objections, next steps and follow up. JSON, not prose, so nothing downstream has to guess.</div></div>
+        <div class="app">OpenAI</div>
+      </div>
+      <div class="mod">
+        <div class="num">08</div>
+        <div><div class="t">Parse JSON and format the note</div><div class="d">Turn the structured object into the clean note layout shown in the next section, so it is readable at a glance inside the contact timeline.</div></div>
+        <div class="app">Make JSON</div>
+      </div>
+      <div class="mod write">
+        <div class="num">09</div>
+        <div><div class="t">Create the note on the correct contact</div><div class="d">POST to the contact notes endpoint using the contact id that came from the call itself, so the note can never land on the wrong record.</div></div>
+        <div class="app">GHL API v2</div>
+      </div>
+      <div class="mod write">
+        <div class="num">10</div>
+        <div><div class="t">Write the signals back to fields and tags</div><div class="d">Motivation level, asking price and timeline go into custom fields. Tags like seller motivated high or objection price get applied so your pipeline and filters actually move on their own.</div></div>
+        <div class="app">GoHighLevel</div>
+      </div>
+      <div class="mod">
+        <div class="num">11</div>
+        <div><div class="t">Error handler with retry and alert</div><div class="d">Break directive with three retries on the API modules, a data store to stop duplicate notes, and a message to you if a call ever fails to process. Silence is never treated as success.</div></div>
+        <div class="app">Make error route</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 02</div>
+    <h2 class="sec-t">What the note actually looks like on the contact</h2>
+    <p class="sec-d">This is the output format, using a sample seller call. Six sections, always in the same order, scannable in about ten seconds. No essay, no filler, no invented detail.</p>
+    <div class="mock">
+      <div class="bar"><span class="lamp"></span> Contact · Notes · added by Automation <span class="rt">Call 6m 42s · inbound</span></div>
+      <div class="body">
+        <div class="nrow"><div class="lb">Motivation</div><div class="vl">Relocating for work in about three months and does not want to carry two mortgages. Says he would rather move quickly than squeeze the last few thousand out of it. <span class="tag hot">motivation high</span></div></div>
+        <div class="nrow"><div class="lb">Property</div><div class="vl">Four bed two bath on a corner lot, roughly 2,100 square feet, roof replaced four years ago, kitchen original, tenant occupied until the end of next month.</div></div>
+        <div class="nrow"><div class="lb">Price and offer</div><div class="vl">Seller floated 385,000. Comparable discussion landed nearer 360,000 to 370,000. He did not reject that range, asked what a cash close would look like. <span class="tag">price discussed</span></div></div>
+        <div class="nrow"><div class="lb">Objections</div><div class="vl">Wants to know the fee is not coming out of his number, and is nervous about the tenant still being in place at closing. <span class="tag warn">objection tenant</span></div></div>
+        <div class="nrow"><div class="lb">Next steps</div><div class="vl">Send a written range in writing today. Walkthrough booked for Thursday afternoon once he confirms tenant access.</div></div>
+        <div class="nrow"><div class="lb">Follow up</div><div class="vl">Call back Monday if the walkthrough is not confirmed by Friday. He asked for text rather than email. <em>Task created and due date set automatically.</em></div></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Sample content, real format.</b> The seller call above is an illustration, not a real client record. The layout, the field names and the tagging are exactly what the build produces.</div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 03</div>
+    <h2 class="sec-t">The prompt contract</h2>
+    <p class="sec-d">The model is not asked to write nicely. It is asked to fill a fixed schema and to leave a field empty when the call did not cover it. That single rule is what stops AI notes from quietly inventing a price that was never said.</p>
+    <pre><span class="c">// AI module output, enforced schema</span>
+{
+  <span class="k">"motivation"</span>:      { <span class="k">"summary"</span>: <span class="s">"string"</span>, <span class="k">"level"</span>: <span class="s">"high | medium | low | unknown"</span> },
+  <span class="k">"property"</span>:        { <span class="k">"beds"</span>: <span class="s">"string"</span>, <span class="k">"baths"</span>: <span class="s">"string"</span>, <span class="k">"condition"</span>: <span class="s">"string"</span>, <span class="k">"occupancy"</span>: <span class="s">"string"</span> },
+  <span class="k">"price"</span>:           { <span class="k">"seller_ask"</span>: <span class="s">"string"</span>, <span class="k">"range_discussed"</span>: <span class="s">"string"</span>, <span class="k">"flexible"</span>: <span class="s">"boolean | null"</span> },
+  <span class="k">"objections"</span>:      [ <span class="s">"string"</span> ],
+  <span class="k">"next_steps"</span>:      [ { <span class="k">"action"</span>: <span class="s">"string"</span>, <span class="k">"owner"</span>: <span class="s">"me | seller"</span>, <span class="k">"due"</span>: <span class="s">"date | null"</span> } ],
+  <span class="k">"follow_up"</span>:       { <span class="k">"when"</span>: <span class="s">"date | null"</span>, <span class="k">"channel"</span>: <span class="s">"call | text | email"</span> },
+  <span class="k">"tags"</span>:            [ <span class="s">"string"</span> ]
+}
+
+<span class="c">// Rules baked into the system prompt</span>
+<span class="c">// 1. Never state a number the seller did not say.</span>
+<span class="c">// 2. Empty string beats a guess. Unknown is a valid answer.</span>
+<span class="c">// 3. Quote the seller when the wording carries the motivation.</span>
+<span class="c">// 4. Next steps must be actions, not observations.</span></pre>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 04</div>
+    <h2 class="sec-t">The parts that decide whether you trust it in month three</h2>
+    <p class="sec-d">Anyone can wire the happy path. Clean and reliable is what happens on the other days.</p>
+    <div class="grid3">
+      <div class="g"><div class="h">No duplicate notes</div><p>Every processed call id is written to a Make data store and checked first. A replayed webhook or a manual rerun cannot post the same note twice.</p></div>
+      <div class="g"><div class="h">Recording not ready yet</div><p>The recording can lag the call end. The scenario waits, then retries three times before it sends the call down the fallback branch instead of dying.</p></div>
+      <div class="g"><div class="h">Cost stays small</div><p>The under 20 seconds filter runs before any AI module, so you never pay to summarise a voicemail. Long calls are chunked so nothing hits a token wall.</p></div>
+      <div class="g"><div class="h">Wrong contact is impossible</div><p>The contact id comes from the call payload itself, never from a phone number lookup, so shared numbers and duplicate records cannot misroute a note.</p></div>
+      <div class="g"><div class="h">You get told when it breaks</div><p>The error route posts the call id and the reason to you. A failed call is visible the same day, not discovered a month later.</p></div>
+      <div class="g"><div class="h">You own all of it</div><p>Your Make account, your GoHighLevel sub account, your OpenAI key. Documented scenario, named modules, a written one page runbook. No lock in to me.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 05</div>
+    <h2 class="sec-t">How I would run the build</h2>
+    <div class="tl">
+      <div class="tli"><div class="w">Days 1 to 2</div><div><div class="b">Access, mapping and the note spec</div><div class="p">Get into the sub account and Make, confirm native calling and recording settings, agree the exact note format and which fields and tags you want written back.</div></div></div>
+      <div class="tli"><div class="w">Days 3 to 5</div><div><div class="b">Core scenario built end to end</div><div class="p">Webhook, filter, recording fetch, transcription fallback, AI module and note creation, tested on your own real recorded calls, not on dummy data.</div></div></div>
+      <div class="tli"><div class="w">Days 6 to 7</div><div><div class="b">Prompt tuning against your calls</div><div class="p">Run a batch of past calls through it, sit with you on the output, and tighten the prompt until the notes read the way you would have written them.</div></div></div>
+      <div class="tli"><div class="w">Days 8 to 10</div><div><div class="b">Guardrails, handover and live</div><div class="p">Dedupe store, retries, error alerts, custom fields and tags, written runbook and a recorded walkthrough. Then it goes live and I watch it for the first week.</div></div></div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Roughly two weeks to live, working part time alongside your calls.</b> Scope, and what it costs to build, is the short conversation I would rather have with you on a call once I have seen the account, than guess at from the outside.</div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 06</div>
+    <h2 class="sec-t">Proof from real builds</h2>
+    <p class="sec-d">Screenshots from live GoHighLevel accounts I built and shipped personally. Same discipline goes into this scenario: clear naming, readable logic, automation the owner can open and understand without me in the room.</p>
+    <div class="shots">
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-01-workflow-library.png" alt="Workflow library in a live GoHighLevel account" />
+        <div class="cap"><b>The full automation library</b><span>Every workflow named and documented, which is how the call notes trigger will be built too.</span></div>
+      </div>
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-02-family-workflows.png" alt="Grouped workflow family in a live GoHighLevel account" />
+        <div class="cap"><b>Workflows grouped in families</b><span>So you can find and edit the call handling logic later without hunting.</span></div>
+      </div>
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-04-pipelines-list.png" alt="Pipeline list in a live GoHighLevel account" />
+        <div class="cap"><b>Pipelines built around the business</b><span>Stages that match how deals really move, which is what the AI tags will drive.</span></div>
+      </div>
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-05-opportunities-kanban.png" alt="Opportunities kanban board in a live GoHighLevel account" />
+        <div class="cap"><b>Live opportunities board</b><span>Records moving on their own because the automation writes the signals back.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 07</div>
+    <h2 class="sec-t">Why me for this specific build</h2>
+    <div class="cols">
+      <div class="card">
+        <h3><span class="ic">1</span> I have shipped this shape of system</h3>
+        <ul>
+          <li><b>Make.com two way sync, live since 29 July</b> between GoHighLevel and a field service platform, running daily for an Australian client</li>
+          <li><b>AI voice agents in Retell</b> wired into GoHighLevel, so call payloads, transcripts and webhooks are daily work for me</li>
+          <li><b>Full GoHighLevel builds</b> with pipelines, workflow families and custom fields, handed over with written documentation</li>
+          <li><b>API and webhook work</b> against the GoHighLevel v2 API, not just the drag and drop connectors</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="ic">2</span> You work with the builder</h3>
+        <ul>
+          <li>I am not an agency. One person, BVN, building it myself end to end</li>
+          <li>No account manager between you and the scenario</li>
+          <li>Nothing outsourced, so nobody has to be briefed twice</li>
+          <li>Long term is the point. I would rather own this system with you than hand off a file and vanish</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="who">Benjamin Vincent Yson · BVN</div>
+    One hands on specialist. I build everything myself, end to end. No team, no middleman, no outsourcing.<br />
+    WhatsApp +63 981 655 6555 · <a href="https://wa.me/639816556555">wa.me/639816556555</a><br />
+    Website <a href="https://www.bvnofficial.com">bvnofficial.com</a><br />
+    CV and portfolio <a href="https://www.bvnofficial.com/benjaminyson">bvnofficial.com/benjaminyson</a><br />
+    Case studies <a href="https://www.bvnofficial.com/case-studies">bvnofficial.com/case-studies</a>
+  </footer>
+</div>
+
+</body>
+</html>

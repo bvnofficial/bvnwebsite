@@ -30,7 +30,7 @@ export type CompletionRow = {
   student_email: string;
   amount: number;
   currency: string;
-  provider: "paymongo" | "paypal" | "credits";
+  provider: "paymongo" | "paypal" | "credits" | "qrph";
   provider_ref: string | null;
   paid: boolean;
   created_at: string;
