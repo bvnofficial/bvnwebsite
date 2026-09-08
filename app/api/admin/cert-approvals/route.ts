@@ -19,18 +19,21 @@ export async function GET(req: Request) {
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ error: "not configured" }, { status: 503 });
 
+  // Manual-approval providers: QR Ph and crypto (USDT/ERC20) both queue here.
+  const manualProviders = ["qrph", "crypto"];
+
   const { data: pending } = await admin
     .from("course_completions")
-    .select("id,course_slug,course_title,student_name,student_email,provider_ref,amount,currency,created_at")
-    .eq("provider", "qrph")
+    .select("id,course_slug,course_title,student_name,student_email,provider,provider_ref,amount,currency,created_at")
+    .in("provider", manualProviders)
     .eq("paid", false)
     .order("created_at", { ascending: false })
     .limit(200);
 
   const { data: approved } = await admin
     .from("course_completions")
-    .select("id,course_title,student_name,student_email,paid_at")
-    .eq("provider", "qrph")
+    .select("id,course_title,student_name,student_email,provider,paid_at")
+    .in("provider", manualProviders)
     .eq("paid", true)
     .order("paid_at", { ascending: false })
     .limit(25);
