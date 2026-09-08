@@ -8569,6 +8569,189 @@ Plan how you'll build reputation from your first projects: how you'll ask for te
       },
     ],
   },
+  {
+    slug: "tiktok-ugc-va",
+    title: "TikTok & UGC Creator VA",
+    tagline: "Make the short-form content brands are desperate to buy.",
+    description:
+      "Brands pay creators to make authentic TikToks and user-generated content that sells. Learn hooks, trends, phone filming, and CapCut editing, then package it as a UGC service and get booked, all from your phone.",
+    icon: "🎬",
+    color: "rose",
+    level: "Beginner",
+    duration: "3 weeks",
+    lessons: 15,
+    category: "Creative",
+    skills: ["Short-Form Hooks", "TikTok Trends", "Phone Filming", "CapCut Editing", "UGC Scripting", "Creator Rates"],
+    modules: [
+      {
+        number: 1,
+        title: "The Creator Economy & What a UGC VA Does",
+        lessons: [
+          { title: "What TikTok and UGC VAs Actually Do", duration: "12 min" },
+          { title: "UGC vs Influencing vs Paid Ads", duration: "12 min" },
+          { title: "Who Hires UGC Creators and Why", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "TikTok Content Foundations",
+        lessons: [
+          { title: "Hooks, Retention and the Algorithm", duration: "15 min" },
+          { title: "Trends, Sounds and Hashtags", duration: "13 min" },
+          { title: "Shooting Great Video on Just a Phone", duration: "13 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Editing for Short Form",
+        lessons: [
+          { title: "CapCut Basics for Beginners", duration: "15 min" },
+          { title: "Captions, B-roll and Pacing", duration: "13 min" },
+          { title: "Batching a Week of Content Fast", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "UGC for Brands",
+        lessons: [
+          { title: "Reading a UGC Brief", duration: "12 min" },
+          { title: "Scripting Authentic Ads That Convert", duration: "14 min" },
+          { title: "Delivering Files and Handling Revisions", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Paid & Getting Hired",
+        lessons: [
+          { title: "Rates, Packages and Usage Rights", duration: "13 min" },
+          { title: "Building a UGC Portfolio With No Clients", duration: "13 min" },
+          { title: "Landing Your First Brand Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "cold-email-lead-gen-va",
+    title: "Cold Email & Lead-Gen VA",
+    tagline: "Fill client pipelines with booked meetings from cold email.",
+    description:
+      "Agencies and B2B founders pay well for VAs who can build lists, write cold emails that get replies, and book meetings. Learn Apollo, Instantly and Smartlead, deliverability, and follow-up so you become the lead-gen VA clients keep.",
+    icon: "✉️",
+    color: "blue",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Lead Generation",
+    skills: ["List Building", "Lead Enrichment", "Cold Email Copy", "Deliverability", "Follow-up Sequences", "Apollo / Instantly / Smartlead"],
+    modules: [
+      {
+        number: 1,
+        title: "Cold Email Foundations",
+        lessons: [
+          { title: "What a Cold Email & Lead-Gen VA Does", duration: "12 min" },
+          { title: "How Cold Email Actually Works in 2026", duration: "13 min" },
+          { title: "Offer and Targeting Basics (ICP)", duration: "13 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Building the List",
+        lessons: [
+          { title: "Finding and Verifying Leads", duration: "14 min" },
+          { title: "Enrichment and ICP Research", duration: "13 min" },
+          { title: "Tools: Apollo, Instantly and Smartlead", duration: "14 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Writing Emails That Get Replies",
+        lessons: [
+          { title: "Subject Lines and Opening Lines", duration: "14 min" },
+          { title: "The Body and the Ask", duration: "13 min" },
+          { title: "Follow-up Sequences That Book Calls", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Deliverability",
+        lessons: [
+          { title: "Domains, Warmup and DNS (SPF, DKIM, DMARC)", duration: "15 min" },
+          { title: "Avoiding Spam Filters", duration: "13 min" },
+          { title: "Sending Volume and Inbox Rotation", duration: "12 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Booking Meetings & Getting Hired",
+        lessons: [
+          { title: "Handling Replies and Objections", duration: "13 min" },
+          { title: "Reporting and the Metrics Clients Want", duration: "12 min" },
+          { title: "Landing Your First Lead-Gen Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "data-entry-va",
+    title: "Data Entry VA",
+    tagline: "The fastest, most reliable way into a remote VA career.",
+    description:
+      "Data entry is the easiest VA role to land and a proven foot in the door. Learn Sheets and Excel, cleaning and formatting, CRM and web research, and the accuracy and speed clients trust, then win your first client fast.",
+    icon: "⌨️",
+    color: "green",
+    level: "Beginner",
+    duration: "2 weeks",
+    lessons: 15,
+    category: "Foundation",
+    skills: ["Google Sheets", "Excel", "Data Cleaning", "CRM Entry", "Web Research", "Accuracy & Speed"],
+    modules: [
+      {
+        number: 1,
+        title: "Data Entry Foundations",
+        lessons: [
+          { title: "What a Data Entry VA Does", duration: "11 min" },
+          { title: "Accuracy, Speed and Attention to Detail", duration: "12 min" },
+          { title: "The Most Common Data Entry Jobs", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "The Core Tools",
+        lessons: [
+          { title: "Google Sheets and Excel Basics", duration: "15 min" },
+          { title: "Formatting and Cleaning Data", duration: "14 min" },
+          { title: "Formulas Every VA Should Know", duration: "14 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Working With Real Data",
+        lessons: [
+          { title: "CRM and Database Entry", duration: "13 min" },
+          { title: "PDF and Image to Spreadsheet", duration: "12 min" },
+          { title: "Web Research and Basic Scraping", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Quality & Speed",
+        lessons: [
+          { title: "Avoiding and Catching Errors", duration: "12 min" },
+          { title: "Keyboard Shortcuts and Efficiency", duration: "12 min" },
+          { title: "Handling Large Files Without Breaking Them", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "Building a Data Entry Portfolio", duration: "12 min" },
+          { title: "Where the Data Entry Jobs Are", duration: "12 min" },
+          { title: "Landing Your First Client", duration: "13 min" },
+        ],
+      },
+    ],
+  },
 ];
 
 export function getCourse(slug: string): Course | undefined {

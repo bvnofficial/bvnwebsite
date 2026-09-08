@@ -105,6 +105,49 @@ export const contentPlan: PlannedPost[] = [
       "Pillar/hub post that funnels to the /courses page (which already ranks well). Explain how BVN Academy works: 24 free, self-paced VA courses, no sign-up, progress saved in the browser, and an optional ₱99 Certificate of Completion that is verifiable (public verify page + QR + LinkedIn). List the most popular niches and link each to its course page (Healthcare, Airbnb/STR, GoHighLevel, Social Media Management, AI & Automation, E-commerce). Compare honestly to paid VA academies (BVN is free to learn, pay only for the certificate). Route the main CTA to /courses. End with a short FAQ that mirrors the questions on the courses page.",
   },
 
+  {
+    slug: "how-to-become-a-medical-billing-va-philippines",
+    title: "How to Become a Medical Billing VA in the Philippines",
+    metaTitle: "How to Become a Medical Billing VA (Philippines, 2026)",
+    metaDescription:
+      "Step-by-step guide to becoming a medical billing and coding virtual assistant from the Philippines: ICD-10/CPT, claims, rates, free course and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a medical billing va",
+    keywords: ["how to become a medical billing va", "medical billing virtual assistant", "medical coding va philippines", "medical billing va course", "healthcare billing va"],
+    ctaHeading: "Ready to become a Medical Billing VA?",
+    ctaText: "Take the free Medical Billing & Coding VA course and earn your BVN Certificate for ₱99 at /courses/medical-billing-coding-va.",
+    brief:
+      "High-intent, high-value VA post. Cover what a medical billing and coding VA does (superbills, ICD-10 and CPT coding, insurance eligibility, clean claims, denials and AR), why US clinics hire PH VAs for it, the skills and tools to learn, realistic rates (this niche pays more than general admin), HIPAA basics, and a step-by-step path to get hired with no experience. Route to the free course at /courses/medical-billing-coding-va and the verifiable ₱99 certificate. End with a short FAQ.",
+  },
+  {
+    slug: "how-to-become-an-amazon-va-philippines",
+    title: "How to Become an Amazon VA (Amazon FBA Virtual Assistant)",
+    metaTitle: "How to Become an Amazon VA in 2026 (Skills, Rates, Certificate)",
+    metaDescription:
+      "Become an Amazon FBA virtual assistant: product research, listings, PPC, Seller Central, rates, plus a free BVN course and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become an amazon va",
+    keywords: ["how to become an amazon va", "amazon virtual assistant", "amazon fba va", "amazon seller va", "amazon va course philippines"],
+    ctaHeading: "Ready to become an Amazon VA?",
+    ctaText: "Take the free Amazon FBA VA course and claim your BVN Certificate for ₱99 at /courses/amazon-fba-va.",
+    brief:
+      "High-intent VA post. Cover what an Amazon FBA VA does (product and keyword research, listing optimization, PPC, inventory, Seller Central, customer messages), why brand owners hire VAs, the skills and tools to learn, realistic rates, and a step-by-step path to the first client. Route to the free course at /courses/amazon-fba-va and the ₱99 certificate. End with a short FAQ.",
+  },
+  {
+    slug: "how-to-become-a-customer-support-va-philippines",
+    title: "How to Become a Customer Support VA in the Philippines",
+    metaTitle: "How to Become a Customer Support VA (Philippines, 2026)",
+    metaDescription:
+      "Guide to becoming a customer support virtual assistant from the Philippines: email and chat support, help desks, rates, a free course and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a customer support va",
+    keywords: ["how to become a customer support va", "customer support virtual assistant", "chat support va philippines", "customer service va", "support va course"],
+    ctaHeading: "Ready to become a Customer Support VA?",
+    ctaText: "Take the free Customer Support VA course and earn your BVN Certificate for ₱99 at /courses/customer-support-va.",
+    brief:
+      "High-intent, beginner-friendly VA post. Cover what a customer support VA does (email, live chat, phone and social support, help desks like Zendesk/Freshdesk, tickets and macros, de-escalation, refunds and policies), why it is one of the easiest VA roles to start, the tools to learn, realistic PH rates, and a step-by-step path to the first client with no experience. Route to the free course at /courses/customer-support-va and the ₱99 certificate. End with a short FAQ.",
+  },
+
   // ═══════════════ CLUSTER A1 · GoHighLevel & Business Automation ═══════════════
   {
     slug: "gohighlevel-for-small-business",
