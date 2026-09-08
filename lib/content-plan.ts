@@ -148,6 +148,49 @@ export const contentPlan: PlannedPost[] = [
       "High-intent, beginner-friendly VA post. Cover what a customer support VA does (email, live chat, phone and social support, help desks like Zendesk/Freshdesk, tickets and macros, de-escalation, refunds and policies), why it is one of the easiest VA roles to start, the tools to learn, realistic PH rates, and a step-by-step path to the first client with no experience. Route to the free course at /courses/customer-support-va and the ₱99 certificate. End with a short FAQ.",
   },
 
+  {
+    slug: "how-to-become-a-ugc-creator-va-philippines",
+    title: "How to Become a UGC Creator VA (TikTok Content) in the Philippines",
+    metaTitle: "How to Become a UGC Creator VA (TikTok, Philippines 2026)",
+    metaDescription:
+      "Guide to becoming a UGC and TikTok content virtual assistant from the Philippines: hooks, filming, CapCut, brand deals, rates, free course and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a ugc creator",
+    keywords: ["how to become a ugc creator", "ugc va philippines", "tiktok va", "ugc creator philippines", "ugc va course"],
+    ctaHeading: "Ready to become a UGC Creator VA?",
+    ctaText: "Take the free TikTok & UGC Creator VA course and earn your BVN Certificate for ₱99 at /courses/tiktok-ugc-va.",
+    brief:
+      "High-intent VA post for the Philippines. Cover what a UGC and TikTok content VA does (hooks and retention, trends and sounds, phone filming, CapCut editing, scripting authentic brand ads, delivering and revisions), why brands pay for UGC, the skills to build with just a phone, realistic rates and usage rights, and a step-by-step path to the first brand client. Route to the free course at /courses/tiktok-ugc-va and the ₱99 certificate. End with a short FAQ.",
+  },
+  {
+    slug: "how-to-become-a-cold-email-va",
+    title: "How to Become a Cold Email VA (Lead Generation)",
+    metaTitle: "How to Become a Cold Email VA in 2026 (Lead-Gen, Rates)",
+    metaDescription:
+      "Become a cold email and lead-generation virtual assistant: list building, copy, deliverability, booking meetings, rates, plus a free course and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a cold email va",
+    keywords: ["how to become a cold email va", "cold email virtual assistant", "lead generation va", "appointment setting va", "cold email va course"],
+    ctaHeading: "Ready to become a Cold Email VA?",
+    ctaText: "Take the free Cold Email & Lead-Gen VA course and claim your BVN Certificate for ₱99 at /courses/cold-email-lead-gen-va.",
+    brief:
+      "High-intent VA post with strong commercial value. Cover what a cold email and lead-gen VA does (list building and verification, ICP research, writing emails that get replies, follow-up sequences, deliverability with domains and warmup, booking meetings), why agencies and B2B founders pay for it, the tools (Apollo, Instantly, Smartlead), realistic rates, and a step-by-step path to the first client. Route to the free course at /courses/cold-email-lead-gen-va and the ₱99 certificate. End with a short FAQ.",
+  },
+  {
+    slug: "how-to-become-a-data-entry-va-philippines",
+    title: "How to Become a Data Entry VA in the Philippines (Beginner Guide)",
+    metaTitle: "How to Become a Data Entry VA (Philippines, 2026)",
+    metaDescription:
+      "The easiest way into a VA career: become a data entry virtual assistant from the Philippines. Skills, tools, rates, a free course and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a data entry va",
+    keywords: ["how to become a data entry va", "data entry virtual assistant", "data entry va philippines", "online data entry jobs", "data entry va course"],
+    ctaHeading: "Ready to become a Data Entry VA?",
+    ctaText: "Take the free Data Entry VA course and earn your BVN Certificate for ₱99 at /courses/data-entry-va.",
+    brief:
+      "High-intent, beginner VA post for the Philippines. Cover what a data entry VA does (Sheets and Excel, cleaning and formatting, CRM and database entry, PDF and image to data, web research), why it is the easiest first VA role, accuracy and speed, realistic PH rates, and a step-by-step path to the first client with no experience. Be honest about avoiding scam job posts. Route to the free course at /courses/data-entry-va and the ₱99 certificate. End with a short FAQ.",
+  },
+
   // ═══════════════ CLUSTER A1 · GoHighLevel & Business Automation ═══════════════
   {
     slug: "gohighlevel-for-small-business",

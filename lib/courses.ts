@@ -8752,6 +8752,189 @@ Plan how you'll build reputation from your first projects: how you'll ask for te
       },
     ],
   },
+  {
+    slug: "insurance-va",
+    title: "Insurance VA",
+    tagline: "Run the back office US insurance agencies cannot live without.",
+    description:
+      "US insurance agencies hire Filipino VAs to process policies, issue certificates, handle renewals, and service clients inside their agency management systems. Learn the lines of business and the tools, and become the insurance VA agencies keep for years.",
+    icon: "🛡️",
+    color: "blue",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Business",
+    skills: ["Policy Processing", "Certificates of Insurance", "Renewals & Remarketing", "AMS (EZLynx / AMS360)", "Client Servicing", "Compliance"],
+    modules: [
+      {
+        number: 1,
+        title: "The US Insurance Landscape",
+        lessons: [
+          { title: "What an Insurance VA Does", duration: "12 min" },
+          { title: "Lines of Business: P&C, Life and Health", duration: "14 min" },
+          { title: "How Agencies Make Money (and Where VAs Fit)", duration: "12 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Agency Tools & Systems",
+        lessons: [
+          { title: "Agency Management Systems: EZLynx, AMS360, Applied", duration: "15 min" },
+          { title: "Quoting and Rating Basics", duration: "13 min" },
+          { title: "CRM and Pipeline Management", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Core Insurance VA Tasks",
+        lessons: [
+          { title: "Policy Processing and Endorsements", duration: "14 min" },
+          { title: "Certificates of Insurance (COIs)", duration: "13 min" },
+          { title: "Renewals and Remarketing", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Servicing & Compliance",
+        lessons: [
+          { title: "Client Servicing and Claims Support", duration: "13 min" },
+          { title: "Data Entry and Accuracy Standards", duration: "12 min" },
+          { title: "Compliance and Client Confidentiality", duration: "12 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "Skills Insurance Agencies Look For", duration: "12 min" },
+          { title: "Where Insurance VAs Get Hired", duration: "12 min" },
+          { title: "Landing Your First Agency Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "real-estate-isa-va",
+    title: "Real Estate ISA VA",
+    tagline: "Turn cold real estate leads into booked appointments.",
+    description:
+      "Inside Sales Agents are the engine of a real estate team: they call leads, follow up relentlessly, and set appointments for agents. Learn the scripts, CRMs, and follow-up systems US agents pay premium rates for.",
+    icon: "🏠",
+    color: "green",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Real Estate",
+    skills: ["Cold & Warm Calling", "Objection Handling", "Lead Qualification", "CRM (Follow Up Boss / kvCORE)", "Appointment Setting", "Follow-up Systems"],
+    modules: [
+      {
+        number: 1,
+        title: "The ISA Role",
+        lessons: [
+          { title: "What a Real Estate ISA VA Does", duration: "12 min" },
+          { title: "The Lead-to-Appointment Funnel", duration: "13 min" },
+          { title: "Buyer vs Seller Leads", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Prospecting & Calling",
+        lessons: [
+          { title: "Cold and Warm Calling Scripts", duration: "15 min" },
+          { title: "Handling Objections With Confidence", duration: "14 min" },
+          { title: "Texting and Email Follow-up", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "CRM & Lead Management",
+        lessons: [
+          { title: "Follow Up Boss, kvCORE and Sierra", duration: "14 min" },
+          { title: "Lead Routing and Tags", duration: "12 min" },
+          { title: "Long-Term Lead Nurture", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Setting Appointments",
+        lessons: [
+          { title: "Qualifying Leads (Budget, Authority, Need, Timeline)", duration: "13 min" },
+          { title: "Booking and Confirming Appointments", duration: "12 min" },
+          { title: "A Clean Handoff to the Agent", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Metrics & Getting Hired",
+        lessons: [
+          { title: "Dials, Conversations and Appointments Set", duration: "12 min" },
+          { title: "Building an ISA Portfolio", duration: "12 min" },
+          { title: "Landing Your First Real Estate Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "linkedin-lead-gen-va",
+    title: "LinkedIn Lead-Gen VA",
+    tagline: "Book B2B calls from LinkedIn for founders and agencies.",
+    description:
+      "B2B businesses pay VAs to turn LinkedIn into a pipeline: optimized profiles, targeted lists, connection requests that get accepted, and DM sequences that book calls. Learn Sales Navigator and social selling and become the LinkedIn VA clients rely on.",
+    icon: "🔗",
+    color: "cyan",
+    level: "Intermediate",
+    duration: "3 weeks",
+    lessons: 15,
+    category: "Lead Generation",
+    skills: ["Sales Navigator", "Profile Optimization", "Targeted Lead Lists", "Connection & DM Outreach", "Social Selling", "CRM Tracking"],
+    modules: [
+      {
+        number: 1,
+        title: "LinkedIn Lead-Gen Foundations",
+        lessons: [
+          { title: "What a LinkedIn Lead-Gen VA Does", duration: "12 min" },
+          { title: "How B2B Buyers Actually Use LinkedIn", duration: "12 min" },
+          { title: "Profile Optimization for Outreach", duration: "13 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Finding & Targeting Leads",
+        lessons: [
+          { title: "Sales Navigator Basics", duration: "15 min" },
+          { title: "Building Targeted Lead Lists", duration: "13 min" },
+          { title: "ICP and Personalization", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Outreach That Books Calls",
+        lessons: [
+          { title: "Connection Requests That Get Accepted", duration: "13 min" },
+          { title: "DM Sequences That Start Conversations", duration: "14 min" },
+          { title: "Content and Social Selling", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Tools & Automation",
+        lessons: [
+          { title: "LinkedIn Automation Tools and Account Safety", duration: "13 min" },
+          { title: "CRM and Response Tracking", duration: "12 min" },
+          { title: "Combining LinkedIn With Cold Email", duration: "12 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "The Metrics Clients Care About", duration: "12 min" },
+          { title: "Building a LinkedIn Lead-Gen Portfolio", duration: "12 min" },
+          { title: "Landing Your First B2B Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
 ];
 
 export function getCourse(slug: string): Course | undefined {
