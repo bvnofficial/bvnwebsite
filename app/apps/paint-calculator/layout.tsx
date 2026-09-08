@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Paint Calculator Philippines - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Paint Calculator Philippines" description="Calculate how many liters of paint you need for any room, wall or ceiling, with a cost estimate." path="/apps/paint-calculator" category="UtilitiesApplication" />
+      {children}
+    </>
+  );
 }

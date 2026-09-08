@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Password Generator - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Password Generator" description="Generate strong, secure passwords instantly. Customize length and characters. Nothing is stored." path="/apps/password-generator" category="UtilitiesApplication" />
+      {children}
+    </>
+  );
 }

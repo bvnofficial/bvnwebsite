@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Freelance Contract Generator – Free Client Agreement Maker",
@@ -13,5 +14,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Freelance Contract Generator" description="Generate a clear freelance service agreement in minutes — scope, payment, IP, confidentiality, and termination clauses. Download as PDF or HTML. Free, no signup." path="/apps/contract-generator" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }

@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Client Proposal Generator – Free Freelance Proposal Maker",
@@ -13,5 +14,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Client Proposal Generator" description="Create a professional client proposal in minutes — overview, deliverables, timeline, and pricing packages. Download as PDF or HTML. Free, no signup." path="/apps/proposal-generator" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }

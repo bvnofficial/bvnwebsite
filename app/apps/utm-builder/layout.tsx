@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "UTM Link Builder - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="UTM Link Builder" description="Build trackable campaign URLs for Google Analytics, Facebook, TikTok and email marketing." path="/apps/utm-builder" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }

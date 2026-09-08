@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "VA Niche Finder Quiz – Which Virtual Assistant Path Fits You?",
@@ -13,5 +14,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="VA Niche Finder Quiz – Which Virtual Assistant Path Fits You?" description="Take a 7-question quiz to discover the Virtual Assistant niche that fits your strengths — plus the free BVN course to start it. Free, no signup." path="/apps/va-niche-finder" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }
