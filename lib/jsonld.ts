@@ -70,7 +70,10 @@ export const organizationSchema = {
     name: "Benjamin Vincent Yson",
     url: `${SITE_URL}/benjaminyson`,
   },
-  sameAs: ["https://www.facebook.com/bvndigital"],
+  sameAs: [
+    "https://www.facebook.com/bvndigital",
+    "https://x.com/bvnofficial",
+  ],
 };
 
 /**
