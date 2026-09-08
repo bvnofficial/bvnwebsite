@@ -20,6 +20,7 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import { courses, colorStyles } from "@/lib/courses";
 import { CourseProgressBadge } from "@/components/ui/CourseProgressBadge";
 import JobsSlackCTA from "@/components/ui/JobsSlackCTA";
+import { coursesFaq } from "@/lib/courses-faq";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 32 },
@@ -402,6 +403,41 @@ export default function CoursesPage() {
 
       {/* VA Job Board — Slack invite */}
       <JobsSlackCTA />
+
+      {/* FAQ — mirrors the FAQPage schema in layout.tsx (must match for rich results) */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+        variants={sectionVariants}
+        className="py-24 px-6 md:px-12 lg:px-24 bg-navy-surface border-t border-white/5"
+      >
+        <div className="max-w-3xl mx-auto">
+          <SectionHeader
+            label="FAQ"
+            title="Common Questions About BVN Academy"
+            subtitle="Free courses, how to join, and how the ₱99 certificate works."
+            centered
+          />
+          <div className="mt-10 space-y-3">
+            {coursesFaq.map((item) => (
+              <details
+                key={item.question}
+                className="group bg-white/[0.04] border border-white/10 rounded-xl px-5 py-4 transition-colors hover:border-white/20 open:border-orange/30 open:bg-white/[0.06]"
+              >
+                <summary className="flex items-center justify-between cursor-pointer list-none font-heading font-semibold text-white text-sm md:text-base">
+                  {item.question}
+                  <ChevronRight
+                    size={18}
+                    className="text-orange shrink-0 ml-4 transition-transform group-open:rotate-90"
+                  />
+                </summary>
+                <p className="text-white/55 text-sm leading-relaxed mt-3">{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </motion.section>
 
       {/* CTA */}
       <motion.section

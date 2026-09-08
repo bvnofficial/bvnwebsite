@@ -27,6 +27,84 @@ export interface PlannedPost {
 }
 
 export const contentPlan: PlannedPost[] = [
+  // ═══════════════ CLUSTER V0 · VA WINNERS → ₱99 CERTIFICATE (priority) ═══════════════
+  // Queued first (2026-09-08). GSC shows the /courses hub and VA course pages
+  // convert far better than the construction/agency traffic, but have thin
+  // top-of-funnel. These target high-intent "how to become a <niche> VA"
+  // searches for the niches that ACTUALLY sell certificates (Healthcare,
+  // Airbnb/STR, GoHighLevel, Social Media), each funnelling to the free course
+  // and the ₱99 certificate.
+  {
+    slug: "how-to-become-a-healthcare-va-philippines",
+    title: "How to Become a Healthcare VA in the Philippines (Free Course + Certificate)",
+    metaTitle: "How to Become a Healthcare VA in the Philippines (2026 Guide)",
+    metaDescription:
+      "A step-by-step guide to becoming a Healthcare Virtual Assistant from the Philippines: skills, tasks, rates, and a free BVN course with a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a healthcare va",
+    keywords: ["how to become a healthcare va", "healthcare virtual assistant philippines", "medical va course", "healthcare va training", "healthcare va certificate"],
+    ctaHeading: "Ready to become a Healthcare VA?",
+    ctaText: "Take the free Healthcare VA course and earn your BVN Certificate for ₱99. Start now at /courses/healthcare-va.",
+    brief:
+      "High-intent VA post for Filipino career-shifters and new VAs. Cover: what a Healthcare VA does (scheduling, EMR/EHR data entry, patient intake, insurance/eligibility, medical scribing, HIPAA basics), why demand is high, the skills and tools to learn, realistic rates for PH-based Healthcare VAs, and a clear step-by-step path to get hired with no experience. Explicitly route readers to BVN Academy's free Healthcare VA course at /courses/healthcare-va and the verifiable ₱99 Certificate of Completion (downloadable PDF + LinkedIn). Keep it honest and specific to the Philippines. End with a short FAQ.",
+  },
+  {
+    slug: "how-to-become-an-airbnb-va",
+    title: "How to Become an Airbnb VA (Short-Term Rental Virtual Assistant)",
+    metaTitle: "How to Become an Airbnb VA (Short-Term Rental VA) in 2026",
+    metaDescription:
+      "Become an Airbnb / short-term rental virtual assistant: guest communication, listings, cleaning coordination, tools, rates, plus a free course and ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become an airbnb va",
+    keywords: ["how to become an airbnb va", "airbnb virtual assistant", "short term rental va", "str virtual assistant", "airbnb va course"],
+    ctaHeading: "Ready to become an Airbnb VA?",
+    ctaText: "Take the free Airbnb & Short-Term Rental VA course and claim your BVN Certificate for ₱99 at /courses/airbnb-str-va.",
+    brief:
+      "High-intent VA post. Cover what an Airbnb / STR VA does (guest messaging and reviews, calendar and pricing, listing optimization, cleaner and maintenance coordination, tools like Airbnb, Hospitable/Guesty, Slack), why hosts hire VAs, the skills to build, realistic rates, and a step-by-step path to landing the first client. Route to the free course at /courses/airbnb-str-va and the ₱99 verifiable certificate. End with a short FAQ.",
+  },
+  {
+    slug: "how-to-become-a-gohighlevel-va",
+    title: "How to Become a GoHighLevel VA (Free Training + Certificate)",
+    metaTitle: "How to Become a GoHighLevel VA in 2026 (Skills, Rates, Certificate)",
+    metaDescription:
+      "GoHighLevel VAs are in high demand. Learn the skills, tools, and rates to become a GHL virtual assistant, with a free BVN course and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a gohighlevel va",
+    keywords: ["how to become a gohighlevel va", "gohighlevel virtual assistant", "ghl va", "gohighlevel va course", "ghl va certificate"],
+    ctaHeading: "Ready to become a GoHighLevel VA?",
+    ctaText: "Take the free GoHighLevel VA course and earn your BVN Certificate for ₱99 at /courses/gohighlevel-va.",
+    brief:
+      "High-intent VA post, strong commercial overlap with the GHL cluster. Cover what a GoHighLevel VA does (funnels and websites, pipelines, workflows and automations, calendars, email/SMS, reputation, snapshots), why agencies and small businesses pay well for GHL VAs, the exact skills and certifications to build, realistic rates, and how to get hired. Route to the free course at /courses/gohighlevel-va and the ₱99 certificate, and internally link the GoHighLevel pillar post. End with a short FAQ.",
+  },
+  {
+    slug: "how-to-become-a-social-media-manager-va-philippines",
+    title: "How to Become a Social Media Manager VA in the Philippines",
+    metaTitle: "How to Become a Social Media Manager VA (Philippines, 2026)",
+    metaDescription:
+      "Step-by-step guide to becoming a social media management virtual assistant from the Philippines: skills, tools, rates, free course, and a ₱99 certificate.",
+    category: "Virtual Assistants",
+    keyword: "how to become a social media manager va",
+    keywords: ["how to become a social media manager va", "social media va philippines", "social media management virtual assistant", "smm va course", "social media va certificate"],
+    ctaHeading: "Ready to become a Social Media VA?",
+    ctaText: "Take the free Social Media Management VA course and claim your BVN Certificate for ₱99 at /courses/social-media-management-va.",
+    brief:
+      "High-intent VA post for the Philippines. Cover what a Social Media Management VA does (content calendars, scheduling, captions and hashtags, community management, basic design in Canva, reporting), the tools to learn, realistic PH rates, and a step-by-step path to the first client. Route to the free course at /courses/social-media-management-va and the ₱99 verifiable certificate. End with a short FAQ.",
+  },
+  {
+    slug: "free-va-courses-with-certificate-philippines",
+    title: "Free VA Courses With a Certificate in the Philippines",
+    metaTitle: "Free VA Courses With Certificate in the Philippines (2026)",
+    metaDescription:
+      "Where to take free virtual assistant courses with a real, verifiable certificate in the Philippines. 24 VA tracks, self-paced, certificate for ₱99.",
+    category: "Virtual Assistants",
+    keyword: "free va courses with certificate philippines",
+    keywords: ["free va courses with certificate", "free virtual assistant course philippines", "va course with certificate", "online va training philippines", "virtual assistant certificate philippines"],
+    ctaHeading: "Start a free VA course today",
+    ctaText: "Browse all 24 free VA courses and earn a verifiable certificate for ₱99 at /courses.",
+    brief:
+      "Pillar/hub post that funnels to the /courses page (which already ranks well). Explain how BVN Academy works: 24 free, self-paced VA courses, no sign-up, progress saved in the browser, and an optional ₱99 Certificate of Completion that is verifiable (public verify page + QR + LinkedIn). List the most popular niches and link each to its course page (Healthcare, Airbnb/STR, GoHighLevel, Social Media Management, AI & Automation, E-commerce). Compare honestly to paid VA academies (BVN is free to learn, pay only for the certificate). Route the main CTA to /courses. End with a short FAQ that mirrors the questions on the courses page.",
+  },
+
   // ═══════════════ CLUSTER A1 · GoHighLevel & Business Automation ═══════════════
   {
     slug: "gohighlevel-for-small-business",

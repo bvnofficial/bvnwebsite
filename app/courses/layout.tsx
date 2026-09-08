@@ -1,6 +1,7 @@
 import { buildMetadata } from "@/lib/og";
-import { breadcrumbSchema, graphScript, SITE_URL } from "@/lib/jsonld";
+import { breadcrumbSchema, faqSchema, graphScript, SITE_URL } from "@/lib/jsonld";
 import { courses } from "@/lib/courses";
+import { coursesFaq } from "@/lib/courses-faq";
 
 export const metadata = buildMetadata({
   title: "Free Virtual Assistant Courses — BVN Academy",
@@ -31,6 +32,7 @@ export default function CoursesLayout({ children }: { children: React.ReactNode 
       { name: "Home", path: "/" },
       { name: "Courses", path: "/courses" },
     ]),
+    faqSchema(coursesFaq),
   ]);
   return (
     <>
