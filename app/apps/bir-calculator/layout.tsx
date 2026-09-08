@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "BIR Withholding Tax Calculator - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="BIR Withholding Tax Calculator" description="Compute your income tax under the TRAIN Law with a step-by-step breakdown, tax bracket and effective rate." path="/apps/bir-calculator" category="FinanceApplication" />
+      {children}
+    </>
+  );
 }

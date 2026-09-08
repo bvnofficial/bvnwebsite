@@ -1,4 +1,7 @@
 import { buildMetadata } from "@/lib/og";
+import { breadcrumbSchema, faqSchema, graphScript, SITE_URL } from "@/lib/jsonld";
+import { courses } from "@/lib/courses";
+import { coursesFaq } from "@/lib/courses-faq";
 
 export const metadata = buildMetadata({
   title: "Free Virtual Assistant Courses — BVN Academy",
@@ -13,5 +16,28 @@ export const metadata = buildMetadata({
 });
 
 export default function CoursesLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  const schema = graphScript([
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Free Virtual Assistant Courses — BVN Academy",
+      itemListElement: courses.map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: c.title,
+        url: `${SITE_URL}/courses/${c.slug}`,
+      })),
+    },
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Courses", path: "/courses" },
+    ]),
+    faqSchema(coursesFaq),
+  ]);
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={schema} />
+      {children}
+    </>
+  );
 }

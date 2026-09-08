@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>District Manager AI Assistant on Claude + Microsoft 365 + n8n — Build Blueprint — BVN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --acc:#1e9bd7; --acc2:#43b6ec; --acc3:#0d6f9c; --acc-soft:rgba(30,155,215,.15);
+    --bg:#070b0e; --card:#101820; --card2:#16212b; --card3:#1d2a36;
+    --text:#eef4f8; --muted:#94a7b5; --muted2:#6a7d8b;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --green:#2ec16b; --amber:#e2a33c; --red:#e2603c;
+    --radius:16px; --radius-sm:11px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1100px 560px at 78% -8%,rgba(30,155,215,.14),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 22px}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:var(--disp);color:#fff;letter-spacing:-.015em}
+
+  .top{border-bottom:1px solid var(--line)}
+  .top .inner{max-width:1020px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:10px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;font-size:16px;color:#fff}
+  .brand .mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--acc2),var(--acc3));display:grid;place-items:center;font-size:12px;color:#fff;font-weight:700}
+  .top .cc{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .top .cc:hover{color:var(--acc2)}
+
+  header.hero{padding:48px 0 6px}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc2);font-weight:700;margin-bottom:12px;display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--acc)}
+  h1{font-size:clamp(29px,5vw,44px);font-weight:700;line-height:1.12}
+  h1 span{color:var(--acc2)}
+  .sub{color:var(--muted);font-size:17px;margin-top:14px;max-width:740px}
+  .status{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--line2);padding:7px 14px;border-radius:99px}
+  .dot{width:9px;height:9px;border-radius:99px;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,193,107,.5)}70%{box-shadow:0 0 0 8px rgba(46,193,107,0)}100%{box-shadow:0 0 0 0 rgba(46,193,107,0)}}
+
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 8px}
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px}
+  .fact .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fact .v{font-family:var(--disp);font-size:20px;font-weight:700;color:#fff;margin-top:6px}
+  .fact .v small{font-size:12px;color:var(--muted);font-weight:500}
+
+  section{margin-top:46px}
+  .sec-h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);font-weight:700;margin-bottom:8px}
+  .sec-t{font-size:24px;margin-bottom:8px}
+  .sec-d{color:var(--muted);font-size:15px;max-width:760px;margin-bottom:20px}
+
+  .chain{display:grid;gap:10px}
+  .mod{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;display:grid;grid-template-columns:38px 1fr auto;gap:14px;align-items:start;position:relative}
+  .mod .num{width:34px;height:34px;border-radius:9px;background:var(--acc-soft);color:var(--acc2);display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700}
+  .mod .t{font-family:var(--disp);font-size:15px;font-weight:700;color:#fff}
+  .mod .d{font-size:13.5px;color:var(--muted);margin-top:4px}
+  .mod .app{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);border:1px solid var(--line2);border-radius:99px;padding:4px 10px;white-space:nowrap}
+  .mod.filter{border-left:3px solid var(--amber)}
+  .mod.ai{border-left:3px solid var(--acc)}
+  .mod.write{border-left:3px solid var(--green)}
+
+  .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .card h3{font-size:17px;display:flex;align-items:center;gap:9px}
+  .card .ic{width:34px;height:34px;border-radius:9px;background:var(--acc-soft);color:var(--acc2);display:grid;place-items:center;font-size:15px;font-family:var(--mono);font-weight:700}
+  .card ul{list-style:none;margin-top:13px}
+  .card li{font-size:14px;color:var(--muted);padding:6px 0 6px 20px;position:relative;border-bottom:1px solid rgba(255,255,255,.045)}
+  .card li:last-child{border-bottom:none}
+  .card li::before{content:"\2192";position:absolute;left:0;color:var(--acc2);font-size:12px}
+  .card li b{color:var(--text);font-weight:600}
+
+  .mock{background:var(--card2);border:1px solid var(--line2);border-radius:var(--radius);overflow:hidden;max-width:430px;margin:0 auto}
+  .mock .bar{background:var(--card3);padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--muted);border-bottom:1px solid var(--line2);display:flex;gap:8px;align-items:center}
+  .mock .bar b{color:#fff;font-weight:600}
+  .mock .body{padding:16px 16px 20px}
+  .mock .line{font-size:14px;color:var(--text);margin-bottom:10px}
+  .mock .line b{color:#fff}
+  .mock .small{font-size:12.5px;color:var(--muted)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-right:6px}
+  .pill.g{background:rgba(46,193,107,.15);color:#6fdb9c}
+  .pill.a{background:rgba(226,163,60,.15);color:#f0c377}
+  .pill.r{background:rgba(226,96,60,.15);color:#f09277}
+  .cite{font-family:var(--mono);font-size:11px;color:var(--muted2);border-top:1px dashed var(--line2);margin-top:12px;padding-top:10px}
+
+  .code{background:#0b1116;border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;font-family:var(--mono);font-size:12.5px;color:#b9cbd7;overflow-x:auto;white-space:pre;line-height:1.75}
+  .code .c{color:var(--muted2)}
+  .code .k{color:var(--acc2)}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-size:13.5px}
+  th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);padding:11px 14px;border-bottom:1px solid var(--line2);background:var(--card2)}
+  td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--muted)}
+  td b{color:var(--text);font-weight:600}
+  tr:last-child td{border-bottom:none}
+
+  .shots{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .shot{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .shot img{width:100%;display:block;border-bottom:1px solid var(--line)}
+  .shot .cap{padding:13px 16px 16px}
+  .shot .cap b{display:block;color:#fff;font-size:14px;font-family:var(--disp)}
+  .shot .cap span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+
+  .honest{background:linear-gradient(180deg,rgba(226,96,60,.07),transparent);border:1px solid rgba(226,96,60,.28)}
+  .honest .ic{background:rgba(226,96,60,.15);color:#f09277}
+
+  footer{margin-top:56px;padding-top:26px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;line-height:1.9}
+  footer .who{font-family:var(--disp);color:#fff;font-size:16px;font-weight:700;margin-bottom:6px}
+  footer a{color:var(--acc2)}
+
+  @media(max-width:760px){
+    .facts{grid-template-columns:repeat(2,1fr)}
+    .cols{grid-template-columns:1fr}
+    .shots{grid-template-columns:1fr}
+    .mod{grid-template-columns:32px 1fr}
+    .mod .app{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="top"><div class="inner">
+  <div class="brand"><span class="mark">B</span> BVN</div>
+  <a class="cc" href="https://www.bvnofficial.com/case-studies">case studies &rarr;</a>
+</div></div>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Build blueprint / prepared for your AI role</div>
+  <h1>Turning operator built prototypes into a <span>district manager assistant</span> that 22 locations can rely on</h1>
+  <p class="sub">This is how I would take the Claude assistants your managers already use and make them scale: source of truth in Microsoft 365, retrieval that is version aware, n8n doing the unattended work, finished PDFs instead of text to reformat, and a test harness that catches a wrong answer before a manager sees it.</p>
+  <div class="status"><span class="dot"></span> Built by Benjamin Vincent Yson, one specialist, no team</div>
+
+  <div class="facts">
+    <div class="fact"><div class="k">Primary model</div><div class="v">Claude <small>Projects, artifacts</small></div></div>
+    <div class="fact"><div class="k">Source of truth</div><div class="v">SharePoint <small>Graph API</small></div></div>
+    <div class="fact"><div class="k">Orchestration</div><div class="v">n8n <small>plus Python</small></div></div>
+    <div class="fact"><div class="k">Output</div><div class="v">PDF / DOCX <small>print ready</small></div></div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-h">Section 01</div>
+  <h2 class="sec-t">The daily report review, end to end</h2>
+  <p class="sec-d">One unattended n8n workflow. It runs before the district manager opens their phone, and every step either succeeds loudly or fails loudly. Nothing silently half runs.</p>
+  <div class="chain">
+    <div class="mod"><div class="num">01</div><div><div class="t">Schedule trigger, 5:30am Central</div><div class="d">Fires per district, not per store, so one manager gets one digest instead of eleven.</div></div><div class="app">n8n</div></div>
+    <div class="mod"><div class="num">02</div><div><div class="t">Pull yesterday's operational reports</div><div class="d">Microsoft Graph reads the day's files and list items from SharePoint and OneDrive. Delta queries, so it only touches what changed.</div></div><div class="app">Graph API</div></div>
+    <div class="mod filter"><div class="num">03</div><div><div class="t">Normalise and validate before the model sees it</div><div class="d">Python cleans the rows, checks every store reported, and flags missing submissions. A missing report is a data problem, not something for Claude to guess about.</div></div><div class="app">Python</div></div>
+    <div class="mod ai"><div class="num">04</div><div><div class="t">Claude reviews against the current policy set</div><div class="d">Structured prompt, XML tagged sections, retrieved policy chunks passed in with their version and effective date. The model is told to answer only from what it was given and to say when it cannot.</div></div><div class="app">Claude</div></div>
+    <div class="mod ai"><div class="num">05</div><div><div class="t">Second pass, compliance and exceptions only</div><div class="d">A separate short call that grades each flagged item green, watch or act, and drops anything it cannot tie to a policy line.</div></div><div class="app">Claude</div></div>
+    <div class="mod"><div class="num">06</div><div><div class="t">Self check before anything is sent</div><div class="d">Every claim must carry a policy ID and effective date. No citation, no send. The item goes to a review queue instead.</div></div><div class="app">n8n</div></div>
+    <div class="mod write"><div class="num">07</div><div><div class="t">Render the finished document</div><div class="d">Python fills a DOCX template that matches your formatting standards, then converts to PDF. The manager gets a document, not a wall of text.</div></div><div class="app">docxtpl</div></div>
+    <div class="mod write"><div class="num">08</div><div><div class="t">Deliver, log, and keep score</div><div class="d">Digest to email or Teams, PDF filed back into SharePoint, and every run logged with token cost, latency, and any item that failed the citation check.</div></div><div class="app">Graph API</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-h">Section 02</div>
+  <h2 class="sec-t">The six month old policy problem</h2>
+  <p class="sec-d">This is the failure your post describes, and it is a content pipeline problem more than a prompting problem. Four things fix it, and all four have to be in place.</p>
+  <div class="cols">
+    <div class="card">
+      <h3><span class="ic">1</span> One place a policy can live</h3>
+      <ul>
+        <li>A single SharePoint library is the source. <b>Nothing is pasted into a prompt or a Project by hand.</b></li>
+        <li>Every document carries owner, version, effective date and review date as real columns</li>
+        <li>If it is not in the library, the assistant does not know it exists</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="ic">2</span> Reindex on change, not on a calendar</h3>
+      <ul>
+        <li>Graph delta or a webhook fires the moment a file is edited</li>
+        <li>The old chunks are <b>deleted, not just superseded</b>, so the stale text is physically gone</li>
+        <li>Reindex finishes in minutes, so there is no long window where two versions are live</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="ic">3</span> Answers have to cite</h3>
+      <ul>
+        <li>Every chunk carries its policy ID, version and effective date into the prompt</li>
+        <li>The answer must name them, and the manager sees them at the bottom of the digest</li>
+        <li>A wrong answer becomes <b>visibly</b> wrong instead of quietly wrong</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="ic">4</span> Stale content gets caught by the system</h3>
+      <ul>
+        <li>Anything past its review date is reported weekly to the owner</li>
+        <li>Expired policy is served with a warning banner or withheld, your call per policy type</li>
+        <li>A monthly diff report shows what changed and what got reindexed</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-h">Section 03</div>
+  <h2 class="sec-t">What the manager actually sees at 6am</h2>
+  <p class="sec-d">Written for a phone screen between store visits. Verdict first, detail underneath, citations at the bottom so it can be checked in ten seconds.</p>
+  <div class="mock">
+    <div class="bar"><b>District 4 daily review</b> &middot; 6 stores</div>
+    <div class="body">
+      <div class="line"><span class="pill r">act</span> <b>Store 118, closing count not submitted</b></div>
+      <div class="line small">Second miss in seven days. Cash handling requires a same day count log. Ask the closing lead for yesterday's sheet before noon.</div>
+      <div class="line" style="margin-top:14px"><span class="pill a">watch</span> <b>Store 106, staffing under plan on Saturday peak</b></div>
+      <div class="line small">Covered two hours short against the posted schedule. No service complaint logged, so this is a heads up, not an escalation.</div>
+      <div class="line" style="margin-top:14px"><span class="pill g">green</span> <b>Four stores clean, nothing needs you</b></div>
+      <div class="line small">102, 109, 114, 121. Reports in on time, no compliance flags.</div>
+      <div class="cite">Sources: POL-CASH-004 v3.1 eff. 2026-05-01 &middot; POL-SCHED-002 v2.0 eff. 2026-01-15<br />1 item withheld, no current policy source found. Sent to review queue.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-h">Section 04</div>
+  <h2 class="sec-t">The prompt structure, not a vibe</h2>
+  <p class="sec-d">Reference material goes in tagged and dated. The instruction to refuse is as important as the instruction to answer.</p>
+  <div class="code"><span class="c">// system prompt, trimmed</span>
+You review daily store reports for a multi location retail
+and wellness operator. Your reader is a district manager
+reading on a phone. Lead with the verdict.
+
+<span class="k">&lt;rules&gt;</span>
+  Answer only from &lt;policy&gt; blocks below.
+  Every compliance claim must name policy_id and effective_date.
+  If no policy block covers it, say so and stop. Do not infer.
+  Never soften a cash handling or safety finding.
+<span class="k">&lt;/rules&gt;</span>
+
+<span class="k">&lt;policy</span> id="POL-CASH-004" version="3.1"
+        effective="2026-05-01" owner="Ops"<span class="k">&gt;</span>
+  ...retrieved chunk text...
+<span class="k">&lt;/policy&gt;</span>
+
+<span class="k">&lt;report</span> store="118" date="2026-08-06"<span class="k">&gt;</span>
+  ...normalised rows...
+<span class="k">&lt;/report&gt;</span>
+
+<span class="c">// output contract, validated in n8n before send</span>
+{ "items": [ { "store", "severity", "finding",
+               "policy_id", "effective_date" } ],
+  "withheld": [ { "reason" } ] }</div>
+</section>
+
+<section>
+  <div class="sec-h">Section 05</div>
+  <h2 class="sec-t">How I would prove it is not drifting</h2>
+  <p class="sec-d">A test set you can read. It runs on every prompt change and every policy reindex, and the numbers go in front of you whether they look good or not.</p>
+  <table>
+    <tr><th>Check</th><th>What it catches</th><th>When it runs</th></tr>
+    <tr><td><b>Golden question set</b></td><td>60 to 100 real manager questions with the correct answer written by your ops lead</td><td>Every prompt change</td></tr>
+    <tr><td><b>Citation validity</b></td><td>Answers citing a policy version that is no longer current</td><td>Every run, automatic</td></tr>
+    <tr><td><b>Refusal test</b></td><td>Questions with no policy source, where a confident answer is the failure</td><td>Weekly</td></tr>
+    <tr><td><b>Reindex diff</b></td><td>Edited policies that never made it into the index</td><td>On every file change</td></tr>
+    <tr><td><b>Manager thumbs down</b></td><td>The real world signal, routed straight into the golden set</td><td>Continuous</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="sec-h">Section 06</div>
+  <h2 class="sec-t">Where I would tell you not to trust it</h2>
+  <div class="card honest">
+    <h3><span class="ic">!</span> The honest list</h3>
+    <ul>
+      <li><b>Anything final on people.</b> Discipline, termination, pay disputes. The assistant can surface the policy and the pattern. A human decides.</li>
+      <li><b>Arithmetic on money.</b> Totals, variances and reconciliations get calculated in code and handed to the model as facts, never computed by it.</li>
+      <li><b>Anything legal or safety critical without a named human sign off.</b> Draft yes, send no.</li>
+      <li><b>Brand new policy in its first week.</b> Watch it, sample the answers, then let it run unattended.</li>
+      <li>I do not build systems that are never wrong. I build systems where <b>wrong is visible, logged, and cheap to fix.</b></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-h">Section 07</div>
+  <h2 class="sec-t">Proof from real builds and my actual setup</h2>
+  <p class="sec-d">Screenshots from live client accounts I built personally, plus the machine and connection I work on, since your post asks about it.</p>
+  <div class="shots">
+    <div class="shot">
+      <img src="https://www.bvnofficial.com/proof/regal-01-workflow-library.png" alt="Automation library in a live client account" />
+      <div class="cap"><b>A real automation library</b><span>Multi step workflows running unattended in a live account, named so someone else can maintain them.</span></div>
+    </div>
+    <div class="shot">
+      <img src="https://www.bvnofficial.com/proof/regal-02-family-workflows.png" alt="Grouped and named workflow family in a live client account" />
+      <div class="cap"><b>Grouped and documented</b><span>Every workflow numbered and grouped, which is the same discipline the documentation requirement in your post asks for.</span></div>
+    </div>
+    <div class="shot">
+      <img src="https://www.bvnofficial.com/proof/bvn-internet-speed.png" alt="Internet speed test result" />
+      <div class="cap"><b>Primary connection</b><span>Well past the 25 Mbps requirement, with a mobile backup line for outages.</span></div>
+    </div>
+    <div class="shot">
+      <img src="https://www.bvnofficial.com/proof/bvn-computer-specs.png" alt="Work computer specifications" />
+      <div class="cap"><b>Dedicated work machine</b><span>My own workstation, used for client builds only.</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-h">Section 08</div>
+  <h2 class="sec-t">What documentation means to me</h2>
+  <div class="cols">
+    <div class="card">
+      <h3><span class="ic">D</span> Per system, in your SharePoint</h3>
+      <ul>
+        <li>What it does, in one paragraph a non technical manager understands</li>
+        <li>The trigger, every step, and every credential it touches</li>
+        <li>Known failure modes and what to do when each one happens</li>
+        <li>Change log, so the next person can see why it looks like this</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="ic">H</span> So you are never stuck with me</h3>
+      <ul>
+        <li>Everything lives in your accounts, your tenant, your n8n</li>
+        <li>Prompts version controlled as files, not buried in a UI</li>
+        <li>Recorded walkthrough for each system as it ships</li>
+        <li>If I disappeared tomorrow, an engineer could pick it up from the docs</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="who">Benjamin Vincent Yson &middot; BVN</div>
+  One hands on specialist. I build everything myself, end to end. No team, no middleman, no outsourcing.<br />
+  WhatsApp +63 981 655 6555 &middot; <a href="https://wa.me/639816556555">wa.me/639816556555</a><br />
+  Website <a href="https://www.bvnofficial.com">bvnofficial.com</a><br />
+  CV and portfolio <a href="https://www.bvnofficial.com/benjaminyson">bvnofficial.com/benjaminyson</a><br />
+  Case studies <a href="https://www.bvnofficial.com/case-studies">bvnofficial.com/case-studies</a>
+</footer>
+
+</div>
+
+</body>
+</html>

@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "13th Month Pay Calculator - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="13th Month Pay Calculator" description="Compute your 13th month pay based on months worked, salary and LWOP deductions, with tax-exempt status." path="/apps/13th-month-calculator" category="FinanceApplication" />
+      {children}
+    </>
+  );
 }

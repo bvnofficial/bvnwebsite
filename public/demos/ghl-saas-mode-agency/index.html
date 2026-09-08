@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>GoHighLevel SaaS Mode Agency Build — Sub-Accounts, Telephony, A2P, AI Call Summaries — BVN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --acc:#1e9bd7; --acc2:#43b6ec; --acc3:#0d6f9c; --acc-soft:rgba(30,155,215,.15);
+    --bg:#070b0e; --card:#101820; --card2:#16212b; --card3:#1d2a36;
+    --text:#eef4f8; --muted:#94a7b5; --muted2:#6a7d8b;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --green:#2ec16b; --amber:#e2a33c; --red:#e2603c;
+    --radius:16px; --radius-sm:11px;
+    --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1100px 560px at 78% -8%,rgba(30,155,215,.14),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 22px}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:var(--disp);color:#fff;letter-spacing:-.015em}
+
+  .top{border-bottom:1px solid var(--line)}
+  .top .inner{max-width:1020px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:10px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;font-size:16px;color:#fff}
+  .brand .mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--acc2),var(--acc3));display:grid;place-items:center;font-size:12px;color:#fff;font-weight:700}
+  .top .cc{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .top .cc:hover{color:var(--acc2)}
+
+  header.hero{padding:48px 0 6px}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc2);font-weight:700;margin-bottom:12px;display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--acc)}
+  h1{font-size:clamp(29px,5vw,44px);font-weight:700;line-height:1.12}
+  h1 span{color:var(--acc2)}
+  .sub{color:var(--muted);font-size:17px;margin-top:14px;max-width:760px}
+  .status{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--line2);padding:7px 14px;border-radius:99px}
+  .dot{width:9px;height:9px;border-radius:99px;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,193,107,.5)}70%{box-shadow:0 0 0 8px rgba(46,193,107,0)}100%{box-shadow:0 0 0 0 rgba(46,193,107,0)}}
+
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 8px}
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px}
+  .fact .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fact .v{font-family:var(--disp);font-size:20px;font-weight:700;color:#fff;margin-top:6px}
+  .fact .v small{font-size:12px;color:var(--muted);font-weight:500}
+
+  section{margin-top:46px}
+  .sec-h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);font-weight:700;margin-bottom:8px}
+  .sec-t{font-size:24px;margin-bottom:8px}
+  .sec-d{color:var(--muted);font-size:15px;max-width:760px;margin-bottom:20px}
+
+  .chain{display:grid;gap:10px}
+  .mod{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;display:grid;grid-template-columns:38px 1fr auto;gap:14px;align-items:start;position:relative}
+  .mod .num{width:34px;height:34px;border-radius:9px;background:var(--acc-soft);color:var(--acc2);display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700}
+  .mod .t{font-family:var(--disp);font-size:15px;font-weight:700;color:#fff}
+  .mod .d{font-size:13.5px;color:var(--muted);margin-top:4px}
+  .mod .app{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);border:1px solid var(--line2);border-radius:99px;padding:4px 10px;white-space:nowrap}
+  .mod.filter{border-left:3px solid var(--amber)}
+  .mod.ai{border-left:3px solid var(--acc)}
+  .mod.write{border-left:3px solid var(--green)}
+
+  .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .card h3{font-size:17px;display:flex;align-items:center;gap:9px}
+  .card .ic{width:34px;height:34px;border-radius:9px;background:var(--acc-soft);color:var(--acc2);display:grid;place-items:center;font-size:15px;font-family:var(--mono);font-weight:700}
+  .card ul{list-style:none;margin-top:13px}
+  .card li{font-size:14px;color:var(--muted);padding:6px 0 6px 20px;position:relative;border-bottom:1px solid rgba(255,255,255,.045)}
+  .card li:last-child{border-bottom:none}
+  .card li::before{content:"→";position:absolute;left:0;color:var(--acc2);font-size:12px}
+  .card li b{color:var(--text);font-weight:600}
+
+  .mock{background:var(--card2);border:1px solid var(--line2);border-radius:var(--radius);overflow:hidden}
+  .mock .bar{background:var(--card3);padding:11px 16px;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+  .mock .bar .lamp{width:8px;height:8px;border-radius:99px;background:var(--green)}
+  .mock .bar .rt{margin-left:auto;color:var(--muted2)}
+  .mock .body{padding:18px 20px}
+  .nrow{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px}
+  .nrow:last-child{border-bottom:none}
+  .nrow .lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--acc2);padding-top:3px}
+  .nrow .vl{color:var(--text)}
+  .nrow .vl em{color:var(--muted);font-style:normal}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10px;border-radius:99px;padding:3px 9px;margin:2px 5px 2px 0;border:1px solid var(--line2);color:var(--muted)}
+  .tag.hot{color:var(--green);border-color:rgba(46,193,107,.4);background:rgba(46,193,107,.1)}
+  .tag.warn{color:var(--amber);border-color:rgba(226,163,60,.4);background:rgba(226,163,60,.1)}
+
+  pre{background:var(--card2);border:1px solid var(--line2);border-radius:var(--radius-sm);padding:18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;color:#cfe3ef;line-height:1.7}
+  pre .k{color:var(--acc2)}
+  pre .s{color:#9fd6a8}
+  pre .c{color:var(--muted2)}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .g{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px}
+  .g .h{font-family:var(--disp);font-size:14.5px;font-weight:700;color:#fff;margin-bottom:6px}
+  .g p{font-size:13px;color:var(--muted)}
+
+  .tl{display:grid;gap:0}
+  .tli{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .tli:last-child{border-bottom:none}
+  .tli .w{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--acc2);padding-top:3px}
+  .tli .b{font-family:var(--disp);font-size:15px;font-weight:700;color:#fff}
+  .tli .p{font-size:13.5px;color:var(--muted);margin-top:3px}
+
+  .snap{display:grid;grid-template-columns:220px 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+  .snap .master{background:var(--card3);padding:22px 20px;border-right:1px solid var(--line)}
+  .snap .master .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc2)}
+  .snap .master .nm{font-family:var(--disp);font-size:17px;font-weight:700;color:#fff;margin-top:6px}
+  .snap .master p{font-size:13px;color:var(--muted);margin-top:8px}
+  .snap .kids{padding:18px 20px;display:grid;gap:9px}
+  .kid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:11px 14px}
+  .kid .n{font-size:14px;color:var(--text);font-weight:600}
+  .kid .m{font-family:var(--mono);font-size:11px;color:var(--muted2);margin-top:2px}
+  .kid .st{font-family:var(--mono);font-size:10px;color:var(--green);border:1px solid rgba(46,193,107,.4);background:rgba(46,193,107,.1);border-radius:99px;padding:3px 9px;white-space:nowrap}
+
+  .shots{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .shot{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .shot img{width:100%;display:block;border-bottom:1px solid var(--line)}
+  .shot .cap{padding:13px 16px}
+  .shot .cap b{font-family:var(--disp);font-size:14px;color:#fff;display:block}
+  .shot .cap span{font-size:12.5px;color:var(--muted)}
+
+  .note{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:var(--radius-sm);padding:18px 20px;color:var(--muted);font-size:14.5px}
+  .note b{color:var(--text)}
+
+  footer{margin-top:54px;border-top:1px solid var(--line);padding-top:24px;font-size:13.5px;color:var(--muted2);line-height:1.9}
+  footer a{color:var(--acc2)}
+  footer .who{font-family:var(--disp);color:#fff;font-size:16px;font-weight:700;margin-bottom:8px}
+
+  @media(max-width:900px){.grid3{grid-template-columns:1fr}.snap{grid-template-columns:1fr}.snap .master{border-right:none;border-bottom:1px solid var(--line)}}
+  @media(max-width:760px){
+    .facts{grid-template-columns:repeat(2,1fr)}
+    .cols,.shots{grid-template-columns:1fr}
+    .mod{grid-template-columns:34px 1fr}
+    .mod .app{grid-column:2;justify-self:start;margin-top:8px}
+    .nrow,.tli{grid-template-columns:1fr;gap:4px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="inner">
+    <span class="brand"><span class="mark">BVN</span> SaaS Mode Agency Build <span style="color:var(--muted2);font-weight:500">· Blueprint</span></span>
+    <a class="cc" href="https://www.bvnofficial.com/case-studies">Case studies →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Pipeline · demo built for this role</div>
+    <h1>One snapshot. Every new team member gets <span>a fully wired sub-account in under an hour.</span></h1>
+    <p class="sub">This is the build described in your post, laid out end to end: agency settings and SaaS Mode, a master snapshot that spins up one sub-account per team member, a dedicated number per sub-account with two way SMS and email, A2P 10DLC registration, recording and transcription on every call, and an AI step that writes a structured call summary onto the contact record by itself. Below is the sub-account factory, the telephony and compliance path, the transcript to summary chain, what the summary looks like on the record, and the handover documentation.</p>
+    <div class="status"><span class="dot"></span> Built by Benjamin Vincent Yson, one specialist, no agency</div>
+  </header>
+
+  <div class="facts">
+    <div class="fact"><div class="k">Spin up a new seat</div><div class="v">&lt;1hr <small>from snapshot</small></div></div>
+    <div class="fact"><div class="k">Numbers</div><div class="v">1:1 <small>per sub-account</small></div></div>
+    <div class="fact"><div class="k">Summary on record</div><div class="v">~90s <small>after hang up</small></div></div>
+    <div class="fact"><div class="k">Handover</div><div class="v">Docs <small>+ walkthrough</small></div></div>
+  </div>
+
+  <section>
+    <div class="sec-h">Section 01</div>
+    <h2 class="sec-t">The sub-account factory</h2>
+    <p class="sec-d">SaaS Mode is easy to switch on and easy to get wrong. The thing that makes it repeatable is a single master template that everything else is cloned from, so sub-account number nine is identical to sub-account number one and you never rebuild anything by hand.</p>
+    <div class="snap">
+      <div class="master">
+        <div class="lbl">Master template</div>
+        <div class="nm">Agency Snapshot v1</div>
+        <p>Pipelines, stages, calendars, custom fields, custom values, tags, email and SMS templates, and every workflow. Version controlled, so v2 pushes to existing sub-accounts without wiping their data.</p>
+      </div>
+      <div class="kids">
+        <div class="kid"><div><div class="n">Team member sub-account 01</div><div class="m">own number · own A2P brand link · own pipeline</div></div><div class="st">cloned</div></div>
+        <div class="kid"><div><div class="n">Team member sub-account 02</div><div class="m">own number · own A2P brand link · own pipeline</div></div><div class="st">cloned</div></div>
+        <div class="kid"><div><div class="n">Team member sub-account 03</div><div class="m">own number · own A2P brand link · own pipeline</div></div><div class="st">cloned</div></div>
+        <div class="kid"><div><div class="n">New hire, next week</div><div class="m">snapshot load · number buy · A2P submit · user invite</div></div><div class="st">45 min</div></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Why it matters in month six.</b> When you change a follow up sequence, you change it once in the master and push. Without this, every sub-account slowly becomes its own custom mess and nobody can support it.</div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 02</div>
+    <h2 class="sec-t">Telephony and A2P 10DLC, the part that quietly kills launches</h2>
+    <p class="sec-d">SMS does not fail loudly. It fails as silent carrier filtering weeks after you go live. This is the order I run it in so registration clears before anyone is relying on texts.</p>
+    <div class="chain">
+      <div class="mod">
+        <div class="num">01</div>
+        <div><div class="t">Brand registration at agency level</div><div class="d">Legal entity name, EIN, address and contact registered once, so every sub-account campaign inherits a verified brand instead of each person filing their own.</div></div>
+        <div class="app">A2P 10DLC</div>
+      </div>
+      <div class="mod">
+        <div class="num">02</div>
+        <div><div class="t">Campaign use case per sub-account</div><div class="d">Sample messages, opt in description and a real opt in path that matches what the forms actually do. Mismatched samples are the single most common rejection reason.</div></div>
+        <div class="app">A2P 10DLC</div>
+      </div>
+      <div class="mod">
+        <div class="num">03</div>
+        <div><div class="t">Dedicated number provisioned and linked</div><div class="d">One number per sub-account, attached to that campaign, set as the default sending number, with the user assigned so outbound calls show the right caller ID.</div></div>
+        <div class="app">GHL telephony</div>
+      </div>
+      <div class="mod">
+        <div class="num">04</div>
+        <div><div class="t">Two way SMS and email verified</div><div class="d">Inbound replies land in the sub-account conversation thread, and a dedicated sending domain with SPF, DKIM and DMARC so email does not land in spam on day one.</div></div>
+        <div class="app">GHL · DNS</div>
+      </div>
+      <div class="mod write">
+        <div class="num">05</div>
+        <div><div class="t">Recording and transcription switched on</div><div class="d">Call recording enabled on inbound and outbound at the sub-account level, transcription enabled, with a written note in the runbook about consent wording per state so you stay clean.</div></div>
+        <div class="app">GHL settings</div>
+      </div>
+      <div class="mod filter">
+        <div class="num">06</div>
+        <div><div class="t">Compliance smoke test before handover</div><div class="d">Real test send to real handsets on the major carriers, a recorded test call each way, and a stop and start keyword check. Nothing is called done because the toggle is green.</div></div>
+        <div class="app">Test pass</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 03</div>
+    <h2 class="sec-t">Transcript to summary, on the contact record, automatically</h2>
+    <p class="sec-d">Your post asked me to advise on native versus third party. My honest answer is start native and only add a layer where native falls short. Native GoHighLevel handles the trigger, the recording and the write back. Where I add Make is transcription reliability and the strict prompt contract, because that is where native gives you the least control.</p>
+    <div class="chain">
+      <div class="mod">
+        <div class="num">01</div>
+        <div><div class="t">Call completed trigger inside the sub-account</div><div class="d">A workflow on the Call Status trigger fires on completed inbound and outbound calls and posts contact id, call id, direction, duration and location id out to the scenario.</div></div>
+        <div class="app">GHL workflow</div>
+      </div>
+      <div class="mod filter">
+        <div class="num">02</div>
+        <div><div class="t">Filter, 20 seconds or more</div><div class="d">Voicemail drops, misdials and hang ups never reach the AI. This one filter is what keeps the contact timeline clean and the running cost near zero.</div></div>
+        <div class="app">Make filter</div>
+      </div>
+      <div class="mod">
+        <div class="num">03</div>
+        <div><div class="t">Wait, then pull the recording and transcript</div><div class="d">Short delay so the recording finishes writing, then the GoHighLevel API v2 conversations endpoint for the recording and the native transcript on that message id.</div></div>
+        <div class="app">GHL API v2</div>
+      </div>
+      <div class="mod">
+        <div class="num">04</div>
+        <div><div class="t">Router, native transcript or fallback</div><div class="d">If the native transcript exists, use it and skip the cost. If it does not, the audio goes down a Whisper branch with speaker separation instead of the whole thing failing.</div></div>
+        <div class="app">Make router</div>
+      </div>
+      <div class="mod">
+        <div class="num">05</div>
+        <div><div class="t">Pull contact context first</div><div class="d">Fetch the contact so the model sees pipeline stage, custom fields and earlier summaries. Context is the difference between a summary and a note somebody actually reads.</div></div>
+        <div class="app">GoHighLevel</div>
+      </div>
+      <div class="mod ai">
+        <div class="num">06</div>
+        <div><div class="t">Structured prompt, JSON out</div><div class="d">One model call against a locked prompt and a fixed schema covering purpose, outcome, commitments, objections, next steps and sentiment. JSON, never prose, so nothing downstream has to guess.</div></div>
+        <div class="app">AI step</div>
+      </div>
+      <div class="mod write">
+        <div class="num">07</div>
+        <div><div class="t">Summary written to the contact record</div><div class="d">Posted as a note on the contact id that came from the call payload itself, so a shared number or a duplicate record can never misroute it.</div></div>
+        <div class="app">GHL API v2</div>
+      </div>
+      <div class="mod write">
+        <div class="num">08</div>
+        <div><div class="t">Fields, tags and pipeline movement</div><div class="d">Outcome, sentiment and next action date land in custom fields, tags get applied, and the opportunity moves stage. This is what makes the follow up sequences fire on their own.</div></div>
+        <div class="app">GoHighLevel</div>
+      </div>
+      <div class="mod">
+        <div class="num">09</div>
+        <div><div class="t">Dedupe store, retries and error alert</div><div class="d">Every processed call id is stored and checked first, API modules retry three times, and a failure pings you with the call id and the reason. Silence is never treated as success.</div></div>
+        <div class="app">Make error route</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 04</div>
+    <h2 class="sec-t">What the summary looks like on the contact</h2>
+    <p class="sec-d">Six sections, always the same order, readable in about ten seconds. No essay, no filler, nothing invented.</p>
+    <div class="mock">
+      <div class="bar"><span class="lamp"></span> Contact · Notes · added by Automation <span class="rt">Call 8m 14s · outbound · sub-account 02</span></div>
+      <div class="body">
+        <div class="nrow"><div class="lb">Purpose</div><div class="vl">Follow up on the quote sent last Tuesday and confirm whether the second location is still in scope for this quarter.</div></div>
+        <div class="nrow"><div class="lb">Outcome</div><div class="vl">Quote accepted in principle for the first location. Second location pushed to next quarter pending their budget cycle. <span class="tag hot">outcome positive</span></div></div>
+        <div class="nrow"><div class="lb">Commitments</div><div class="vl">We send a revised single location agreement by end of day. They confirm the signer and send the billing contact tomorrow morning.</div></div>
+        <div class="nrow"><div class="lb">Objections</div><div class="vl">Wants the start date moved back two weeks so it does not collide with their audit. Asked twice about the cancellation terms. <span class="tag warn">objection timing</span></div></div>
+        <div class="nrow"><div class="lb">Next steps</div><div class="vl">Revised agreement out today. Check in call booked Thursday at 10. <em>Task created, due date set and the opportunity moved to Agreement Sent.</em></div></div>
+        <div class="nrow"><div class="lb">Sentiment</div><div class="vl">Warm and engaged, slightly cautious about timing rather than about price. <span class="tag">sentiment warm</span></div></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Sample content, real format.</b> The call above is an illustration, not a real client record. The layout, the field names and the tagging are exactly what the build produces.</div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 05</div>
+    <h2 class="sec-t">The prompt contract</h2>
+    <p class="sec-d">The model is not asked to write nicely. It is asked to fill a fixed schema and to leave a field empty when the call did not cover it. That one rule is what stops AI summaries from quietly inventing a commitment nobody made.</p>
+    <pre><span class="c">// AI step output, enforced schema</span>
+{
+  <span class="k">"purpose"</span>:     <span class="s">"string"</span>,
+  <span class="k">"outcome"</span>:     { <span class="k">"summary"</span>: <span class="s">"string"</span>, <span class="k">"result"</span>: <span class="s">"won | progressed | stalled | lost | unknown"</span> },
+  <span class="k">"commitments"</span>: [ { <span class="k">"who"</span>: <span class="s">"us | them"</span>, <span class="k">"what"</span>: <span class="s">"string"</span>, <span class="k">"due"</span>: <span class="s">"date | null"</span> } ],
+  <span class="k">"objections"</span>:  [ <span class="s">"string"</span> ],
+  <span class="k">"next_steps"</span>:  [ { <span class="k">"action"</span>: <span class="s">"string"</span>, <span class="k">"owner"</span>: <span class="s">"us | them"</span>, <span class="k">"due"</span>: <span class="s">"date | null"</span> } ],
+  <span class="k">"sentiment"</span>:   { <span class="k">"label"</span>: <span class="s">"warm | neutral | cool"</span>, <span class="k">"why"</span>: <span class="s">"string"</span> },
+  <span class="k">"stage_move"</span>:  <span class="s">"pipeline stage name | null"</span>,
+  <span class="k">"tags"</span>:        [ <span class="s">"string"</span> ]
+}
+
+<span class="c">// Rules baked into the system prompt</span>
+<span class="c">// 1. Never state a number, date or commitment that was not said on the call.</span>
+<span class="c">// 2. Empty beats a guess. Unknown is a valid answer.</span>
+<span class="c">// 3. Quote them when the wording carries the meaning.</span>
+<span class="c">// 4. Next steps are actions with an owner, not observations.</span>
+<span class="c">// 5. Only propose a stage move that exists in this sub-account's pipeline.</span></pre>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 06</div>
+    <h2 class="sec-t">The parts that decide whether you still trust it in month three</h2>
+    <p class="sec-d">Anyone can wire the happy path. Clean and reliable is what happens on the other days.</p>
+    <div class="grid3">
+      <div class="g"><div class="h">Snapshot updates do not wipe data</div><p>Version the master, push updates deliberately, and test on a sandbox sub-account first. Existing contacts, pipelines and history stay intact.</p></div>
+      <div class="g"><div class="h">No duplicate summaries</div><p>Every processed call id goes to a data store and is checked first. A replayed webhook or a manual rerun cannot post the same summary twice.</p></div>
+      <div class="g"><div class="h">Recording lag handled</div><p>The recording can lag the call end. The scenario waits, retries three times, then takes the fallback transcription branch instead of dying quietly.</p></div>
+      <div class="g"><div class="h">Cost stays small</div><p>The short call filter runs before any AI step, native transcript is used when it exists, and long calls are chunked so nothing hits a token wall.</p></div>
+      <div class="g"><div class="h">Wrong contact is impossible</div><p>The contact id comes from the call payload, never from a phone number lookup, so shared numbers and duplicate records cannot misroute a summary.</p></div>
+      <div class="g"><div class="h">You own all of it</div><p>Your agency account, your Make account, your keys. Named workflows, documented snapshot, a written runbook. No lock in to me.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 07</div>
+    <h2 class="sec-t">How I would run the build</h2>
+    <div class="tl">
+      <div class="tli"><div class="w">Week 1</div><div><div class="b">Agency setup and the master snapshot</div><div class="p">Agency settings, SaaS Mode configured, then the master template built out: pipelines, stages, calendars, custom fields, custom values, tags and templates, agreed with you before anything gets cloned.</div></div></div>
+      <div class="tli"><div class="w">Week 1 to 2</div><div><div class="b">A2P brand and campaigns filed early</div><div class="p">Registration goes in at the start, not at the end, because approval time is the one thing I cannot speed up. Numbers provisioned, two way SMS and email verified, sending domain authenticated.</div></div></div>
+      <div class="tli"><div class="w">Week 2</div><div><div class="b">First sub-account cloned and proven</div><div class="p">One real team member's sub-account built from the snapshot, recording and transcription live, tested with real calls both directions before it is repeated.</div></div></div>
+      <div class="tli"><div class="w">Week 2 to 3</div><div><div class="b">AI summary chain and follow up automations</div><div class="p">Transcript to summary built and tuned on your actual calls, then the email and SMS sequences, pipeline triggers and task creation that hang off the call outcome.</div></div></div>
+      <div class="tli"><div class="w">Week 3 to 4</div><div><div class="b">Roll out remaining sub-accounts, then handover</div><div class="p">Remaining seats spun up from the snapshot, guardrails in place, written documentation and a recorded walkthrough so your team runs it day to day. I stay on watch the first week live.</div></div></div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Roughly three to four weeks to fully live, with A2P approval as the one external dependency.</b> Scope and what it costs to build is the short conversation I would rather have with you on a call once I have seen the account, than guess at from the outside.</div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 08</div>
+    <h2 class="sec-t">Proof from real builds</h2>
+    <p class="sec-d">Screenshots from live GoHighLevel accounts I built and shipped personally. Same discipline goes into this one: clear naming, readable logic, automation the owner can open and understand without me in the room.</p>
+    <div class="shots">
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-01-workflow-library.png" alt="Workflow library in a live GoHighLevel account" />
+        <div class="cap"><b>The full automation library</b><span>Every workflow named and documented, which is exactly how the master snapshot gets built.</span></div>
+      </div>
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-02-family-workflows.png" alt="Grouped workflow family in a live GoHighLevel account" />
+        <div class="cap"><b>Workflows grouped in families</b><span>So your team can find and edit the call handling logic later without hunting for it.</span></div>
+      </div>
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-04-pipelines-list.png" alt="Pipeline list in a live GoHighLevel account" />
+        <div class="cap"><b>Pipelines built around the business</b><span>Stages that match how work really moves, which is what the AI summary tags will drive.</span></div>
+      </div>
+      <div class="shot">
+        <img src="https://www.bvnofficial.com/proof/regal-05-opportunities-kanban.png" alt="Opportunities kanban board in a live GoHighLevel account" />
+        <div class="cap"><b>Live opportunities board</b><span>Records moving on their own because the automation writes the signals back.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">Section 09</div>
+    <h2 class="sec-t">Why me for this specific build</h2>
+    <div class="cols">
+      <div class="card">
+        <h3><span class="ic">1</span> I have shipped this shape of system</h3>
+        <ul>
+          <li><b>GoHighLevel since it launched in 2019</b>, six plus years hands on, agency settings, snapshots, sub-accounts, workflows, pipelines, calendars, telephony and A2P</li>
+          <li><b>Full live builds</b> including a four pipeline, fifteen custom field, twenty tag account built through the GoHighLevel API, not by clicking</li>
+          <li><b>Make two way sync live since 29 July</b> between GoHighLevel and a field service platform, running daily for an Australian client</li>
+          <li><b>AI voice agents and missed call text back</b> wired into GoHighLevel, so call payloads, transcripts and webhooks are ordinary work for me</li>
+          <li><b>Email deliverability</b> handled properly with SPF, DKIM and DMARC on dedicated sending domains</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="ic">2</span> You work with the builder</h3>
+        <ul>
+          <li>I am not an agency. One person, BVN, building all of it myself end to end</li>
+          <li>No account manager between you and the account</li>
+          <li>Nothing outsourced, so nobody has to be briefed twice</li>
+          <li>Documentation is part of the build, not a favour at the end</li>
+          <li>You hold the logins. I work inside your account, never around it</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="who">Benjamin Vincent Yson · BVN</div>
+    One hands on specialist. I build everything myself, end to end. No team, no middleman, no outsourcing.<br />
+    WhatsApp +63 981 655 6555 · <a href="https://wa.me/639816556555">wa.me/639816556555</a><br />
+    Website <a href="https://www.bvnofficial.com">bvnofficial.com</a><br />
+    CV and portfolio <a href="https://www.bvnofficial.com/benjaminyson">bvnofficial.com/benjaminyson</a><br />
+    Case studies <a href="https://www.bvnofficial.com/case-studies">bvnofficial.com/case-studies</a>
+  </footer>
+</div>
+
+</body>
+</html>

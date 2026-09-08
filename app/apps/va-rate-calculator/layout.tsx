@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "VA Rate Calculator – What Should a Virtual Assistant Charge?",
@@ -13,5 +14,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="VA Rate Calculator – What Should a Virtual Assistant Charge?" description="Find out what to charge as a Virtual Assistant. Get a realistic hourly and monthly rate range based on your niche, experience, and client region. Free." path="/apps/va-rate-calculator" category="FinanceApplication" />
+      {children}
+    </>
+  );
 }
