@@ -20,6 +20,11 @@ export const LINK_MAP: { phrase: string; slug: string }[] = [
   { phrase: "highest paying virtual assistant skills", slug: "highest-paying-virtual-assistant-skills" },
   { phrase: "virtual assistant", slug: "how-to-become-a-virtual-assistant" },
   { phrase: "local SEO", slug: "local-seo-philippines-google-maps-ranking-guide" },
+  { phrase: "SEO in the Philippines", slug: "seo-philippines-rank-google-2026" },
+  { phrase: "rank on Google", slug: "seo-philippines-rank-google-2026" },
+  { phrase: "business automation", slug: "business-automation-philippines-guide" },
+  { phrase: "outsource social media management", slug: "outsource-social-media-management-philippines" },
+  { phrase: "social media outsourcing", slug: "outsource-social-media-management-philippines" },
   { phrase: "outsource social media", slug: "outsource-social-media-management-philippines" },
   { phrase: "digital marketing", slug: "digital-marketing-philippines-strategy-2026" },
 ];
