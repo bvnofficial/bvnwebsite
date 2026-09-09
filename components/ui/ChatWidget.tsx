@@ -11,6 +11,7 @@ type Msg = { id: string; sender: "visitor" | "admin"; body: string; created_at: 
 const CID_KEY = "bvn_chat_cid";
 const NAME_KEY = "bvn_chat_name";
 const MSGS_KEY = "bvn_chat_msgs";
+const EMAIL_KEY = "bvn_chat_email";
 
 function getCid(): string {
   try {
@@ -30,6 +31,7 @@ export default function ChatWidget() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [text, setText] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [hp, setHp] = useState("");
   const [showDot, setShowDot] = useState(true);
@@ -40,6 +42,7 @@ export default function ChatWidget() {
   useEffect(() => {
     cid.current = getCid();
     try { setName(localStorage.getItem(NAME_KEY) || ""); } catch {}
+    try { setEmail(localStorage.getItem(EMAIL_KEY) || ""); } catch {}
     // Hydrate the past conversation so a refresh never looks like it wiped the
     // chat; the server poll then reconciles.
     try {
@@ -103,12 +106,12 @@ export default function ChatWidget() {
     const optimistic: Msg = { id: "tmp-" + Date.now(), sender: "visitor", body, created_at: new Date().toISOString() };
     setMsgs((p) => [...p, optimistic]);
     setText("");
-    try { if (name) localStorage.setItem(NAME_KEY, name); } catch {}
+    try { if (name) localStorage.setItem(NAME_KEY, name); if (email) localStorage.setItem(EMAIL_KEY, email); } catch {}
     try {
       const r = await fetch("/api/chat/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId: cid.current, body, name: name || undefined, hp }),
+        body: JSON.stringify({ conversationId: cid.current, body, name: name || undefined, email: email || undefined, hp }),
       });
       if (!r.ok) {
         const j = await r.json().catch(() => ({}));
@@ -183,12 +186,21 @@ export default function ChatWidget() {
         {/* Input */}
         <div className="px-3 py-3 bg-[#0f172a] border-t border-white/10 flex-shrink-0">
           {msgs.length === 0 && (
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name (optional)"
-              className="w-full mb-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm placeholder-white/30 outline-none focus:border-orange/40"
-            />
+            <>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name (optional)"
+                className="w-full mb-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm placeholder-white/30 outline-none focus:border-orange/40"
+              />
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="Email (so we can reply if you leave)"
+                className="w-full mb-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm placeholder-white/30 outline-none focus:border-orange/40"
+              />
+            </>
           )}
           <input value={hp} onChange={(e) => setHp(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
           <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 focus-within:border-orange/40 transition-colors">

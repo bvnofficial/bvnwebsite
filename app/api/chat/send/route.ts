@@ -18,7 +18,7 @@ function rateLimited(key: string): boolean {
 }
 
 export async function POST(request: Request) {
-  let payload: { conversationId?: string; body?: string; name?: string; hp?: string };
+  let payload: { conversationId?: string; body?: string; name?: string; email?: string; hp?: string };
   try {
     payload = await request.json();
   } catch {
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
   const conversationId = String(payload.conversationId || "").trim();
   const body = String(payload.body || "").trim();
   const name = payload.name ? String(payload.name).trim().slice(0, 80) : null;
+  const email = payload.email ? String(payload.email).trim().slice(0, 160) : null;
 
   if (!UUID_RE.test(conversationId)) return NextResponse.json({ error: "Invalid conversation" }, { status: 400 });
   if (!body || body.length > 2000) return NextResponse.json({ error: "Message must be 1–2000 characters." }, { status: 400 });
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
 
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ error: "Chat is temporarily unavailable." }, { status: 503 });
-  const { error } = await admin.from("chat_messages").insert({ conversation_id: conversationId, sender: "visitor", body, name });
+  const { error } = await admin.from("chat_messages").insert({ conversation_id: conversationId, sender: "visitor", body, name, email });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });
 }
