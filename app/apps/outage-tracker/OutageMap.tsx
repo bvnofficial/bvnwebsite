@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Waves, TrainFront, Zap, Wifi, Droplets, Activity, Wind, Search, RefreshCw,
-  AlertTriangle, MapPin, Link2, Check, Globe, Map as MapIcon,
+  AlertTriangle, MapPin, Link2, Check, Globe,
 } from "lucide-react";
 import OutageGlobe from "./OutageGlobe";
 
@@ -110,7 +110,6 @@ export default function OutageMap() {
   const [globeFocus, setGlobeFocus] = useState<{ lat: number; lng: number; nonce: number } | null>(null);
   const didInit = useRef(false);
 
-  function showGlobe() { setGlobeMounted(true); setView("3d"); }
   function flyBoth(lat: number, lng: number, z: number) {
     mapRef.current?.setView([lat, lng], z, { animate: true });
     setGlobeFocus({ lat, lng, nonce: Date.now() });
@@ -273,17 +272,11 @@ export default function OutageMap() {
           {copied ? <Check size={12} className="text-emerald-400" /> : <Link2 size={12} />}
           {copied ? "Copied!" : "Copy link"}
         </button>
-        {/* 2D / 3D view switch */}
-        <div className="inline-flex overflow-hidden rounded-full border border-white/10">
-          <button onClick={() => setView("2d")} title="2D map"
-            className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition ${view === "2d" ? "bg-white/15 text-white" : "bg-transparent text-slate-400 hover:text-white"}`}>
-            <MapIcon size={12} /> 2D
-          </button>
-          <button onClick={showGlobe} title="3D globe view"
-            className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition ${view === "3d" ? "bg-white/15 text-white" : "bg-transparent text-slate-400 hover:text-white"}`}>
-            <Globe size={12} /> 3D
-          </button>
-        </div>
+        {/* Full-page 3D globe (God's Eye view) */}
+        <a href="/apps/outage-tracker/globe" title="Open the 3D orbital globe view"
+          className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-300 transition hover:bg-amber-400/20">
+          <Globe size={12} /> 3D Globe view ↗
+        </a>
         <span className="ml-auto inline-flex items-center gap-1 text-xs text-slate-400">
           <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
           {data ? `Updated ${timeAgo(data.generated_at)} · 60s` : "Loading…"}
