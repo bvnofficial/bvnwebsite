@@ -58,6 +58,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/va-niche-quiz`,
+      lastModified: new Date("2026-09-10"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${BASE_URL}/pricing`,
       lastModified: new Date("2026-06-01"),
       changeFrequency: "monthly",
