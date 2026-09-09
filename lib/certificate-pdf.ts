@@ -5,6 +5,7 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import QRCode from "qrcode";
 import type { CompletionRow } from "@/lib/certificate";
 import { BVN_LOGO_PNG_BASE64, BVN_LOGO_WIDTH, BVN_LOGO_HEIGHT } from "@/lib/bvn-logo";
+import { BVN_SIGNATURE_PNG_BASE64, BVN_SIGNATURE_WIDTH, BVN_SIGNATURE_HEIGHT } from "@/lib/bvn-signature";
 
 // BVN brand colors
 const NAVY = rgb(10 / 255, 15 / 255, 30 / 255);
@@ -63,13 +64,20 @@ export async function buildCertificatePdf(row: CompletionRow): Promise<Uint8Arra
     height: logoH,
   });
 
-  // ── Brand wordmark ──
-  const brand = "BVN DIGITAL AGENCY";
+  // ── Brand wordmark + tagline ──
+  const brand = "WWW.BVNOFFICIAL.COM";
+  const brandY = H - 42 - logoH - 20;
   page.drawText(brand, {
-    x: center(brand, helvBold, 14), y: H - 42 - logoH - 22,
+    x: center(brand, helvBold, 14), y: brandY,
     size: 14, font: helvBold, color: NAVY,
   });
-  page.drawRectangle({ x: 40, y: H - 42 - logoH - 38, width: W - 80, height: 3, color: ORANGE });
+  const tagline = "MARKETING AND OPERATIONS AUTOMATIONS AGENCY";
+  const taglineSize = 8.5;
+  page.drawText(tagline, {
+    x: center(tagline, helvBold, taglineSize), y: brandY - 13,
+    size: taglineSize, font: helvBold, color: MUTED,
+  });
+  page.drawRectangle({ x: 40, y: brandY - 26, width: W - 80, height: 3, color: ORANGE });
 
   // ── Title ──
   const title = "CERTIFICATE OF COMPLETION";
@@ -120,10 +128,17 @@ export async function buildCertificatePdf(row: CompletionRow): Promise<Uint8Arra
   page.drawRectangle({ x: 130, y: 144, width: 150, height: 1, color: MUTED });
   page.drawText("Date Issued", { x: 130, y: 128, size: 10, font: helv, color: MUTED });
 
-  const signName = "Benjamin Yson";
+  // Handwritten signature, centered over the signature line, above the name.
+  const sigImg = await pdf.embedPng(Buffer.from(BVN_SIGNATURE_PNG_BASE64, "base64"));
+  const sigH = 46;
+  const sigW = sigH * (BVN_SIGNATURE_WIDTH / BVN_SIGNATURE_HEIGHT);
+  const sigLineCenter = W - 205; // midpoint of the signature line below
+  page.drawImage(sigImg, { x: sigLineCenter - sigW / 2, y: 162, width: sigW, height: sigH });
+
+  const signName = "Benjamin Vincent Yson";
   page.drawText(signName, { x: W - 130 - helvBold.widthOfTextAtSize(signName, 13), y: 150, size: 13, font: helvBold, color: INK });
   page.drawRectangle({ x: W - 280, y: 144, width: 150, height: 1, color: MUTED });
-  const signRole = "Founder, BVN Digital Agency";
+  const signRole = "Founder, BVN Digital";
   page.drawText(signRole, { x: W - 130 - helv.widthOfTextAtSize(signRole, 10), y: 128, size: 10, font: helv, color: MUTED });
 
   // ── Gold seal medallion ──
