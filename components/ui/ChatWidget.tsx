@@ -10,6 +10,7 @@ type Msg = { id: string; sender: "visitor" | "admin"; body: string; created_at: 
 
 const CID_KEY = "bvn_chat_cid";
 const NAME_KEY = "bvn_chat_name";
+const MSGS_KEY = "bvn_chat_msgs";
 
 function getCid(): string {
   try {
@@ -39,7 +40,27 @@ export default function ChatWidget() {
   useEffect(() => {
     cid.current = getCid();
     try { setName(localStorage.getItem(NAME_KEY) || ""); } catch {}
+    // Hydrate the past conversation so a refresh never looks like it wiped the
+    // chat; the server poll then reconciles.
+    try {
+      const raw = localStorage.getItem(MSGS_KEY);
+      if (raw) {
+        const cached: Msg[] = JSON.parse(raw);
+        if (Array.isArray(cached) && cached.length) {
+          setMsgs(cached);
+          since.current = cached[cached.length - 1].created_at;
+        }
+      }
+    } catch {}
   }, []);
+
+  // Persist the conversation locally (real messages only) on every change.
+  useEffect(() => {
+    try {
+      const real = msgs.filter((m) => !String(m.id).startsWith("tmp-"));
+      localStorage.setItem(MSGS_KEY, JSON.stringify(real.slice(-100)));
+    } catch {}
+  }, [msgs]);
 
   const poll = useCallback(async () => {
     if (!cid.current) return;
