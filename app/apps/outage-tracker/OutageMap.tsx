@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Waves, TrainFront, Zap, Wifi, Droplets, Activity, Wind, Search, RefreshCw,
-  AlertTriangle, MapPin, Link2, Check,
+  AlertTriangle, MapPin, Link2, Check, Globe, Map as MapIcon,
 } from "lucide-react";
+import OutageGlobe from "./OutageGlobe";
 
 type EventType = "flood" | "rail" | "power" | "internet" | "water" | "quake" | "storm";
 type Severity = "info" | "warning" | "severe";
@@ -104,7 +105,16 @@ export default function OutageMap() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [severeOnly, setSevereOnly] = useState(false);
+  const [view, setView] = useState<"2d" | "3d">("2d");
+  const [globeMounted, setGlobeMounted] = useState(false);
+  const [globeFocus, setGlobeFocus] = useState<{ lat: number; lng: number; nonce: number } | null>(null);
   const didInit = useRef(false);
+
+  function showGlobe() { setGlobeMounted(true); setView("3d"); }
+  function flyBoth(lat: number, lng: number, z: number) {
+    mapRef.current?.setView([lat, lng], z, { animate: true });
+    setGlobeFocus({ lat, lng, nonce: Date.now() });
+  }
 
   // Read deep-link params once on mount.
   useEffect(() => {
@@ -120,6 +130,7 @@ export default function OutageMap() {
     if (p.get("q")) setQuery(p.get("q") as string);
     const l = p.get("loc");
     if (l && AREAS.some((a) => a.id === l)) setLoc(l);
+    if (p.get("view") === "3d") { setGlobeMounted(true); setView("3d"); }
   }, []);
 
   // Write deep-link params when filters change.
@@ -130,9 +141,15 @@ export default function OutageMap() {
     if (issuesOnly) p.set("issues", "1");
     if (query.trim()) p.set("q", query.trim());
     if (loc !== "ph") p.set("loc", loc);
+    if (view === "3d") p.set("view", "3d");
     const qs = p.toString();
     window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
-  }, [active, issuesOnly, query, loc]);
+  }, [active, issuesOnly, query, loc, view]);
+
+  // Leaflet was display:none while the globe showed; fix its size on return.
+  useEffect(() => {
+    if (view === "2d") setTimeout(() => mapRef.current?.invalidateSize(), 60);
+  }, [view]);
 
   // Init map.
   useEffect(() => {
@@ -221,7 +238,7 @@ export default function OutageMap() {
   function toggle(t: string) {
     setActive((prev) => { const n = new Set(prev); if (n.has(t)) n.delete(t); else n.add(t); return n; });
   }
-  function focus(e: OutageEvent) { mapRef.current?.setView([e.lat, e.lng], 11, { animate: true }); }
+  function focus(e: OutageEvent) { flyBoth(e.lat, e.lng, 11); }
   function copyLink() {
     try {
       navigator.clipboard.writeText(window.location.href);
@@ -256,6 +273,17 @@ export default function OutageMap() {
           {copied ? <Check size={12} className="text-emerald-400" /> : <Link2 size={12} />}
           {copied ? "Copied!" : "Copy link"}
         </button>
+        {/* 2D / 3D view switch */}
+        <div className="inline-flex overflow-hidden rounded-full border border-white/10">
+          <button onClick={() => setView("2d")} title="2D map"
+            className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition ${view === "2d" ? "bg-white/15 text-white" : "bg-transparent text-slate-400 hover:text-white"}`}>
+            <MapIcon size={12} /> 2D
+          </button>
+          <button onClick={showGlobe} title="3D globe view"
+            className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition ${view === "3d" ? "bg-white/15 text-white" : "bg-transparent text-slate-400 hover:text-white"}`}>
+            <Globe size={12} /> 3D
+          </button>
+        </div>
         <span className="ml-auto inline-flex items-center gap-1 text-xs text-slate-400">
           <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
           {data ? `Updated ${timeAgo(data.generated_at)} · 60s` : "Loading…"}
@@ -312,7 +340,7 @@ export default function OutageMap() {
               const Icon = a.type === "internet" ? Wifi : TYPE_META[a.type as Exclude<EventType, "internet">].Icon;
               return (
                 <button key={a.key}
-                  onClick={() => (a.lat != null && a.lng != null ? mapRef.current?.setView([a.lat, a.lng], 11, { animate: true }) : a.url && window.open(a.url, "_blank"))}
+                  onClick={() => (a.lat != null && a.lng != null ? flyBoth(a.lat, a.lng, 11) : a.url && window.open(a.url, "_blank"))}
                   className="min-w-[210px] max-w-[250px] shrink-0 rounded-xl border px-3 py-2 text-left transition hover:brightness-125"
                   style={{ borderColor: a.severe ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.12)", background: a.severe ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.03)" }}>
                   <div className="flex items-center gap-1.5">
@@ -364,7 +392,24 @@ export default function OutageMap() {
 
       {/* body */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px]">
-        <div id="bvn-outage-map" className="h-[380px] w-full bg-slate-200 lg:h-[560px]" />
+        <div className="relative h-[380px] w-full lg:h-[560px]">
+          <div id="bvn-outage-map" className={`h-full w-full bg-slate-200 ${view === "3d" ? "hidden" : ""}`} />
+          {globeMounted && (
+            <div className={`absolute inset-0 ${view === "3d" ? "" : "hidden"}`}>
+              <OutageGlobe
+                events={visible.map((e) => ({
+                  id: e.id, type: e.type, title: e.title, region: e.region,
+                  lat: e.lat, lng: e.lng, severity: e.severity,
+                  source_name: e.source_name, source_url: e.source_url,
+                  started_at: e.started_at, sample: e.sample,
+                }))}
+                area={AREAS.find((a) => a.id === loc) ?? AREAS[0]}
+                focus={globeFocus}
+                visible={view === "3d"}
+              />
+            </div>
+          )}
+        </div>
         <div className="max-h-[560px] overflow-y-auto border-t border-white/10 lg:border-l lg:border-t-0">
           {visible.length === 0 && (
             <div className="p-4 text-sm text-slate-400">{loading ? "Loading live feeds…" : "Walang tugmang alerto sa mga filter na ito."}</div>
