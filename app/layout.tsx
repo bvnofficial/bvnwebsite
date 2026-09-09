@@ -5,6 +5,7 @@ import { organizationSchema, websiteSchema, jsonLdScript } from "@/lib/jsonld";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
+import Tracker from "@/components/ui/Tracker";
 
 export const metadata: Metadata = {
   title: {
@@ -135,6 +136,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <ChatWidget />
+        <Tracker />
       </body>
     </html>
   );
