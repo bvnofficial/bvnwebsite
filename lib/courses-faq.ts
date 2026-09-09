@@ -54,4 +54,14 @@ export const coursesFaq: { question: string; answer: string }[] = [
     answer:
       "Yes. Once you claim a certificate, there is a one-click add-to-LinkedIn button, plus the shareable verification link and the downloadable PDF.",
   },
+  {
+    question: "How much can a virtual assistant earn in the Philippines?",
+    answer:
+      "It depends on niche and experience. Entry-level VAs commonly start around $4 to $6 per hour, while specialized VAs in healthcare, GoHighLevel, or short-term rentals often reach $8 to $15+ per hour. The courses focus on the high-demand skills that let you charge more.",
+  },
+  {
+    question: "Can a total beginner from the Philippines start here?",
+    answer:
+      "Yes. The courses assume no prior experience and are built for Filipino beginners and career-shifters. You learn the skills clients actually pay for, build portfolio projects as you go, and can claim a verifiable certificate to show on your applications.",
+  },
 ];

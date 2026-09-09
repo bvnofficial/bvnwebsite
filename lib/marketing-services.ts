@@ -31,6 +31,9 @@ export interface MarketingService {
   caseStudies: CaseStudy[];
   testimonials: Testimonial[];
   demoType: string;
+  // Optional per-service SEO overrides (else the page falls back to the shared template).
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export const marketingServices: MarketingService[] = [
@@ -98,6 +101,8 @@ export const marketingServices: MarketingService[] = [
   {
     slug: "digital-marketing",
     title: "Digital Marketing",
+    seoTitle: "Digital Marketing Agency Philippines 2026 (Google & Meta Ads) | BVN",
+    seoDescription: "BVN runs Google Ads and Meta Ads for businesses in the Philippines and worldwide. Real campaigns, real ROAS: one store went from 1.4x to 5.2x on the same budget. Book a free strategy call.",
     shortDesc: "Data-driven paid campaigns across Google, Meta, and programmatic platforms.",
     heroHeadline: "Reach the Right People. At the Right Time. Every Time.",
     heroSubtext: "We run precision-targeted campaigns across Google Ads, Meta Ads, and programmatic platforms — engineered to maximize ROI and scale your customer acquisition.",

@@ -42,6 +42,18 @@ const FAQ: { q: string; a: string }[] = [
     q: "Opisyal na emergency source ba ito?",
     a: "Hindi. Ang BVN Philippines Outage Tracker ay isang libreng public-service tool na nag-aggregate ng bukas na datos (NASA POWER, IODA, Meralco, NGCP, Google News). Para sa mga desisyong pangkaligtasan, palaging sundin ang PAGASA, PHIVOLCS, NDRRMC, at ang inyong lokal na awtoridad.",
   },
+  {
+    q: "May libreng brownout map ba ng Pilipinas?",
+    a: "Oo. Ito ang libreng brownout at outage map para sa buong Pilipinas. Makikita mo ang Meralco maintenance interruptions, NGCP yellow at red alerts, at ang mga apektadong lugar. Walang bayad, walang signup. I-filter lang sa Kuryente / Power para sa mga brownout, o tingnan ang buong mapa para sa baha, tubig, internet, lindol, at bagyo nang sabay-sabay.",
+  },
+  {
+    q: "Paano gamitin ang tracker? May bayad ba?",
+    a: "Libre ito at walang kailangang mag-sign up. Buksan lang ang mapa, piliin ang inyong lugar sa location selector, at i-toggle ang mga kategorya (baha, kuryente, tubig, internet, lindol, bagyo, tren). May shareable link din kada view kaya madali itong i-share sa pamilya o sa group chat.",
+  },
+  {
+    q: "May 3D satellite view ba?",
+    a: "Meron. Pindutin ang 3D Globe view sa taas ng mapa para sa isang full na 3D globe na nakasentro sa Pilipinas, may totoong satellite imagery at terrain. Buksan ang Live Clouds para makita ang mga ulap ng bagyo mula sa satellite, kasama ang bawat flood at storm alert sa ibabaw. Libre pa rin, walang API key.",
+  },
 ];
 
 const REGIONS = [
