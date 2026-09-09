@@ -22,7 +22,7 @@ export async function GET(req: Request) {
   if (cid) {
     const { data, error } = await admin
       .from("chat_messages")
-      .select("id,sender,body,name,created_at")
+      .select("id,sender,body,name,email,created_at")
       .eq("conversation_id", cid)
       .order("created_at", { ascending: true })
       .limit(500);
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
 
   const { data, error } = await admin
     .from("chat_messages")
-    .select("id,conversation_id,sender,body,name,created_at,read_by_admin")
+    .select("id,conversation_id,sender,body,name,email,created_at,read_by_admin")
     .order("created_at", { ascending: false })
     .limit(500);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
