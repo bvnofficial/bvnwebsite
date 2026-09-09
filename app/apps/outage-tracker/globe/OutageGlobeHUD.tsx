@@ -75,12 +75,14 @@ export default function OutageGlobeHUD() {
   const elRef = useRef<HTMLDivElement | null>(null);
   const viewerRef = useRef<any>(null);
   const dataMapRef = useRef<Record<string, Ev>>({});
+  const cloudLayerRef = useRef<any>(null);
   const [data, setData] = useState<Payload | null>(null);
   const [active, setActive] = useState<Set<string>>(new Set(PIN_TYPES));
   const [selected, setSelected] = useState<Ev | null>(null);
   const [cam, setCam] = useState({ lat: PH.lat, lon: PH.lon, alt: PH.alt });
   const [clock, setClock] = useState("");
   const [ready, setReady] = useState(false);
+  const [clouds, setClouds] = useState(false);
 
   // live UTC clock
   useEffect(() => {
@@ -134,6 +136,11 @@ export default function OutageGlobeHUD() {
       viewer.camera.setView({
         destination: Cesium.Cartesian3.fromDegrees(PH.lon, PH.lat, PH.alt),
       });
+
+      // Keyless 3D terrain (Re:Earth / Mapterhorn, CC BY 4.0); flat if unreachable.
+      Cesium.CesiumTerrainProvider.fromUrl("https://terrain.reearth.land/cesium-mesh/ellipsoid")
+        .then((tp: any) => { if (viewerRef.current) viewerRef.current.terrainProvider = tp; })
+        .catch(() => { /* keep flat ellipsoid */ });
 
       // decorative "orbital pass" line near PH
       viewer.entities.add({
@@ -227,6 +234,27 @@ export default function OutageGlobeHUD() {
   function recenter() {
     const viewer = viewerRef.current; const Cesium = (window as any).Cesium;
     if (viewer && Cesium) viewer.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(PH.lon, PH.lat, PH.alt), duration: 1.4 });
+  }
+  function toggleClouds() {
+    const viewer = viewerRef.current; const Cesium = (window as any).Cesium;
+    if (!viewer || !Cesium) return;
+    if (cloudLayerRef.current) {
+      viewer.imageryLayers.remove(cloudLayerRef.current, true);
+      cloudLayerRef.current = null; setClouds(false);
+    } else {
+      // NASA GIBS near-real-time satellite (VIIRS true colour, yesterday UTC for availability).
+      const day = new Date(Date.now() - 24 * 3600 * 1000).toISOString().slice(0, 10);
+      const prov = new Cesium.UrlTemplateImageryProvider({
+        url: `https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/${day}/250m/{z}/{y}/{x}.jpg`,
+        tilingScheme: new Cesium.GeographicTilingScheme(),
+        maximumLevel: 8,
+        credit: "NASA GIBS / EOSDIS (VIIRS SNPP)",
+      });
+      const layer = new Cesium.ImageryLayer(prov);
+      layer.alpha = 0.62;
+      viewer.imageryLayers.add(layer);
+      cloudLayerRef.current = layer; setClouds(true);
+    }
   }
   function flyTo(e: Ev) {
     const viewer = viewerRef.current; const Cesium = (window as any).Cesium;
@@ -357,6 +385,10 @@ export default function OutageGlobeHUD() {
         {/* bottom-center controls */}
         <div style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 10 }}>
           <button className="geh-btn" onClick={recenter}>◎ Philippines</button>
+          <button className="geh-btn" onClick={toggleClouds}
+            style={{ borderColor: clouds ? "rgba(127,212,230,.8)" : undefined, color: clouds ? "#7fd4e6" : undefined }}>
+            ☁ Live Clouds {clouds ? "◉" : "○"}
+          </button>
           <a className="geh-btn" href="/apps/outage-tracker">↩ Exit to 2D</a>
         </div>
 
