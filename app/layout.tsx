@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
 import Tracker from "@/components/ui/Tracker";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: {
@@ -137,6 +138,7 @@ export default function RootLayout({
         <Footer />
         <ChatWidget />
         <Tracker />
+        <Analytics />
       </body>
     </html>
   );
