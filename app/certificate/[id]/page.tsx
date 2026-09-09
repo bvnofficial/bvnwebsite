@@ -262,7 +262,7 @@ export default async function CertificatePage({ params }: { params: { id: string
               </div>
 
               <div className="text-right">
-                <p className="font-semibold text-[#0A0F1E] text-base border-b border-gray-300 pb-1" style={{ fontFamily: "'Brush Script MT', cursive" }}>Benjamin Yson</p>
+                <p className="font-semibold text-[#0A0F1E] text-base border-b border-gray-300 pb-1" style={{ fontFamily: "'Brush Script MT', cursive" }}>Benjamin Vincent Yson</p>
                 <p className="text-gray-400 text-[11px] mt-1">Founder, BVN Digital Agency</p>
               </div>
             </div>
