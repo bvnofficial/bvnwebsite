@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Shopify to GHL Integration (application)",
+    region: "Fast-moving business, systems builder + client-facing",
+    scope: "GHL · Shopify · Webhooks · Data Integrity",
+    blurb:
+      "Interactive Shopify to GoHighLevel integration for a high-level GHL builder role. Click five real store events, new order, abandoned checkout, new customer, refund, repeat buyer, and see exactly what GHL does in response: contact dedup, tagging, pipeline moves, and follow up. Plus the three wiring paths (webhooks, Make, direct API) and the data integrity guardrails (no duplicates, clean naming, no double fires, fast to diagnose). Subject GO HIGH LEVEL SPECIALIST. Built with Claude Code.",
+    href: "/clients/shopify-ghl/integration-flow",
+    status: "pending",
+    accent: "#34D399",
+    tags: ["GoHighLevel", "Shopify", "Webhooks", "Integrations"],
+  },
+  {
     name: "FAT Karting League Operations Dashboard (deal)",
     region: "Consumer motorsport, UK/DE/US, retainer",
     scope: "Ops Dashboard · Paid + Social + HubSpot",
