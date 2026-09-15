@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Real Estate Recruiting SaaS on GHL (application)",
+    region: "Real estate recruiting SaaS, full-time, codeword role",
+    scope: "GHL SaaS · Snapshots · Multi-Sub · A2P",
+    blurb:
+      "Interactive demo for a subscription real-estate-recruiting platform on GoHighLevel: the recruiting engine (GHL-native sites, forms, SMS/email follow-up, long-term nurture, pipelines, booking, reminders, missed-call automations, reactivation, dashboards), a recruit-journey stepper, a snapshot + SaaS-mode onboarding flow that answers their Q8 (customer #100 by config not rebuild), the A2P/LC Phone/domain/deliverability infrastructure grid, and REAL Regal screenshots via ProofTile (public/proof/regal-*.png, sanitized). Cites the field-service two-way sync as most-complex automation, the 34 sub-account agency + SaaS-mode config, and prospectmarketingco.com as a GHL-native site. Codeword GHL RECRUITING PLATFORM (first line of body). Desired salary PHP 75,000/mo (from Benjamin, ~$8/hr basis). Video requirement handled by honest substitute (interactive demo + written walkthrough + live screen-share; Benjamin does not record). Built with Claude Code.",
+    href: "/clients/real-estate-recruiting/ghl-saas-platform",
+    status: "pending",
+    accent: C.green,
+    tags: ["GoHighLevel", "SaaS Mode", "Snapshots", "A2P 10DLC"],
+  },
+  {
     name: "Productised Sales AI Multi-Tenant Build (application)",
     region: "AI sales/systems consultancy, Australia, milestone contract",
     scope: "Multi-Tenant · n8n · Retell Voice · Dashboard",
