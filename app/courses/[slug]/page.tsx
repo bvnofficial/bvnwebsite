@@ -163,10 +163,10 @@ export default function CoursePage() {
 
               <div className="border-t border-white/8 pt-5 space-y-3">
                 {[
-                  "100% free — no credit card needed",
+                  "Free course — no credit card needed",
                   "Self-paced — learn on your schedule",
                   "Practical projects for your portfolio",
-                  "BVN Certificate upon completion",
+                  "Optional certificate on completion — ₱99",
                   "Community access included",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-2.5">

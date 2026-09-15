@@ -53,7 +53,7 @@ const STATS = [
   { icon: BookOpen, label: "Courses", value: `${TOTAL_COURSES}` },
   { icon: PlayCircle, label: "Total Lessons", value: `${TOTAL_LESSONS}` },
   { icon: LayoutGrid, label: "Career Tracks", value: `${CATEGORIES.length}` },
-  { icon: Award, label: "Certificate", value: "Free" },
+  { icon: Award, label: "Course", value: "Free" },
 ];
 
 export default function CoursesPage() {
