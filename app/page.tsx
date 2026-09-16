@@ -356,9 +356,9 @@ export default function HomePage() {
           </motion.p>
 
           <motion.div variants={childVariant} className="mb-8">
-            <GlowButton href="/contact" variant="filled" showArrow
+            <GlowButton href="/book" variant="filled" showArrow
               className="text-base px-8 py-4 neon-glow">
-              Book a Free Consultation
+              Book a Free Call
             </GlowButton>
           </motion.div>
 
