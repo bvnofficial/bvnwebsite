@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "GoHighLevel Business Launch System (application)",
+    region: "GHL Expert & Implementation Manager, multi-company service businesses",
+    scope: "GHL · Multi-account Launches · Funnels · Phone/A2P · Team Training",
+    blurb:
+      "Interactive demo for a GHL Implementation Manager role that spins up new service companies and needs the team trained daily. Pick a business type (plumbing, electrical, auto glass, real estate) and run the full start-to-finish launch checklist (snapshot, pipelines, funnels, forms, automations, phone + A2P, social + calendars, team training), with each step adapting to the chosen vertical. A second view shows how one master snapshot scales across many companies (configure not rebuild, naming conventions, improve-once-roll-out-everywhere), grounded in the real 34 sub-account trade-services agency. A third view is the daily team-training system (SOP library, screen recordings, office hours, role-based onboarding). Built with Claude Code.",
+    href: "/clients/ghl-launch/business-system",
+    status: "pending",
+    accent: C.green,
+    tags: ["GoHighLevel", "Implementation", "Multi-account", "Team Training"],
+  },
+  {
     name: "Ad to Conversion Lead Journey (application)",
     region: "Ads Manager / GoHighLevel role, service and local businesses",
     scope: "Meta Ads · GHL Funnels · CRM · Follow-up · Reporting",
