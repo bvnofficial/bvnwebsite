@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Ad to Conversion Lead Journey (application)",
+    region: "Ads Manager / GoHighLevel role, service and local businesses",
+    scope: "Meta Ads · GHL Funnels · CRM · Follow-up · Reporting",
+    blurb:
+      "Interactive demo for an Ads Manager role that wants someone who owns the whole path, not just the ad. Step a single lead through Meta ad, tracked click, GHL landing funnel, lead form, CRM contact with source tagging and pipeline, follow-up automation, and booked and won. A Numbers view toggles before and after optimization on the same $3,000 spend (cost per lead $25 to $14, bookings more than doubled) with a funnel breakdown, and a How I Optimize view lays out the method: testing, message match, source tracking, speed to lead, lead quality, and honest reporting. Built with Claude Code.",
+    href: "/clients/ads-manager/lead-journey",
+    status: "pending",
+    accent: C.blue,
+    tags: ["Meta Ads", "GoHighLevel", "Lead Gen", "CRM"],
+  },
+  {
     name: "Shopify to GHL Integration (application)",
     region: "Fast-moving business, systems builder + client-facing",
     scope: "GHL · Shopify · Webhooks · Data Integrity",
