@@ -28,6 +28,19 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Only the authenticated areas need a Supabase session check/refresh. Every
+  // other request (all public pages, API routes, etc.) skips it, which keeps
+  // middleware near-free on the bulk of traffic instead of doing a Supabase
+  // auth round-trip on every single request. Big Fluid CPU saver.
+  const AUTH_PREFIXES = ["/dashboard", "/credits", "/command", "/admin", "/leads", "/apps/pro"];
+  const needsAuth =
+    path === "/login" ||
+    path === "/register" ||
+    AUTH_PREFIXES.some((p) => path === p || path.startsWith(p + "/"));
+  if (!needsAuth) {
+    return NextResponse.next({ request });
+  }
+
   // If Supabase env vars aren't configured yet, pass through safely
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

@@ -67,6 +67,8 @@ export default function ChatWidget() {
 
   const poll = useCallback(async () => {
     if (!cid.current) return;
+    // Don't poll while the tab is in the background — saves needless requests.
+    if (typeof document !== "undefined" && document.hidden) return;
     try {
       const qs = `conversationId=${cid.current}${since.current ? `&since=${encodeURIComponent(since.current)}` : ""}`;
       const r = await fetch(`/api/chat/thread?${qs}`, { cache: "no-store" });
@@ -91,7 +93,7 @@ export default function ChatWidget() {
     if (!open) return;
     setShowDot(false);
     poll();
-    const t = setInterval(poll, 4000);
+    const t = setInterval(poll, 12000);
     return () => clearInterval(t);
   }, [open, poll]);
 
