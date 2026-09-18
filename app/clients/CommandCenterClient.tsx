@@ -73,6 +73,17 @@ const CLIENTS: Client[] = [
     tags: ["Ops Dashboard", "Paid Media", "HubSpot", "Motorsport"],
   },
   {
+    name: "Framework to AI Agent Builder (application)",
+    region: "AI Agent Developer & Automation Specialist, part-time contractor, Pacific Time",
+    scope: "AI Agents · Prompt Architecture · Guardrails · Human-in-the-loop",
+    blurb:
+      "Interactive demo for an AI Agent Developer role that wants business methodologies turned into reliable AI tools, not research. Step through a guided intake that collects four structured inputs and assembles a consistent campaign brief from a marketing methodology, using only the facts supplied (the hallucination guard) and ending in human-review flags. Then two more views: the architecture (knowledge base, input schema, layered instructions, grounding, human gate, Zapier/Make/n8n integrations, docs) and the safeguards layer (grounding, consistency, brand, edge-case, and human-gate tests). Shows judgment on where AI must not be trusted. Built with Claude Code.",
+    href: "/clients/ai-agent-builder/framework-to-agent",
+    status: "pending",
+    accent: C.purple,
+    tags: ["AI Agents", "Prompt Architecture", "Guardrails", "Automation"],
+  },
+  {
     name: "Car Detailing Master Template (application)",
     region: "Car detailing template, GHL web design",
     scope: "GHL Web Design · Premium UI · Custom Values",
