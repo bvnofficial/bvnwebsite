@@ -146,15 +146,18 @@ export function ParticleTextEffect({
     if (!canvas) return
 
     // ── Canvas sizing ────────────────────────────────────────────
+    // Never let the canvas be 0-wide: getImageData on a 0-width source throws
+    // IndexSizeError, and because this runs inside the effect it takes the whole
+    // page down with "Application error". Fall back and clamp to a floor of 1.
     const setSize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 0)
+      canvas.height = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 0)
     }
     setSize()
 
     // ── Render a word into particles ─────────────────────────────
     function spawnWord(word: string) {
-      if (!canvas) return
+      if (!canvas || canvas.width < 1 || canvas.height < 1) return
 
       const offscreen = document.createElement("canvas")
       offscreen.width = canvas.width
@@ -288,8 +291,18 @@ export function ParticleTextEffect({
       animRef.current = requestAnimationFrame(animate)
     }
 
-    spawnWord(wordsRef.current[0])
-    animate()
+    // Wait for a real viewport before the first paint so getImageData never
+    // runs on a 0-size canvas; retry next frame until the window has laid out.
+    const start = () => {
+      setSize()
+      if (canvas.width < 2 || canvas.height < 2) {
+        animRef.current = requestAnimationFrame(start)
+        return
+      }
+      spawnWord(wordsRef.current[0])
+      animate()
+    }
+    start()
 
     const handleResize = () => {
       setSize()
