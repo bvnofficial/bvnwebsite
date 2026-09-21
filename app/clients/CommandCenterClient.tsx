@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Telehealth GHL System Architecture (application)",
+    region: "Australian telehealth company, full-time, AU hours",
+    scope: "GHL Architecture · Patient Journey · Integrations",
+    blurb:
+      "Interactive demo for architecting and owning a complex GHL system for an Australian telehealth business: the full patient journey (lead, call, consultation, payment, patient, ongoing care, reactivation) as an interactive stepper, an anatomy-of-a-complex-workflow explorer (triggers, branches, tags/custom fields, pipeline moves, integrations, waits/QA, each with the why) that substitutes for their required build-walkthrough video, a systems-thinking answer to their booking-drop troubleshooting question, WordPress/Make/webhook integrations, QA discipline, and real sanitized Regal screenshots via ProofTile. Zero patient data. Rate AUD $14/hr (from $8 USD basis, fixed-monthly preference noted), full AU business hours, start immediately. /intro included as personal intro; build-walkthrough handled by demo + written breakdown + live screen-share (Benjamin does not record). Built with Claude Code.",
+    href: "/clients/telehealth-ghl/patient-system",
+    status: "pending",
+    accent: C.cyan,
+    tags: ["GoHighLevel", "Architecture", "Healthcare", "Integrations"],
+  },
+  {
     name: "Real Estate Recruiting SaaS on GHL (application)",
     region: "Real estate recruiting SaaS, full-time, codeword role",
     scope: "GHL SaaS · Snapshots · Multi-Sub · A2P",
