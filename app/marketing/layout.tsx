@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ogImage } from "@/lib/og";
+import { serviceSchema, breadcrumbSchema, graphScript, SITE_URL } from "@/lib/jsonld";
+import { marketingServices } from "@/lib/marketing-services";
 
 export const metadata: Metadata = {
   title: "Digital Marketing Services Philippines — BVN Marketing",
@@ -21,5 +23,35 @@ export const metadata: Metadata = {
 };
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  const schema = graphScript([
+    serviceSchema({
+      name: "Digital Marketing Services",
+      description:
+        "Full-service digital marketing for Philippine businesses: social media management, SEO, content, email, video, web development and influencer marketing.",
+      path: "/marketing",
+      serviceType: "Digital Marketing",
+      category: "Marketing",
+    }),
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "BVN Marketing Services",
+      itemListElement: marketingServices.map((s, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: s.title,
+        url: `${SITE_URL}/marketing/${s.slug}`,
+      })),
+    },
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Marketing", path: "/marketing" },
+    ]),
+  ]);
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={schema} />
+      {children}
+    </>
+  );
 }

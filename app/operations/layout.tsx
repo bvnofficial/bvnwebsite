@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ogImage } from "@/lib/og";
+import { serviceSchema, breadcrumbSchema, graphScript, SITE_URL } from "@/lib/jsonld";
+import { operationsServices } from "@/lib/operations-services";
 
 export const metadata: Metadata = {
   title: "Business Operations Automation Philippines — BVN Operations",
@@ -21,5 +23,35 @@ export const metadata: Metadata = {
 };
 
 export default function OperationsLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  const schema = graphScript([
+    serviceSchema({
+      name: "Business Operations Automation",
+      description:
+        "Intelligent business automation for Philippine companies: AI agents, CRM automation, HR & payroll automation, workflows, time tracking and admin automation.",
+      path: "/operations",
+      serviceType: "Business Process Automation",
+      category: "Operations",
+    }),
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "BVN Operations Services",
+      itemListElement: operationsServices.map((s, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: s.title,
+        url: `${SITE_URL}/operations/${s.slug}`,
+      })),
+    },
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Operations", path: "/operations" },
+    ]),
+  ]);
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={schema} />
+      {children}
+    </>
+  );
 }

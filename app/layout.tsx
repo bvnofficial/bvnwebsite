@@ -5,10 +5,12 @@ import { organizationSchema, websiteSchema, jsonLdScript } from "@/lib/jsonld";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
+import Tracker from "@/components/ui/Tracker";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: {
-    default: "BVN — Global Marketing & Operations Automation Agency",
+    default: "BVN — Global Marketing & Operations Automation",
     template: "%s | BVN",
   },
   description:
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
   keywords:
     "digital marketing agency, business automation agency, social media management, SEO agency, CRM automation, HR payroll automation, AI automation, digital marketing Philippines, international marketing agency",
   openGraph: {
-    title: "BVN — Global Marketing & Operations Automation Agency",
+    title: "BVN — Global Marketing & Operations Automation",
     description:
       "High-impact digital marketing + intelligent business automation. Trusted by 238+ clients worldwide — now serving local and international businesses.",
     url: "https://www.bvnofficial.com",
@@ -33,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "BVN — Global Marketing & Operations Automation Agency",
+    title: "BVN — Global Marketing & Operations Automation",
     description:
       "High-impact digital marketing + intelligent business automation. Trusted by 238+ clients worldwide — now serving local and international businesses.",
     site: "@bvnofficial",
@@ -135,6 +137,8 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <ChatWidget />
+        <Tracker />
+        <Analytics />
       </body>
     </html>
   );

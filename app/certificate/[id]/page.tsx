@@ -2,6 +2,8 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { PAYMONGO_BASE, pmAuth, type CompletionRow } from "@/lib/certificate";
+import { sendCertificateEmail } from "@/lib/certificate-email";
+import ResendButton from "./ResendButton";
 
 export const metadata = {
   title: "Your Certificate | BVN",
@@ -36,13 +38,29 @@ async function loadCertificate(id: string): Promise<CompletionRow | null> {
         const status: string =
           attrs?.payment_intent?.attributes?.status ?? attrs?.status ?? "";
         if (status === "succeeded" || status === "paid") {
+          // Atomic flip: only the request that actually transitions the row
+          // from unpaid → paid gets a row back, so the certificate email is
+          // sent EXACTLY ONCE even if several page loads race on confirmation.
           const { data: updated } = await supabase
             .from("course_completions")
             .update({ paid: true, paid_at: new Date().toISOString() })
             .eq("id", id)
+            .eq("paid", false)
             .select("*")
-            .single();
-          if (updated) row = updated as CompletionRow;
+            .maybeSingle();
+          if (updated) {
+            row = updated as CompletionRow;
+            // First (and only) confirmation — email it to the student (non-fatal).
+            await sendCertificateEmail(row);
+          } else {
+            // A concurrent request already flipped it; just show the paid record.
+            const { data: fresh } = await supabase
+              .from("course_completions")
+              .select("*")
+              .eq("id", id)
+              .single();
+            if (fresh) row = fresh as CompletionRow;
+          }
         }
       }
     } catch (e) {
@@ -244,7 +262,7 @@ export default async function CertificatePage({ params }: { params: { id: string
               </div>
 
               <div className="text-right">
-                <p className="font-semibold text-[#0A0F1E] text-base border-b border-gray-300 pb-1" style={{ fontFamily: "'Brush Script MT', cursive" }}>Benjamin Yson</p>
+                <p className="font-semibold text-[#0A0F1E] text-base border-b border-gray-300 pb-1" style={{ fontFamily: "'Brush Script MT', cursive" }}>Benjamin Vincent Yson</p>
                 <p className="text-gray-400 text-[11px] mt-1">Founder, BVN Digital Agency</p>
               </div>
             </div>
@@ -280,6 +298,7 @@ export default async function CertificatePage({ params }: { params: { id: string
           >
             in  Add to LinkedIn
           </a>
+          <ResendButton id={cert.id} />
           <Link
             href={`/courses/${cert.course_slug}`}
             className="w-full sm:w-auto text-center px-6 py-3 rounded-xl border border-white/15 text-white/70 font-heading font-semibold text-sm hover:bg-white/5 transition-all"
@@ -287,6 +306,10 @@ export default async function CertificatePage({ params }: { params: { id: string
             Back to course
           </Link>
         </div>
+
+        <p className="text-center text-white/30 text-xs mt-3">
+          A copy was emailed to you when this certificate was issued. Use the button above to resend it.
+        </p>
 
         <p className="text-center text-white/30 text-xs mt-6">
           Save your Certificate ID to verify this certificate any time at{" "}

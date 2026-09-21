@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "VA Portfolio Builder – Free One-Page Portfolio Maker",
@@ -13,5 +14,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="VA Portfolio Builder" description="Create a professional Virtual Assistant portfolio in minutes. Add your services, work, and testimonials, then download a hostable HTML page or PDF. Free, no signup." path="/apps/portfolio-builder" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }

@@ -9,7 +9,7 @@ import {
   Share2, BarChart2, Search, Mail, FileText, Video, Users, Globe, Smartphone, Database,
   Bot, Workflow, UserCheck, Settings, Clock, Shield, PieChart, Plug,
   Sun, Wrench, TrendingUp, BookOpen, Grid3X3, LayoutDashboard, ImageDown, Receipt, Bluetooth, DollarSign, QrCode, Gift,
-  LogIn, Coins,
+  LogIn, Coins, CalendarClock,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -508,6 +508,16 @@ export default function Navbar() {
 
           {/* Desktop CTA / Account */}
           <div className="hidden lg:flex items-center gap-2">
+            {/* Book a Call — primary sales CTA, always visible */}
+            <Link
+              href="/book"
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-orange text-white text-sm font-heading font-semibold rounded-lg whitespace-nowrap
+                shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light hover:shadow-[0_0_30px_rgba(232,96,16,0.6)]
+                transition-all duration-200"
+            >
+              <CalendarClock size={15} />
+              Book a Call
+            </Link>
             {user ? (
               <>
                 <Link
@@ -548,9 +558,8 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2.5 bg-orange text-white text-sm font-heading font-semibold rounded-lg
-                    shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light hover:shadow-[0_0_30px_rgba(232,96,16,0.6)]
-                    transition-all duration-200"
+                  className="px-5 py-2.5 bg-white/8 border border-white/12 text-white text-sm font-heading font-semibold rounded-lg
+                    hover:bg-white/12 transition-all duration-200"
                 >
                   Sign Up
                 </Link>
@@ -676,11 +685,12 @@ export default function Navbar() {
                     </Link>
                   </div>
                   <Link
-                    href="/contact"
-                    className="block text-center px-5 py-3 bg-orange text-white text-sm font-heading font-semibold rounded-lg
+                    href="/book"
+                    className="flex items-center justify-center gap-1.5 px-5 py-3 bg-orange text-white text-sm font-heading font-semibold rounded-lg
                       shadow-[0_0_20px_rgba(232,96,16,0.4)] hover:bg-orange-light transition-all"
                   >
-                    Get Started
+                    <CalendarClock size={15} />
+                    Book a Call
                   </Link>
                 </>
               )}

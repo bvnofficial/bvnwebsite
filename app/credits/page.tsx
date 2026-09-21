@@ -25,7 +25,6 @@ export default async function CreditsPage() {
       user={{ email: user.email!, name: user.user_metadata?.full_name }}
       wallet={wallet}
       catalog={CREDIT_CATALOG}
-      paypalEnabled={Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID)}
     />
   );
 }

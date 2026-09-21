@@ -1,6 +1,32 @@
 import { NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import nodemailer from "nodemailer";
+import { createAdminClient } from "@/utils/supabase/admin";
+import type { CompletionRow } from "@/lib/certificate";
+import { sendCertificateEmail } from "@/lib/certificate-email";
+
+// A certificate checkout carries its cert id in metadata.certificate_id. When
+// that's present, flip the course_completions row to PAID (atomically, so the
+// email fires exactly once even if the webhook and the /certificate/<id> page
+// race) and email the student their certificate. This makes delivery happen on
+// PAYMENT — students who never reopen the page still get their cert.
+async function deliverCertificate(certId: string): Promise<boolean> {
+  const supabase = createAdminClient();
+  if (!supabase) {
+    console.error("Cert webhook: admin client unavailable.");
+    return false;
+  }
+  const { data: updated } = await supabase
+    .from("course_completions")
+    .update({ paid: true, paid_at: new Date().toISOString() })
+    .eq("id", certId)
+    .eq("paid", false)
+    .select("*")
+    .maybeSingle();
+  if (!updated) return false; // already delivered (page won the race) or no such row
+  await sendCertificateEmail(updated as CompletionRow);
+  return true;
+}
 
 // Verify PayMongo webhook signature
 function verifySignature(rawBody: string, sigHeader: string, secret: string): boolean {
@@ -57,6 +83,18 @@ export async function POST(req: Request) {
     const billing = checkoutSession.billing as Record<string, string> | null;
     const lineItems = checkoutSession.line_items as Array<Record<string, unknown>> | null;
     const metadata = checkoutSession.metadata as Record<string, string> | null;
+
+    // Certificate payment → deliver the certificate server-side, then stop.
+    // (Cert students get the certificate email, not the generic services one.)
+    const certificateId = metadata?.certificate_id;
+    if (certificateId) {
+      try {
+        await deliverCertificate(certificateId);
+      } catch (e) {
+        console.error("Cert webhook delivery error:", e);
+      }
+      return NextResponse.json({ received: true });
+    }
 
     const customerName = billing?.name ?? metadata?.customer_name ?? "Customer";
     const customerEmail = billing?.email ?? metadata?.customer_email ?? "";

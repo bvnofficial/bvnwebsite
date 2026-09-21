@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Invoice Generator - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Invoice Generator" description="Create professional invoices in seconds. Add your logo, line items and tax, then download as PDF." path="/apps/invoice-generator" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }

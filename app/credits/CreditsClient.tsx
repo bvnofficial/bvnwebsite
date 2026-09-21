@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import {
   Coins, ArrowLeft, Check, AlertCircle, Lock, Wrench, GraduationCap, Headphones,
   Plus, History,
@@ -14,14 +13,12 @@ import {
   type CreditItem, type CreditCategory, CATEGORY_LABELS, TOPUP_PRESETS,
 } from "@/lib/credit-catalog";
 
-const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
 const PHP_PER_CREDIT = 60; // must match /api/credits/paymongo-topup
 
 interface Props {
   user: { email: string; name?: string };
   wallet: WalletData;
   catalog: CreditItem[];
-  paypalEnabled: boolean;
 }
 
 const CATEGORY_ICON: Record<CreditCategory, typeof Wrench> = {
@@ -30,7 +27,7 @@ const CATEGORY_ICON: Record<CreditCategory, typeof Wrench> = {
   coaching: Headphones,
 };
 
-export default function CreditsClient({ user, wallet, catalog, paypalEnabled }: Props) {
+export default function CreditsClient({ user, wallet, catalog }: Props) {
   const router = useRouter();
   const [balance, setBalance] = useState(wallet.balance);
   const [owned, setOwned] = useState<Set<string>>(new Set(wallet.entitlements));
@@ -38,7 +35,7 @@ export default function CreditsClient({ user, wallet, catalog, paypalEnabled }: 
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
-  // Keep latest top-up amount readable inside PayPal callbacks without rebuilding buttons.
+  // Keep the latest top-up amount readable inside async handlers.
   const amountRef = useRef(amount);
   amountRef.current = amount;
 
@@ -252,66 +249,7 @@ export default function CreditsClient({ user, wallet, catalog, paypalEnabled }: 
                 for <span className="text-white font-semibold">${amount}.00</span>.
               </p>
 
-              {/* PayPal */}
-              {paypalEnabled && PAYPAL_CLIENT_ID ? (
-                <PayPalScriptProvider
-                  options={{
-                    clientId: PAYPAL_CLIENT_ID,
-                    currency: "USD",
-                    intent: "capture",
-                    components: "buttons",
-                    enableFunding: "card",
-                  }}
-                >
-                  <PayPalButtons
-                    style={{ layout: "vertical", color: "gold", shape: "pill", label: "pay", height: 46 }}
-                    forceReRender={[amount]}
-                    onClick={(_d, actions) => {
-                      if (!amountRef.current || amountRef.current < 1) {
-                        setMsg({ ok: false, text: "Enter an amount of at least $1." });
-                        return actions.reject();
-                      }
-                      setMsg(null);
-                      return actions.resolve();
-                    }}
-                    createOrder={async () => {
-                      const res = await fetch("/api/credits/create-order", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ amount: amountRef.current }),
-                      });
-                      const d = await res.json();
-                      if (!res.ok || !d.id) throw new Error(d.error || "Could not start checkout.");
-                      return d.id;
-                    }}
-                    onApprove={async (data) => {
-                      const res = await fetch("/api/credits/capture", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ orderID: data.orderID }),
-                      });
-                      const d = await res.json();
-                      if (!res.ok || !d.ok) {
-                        setMsg({ ok: false, text: d.error || "Payment could not be completed." });
-                        return;
-                      }
-                      setBalance(d.balance);
-                      setMsg({ ok: true, text: `Added ${d.credited} credits. New balance: ${d.balance}.` });
-                      router.refresh();
-                    }}
-                    onError={() => setMsg({ ok: false, text: "A payment error occurred. Please try again." })}
-                  />
-                </PayPalScriptProvider>
-              ) : null}
-
-              {/* GCash / Card (PHP) via PayMongo — always available */}
-              {paypalEnabled && PAYPAL_CLIENT_ID && (
-                <div className="flex items-center gap-3 my-4">
-                  <div className="flex-1 h-px bg-white/10" />
-                  <span className="text-white/30 text-xs font-accent">or</span>
-                  <div className="flex-1 h-px bg-white/10" />
-                </div>
-              )}
+              {/* GCash / Card (PHP) via PayMongo */}
               <button
                 onClick={payGcash}
                 disabled={busy === "__gcash"}

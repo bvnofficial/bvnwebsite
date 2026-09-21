@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "VA CV & Resume Builder – Free HTML & PDF Resume Maker",
@@ -13,5 +14,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="VA CV & Resume Builder" description="Build a professional Virtual Assistant resume in minutes. Live preview, accent colors, and download as a polished PDF or a hostable HTML file. Free, no signup." path="/apps/cv-builder" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }

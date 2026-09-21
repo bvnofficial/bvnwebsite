@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "QR Code Generator - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="QR Code Generator" description="Create free QR codes for URLs, WiFi, contacts, email and SMS. Customizable colors and instant PNG download." path="/apps/qr-code-generator" category="UtilitiesApplication" />
+      {children}
+    </>
+  );
 }

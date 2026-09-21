@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Check, Minus, Info, ArrowRight } from "lucide-react";
@@ -277,6 +278,11 @@ function Note({ children }: { children: React.ReactNode }) {
 }
 
 export default function PricingPage() {
+  // USD/PHP display toggle. USD is the source of truth in the data; PHP is
+  // converted at render. Defaults to USD (most clients are international).
+  const [currency, setCurrency] = useState<"USD" | "PHP">("USD");
+  const fmt = (usd: string) => (currency === "USD" ? usd : toPhp(usd));
+  const alt = (usd: string) => (currency === "USD" ? toPhp(usd) : usd);
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────── */}
@@ -287,6 +293,22 @@ export default function PricingPage() {
         primaryCta={{ label: "Get a Custom Quote", href: "/contact" }}
         secondaryCta={{ label: "Learn About Services", href: "/marketing" }}
       />
+
+      {/* Currency toggle */}
+      <div className="flex justify-center pt-10 -mb-6 px-6">
+        <div className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1">
+          <span className="px-3 text-white/40 text-xs font-accent">Show prices in</span>
+          {(["USD", "PHP"] as const).map((c) => (
+            <button
+              key={c}
+              onClick={() => setCurrency(c)}
+              className={`px-5 py-1.5 rounded-full text-sm font-heading font-semibold transition-colors ${currency === c ? "bg-orange text-white shadow-[0_0_16px_rgba(232,96,16,0.4)]" : "text-white/60 hover:text-white"}`}
+            >
+              {c === "USD" ? "$ USD" : "₱ PHP"}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* ── Section 1: Marketing Plans ───────────────────── */}
       <motion.section
@@ -316,8 +338,8 @@ export default function PricingPage() {
               <motion.div key={plan.tier} variants={childVariant}>
                 <PricingCard
                   {...plan}
-                  price={toPhp(plan.price)}
-                  subPrice={`≈ ${plan.price}/mo`}
+                  price={fmt(plan.price)}
+                  subPrice={`≈ ${alt(plan.price)}/mo`}
                   ctaHref={payHref(
                     `Marketing ${plan.tier}`,
                     `Marketing ${plan.tier} Plan (${toPhp(plan.price)}/mo)`,
@@ -330,7 +352,7 @@ export default function PricingPage() {
 
           <Note>
             ★ All packages require a minimum 3-month commitment. One-time setup
-            fee of {toPhp("$150")} (≈ $150, waived for Pro plan).
+            fee of {fmt("$150")} (≈ {alt("$150")}, waived for Pro plan).
           </Note>
         </div>
       </motion.section>
@@ -383,15 +405,15 @@ export default function PricingPage() {
                 <div className="flex md:block items-center gap-2">
                   <span className="text-white/30 text-xs md:hidden">From:</span>
                   <span className="text-orange font-heading font-bold">
-                    {toPhp(from)}
-                    <span className="block text-white/30 text-[11px] font-body font-normal">≈ {from}</span>
+                    {fmt(from)}
+                    <span className="block text-white/30 text-[11px] font-body font-normal">≈ {alt(from)}</span>
                   </span>
                 </div>
                 <div className="flex md:block items-center gap-2">
                   <span className="text-white/30 text-xs md:hidden">Up to:</span>
                   <span className="text-orange-light font-semibold">
-                    {toPhp(to)}
-                    <span className="block text-white/30 text-[11px] font-normal">≈ {to}</span>
+                    {fmt(to)}
+                    <span className="block text-white/30 text-[11px] font-normal">≈ {alt(to)}</span>
                   </span>
                 </div>
                 <div className="flex md:block items-center gap-2">
@@ -449,8 +471,8 @@ export default function PricingPage() {
               <motion.div key={plan.tier} variants={childVariant}>
                 <PricingCard
                   {...plan}
-                  price={toPhp(plan.price)}
-                  subPrice={`≈ ${plan.price}/mo`}
+                  price={fmt(plan.price)}
+                  subPrice={`≈ ${alt(plan.price)}/mo`}
                   ctaHref={payHref(
                     `Operations ${plan.tier}`,
                     `Operations ${plan.tier} Plan (${toPhp(plan.price)}/mo)`,
@@ -462,7 +484,7 @@ export default function PricingPage() {
           </motion.div>
 
           <Note>
-            ★ One-time system audit & setup fee of {toPhp("$200")} (≈ $200, waived for Pro plan).
+            ★ One-time system audit & setup fee of {fmt("$200")} (≈ {alt("$200")}, waived for Pro plan).
             All plans include onboarding and documentation.
           </Note>
         </div>
@@ -506,9 +528,9 @@ export default function PricingPage() {
                     <span className="text-white/70 text-sm">{type}</span>
                     <span className="text-right">
                       <span className="block font-heading font-bold text-orange text-sm">
-                        {toPhp(rate)}
+                        {fmt(rate)}
                       </span>
-                      <span className="block text-white/30 text-[11px]">≈ {rate}</span>
+                      <span className="block text-white/30 text-[11px]">≈ {alt(rate)}</span>
                     </span>
                   </motion.div>
                 ))}
@@ -535,9 +557,9 @@ export default function PricingPage() {
                   </div>
                   <div className="text-right">
                     <div className="font-heading font-extrabold text-xl text-gradient">
-                      {toPhp(price)}
+                      {fmt(price)}
                     </div>
-                    <div className="text-white/30 text-[11px] mb-0.5">≈ {price}</div>
+                    <div className="text-white/30 text-[11px] mb-0.5">≈ {alt(price)}</div>
                     <div className="flex items-center justify-end gap-1 text-white/40 group-hover:text-orange text-xs transition-colors">
                       Reserve <ArrowRight size={11} />
                     </div>

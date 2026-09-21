@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Image Compressor - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Image Compressor" description="Compress and resize JPEG, PNG and WebP images instantly in your browser. Nothing is uploaded." path="/apps/image-compressor" category="UtilitiesApplication" />
+      {children}
+    </>
+  );
 }

@@ -30,6 +30,7 @@ const ALL_APPS = [
   "image-compressor",
   "floor-plan-designer",
   "tracker-detector",
+  "outage-tracker",
 ];
 
 // Refresh hourly so auto-published posts appear in the sitemap without a redeploy.
@@ -53,6 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${BASE_URL}/get-started`,
       lastModified: new Date("2026-06-01"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/va-niche-quiz`,
+      lastModified: new Date("2026-09-10"),
       changeFrequency: "monthly",
       priority: 0.9,
     },

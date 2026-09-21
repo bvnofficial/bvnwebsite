@@ -8386,6 +8386,555 @@ Plan how you'll build reputation from your first projects: how you'll ask for te
       },
     ],
   },
+  {
+    slug: "medical-billing-coding-va",
+    title: "Medical Billing & Coding VA",
+    tagline: "Become the billing specialist US healthcare practices hire remotely.",
+    description:
+      "Learn the exact skills US clinics and billing companies pay Filipino VAs for: reading superbills, coding with ICD-10 and CPT, verifying insurance, submitting clean claims, and working denials. A high-value healthcare niche you can start from home.",
+    icon: "🧾",
+    color: "cyan",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Healthcare",
+    skills: ["Medical Coding (ICD-10 / CPT)", "Claims Submission", "Insurance Verification", "Denial Management", "HIPAA Compliance", "EHR / EMR"],
+    modules: [
+      {
+        number: 1,
+        title: "The US Healthcare Billing Landscape",
+        lessons: [
+          { title: "What a Medical Billing & Coding VA Does", duration: "12 min" },
+          { title: "How US Health Insurance Works (Payers, Plans, Networks)", duration: "14 min" },
+          { title: "The Revenue Cycle From Visit to Payment", duration: "13 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Medical Coding Foundations",
+        lessons: [
+          { title: "ICD-10 Diagnosis Codes Explained", duration: "15 min" },
+          { title: "CPT & HCPCS Procedure Codes", duration: "15 min" },
+          { title: "Modifiers and the Most Common Coding Errors", duration: "13 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Claims & Insurance Workflow",
+        lessons: [
+          { title: "Insurance Eligibility & Benefit Verification", duration: "14 min" },
+          { title: "Submitting a Clean Claim (CMS-1500)", duration: "15 min" },
+          { title: "Clearinghouses & Practice Management Systems", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Denials, Appeals & Accounts Receivable",
+        lessons: [
+          { title: "Reading an EOB and ERA", duration: "13 min" },
+          { title: "Working Denials and Rejections", duration: "15 min" },
+          { title: "Accounts Receivable Follow-up That Gets Paid", duration: "13 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Compliance & Getting Hired",
+        lessons: [
+          { title: "HIPAA Essentials for Billing VAs", duration: "12 min" },
+          { title: "Tools and Certifications Clients Look For", duration: "12 min" },
+          { title: "Landing Your First Medical Billing Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "amazon-fba-va",
+    title: "Amazon FBA VA",
+    tagline: "Run Amazon seller accounts end to end for busy brand owners.",
+    description:
+      "Amazon sellers pay VAs well to manage the work they hate: product research, listing optimization, PPC, inventory, and customer messages. Learn Seller Central from the inside and become the Amazon VA brands keep on retainer.",
+    icon: "📦",
+    color: "yellow",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "E-Commerce",
+    skills: ["Product Research", "Listing Optimization", "Amazon PPC", "Inventory Management", "Seller Central", "Customer Service"],
+    modules: [
+      {
+        number: 1,
+        title: "Amazon Seller Foundations",
+        lessons: [
+          { title: "What an Amazon FBA VA Does", duration: "12 min" },
+          { title: "Seller Central Tour: Where Everything Lives", duration: "14 min" },
+          { title: "FBA vs FBM and Why It Matters", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Product & Market Research",
+        lessons: [
+          { title: "How to Spot a Winning Product", duration: "15 min" },
+          { title: "Competitor and Keyword Research", duration: "14 min" },
+          { title: "Sourcing and Supplier Basics", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Listing Optimization",
+        lessons: [
+          { title: "Writing Titles, Bullets & Descriptions That Sell", duration: "15 min" },
+          { title: "Backend Keywords and A+ Content", duration: "13 min" },
+          { title: "Images and Conversion Rate", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Amazon PPC & Growth",
+        lessons: [
+          { title: "PPC Campaign Structure for Beginners", duration: "15 min" },
+          { title: "Managing ACoS, Bids and Budgets", duration: "14 min" },
+          { title: "Promotions, Reviews and Ranking", duration: "13 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Operations & Getting Hired",
+        lessons: [
+          { title: "Inventory and Restock Planning", duration: "13 min" },
+          { title: "Customer Messages and Account Health", duration: "12 min" },
+          { title: "Landing Your First Amazon Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "customer-support-va",
+    title: "Customer Support VA",
+    tagline: "Deliver the email, chat, and phone support clients rely on.",
+    description:
+      "Great support is the easiest VA role to start and one of the most in demand. Learn help desks, ticketing, tone, and de-escalation so businesses trust you with their customers on email, chat, and phone.",
+    icon: "💬",
+    color: "green",
+    level: "Beginner",
+    duration: "3 weeks",
+    lessons: 15,
+    category: "Customer Support",
+    skills: ["Email Support", "Live Chat", "Help Desk (Zendesk / Freshdesk)", "Ticketing", "Customer Retention", "Tone & Empathy"],
+    modules: [
+      {
+        number: 1,
+        title: "Customer Support Foundations",
+        lessons: [
+          { title: "What a Customer Support VA Does", duration: "11 min" },
+          { title: "The Channels: Email, Chat, Phone and Social", duration: "13 min" },
+          { title: "Tone, Empathy and Brand Voice", duration: "12 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Help Desk Tools",
+        lessons: [
+          { title: "Zendesk and Freshdesk Basics", duration: "14 min" },
+          { title: "Tickets, Tags and Macros", duration: "13 min" },
+          { title: "Knowledge Bases and Canned Replies", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Handling Real Conversations",
+        lessons: [
+          { title: "Answering the Most Common Questions", duration: "13 min" },
+          { title: "De-escalating Angry Customers", duration: "14 min" },
+          { title: "Refunds, Returns and Policies", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Metrics & Quality",
+        lessons: [
+          { title: "Response Time, CSAT and SLAs", duration: "12 min" },
+          { title: "Writing Clear, Fast Replies", duration: "13 min" },
+          { title: "Escalation and Clean Handoffs", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "Building a Support Portfolio With No Experience", duration: "13 min" },
+          { title: "Where Clients Hire Support VAs", duration: "12 min" },
+          { title: "Landing Your First Support Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "tiktok-ugc-va",
+    title: "TikTok & UGC Creator VA",
+    tagline: "Make the short-form content brands are desperate to buy.",
+    description:
+      "Brands pay creators to make authentic TikToks and user-generated content that sells. Learn hooks, trends, phone filming, and CapCut editing, then package it as a UGC service and get booked, all from your phone.",
+    icon: "🎬",
+    color: "rose",
+    level: "Beginner",
+    duration: "3 weeks",
+    lessons: 15,
+    category: "Creative",
+    skills: ["Short-Form Hooks", "TikTok Trends", "Phone Filming", "CapCut Editing", "UGC Scripting", "Creator Rates"],
+    modules: [
+      {
+        number: 1,
+        title: "The Creator Economy & What a UGC VA Does",
+        lessons: [
+          { title: "What TikTok and UGC VAs Actually Do", duration: "12 min" },
+          { title: "UGC vs Influencing vs Paid Ads", duration: "12 min" },
+          { title: "Who Hires UGC Creators and Why", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "TikTok Content Foundations",
+        lessons: [
+          { title: "Hooks, Retention and the Algorithm", duration: "15 min" },
+          { title: "Trends, Sounds and Hashtags", duration: "13 min" },
+          { title: "Shooting Great Video on Just a Phone", duration: "13 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Editing for Short Form",
+        lessons: [
+          { title: "CapCut Basics for Beginners", duration: "15 min" },
+          { title: "Captions, B-roll and Pacing", duration: "13 min" },
+          { title: "Batching a Week of Content Fast", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "UGC for Brands",
+        lessons: [
+          { title: "Reading a UGC Brief", duration: "12 min" },
+          { title: "Scripting Authentic Ads That Convert", duration: "14 min" },
+          { title: "Delivering Files and Handling Revisions", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Paid & Getting Hired",
+        lessons: [
+          { title: "Rates, Packages and Usage Rights", duration: "13 min" },
+          { title: "Building a UGC Portfolio With No Clients", duration: "13 min" },
+          { title: "Landing Your First Brand Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "cold-email-lead-gen-va",
+    title: "Cold Email & Lead-Gen VA",
+    tagline: "Fill client pipelines with booked meetings from cold email.",
+    description:
+      "Agencies and B2B founders pay well for VAs who can build lists, write cold emails that get replies, and book meetings. Learn Apollo, Instantly and Smartlead, deliverability, and follow-up so you become the lead-gen VA clients keep.",
+    icon: "✉️",
+    color: "blue",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Lead Generation",
+    skills: ["List Building", "Lead Enrichment", "Cold Email Copy", "Deliverability", "Follow-up Sequences", "Apollo / Instantly / Smartlead"],
+    modules: [
+      {
+        number: 1,
+        title: "Cold Email Foundations",
+        lessons: [
+          { title: "What a Cold Email & Lead-Gen VA Does", duration: "12 min" },
+          { title: "How Cold Email Actually Works in 2026", duration: "13 min" },
+          { title: "Offer and Targeting Basics (ICP)", duration: "13 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Building the List",
+        lessons: [
+          { title: "Finding and Verifying Leads", duration: "14 min" },
+          { title: "Enrichment and ICP Research", duration: "13 min" },
+          { title: "Tools: Apollo, Instantly and Smartlead", duration: "14 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Writing Emails That Get Replies",
+        lessons: [
+          { title: "Subject Lines and Opening Lines", duration: "14 min" },
+          { title: "The Body and the Ask", duration: "13 min" },
+          { title: "Follow-up Sequences That Book Calls", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Deliverability",
+        lessons: [
+          { title: "Domains, Warmup and DNS (SPF, DKIM, DMARC)", duration: "15 min" },
+          { title: "Avoiding Spam Filters", duration: "13 min" },
+          { title: "Sending Volume and Inbox Rotation", duration: "12 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Booking Meetings & Getting Hired",
+        lessons: [
+          { title: "Handling Replies and Objections", duration: "13 min" },
+          { title: "Reporting and the Metrics Clients Want", duration: "12 min" },
+          { title: "Landing Your First Lead-Gen Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "data-entry-va",
+    title: "Data Entry VA",
+    tagline: "The fastest, most reliable way into a remote VA career.",
+    description:
+      "Data entry is the easiest VA role to land and a proven foot in the door. Learn Sheets and Excel, cleaning and formatting, CRM and web research, and the accuracy and speed clients trust, then win your first client fast.",
+    icon: "⌨️",
+    color: "green",
+    level: "Beginner",
+    duration: "2 weeks",
+    lessons: 15,
+    category: "Foundation",
+    skills: ["Google Sheets", "Excel", "Data Cleaning", "CRM Entry", "Web Research", "Accuracy & Speed"],
+    modules: [
+      {
+        number: 1,
+        title: "Data Entry Foundations",
+        lessons: [
+          { title: "What a Data Entry VA Does", duration: "11 min" },
+          { title: "Accuracy, Speed and Attention to Detail", duration: "12 min" },
+          { title: "The Most Common Data Entry Jobs", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "The Core Tools",
+        lessons: [
+          { title: "Google Sheets and Excel Basics", duration: "15 min" },
+          { title: "Formatting and Cleaning Data", duration: "14 min" },
+          { title: "Formulas Every VA Should Know", duration: "14 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Working With Real Data",
+        lessons: [
+          { title: "CRM and Database Entry", duration: "13 min" },
+          { title: "PDF and Image to Spreadsheet", duration: "12 min" },
+          { title: "Web Research and Basic Scraping", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Quality & Speed",
+        lessons: [
+          { title: "Avoiding and Catching Errors", duration: "12 min" },
+          { title: "Keyboard Shortcuts and Efficiency", duration: "12 min" },
+          { title: "Handling Large Files Without Breaking Them", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "Building a Data Entry Portfolio", duration: "12 min" },
+          { title: "Where the Data Entry Jobs Are", duration: "12 min" },
+          { title: "Landing Your First Client", duration: "13 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "insurance-va",
+    title: "Insurance VA",
+    tagline: "Run the back office US insurance agencies cannot live without.",
+    description:
+      "US insurance agencies hire Filipino VAs to process policies, issue certificates, handle renewals, and service clients inside their agency management systems. Learn the lines of business and the tools, and become the insurance VA agencies keep for years.",
+    icon: "🛡️",
+    color: "blue",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Business",
+    skills: ["Policy Processing", "Certificates of Insurance", "Renewals & Remarketing", "AMS (EZLynx / AMS360)", "Client Servicing", "Compliance"],
+    modules: [
+      {
+        number: 1,
+        title: "The US Insurance Landscape",
+        lessons: [
+          { title: "What an Insurance VA Does", duration: "12 min" },
+          { title: "Lines of Business: P&C, Life and Health", duration: "14 min" },
+          { title: "How Agencies Make Money (and Where VAs Fit)", duration: "12 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Agency Tools & Systems",
+        lessons: [
+          { title: "Agency Management Systems: EZLynx, AMS360, Applied", duration: "15 min" },
+          { title: "Quoting and Rating Basics", duration: "13 min" },
+          { title: "CRM and Pipeline Management", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Core Insurance VA Tasks",
+        lessons: [
+          { title: "Policy Processing and Endorsements", duration: "14 min" },
+          { title: "Certificates of Insurance (COIs)", duration: "13 min" },
+          { title: "Renewals and Remarketing", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Servicing & Compliance",
+        lessons: [
+          { title: "Client Servicing and Claims Support", duration: "13 min" },
+          { title: "Data Entry and Accuracy Standards", duration: "12 min" },
+          { title: "Compliance and Client Confidentiality", duration: "12 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "Skills Insurance Agencies Look For", duration: "12 min" },
+          { title: "Where Insurance VAs Get Hired", duration: "12 min" },
+          { title: "Landing Your First Agency Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "real-estate-isa-va",
+    title: "Real Estate ISA VA",
+    tagline: "Turn cold real estate leads into booked appointments.",
+    description:
+      "Inside Sales Agents are the engine of a real estate team: they call leads, follow up relentlessly, and set appointments for agents. Learn the scripts, CRMs, and follow-up systems US agents pay premium rates for.",
+    icon: "🏠",
+    color: "green",
+    level: "Intermediate",
+    duration: "4 weeks",
+    lessons: 15,
+    category: "Real Estate",
+    skills: ["Cold & Warm Calling", "Objection Handling", "Lead Qualification", "CRM (Follow Up Boss / kvCORE)", "Appointment Setting", "Follow-up Systems"],
+    modules: [
+      {
+        number: 1,
+        title: "The ISA Role",
+        lessons: [
+          { title: "What a Real Estate ISA VA Does", duration: "12 min" },
+          { title: "The Lead-to-Appointment Funnel", duration: "13 min" },
+          { title: "Buyer vs Seller Leads", duration: "11 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Prospecting & Calling",
+        lessons: [
+          { title: "Cold and Warm Calling Scripts", duration: "15 min" },
+          { title: "Handling Objections With Confidence", duration: "14 min" },
+          { title: "Texting and Email Follow-up", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "CRM & Lead Management",
+        lessons: [
+          { title: "Follow Up Boss, kvCORE and Sierra", duration: "14 min" },
+          { title: "Lead Routing and Tags", duration: "12 min" },
+          { title: "Long-Term Lead Nurture", duration: "13 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Setting Appointments",
+        lessons: [
+          { title: "Qualifying Leads (Budget, Authority, Need, Timeline)", duration: "13 min" },
+          { title: "Booking and Confirming Appointments", duration: "12 min" },
+          { title: "A Clean Handoff to the Agent", duration: "11 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Metrics & Getting Hired",
+        lessons: [
+          { title: "Dials, Conversations and Appointments Set", duration: "12 min" },
+          { title: "Building an ISA Portfolio", duration: "12 min" },
+          { title: "Landing Your First Real Estate Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "linkedin-lead-gen-va",
+    title: "LinkedIn Lead-Gen VA",
+    tagline: "Book B2B calls from LinkedIn for founders and agencies.",
+    description:
+      "B2B businesses pay VAs to turn LinkedIn into a pipeline: optimized profiles, targeted lists, connection requests that get accepted, and DM sequences that book calls. Learn Sales Navigator and social selling and become the LinkedIn VA clients rely on.",
+    icon: "🔗",
+    color: "cyan",
+    level: "Intermediate",
+    duration: "3 weeks",
+    lessons: 15,
+    category: "Lead Generation",
+    skills: ["Sales Navigator", "Profile Optimization", "Targeted Lead Lists", "Connection & DM Outreach", "Social Selling", "CRM Tracking"],
+    modules: [
+      {
+        number: 1,
+        title: "LinkedIn Lead-Gen Foundations",
+        lessons: [
+          { title: "What a LinkedIn Lead-Gen VA Does", duration: "12 min" },
+          { title: "How B2B Buyers Actually Use LinkedIn", duration: "12 min" },
+          { title: "Profile Optimization for Outreach", duration: "13 min" },
+        ],
+      },
+      {
+        number: 2,
+        title: "Finding & Targeting Leads",
+        lessons: [
+          { title: "Sales Navigator Basics", duration: "15 min" },
+          { title: "Building Targeted Lead Lists", duration: "13 min" },
+          { title: "ICP and Personalization", duration: "12 min" },
+        ],
+      },
+      {
+        number: 3,
+        title: "Outreach That Books Calls",
+        lessons: [
+          { title: "Connection Requests That Get Accepted", duration: "13 min" },
+          { title: "DM Sequences That Start Conversations", duration: "14 min" },
+          { title: "Content and Social Selling", duration: "12 min" },
+        ],
+      },
+      {
+        number: 4,
+        title: "Tools & Automation",
+        lessons: [
+          { title: "LinkedIn Automation Tools and Account Safety", duration: "13 min" },
+          { title: "CRM and Response Tracking", duration: "12 min" },
+          { title: "Combining LinkedIn With Cold Email", duration: "12 min" },
+        ],
+      },
+      {
+        number: 5,
+        title: "Getting Hired",
+        lessons: [
+          { title: "The Metrics Clients Care About", duration: "12 min" },
+          { title: "Building a LinkedIn Lead-Gen Portfolio", duration: "12 min" },
+          { title: "Landing Your First B2B Client", duration: "14 min" },
+        ],
+      },
+    ],
+  },
 ];
 
 export function getCourse(slug: string): Course | undefined {

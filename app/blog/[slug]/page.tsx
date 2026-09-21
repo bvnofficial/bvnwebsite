@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag, ArrowRight } from "lucide-react";
 import { getBlogPostBySlug, getRelatedPosts, getPublishedSlugs } from "@/lib/blog-db";
+import { autoLink } from "@/lib/internal-links";
 import { type ContentSection } from "@/lib/blog-posts";
 import { ogImage } from "@/lib/og";
 import { breadcrumbSchema, jsonLdScript, SITE_URL } from "@/lib/jsonld";
@@ -27,12 +28,17 @@ export async function generateMetadata({
   const post = await getBlogPostBySlug(params.slug);
   if (!post) return { title: "Post Not Found | BVN" };
 
+  // Stored metaTitle already ends in "| BVN" AND the root layout template
+  // appends "%s | BVN" — which doubled the brand in the SERP. Normalize to
+  // exactly one "| BVN" and set it absolute so the template can't re-append.
+  const pageTitle = `${post.metaTitle.replace(/\s*\|\s*BVN\s*$/i, "").trim()} | BVN`;
+
   return {
-    title: post.metaTitle,
+    title: { absolute: pageTitle },
     description: post.metaDescription,
     keywords: post.keywords.join(", "),
     openGraph: {
-      title: post.metaTitle,
+      title: pageTitle,
       description: post.metaDescription,
       url: `https://www.bvnofficial.com/blog/${post.slug}`,
       type: "article",
@@ -43,7 +49,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: post.metaTitle,
+      title: pageTitle,
       description: post.metaDescription,
       images: [ogImage({ title: post.title, eyebrow: post.category, theme: post.category === "Operations" ? "blue" : "orange" }).url],
     },
@@ -191,7 +197,7 @@ export default async function BlogPostPage({
       <article className="relative bg-navy-surface border-t border-white/5 px-6 md:px-12 lg:px-24 py-14">
         <div className="max-w-3xl mx-auto space-y-6">
           {post.sections.map((section, i) => (
-            <SectionRenderer key={i} section={section} isMarketing={isMarketing} />
+            <SectionRenderer key={i} section={section} isMarketing={isMarketing} slug={post.slug} />
           ))}
         </div>
       </article>
@@ -266,9 +272,11 @@ export default async function BlogPostPage({
 function SectionRenderer({
   section,
   isMarketing,
+  slug,
 }: {
   section: ContentSection;
   isMarketing: boolean;
+  slug: string;
 }) {
   const accentClass = isMarketing ? "text-orange" : "text-blue-400";
   const accentBorderClass = isMarketing ? "border-orange/30" : "border-blue-400/30";
@@ -278,7 +286,11 @@ function SectionRenderer({
     case "paragraph":
       return (
         <p className="text-white/75 text-base md:text-[17px] leading-[1.85] font-body">
-          {section.text}
+          {autoLink(section.text, slug).map((tok, j) =>
+            tok.href
+              ? <Link key={j} href={tok.href} className={`${accentClass} underline underline-offset-2 hover:opacity-80`}>{tok.text}</Link>
+              : <span key={j}>{tok.text}</span>
+          )}
         </p>
       );
 

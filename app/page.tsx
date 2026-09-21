@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Megaphone, Settings2, Wrench, Bot, Target, Users, Mail, Phone, Zap, Globe, TrendingUp, Shield, ArrowRight,
+  GraduationCap, Rocket, Check,
 } from "lucide-react";
 import Link from "next/link";
 import HeroSection from "@/components/ui/HeroSection";
@@ -128,11 +129,80 @@ export default function HomePage() {
 
       {/* ── SECTION 1: Hero ─────────────────────────────────── */}
       <HeroSection
-        headline="Elevate Your Business. Dominate Your Market."
-        subtext="BVN is a global digital marketing and business automation agency trusted by 238+ clients worldwide. We combine high-impact marketing with intelligent automation to help you scale faster, smarter, and stronger."
-        primaryCta={{ label: "Explore Marketing", href: "/marketing" }}
-        secondaryCta={{ label: "Explore Operations", href: "/operations" }}
+        headline="Launch Your VA Career. Scale Your Business."
+        subtext="BVN trains virtual assistants with free courses and real certification, and runs marketing and automation for growing businesses. Pick your path below."
+        primaryCta={{ label: "Free VA Courses", href: "/courses" }}
+        secondaryCta={{ label: "Grow My Business", href: "/book" }}
       />
+
+      {/* ── AUDIENCE SPLIT: choose your path ─────────────────── */}
+      <section className="relative bg-[#0A0F1E] border-t border-white/5 py-16 md:py-20 px-6 md:px-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-9 md:mb-11">
+            <span className="font-accent font-semibold text-xs tracking-[0.2em] uppercase text-orange/80">Start here</span>
+            <h2 className="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl text-white mt-3">
+              What brings you to BVN?
+            </h2>
+            <p className="text-white/50 text-sm md:text-base mt-3 max-w-xl mx-auto">
+              Two paths, one agency. Pick the one that fits you.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+            {/* Path 1 — aspiring VA */}
+            <Link
+              href="/courses"
+              className="group relative flex flex-col rounded-2xl p-7 md:p-8 bg-white/[0.04] border border-orange/25 hover:border-orange/60 hover:bg-white/[0.06] transition-all duration-300 active:scale-[0.99]"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-orange/10 border border-orange/25 flex items-center justify-center mb-5 group-hover:bg-orange/20 transition-colors">
+                <GraduationCap size={26} className="text-orange" />
+              </div>
+              <span className="font-accent font-bold text-xs tracking-[0.18em] uppercase text-orange mb-2">I want to earn from home</span>
+              <h3 className="font-heading font-extrabold text-xl md:text-2xl text-white mb-2">Become a Virtual Assistant</h3>
+              <p className="text-white/55 text-sm leading-relaxed mb-5">
+                Learn the skills clients pay for with free, self-paced courses, then earn a verifiable certificate. No experience needed.
+              </p>
+              <ul className="space-y-2 mb-6">
+                {["33 free VA courses", "Verifiable certificate for ₱99", "No sign-up, learn at your pace"].map((x) => (
+                  <li key={x} className="flex items-center gap-2.5 text-white/65 text-sm">
+                    <span className="w-4 h-4 rounded-full bg-orange/15 text-orange flex items-center justify-center shrink-0"><Check size={10} strokeWidth={3} /></span>
+                    {x}
+                  </li>
+                ))}
+              </ul>
+              <span className="mt-auto inline-flex items-center gap-2 font-heading font-semibold text-sm text-orange group-hover:text-orange-light">
+                Browse free courses <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform duration-200" />
+              </span>
+            </Link>
+
+            {/* Path 2 — business owner */}
+            <Link
+              href="/book"
+              className="group relative flex flex-col rounded-2xl p-7 md:p-8 bg-white/[0.04] border border-blue-500/25 hover:border-blue-400/60 hover:bg-white/[0.06] transition-all duration-300 active:scale-[0.99]"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/25 flex items-center justify-center mb-5 group-hover:bg-blue-500/20 transition-colors">
+                <Rocket size={26} className="text-blue-400" />
+              </div>
+              <span className="font-accent font-bold text-xs tracking-[0.18em] uppercase text-blue-400 mb-2">I want to grow my business</span>
+              <h3 className="font-heading font-extrabold text-xl md:text-2xl text-white mb-2">Hire BVN for Your Business</h3>
+              <p className="text-white/55 text-sm leading-relaxed mb-5">
+                Hand your marketing and operations to a team that builds and runs the systems that scale you. Trusted by 238+ businesses.
+              </p>
+              <ul className="space-y-2 mb-6">
+                {["Marketing + automation, done for you", "238+ clients worldwide", "A free strategy call to start"].map((x) => (
+                  <li key={x} className="flex items-center gap-2.5 text-white/65 text-sm">
+                    <span className="w-4 h-4 rounded-full bg-blue-500/15 text-blue-400 flex items-center justify-center shrink-0"><Check size={10} strokeWidth={3} /></span>
+                    {x}
+                  </li>
+                ))}
+              </ul>
+              <span className="mt-auto inline-flex items-center gap-2 font-heading font-semibold text-sm text-blue-400 group-hover:text-blue-300">
+                Book a free call <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform duration-200" />
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ── TRUSTED BY (clients) ────────────────────────────── */}
       <section className="relative py-12 px-6 bg-[#0A0F1E] border-t border-white/5">
@@ -356,9 +426,9 @@ export default function HomePage() {
           </motion.p>
 
           <motion.div variants={childVariant} className="mb-8">
-            <GlowButton href="/contact" variant="filled" showArrow
+            <GlowButton href="/book" variant="filled" showArrow
               className="text-base px-8 py-4 neon-glow">
-              Book a Free Consultation
+              Book a Free Call
             </GlowButton>
           </motion.div>
 

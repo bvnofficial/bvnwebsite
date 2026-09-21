@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Bluetooth Tracker Detector - Free Online Tool",
@@ -10,5 +11,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Bluetooth Tracker Detector" description="Detect hidden Bluetooth trackers near you - AirTags, Tile, SmartTags and unknown BLE devices." path="/apps/tracker-detector" category="UtilitiesApplication" />
+      {children}
+    </>
+  );
 }

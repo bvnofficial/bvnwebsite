@@ -3,7 +3,8 @@ import { randomUUID } from "crypto";
 import { getCourse } from "@/lib/courses";
 import { getAccessToken } from "@/lib/paypal";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { PAYPAL_BASE, CERT_PRICE_USD } from "@/lib/certificate";
+import { PAYPAL_BASE, CERT_PRICE_USD, type CompletionRow } from "@/lib/certificate";
+import { sendCertificateEmail } from "@/lib/certificate-email";
 
 // Called by the claim page after the PayPal buttons capture a payment. We DON'T
 // trust the client: we re-fetch the capture from PayPal and confirm it's
@@ -45,24 +46,44 @@ export async function POST(req: Request) {
     }
 
     const id = randomUUID();
+    const paidAt = new Date().toISOString();
+    const studentName = String(name).trim().slice(0, 120);
+    const studentEmail = String(email).trim().toLowerCase().slice(0, 160);
+
     const { error: insertErr } = await supabase.from("course_completions").insert({
       id,
       course_slug: course.slug,
       course_title: course.title,
-      student_name: String(name).trim().slice(0, 120),
-      student_email: String(email).trim().toLowerCase().slice(0, 160),
+      student_name: studentName,
+      student_email: studentEmail,
       amount,
       currency,
       provider: "paypal",
       provider_ref: captureId,
       paid: true,
-      paid_at: new Date().toISOString(),
+      paid_at: paidAt,
     });
 
     if (insertErr) {
       console.error("Certificate paypal insert error:", insertErr.message);
       return NextResponse.json({ error: "Could not issue certificate." }, { status: 500 });
     }
+
+    // Email the certificate to the student (non-fatal).
+    await sendCertificateEmail({
+      id,
+      course_slug: course.slug,
+      course_title: course.title,
+      student_name: studentName,
+      student_email: studentEmail,
+      amount,
+      currency,
+      provider: "paypal",
+      provider_ref: captureId,
+      paid: true,
+      created_at: paidAt,
+      paid_at: paidAt,
+    } as CompletionRow);
 
     return NextResponse.json({ id });
   } catch (err) {

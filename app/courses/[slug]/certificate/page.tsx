@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Award, Lock, ArrowLeft, Loader2, QrCode, Coins } from "lucide-react";
+import { Award, Lock, ArrowLeft, Loader2, QrCode, Coins, Wallet, Copy, Check } from "lucide-react";
+import QRCode from "qrcode";
 import { getCourse } from "@/lib/courses";
 import { useProgress } from "@/lib/useProgress";
 import { createClient } from "@/utils/supabase/client";
-import PayPalCheckout from "@/app/payments/PayPalCheckout";
+import { CRYPTO_PAY, cryptoPayEnabled } from "@/lib/crypto-pay";
 
 export default function CertificateClaimPage() {
   const params = useParams();
@@ -26,6 +27,15 @@ export default function CertificateClaimPage() {
   // (1 credit = $1 = ₱60 = exactly the certificate fee.)
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
+  // If they already own this course's certificate, show it instead of re-charging.
+  const [existingCertId, setExistingCertId] = useState<string | null>(null);
+
+  // Crypto lane (USDT / Ethereum ERC20) for international students.
+  const [showCrypto, setShowCrypto] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState("");
+  const [txHash, setTxHash] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [cryptoSubmitted, setCryptoSubmitted] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -43,9 +53,31 @@ export default function CertificateClaimPage() {
         .eq("user_id", u.id)
         .maybeSingle();
       setBalance(wallet?.balance ?? 0);
+
+      // Already earned this certificate? Skip straight to viewing it.
+      try {
+        const res = await fetch("/api/certificate/mine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ courseSlug: slug }),
+        });
+        const d = await res.json();
+        if (d.found && d.id) setExistingCertId(d.id);
+      } catch {
+        /* non-fatal */
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Render the crypto QR from the wallet address the first time the panel opens.
+  useEffect(() => {
+    if (showCrypto && cryptoPayEnabled() && !qrDataUrl) {
+      QRCode.toDataURL(CRYPTO_PAY.address, { margin: 1, width: 240 })
+        .then(setQrDataUrl)
+        .catch(() => {});
+    }
+  }, [showCrypto, qrDataUrl]);
 
   if (!course) {
     return (
@@ -119,25 +151,47 @@ export default function CertificateClaimPage() {
     }
   };
 
-  // ── PayPal success → record + redirect ──
-  const onPaypalSuccess = async (d: { captureId: string }) => {
+  // ── Copy the crypto address ──
+  const copyAddress = async () => {
+    try {
+      await navigator.clipboard.writeText(CRYPTO_PAY.address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard blocked — the address is still shown for manual copy */
+    }
+  };
+
+  // ── Submit a crypto payment claim (goes to the Approvals queue) ──
+  const submitCrypto = async () => {
+    if (!formValid) {
+      setError("Please enter your full name and a valid email.");
+      return;
+    }
+    setError("");
     setLoading(true);
     try {
-      const res = await fetch("/api/certificate/paypal-complete", {
+      const res = await fetch("/api/certificate/crypto-claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          captureId: d.captureId,
           courseSlug: slug,
           name: name.trim(),
           email: email.trim(),
+          txHash: txHash.trim(),
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.id) throw new Error(data.error || "Could not issue certificate.");
-      router.push(`/certificate/${data.id}`);
+      if (!res.ok || !data.ok) throw new Error(data.error || "Could not submit your payment.");
+      // Already paid for this course before → jump straight to the certificate.
+      if (data.already && data.id) {
+        router.push(`/certificate/${data.id}`);
+        return;
+      }
+      setCryptoSubmitted(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Payment recorded but certificate failed. Contact bvn@bvnofficial.com.");
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
       setLoading(false);
     }
   };
@@ -164,8 +218,26 @@ export default function CertificateClaimPage() {
           </p>
         </div>
 
-        {/* Not-yet-complete gate */}
-        {loaded && !allComplete ? (
+        {/* Already earned → show it, don't ask to pay again */}
+        {existingCertId ? (
+          <div className="bg-white/[0.04] border border-emerald-500/20 rounded-2xl p-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 mb-4">
+              <Award className="text-emerald-400" size={26} />
+            </div>
+            <p className="text-white font-heading font-bold text-lg mb-2">
+              You already have this certificate
+            </p>
+            <p className="text-white/50 text-sm leading-relaxed mb-6">
+              No need to pay again. View or download it, or re-send it to your email.
+            </p>
+            <Link
+              href={`/certificate/${existingCertId}`}
+              className="inline-block px-6 py-3 rounded-xl bg-orange text-white font-heading font-semibold text-sm hover:bg-orange-light transition-all"
+            >
+              View my certificate →
+            </Link>
+          </div>
+        ) : loaded && !allComplete ? (
           <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-8 text-center">
             <Lock className="text-white/40 mx-auto mb-4" size={28} />
             <p className="text-white/80 font-heading font-semibold mb-2">
@@ -216,7 +288,7 @@ export default function CertificateClaimPage() {
             {/* Price */}
             <div className="flex items-center justify-between bg-white/[0.03] border border-white/8 rounded-xl px-4 py-3 mb-5">
               <span className="text-white/60 text-sm">Certificate fee</span>
-              <span className="text-white font-heading font-bold">₱60 <span className="text-white/40 font-normal text-sm">/ $1</span></span>
+              <span className="text-white font-heading font-bold">₱99 <span className="text-white/40 font-normal text-sm">/ $1</span></span>
             </div>
 
             {/* Pay with wallet credits (1 credit = the full fee) */}
@@ -282,29 +354,109 @@ export default function CertificateClaimPage() {
               }`}
             >
               {loading ? <Loader2 className="animate-spin" size={16} /> : <QrCode size={16} />}
-              Pay ₱60 with QR Ph
+              Pay ₱99 with QR Ph
             </button>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3 my-4">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-white/30 text-xs font-accent">or pay internationally</span>
-              <div className="flex-1 h-px bg-white/10" />
-            </div>
+            {/* Crypto lane (USDT / Ethereum ERC20) — international students */}
+            {cryptoPayEnabled() && !cryptoSubmitted && (
+              <>
+                <div className="flex items-center gap-3 my-4">
+                  <div className="flex-1 h-px bg-white/10" />
+                  <span className="text-white/30 text-xs font-accent">or paying from outside PH</span>
+                  <div className="flex-1 h-px bg-white/10" />
+                </div>
 
-            {/* PayPal / card ($1 USD) */}
-            <div className={!formValid || loading ? "opacity-50 pointer-events-none" : ""}>
-              <PayPalCheckout
-                amount="1.00"
-                currency="USD"
-                name={name.trim()}
-                email={email.trim()}
-                description={`BVN Certificate — ${course.title}`}
-                onSuccess={onPaypalSuccess}
-                onError={(msg) => setError(msg)}
-              />
-            </div>
-            {!formValid && (
+                {!showCrypto ? (
+                  <button
+                    onClick={() => setShowCrypto(true)}
+                    className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/8 border border-white/12 text-white font-heading font-semibold text-sm hover:bg-white/12 transition-all"
+                  >
+                    <Wallet size={16} /> Pay with crypto ({CRYPTO_PAY.coin})
+                  </button>
+                ) : (
+                  <div className="rounded-xl border border-white/12 bg-white/[0.03] p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-white font-heading font-semibold text-sm">
+                        Pay ${CRYPTO_PAY.amountUsd} in {CRYPTO_PAY.coin}
+                      </span>
+                      <span className="text-white/40 text-xs font-accent">{CRYPTO_PAY.network}</span>
+                    </div>
+
+                    {qrDataUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={qrDataUrl}
+                        alt={`${CRYPTO_PAY.coin} ${CRYPTO_PAY.network} address QR`}
+                        className="w-40 h-40 rounded-lg bg-white p-2 mx-auto mb-3"
+                      />
+                    ) : (
+                      <div className="w-40 h-40 rounded-lg bg-white/5 mx-auto mb-3 flex items-center justify-center">
+                        <Loader2 className="animate-spin text-white/30" size={20} />
+                      </div>
+                    )}
+
+                    <p className="text-amber-300/90 text-xs leading-relaxed bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 mb-3">
+                      Send only <span className="font-semibold">{CRYPTO_PAY.coin}</span> on the{" "}
+                      <span className="font-semibold">{CRYPTO_PAY.network}</span> network to this address.
+                      Sending on any other network, or any other coin, means the payment is lost and cannot be recovered.
+                    </p>
+
+                    <label className="block text-white/50 text-xs font-accent mb-1">Wallet address</label>
+                    <div className="flex items-stretch gap-2 mb-3">
+                      <code className="flex-1 min-w-0 break-all text-white/80 text-xs bg-white/5 border border-white/12 rounded-lg px-3 py-2 leading-relaxed">
+                        {CRYPTO_PAY.address}
+                      </code>
+                      <button
+                        onClick={copyAddress}
+                        className="shrink-0 flex items-center justify-center w-10 rounded-lg bg-white/8 border border-white/12 text-white hover:bg-white/12 transition-all"
+                        aria-label="Copy address"
+                      >
+                        {copied ? <Check size={15} className="text-emerald-400" /> : <Copy size={15} />}
+                      </button>
+                    </div>
+
+                    <label className="block text-white/50 text-xs font-accent mb-1">
+                      Transaction hash (optional, speeds up approval)
+                    </label>
+                    <input
+                      type="text"
+                      value={txHash}
+                      onChange={(e) => setTxHash(e.target.value)}
+                      placeholder="0x… paste your tx hash"
+                      className="w-full bg-white/5 border border-white/12 rounded-lg px-3 py-2 text-white text-xs placeholder-white/25 focus:outline-none focus:border-orange/50 mb-3"
+                    />
+
+                    <button
+                      onClick={submitCrypto}
+                      disabled={loading || !formValid}
+                      className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange text-white font-heading font-semibold text-sm hover:bg-orange-light disabled:opacity-50 transition-all"
+                    >
+                      {loading ? <Loader2 className="animate-spin" size={16} /> : <Wallet size={16} />}
+                      I&apos;ve sent the payment
+                    </button>
+                    <p className="text-white/35 text-xs text-center mt-2">
+                      We confirm the transfer and email your certificate, usually within a few hours.
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Crypto claim submitted → pending confirmation */}
+            {cryptoSubmitted && (
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] p-5 text-center mt-3">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 mb-3">
+                  <Check className="text-emerald-400" size={22} />
+                </div>
+                <p className="text-white font-heading font-semibold text-sm mb-1">Payment submitted</p>
+                <p className="text-white/50 text-xs leading-relaxed">
+                  Once we confirm your {CRYPTO_PAY.coin} transfer, your certificate is emailed to{" "}
+                  <span className="text-white/75">{email.trim()}</span>. This usually takes a few hours.
+                </p>
+              </div>
+            )}
+
+            {!formValid && !cryptoSubmitted && (
               <p className="text-white/30 text-xs text-center mt-2">
                 Enter your name and email above to enable payment.
               </p>

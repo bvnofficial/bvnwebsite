@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Regal Care App — Build Roadmap | BVN</title>
+<style>
+  :root{
+    --bg:#0b0a12; --bg2:#12101c; --panel:rgba(45,35,75,0.32); --panel2:rgba(45,35,75,0.55);
+    --border:#241d38; --border2:#3a2f5c; --text:#ece8f5; --muted:#a99fc4; --dim:#6f6690;
+    --violet:#7c3aed; --violet2:#a78bfa; --gold:#fbbf24; --green:#34d399; --blue:#60a5fa; --gray:#8b93a7;
+    --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:radial-gradient(1200px 600px at 72% -10%,rgba(124,58,237,0.16),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  a{color:var(--violet2);text-decoration:none}
+
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(11,10,18,0.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border)}
+  .topbar .inner{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
+  .topbar .label{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .pbar{flex:1;height:8px;border-radius:99px;background:#221b36;overflow:hidden}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--violet2));transition:width .35s ease}
+  .ppct{font-family:var(--mono);font-weight:700;color:var(--violet2);font-size:13px;min-width:40px;text-align:right}
+
+  header.hero{padding:48px 0 20px}
+  .brandrow{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .brandrow img{height:30px;width:auto;opacity:.95}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--violet2)}
+  h1{font-size:34px;line-height:1.15;font-weight:800;letter-spacing:-.02em}
+  h1 span{color:var(--violet2)}
+  .sub{color:var(--muted);font-size:16px;margin-top:12px;max-width:680px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .badge{font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding:5px 11px;border-radius:99px;
+    border:1px solid var(--border2);color:var(--muted);background:var(--panel)}
+  .badge.on{border-color:var(--green);color:var(--green)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 8px}
+  .stat{background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius);padding:16px 16px 14px}
+  .stat .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-size:20px;font-weight:800;color:var(--violet2);margin-top:6px}
+  .stat .v small{font-size:12px;color:var(--dim);font-weight:600}
+
+  section{margin-top:34px}
+  .sec-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .sec-h h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .sec-h .num{font-family:var(--mono);color:var(--violet2);font-size:13px;font-weight:700}
+  .sec-h .mini{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 4px}
+  .tab{cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:7px 14px;border-radius:99px;
+    border:1px solid var(--border2);background:var(--panel);color:var(--muted);transition:.15s}
+  .tab:hover{color:var(--text);border-color:#5a4a86}
+  .tab.active{background:var(--violet);color:#fff;border-color:var(--violet);font-weight:700}
+
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .card .head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;
+    border-bottom:1px solid transparent;transition:.15s}
+  .card .head:hover{background:rgba(58,47,92,0.28)}
+  .card.open .head{border-bottom-color:var(--border)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px;font-weight:700;white-space:nowrap}
+  .chip.setup{background:rgba(96,165,250,0.15);color:var(--blue);border:1px solid rgba(96,165,250,0.3)}
+  .chip.p0{background:rgba(52,211,153,0.14);color:var(--green);border:1px solid rgba(52,211,153,0.32)}
+  .chip.p1{background:rgba(124,58,237,0.2);color:var(--violet2);border:1px solid rgba(124,58,237,0.4)}
+  .chip.p2{background:rgba(167,139,250,0.14);color:var(--violet2);border:1px solid rgba(167,139,250,0.3)}
+  .chip.p3{background:rgba(139,147,167,0.14);color:var(--gray);border:1px solid rgba(139,147,167,0.3)}
+  .chip.biz{background:rgba(251,191,36,0.14);color:var(--gold);border:1px solid rgba(251,191,36,0.3)}
+  .card .head .title{font-weight:700;font-size:15px}
+  .card .head .meta{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .ring{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .ring b{color:var(--violet2)}
+  .chev{color:var(--dim);transition:transform .2s;font-size:13px}
+  .card.open .chev{transform:rotate(90deg)}
+  .items{display:none;padding:6px 18px 14px}
+  .card.open .items{display:block}
+  .item{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(36,29,56,0.7)}
+  .item:last-child{border-bottom:none}
+  .item label{display:flex;gap:12px;align-items:flex-start;cursor:pointer;flex:1}
+  .item input{appearance:none;-webkit-appearance:none;width:19px;height:19px;border:1.5px solid var(--border2);
+    border-radius:5px;margin-top:2px;flex-shrink:0;cursor:pointer;position:relative;transition:.15s;background:#14101f}
+  .item input:hover{border-color:var(--violet2)}
+  .item input:checked{background:var(--violet);border-color:var(--violet)}
+  .item input:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  .item .txt{font-size:14.5px;color:var(--text);transition:.15s}
+  .item .txt .note{display:block;font-size:12.5px;color:var(--dim);margin-top:2px}
+  .item input:checked ~ .txt{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(169,159,196,0.4)}
+  .item input:checked ~ .txt .note{text-decoration:none}
+
+  .cards{display:flex;flex-direction:column;gap:12px}
+  .hidden{display:none!important}
+
+  .tl-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px}
+  .tl-row .blk{border-radius:8px;padding:11px 12px;font-size:12px;font-weight:600;color:#fff}
+  .b0{background:linear-gradient(135deg,#34d399,#10b981)}
+  .b1{background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
+  .b2{background:linear-gradient(135deg,#a78bfa,#8b5cf6)}
+  .b3{background:linear-gradient(135deg,#4b4266,#3a2f5c)}
+  .bs{background:linear-gradient(135deg,#60a5fa,#3b82f6)}
+  .blk span{display:block;font-size:10px;font-weight:700;opacity:.8;font-family:var(--mono);margin-bottom:2px}
+
+  .callout{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(124,58,237,0.03));
+    border:1px solid rgba(124,58,237,0.3);border-radius:var(--radius);padding:16px 18px;margin-top:16px;font-size:14px}
+  .callout b{color:var(--violet2)}
+  .callout.warn{background:linear-gradient(135deg,rgba(251,191,36,0.1),rgba(251,191,36,0.02));border-color:rgba(251,191,36,0.32)}
+  .callout.warn b{color:var(--gold)}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .btn{font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:9px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--border2);background:var(--panel);color:var(--text);transition:.15s}
+  .btn:hover{border-color:var(--violet2);color:var(--violet2)}
+  .btn.primary{background:var(--violet);color:#fff;border-color:var(--violet);font-weight:700}
+  .btn.primary:hover{background:var(--violet2);color:#160f24}
+
+  footer{margin-top:46px;padding-top:24px;border-top:1px solid var(--border);color:var(--dim);font-size:13px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  footer .who{font-weight:700;color:var(--text)}
+
+  @media(max-width:680px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    h1{font-size:27px}
+    .tl-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <span class="label">Build Progress</span>
+    <div class="pbar"><i id="globalBar"></i></div>
+    <span class="ppct" id="globalPct">0%</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="brandrow">
+      <img src="/clients/regal-homes/website/img/logo-white.png" alt="Regal Senior Living" onerror="this.style.display='none'"/>
+      <span class="eyebrow">BVN · Regal Care · Build Roadmap</span>
+    </div>
+    <h1>Regal Care App<br><span>Alcomy-style, GoHighLevel-backed</span></h1>
+    <p class="sub">Every phase and task to take Regal from concept to a live, owned app on web, iOS, and Android, with GoHighLevel as the backend. Check items off as they are done; progress saves in your browser so nothing gets forgotten.</p>
+    <div class="badges">
+      <span class="badge on">● Don ~80% sold</span>
+      <span class="badge">Backend · GoHighLevel</span>
+      <span class="badge">Web · iOS · Android</span>
+      <span class="badge">Pilot cost · $0</span>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Backend</div><div class="v">GHL <small>only</small></div></div>
+    <div class="stat"><div class="k">Targets</div><div class="v">3 <small>web/iOS/Android</small></div></div>
+    <div class="stat"><div class="k">Phases</div><div class="v">4 <small>+ setup</small></div></div>
+    <div class="stat"><div class="k">Pilot Cost</div><div class="v">$0 <small>to BVN</small></div></div>
+  </div>
+
+  <!-- Filter -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-f="all">All</div>
+    <div class="tab" data-f="setup">Setup</div>
+    <div class="tab" data-f="p0">Phase 0 · Pilot</div>
+    <div class="tab" data-f="p1">Phase 1 · Core</div>
+    <div class="tab" data-f="p2">Phase 2 · Native</div>
+    <div class="tab" data-f="p3">Phase 3 · Clinical</div>
+    <div class="tab" data-f="biz">Business</div>
+  </div>
+
+  <section>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <div class="callout">
+    <b>Architecture in one line:</b> GoHighLevel is the only backend. The app reads and writes straight to GHL and stores nothing itself, so all resident data stays inside GHL's HIPAA boundary (covered by the existing BVN&#8596;Regal BAA), hosting is free on Vercel, and messaging is recorded natively in GHL Conversations.
+  </div>
+  <div class="callout warn">
+    <b>Do not forget:</b> rotate the GHL Private Integration token after wiring (it was shared in chat). And confirm the existing BVN&#8596;Regal BAA is entity-level, not worded only for the CRM.
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
+    <button class="btn" id="expandAll">Expand all</button>
+    <button class="btn" id="collapseAll">Collapse all</button>
+    <button class="btn" id="resetBtn">Reset progress</button>
+  </div>
+
+  <!-- Phase strip -->
+  <section>
+    <div class="sec-h"><span class="num">&#9656;</span><h2>The Phases</h2><span class="mini">pilot closes the deal, rest is paid</span></div>
+    <div class="tl-row">
+      <div class="blk bs"><span>SETUP</span>GHL token, objects, field mapping, PWA scaffold</div>
+      <div class="blk b0"><span>PHASE 0 · FREE</span>Live pilot: family + owner, 1&#8211;2 residents, one real payment</div>
+      <div class="blk b1"><span>PHASE 1 · PAID</span>Core: all residents, full family/owner + staff</div>
+      <div class="blk b2"><span>PHASE 2 · PAID</span>Native apps + push + sensors</div>
+      <div class="blk b3"><span>PHASE 3 · OPTIONAL</span>Full MAR / clinical core</div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="who">Benjamin Yson</span>
+    <span>BVN · Build &amp; Delivery</span>
+    <span style="margin-left:auto"><a href="mailto:bvn@bvnofficial.com?subject=Regal%20Care%20App">bvn@bvnofficial.com</a></span>
+  </footer>
+
+</div>
+
+<script>
+const SECTIONS = [
+  { id:"ghl", title:"GHL Setup & Foundations", chip:"setup", chipLabel:"Setup", f:"setup",
+    items:[
+      ["Confirm Private Integration token scopes","contacts, custom objects, custom fields, conversations, files, opportunities"],
+      ["Rotate the Private Integration token after wiring","it was shared in chat — replace it once live"],
+      ["Confirm HIPAA/BAA add-on is active on the Regal GHL location"],
+      ["Confirm BVN↔Regal BAA is entity-level, not CRM-only"],
+      ["Read live GHL custom fields + custom objects; finalize field mapping"],
+      ["Create custom object: Resident","level of care, hospice, pharmacy, room, status"],
+      ["Create custom object: Log","vitals: BP, weight, sleep, bowel, body check"],
+      ["Create custom object: Care Task","+ completion log"],
+      ["Set up GHL webhooks → Vercel endpoint","contact / opportunity / note / file changes"],
+    ]},
+  { id:"infra", title:"Architecture & Infrastructure", chip:"setup", chipLabel:"Setup", f:"setup",
+    items:[
+      ["Scaffold Next.js PWA","installable on web, iOS, Android — no app store needed yet"],
+      ["Reuse the purple Fraunces/Hanken UI from the app previews"],
+      ["Thin API layer that stores/logs NO PHI","all reads/writes pass straight through to GHL"],
+      ["Deploy to existing Vercel (free)"],
+      ["Lightweight auth (email + role, no health data)","family / staff / owner"],
+      ["Keep the GHL API token server-side, never in the browser bundle"],
+    ]},
+  { id:"p0", title:"Phase 0 · Live Pilot (spec, free) — the closer", chip:"p0", chipLabel:"Phase 0 · Free", f:"p0",
+    items:[
+      ["Pick 1–2 pilot residents Don authorizes"],
+      ["Enter pilot resident data into GHL"],
+      ["Family app — Today","status, vitals, meds, photo, live from GHL"],
+      ["Family app — Health","vitals trends, allergies, diet, diagnoses summary"],
+      ["Family app — Messages → GHL Conversations","recorded in the CRM automatically"],
+      ["Family app — Docs (snap-a-doc → GHL files)"],
+      ["Family app — Billing (Stripe→ACH pay now / autopay)"],
+      ["Owner Overview — real occupancy + completion %"],
+      ["One real Stripe→ACH payment Don authorizes"],
+      ["Deploy to a private URL; Don logs in on his phone"],
+      ["→ Don pays"],
+    ]},
+  { id:"p1", title:"Phase 1 · Core (paid)", chip:"p1", chipLabel:"Phase 1 · Core", f:"p1",
+    items:[
+      ["Onboard all residents into GHL"],
+      ["Full Family app (all tabs) for every family"],
+      ["Contacts / POA structure wired","Emergency / POA / Primary roles → app permissions"],
+      ["Full Owner app","Overview, Money (by entity), Compliance, Leads"],
+      ["Staff app — Board","this shift's care tasks across residents"],
+      ["Staff app — Chart","record vitals / ADLs, incident note"],
+      ["Staff app — Meds","light record-given"],
+      ["Staff app — Alerts","webhook-driven feed"],
+      ["Roles & permissions (family / staff / owner scoping)"],
+      ["Announcements (GHL broadcast + app feed)"],
+      ["Realtime updates via webhooks"],
+    ]},
+  { id:"p2", title:"Phase 2 · Native apps & depth (paid)", chip:"p2", chipLabel:"Phase 2 · Native", f:"p2",
+    items:[
+      ["Port PWA → Expo (React Native + web)"],
+      ["Ship to Apple App Store (EAS build/submit)"],
+      ["Ship to Google Play (EAS build/submit)"],
+      ["Push notifications (Expo / FCM / APNs)"],
+      ["Sensor alerts","The Orchard bed / chair / door sensors"],
+      ["Staff scheduling"],
+    ]},
+  { id:"p3", title:"Phase 3 · Full clinical core (paid, optional)", chip:"p3", chipLabel:"Phase 3 · Optional", f:"p3",
+    items:[
+      ["Full MAR (medication administration record)"],
+      ["Missed-med tracking + compliance %"],
+      ["Care Plans + Outcomes"],
+      ["Pharmacy integration (Simi Valley LTC)"],
+      ["Only build if Don leaves Alcomy entirely","clinically/legally heavy — the real Alcomy engine"],
+    ]},
+  { id:"comp", title:"Compliance & Guardrails", chip:"setup", chipLabel:"Setup", f:"setup",
+    items:[
+      ["PHI stays only in GHL — app persists nothing"],
+      ["Role-based access enforced (family sees only their resident)"],
+      ["HTTPS everywhere; API token server-side"],
+      ["Pilot limited to Don-authorized residents"],
+      ["Audit trail via GHL record history"],
+    ]},
+  { id:"biz", title:"Business — Sales, Pricing & Consent", chip:"biz", chipLabel:"Business", f:"biz",
+    items:[
+      ["Firm up the pilot scope into a one-pager for Don"],
+      ["Price the core build: one-time $6k–$12k"],
+      ["Price the monthly: $200–$400 (hosting/support), framed as ≤ Alcomy"],
+      ["Present Phases 2–3 as separately-priced add-ons"],
+      ["Confirm Stripe→ACH consent flow with Don (families authorize)"],
+      ["Positioning line: Alcomy is rent forever; this one Regal owns"],
+    ]},
+];
+
+const STORE = "regal-careapp-progress-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch(e){ state = {}; }
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
+function key(s,i){ return s+"::"+i; }
+
+const cardsEl = document.getElementById("cards");
+SECTIONS.forEach(sec=>{
+  const card = document.createElement("div");
+  card.className = "card open";
+  card.dataset.f = sec.f;
+  const itemsHtml = sec.items.map((it,i)=>{
+    const k = key(sec.id,i);
+    const checked = state[k] ? "checked" : "";
+    const note = it[1] ? '<span class="note">'+it[1]+'</span>' : '';
+    return `<div class="item"><label><input type="checkbox" data-k="${k}" ${checked}/>
+      <span class="txt">${it[0]}${note}</span></label></div>`;
+  }).join("");
+  card.innerHTML = `
+    <div class="head">
+      <span class="chip ${sec.chip}">${sec.chipLabel}</span>
+      <span class="title">${sec.title}</span>
+      <span class="meta"><span class="ring" id="ring-${sec.id}"></span><span class="chev">&#9656;</span></span>
+    </div>
+    <div class="items">${itemsHtml}</div>`;
+  card.querySelector(".head").addEventListener("click", e=>{
+    if(e.target.tagName==="INPUT") return;
+    card.classList.toggle("open");
+  });
+  cardsEl.appendChild(card);
+});
+
+function updateProgress(){
+  let total=0, done=0;
+  SECTIONS.forEach(sec=>{
+    let st=0, sd=0;
+    sec.items.forEach((it,i)=>{ st++; if(state[key(sec.id,i)]) sd++; });
+    total+=st; done+=sd;
+    const ring = document.getElementById("ring-"+sec.id);
+    if(ring) ring.innerHTML = `<b>${sd}</b>/${st}`;
+  });
+  const pct = total? Math.round(done/total*100):0;
+  document.getElementById("globalBar").style.width = pct+"%";
+  document.getElementById("globalPct").textContent = pct+"%";
+}
+
+cardsEl.addEventListener("change", e=>{
+  if(e.target.matches('input[type="checkbox"]')){
+    state[e.target.dataset.k] = e.target.checked;
+    save(); updateProgress();
+  }
+});
+
+document.getElementById("tabs").addEventListener("click", e=>{
+  const t = e.target.closest(".tab"); if(!t) return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  const f = t.dataset.f;
+  document.querySelectorAll("#cards .card").forEach(c=>{
+    c.classList.toggle("hidden", !(f==="all" || c.dataset.f===f));
+  });
+});
+
+document.getElementById("expandAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
+document.getElementById("collapseAll").onclick = ()=>document.querySelectorAll(".card").forEach(c=>c.classList.remove("open"));
+document.getElementById("resetBtn").onclick = ()=>{
+  if(confirm("Reset all checked items?")){ state={}; save();
+    document.querySelectorAll('#cards input[type="checkbox"]').forEach(c=>c.checked=false); updateProgress(); }
+};
+
+updateProgress();
+</script>
+</body>
+</html>

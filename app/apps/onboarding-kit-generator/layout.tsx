@@ -1,4 +1,5 @@
 import { buildMetadata } from "@/lib/og";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 export const metadata = buildMetadata({
   title: "Client Onboarding Kit Generator – Free VA Onboarding Maker",
@@ -13,5 +14,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ToolJsonLd name="Client Onboarding Kit Generator" description="Generate a professional client onboarding kit — welcome message, next steps, intake questionnaire, and first milestones. Download as PDF or HTML. Free, no signup." path="/apps/onboarding-kit-generator" category="BusinessApplication" />
+      {children}
+    </>
+  );
 }

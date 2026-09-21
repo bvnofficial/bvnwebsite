@@ -413,7 +413,7 @@ function LearnPageInner() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-heading font-bold text-white text-sm">🎉 Course complete — claim your certificate</p>
-                  <p className="text-white/50 text-xs mt-0.5">Official Certificate of Completion · ₱60 / $1 · downloadable PDF</p>
+                  <p className="text-white/50 text-xs mt-0.5">Official Certificate of Completion · ₱99 / $1 · downloadable PDF</p>
                 </div>
                 <ChevronRight className="text-orange shrink-0 group-hover:translate-x-0.5 transition-transform" size={18} />
               </Link>
