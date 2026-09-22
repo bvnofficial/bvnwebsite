@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Pratt Electrical GHL + Simpro CRM (application)",
+    region: "Solar/electrical business, ongoing remote, hourly",
+    scope: "GoHighLevel · Simpro · AI Calling · Lead Routing",
+    blurb:
+      "Interactive demo for an ongoing CRM and automation role across GoHighLevel and Simpro at a solar/electrical business: the full lead lifecycle (enquiry, routing, AI call/speed-to-lead, appointment, quote in Simpro, sale and install, post-sale/reactivation) as a stepper, an interactive GHL-vs-Simpro division-of-labour explorer showing who owns what and how they sync, solar/electrical domain understanding, an ongoing-role weekly cadence (find, fix, improve, report), and real sanitized Regal screenshots. Simpro confirmed by Benjamin as real hands-on experience (apply full). Rate AUD $14/hr (fixed-monthly preference notable), availability 8am-5pm PHT overlapping AU hours. Workflow example = field-service two-way sync. Built with Claude Code.",
+    href: "/clients/pratt-electrical/crm-automation-system",
+    status: "pending",
+    accent: C.amber,
+    tags: ["GoHighLevel", "Simpro", "AI Calling", "Lead Routing"],
+  },
+  {
     name: "Telehealth GHL System Architecture (application)",
     region: "Australian telehealth company, full-time, AU hours",
     scope: "GHL Architecture · Patient Journey · Integrations",
