@@ -21,16 +21,28 @@ async function findUserByEmail(admin: SupabaseClient, email: string) {
 // Admin-only: manually add/remove credits from any account by email.
 export async function POST(req: Request) {
   try {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // Two ways in: a logged-in admin browser session, OR the CERT_ADMIN_SECRET
+    // (header or ?secret) used server-to-server by BVN OS, same as the other
+    // admin routes it drives.
+    const url = new URL(req.url);
+    const want = process.env.CERT_ADMIN_SECRET;
+    const gotSecret = req.headers.get("x-admin-secret") || url.searchParams.get("secret") || "";
+    const viaSecret = !!want && gotSecret === want;
 
-    if (!user) {
-      return NextResponse.json({ error: "Please log in first." }, { status: 401 });
-    }
-    if (!isAdmin(user.email)) {
-      return NextResponse.json({ error: "Not authorized." }, { status: 403 });
+    let actor = "BVN OS";
+    if (!viaSecret) {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        return NextResponse.json({ error: "Please log in first." }, { status: 401 });
+      }
+      if (!isAdmin(user.email)) {
+        return NextResponse.json({ error: "Not authorized." }, { status: 403 });
+      }
+      actor = user.email || "admin";
     }
 
     const { email, amount, note } = await req.json();
@@ -62,7 +74,7 @@ export async function POST(req: Request) {
 
     const desc = note?.trim()
       ? `Admin adjustment: ${note.trim()}`
-      : `Admin adjustment by ${user.email}`;
+      : `Admin adjustment by ${actor}`;
 
     const { data: balance, error } = await admin.rpc("admin_adjust_credits", {
       p_user: target.id,
