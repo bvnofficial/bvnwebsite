@@ -1,0 +1,103 @@
+/* An encyclopedia-style article page. Scoped to .wiki so nothing leaks into the rest of the site. */
+
+.wiki {
+  --link: #0645ad;
+  --link-visited: #0b0080;
+  --border: #a2a9b1;
+  --border-soft: #c8ccd1;
+  --panel: #f8f9fa;
+  --text: #202122;
+  --muted: #54595d;
+  background: #f6f6f6;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.wiki a { color: var(--link); text-decoration: none; }
+.wiki a:hover { text-decoration: underline; }
+.wiki a:visited { color: var(--link-visited); }
+
+/* top bar */
+.wiki-top { background: #fff; border-bottom: 1px solid var(--border-soft); position: sticky; top: 0; z-index: 30; }
+.wiki-top-inner { max-width: 1120px; margin: 0 auto; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.wiki-brand { display: flex; align-items: center; gap: 10px; color: var(--text) !important; }
+.wiki-brand img { border-radius: 6px; }
+.wiki-brand strong { display: block; font-family: Georgia, "Linux Libertine", "Times New Roman", serif; font-size: 18px; line-height: 1.1; }
+.wiki-brand em { display: block; font-size: 11px; color: var(--muted); font-style: normal; }
+.wiki-top nav { display: flex; gap: 16px; align-items: center; font-size: 13px; flex-wrap: wrap; }
+.wiki-play { background: #36c; color: #fff !important; padding: 6px 12px; border-radius: 2px; font-weight: 600; }
+.wiki-play:hover { background: #447ff5; text-decoration: none !important; }
+.wiki a.wiki-play:visited { color: #fff; }
+
+/* page */
+.wiki-page { max-width: 1120px; margin: 0 auto; padding: 0 16px 48px; }
+.wiki article { background: #fff; border: 1px solid var(--border-soft); border-top: none; padding: 20px 32px 32px; }
+.wiki-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border-soft); margin: -20px -32px 16px; padding: 0 16px; background: linear-gradient(#fff, #f6f7f8); }
+.wiki-tabs span, .wiki-tabs a { padding: 10px 14px; font-size: 13px; }
+.wiki-tabs span.on { color: var(--text); font-weight: 600; border-bottom: 2px solid #36c; margin-bottom: -1px; background: #fff; }
+
+.wiki h1 { font-family: Georgia, "Linux Libertine", "Times New Roman", serif; font-weight: 400; font-size: 1.9em; line-height: 1.3; margin: 0 0 4px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.wiki .siteSub { color: var(--muted); font-size: 12.5px; margin: 0 0 10px; }
+.wiki .hatnote { font-style: italic; padding-left: 1.6em; margin-bottom: 10px; font-size: 13px; }
+.wiki h2 { font-family: Georgia, "Linux Libertine", "Times New Roman", serif; font-weight: 400; font-size: 1.5em; margin: 1.2em 0 0.5em; border-bottom: 1px solid var(--border); padding-bottom: 2px; line-height: 1.3; clear: both; }
+.wiki h3 { font-size: 1.2em; font-weight: 700; margin: 1em 0 0.4em; line-height: 1.3; }
+.wiki p { margin: 0.5em 0 0.9em; }
+.wiki ul, .wiki ol { margin: 0.3em 0 0.8em 1.6em; }
+.wiki li { margin-bottom: 0.15em; }
+.wiki .mw-editsection { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 12px; font-weight: 400; margin-left: 0.6em; color: var(--muted); }
+.wiki .mw-editsection a { padding: 0 2px; }
+.wiki sup.reference { font-size: 0.75em; line-height: 1; }
+.wiki kbd { background: #eee; border: 1px solid #ccc; border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; font-size: 12px; font-family: inherit; }
+
+/* infobox */
+.wiki .infobox { float: right; clear: right; width: 264px; margin: 0.4em 0 1em 1.4em; background: var(--panel); border: 1px solid var(--border); border-collapse: collapse; font-size: 13px; line-height: 1.45; }
+.wiki .infobox th, .wiki .infobox td { padding: 4px 8px; vertical-align: top; text-align: left; border: none; }
+.wiki .infobox th { width: 38%; font-weight: 700; }
+.wiki .infobox-title { text-align: center !important; font-size: 1.25em; background: #cedff2; padding: 6px 8px !important; }
+.wiki .infobox-image { text-align: center !important; padding: 8px !important; }
+.wiki .infobox-image img { max-width: 100%; height: auto; border: 1px solid var(--border-soft); border-radius: 18px; }
+.wiki .infobox .caption { font-size: 12px; margin-top: 4px; }
+
+/* contents box */
+.wiki .toc { display: inline-block; background: var(--panel); border: 1px solid var(--border); padding: 7px 14px 8px 10px; margin: 0.4em 0 1em; font-size: 13px; min-width: 240px; }
+.wiki .toctitle h2 { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 1em; font-weight: 700; border: none; margin: 0 0 4px; padding: 0; text-align: center; }
+.wiki .toc ul { list-style: none; margin: 0; padding: 0; }
+.wiki .toc ul ul { margin-left: 1.6em; }
+.wiki .toc li { margin: 0; line-height: 1.5; }
+.wiki .tocnumber { color: var(--text); margin-right: 4px; }
+
+/* tables */
+.wiki .wikitable { background: var(--panel); border: 1px solid var(--border); border-collapse: collapse; margin: 0.6em 0 1.2em; font-size: 13px; }
+.wiki .wikitable > * > tr > th, .wiki .wikitable > * > tr > td { border: 1px solid var(--border); padding: 4px 9px; text-align: left; vertical-align: top; }
+.wiki .wikitable > * > tr > th { background: #eaecf0; text-align: center; }
+.wiki .wikitable caption { font-weight: 700; padding: 4px; text-align: left; caption-side: top; }
+.wiki .wikitable tbody tr:nth-child(even) { background: #fff; }
+.wiki #creature-table { display: block; max-height: 520px; overflow: auto; max-width: 100%; }
+.wiki #creature-table thead th { position: sticky; top: 0; }
+.wiki .table-wrap { overflow-x: auto; }
+
+/* gallery */
+.wiki .gallery { list-style: none; margin: 0.6em 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.wiki .gallery li { border: 1px solid var(--border-soft); background: var(--panel); padding: 6px; margin: 0; }
+.wiki .gallery img { width: 100%; height: 150px; object-fit: cover; display: block; background: #e8eaee; }
+.wiki .gallery img.logo-tile { object-fit: contain; background: #10193a; }
+.wiki .gallery p { margin: 6px 2px 2px; font-size: 12.5px; }
+
+.wiki .references { font-size: 13px; }
+.wiki .catlinks { border: 1px solid var(--border); background: var(--panel); padding: 5px 10px; margin-top: 24px; font-size: 13px; }
+.wiki .footer-note { color: var(--muted); font-size: 12px; margin-top: 12px; }
+
+@media (max-width: 720px) {
+  .wiki article { padding: 14px 14px 24px; }
+  .wiki-tabs { margin: -14px -14px 12px; }
+  .wiki .infobox { float: none; width: 100%; margin: 0.6em 0 1em; }
+  .wiki-top nav a:not(.wiki-play) { display: none; }
+  .wiki .wikitable { display: block; overflow-x: auto; }
+}
+
+.wiki .thumb { clear: both; margin: 1em 0; border: 1px solid var(--border-soft); background: var(--panel); padding: 6px; max-width: 640px; }
+.wiki .thumb img { width: 100%; height: auto; display: block; }
+.wiki .thumb figcaption { font-size: 12.5px; padding: 6px 2px 2px; }
