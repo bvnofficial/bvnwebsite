@@ -6,8 +6,7 @@ import { MONSTERS, type Monster } from "./monsters";
 import { FINISHES, RARITIES, SKILL_BLURB, rarityColor, rarityName } from "./data";
 
 const PAGE = 36;
-const pic = (m: Monster, finish = "Normal") =>
-  finish === "Normal" ? `/roblox/catch/dex/${m.id}.webp` : `/roblox/catch/dex/${m.id}-${finish.toLowerCase()}.webp`;
+const pic = (m: Monster, evolved = false) => (evolved ? `/roblox/catch/evo/${m.id}.webp` : `/roblox/catch/mon/${m.id}.webp`);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default function Dex() {
@@ -16,7 +15,7 @@ export default function Dex() {
   const [set, setSet] = useState<string>("all");
   const [shown, setShown] = useState(PAGE);
   const [open, setOpen] = useState<number | null>(null);
-  const [finish, setFinish] = useState("Normal");
+  const [evolved, setEvolved] = useState(false);
 
   const sets = useMemo(() => Array.from(new Set(MONSTERS.map((m) => m.set))).sort(), []);
   const list = useMemo(() => {
@@ -34,7 +33,7 @@ export default function Dex() {
   const current = open === null ? null : list[open];
   const step = useCallback(
     (d: number) => {
-      setFinish("Normal");
+      setEvolved(false);
       setOpen((o) => (o === null ? o : (o + d + list.length) % list.length));
     },
     [list.length],
@@ -88,7 +87,7 @@ export default function Dex() {
         ))}
       </div>
       <p className="ct-dex-count">
-        Showing {Math.min(shown, list.length)} of {list.length} monsters. Tap one to see every finish.
+        Showing {Math.min(shown, list.length)} of {list.length} monsters. Tap one to see its evolved form.
       </p>
 
       <div className="ct-grid">
@@ -98,7 +97,7 @@ export default function Dex() {
             className="ct-card"
             style={{ ["--rc" as string]: rarityColor(m.rarity) }}
             onClick={() => {
-              setFinish("Normal");
+              setEvolved(false);
               setOpen(i);
             }}
           >
@@ -122,17 +121,18 @@ export default function Dex() {
           <div className="ct-modal-box" onClick={(e) => e.stopPropagation()} style={{ ["--rc" as string]: rarityColor(current.rarity) + "66" }}>
             <button className="ct-x" onClick={() => setOpen(null)} aria-label="Close">X</button>
             <div className="ct-modal-art">
-              <img key={current.id + finish} src={pic(current, finish)} alt={`${current.name} ${finish}`} width={280} height={280} />
-              <div className="ct-fins">
+              <img key={current.id + String(evolved)} src={pic(current, evolved)} alt={`${current.name}${evolved ? " evolved" : ""}`} width={280} height={280} />
+              {current.evo && (
+                <div className="ct-fins">
+                  <button className={`ct-fin ${!evolved ? "on" : ""}`} style={{ background: "#fffdf5" }} onClick={() => setEvolved(false)}>NORMAL</button>
+                  <button className={`ct-fin ${evolved ? "on" : ""}`} style={{ background: "#3ee6ff" }} onClick={() => setEvolved(true)}>EVOLVED</button>
+                </div>
+              )}
+              <div className="ct-fins" style={{ marginTop: 8 }}>
                 {FINISHES.filter((f) => current.finishes.includes(f.id)).map((f) => (
-                  <button
-                    key={f.id}
-                    className={`ct-fin ${finish === f.id ? "on" : ""}`}
-                    style={{ background: f.color }}
-                    onClick={() => setFinish(f.id)}
-                  >
+                  <span key={f.id} className="ct-fin on" style={{ background: f.color, cursor: "default", transform: "none", boxShadow: "none", fontSize: 10 }}>
                     {f.id} {f.mult > 1 ? `x${f.mult}` : ""}
-                  </button>
+                  </span>
                 ))}
               </div>
             </div>
@@ -153,7 +153,7 @@ export default function Dex() {
                 <dt>Special</dt>
                 <dd>{cap(current.special)}</dd>
                 <dt>Finishes</dt>
-                <dd>{current.finishes.length}</dd>
+                <dd>{current.finishes.length} (tinted looks worth more)</dd>
               </dl>
               <p className="blurb">
                 <b>{current.skill}:</b> {SKILL_BLURB[current.skill] ?? ""} Make {current.name} one of your three Pal Pets to get it.

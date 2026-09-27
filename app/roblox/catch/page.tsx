@@ -128,7 +128,7 @@ export default function CatchPage() {
         <div className="ct-hero-bg" style={{ backgroundImage: "url(/roblox/catch/catch-them-all.webp)" }} />
         <div className="ct-rays" />
         {HERO_FLOATERS.map((f) => (
-          <img key={f.id} src={`/roblox/catch/dex/${f.id}.webp`} alt="" className={`ct-float ${f.sm ? "hide-sm" : ""}`} style={f.style} width={150} height={150} />
+          <img key={f.id} src={`/roblox/catch/mon/${f.id}.webp`} alt="" className={`ct-float ${f.sm ? "hide-sm" : ""}`} style={f.style} width={150} height={150} />
         ))}
         <div className="ct-hero-in">
           <h1 style={{ margin: 0 }}>
@@ -167,12 +167,12 @@ export default function CatchPage() {
       <div className="ct-marquee" aria-hidden="true">
         <div className="ct-marquee-row">
           {[...ROW_A, ...ROW_A].map((m, i) => (
-            <img key={m.id + i} src={`/roblox/catch/dex/${m.id}.webp`} alt="" loading="lazy" width={96} height={96} />
+            <img key={m.id + i} src={`/roblox/catch/mon/${m.id}.webp`} alt="" loading="lazy" width={96} height={96} />
           ))}
         </div>
         <div className="ct-marquee-row rev">
           {[...ROW_B, ...ROW_B].map((m, i) => (
-            <img key={m.id + i} src={`/roblox/catch/dex/${m.id}.webp`} alt="" loading="lazy" width={96} height={96} />
+            <img key={m.id + i} src={`/roblox/catch/mon/${m.id}.webp`} alt="" loading="lazy" width={96} height={96} />
           ))}
         </div>
       </div>
@@ -182,9 +182,9 @@ export default function CatchPage() {
         <div className="ct-steps">
           {[
             ["1", "THROW", "Aim anywhere and lob a sphere. Every miss tires the monster out, so the next throw has better odds.", "/roblox/catch/art/sphere-zenith.webp"],
-            ["2", "CATCH", "The sphere wiggles three times. CAPTURE SUCCESS! or GOT AWAY! Rare ones announce you to the whole server.", `/roblox/catch/dex/fee-nix.webp`],
-            ["3", "EARN", "Park monsters on your hub and they earn money every second, even while you are away.", "/roblox/catch/art/hub-level-15.webp"],
-            ["4", "FIGHT", "Take three Pal Pets with you. They fight wild monsters beside you and give you their skill.", `/roblox/catch/dex/laylina-cannonella.webp`],
+            ["2", "CATCH", "The sphere wiggles three times. CAPTURE SUCCESS! or GOT AWAY! Rare ones announce you to the whole server.", `/roblox/catch/mon/fee-nix.webp`],
+            ["3", "EARN", "Park monsters on your hub and they earn money every second, even while you are away.", "/roblox/catch/art/gate-level-15.webp"],
+            ["4", "FIGHT", "Take three Pal Pets with you. They fight wild monsters beside you and give you their skill.", `/roblox/catch/mon/laylina-cannonella.webp`],
           ].map(([n, h, p, img]) => (
             <div className="ct-step ct-rv" key={n}>
               <div className="num">{n}</div>
@@ -225,7 +225,7 @@ export default function CatchPage() {
             <span className="ct-badge new">NEW</span>
             <div className="pic">
               {["alucardino-spadone", "eudorina-fulminella", "zilonghino-lancione"].map((s) => (
-                <img key={s} src={`/roblox/catch/dex/${s}.webp`} alt="" loading="lazy" width={110} height={110} style={{ maxHeight: 110 }} />
+                <img key={s} src={`/roblox/catch/mon/${s}.webp`} alt="" loading="lazy" width={110} height={110} style={{ maxHeight: 110 }} />
               ))}
             </div>
             <h3>PAL PETS FIGHT FOR YOU</h3>
@@ -233,7 +233,7 @@ export default function CatchPage() {
           </div>
           <div className="ct-feat ct-rv">
             <div className="pic">
-              <img src="/roblox/catch/dex/megasqualo-dentone.webp" alt="" loading="lazy" width={140} height={140} />
+              <img src="/roblox/catch/mon/megasqualo-dentone.webp" alt="" loading="lazy" width={140} height={140} />
             </div>
             <h3>MONSTERS FIGHT BACK</h3>
             <p>Miss a throw on a Rare or bigger and it can go into a RAGE. It shows where it will hit, then flings anyone standing there. Beams, crosses, rings and a full barrage at Ethereal.</p>
@@ -247,8 +247,8 @@ export default function CatchPage() {
           </div>
           <div className="ct-feat ct-rv">
             <div className="pic">
-              {["1", "8", "15"].map((l) => (
-                <img key={l} src={`/roblox/catch/art/hub-level-${l}.webp`} alt="" loading="lazy" width={110} height={110} style={{ maxHeight: 110 }} />
+              {["gate-level-1", "gate-level-8", "gate-level-15"].map((l) => (
+                <img key={l} src={`/roblox/catch/art/${l}.webp`} alt="" loading="lazy" width={110} height={110} style={{ maxHeight: 110 }} />
               ))}
             </div>
             <h3>YOUR OWN HUB</h3>
@@ -322,7 +322,7 @@ export default function CatchPage() {
         alt
         kicker={`${MONSTERS.length} MONSTERS, ${sets.length} SETS`}
         title={<>THE <em>MONSTER</em> INDEX</>}
-        sub="Every monster in the game, with every finish it comes in. Search, filter by rarity or set, and tap one to spin through its looks."
+        sub="Every monster in the game. Search, filter by rarity or set, and tap one to see its evolved form."
       >
         <div className="ct-rv">
           <Dex />
@@ -396,9 +396,9 @@ export default function CatchPage() {
                 </div>
                 <div className="scene">
                   <img src={`/roblox/catch/art/env-${b.id}-1.webp`} alt="" loading="lazy" width={120} height={120} />
-                  <img className="mon" src={`/roblox/catch/dex/${BIOME_MONS[b.id][0]}.webp`} alt={byId(BIOME_MONS[b.id][0]).name} loading="lazy" width={100} height={100} />
+                  <img className="mon" src={`/roblox/catch/mon/${BIOME_MONS[b.id][0]}.webp`} alt={byId(BIOME_MONS[b.id][0]).name} loading="lazy" width={100} height={100} />
                   <img src={`/roblox/catch/art/env-${b.id}-2.webp`} alt="" loading="lazy" width={120} height={120} />
-                  <img className="mon" src={`/roblox/catch/dex/${BIOME_MONS[b.id][1]}.webp`} alt={byId(BIOME_MONS[b.id][1]).name} loading="lazy" width={100} height={100} style={{ animationDelay: "0.6s" }} />
+                  <img className="mon" src={`/roblox/catch/mon/${BIOME_MONS[b.id][1]}.webp`} alt={byId(BIOME_MONS[b.id][1]).name} loading="lazy" width={100} height={100} style={{ animationDelay: "0.6s" }} />
                   <img src={`/roblox/catch/art/env-${b.id}-3.webp`} alt="" loading="lazy" width={120} height={120} />
                 </div>
               </div>
@@ -449,11 +449,14 @@ export default function CatchPage() {
       </Sec>
 
       {/* ---------- hub + arena ---------- */}
-      <Sec id="hub" alt kicker="YOUR BASE" title={<>BUILD YOUR <em>HUB</em></>} sub="Fifteen hub levels. Each one adds room for more monsters and gives your plot a bigger fence and gate. Slide through them.">
+      <Sec id="hub" alt kicker="YOUR BASE" title={<>BUILD YOUR <em>HUB</em></>} sub="Fifteen hub levels. Each one adds room for more monsters and gives your plot a new fence and gate. Slide through all fifteen.">
         <div className="ct-hubs ct-rv">
           {Array.from({ length: 15 }, (_, i) => i + 1).map((l) => (
             <figure key={l}>
-              <img src={`/roblox/catch/art/hub-level-${l}.webp`} alt={`Hub level ${l}`} loading="lazy" width={130} height={130} />
+              <div className="fg">
+                <img src={`/roblox/catch/art/fence-level-${l}.webp`} alt={`Level ${l} fence`} loading="lazy" width={130} height={130} />
+                <img className="gate" src={`/roblox/catch/art/gate-level-${l}.webp`} alt={`Level ${l} gate`} loading="lazy" width={100} height={100} />
+              </div>
               <figcaption>LEVEL {l}</figcaption>
             </figure>
           ))}
@@ -683,7 +686,7 @@ export default function CatchPage() {
             <p>Hop on the back of the monsters you caught and ride them across the island. Your dragon becomes your wings. Your Titan becomes your tank.</p>
             <div className="mons">
               {["zilonghino-lancione", "draghetto-cannellone", "arcierino-galoppino", "megasqualo-dentone"].map((m) => (
-                <img key={m} src={`/roblox/catch/dex/${m}.webp`} alt="" loading="lazy" width={130} height={130} />
+                <img key={m} src={`/roblox/catch/mon/${m}.webp`} alt="" loading="lazy" width={130} height={130} />
               ))}
             </div>
           </div>

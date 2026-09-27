@@ -370,3 +370,6 @@
 .ct-milestone.big h3 { font-size: clamp(40px, 6vw, 58px); }
 .ct-milestone.big .mons { gap: 18px; flex-wrap: wrap; }
 .ct-milestone.big .mons img { width: clamp(80px, 14vw, 130px); height: auto; aspect-ratio: 1; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.45)); }
+.ct-hubs .fg { position: relative; height: 130px; }
+.ct-hubs .fg img { position: absolute; left: 0; right: 0; bottom: 0; }
+.ct-hubs .fg img.gate { width: 96px; height: 96px; bottom: 18px; }

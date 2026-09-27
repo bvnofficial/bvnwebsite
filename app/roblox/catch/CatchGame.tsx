@@ -93,7 +93,7 @@ export default function CatchGame() {
               <span className="ct-game-rar" style={{ background: rarityColor(mon.rarity) }}>
                 WILD {rarityName(mon.rarity).toUpperCase()}: {mon.name}
               </span>
-              <img className={`ct-game-mon ${hidden ? "gone" : ""}`} src={`/roblox/catch/dex/${mon.id}.webp`} alt={mon.name} width={180} height={180} />
+              <img className={`ct-game-mon ${hidden ? "gone" : ""}`} src={`/roblox/catch/mon/${mon.id}.webp`} alt={mon.name} width={180} height={180} />
             </>
           )}
           {phase !== "idle" && phase !== "win" && phase !== "lose" && phase !== "tore" && (
@@ -135,7 +135,7 @@ export default function CatchGame() {
       </div>
       <div className="ct-caught" aria-live="polite">
         {bag.map((m, i) => (
-          <img key={m.id + i} src={`/roblox/catch/dex/${m.id}.webp`} alt={m.name} title={m.name} width={54} height={54} style={{ borderColor: rarityColor(m.rarity) }} />
+          <img key={m.id + i} src={`/roblox/catch/mon/${m.id}.webp`} alt={m.name} title={m.name} width={54} height={54} style={{ borderColor: rarityColor(m.rarity) }} />
         ))}
       </div>
     </div>
