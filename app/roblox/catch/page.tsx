@@ -119,7 +119,7 @@ export default function CatchPage() {
             <a href="#premium">Premium</a>
             <a href="#future">Coming Soon</a>
           </nav>
-          <a href={GAME_URL} className="ct-btn small" target="_blank" rel="noopener noreferrer">ROBLOX</a>
+          <a href={GAME_URL} className="ct-btn small green" target="_blank" rel="noopener noreferrer">PLAY NOW</a>
         </div>
       </header>
 
@@ -141,10 +141,11 @@ export default function CatchPage() {
             a shopping cart to a rocket.
           </p>
           <div className="ct-hero-ctas">
+            <a className="ct-btn green" href={GAME_URL} target="_blank" rel="noopener noreferrer">PLAY NOW ON ROBLOX</a>
             <a className="ct-btn" href="#play">TRY A CATCH</a>
             <a className="ct-btn pink" href="#monsters">SEE ALL 190 MONSTERS</a>
           </div>
-          <p className="ct-soon">A Roblox game by BVN. Coming soon to everyone on Roblox.</p>
+          <p className="ct-soon">A Roblox game by BVN. Out now on Roblox, free to play.</p>
         </div>
       </section>
 
@@ -722,7 +723,7 @@ export default function CatchPage() {
         </h2>
         <p className="ct-sub ct-rv">Follow CATCH! on Roblox so you are there on day one.</p>
         <div className="ct-hero-ctas ct-rv">
-          <a className="ct-btn" href={GAME_URL} target="_blank" rel="noopener noreferrer">CATCH! ON ROBLOX</a>
+          <a className="ct-btn green" href={GAME_URL} target="_blank" rel="noopener noreferrer">PLAY NOW ON ROBLOX</a>
           <a className="ct-btn cyan" href="#play">ONE MORE THROW</a>
         </div>
       </section>
