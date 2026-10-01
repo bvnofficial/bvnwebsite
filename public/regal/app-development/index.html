@@ -348,7 +348,19 @@ var state = {
     { d:'Thu', in:'7:02 AM', out:'3:30 PM', hrs:8.0 },
     { d:'Fri', in:'7:00 AM', out:null, hrs:0 }
   ],
-  autopay:true, autoReminders:true, period:'October 2026',
+  autopay:true, autoReminders:true, period:'October 2026', lang:'en', pushNotif:true,
+  careDone:{},
+  pto:[
+    { who:'Kelly Oktavian', type:'Vacation', days:'Nov 3 to 5', status:'pending' },
+    { who:'Ivon R.', type:'Sick day', days:'Oct 2', status:'pending' },
+    { who:'Oktaviana Han', type:'Personal', days:'Oct 18', status:'approved' }
+  ],
+  users:[
+    { name:'Don Brodt', role:'Owner', email:'owner@regalcare.org', active:true },
+    { name:'Mel W.', role:'HR & Payroll', email:'hr@regalcare.org', active:true },
+    { name:'Maria G.', role:'Staff', email:'staff@regalcare.org', active:true },
+    { name:'Roy’s family', role:'Guest', email:'guest@regalcare.org', active:true }
+  ],
   tasks:[
     { id:1, who:'Roy H.', title:'Refill Metformin', note:'Ask Dr. Lee for a new 30-day script', from:'AI from Meds topic, 2:14 PM', done:false },
     { id:2, who:'Frances V.', title:'New bottle of Eliquis started', note:'Confirm start date on the record', from:'AI from Meds topic, 9:02 AM', done:false },
@@ -385,9 +397,9 @@ var CTX = {
   owner:{ b:'Don Brodt', s:'Owner · 3 homes' }
 };
 var TABS = {
-  family:[ ['home','Updates',I.home], ['billing','Billing',I.card], ['requests','Requests',I.hand], ['docs','Documents',I.doc] ],
-  staff:[ ['messages','Messages',I.chat], ['residents','Residents',I.people], ['meds','Med Tasks',I.pill], ['shift','My Shift',I.clock] ],
-  hr:[ ['timesheets','Hours',I.clock], ['team','Team',I.people], ['exports','Exports',I.sheet] ],
+  family:[ ['home','Updates',I.home], ['messages','Messages',I.chat], ['billing','Billing',I.card], ['requests','Requests',I.hand], ['docs','Docs',I.doc] ],
+  staff:[ ['messages','Messages',I.chat], ['residents','Residents',I.people], ['care','Care',I.check], ['meds','Meds',I.pill], ['shift','Shift',I.clock] ],
+  hr:[ ['timesheets','Hours',I.clock], ['schedule','Schedule',I.cal], ['team','Team',I.people], ['exports','Exports',I.sheet] ],
   owner:[ ['overview','Overview',I.grid], ['homes','Homes',I.home], ['billing','Billing',I.dollar], ['messages','Messages',I.chat], ['more','More',I.more] ]
 };
 var OWNER_PRIMARY = ['overview','homes','billing','messages','more'];
@@ -422,6 +434,12 @@ function famHome(){
         ${updateRow(I.home,'Activity','Walked in the garden, joined the morning puzzle.','10:30 AM')}
         ${updateRow(I.bell,'Mood','Cheerful, asked about the grandkids.','11:15 AM')}
       </div></div>
+    <div class="card"><div class="spread"><p class="card-h" style="margin:0">This week’s recap</p><button class="btn btn-ghost sm" data-act="lang">${state.lang==='es'?'English':'Español'}</button></div>
+      <p class="muted" style="font-size:13px;margin:8px 0 0;line-height:1.5">${state.lang==='es'?'Roy tuvo una buena semana. Comió bien, participó en actividades y durmió bien. Sus signos vitales se mantuvieron estables.':'Roy had a good week. He ate well, joined activities, and slept soundly. His vitals stayed stable throughout.'}</p></div>
+    <div><p class="card-h" style="margin:2px 0 8px">Photos & milestones</p><div class="tile-grid">
+      <div class="photo" style="width:100%;height:94px">${svg(I.camera)}<span>Garden walk</span></div>
+      <div class="photo" style="width:100%;height:94px">${svg(I.camera)}<span>Birthday tea</span></div>
+    </div></div>
     <p class="faint" style="font-size:11px;text-align:center;margin:0">Care details come from Regal. Clinical records stay in your home's licensed system.</p>
   </div>`;
 }
@@ -462,9 +480,9 @@ function famInvRow(label,amt,status){
   <div class="spread"><span class="muted" style="font-size:12px">${status==='paid'?'Paid by bank transfer':'Scheduled'}</span>${status==='paid'?'<button class="btn btn-ghost sm" data-act="receipt" data-label="'+label+'">Receipt</button>':''}</div></div></div>`;
 }
 function famRequests(){
-  var reqs=[['Request updated medication list','We send you Roy’s current list',I.pill],['Request a call from the care team','A coordinator calls you back',I.phone],['Schedule a visit','Pick a day and time to come by',I.cal],['Update contact or insurance info','Keep Roy’s file current',I.user]];
+  var reqs=[['Request updated medication list','We send you Roy’s current list',I.pill,'request'],['Request a call from the care team','A coordinator calls you back',I.phone,'request'],['Schedule a visit','Pick a day and time to come by',I.cal,'visit'],['Update contact or insurance info','Keep Roy’s file current',I.user,'request']];
   var html='<div class="pad"><div class="screen-head"><h2 class="screen-title">Requests</h2></div><p class="muted" style="font-size:13px;margin:-4px 0 2px">One tap sends it to Regal. Your care coordinator follows up, no phone tag.</p>';
-  reqs.forEach(function(r){ html+=`<button class="reqbtn" data-act="request" data-label="${r[0]}"><span class="ico">${svg(r[2])}</span><span class="grow">${r[0]}<div class="faint" style="font-size:11.5px;font-weight:500;margin-top:1px">${r[1]}</div></span><span class="chev">${svg(I.chev)}</span></button>`; });
+  reqs.forEach(function(r){ html+=`<button class="reqbtn" data-act="${r[3]}" data-label="${r[0]}"><span class="ico">${svg(r[2])}</span><span class="grow">${r[0]}<div class="faint" style="font-size:11.5px;font-weight:500;margin-top:1px">${r[1]}</div></span><span class="chev">${svg(I.chev)}</span></button>`; });
   return html+'</div>';
 }
 function famDocs(){
@@ -624,8 +642,8 @@ function threadView(){
 function staffResidents(){
   var r=[['Roy H.','Regal Care · Room 3','good','Stable'],['Frances V.','Regal Care · Room 1','warn','Med review'],['Walter K.','Regal Care · Room 4','good','Stable'],['Gloria N.','Regal Care · Room 2','good','Stable']];
   var html='<div class="pad"><div class="screen-head"><h2 class="screen-title">Residents <small>Regal Care</small></h2></div><div class="card tight">';
-  r.forEach(function(x,i){ html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="av sm">'+initials(x[0])+'</span><div class="grow"><b style="font-size:14px">'+x[0]+'</b><div class="muted" style="font-size:12px">'+x[1]+'</div></div><span class="pill '+x[2]+'">'+x[3]+'</span></div>'; });
-  return html+'</div><p class="faint" style="font-size:11px;text-align:center;margin:10px 0 0">Tagging a resident in a message attaches it to this record.</p></div>';
+  r.forEach(function(x){ html+='<button class="channel" data-act="facesheet" data-n="'+x[0]+'"><span class="av sm">'+initials(x[0])+'</span><span class="grow"><b style="font-size:14px;display:block">'+x[0]+'</b><span class="muted" style="font-size:12px">'+x[1]+'</span></span><span class="pill '+x[2]+'">'+x[3]+'</span></button>'; });
+  return html+'</div><p class="faint" style="font-size:11px;text-align:center;margin:10px 0 0">Tap a resident for their facesheet. Tagging them in a message attaches it to this record.</p></div>';
 }
 function staffMeds(){
   var open=state.tasks.filter(function(t){return !t.done;}).length;
@@ -655,7 +673,14 @@ function staffShift(){
       <div class="hr"></div>
       <button class="btn btn-ghost sm" data-act="submit-week" style="width:100%">Submit week for approval</button>
       <p class="faint" style="font-size:11px;text-align:center;margin:9px 0 0">Your in and out times feed the HR view automatically. Kept separate from payroll.</p>
-    </div></div>`;
+    </div>
+    <div class="card"><div class="spread"><p class="card-h" style="margin:0">Open shifts</p><span class="pill warn">2 open</span></div>
+      <div class="listitem" style="border-top:0;align-items:center"><span class="ico">${svg(I.clock)}</span><div class="grow"><b style="font-size:13px">Sun AM · Regal Care</b><div class="muted" style="font-size:12px">7 AM to 3 PM</div></div><button class="btn btn-ghost sm" data-act="pickup">Pick up</button></div>
+      <div class="listitem" style="align-items:center"><span class="ico">${svg(I.clock)}</span><div class="grow"><b style="font-size:13px">Sat PM · The Orchard</b><div class="muted" style="font-size:12px">3 PM to 11 PM</div></div><button class="btn btn-ghost sm" data-act="pickup">Pick up</button></div></div>
+    <div class="card"><p class="card-h">Your training</p>
+      <div class="listitem" style="border-top:0;align-items:center"><span class="dot" style="width:9px;height:9px;background:var(--warn)"></span><div class="grow"><b style="font-size:13px">CPR / First Aid</b><div class="muted" style="font-size:12px">Renew by Nov 15</div></div><span class="pill warn">Due soon</span></div>
+      <div class="listitem" style="align-items:center"><span class="dot" style="width:9px;height:9px;background:var(--good)"></span><div class="grow"><b style="font-size:13px">TB test</b><div class="muted" style="font-size:12px">Current</div></div><span class="pill good">OK</span></div></div>
+    </div>`;
 }
 
 /* ---------------- OWNER ---------------- */
@@ -690,6 +715,7 @@ function ownerOverview(){
 function stat(lab,big,sub){ return '<div class="stat"><div class="lab">'+lab+'</div><div class="mid num">'+big+'</div><div class="faint" style="font-size:11.5px;margin-top:3px">'+sub+'</div></div>'; }
 function alertRow(sev,t,s,go){ return '<div class="listitem" style="align-items:center"'+(go?' data-act="goto" data-to="'+go+'"':'')+'><span class="dot" style="width:9px;height:9px;background:var(--'+sev+')"></span><div class="grow"><b style="font-size:13.5px">'+t+'</b><div class="muted" style="font-size:12px">'+s+'</div></div><span class="chev faint">'+svg(I.chev)+'</span></div>'; }
 function leadRow(t,s,when){ return '<div class="listitem" style="align-items:center"><span class="ico">'+svg(I.phone)+'</span><div class="grow"><b style="font-size:13.5px">'+t+'</b><div class="muted" style="font-size:12px">'+s+'</div></div><span class="pill navy">'+when+'</span></div>'; }
+function srcRow(name,pct){ return '<div class="listitem" style="align-items:center"><div class="grow"><div class="spread" style="margin-bottom:5px"><b style="font-size:13px">'+name+'</b><span class="num faint" style="font-size:11.5px">'+pct+'%</span></div><span class="meter"><span style="width:'+pct+'%"></span></span></div></div>'; }
 function ownerHomes(){
   var homes=[['Regal Care','Zephaniah LLC','5 / 6','$32.5k','good'],['Regal Residence','Zephaniah LLC','6 / 6','$39.0k','good'],['The Orchard','Nehemiah LLC','5 / 8','$38.0k','warn']];
   var html='<div class="pad"><div class="screen-head"><h2 class="screen-title">Homes</h2></div><p class="muted" style="font-size:12.5px;margin:-4px 0 2px">One login. Each home runs on its own entity and bank underneath, you just watch the one screen.</p>';
@@ -736,13 +762,13 @@ function ownerCompliance(){
   items.forEach(function(x,i){ html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="dot" style="width:9px;height:9px;background:var(--'+x[0]+')"></span><div class="grow"><b style="font-size:13.5px">'+x[1]+'</b><div class="muted" style="font-size:12px">'+x[2]+'</div></div><span class="pill '+x[0]+'">'+x[3]+'</span></div>'; });
   return html+'</div><p class="faint" style="font-size:11px;text-align:center;margin:10px 0 0">Licenses, TB, training and physician reports tracked in one list with what is due and when.</p></div>';
 }
-function spark(points,w,h){
+function spark(points,w,h,color){
   var mx=Math.max.apply(null,points), mn=Math.min.apply(null,points), n=points.length;
   var xy=points.map(function(v,i){ var x=(i/(n-1))*w; var y=h-((v-mn)/((mx-mn)||1))*(h-8)-4; return [x,y]; });
   var line=xy.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');
   var area=line+' '+w+','+h+' 0,'+h;
   var last=xy[n-1];
-  return '<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" style="display:block;width:100%;height:'+h+'px;color:var(--gold)">'+
+  return '<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" style="display:block;width:100%;height:'+h+'px;color:'+(color||'var(--gold)')+'">'+
     '<polygon points="'+area+'" fill="currentColor" opacity="0.12"/>'+
     '<polyline points="'+line+'" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+
     '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="3.5" fill="currentColor"/></svg>';
@@ -764,6 +790,13 @@ function ownerGrowth(){
   });
   html+='</div>'+
     '<div class="card"><div class="spread"><div><p class="card-h" style="margin:0 0 5px">Google reviews</p><div class="row" style="gap:7px"><span class="big" style="font-size:26px">4.8</span><span class="faint" style="font-size:12px">63 reviews<br>+4 this month</span></div></div><span class="pill good">'+svg(I.star)+' Top rated</span></div><button class="btn btn-ghost sm" data-act="ask-review" style="width:100%;margin-top:11px">Ask recent families for a review</button></div>'+
+    '<div class="card"><p class="card-h">Recent reviews</p>'+
+      '<div class="listitem" style="border-top:0;align-items:flex-start"><span class="pill good" style="margin-top:2px">'+svg(I.star)+' 5</span><div class="grow"><div class="muted" style="font-size:12.5px">“The staff treat my mom like family.”</div><button class="btn btn-ghost sm" data-act="reply-review" style="margin-top:6px">Reply</button></div></div>'+
+      '<div class="listitem" style="align-items:flex-start"><span class="pill good" style="margin-top:2px">'+svg(I.star)+' 5</span><div class="grow"><div class="muted" style="font-size:12.5px">“Clean, warm, and the updates give us peace of mind.”</div><button class="btn btn-ghost sm" data-act="reply-review" style="margin-top:6px">Reply</button></div></div></div>'+
+    '<p class="secthead">Lead sources</p><div class="card tight">'+
+      srcRow('AI receptionist',42)+srcRow('Google / maps',28)+srcRow('Referrals',18)+srcRow('Website',12)+'</div>'+
+    '<div class="card"><div class="spread"><div><p class="card-h" style="margin:0 0 4px">Ads</p><div class="row" style="gap:7px"><span class="big" style="font-size:22px">$36</span><span class="faint" style="font-size:12px">cost per lead<br>7 leads this month</span></div></div><span class="pill good">'+svg(I.trend)+' Good</span></div></div>'+
+    '<button class="btn btn-ghost" data-act="reactivate">'+svg(I.bullhorn,2)+' Reactivate past inquiries</button>'+
     '<button class="btn btn-gold" data-act="new-post">'+svg(I.plus)+' Create or schedule a post</button>'+
     '<p class="faint" style="font-size:11px;text-align:center;margin:0">Pulled from your connected accounts through GoHighLevel.</p></div>';
   return html;
@@ -778,12 +811,12 @@ function ownerTimesheets(){
   var pending=ts.filter(function(x){return !x.approved;}).length;
   var html='<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+
     '<div class="screen-head"><h2 class="screen-title">Timesheets <small>HR · this week</small></h2></div>'+
-    '<div class="tile-grid">'+stat('On the clock', String(onclock)+' now','of '+ts.length+' staff')+stat('Total hours', total.toFixed(1),'this week')+'</div>'+
+    '<div class="tile-grid">'+stat('On the clock', String(onclock)+' now','of '+ts.length+' staff')+stat('Total hours', total.toFixed(1),'4.5 h overtime')+stat('Labor cost', '$'+Math.round(total*22).toLocaleString('en-US'),'~$22/hr blended')+stat('Pending', String(pending),'to approve')+'</div>'+
     '<div class="spread"><button class="btn btn-ghost sm" data-act="export" data-f="Weekly hours timesheet">'+svg(I.sheet)+' Export to Excel</button>'+(pending?'<button class="btn btn-primary sm" data-act="approve-all">Approve all ('+pending+')</button>':'<span class="pill good">All approved</span>')+'</div>'+
     '<div class="card tight">';
   ts.forEach(function(x,i){
     var status = x.inNow ? '<span class="pill good">In since '+x.since+'</span>' : (x.approved?'<span class="pill navy">Approved</span>':'<span class="pill warn">Pending</span>');
-    html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="av sm">'+initials(x.name)+'</span><div class="grow"><div class="spread"><b style="font-size:13.5px">'+x.name+'</b><span class="num" style="font-weight:700">'+x.hrs.toFixed(1)+' h</span></div><div class="muted" style="font-size:12px">'+x.role+' · '+x.home+'</div><div style="margin-top:6px" class="row"><span class="grow">'+status+'</span>'+(!x.approved&&!x.inNow?'<button class="btn btn-ghost sm" data-act="approve-ts" data-n="'+x.name+'">Approve</button>':'')+'</div></div></div>';
+    html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="av sm">'+initials(x.name)+'</span><div class="grow"><div class="spread"><b style="font-size:13.5px">'+x.name+'</b><span class="num" style="font-weight:700">'+x.hrs.toFixed(1)+' h</span></div><div class="muted" style="font-size:12px">'+x.role+' · '+x.home+'</div><div style="margin-top:6px" class="row"><span class="grow">'+status+'</span><button class="btn btn-ghost sm" data-act="edit-entry" data-n="'+x.name+'">Edit</button>'+(!x.approved&&!x.inNow?'<button class="btn btn-primary sm" data-act="approve-ts" data-n="'+x.name+'">Approve</button>':'')+'</div></div></div>';
   });
   html+='</div><p class="faint" style="font-size:11px;text-align:center;margin:2px 0 0">Staff clock in and out in their app, this builds the weekly report so no one compiles a paper book. Kept separate from payroll, export when you need it.</p></div>';
   return html;
@@ -858,29 +891,132 @@ function ownerRoadmap(){
   html+='<p class="faint" style="font-size:11px;text-align:center;margin:6px 0 0">Flagged items go on your scope list. You approve before anything is built or billed.</p></div>';
   return html;
 }
+/* ===== FAMILY extra ===== */
+function famMessages(){
+  return '<div class="pad"><div class="screen-head"><h2 class="screen-title">Messages <small>Care team</small></h2></div></div>'+
+    '<div class="pad" style="padding-top:0;display:block">'+
+      M({who:'Mel · Regal Care',role:'admin',text:'Good morning. Roy slept well and finished his breakfast.',time:'8:10 AM'})+
+      M({me:true,text:'Thank you, that is wonderful to hear.',time:'8:22 AM'})+
+      M({who:'Mel · Regal Care',role:'admin',text:'He is joining the garden walk at 10, we will post a photo.',time:'8:25 AM'})+
+      M({me:true,text:'Please tell him his daughter says hello.',time:'8:40 AM'})+
+    '</div>'+
+    '<div class="composer"><input id="composer" placeholder="Message the care team…" aria-label="Message"><button class="send" data-act="fakesend">'+svg(I.send,2.2)+'</button></div>';
+}
+function visitSheet(){
+  openSheet('<h3>Schedule a visit</h3><p class="muted" style="font-size:13px;margin:0 0 10px">Pick a day and time to come by.</p><label class="f">Home<select><option>Regal Care</option><option>Regal Residence</option><option>The Orchard</option></select></label><label class="f">Date<input type="date"></label><label class="f">Time<select><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label><div style="display:flex;gap:9px;margin-top:4px"><button class="btn btn-ghost" data-act="cancel">Cancel</button><button class="btn btn-primary" data-act="book-visit">Request visit</button></div>');
+}
+/* ===== STAFF extra ===== */
+function staffCare(){
+  var items=['Reposition Mr. Dale every 2 hours','Encourage fluids for Mr. Ellis between meals','Blood pressure check Roy, 8 AM and 8 PM','Shower assist for Frances','Walk the garden group at 10 AM'];
+  var html='<div class="pad"><div class="screen-head"><h2 class="screen-title">Care <small>Today’s tasks</small></h2></div><div class="card">';
+  items.forEach(function(x,i){ var done=!!state.careDone[i]; html+='<div class="task'+(done?' done':'')+'" data-act="caretask" data-i="'+i+'" style="padding:11px 0;border-top:'+(i?'1px solid var(--line)':'0')+'"><span class="check">'+svg(I.check,3)+'</span><div class="grow"><span class="t-title" style="font-size:13.5px">'+x+'</span></div></div>'; });
+  html+='</div>'+
+    '<button class="reqbtn" data-act="incident"><span class="ico" style="background:var(--crit-bg);border-color:transparent;color:var(--crit)">'+svg(I.bell)+'</span><span class="grow">Report an incident or fall<div class="faint" style="font-size:11.5px;font-weight:500;margin-top:1px">Photo and details, routed to the owner</div></span><span class="chev">'+svg(I.chev)+'</span></button>'+
+    '<button class="reqbtn" data-act="handover"><span class="ico">'+svg(I.doc)+'</span><span class="grow">Leave a shift handover note<div class="faint" style="font-size:11.5px;font-weight:500;margin-top:1px">For the next caregiver on duty</div></span><span class="chev">'+svg(I.chev)+'</span></button></div>';
+  return html;
+}
+function facesheetSheet(name){
+  openSheet('<h3>'+name+'</h3><p class="muted" style="font-size:12.5px;margin:0 0 10px">Facesheet · Regal Care</p>'+
+    '<div class="kv"><span>Care level</span><b>Assisted</b></div><div class="kv"><span>Diet</span><b>Low sodium, soft</b></div>'+
+    '<div class="kv"><span>Allergies</span><b>Penicillin</b></div><div class="kv"><span>Mobility</span><b>Walker</b></div>'+
+    '<div class="kv"><span>Primary contact</span><b>Daughter, (805) 555-0142</b></div><div class="kv"><span>POA</span><b>On file</b></div>'+
+    '<div class="kv"><span>Physician</span><b>Dr. Lee</b></div><div class="kv"><span>Pharmacy</span><b>Simi Valley LTC</b></div>'+
+    '<button class="btn btn-ghost" data-act="cancel" style="margin-top:14px">Close</button>');
+}
+function incidentSheet(){
+  openSheet('<h3>Report an incident</h3><label class="f">Resident<select><option>Roy H.</option><option>Frances V.</option><option>Mr. Dale</option><option>Mr. Ellis</option></select></label><label class="f">Type<select><option>Fall</option><option>Skin or injury</option><option>Behavior</option><option>Medication</option><option>Other</option></select></label><label class="f">What happened<input type="text" placeholder="Short description"></label><button class="reqbtn" style="margin-bottom:12px"><span class="ico">'+svg(I.camera)+'</span><span class="grow">Add a photo</span><span class="chev">'+svg(I.chev)+'</span></button><div style="display:flex;gap:9px"><button class="btn btn-ghost" data-act="cancel">Cancel</button><button class="btn btn-primary" data-act="file-incident">Submit report</button></div>');
+}
+function handoverSheet(){
+  openSheet('<h3>Shift handover</h3><p class="muted" style="font-size:13px;margin:0 0 10px">Goes to the next caregiver and logs to the record.</p><label class="f">Notes<input type="text" placeholder="Anything the next shift should know"></label><div style="display:flex;gap:9px"><button class="btn btn-ghost" data-act="cancel">Cancel</button><button class="btn btn-primary" data-act="save-handover">Save handover</button></div>');
+}
+/* ===== HR extra ===== */
+function hrSchedule(){
+  var pend=state.pto.filter(function(p){return p.status==='pending';}).length;
+  var html='<div class="pad"><div class="screen-head"><h2 class="screen-title">Schedule <small>Time off & rota</small></h2></div>'+
+    '<p class="secthead">Time-off requests'+(pend?' · '+pend+' pending':'')+'</p><div class="card tight">';
+  state.pto.forEach(function(p,i){ html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="av sm">'+initials(p.who)+'</span><div class="grow"><b style="font-size:13.5px">'+p.who+'</b><div class="muted" style="font-size:12px">'+p.type+' · '+p.days+'</div></div>'+(p.status==='pending'?'<button class="btn btn-ghost sm" data-act="approve-pto" data-i="'+i+'">Approve</button>':'<span class="pill good">Approved</span>')+'</div>'; });
+  html+='</div>'+
+    '<p class="secthead">Scheduled vs actual this week</p><div class="card">'+
+      scheduleRow('Regal Care','168 h','171 h',102)+scheduleRow('Regal Residence','168 h','160 h',95)+scheduleRow('The Orchard','210 h','214 h',102)+
+      '<div class="hr"></div><button class="btn btn-ghost sm" data-act="export" data-f="Schedule vs actual" style="width:100%">'+svg(I.sheet)+' Export to Excel</button></div></div>';
+  return html;
+}
+function scheduleRow(home,sched,actual,pct){ return '<div class="spread" style="padding:7px 0"><div class="grow"><b style="font-size:13px">'+home+'</b><div class="faint" style="font-size:11px">scheduled '+sched+' · actual '+actual+'</div></div><span class="pill '+(pct>100?'warn':'good')+'">'+pct+'%</span></div>'; }
+/* ===== OWNER extra ===== */
+function ownerTrends(){
+  var rev=[86,92,90,98,104,109]; var exp=[70,72,71,75,78,80];
+  return '<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+'<div class="screen-head"><h2 class="screen-title">Trends <small>Revenue & expenses</small></h2></div>'+
+    '<div class="tile-grid">'+stat('Revenue, Oct','$109.5k','+5% vs Sep')+stat('Expenses, Oct','$80.1k','payroll + ops')+stat('Net','$29.4k','27% margin')+stat('6-mo growth','+27%','revenue')+'</div>'+
+    '<div class="card"><p class="card-h">Revenue, last 6 months</p>'+spark(rev,300,64,'var(--good)')+'<div class="spread" style="margin-top:4px"><span class="faint" style="font-size:10.5px">May</span><span class="faint" style="font-size:10.5px">Oct</span></div></div>'+
+    '<div class="card"><p class="card-h">Expenses, last 6 months</p>'+spark(exp,300,64,'var(--warn)')+'<div class="spread" style="margin-top:4px"><span class="faint" style="font-size:10.5px">May</span><span class="faint" style="font-size:10.5px">Oct</span></div></div>'+
+    '<button class="btn btn-ghost sm" data-act="export" data-f="Revenue and expenses" style="width:100%">'+svg(I.sheet)+' Export to Excel</button></div>';
+}
+function ownerDocs(){
+  var cats=[['Licenses & permits',6,I.shield],['Resident agreements',16,I.doc],['Insurance',4,I.shield],['Staff files',5,I.people],['Policies & SOPs',12,I.doc],['Inspections',8,I.check]];
+  var html='<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+'<div class="screen-head"><h2 class="screen-title">Document vault</h2></div><p class="muted" style="font-size:12.5px;margin:-4px 0 2px">Every document by home and resident, searchable, stored under your BAA.</p><div class="card tight">';
+  cats.forEach(function(c,i){ html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="ico">'+svg(c[2])+'</span><div class="grow"><b style="font-size:13.5px">'+c[0]+'</b></div><span class="pill navy">'+c[1]+'</span></div>'; });
+  html+='</div><button class="reqbtn" data-act="snap"><span class="ico" style="background:var(--gold-soft);border-color:transparent;color:var(--gold)">'+svg(I.camera)+'</span><span class="grow">Upload or snap a document</span><span class="chev">'+svg(I.chev)+'</span></button></div>';
+  return html;
+}
+function ownerCalendar(){
+  var days=[['Today',[['12:30 PM','Nurse visit · Mr. Ellis · Orchard'],['2:00 PM','Tour · Camarillo family · Orchard']]],['Tomorrow',[['9:00 AM','Plumber · Regal Care'],['11:00 AM','Consultation · Simi Valley']]],['Thu Oct 4',[['10:00 AM','Podiatry · Regal Residence'],['3:00 PM','Pharmacy delivery · all homes']]]];
+  var html='<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+'<div class="screen-head"><h2 class="screen-title">Calendar <small>Visits & appointments</small></h2></div>';
+  days.forEach(function(d){ html+='<p class="secthead">'+d[0]+'</p><div class="card tight">'; d[1].forEach(function(e,i){ html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="ico">'+svg(I.cal)+'</span><div class="grow"><b style="font-size:13px">'+e[1]+'</b></div><span class="num faint" style="font-size:11.5px">'+e[0]+'</span></div>'; }); html+='</div>'; });
+  return html+'</div>';
+}
+function ownerCCTV(){
+  var cams=['Regal Care · Front','Regal Care · Common room','Regal Residence · Entry','The Orchard · Garden'];
+  var html='<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+'<div class="screen-head"><h2 class="screen-title">Cameras <small>Owner only</small></h2></div><div class="tile-grid">';
+  cams.forEach(function(c){ html+='<div><div class="photo" style="width:100%;height:92px;position:relative"><span class="pill crit" style="position:absolute;top:6px;left:6px;font-size:9px">LIVE</span>'+svg(I.camera)+'</div><div class="faint" style="font-size:11px;margin-top:4px">'+c+'</div></div>'; });
+  return html+'</div><p class="faint" style="font-size:11px;text-align:center;margin:2px 0 0">Optional add-on. Only you can see these feeds.</p></div>';
+}
+function ownerUsers(){
+  var html='<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+'<div class="screen-head"><h2 class="screen-title">Users & roles</h2></div><div class="card tight">';
+  state.users.forEach(function(u,i){ html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="av sm">'+initials(u.name)+'</span><div class="grow"><b style="font-size:13.5px">'+u.name+'</b><div class="muted" style="font-size:12px">'+u.role+' · '+u.email+'</div></div><span class="pill '+(u.active?'good':'warn')+'">'+(u.active?'Active':'Off')+'</span></div>'; });
+  html+='</div><button class="btn btn-gold" data-act="add-user">'+svg(I.plus)+' Add a user</button><p class="faint" style="font-size:11px;text-align:center;margin:0">Each role sees only what it needs.</p></div>';
+  return html;
+}
+function ownerAudit(){
+  var log=[['Mel W.','Approved Kelly’s hours','9:14 AM'],['AI','Created med task for Harold','8:28 AM'],['Don Brodt','Sent reminder to Robert M.','8:02 AM'],['Maria G.','Clocked in · Regal Care','7:00 AM'],['Ribka B.','Uploaded inspection report','Yesterday'],['AI','Logged call · tour booked','Yesterday']];
+  var html='<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+'<div class="screen-head"><h2 class="screen-title">Audit log</h2></div><p class="muted" style="font-size:12.5px;margin:-4px 0 2px">Who did what, kept for your records.</p><div class="card tight">';
+  log.forEach(function(l,i){ html+='<div class="listitem" style="align-items:center'+(i===0?';border-top:0':'')+'"><span class="av sm">'+initials(l[0])+'</span><div class="grow"><b style="font-size:13px">'+l[1]+'</b><div class="muted" style="font-size:12px">'+l[0]+'</div></div><span class="num faint" style="font-size:11px">'+l[2]+'</span></div>'; });
+  return html+'</div></div>';
+}
+function ownerSettings(){
+  return '<div class="pad">'+(state.role==='owner'?backBtn('more','More'):'')+'<div class="screen-head"><h2 class="screen-title">Settings</h2></div>'+
+    '<div class="card"><div class="spread"><div class="grow"><b style="font-size:13.5px">Push notifications</b><div class="muted" style="font-size:12px;margin-top:2px">New message, overdue invoice, compliance due</div></div><button class="switch '+(state.pushNotif?'on':'')+'" data-act="toggle-push"></button></div></div>'+
+    '<button class="reqbtn" data-act="goto-tab" data-to="roadmap"><span class="ico" style="background:var(--gold-soft);border-color:transparent;color:var(--gold)">'+svg(I.plus)+'</span><span class="grow">What we can add<div class="faint" style="font-size:11.5px;font-weight:500;margin-top:1px">Browse add-on features</div></span><span class="chev">'+svg(I.chev)+'</span></button>'+
+    '<div class="card tight" style="background:var(--surface-2)"><div class="row" style="gap:9px"><span class="ico" style="background:var(--gold-soft);border-color:transparent;color:var(--gold)">'+svg(I.home)+'</span><div class="muted" style="font-size:12px">This is a web app. Open it on your phone or computer at the same address, one login.</div></div></div></div>';
+}
 function ownerMore(){
   var items=[
     ['timesheets','Timesheets & HR','Clock-ins, hours, approvals',I.clock],
     ['calls','Calls & transcripts','AI receptionist calls, recorded',I.phone],
     ['pipeline','Move-in pipeline','Leads from first call to move-in',I.funnel],
+    ['trends','Revenue & expense trends','Money over time',I.trend],
     ['growth','Marketing & social','Followers, reach, reviews, posts',I.chart],
+    ['calendar','Calendar','Visits and appointments',I.cal],
+    ['documents','Document vault','Every file by home and resident',I.doc],
     ['compliance','Compliance checks','Licenses, TB, training, reports',I.shield],
+    ['cctv','Cameras','Owner-only CCTV feeds',I.camera],
     ['exports','Exports for accounting','Excel files for your accountant',I.sheet],
-    ['roadmap','What we can add','Explore add-on features',I.plus]
+    ['users','Users & roles','Accounts and access',I.people],
+    ['audit','Audit log','Who did what',I.receipt],
+    ['roadmap','What we can add','Browse add-on features',I.plus],
+    ['settings','Settings','Notifications and app access',I.more]
   ];
-  var html='<div class="pad"><div class="screen-head"><h2 class="screen-title">More</h2></div>';
-  items.forEach(function(x){ html+='<button class="reqbtn" data-act="goto-tab" data-to="'+x[0]+'"><span class="ico">'+svg(x[3])+'</span><span class="grow">'+x[1]+'<div class="faint" style="font-size:11.5px;font-weight:500;margin-top:1px">'+x[2]+'</div></span><span class="chev">'+svg(I.chev)+'</span></button>'; });
-  html+='<button class="reqbtn" data-act="settings"><span class="ico">'+svg(I.user)+'</span><span class="grow">Settings & users<div class="faint" style="font-size:11.5px;font-weight:500;margin-top:1px">Accounts, roles, and access</div></span><span class="chev">'+svg(I.chev)+'</span></button>';
-  html+='</div>';
+  var html='<div class="pad"><div class="screen-head"><h2 class="screen-title">More</h2></div><div class="card tight" style="padding:2px 14px">';
+  items.forEach(function(x){ html+='<button class="channel" data-act="goto-tab" data-to="'+x[0]+'"><span class="ico">'+svg(x[3])+'</span><span class="grow"><b style="font-size:13.5px;display:block">'+x[1]+'</b><span class="muted" style="font-size:11.5px">'+x[2]+'</span></span><span class="tag2">'+svg(I.chev)+'</span></button>'; });
+  html+='</div></div>';
   return html;
 }
 
 /* ---------------- router ---------------- */
 var VIEWS = {
-  family:{ home:famHome, billing:famBilling, requests:famRequests, docs:famDocs },
-  staff:{ messages:function(){ return state.channel?threadView():channelList(); }, residents:staffResidents, meds:staffMeds, shift:staffShift },
-  hr:{ timesheets:ownerTimesheets, team:hrTeam, exports:hrExports },
-  owner:{ overview:ownerOverview, homes:ownerHomes, billing:ownerBilling, messages:function(){ return state.channel?threadView():channelList(); }, more:ownerMore, timesheets:ownerTimesheets, calls:ownerCalls, pipeline:ownerPipeline, growth:ownerGrowth, compliance:ownerCompliance, exports:hrExports, roadmap:ownerRoadmap }
+  family:{ home:famHome, messages:famMessages, billing:famBilling, requests:famRequests, docs:famDocs },
+  staff:{ messages:function(){ return state.channel?threadView():channelList(); }, residents:staffResidents, care:staffCare, meds:staffMeds, shift:staffShift },
+  hr:{ timesheets:ownerTimesheets, schedule:hrSchedule, team:hrTeam, exports:hrExports },
+  owner:{ overview:ownerOverview, homes:ownerHomes, billing:ownerBilling, messages:function(){ return state.channel?threadView():channelList(); }, more:ownerMore, timesheets:ownerTimesheets, calls:ownerCalls, pipeline:ownerPipeline, trends:ownerTrends, growth:ownerGrowth, calendar:ownerCalendar, documents:ownerDocs, compliance:ownerCompliance, cctv:ownerCCTV, exports:hrExports, users:ownerUsers, audit:ownerAudit, roadmap:ownerRoadmap, settings:ownerSettings }
 };
 function renderTabs(){
   var bar=el('tabbar'); bar.innerHTML='';
@@ -961,6 +1097,23 @@ document.querySelector('.phone').addEventListener('click', function(e){
   else if(act==='play-rec'){ toast('Recording plays here in the live app, streamed from GoHighLevel.'); }
   else if(act==='add-lead'){ closeSheet(); toast('Added '+(t.dataset.n||'caller')+' as a lead in your CRM.'); }
   else if(act==='wish'){ toast('Added “'+(t.dataset.f||'feature')+'” to your add-on list. No cost until you approve it.'); }
+  else if(act==='caretask'){ var ci=t.dataset.i; state.careDone[ci]=!state.careDone[ci]; render(); toast('Care task updated and logged.'); }
+  else if(act==='incident'){ incidentSheet(); }
+  else if(act==='file-incident'){ closeSheet(); toast('Incident report filed and sent to the owner.'); }
+  else if(act==='handover'){ handoverSheet(); }
+  else if(act==='save-handover'){ closeSheet(); toast('Handover saved for the next shift.'); }
+  else if(act==='facesheet'){ facesheetSheet(t.dataset.n||'Resident'); }
+  else if(act==='approve-pto'){ var pi=+t.dataset.i; if(state.pto[pi]) state.pto[pi].status='approved'; render(); toast('Time-off approved.'); }
+  else if(act==='add-user'){ toast('Add a user and set their role here in the live app.'); }
+  else if(act==='toggle-push'){ state.pushNotif=!state.pushNotif; t.classList.toggle('on'); toast(state.pushNotif?'Push notifications on.':'Push notifications off.'); }
+  else if(act==='book-visit'){ closeSheet(); toast('Visit requested. Regal will confirm by text.'); }
+  else if(act==='visit'){ visitSheet(); }
+  else if(act==='lang'){ state.lang = state.lang==='en'?'es':'en'; render(); toast(state.lang==='es'?'Cambiado a español.':'Switched to English.'); }
+  else if(act==='reply-review'){ toast('Reply posted to Google. Families see you respond.'); }
+  else if(act==='reactivate'){ toast('Reactivation campaign queued to past inquiries.'); }
+  else if(act==='edit-entry'){ openSheet('<h3>Edit clock entry</h3><p class="muted" style="font-size:12.5px;margin:0 0 10px">'+(t.dataset.n||'')+' · changes are logged to the audit trail.</p><label class="f">Clock in<input type="text" value="7:00 AM"></label><label class="f">Clock out<input type="text" value="3:30 PM"></label><label class="f">Reason for change<input type="text" placeholder="e.g. forgot to clock out"></label><div style="display:flex;gap:9px"><button class="btn btn-ghost" data-act="cancel">Cancel</button><button class="btn btn-primary" data-act="save-entry">Save</button></div>'); }
+  else if(act==='save-entry'){ closeSheet(); toast('Clock entry updated. Change logged to the audit trail.'); }
+  else if(act==='pickup'){ toast('Shift request sent to your lead for approval.'); }
   else if(act==='goto'){ if(t.dataset.to==='owner-billing'){ state.tab.owner='billing'; render(); } }
   else if(act==='inv-send'){ var inv=invById(t.dataset.id); if(inv){ inv.status='pending'; render(); toast('Invoice sent to '+inv.name+'’s family by email.'); } }
   else if(act==='inv-remind'){ var inv2=invById(t.dataset.id); if(inv2){ inv2.reminders++; render(); toast('Reminder sent to '+inv2.name+'’s family by email and text.'); } }
