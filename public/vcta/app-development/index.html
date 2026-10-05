@@ -539,6 +539,11 @@ function dirReports(){
   return '<div class="pad">'+back()+head('Reports')+
   '<div class="tile-grid">'+stat('Donor retention','58%','national average is about 43%')+stat('Lapsed (gave 2025, not 2026)','214','$41,300 last year')+'</div>'+
   '<div class="card"><div class="card-h">Raised by month, both entities</div>'+bars([14.2,11.8,16.4,12.9,15.1,13.7,18.4,22.6,19.3,18.4],['Jan','','Mar','','May','','Jul','','Sep','Oct'])+'</div>'+
+  '<div class="card"><div class="spread"><div class="card-h" style="margin:0">Year end tax package</div><span class="pill teal">For your CPA</span></div>'+
+    '<p style="font-size:13px;color:var(--muted);margin:8px 0 10px">One Excel file per organization, built from every gift recorded this year: gift ledger, donor totals, donors of $5,000 or more (Schedule B), five year totals (Foundation), income by type, events with the deductible part, restricted and non cash gifts, receipts log, bank check, and the lobbying share of dues (VCTA).</p>'+
+    '<div class="spread" style="gap:10px"><button class="btn btn-teal sm" style="flex:1" data-act="toast" data-m="2026 tax package for VCTA (501(c)(4)) is ready. Sent to your email and to your CPA.">VCTA 2026</button>'+
+    '<button class="btn btn-teal sm" style="flex:1" data-act="toast" data-m="2026 tax package for the Foundation (501(c)(3)) is ready. Sent to your email and to your CPA.">Foundation 2026</button></div>'+
+  '</div>'+
   '<div class="card"><div class="card-h">Ready made reports</div>'+
     ['Lapsed donors (LYBUNT)','Gave some years but not this one (SYBUNT)','Giving by fund and campaign','Top donors and soft credits','Membership growth and renewals','Email engagement by segment','Event revenue and attendance'].map(function(r){return '<div class="spread" style="padding:9px 0;border-top:1px solid var(--line)"><b style="font-size:13px">'+r+'</b><button class="btn btn-ghost sm" data-act="toast" data-m="'+r+' exported to Excel.">Excel</button></div>';}).join('')+
   '</div>'+
