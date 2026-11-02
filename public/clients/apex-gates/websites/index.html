@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apex Gates Homepage Concepts</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#212529;--char:#1e1f22;--char2:#2b2d31;--muted:#5f6166;--line:#e4e4e4;--paper:#f2f2f2;--red:#d61d09;--red2:#b52111;--ok:#16a34a;--max:1240px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--paper);font-size:16px;line-height:1.6}
+a{color:inherit}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;margin:0;line-height:1.08;letter-spacing:-.02em}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.eb{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;font-weight:600;font-size:14px;text-decoration:none;transition:transform .2s,background .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red2);box-shadow:0 10px 22px rgba(214,29,9,.3)}
+.btn-line{border:1.5px solid var(--ink)}.btn-line:hover{background:var(--ink);color:#fff}
+
+.top{background:var(--char);color:#fff;padding:70px 0 120px;position:relative;overflow:hidden}
+.top::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 360px at 85% 20%,rgba(214,29,9,.28),transparent 70%)}
+.top .wrap{position:relative}
+.top .logo{background:#fff;display:inline-block;padding:8px 12px;border-radius:10px}
+.top .logo img{height:42px;display:block}
+.top h1{font-size:clamp(40px,6vw,76px);margin:28px 0 18px;max-width:900px}
+.top p{color:#c9c9cd;max-width:640px;font-size:18px;margin:0}
+.top .meta{display:flex;gap:28px;margin-top:30px;flex-wrap:wrap;color:#a3a3a8;font-size:14px}
+.top .meta b{color:#fff;display:block;font-family:"Space Grotesk";font-size:22px}
+.palette{display:flex;gap:10px;margin-top:34px;flex-wrap:wrap}
+.sw{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 14px 6px 6px;font-size:13px;color:#d8d8dc}
+.sw i{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:-70px;position:relative}
+.card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.08);display:flex;flex-direction:column;transition:transform .35s,box-shadow .35s}
+.card:hover{transform:translateY(-6px);box-shadow:0 30px 60px rgba(0,0,0,.14)}
+.card.wide{grid-column:1/-1;flex-direction:row}
+.card.wide .shot{flex:1.4}
+.card.wide .body{flex:1}
+.shot{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--char2);display:block}
+.shot iframe{position:absolute;left:0;top:0;width:1440px;height:900px;border:0;transform-origin:0 0;pointer-events:none}
+.shot .open{position:absolute;inset:0;display:grid;place-items:center;background:rgba(30,31,34,0);color:#fff;font-weight:600;opacity:0;transition:all .3s;text-decoration:none}
+.shot:hover .open{opacity:1;background:rgba(30,31,34,.55)}
+.body{padding:26px 28px 28px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.num{font-family:"Space Grotesk";font-size:13px;font-weight:700;color:var(--muted)}
+.card h2{font-size:28px;margin-top:4px}
+.card p{margin:0;color:var(--muted)}
+.gate{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;background:var(--paper);border-radius:999px;padding:6px 12px;align-self:flex-start}
+.gate::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--red)}
+.feat{display:flex;flex-wrap:wrap;gap:6px}
+.feat span{font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:#3f3e41}
+.acts{display:flex;gap:10px;margin-top:auto;padding-top:8px;flex-wrap:wrap}
+.ring{flex:0 0 74px;height:74px;position:relative}
+.ring svg{width:74px;height:74px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:7}
+.ring .bg{stroke:#ececec}
+.ring .fg{stroke:var(--ok);stroke-linecap:round;transition:stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:"Space Grotesk";font-size:20px}
+.ring small{position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+
+section{padding:100px 0}
+.sh{max-width:760px;margin-bottom:40px}
+.sh h2{font-size:clamp(32px,4vw,52px);margin:12px 0 14px}
+.sh p{color:var(--muted);font-size:18px;margin:0}
+
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.vs{border-radius:24px;padding:34px;background:#fff}
+.vs.dark{background:var(--char);color:#fff}
+.vs .big{display:flex;align-items:center;gap:22px;margin-bottom:22px}
+.vs .big b{font-family:"Space Grotesk";font-size:84px;line-height:1}
+.vs .big span{font-size:15px;color:var(--muted)}
+.vs.dark .big span{color:#a3a3a8}
+.bar{height:12px;border-radius:999px;background:#ececec;overflow:hidden;margin-bottom:24px}
+.vs.dark .bar{background:#3a3b40}
+.bar i{display:block;height:100%;width:0;border-radius:999px;transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
+.vs ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.vs li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.vs li em{font-style:normal;color:var(--muted);display:block;font-size:13px}
+.vs.dark li em{color:#a3a3a8}
+.x,.t{flex:0 0 20px;height:20px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;margin-top:2px}
+.x{background:var(--red)}.t{background:var(--ok)}
+
+.tablewrap{overflow-x:auto;background:#fff;border-radius:24px;margin-top:30px}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:14px}
+th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:center}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#fff}
+thead th{font-family:"Space Grotesk";font-size:13px;background:var(--paper)}
+thead th:first-child{background:var(--paper)}
+td .t,td .x{margin:0 auto;width:22px;height:22px;display:inline-grid}
+tbody tr:hover td{background:#fafafa}
+tfoot td{font-family:"Space Grotesk";font-weight:700;font-size:18px;border-bottom:0}
+
+.issues{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.issue{background:#fff;border-radius:20px;padding:26px;border-top:4px solid var(--red)}
+.issue h3{font-size:19px;margin-bottom:8px}
+.issue p{margin:0;color:var(--muted);font-size:15px}
+.issue .fix{margin-top:12px;font-size:14px;color:var(--ink)}
+.issue .fix b{color:var(--ok)}
+.note{margin-top:26px;color:var(--muted);font-size:14px;max-width:820px}
+
+footer{background:var(--char);color:#a3a3a8;padding:44px 0;font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+@media (max-width:900px){.grid,.versus,.issues{grid-template-columns:1fr}.card.wide{flex-direction:column}}
+@media (max-width:620px){.wrap{padding:0 16px}section{padding:70px 0}.body{padding:22px}.vs{padding:24px}.vs .big b{font-size:64px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <span class="logo"><img src="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png" alt="Apex Gates"></span>
+    <h1>Five homepage concepts for Apex Gates</h1>
+    <p>Each one leads with your commercial work, uses your own photos and wording, and opens the way one of your gates does. Pick the one that feels most like Apex, and we can mix in parts from the others.</p>
+    <div class="meta">
+      <div><b>5</b>concepts</div>
+      <div><b id="avg">100</b>average SEO score</div>
+      <div><b id="liveS">43</b>current site score</div>
+      <div><b>Nov 2026</b>prepared for Simon Sperrin</div>
+    </div>
+    <div class="palette" aria-label="Apex colour palette">
+      <span class="sw"><i style="background:#d61d09"></i>Apex red #D61D09</span>
+      <span class="sw"><i style="background:#b52111"></i>Deep red #B52111</span>
+      <span class="sw"><i style="background:#212529"></i>Charcoal #212529</span>
+      <span class="sw"><i style="background:#3f3e41"></i>Graphite #3F3E41</span>
+      <span class="sw"><i style="background:#f2f2f2"></i>Light grey #F2F2F2</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="grid" id="grid"></div>
+</div>
+
+<section id="seo">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="eb">SEO assessment</div>
+      <h2>How apexgates.com.au scores today, and how the concepts score</h2>
+      <p>We ran the same on-page checks on your current homepage and on every concept: titles, descriptions, headings, image text, business details for Google, sharing previews, mobile and lead capture.</p>
+    </div>
+    <div class="versus">
+      <div class="vs rv" id="vsLive"></div>
+      <div class="vs dark rv" style="--d:.1s" id="vsNew"></div>
+    </div>
+    <div class="tablewrap rv"><table id="tbl"></table></div>
+    <p class="note rv">These are on-page checks, the parts of SEO the website itself controls. Every concept is now a full 18 page website with its own page for each product, industry and service, and all 80 indexable pages pass every check. Ranking on Google also depends on a Google Business Profile with reviews and links from other sites. Those are the next steps once a design is chosen.</p>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="eb">What we found on the current site</div>
+      <h2>Beyond SEO: why commercial clients slip through</h2>
+    </div>
+    <div class="issues">
+      <div class="issue rv"><h3>The commercial story is buried</h3><p>Telstra, Western Power, the Water Corporation, mining, airports and seaports are only on the About page. The homepage reads residential.</p><div class="fix"><b>Fixed:</b> every concept names them in the first screen.</div></div>
+      <div class="issue rv" style="--d:.08s"><h3>No way to ask for a quote</h3><p>No contact or quote form on any page, only a phone number and email.</p><div class="fix"><b>Fixed:</b> a quote form with photo upload on every concept.</div></div>
+      <div class="issue rv" style="--d:.16s"><h3>No service contract offer</h3><p>Nothing tells a facility manager you offer maintenance contracts, the steadiest commercial work there is.</p><div class="fix"><b>Fixed:</b> a service contract section in all five.</div></div>
+      <div class="issue rv"><h3>Two numbers, no labels</h3><p>0477 88 44 22 and 0409 865 250 appear with no hint which to call.</p><div class="fix"><b>Fixed:</b> labelled Office and Mobile, click to call.</div></div>
+      <div class="issue rv" style="--d:.08s"><h3>Links that go to the wrong page</h3><p>"Automated Boom Gates" opens the swing gates page, and several menu items are icons only.</p><div class="fix"><b>Fixed:</b> plain text menus that point where they say.</div></div>
+      <div class="issue rv" style="--d:.16s"><h3>Typos and dated photos</h3><p>"Safefy Bay" and "Turnstyles", and most images date from 2018 and 2019.</p><div class="fix"><b>Fixed:</b> corrected copy and your recent Instagram job photos.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><span>Concepts prepared for Apex Gates, Perth WA. Photos, logo and wording belong to Apex Gates.</span><span>Benjamin Yson</span></div>
+</footer>
+
+<!--AUDIT--><script>window.AUDIT={"live": {"name": "apexgates.com.au today", "score": 54, "passed": 14, "total": 26, "checks": [{"name": "Title length 30 to 60 characters", "ok": false, "note": "63 characters, phone number in the title"}, {"name": "Meta description 120 to 160 characters", "ok": true, "note": "146 characters"}, {"name": "Focus phrase \"automatic gate\" in title", "ok": true, "note": ""}, {"name": "Focus phrase \"automatic gate\" in description", "ok": true, "note": ""}, {"name": "Focus phrase \"automatic gate\" in opening text", "ok": true, "note": ""}, {"name": "Perth in title", "ok": true, "note": ""}, {"name": "Heading levels never skip", "ok": true, "note": ""}, {"name": "Commercial work mentioned on the homepage", "ok": false, "note": "\"commercial\" appears once, no mining, Telstra or turnstiles"}, {"name": "Exactly one H1", "ok": true, "note": "1 found"}, {"name": "H1 comes before other headings", "ok": false, "note": "six H2s sit above the H1"}, {"name": "Every image has alt text", "ok": false, "note": "24 images, 18 missing"}, {"name": "Images below the fold lazy load", "ok": false, "note": "12 of 24"}, {"name": "Language set to en-AU", "ok": false, "note": "en-GB"}, {"name": "Mobile viewport", "ok": true, "note": ""}, {"name": "Canonical URL", "ok": true, "note": ""}, {"name": "Robots allow indexing", "ok": true, "note": ""}, {"name": "Open Graph tags for sharing", "ok": true, "note": ""}, {"name": "Twitter card", "ok": true, "note": ""}, {"name": "Favicon", "ok": true, "note": ""}, {"name": "LocalBusiness schema with address and phone", "ok": false, "note": "only WebPage, WebSite, Breadcrumb"}, {"name": "Service catalogue in schema", "ok": false, "note": ""}, {"name": "FAQ schema on the FAQ page", "ok": false, "note": "FAQs page has no FAQPage schema"}, {"name": "Click to call phone links", "ok": true, "note": "2 links"}, {"name": "Quote or contact form", "ok": false, "note": "no form on any page"}, {"name": "Every link has readable text", "ok": false, "note": "8 icon only links"}, {"name": "At least 600 words of content", "ok": false, "note": "471 words"}]}, "drafts": [{"title": "Commercial Gate Automation Perth | Apex Gates WA", "desc": "Commercial gate automation in Perth. Automatic gates, boom gates, bollards, turnstiles and access control, installed and serviced by a WA family company.", "words": 1624, "score": 100, "passed": 26, "total": 26, "checks": [{"name": "Title length 30 to 60 characters", "ok": true, "note": "48 characters"}, {"name": "Meta description 120 to 160 characters", "ok": true, "note": "153 characters"}, {"name": "Focus phrase \"gate automation\" in title", "ok": true, "note": "Commercial Gate Automation Perth | Apex Gates WA"}, {"name": "Focus phrase \"gate automation\" in description", "ok": true, "note": ""}, {"name": "Focus phrase \"gate automation\" in opening text", "ok": true, "note": ""}, {"name": "Perth in title", "ok": true, "note": ""}, {"name": "Exactly one H1", "ok": true, "note": "1 found"}, {"name": "H1 comes before other headings", "ok": true, "note": ""}, {"name": "Heading levels never skip", "ok": true, "note": "0 skips"}, {"name": "Every image has alt text", "ok": true, "note": "27 images, 0 missing"}, {"name": "Images below the fold lazy load", "ok": true, "note": "24 of 27"}, {"name": "Language set to en-AU", "ok": true, "note": "en-AU"}, {"name": "Mobile viewport", "ok": true, "note": ""}, {"name": "Canonical URL", "ok": true, "note": ""}, {"name": "Robots allow indexing", "ok": true, "note": ""}, {"name": "Open Graph tags for sharing", "ok": true, "note": ""}, {"name": "Twitter card", "ok": true, "note": ""}, {"name": "Favicon", "ok": true, "note": ""}, {"name": "LocalBusiness schema with address and phone", "ok": true, "note": ""}, {"name": "Service catalogue in schema", "ok": true, "note": ""}, {"name": "FAQ schema matches the FAQs on the page", "ok": true, "note": ""}, {"name": "Schema is valid JSON", "ok": true, "note": "LocalBusiness, HomeAndConstructionBusiness, WebSite, WebPage, BreadcrumbList, FAQPage"}, {"name": "Click to call phone links", "ok": true, "note": "4 links"}, {"name": "Quote or contact form", "ok": true, "note": ""}, {"name": "Every link has readable text", "ok": true, "note": "0 empty"}, {"name": "At least 600 words of content", "ok": true, "note": "1624 words"}], "file": "draft-1-commercial-bold.html", "name": "Commercial bold", "kw": "gate automation", "key": "draft-1-commercial-bold.html", "href": "/clients/apex-gates/websites/draft-1-commercial-bold/index.html", "pages": 18, "audited": 16, "site_avg": 100, "site_low": 100, "per": [{"page": "index.html", "score": 100, "title": "Commercial Gate Automation Perth | Apex Gates WA", "words": 1637}, {"page": "products.html", "score": 100, "title": "Automatic Gates and Access Products Perth | Apex Gates", "words": 702}, {"page": "cantilever-gates.html", "score": 100, "title": "Cantilever Gates Perth | Apex Gates", "words": 764}, {"page": "sliding-telescopic-gates.html", "score": 100, "title": "Sliding and Telescopic Gates Perth | Apex Gates", "words": 795}, {"page": "swing-bifold-gates.html", "score": 100, "title": "Swing Gates and Bifold Gates Perth | Apex Gates", "words": 773}, {"page": "bollards-road-blockers.html", "score": 100, "title": "Rising Bollards and Road Blockers Perth | Apex Gates", "words": 723}, {"page": "turnstiles-pedestrian-gates.html", "score": 100, "title": "Turnstiles and Pedestrian Gates Perth | Apex Gates", "words": 677}, {"page": "boom-cable-chain-gates.html", "score": 100, "title": "Boom Gates, Cable and Chain Gates Perth | Apex Gates", "words": 685}, {"page": "access-control-intercoms.html", "score": 100, "title": "Access Control and Intercoms Perth | Apex Gates", "words": 658}, {"page": "commercial.html", "score": 100, "title": "Commercial Gates for Industry Perth | Apex Gates", "words": 688}, {"page": "service-contracts.html", "score": 100, "title": "Gate Maintenance Contracts Perth | Apex Gates", "words": 671}, {"page": "repairs.html", "score": 100, "title": "Gate Repairs and Breakdowns Perth | Apex Gates", "words": 696}, {"page": "projects.html", "score": 100, "title": "Gate Installation Projects in Perth | Apex Gates", "words": 674}, {"page": "about.html", "score": 100, "title": "About Apex Gates | Perth Automatic Gate Specialist", "words": 677}, {"page": "faqs.html", "score": 100, "title": "Automatic Gate FAQs Perth | Apex Gates", "words": 766}, {"page": "contact.html", "score": 100, "title": "Contact Apex Gates | Gate Quotes Perth and Peel", "words": 657}]}, {"title": "Automatic Gates and Access Control Perth | Apex Gates", "desc": "Apex Gates supplies, installs and services automatic gates, boom gates, bollards, turnstiles and access control for commercial sites across Perth and the Peel.", "words": 673, "score": 100, "passed": 26, "total": 26, "checks": [{"name": "Title length 30 to 60 characters", "ok": true, "note": "53 characters"}, {"name": "Meta description 120 to 160 characters", "ok": true, "note": "159 characters"}, {"name": "Focus phrase \"automatic gates\" in title", "ok": true, "note": "Automatic Gates and Access Control Perth | Apex Gates"}, {"name": "Focus phrase \"automatic gates\" in description", "ok": true, "note": ""}, {"name": "Focus phrase \"automatic gates\" in opening text", "ok": true, "note": ""}, {"name": "Perth in title", "ok": true, "note": ""}, {"name": "Exactly one H1", "ok": true, "note": "1 found"}, {"name": "H1 comes before other headings", "ok": true, "note": ""}, {"name": "Heading levels never skip", "ok": true, "note": "0 skips"}, {"name": "Every image has alt text", "ok": true, "note": "21 images, 0 missing"}, {"name": "Images below the fold lazy load", "ok": true, "note": "18 of 21"}, {"name": "Language set to en-AU", "ok": true, "note": "en-AU"}, {"name": "Mobile viewport", "ok": true, "note": ""}, {"name": "Canonical URL", "ok": true, "note": ""}, {"name": "Robots allow indexing", "ok": true, "note": ""}, {"name": "Open Graph tags for sharing", "ok": true, "note": ""}, {"name": "Twitter card", "ok": true, "note": ""}, {"name": "Favicon", "ok": true, "note": ""}, {"name": "LocalBusiness schema with address and phone", "ok": true, "note": ""}, {"name": "Service catalogue in schema", "ok": true, "note": ""}, {"name": "FAQ schema matches the FAQs on the page", "ok": true, "note": ""}, {"name": "Schema is valid JSON", "ok": true, "note": "LocalBusiness, HomeAndConstructionBusiness, WebSite, WebPage, BreadcrumbList"}, {"name": "Click to call phone links", "ok": true, "note": "3 links"}, {"name": "Quote or contact form", "ok": true, "note": ""}, {"name": "Every link has readable text", "ok": true, "note": "0 empty"}, {"name": "At least 600 words of content", "ok": true, "note": "673 words"}], "file": "draft-2-clean-corporate.html", "name": "Clean corporate", "kw": "automatic gates", "key": "draft-2-clean-corporate.html", "href": "/clients/apex-gates/websites/draft-2-clean-corporate/index.html", "pages": 18, "audited": 16, "site_avg": 100, "site_low": 100, "per": [{"page": "index.html", "score": 100, "title": "Automatic Gates and Access Control Perth | Apex Gates", "words": 687}, {"page": "products.html", "score": 100, "title": "Automatic Gates and Access Products Perth | Apex Gates", "words": 657}, {"page": "cantilever-gates.html", "score": 100, "title": "Cantilever Gates Perth | Apex Gates", "words": 719}, {"page": "sliding-telescopic-gates.html", "score": 100, "title": "Sliding and Telescopic Gates Perth | Apex Gates", "words": 750}, {"page": "swing-bifold-gates.html", "score": 100, "title": "Swing Gates and Bifold Gates Perth | Apex Gates", "words": 728}, {"page": "bollards-road-blockers.html", "score": 100, "title": "Rising Bollards and Road Blockers Perth | Apex Gates", "words": 678}, {"page": "turnstiles-pedestrian-gates.html", "score": 100, "title": "Turnstiles and Pedestrian Gates Perth | Apex Gates", "words": 632}, {"page": "boom-cable-chain-gates.html", "score": 100, "title": "Boom Gates, Cable and Chain Gates Perth | Apex Gates", "words": 640}, {"page": "access-control-intercoms.html", "score": 100, "title": "Access Control and Intercoms Perth | Apex Gates", "words": 613}, {"page": "commercial.html", "score": 100, "title": "Commercial Gates for Industry Perth | Apex Gates", "words": 643}, {"page": "service-contracts.html", "score": 100, "title": "Gate Maintenance Contracts Perth | Apex Gates", "words": 626}, {"page": "repairs.html", "score": 100, "title": "Gate Repairs and Breakdowns Perth | Apex Gates", "words": 651}, {"page": "projects.html", "score": 100, "title": "Gate Installation Projects in Perth | Apex Gates", "words": 629}, {"page": "about.html", "score": 100, "title": "About Apex Gates | Perth Automatic Gate Specialist", "words": 632}, {"page": "faqs.html", "score": 100, "title": "Automatic Gate FAQs Perth | Apex Gates", "words": 721}, {"page": "contact.html", "score": 100, "title": "Contact Apex Gates | Gate Quotes Perth and Peel", "words": 612}]}, {"title": "Heavy Duty Gates and Gate Automation Perth | Apex Gates", "desc": "Heavy duty automatic gates, cantilever and telescopic gates, bollards and turnstiles for Perth commercial sites. A WA family company trusted since 2005.", "words": 643, "score": 100, "passed": 26, "total": 26, "checks": [{"name": "Title length 30 to 60 characters", "ok": true, "note": "55 characters"}, {"name": "Meta description 120 to 160 characters", "ok": true, "note": "152 characters"}, {"name": "Focus phrase \"heavy duty\" in title", "ok": true, "note": "Heavy Duty Gates and Gate Automation Perth | Apex Gates"}, {"name": "Focus phrase \"heavy duty\" in description", "ok": true, "note": ""}, {"name": "Focus phrase \"heavy duty\" in opening text", "ok": true, "note": ""}, {"name": "Perth in title", "ok": true, "note": ""}, {"name": "Exactly one H1", "ok": true, "note": "1 found"}, {"name": "H1 comes before other headings", "ok": true, "note": ""}, {"name": "Heading levels never skip", "ok": true, "note": "0 skips"}, {"name": "Every image has alt text", "ok": true, "note": "26 images, 0 missing"}, {"name": "Images below the fold lazy load", "ok": true, "note": "23 of 26"}, {"name": "Language set to en-AU", "ok": true, "note": "en-AU"}, {"name": "Mobile viewport", "ok": true, "note": ""}, {"name": "Canonical URL", "ok": true, "note": ""}, {"name": "Robots allow indexing", "ok": true, "note": ""}, {"name": "Open Graph tags for sharing", "ok": true, "note": ""}, {"name": "Twitter card", "ok": true, "note": ""}, {"name": "Favicon", "ok": true, "note": ""}, {"name": "LocalBusiness schema with address and phone", "ok": true, "note": ""}, {"name": "Service catalogue in schema", "ok": true, "note": ""}, {"name": "FAQ schema matches the FAQs on the page", "ok": true, "note": ""}, {"name": "Schema is valid JSON", "ok": true, "note": "LocalBusiness, HomeAndConstructionBusiness, WebSite, WebPage, BreadcrumbList"}, {"name": "Click to call phone links", "ok": true, "note": "2 links"}, {"name": "Quote or contact form", "ok": true, "note": ""}, {"name": "Every link has readable text", "ok": true, "note": "0 empty"}, {"name": "At least 600 words of content", "ok": true, "note": "643 words"}], "file": "draft-3-dark-cinematic.html", "name": "Dark cinematic", "kw": "heavy duty", "key": "draft-3-dark-cinematic.html", "href": "/clients/apex-gates/websites/draft-3-dark-cinematic/index.html", "pages": 18, "audited": 16, "site_avg": 100, "site_low": 100, "per": [{"page": "index.html", "score": 100, "title": "Heavy Duty Gates and Gate Automation Perth | Apex Gates", "words": 657}, {"page": "products.html", "score": 100, "title": "Automatic Gates and Access Products Perth | Apex Gates", "words": 645}, {"page": "cantilever-gates.html", "score": 100, "title": "Cantilever Gates Perth | Apex Gates", "words": 707}, {"page": "sliding-telescopic-gates.html", "score": 100, "title": "Sliding and Telescopic Gates Perth | Apex Gates", "words": 738}, {"page": "swing-bifold-gates.html", "score": 100, "title": "Swing Gates and Bifold Gates Perth | Apex Gates", "words": 716}, {"page": "bollards-road-blockers.html", "score": 100, "title": "Rising Bollards and Road Blockers Perth | Apex Gates", "words": 666}, {"page": "turnstiles-pedestrian-gates.html", "score": 100, "title": "Turnstiles and Pedestrian Gates Perth | Apex Gates", "words": 620}, {"page": "boom-cable-chain-gates.html", "score": 100, "title": "Boom Gates, Cable and Chain Gates Perth | Apex Gates", "words": 628}, {"page": "access-control-intercoms.html", "score": 100, "title": "Access Control and Intercoms Perth | Apex Gates", "words": 601}, {"page": "commercial.html", "score": 100, "title": "Commercial Gates for Industry Perth | Apex Gates", "words": 631}, {"page": "service-contracts.html", "score": 100, "title": "Gate Maintenance Contracts Perth | Apex Gates", "words": 614}, {"page": "repairs.html", "score": 100, "title": "Gate Repairs and Breakdowns Perth | Apex Gates", "words": 639}, {"page": "projects.html", "score": 100, "title": "Gate Installation Projects in Perth | Apex Gates", "words": 617}, {"page": "about.html", "score": 100, "title": "About Apex Gates | Perth Automatic Gate Specialist", "words": 620}, {"page": "faqs.html", "score": 100, "title": "Automatic Gate FAQs Perth | Apex Gates", "words": 709}, {"page": "contact.html", "score": 100, "title": "Contact Apex Gates | Gate Quotes Perth and Peel", "words": 600}]}, {"title": "Gate Servicing, Repairs and Maintenance Perth | Apex Gates", "desc": "Automatic gate servicing, repairs and maintenance contracts in Perth. All brands serviced, safety inspections and breakdown repairs. Call 0477 88 44 22.", "words": 755, "score": 100, "passed": 26, "total": 26, "checks": [{"name": "Title length 30 to 60 characters", "ok": true, "note": "58 characters"}, {"name": "Meta description 120 to 160 characters", "ok": true, "note": "152 characters"}, {"name": "Focus phrase \"gate servicing\" in title", "ok": true, "note": "Gate Servicing, Repairs and Maintenance Perth | Apex Gates"}, {"name": "Focus phrase \"gate servicing\" in description", "ok": true, "note": ""}, {"name": "Focus phrase \"gate servicing\" in opening text", "ok": true, "note": ""}, {"name": "Perth in title", "ok": true, "note": ""}, {"name": "Exactly one H1", "ok": true, "note": "1 found"}, {"name": "H1 comes before other headings", "ok": true, "note": ""}, {"name": "Heading levels never skip", "ok": true, "note": "0 skips"}, {"name": "Every image has alt text", "ok": true, "note": "30 images, 0 missing"}, {"name": "Images below the fold lazy load", "ok": true, "note": "27 of 30"}, {"name": "Language set to en-AU", "ok": true, "note": "en-AU"}, {"name": "Mobile viewport", "ok": true, "note": ""}, {"name": "Canonical URL", "ok": true, "note": ""}, {"name": "Robots allow indexing", "ok": true, "note": ""}, {"name": "Open Graph tags for sharing", "ok": true, "note": ""}, {"name": "Twitter card", "ok": true, "note": ""}, {"name": "Favicon", "ok": true, "note": ""}, {"name": "LocalBusiness schema with address and phone", "ok": true, "note": ""}, {"name": "Service catalogue in schema", "ok": true, "note": ""}, {"name": "FAQ schema matches the FAQs on the page", "ok": true, "note": ""}, {"name": "Schema is valid JSON", "ok": true, "note": "LocalBusiness, HomeAndConstructionBusiness, WebSite, WebPage, BreadcrumbList, FAQPage"}, {"name": "Click to call phone links", "ok": true, "note": "5 links"}, {"name": "Quote or contact form", "ok": true, "note": ""}, {"name": "Every link has readable text", "ok": true, "note": "0 empty"}, {"name": "At least 600 words of content", "ok": true, "note": "755 words"}], "file": "draft-4-service-first.html", "name": "Service first", "kw": "gate servicing", "key": "draft-4-service-first.html", "href": "/clients/apex-gates/websites/draft-4-service-first/index.html", "pages": 18, "audited": 16, "site_avg": 100, "site_low": 100, "per": [{"page": "index.html", "score": 100, "title": "Gate Servicing, Repairs and Maintenance Perth | Apex Gates", "words": 768}, {"page": "products.html", "score": 100, "title": "Automatic Gates and Access Products Perth | Apex Gates", "words": 671}, {"page": "cantilever-gates.html", "score": 100, "title": "Cantilever Gates Perth | Apex Gates", "words": 733}, {"page": "sliding-telescopic-gates.html", "score": 100, "title": "Sliding and Telescopic Gates Perth | Apex Gates", "words": 764}, {"page": "swing-bifold-gates.html", "score": 100, "title": "Swing Gates and Bifold Gates Perth | Apex Gates", "words": 742}, {"page": "bollards-road-blockers.html", "score": 100, "title": "Rising Bollards and Road Blockers Perth | Apex Gates", "words": 692}, {"page": "turnstiles-pedestrian-gates.html", "score": 100, "title": "Turnstiles and Pedestrian Gates Perth | Apex Gates", "words": 646}, {"page": "boom-cable-chain-gates.html", "score": 100, "title": "Boom Gates, Cable and Chain Gates Perth | Apex Gates", "words": 654}, {"page": "access-control-intercoms.html", "score": 100, "title": "Access Control and Intercoms Perth | Apex Gates", "words": 627}, {"page": "commercial.html", "score": 100, "title": "Commercial Gates for Industry Perth | Apex Gates", "words": 657}, {"page": "service-contracts.html", "score": 100, "title": "Gate Maintenance Contracts Perth | Apex Gates", "words": 640}, {"page": "repairs.html", "score": 100, "title": "Gate Repairs and Breakdowns Perth | Apex Gates", "words": 665}, {"page": "projects.html", "score": 100, "title": "Gate Installation Projects in Perth | Apex Gates", "words": 643}, {"page": "about.html", "score": 100, "title": "About Apex Gates | Perth Automatic Gate Specialist", "words": 646}, {"page": "faqs.html", "score": 100, "title": "Automatic Gate FAQs Perth | Apex Gates", "words": 735}, {"page": "contact.html", "score": 100, "title": "Contact Apex Gates | Gate Quotes Perth and Peel", "words": 626}]}, {"title": "Automatic Gates, Bollards and Turnstiles Perth | Apex Gates", "desc": "Automatic gates, boom gates, rising bollards and turnstiles for mining, utilities, builders, hospitals and business sites across Perth, Rockingham and Mandurah.", "words": 624, "score": 100, "passed": 26, "total": 26, "checks": [{"name": "Title length 30 to 60 characters", "ok": true, "note": "59 characters"}, {"name": "Meta description 120 to 160 characters", "ok": true, "note": "160 characters"}, {"name": "Focus phrase \"automatic gates\" in title", "ok": true, "note": "Automatic Gates, Bollards and Turnstiles Perth | Apex Gates"}, {"name": "Focus phrase \"automatic gates\" in description", "ok": true, "note": ""}, {"name": "Focus phrase \"automatic gates\" in opening text", "ok": true, "note": ""}, {"name": "Perth in title", "ok": true, "note": ""}, {"name": "Exactly one H1", "ok": true, "note": "1 found"}, {"name": "H1 comes before other headings", "ok": true, "note": ""}, {"name": "Heading levels never skip", "ok": true, "note": "0 skips"}, {"name": "Every image has alt text", "ok": true, "note": "11 images, 0 missing"}, {"name": "Images below the fold lazy load", "ok": true, "note": "9 of 11"}, {"name": "Language set to en-AU", "ok": true, "note": "en-AU"}, {"name": "Mobile viewport", "ok": true, "note": ""}, {"name": "Canonical URL", "ok": true, "note": ""}, {"name": "Robots allow indexing", "ok": true, "note": ""}, {"name": "Open Graph tags for sharing", "ok": true, "note": ""}, {"name": "Twitter card", "ok": true, "note": ""}, {"name": "Favicon", "ok": true, "note": ""}, {"name": "LocalBusiness schema with address and phone", "ok": true, "note": ""}, {"name": "Service catalogue in schema", "ok": true, "note": ""}, {"name": "FAQ schema matches the FAQs on the page", "ok": true, "note": ""}, {"name": "Schema is valid JSON", "ok": true, "note": "LocalBusiness, HomeAndConstructionBusiness, WebSite, WebPage, BreadcrumbList, FAQPage"}, {"name": "Click to call phone links", "ok": true, "note": "4 links"}, {"name": "Quote or contact form", "ok": true, "note": ""}, {"name": "Every link has readable text", "ok": true, "note": "0 empty"}, {"name": "At least 600 words of content", "ok": true, "note": "624 words"}], "file": "draft-5-sector-chooser.html", "name": "Sector chooser", "kw": "automatic gates", "key": "draft-5-sector-chooser.html", "href": "/clients/apex-gates/websites/draft-5-sector-chooser/index.html", "pages": 18, "audited": 16, "site_avg": 100, "site_low": 100, "per": [{"page": "index.html", "score": 100, "title": "Automatic Gates, Bollards and Turnstiles Perth | Apex Gates", "words": 638}, {"page": "products.html", "score": 100, "title": "Automatic Gates and Access Products Perth | Apex Gates", "words": 650}, {"page": "cantilever-gates.html", "score": 100, "title": "Cantilever Gates Perth | Apex Gates", "words": 712}, {"page": "sliding-telescopic-gates.html", "score": 100, "title": "Sliding and Telescopic Gates Perth | Apex Gates", "words": 743}, {"page": "swing-bifold-gates.html", "score": 100, "title": "Swing Gates and Bifold Gates Perth | Apex Gates", "words": 721}, {"page": "bollards-road-blockers.html", "score": 100, "title": "Rising Bollards and Road Blockers Perth | Apex Gates", "words": 671}, {"page": "turnstiles-pedestrian-gates.html", "score": 100, "title": "Turnstiles and Pedestrian Gates Perth | Apex Gates", "words": 625}, {"page": "boom-cable-chain-gates.html", "score": 100, "title": "Boom Gates, Cable and Chain Gates Perth | Apex Gates", "words": 633}, {"page": "access-control-intercoms.html", "score": 100, "title": "Access Control and Intercoms Perth | Apex Gates", "words": 606}, {"page": "commercial.html", "score": 100, "title": "Commercial Gates for Industry Perth | Apex Gates", "words": 636}, {"page": "service-contracts.html", "score": 100, "title": "Gate Maintenance Contracts Perth | Apex Gates", "words": 619}, {"page": "repairs.html", "score": 100, "title": "Gate Repairs and Breakdowns Perth | Apex Gates", "words": 644}, {"page": "projects.html", "score": 100, "title": "Gate Installation Projects in Perth | Apex Gates", "words": 622}, {"page": "about.html", "score": 100, "title": "About Apex Gates | Perth Automatic Gate Specialist", "words": 625}, {"page": "faqs.html", "score": 100, "title": "Automatic Gate FAQs Perth | Apex Gates", "words": 714}, {"page": "contact.html", "score": 100, "title": "Contact Apex Gates | Gate Quotes Perth and Peel", "words": 605}]}]};</script><!--/AUDIT-->
+<script>
+(()=>{
+  const A=window.AUDIT;if(!A)return;
+  const info={
+    'draft-1-commercial-bold.html':{gate:'Opens like a cantilever gate',d:'Bold red and charcoal with the quote form in the first screen. The most complete page: sectors, featured hospital job, products, service contracts, projects, FAQs and service map.',f:['Quote form up top','Featured project','Scroll progress bar','FAQs','Service area map']},
+    'draft-2-clean-corporate.html':{gate:'Opens like a telescopic gate',d:'Light, clean and calm. Built for facility managers and procurement teams who want to see credentials and clients fast.',f:['CM3 badge on the photo','Numbered industries','Brand logos in colour on hover','Contact form']},
+    'draft-3-dark-cinematic.html':{gate:'Opens like a swing gate',d:'Dark and cinematic with huge type and full screen photos. A product list that swaps the photo as you move down it, and a drag to scroll gallery.',f:['Animated counters','Client marquee','Parallax photos','Drag gallery','Floating labels form']},
+    'draft-4-service-first.html':{gate:'Opens like a boom gate',d:'Leads with servicing, breakdowns and maintenance contracts. A boom gate lifts in the hero and a call bar stays on screen for phones.',f:['Animated boom gate','Brand marquee','Breakdown timeline','Sticky call bar','Service booking form']},
+    'draft-5-sector-chooser.html':{gate:'Opens with rising bollards',d:'Editorial and modern. Visitors choose their type of site and the page shows the products that suit it.',f:['Rising bollards','Interactive site chooser','Bento project grid','Image wipe reveal']}
+  };
+  const g=document.getElementById('grid');
+  A.drafts.forEach((r,i)=>{
+    const m=info[r.key||r.file],u=r.href||r.file,c=document.createElement('article');c.className='card rv'+(i==0?' wide':'');c.style.setProperty('--d',(i%2)*0.08+'s');
+    const C=2*Math.PI*30;
+    c.innerHTML=`<a class="shot" href="${u}" aria-label="Open ${r.name}"><iframe src="${u}" loading="lazy" tabindex="-1" title="${r.name} preview"></iframe><span class="open">Open full page</span></a>
+    <div class="body"><div class="row"><div><div class="num">Concept ${i+1}</div><h2>${r.name}</h2></div>
+    <div class="ring" title="SEO score"><svg viewBox="0 0 74 74"><circle class="bg" cx="37" cy="37" r="30"/><circle class="fg" cx="37" cy="37" r="30" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-to="${C*(1-r.score/100)}"/></svg><b>${r.score}</b><small>SEO</small></div></div>
+    <span class="gate">${m.gate}</span><p>${m.d}</p><div class="feat">${r.pages?`<span>${r.pages} page website</span>`:''}${m.f.map(x=>`<span>${x}</span>`).join('')}</div>
+    <div class="acts"><a class="btn btn-red" href="${u}">View concept</a><a class="btn btn-line" href="#seo">SEO details</a></div></div>`;
+    g.appendChild(c)});
+  const fit=()=>document.querySelectorAll('.shot').forEach(s=>{const f=s.querySelector('iframe');f.style.transform=`scale(${s.clientWidth/1440})`});
+  fit();addEventListener('resize',fit);
+  const avg=Math.round(A.drafts.reduce((a,r)=>a+r.score,0)/A.drafts.length);
+  document.getElementById('avg').textContent=avg;document.getElementById('liveS').textContent=A.live.score;
+  const li=(c)=>`<li><span class="${c.ok?'t':'x'}">${c.ok?'&#10003;':'&#10005;'}</span><div>${c.name}${c.note?`<em>${c.note}</em>`:''}</div></li>`;
+  document.getElementById('vsLive').innerHTML=`<div class="eb">apexgates.com.au today</div><div class="big"><b>${A.live.score}</b><span>${A.live.passed} of ${A.live.total} checks passed</span></div><div class="bar"><i style="background:var(--red)" data-w="${A.live.score}"></i></div><ul>${A.live.checks.filter(c=>!c.ok).map(li).join('')}</ul>`;
+  const d0=A.drafts[0];
+  document.getElementById('vsNew').innerHTML=`<div class="eb" style="color:#ff6a50">Every concept</div><div class="big"><b>${avg}</b><span>${d0.passed} of ${d0.total} checks passed on all five</span></div><div class="bar"><i style="background:var(--ok)" data-w="${avg}"></i></div><ul>${['LocalBusiness schema with your address, phones, ABN and service area','FAQ schema so answers can show in Google results','Every photo described for Google Images','One clear H1 and clean heading order','Australian English, sharing previews and click to call','A quote form on every page','600 to 1,600 words of real content'].map(x=>li({ok:true,name:x})).join('')}</ul>`;
+  const norm=s=>s.replace(/Focus phrase ".*?"/,'Focus phrase');
+  const names=A.drafts[0].checks.map(c=>norm(c.name));
+  const liveMap={};A.live.checks.forEach(c=>liveMap[norm(c.name)]=c.ok);
+  const cell=ok=>ok===undefined?'<td style="color:#aaa">n/a</td>':`<td><span class="${ok?'t':'x'}">${ok?'&#10003;':'&#10005;'}</span></td>`;
+  document.getElementById('tbl').innerHTML=`<thead><tr><th>Check</th><th>Current site</th>${A.drafts.map((r,i)=>`<th>${i+1}. ${r.name}</th>`).join('')}</tr></thead>
+  <tbody>${names.map((n,k)=>`<tr><td>${n}</td>${cell(liveMap[n]??(n=='FAQ schema matches the FAQs on the page'?liveMap['FAQ schema on the FAQ page']:undefined))}${A.drafts.map(r=>cell(r.checks[k].ok)).join('')}</tr>`).join('')}</tbody>
+  <tfoot><tr><td>Score</td><td style="color:var(--red)">${A.live.score}</td>${A.drafts.map(r=>`<td style="color:var(--ok)">${r.score}</td>`).join('')}</tr></tfoot>`;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const t=e.target;t.classList.add('in');
+    t.querySelectorAll('.fg').forEach(c=>setTimeout(()=>c.style.strokeDashoffset=c.dataset.to,300));
+    t.querySelectorAll('.bar i').forEach(b=>setTimeout(()=>b.style.width=b.dataset.w+'%',300));io.unobserve(t)}),{threshold:.15});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+})();
+</script>
+</body>
+</html>
