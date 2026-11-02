@@ -6,6 +6,12 @@ import {
   isRaetzerGated,
   raetzerGateHtml,
 } from "@/lib/raetzer-gate";
+import {
+  BT_COOKIE,
+  hasBlockTreasureAccess,
+  isBlockTreasureGated,
+  blockTreasureGateHtml,
+} from "@/lib/blocktreasure-gate";
 
 export async function middleware(request: NextRequest) {
   // Password gate for the private Raetzer client preview and its hosted site
@@ -18,6 +24,22 @@ export async function middleware(request: NextRequest) {
     if (cookie !== RAETZER_TOKEN) {
       const showError = request.nextUrl.searchParams.get("rz") === "bad";
       return new NextResponse(raetzerGateHtml(path, showError), {
+        status: 401,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+          "x-robots-tag": "noindex, nofollow",
+        },
+      });
+    }
+  }
+
+  // Password gate for the private Block Treasure N.V. client dashboard and its
+  // hosted documents under /clients/blocktreasure.
+  if (isBlockTreasureGated(path)) {
+    if (!hasBlockTreasureAccess(request.cookies.get(BT_COOKIE)?.value)) {
+      const showError = request.nextUrl.searchParams.get("bt") === "bad";
+      return new NextResponse(blockTreasureGateHtml(path, showError), {
         status: 401,
         headers: {
           "content-type": "text/html; charset=utf-8",
