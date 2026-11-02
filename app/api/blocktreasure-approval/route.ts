@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BT_COOKIE, hasBlockTreasureAccess } from "@/lib/blocktreasure-gate";
 
 const clean = (v: unknown, max: number) =>
   String(v ?? "")
@@ -7,11 +6,8 @@ const clean = (v: unknown, max: number) =>
     .replace(/[<>]/g, "");
 
 // Records a content approval decision from the Block Treasure dashboard and
-// emails it to BVN. Only callers holding the dashboard access cookie may post.
+// emails it to BVN.
 export async function POST(req: NextRequest) {
-  if (!hasBlockTreasureAccess(req.cookies.get(BT_COOKIE)?.value)) {
-    return NextResponse.json({ error: "Not authorised." }, { status: 401 });
-  }
 
   let body: Record<string, unknown>;
   try {
