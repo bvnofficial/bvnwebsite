@@ -1258,6 +1258,10 @@ document.addEventListener("click", (e) => { const b = e.target.closest("[data-go
 openShared();
 })();
 </script>
-<script type="module" src="gate3d.js"></script>
+<script type="module">
+// load the 3D engine next to this page, whether or not the address ends in a slash
+const here = location.pathname.endsWith("/") || location.pathname.endsWith(".html") ? "" : location.pathname.split("/").pop() + "/";
+import(new URL(here + "gate3d.js", location.href).href);
+</script>
 </body>
 </html>
