@@ -431,156 +431,287 @@ const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
 /* ---------- Gate drawing ----------
    Everything is drawn in metres on the gate's plane: X across (0 = left post), Y up (0 = ground).
-   The homography maps that plane onto the opening the customer marked. */
-function drawGate(ctx, P, opts) {
-  const { W, Hm, type, style, col, t, dir } = opts;
+   The homography maps that plane onto the opening the customer marked.
+   The gate is drawn on its own layer, then lit and grained to sit in the photo. */
+const GALV = "#9EA3A8", STEEL = "#2A2D31";
+const layers = new WeakMap();
+function layerFor(c) {
+  let l = layers.get(c);
+  if (!l) { l = document.createElement("canvas"); layers.set(c, l); }
+  if (l.width !== c.width || l.height !== c.height) { l.width = c.width; l.height = c.height; }
+  return l;
+}
+let noiseTile = null;
+function grain(ctx) {
+  if (!noiseTile) {
+    noiseTile = document.createElement("canvas"); noiseTile.width = noiseTile.height = 128;
+    const g = noiseTile.getContext("2d"), id = g.createImageData(128, 128);
+    for (let i = 0; i < id.data.length; i += 4) { const v = Math.random() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; }
+    g.putImageData(id, 0, 0);
+  }
+  return ctx.createPattern(noiseTile, "repeat");
+}
+// Cross section shading: how a profile catches light from above (or from the left).
+function prof(c, kind) {
+  if (kind === "round") return [[0, shade(c, -.5)], [.16, shade(c, .5)], [.3, shade(c, .12)], [.62, shade(c, -.12)], [.82, shade(c, .18)], [1, shade(c, -.55)]];
+  if (kind === "fold") return [[0, shade(c, -.35)], [.3, shade(c, .3)], [.5, c], [.72, shade(c, .12)], [1, shade(c, -.45)]];
+  return [[0, shade(c, .34)], [.1, shade(c, .12)], [.5, c], [.86, shade(c, -.12)], [1, shade(c, -.45)]];
+}
+
+function drawGate(out, P, opts) {
+  const { W, Hm, type, style, col, t, dir, light } = opts;
   const H = homography(P[0], P[1], P[2], P[3]);
   const M = (X, Y) => H(X / W, Y / Hm);
-  const poly = (pts, fill) => {
-    ctx.beginPath();
-    pts.forEach((p, i) => { const q = M(p[0], p[1]); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); });
-    ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+  const layer = layerFor(out.canvas), ctx = layer.getContext("2d");
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, layer.width, layer.height);
+  ctx.setTransform(out.getTransform());
+
+  const trace = (c, pts) => { c.beginPath(); pts.forEach((p, i) => { const q = M(p[0], p[1]); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); }); c.closePath(); };
+  const poly = (pts, fill) => { trace(ctx, pts); ctx.fillStyle = fill; ctx.fill(); };
+  // gradient between two plane points; byX keeps the light on the left in the photo whichever way the gate is mirrored
+  const lg = (a, b, stops, byX) => {
+    let A = M(a[0], a[1]), B = M(b[0], b[1]);
+    if (byX && A[0] > B[0]) [A, B] = [B, A];
+    const g = ctx.createLinearGradient(A[0], A[1], B[0], B[1]);
+    stops.forEach(([o, c]) => g.addColorStop(o, c)); return g;
   };
   const box = (x0, y0, x1, y1, fill) => poly([[x0, y0], [x1, y0], [x1, y1], [x0, y1]], fill);
+  const hbar = (x0, y0, x1, y1, c, kind = "box") => box(x0, y0, x1, y1, lg([(x0 + x1) / 2, y1], [(x0 + x1) / 2, y0], prof(c, kind)));
+  const vbar = (x0, y0, x1, y1, c, kind = "box") => box(x0, y0, x1, y1, lg([x0, (y0 + y1) / 2], [x1, (y0 + y1) / 2], prof(c, kind), true));
   const mx = (X) => dir === 1 ? X : W - X;               // mirror so every gate can be drawn opening to the right
-  const mbox = (x0, y0, x1, y1, fill) => box(mx(x0), y0, mx(x1), y1, fill);
+  const mh = (x0, y0, x1, y1, c, k) => hbar(Math.min(mx(x0), mx(x1)), y0, Math.max(mx(x0), mx(x1)), y1, c, k);
+  const mv = (x0, y0, x1, y1, c, k) => vbar(Math.min(mx(x0), mx(x1)), y0, Math.max(mx(x0), mx(x1)), y1, c, k);
+  const disc = (cx, cy, r, fill) => poly(Array.from({ length: 16 }, (_, i) => [cx + r * Math.cos(i / 16 * 6.283), cy + r * Math.sin(i / 16 * 6.283)]), fill);
 
   // pixels per metre near the ground line, for blur sizes
   const ppm = Math.hypot(P[1][0] - P[0][0], P[1][1] - P[0][1]) / W;
 
-  function shadow(x0, x1, depth = .16) {
-    ctx.save(); ctx.filter = `blur(${Math.max(2, ppm * .05)}px)`; ctx.globalAlpha = .38;
-    box(Math.min(x0, x1), -depth, Math.max(x0, x1), .02, "#000"); ctx.restore();
+  // Shadows go straight onto the photo: a tight dark contact line and a soft cast shadow falling forward and right.
+  function shadow(x0, x1, depth = .3) {
+    const a = Math.min(x0, x1), b = Math.max(x0, x1);
+    out.save(); out.fillStyle = "#000";
+    out.filter = `blur(${Math.max(1, ppm * .02)}px)`; out.globalAlpha = .5;
+    trace(out, [[a, -.03], [b, -.03], [b, .015], [a, .015]]); out.fill();
+    out.filter = `blur(${Math.max(3, ppm * .08)}px)`; out.globalAlpha = .26;
+    trace(out, [[a, .01], [b, .01], [b + .3, -depth], [a + .3, -depth]]); out.fill();
+    out.restore();
   }
 
   // A panel given its four corners on the plane (for swing leaves the far edge is pulled in and up).
   function panel(c, Lw, colour) {
     const Lh = Hm;
     const at = (s, r) => { const bot = lerp(c.bl, c.br, s / Lw), top = lerp(c.tl, c.tr, s / Lw); return lerp(bot, top, r / Lh); };
-    const q = (s0, r0, s1, r1, fill) => poly([at(s0, r0), at(s1, r0), at(s1, r1), at(s0, r1)], fill);
-    const base = colour, hi = shade(colour, .22), lo = shade(colour, -.28);
+    const quad = (s0, r0, s1, r1) => [at(s0, r0), at(s1, r0), at(s1, r1), at(s0, r1)];
+    const qh = (s0, r0, s1, r1, k = "box") => poly(quad(s0, r0, s1, r1), lg(at((s0 + s1) / 2, r1), at((s0 + s1) / 2, r0), prof(colour, k)));
+    const qv = (s0, r0, s1, r1, k = "box") => poly(quad(s0, r0, s1, r1), lg(at(s0, (r0 + r1) / 2), at(s1, (r0 + r1) / 2), prof(colour, k), true));
     const th = .05;
     if (style === "slat") {
-      for (let r = th + .012; r + .07 < Lh - th; r += .105) { q(th, r, Lw - th, r + .085, base); q(th, r + .071, Lw - th, r + .085, hi); }
+      for (let r = th + .012; r + .07 < Lh - th; r += .105) qh(th, r, Lw - th, r + .085);
     } else if (style === "picket") {
-      q(0, Lh * .5 - .03, Lw, Lh * .5 + .03, base);
-      for (let s = th + .035; s + .045 < Lw - th; s += .115) { q(s, th, s + .045, Lh - th, base); q(s + .032, th, s + .045, Lh - th, lo); }
+      qh(0, Lh * .5 - .03, Lw, Lh * .5 + .03);
+      for (let s = th + .035; s + .045 < Lw - th; s += .115) qv(s, th, s + .045, Lh - th);
     } else if (style === "palisade") {
-      q(0, .3, Lw, .36, base); q(0, Lh - .42, Lw, Lh - .36, base);
+      qh(0, .3, Lw, .36); qh(0, Lh - .42, Lw, Lh - .36);
       for (let s = .06; s + .065 < Lw - .02; s += .15) {
-        q(s, .05, s + .065, Lh - .1, base); q(s + .045, .05, s + .065, Lh - .1, lo);
-        poly([at(s, Lh - .1), at(s + .065, Lh - .1), at(s + .0325, Lh + .02)], base);
+        qv(s, .05, s + .065, Lh - .1, "fold");
+        poly([at(s, Lh - .1), at(s + .065, Lh - .1), at(s + .0325, Lh + .02)], lg(at(s, Lh - .05), at(s + .065, Lh - .05), prof(colour, "fold"), true));
+        // bolt heads on the rails
+        [.33, Lh - .39].forEach((r) => poly(quad(s + .026, r - .01, s + .039, r + .01), shade(colour, .35)));
       }
     } else { // mesh
-      ctx.save(); ctx.globalAlpha = .28; q(th, th, Lw - th, Lh - th, base); ctx.restore();
-      for (let s = th + .1; s < Lw - th; s += .1) q(s, th, s + .012, Lh - th, base);
-      for (let r = th + .1; r < Lh - th; r += .1) q(th, r, Lw - th, r + .012, base);
+      ctx.save(); ctx.globalAlpha = .16; poly(quad(th, th, Lw - th, Lh - th), colour); ctx.restore();
+      for (let s = th + .1; s < Lw - th; s += .1) qv(s, th, s + .012, Lh - th, "round");
+      for (let r = th + .1; r < Lh - th; r += .1) qh(th, r, Lw - th, r + .012, "round");
     }
     if (style !== "palisade") {
-      q(0, 0, Lw, th, lo); q(0, Lh - th, Lw, Lh, base); q(0, Lh - th, Lw, Lh - th + .012, hi);
-      q(0, 0, th, Lh, base); q(Lw - th, 0, Lw, Lh, base);
+      qh(0, 0, Lw, th); qh(0, Lh - th, Lw, Lh);
+      qv(0, 0, th, Lh); qv(Lw - th, 0, Lw, Lh);
+      // a soft shade where the infill meets the frame
+      poly(quad(th, Lh - th - .03, Lw - th, Lh - th), lg(at(Lw / 2, Lh - th), at(Lw / 2, Lh - th - .03), [[0, "rgba(0,0,0,.35)"], [1, "rgba(0,0,0,0)"]]));
     }
   }
   const rectCorners = (x0, x1, y0 = .03, y1 = Hm) => ({ bl: [mx(x0), y0], br: [mx(x1), y0], tr: [mx(x1), y1], tl: [mx(x0), y1] });
   function posts(lift = .12) {
-    const pc = shade("#2A2D31", 0);
-    box(-.11, 0, 0, Hm + lift, pc); box(-.11, Hm + lift - .02, 0, Hm + lift, "#55595F");
-    box(W, 0, W + .11, Hm + lift, pc); box(W, Hm + lift - .02, W + .11, Hm + lift, "#55595F");
+    [[-.11, 0], [W, W + .11]].forEach(([a, b]) => {
+      vbar(a, 0, b, Hm + lift, STEEL);
+      hbar(a - .012, Hm + lift - .025, b + .012, Hm + lift + .005, STEEL);   // cap
+    });
+  }
+  function motor(x0, x1) {
+    mh(x0 - .06, -.03, x1 + .06, .04, "#BDB8AE");                        // concrete plinth
+    mv(x0, .04, x1, .4, "#2E3135");
+    mh(x0 - .01, .37, x1 + .01, .42, "#3A3E43");                         // lid
+    for (let y = .12; y < .3; y += .045) mh(x0 + .05, y, x1 - .05, y + .012, "#1E2023"); // vents
+    mh(x0 + .04, .32, x0 + .07, .335, "#35d07f");                        // status light
+  }
+  function rack(x0, x1, y = .07) {
+    mh(x0, y, x1, y + .035, GALV);
+    for (let x = x0; x < x1; x += .025) mh(x, y - .012, x + .012, y, "#6E7378");
+  }
+  function wheels(x0, x1) {
+    [x0 + .3, x1 - .3].forEach((x) => { disc(mx(x), .045, .05, "#1B1D20"); disc(mx(x), .045, .018, GALV); });
   }
 
-  ctx.save();
   ctx.lineJoin = "round";
   const o = ease(t);
 
   if (type === "sliding" || type === "cantilever" || type === "telescopic") {
     const travel = W * 1.02;
     if (type === "sliding") {
-      box(mx(-.1) , 0, mx(W * 2.1), .025, "#4b4f55");                          // ground track
-      mbox(W + .18, 0, W + .5, .38, "#2C2F33"); mbox(W + .18, .34, W + .5, .38, "#474B51"); // motor
       shadow(mx(o * travel), mx(W + o * travel + .12));
-      panel(rectCorners(o * travel, W + .12 + o * travel), W + .12, col);
+      mh(-.1, -.01, W * 2.1, .025, GALV);                                 // ground track
+      motor(W + .18, W + .5);
+      panel(rectCorners(o * travel, W + .12 + o * travel, .06), W + .12, col);
+      rack(o * travel + .05, W + .07 + o * travel, .1);
+      wheels(o * travel, W + .12 + o * travel);
       posts();
     } else if (type === "cantilever") {
       const L = W * 1.42;
-      [W + .25, W + .25 + W * .3].forEach((x) => { mbox(x, 0, x + .1, .42, "#2A2D31"); mbox(x - .08, .12, x + .18, .24, "#55595F"); });
-      mbox(W + .55 + W * .3, 0, W + .85 + W * .3, .38, "#2C2F33");
       shadow(mx(o * travel), mx(L + o * travel));
+      motor(W + .55 + W * .3, W + .85 + W * .3);
       panel(rectCorners(o * travel, L + o * travel, .1, Hm), L, col);
+      mh(o * travel, .1, L + o * travel, .2, shade(col, -.1));           // bottom beam that rides the rollers
       // diagonal brace on the tail
       const x0 = W + .05 + o * travel, x1 = L - .05 + o * travel;
-      poly([[mx(x0), .15], [mx(x0 + .05), .15], [mx(x1), Hm - .1], [mx(x1 - .05), Hm - .1]], shade(col, -.15));
+      poly([[mx(x0), .2], [mx(x0 + .05), .2], [mx(x1), Hm - .1], [mx(x1 - .05), Hm - .1]], lg([mx(x0), .2], [mx(x0 + .05), .2], prof(col, "box"), true));
+      [W + .25, W + .25 + W * .3].forEach((x) => { mv(x, 0, x + .1, .3, STEEL); mh(x - .1, .05, x + .2, .14, GALV); }); // roller carriages
       posts();
     } else {
       const la = W * .56;
-      box(mx(-.1), 0, mx(W * 1.7), .025, "#4b4f55");
-      mbox(W + .2, 0, W + .5, .38, "#2C2F33");
+      shadow(mx(o * W), mx(W + o * (W - W * .44)));
+      mh(-.1, -.01, W * 1.7, .025, GALV);
+      motor(W + .2, W + .5);
       const aOff = o * W, bOff = o * (W - W * .44);
-      shadow(mx(aOff), mx(W + bOff));
-      panel(rectCorners(aOff, aOff + la), la, shade(col, -.12));               // back leaf
-      panel(rectCorners(W * .44 + bOff, W + bOff), la, col);                     // front leaf
+      panel(rectCorners(aOff, aOff + la, .06), la, shade(col, -.14));     // back leaf
+      panel(rectCorners(W * .44 + bOff, W + bOff, .06), la, col);         // front leaf
+      rack(W * .44 + bOff + .05, W + bOff - .05, .1);
       posts();
     }
   } else if (type === "swing" || type === "bifold") {
     const double = W > 3.5 || type === "bifold";
     const L = double ? W / 2 : W;
     const phi = o * (type === "swing" ? 1.45 : 1.35);
-    posts();
     const leaves = double ? [1, -1] : [dir];
+    leaves.forEach((s) => { const h = s === 1 ? 0 : W; shadow(h, h + s * L * Math.max(Math.cos(phi), .15)); });
+    posts();
     leaves.forEach((side) => {
       const hinge = side === 1 ? 0 : W, s = side;
       const X = (d) => hinge + s * d;
       const sh = shade(col, -.3 * Math.sin(phi));
       if (type === "swing") {
         const ex = L * Math.cos(phi), k = .12 * L * Math.sin(phi);
-        shadow(X(0), X(ex));
         const c = { bl: [X(0), .03], br: [X(ex), .03 + k], tr: [X(ex), Hm - k * 1.4], tl: [X(0), Hm] };
         if (s === -1) [c.bl, c.br, c.tr, c.tl] = [c.br, c.bl, c.tl, c.tr];
         panel(c, L, sh);
-        box(X(0) - .04, .5, X(0) + .04 * s + .35 * s * Math.cos(phi), .58, "#2C2F33"); // swing motor arm
+        const a0 = X(0) - .04 * s, a1 = X(0) + .04 * s + .38 * s * Math.cos(phi);   // ram arm
+        hbar(Math.min(a0, a1), .5, Math.max(a0, a1), .575, GALV, "round");
       } else {
         const half = L / 2, fx = half * Math.cos(phi), k = .14 * half * Math.sin(phi);
         const p1 = { bl: [X(0), .03], br: [X(fx), .03 + k], tr: [X(fx), Hm - k * 1.4], tl: [X(0), Hm] };
         const p2 = { bl: [X(fx), .03 + k], br: [X(2 * fx), .03], tr: [X(2 * fx), Hm], tl: [X(fx), Hm - k * 1.4] };
         [p1, p2].forEach((c) => { if (s === -1) [c.bl, c.br, c.tr, c.tl] = [c.br, c.bl, c.tl, c.tr]; });
-        shadow(X(0), X(2 * fx));
         panel(p1, half, sh); panel(p2, half, shade(col, -.12 * Math.sin(phi)));
       }
+      [.25, Hm - .3].forEach((y) => box(Math.min(X(-.02), X(.05)), y, Math.max(X(-.02), X(.05)), y + .1, "#1E2023")); // hinges
     });
   } else if (type === "boom") {
-    const hx0 = mx(.05), hx1 = mx(.42);
-    shadow(hx0, hx1, .12);
-    box(Math.min(hx0, hx1), 0, Math.max(hx0, hx1), 1.05, col);
-    box(Math.min(hx0, hx1), .98, Math.max(hx0, hx1), 1.05, shade(col, .25));
-    box(Math.min(hx0, hx1) + .05, .7, Math.max(hx0, hx1) - .05, .9, shade(col, -.35));
-    const lightOn = o > .95 ? "#35d07f" : "#ff3b2f";
-    box(Math.min(hx0, hx1) + .12, .76, Math.max(hx0, hx1) - .12, .84, lightOn);
-    // rest post
-    box(mx(W - .2), 0, mx(W - .12), .85, "#2A2D31"); box(mx(W - .26), .8, mx(W - .06), .86, "#2A2D31");
+    const hx0 = Math.min(mx(.05), mx(.42)), hx1 = Math.max(mx(.05), mx(.42));
+    shadow(hx0, hx1, .25);
+    mh(-.02, -.03, .49, .03, "#BDB8AE");                                  // plinth
+    vbar(hx0, 0, hx1, 1.05, col);
+    hbar(hx0 - .015, .99, hx1 + .015, 1.07, col);                         // lid
+    box(hx0 + .05, .12, hx1 - .05, .125, "rgba(0,0,0,.45)"); box(hx0 + .05, .12, hx0 + .055, .82, "rgba(0,0,0,.45)"); // door seam
+    box(hx1 - .055, .12, hx1 - .05, .82, "rgba(0,0,0,.45)"); box(hx0 + .05, .815, hx1 - .05, .82, "rgba(0,0,0,.45)");
+    vbar(hx0 + .09, .86, hx1 - .09, .95, "#1E2023");
+    box(hx0 + .12, .885, hx1 - .12, .925, o > .95 ? "#35d07f" : "#ff3b2f");
+    // rest post with a fork for the arm
+    mv(W - .2, 0, W - .12, .85, STEEL); mh(W - .26, .8, W - .06, .86, STEEL);
     // arm: rotate in the gate plane, aspect is true metres
     const pv = [mx(.24), .93], ang = o * 1.52, len = W - .3, th = .085;
     const ux = Math.cos(ang) * dir, uy = Math.sin(ang), nx = -Math.sin(ang) * dir, ny = Math.cos(ang);
     const pt = (s, w) => [pv[0] + ux * s + nx * w, pv[1] + uy * s + ny * w];
     for (let s = 0; s < len; s += .45) {
-      const s1 = Math.min(len, s + .45), stripe = Math.round(s / .45) % 2 ? "#C2210F" : "#F7F7F5";
+      const s1 = Math.min(len, s + .45), stripe = Math.round(s / .45) % 2 ? "#C2210F" : "#F2F2EE";
       poly([pt(s, -th / 2), pt(s1, -th / 2), pt(s1, th / 2), pt(s, th / 2)], stripe);
     }
-    poly([pt(-.12, -th), pt(.12, -th), pt(.12, th), pt(-.12, th)], "#2C2F33");
+    poly([pt(0, -th / 2), pt(len, -th / 2), pt(len, th / 2), pt(0, th / 2)],
+      lg(pt(0, th / 2), pt(0, -th / 2), [[0, "rgba(255,255,255,.55)"], [.3, "rgba(255,255,255,.08)"], [.6, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,.42)"]]));
+    poly([pt(len - .04, -th * .6), pt(len + .02, -th * .6), pt(len + .02, th * .6), pt(len - .04, th * .6)], "#1E2023"); // rubber tip
+    poly([pt(-.12, -th), pt(.12, -th), pt(.12, th), pt(-.12, th)], lg(pt(0, th), pt(0, -th), prof("#2C2F33", "box")));
   } else if (type === "bollards") {
     const n = Math.max(2, Math.round(W / 1.4) + 1), r = .135, span = W - .5;
+    // an ellipse lying on the ground (or on top of a bollard), seen from a little above
+    const flat = (cx, y, rad) => {
+      const A = M(cx - rad, y), B = M(cx + rad, y);
+      return { x: (A[0] + B[0]) / 2, y: (A[1] + B[1]) / 2, rx: Math.hypot(B[0] - A[0], B[1] - A[1]) / 2, rot: Math.atan2(B[1] - A[1], B[0] - A[0]), A, B };
+    };
+    const ell = (e, fill, k = .24) => { ctx.beginPath(); ctx.ellipse(e.x, e.y, e.rx, e.rx * k, e.rot, 0, 6.283); ctx.fillStyle = fill; ctx.fill(); };
     for (let i = 0; i < n; i++) {
       const cx = .25 + span * (n === 1 ? .5 : i / (n - 1));
-      box(cx - r - .07, -.03, cx + r + .07, .01, "#5A5E63");
       const hgt = .95 * (1 - o * .985);
+      const base = flat(cx, 0, r + .075), hole = flat(cx, 0, r + .01);
+      ell(base, lg([cx - r - .075, 0], [cx + r + .075, 0], prof(GALV, "round"), true));
+      ell(hole, "#141517");
       if (hgt < .02) continue;
-      ctx.save(); ctx.filter = `blur(${Math.max(1.5, ppm * .03)}px)`; ctx.globalAlpha = .3; box(cx - r, -.06, cx + r + .08, 0, "#000"); ctx.restore();
-      box(cx - r, 0, cx + r, hgt, col);
-      box(cx - r, 0, cx - r * .45, hgt, shade(col, .25));
-      box(cx + r * .4, 0, cx + r, hgt, shade(col, -.3));
-      if (hgt > .25) { box(cx - r, hgt - .2, cx + r, hgt - .12, "#F2C230"); box(cx - r, hgt - .06, cx + r, hgt - .035, "#ff3b2f"); }
-      box(cx - r, hgt - .02, cx + r, hgt + .015, shade(col, .4));
+      out.save(); out.filter = `blur(${Math.max(2, ppm * .05)}px)`; out.globalAlpha = .3; out.fillStyle = "#000";
+      trace(out, [[cx - r, .0], [cx + r, 0], [cx + r + .3, -.22 * hgt / .95 - .02], [cx - r + .3, -.22 * hgt / .95 - .02]]); out.fill(); out.restore();
+      const top = flat(cx, hgt, r);
+      const body = (y0, y1, c) => {
+        const t0 = flat(cx, y1, r), b0 = flat(cx, y0, r);
+        ctx.beginPath(); ctx.moveTo(t0.A[0], t0.A[1]); ctx.lineTo(t0.B[0], t0.B[1]); ctx.lineTo(b0.B[0], b0.B[1]);
+        ctx.ellipse(b0.x, b0.y, b0.rx, b0.rx * .24, b0.rot, 0, Math.PI); ctx.closePath();
+        ctx.fillStyle = lg([cx - r, (y0 + y1) / 2], [cx + r, (y0 + y1) / 2], prof(c, "round"), true); ctx.fill();
+      };
+      body(0, hgt, col);
+      if (hgt > .25) { body(hgt - .2, hgt - .12, "#F2C230"); body(hgt - .075, hgt - .045, "#E8E8E4"); }
+      ell(top, lg([cx - r, hgt], [cx + r, hgt], [[0, shade(col, .1)], [.4, shade(col, .45)], [1, shade(col, -.1)]], true));
+      // LED ring round the cap
+      ctx.save(); ctx.beginPath(); ctx.ellipse(top.x, top.y, top.rx * .78, top.rx * .78 * .24, top.rot, 0, 6.283);
+      ctx.strokeStyle = "#FFC23A"; ctx.lineWidth = Math.max(1, top.rx * .1); ctx.shadowColor = "#FFB000"; ctx.shadowBlur = top.rx * .5; ctx.stroke(); ctx.restore();
     }
   }
-  ctx.restore();
+
+  // Light the gate like the photo: sun from the upper left, the photo's own colour cast and brightness, then grain.
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const xs = P.map((p) => p[0]), ys = P.map((p) => p[1]);
+  const m = out.getTransform().a || 1;
+  const x0 = Math.min(...xs) * m, x1 = Math.max(...xs) * m, y0 = Math.min(...ys) * m, y1 = Math.max(...ys) * m;
+  ctx.globalCompositeOperation = "source-atop";
+  const sun = ctx.createLinearGradient(x0, y0, x1, y1);
+  sun.addColorStop(0, "rgba(255,250,240,.12)"); sun.addColorStop(.5, "rgba(255,255,255,0)"); sun.addColorStop(1, "rgba(0,0,0,.18)");
+  ctx.fillStyle = sun; ctx.fillRect(0, 0, layer.width, layer.height);
+  if (light) {
+    ctx.fillStyle = `rgba(${light.r},${light.g},${light.b},.12)`; ctx.fillRect(0, 0, layer.width, layer.height);
+    if (light.lum < .5) { ctx.fillStyle = `rgba(0,0,0,${Math.min(.5, (.5 - light.lum) * 1.1)})`; ctx.fillRect(0, 0, layer.width, layer.height); }
+  }
+  ctx.globalAlpha = .06; ctx.fillStyle = grain(ctx); ctx.fillRect(0, 0, layer.width, layer.height);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+
+  out.save(); out.setTransform(1, 0, 0, 1, 0, 0);
+  out.filter = `blur(${Math.max(.3, m * .25)}px)`;    // soften the edges to match the camera
+  out.drawImage(layer, 0, 0); out.restore();
+}
+
+/* average colour and brightness of the photo around the opening, so the gate takes on the same light */
+let thumbOf = null, thumb = null;
+function sampleLight(P, w, h) {
+  if (thumbOf !== S.img) {
+    thumbOf = S.img; thumb = null;
+    const tw = 96, th = Math.max(1, Math.round(96 * S.ih / S.iw));
+    const c = document.createElement("canvas"); c.width = tw; c.height = th;
+    const g = c.getContext("2d"); g.drawImage(S.img, 0, 0, tw, th);
+    try { thumb = { d: g.getImageData(0, 0, tw, th).data, tw, th }; } catch (e) { thumb = null; }
+  }
+  if (!thumb) return null;
+  const xs = P.map((p) => p[0] / w), ys = P.map((p) => p[1] / h);
+  const pad = .3 * (Math.max(...xs) - Math.min(...xs));
+  const X0 = Math.max(0, Math.floor((Math.min(...xs) - pad) * thumb.tw)), X1 = Math.min(thumb.tw, Math.ceil((Math.max(...xs) + pad) * thumb.tw));
+  const Y0 = Math.max(0, Math.floor((Math.min(...ys) - pad) * thumb.th)), Y1 = Math.min(thumb.th, Math.ceil((Math.max(...ys) + pad) * thumb.th));
+  let r = 0, g = 0, b = 0, n = 0;
+  for (let y = Y0; y < Y1; y++) for (let x = X0; x < X1; x++) { const i = (y * thumb.tw + x) * 4; r += thumb.d[i]; g += thumb.d[i + 1]; b += thumb.d[i + 2]; n++; }
+  if (!n) return null;
+  r /= n; g /= n; b /= n;
+  return { r: Math.round(r), g: Math.round(g), b: Math.round(b), lum: (.2126 * r + .7152 * g + .0722 * b) / 255 };
 }
 
 /* ---------- Sample scene (drawn, so it runs offline and stays private) ---------- */
@@ -667,7 +798,7 @@ function render(ctx, w, h, { gate = true, handles = false, dets = false } = {}) 
     });
     ctx.restore();
   }
-  if (gate && S.type && !S.before) drawGate(ctx, P, gateOpts());
+  if (gate && S.type && !S.before) drawGate(ctx, P, { ...gateOpts(), light: sampleLight(P, w, h) });
   if (handles) {
     ctx.save();
     ctx.fillStyle = "rgba(214,29,9,.12)"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.setLineDash([7, 5]);
