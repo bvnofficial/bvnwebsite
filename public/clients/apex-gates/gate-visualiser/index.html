@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <style>
 :root{
   --red:#D61D09; --red-deep:#B52111; --char:#212529; --graph:#3F3E41; --grey:#F2F2F2;
@@ -109,6 +110,27 @@ h3{font-size:20px}
 .sw{width:42px;height:42px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line);cursor:pointer;transition:transform .15s,box-shadow .15s}
 .sw.on{box-shadow:0 0 0 2.5px var(--char);transform:scale(1.06)}
 .swname{font-size:13px;color:var(--muted);margin-top:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+.card{position:relative;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:0;overflow:hidden;cursor:pointer;text-align:left;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:#c6c9ce}
+.card .ph{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:linear-gradient(110deg,#eceef1 30%,#f6f7f8 50%,#eceef1 70%);background-size:200% 100%;animation:shim 1.4s linear infinite}
+.card img.ph{animation:none}
+@keyframes shim{to{background-position:-200% 0}}
+.card>span{display:block;padding:8px 10px;font-weight:600;font-size:13.5px;line-height:1.25}
+.card.on{border-color:var(--char);box-shadow:0 0 0 1.5px var(--char)}
+.card .badge{position:absolute;top:6px;left:6px;background:var(--red);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.4px;padding:3px 6px;border-radius:6px;text-transform:uppercase}
+.tog{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px}
+.tog small{display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:2px}
+.tog i{flex:none;width:22px;height:22px;border-radius:6px;border:1.5px solid #c6c9ce;display:grid;place-items:center}
+.tog.on{border-color:var(--char)}
+.tog.on i{background:var(--char);border-color:var(--char)}
+.tog.on i::after{content:"";width:10px;height:6px;border:2.5px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.need{border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;margin-top:4px}
+.need.ok{background:#EAF6EF;color:#14532d}
+.need.bad{background:#FFF1EF;color:#7f1d1d}
+.pill.on{background:#fff;color:var(--char)}
+.linkrow{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.linkrow .note{margin:0}
 
 /* Recommendation */
 .rec-card{background:var(--char);color:#fff;border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
@@ -161,7 +183,7 @@ h3{font-size:20px}
     <div>
       <span class="kicker">Free gate visualiser</span>
       <h1>See your new gate <em>before we build it</em></h1>
-      <p class="lead">Take a photo of your driveway or site entrance. We work out which automatic gate suits the space, draw it into your photo, and fill in your quote request for you.</p>
+      <p class="lead">Take a photo of your driveway or site entrance. We work out which automatic gate suits the space, build it in 3D right in your photo, and fill in your quote request for you.</p>
       <div class="actions">
         <label class="btn primary" for="cam">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
@@ -229,7 +251,8 @@ h3{font-size:20px}
         <div class="field">
           <span class="lbl">Clear space beside the opening <span class="hint">along the fence or wall</span></span>
           <div class="chips" data-key="space">
-            <button class="chip" data-v="full">As long as the opening</button>
+            <button class="chip" data-v="long">1.5 times the opening or more</button>
+            <button class="chip" data-v="full">About as long as the opening</button>
             <button class="chip" data-v="half">About half</button>
             <button class="chip" data-v="none">Very little</button>
           </div>
@@ -264,25 +287,38 @@ h3{font-size:20px}
       <div class="rec-card" id="rec"></div>
       <div class="panel" style="margin-top:14px">
         <div class="field">
-          <span class="lbl">Gate type</span>
-          <div class="chips" data-key="type" id="typeChips"></div>
+          <span class="lbl">1. Gate type</span>
+          <div class="cards" data-key="type" id="typeCards"></div>
+          <div class="need" id="need" hidden></div>
         </div>
         <div class="field" id="styleField">
-          <span class="lbl">Style</span>
-          <div class="chips" data-key="style">
-            <button class="chip" data-v="slat">Horizontal slat</button>
-            <button class="chip" data-v="picket">Vertical picket</button>
-            <button class="chip" data-v="palisade">Security palisade</button>
-            <button class="chip" data-v="mesh">Welded mesh</button>
-          </div>
+          <span class="lbl">2. Style</span>
+          <div class="cards" data-key="style" id="styleCards"></div>
         </div>
-        <div class="field" style="margin-bottom:6px">
-          <span class="lbl">Colour</span>
+        <div class="field">
+          <span class="lbl"><span id="colNo">3</span>. Colour</span>
           <div class="swatches" id="swatches"></div>
           <div class="swname" id="swname"></div>
         </div>
+        <div class="field" id="extrasField">
+          <span class="lbl">4. Extras</span>
+          <button class="tog" data-x="safety"><i></i><span>Safety beams and warning light<small>Stops the gate if anything is in the way, and flashes while it moves</small></span></button>
+          <button class="tog" data-x="keypad"><i></i><span>Keypad and intercom post<small>At driver height, so visitors can call you from the car</small></span></button>
+          <button class="tog" data-x="lights"><i></i><span>Post lights<small>Lights on top of the gate posts. Tap "Lights" on the photo to see them at night</small></span></button>
+        </div>
+        <div class="field" id="wallField" style="margin-bottom:4px">
+          <span class="lbl">Beside the opening <span class="hint">so the gate hides behind it as it opens</span></span>
+          <div class="chips" data-key="wall">
+            <button class="chip" data-v="solid">Solid wall or fence</button>
+            <button class="chip" data-v="open">Open, or see through</button>
+          </div>
+        </div>
       </div>
       <button class="btn primary full" id="toQuote" style="margin-top:14px">Get a quote for this gate</button>
+      <div class="linkrow">
+        <button class="btn ghost" id="share" style="padding:11px 16px;font-size:14px">Copy a link to this design</button>
+        <p class="note" id="shareNote">Opens on the sample site. Your photo stays private.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -335,7 +371,7 @@ h3{font-size:20px}
 
 <footer class="foot">
   <span>Apex Gates &middot; Unit 4, 30 Enterprise Crescent, Malaga WA 6090 &middot; WA owned and operated since 2005</span>
-  <span>Gates drawn into photos are an impression only. Sizes are confirmed on site.</span>
+  <span>Gates shown in photos are an impression only. Sizes are confirmed on site.</span>
 </footer>
 
 <script>
@@ -349,6 +385,8 @@ const S = {
   site: "home", width: 4.0, widthManual: false, height: 1.8,
   space: "full", dir: 1, slope: "flat",
   type: null, recType: null, style: "slat", colour: 0,
+  extras: { safety: true, keypad: false, lights: false }, wall: "solid",
+  night: false, view3d: false, zone: false, yaw: -.6, pitch: .28,
   t: 0, target: 0, editing: true, before: false,
   dets: [], scanned: false, isSample: false,
 };
@@ -366,9 +404,10 @@ const TYPES = {
   boom:       { name: "Boom gate", short: "Boom gate", panel: false },
   bollards:   { name: "Rising bollards", short: "Bollards", panel: false },
 };
-const STYLE_NAMES = { slat: "Horizontal slat", picket: "Vertical picket", palisade: "Security palisade", mesh: "Welded mesh" };
+const STYLE_NAMES = { slat: "Horizontal slat", picket: "Vertical picket", palisade: "Security palisade", mesh: "Welded mesh", solid: "Solid sheet" };
+const G3 = () => window.Gate3D;
 const SITE_NAMES = { home: "Home", commercial: "Commercial", industrial: "Industrial or mining", carpark: "Car park" };
-const SPACE_NAMES = { full: "As long as the opening", half: "About half the opening", none: "Very little" };
+const SPACE_NAMES = { long: "One and a half times the opening or more", full: "About as long as the opening", half: "About half the opening", none: "Very little" };
 const SLOPE_NAMES = { flat: "Level", gentle: "Gentle slope", steep: "Steep slope" };
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -381,16 +420,16 @@ function recommend() {
     type: "boom", alts: ["bollards", "sliding"],
     why: "Car parks open and close all day for one vehicle at a time. A boom gate lifts in a few seconds and is built for hundreds of cycles a day.",
   };
-  if (S.space === "full") {
-    if ((biz && wide) || S.slope === "steep" || S.site === "industrial") return {
-      type: "cantilever", alts: ["sliding", "telescopic", "bollards"],
-      why: "There's a clear run beside the opening, and " + (S.slope === "steep" ? "the ground slopes. A cantilever gate hangs from rollers beside the opening, so nothing runs across the driveway and the slope matters far less."
-        : "this is a wide working entry. A cantilever gate hangs from rollers beside the opening, so trucks and forklifts cross with no track on the ground."),
-    };
+  if (S.space === "long" && ((biz && wide) || S.slope === "steep" || S.site === "industrial")) return {
+    type: "cantilever", alts: ["sliding", "telescopic", "bollards"],
+    why: "There's a long clear run beside the opening, and " + (S.slope === "steep" ? "the ground slopes. A cantilever gate hangs from rollers beside the opening, so nothing runs across the driveway and the slope matters far less."
+      : "this is a wide working entry. A cantilever gate hangs from rollers beside the opening, so trucks and forklifts cross with no track on the ground."),
+  };
+  if (S.space === "full" || S.space === "long") {
     return {
       type: "sliding", alts: ["cantilever", "telescopic", "swing"],
       why: "There's a clear wall beside the opening as long as the opening itself, so the gate can slide straight back. A sliding gate needs no room to swing into your property and copes well with wind." +
-        (S.slope === "gentle" ? " On a gentle slope we level the track first." : ""),
+        (S.slope === "gentle" ? " On a gentle slope we level the track first." : S.slope === "steep" ? " On a steep slope we build a level track, or a cantilever gate works if there's one and a half times the opening to run back into." : ""),
     };
   }
   if (S.space === "half") return {
@@ -520,6 +559,8 @@ function drawGate(out, P, opts) {
         // bolt heads on the rails
         [.33, Lh - .39].forEach((r) => poly(quad(s + .026, r - .01, s + .039, r + .01), shade(colour, .35)));
       }
+    } else if (style === "solid") {
+      qh(th, th, Lw - th, Lh - th);
     } else { // mesh
       ctx.save(); ctx.globalAlpha = .16; poly(quad(th, th, Lw - th, Lh - th), colour); ctx.restore();
       for (let s = th + .1; s < Lw - th; s += .1) qv(s, th, s + .012, Lh - th, "round");
@@ -780,14 +821,22 @@ function sizeStage() {
 }
 const toPx = (p, w, h) => [p[0] * w, p[1] * h];
 
-function gateOpts() {
-  return { W: S.width, Hm: S.type === "boom" || S.type === "bollards" ? Math.max(S.height, 1.2) : S.height,
-           type: S.type, style: S.style, col: COLOURS[S.colour][1], t: S.t, dir: S.dir };
+function gateOpts(over = {}) {
+  const o = { W: S.width, Hm: S.type === "boom" || S.type === "bollards" ? Math.max(S.height, 1.2) : S.height,
+    type: S.type, style: S.style, col: COLOURS[S.colour][1], colourName: COLOURS[S.colour][0], t: S.t, dir: S.dir,
+    extras: { ...S.extras }, wall: S.wall, space: S.space, ...over };
+  o.styleName = STYLE_NAMES[o.style];
+  return o;
 }
 
 function render(ctx, w, h, { gate = true, handles = false, dets = false } = {}) {
   ctx.clearRect(0, 0, w, h);
+  if (gate && S.type && S.view3d && G3()) {
+    G3().drawOrbit(ctx, w, h, gateOpts(), S.t, S.yaw, S.pitch, { photo: S.img, night: S.night, zone: S.zone });
+    return;
+  }
   ctx.drawImage(S.img, 0, 0, w, h);
+  if (gate && S.type && S.night && !S.before) { ctx.fillStyle = "rgba(6,12,28,.68)"; ctx.fillRect(0, 0, w, h); }
   const P = S.pts.map((p) => toPx(p, w, h));
   if (dets && S.dets.length) {
     ctx.save(); ctx.lineWidth = 2; ctx.font = "600 12px Inter, sans-serif";
@@ -800,7 +849,11 @@ function render(ctx, w, h, { gate = true, handles = false, dets = false } = {}) 
     });
     ctx.restore();
   }
-  if (gate && S.type && !S.before) drawGate(ctx, P, { ...gateOpts(), light: sampleLight(P, w, h) });
+  if (gate && S.type && !S.before) {
+    const light = sampleLight(P, w, h);
+    const done = G3() && G3().draw(ctx, w, h, P, gateOpts(), S.t, { photo: S.img, light, night: S.night, zone: S.zone });
+    if (!done) drawGate(ctx, P, { ...gateOpts(), light });
+  }
   if (handles) {
     ctx.save();
     ctx.fillStyle = "rgba(214,29,9,.12)"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.setLineDash([7, 5]);
@@ -828,19 +881,26 @@ function draw() {
 /* dragging the corners */
 let drag = -1;
 function evPt(e) { const r = stage.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; }
+let orbit = null;   // dragging in 3D view turns the gate
 stage.addEventListener("pointerdown", (e) => {
+  if (!S.editing && S.view3d) { orbit = { x: e.clientX, y: e.clientY, yaw: S.yaw, pitch: S.pitch }; stage.setPointerCapture(e.pointerId); e.preventDefault(); return; }
   if (!S.editing) return;
   const p = evPt(e); let best = -1, bd = 1e9;
   S.pts.forEach((q, i) => { const d = Math.hypot((q[0] - p[0]) * cw, (q[1] - p[1]) * ch); if (d < bd) { bd = d; best = i; } });
   if (bd < 44) { drag = best; stage.setPointerCapture(e.pointerId); e.preventDefault(); }
 });
 stage.addEventListener("pointermove", (e) => {
+  if (orbit) {
+    S.yaw = orbit.yaw - (e.clientX - orbit.x) * .008;
+    S.pitch = Math.min(1.2, Math.max(.05, orbit.pitch + (e.clientY - orbit.y) * .006));
+    draw(); return;
+  }
   if (drag < 0) return;
   const p = evPt(e); S.pts[drag] = [Math.min(1, Math.max(0, p[0])), Math.min(1, Math.max(0, p[1]))];
   if (!S.widthManual) estimateWidth();
   draw();
 });
-["pointerup", "pointercancel"].forEach((ev) => stage.addEventListener(ev, () => { drag = -1; }));
+["pointerup", "pointercancel"].forEach((ev) => stage.addEventListener(ev, () => { drag = -1; orbit = null; }));
 window.addEventListener("resize", () => { sizeStage(); });
 
 /* ---------- Photo scan (runs on the phone with a free object detector) ---------- */
@@ -927,15 +987,28 @@ function syncChips() {
     const k = g.dataset.key;
     $$(".chip", g).forEach((c) => c.classList.toggle("on", String(S[k]) === c.dataset.v));
   });
+  $$(".cards[data-key]").forEach((g) => {
+    const k = g.dataset.key;
+    $$(".card", g).forEach((c) => c.classList.toggle("on", String(S[k]) === c.dataset.v));
+  });
+  $$(".tog").forEach((t) => t.classList.toggle("on", !!S.extras[t.dataset.x]));
   $("#dirField").style.display = S.space === "none" && S.width > 3.5 ? "none" : "";
 }
 document.addEventListener("click", (e) => {
-  const chip = e.target.closest(".chip"); if (!chip) return;
+  const tog = e.target.closest(".tog");
+  if (tog) {
+    const x = tog.dataset.x; S.extras[x] = !S.extras[x];
+    if (x === "lights" && !S.extras.lights) S.night = false;
+    syncChips(); updateResultUI(); draw(); return;
+  }
+  const chip = e.target.closest(".chip, .card"); if (!chip) return;
   const k = chip.parentElement.dataset.key, v = chip.dataset.v;
+  if (!k) return;
   S[k] = k === "dir" ? Number(v) : v;
   if (k === "site") { S.siteTouched = true; $("#siteAuto").innerHTML = ""; }
   if (k === "type") { S.t = 0; S.target = 0; playOpen(900); }
   syncChips(); if (k === "type" || k === "style") updateResultUI(); draw();
+  if (k === "style") refreshThumbs();
 });
 $("#width").addEventListener("input", (e) => { const v = parseFloat(e.target.value); if (v > 0) { S.width = v; S.widthManual = true; $("#widthAuto").innerHTML = ""; } });
 $("#height").addEventListener("change", (e) => { S.height = parseFloat(e.target.value); draw(); });
@@ -946,36 +1019,99 @@ function buildSwatches() {
 }
 $("#swatches").addEventListener("click", (e) => {
   const b = e.target.closest(".sw"); if (!b) return;
-  S.colour = Number(b.dataset.i); buildSwatches(); draw();
+  S.colour = Number(b.dataset.i); buildSwatches(); draw(); refreshThumbs();
 });
 
 /* ---------- Result ---------- */
 let rec = null;
-$("#toResult").addEventListener("click", () => {
-  rec = recommend(); S.recType = rec.type; S.type = rec.type; S.editing = false; S.t = 0; S.target = 0;
+function showResult(type) {
+  rec = recommend(); S.recType = rec.type; S.type = type || rec.type; S.editing = false; S.t = 0; S.target = 0;
+  S.view3d = false; S.night = false;
   go("s-result");
   $("#stageSlot").appendChild(stageWrapForResult());
-  updateResultUI(); buildSwatches();
-  setTimeout(() => { sizeStage(); setTimeout(() => playOpen(), 700); }, 0);
-});
+  buildCards(); updateResultUI(); buildSwatches(); syncChips();
+  setTimeout(() => { sizeStage(); setTimeout(() => playOpen(), 700); refreshThumbs(); }, 0);
+}
+$("#toResult").addEventListener("click", () => showResult());
+
+const PANEL = (k) => TYPES[k].panel;
+function buildCards() {
+  const order = [S.recType, ...rec.alts, ...Object.keys(TYPES).filter((k) => k !== S.recType && !rec.alts.includes(k))];
+  $("#typeCards").innerHTML = order.map((k) => `<button class="card" data-v="${k}"><img class="ph" alt="" data-thumb="type:${k}"><span>${TYPES[k].short}</span>${k === S.recType ? '<em class="badge">Best fit</em>' : ""}</button>`).join("");
+  $("#styleCards").innerHTML = Object.keys(STYLE_NAMES).map((k) => `<button class="card" data-v="${k}"><img class="ph" alt="" data-thumb="style:${k}"><span>${STYLE_NAMES[k]}</span></button>`).join("");
+  $$(".card img").forEach((i) => { i.removeAttribute("src"); });
+}
+
+// small 3D pictures of each option, made on the phone
+const thumbCache = new Map();
+let thumbJob = 0;
+function refreshThumbs() {
+  if (!G3() || !rec) return;
+  const job = ++thumbJob;
+  const imgs = $$(".card img[data-thumb]");
+  const baseType = S.type && PANEL(S.type) ? S.type : "sliding";
+  const next = (i) => {
+    if (job !== thumbJob || i >= imgs.length) { if (i >= imgs.length) draw(); return; }
+    const [kind, k] = imgs[i].dataset.thumb.split(":");
+    const cfg = kind === "type" ? gateOpts({ type: k, W: 4.5, Hm: k === "boom" || k === "bollards" ? 1.2 : 1.8, dir: 1 })
+      : gateOpts({ type: baseType, style: k, W: 4.5, Hm: 1.8, dir: 1 });
+    const key = JSON.stringify([cfg.type, cfg.style, cfg.col]);
+    let url = thumbCache.get(key);
+    if (!url) { url = G3().thumb(cfg); thumbCache.set(key, url); }
+    imgs[i].src = url;
+    setTimeout(() => next(i + 1), 0);
+  };
+  next(0);
+}
+window.addEventListener("gate3d-ready", () => { draw(); refreshThumbs(); });
 
 let resultWrap = null;
+const PILL_ICONS = {
+  open: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 5l11 7-11 7z"/></svg>',
+  before: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  view: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>',
+  zone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17h18M3 17l3-6h12l3 6"/><path d="M8 11V7m8 4V7"/></svg>',
+  lights: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/></svg>',
+  adjust: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>',
+};
 function stageWrapForResult() {
   if (!resultWrap) {
     resultWrap = document.createElement("div"); resultWrap.className = "stage-wrap";
     resultWrap.innerHTML = `<div class="stage-bar">
-        <button class="pill red" id="openBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 5l11 7-11 7z"/></svg><span>Open gate</span></button>
-        <button class="pill" id="beforeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Hold to see before</button>
-        <button class="pill" id="adjustBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>Adjust corners</button>
+        <button class="pill red" id="openBtn">${PILL_ICONS.open}<span>Open gate</span></button>
+        <button class="pill" id="beforeBtn">${PILL_ICONS.before}Hold to see before</button>
+        <button class="pill" id="viewBtn">${PILL_ICONS.view}<span>Turn it around</span></button>
+        <button class="pill" id="zoneBtn">${PILL_ICONS.zone}Space needed</button>
+        <button class="pill" id="lightBtn">${PILL_ICONS.lights}Lights</button>
+        <button class="pill" id="adjustBtn">${PILL_ICONS.adjust}Adjust corners</button>
       </div>`;
     resultWrap.querySelector("#openBtn").addEventListener("click", () => playOpen());
     const bb = resultWrap.querySelector("#beforeBtn");
     const on = (e) => { e.preventDefault(); S.before = true; draw(); }, off = () => { S.before = false; draw(); };
     bb.addEventListener("pointerdown", on); ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => bb.addEventListener(ev, off));
-    resultWrap.querySelector("#adjustBtn").addEventListener("click", () => { go("s-mark"); $("#wrap").prepend(stage); S.editing = true; setTimeout(sizeStage, 0); });
+    resultWrap.querySelector("#viewBtn").addEventListener("click", () => { S.view3d = !S.view3d; stage.style.cursor = S.view3d ? "grab" : ""; updateResultUI(); draw(); });
+    resultWrap.querySelector("#zoneBtn").addEventListener("click", () => { S.zone = !S.zone; updateResultUI(); draw(); });
+    resultWrap.querySelector("#lightBtn").addEventListener("click", () => { S.night = !S.night; updateResultUI(); draw(); });
+    resultWrap.querySelector("#adjustBtn").addEventListener("click", () => { S.view3d = false; go("s-mark"); $("#wrap").prepend(stage); S.editing = true; setTimeout(sizeStage, 0); });
   }
   resultWrap.prepend(stage);
   return resultWrap;
+}
+
+// how much room the chosen gate needs, and whether the customer said they have it
+function spaceNeed() {
+  const W = S.width, side = S.dir === -1 ? "left" : "right";
+  const room = { long: W * 1.6, full: W * 1.05, half: W * .55 }[S.space] || .6;
+  const swingL = W > 3.5 ? W / 2 : W;
+  const need = { sliding: W + .55, cantilever: W * 1.43 + .25, telescopic: W * .56 + .25 }[S.type];
+  if (need) {
+    const ok = need <= room + .35;
+    return { ok, text: `Needs about <b>${need.toFixed(1)} m</b> of clear space along the wall on the ${side} for the gate to slide back.` +
+      (ok ? "" : ` You told us the clear space is ${SPACE_NAMES[S.space].toLowerCase()}, so it may not fit. ${S.type === "telescopic" ? "Swing or bi-fold gates" : "A telescopic gate"} needs less.`) };
+  }
+  if (S.type === "swing") return { ok: true, text: `Needs about <b>${swingL.toFixed(1)} m</b> clear inside the property for the gate${W > 3.5 ? "s" : ""} to swing open.` };
+  if (S.type === "bifold") return { ok: true, text: `Needs about <b>${(W / 4).toFixed(1)} m</b> clear inside the property as the gates fold.` };
+  return null;
 }
 
 function updateResultUI() {
@@ -987,10 +1123,20 @@ function updateResultUI() {
     <h2>${T.name}</h2><p>${why}${extra}</p>
     <div class="facts">${facts.map((f) => `<span>${f}</span>`).join("")}</div>
     <div class="confirm">Based on your photo and answers. Apex confirms the right gate on a free site measure.</div>`;
-  const order = [S.recType, ...rec.alts, ...Object.keys(TYPES).filter((k) => k !== S.recType && !rec.alts.includes(k))];
-  $("#typeChips").innerHTML = order.map((k) => `<button class="chip${k === S.type ? " on" : ""}${k === S.recType ? " rec" : ""}" data-v="${k}">${TYPES[k].short}</button>`).join("");
   $("#styleField").style.display = T.panel ? "" : "none";
+  $("#extrasField").style.display = T.panel ? "" : "none";
+  $("#wallField").style.display = ["sliding", "cantilever", "telescopic"].includes(S.type) ? "" : "none";
+  $("#colNo").textContent = T.panel ? "3" : "2";
+  const n = spaceNeed(), box = $("#need");
+  box.hidden = !n; if (n) { box.className = "need " + (n.ok ? "ok" : "bad"); box.innerHTML = n.text; }
+  const pill = (id, show, on) => { const b = $("#" + id); if (!b) return; b.style.display = show ? "" : "none"; b.classList.toggle("on", !!on); };
+  pill("zoneBtn", !!n && !!G3(), S.zone);
+  pill("lightBtn", T.panel && S.extras.lights && !!G3(), S.night);
+  pill("viewBtn", !!G3(), S.view3d);
+  const vb = $("#viewBtn span"); if (vb) vb.textContent = S.view3d ? "Back to my photo" : "Turn it around";
+  const bb = $("#beforeBtn"); if (bb) bb.style.display = S.view3d ? "none" : "";
   $("#openBtn span") && ($("#openBtn span").textContent = S.target ? "Close gate" : "Open gate");
+  syncChips();
 }
 function altWhy(type) {
   return {
@@ -1002,6 +1148,25 @@ function altWhy(type) {
     boom: "A lifting arm for car parks and traffic control. Fast, and built for constant use.",
     bollards: "Rise out of the ground to stop vehicles, and sink flush to let them through. For high security entries.",
   }[type];
+}
+
+/* share a design: everything except the photo goes in the link */
+$("#share").addEventListener("click", async () => {
+  const d = { t: S.type, s: S.style, c: S.colour, w: S.width, h: S.height, d: S.dir, x: Object.keys(S.extras).filter((k) => S.extras[k]).join(","), l: S.wall, si: S.site, sp: S.space, sl: S.slope };
+  const url = location.origin + location.pathname + "#d=" + encodeURIComponent(btoa(JSON.stringify(d)));
+  try { await navigator.clipboard.writeText(url); $("#shareNote").textContent = "Link copied. It opens this gate on the sample site."; }
+  catch (e) { prompt("Copy this link", url); }
+});
+function openShared() {
+  const m = location.hash.match(/^#d=(.+)$/); if (!m) return;
+  let d; try { d = JSON.parse(atob(decodeURIComponent(m[1]))); } catch (e) { return; }
+  if (!TYPES[d.t]) return;
+  const c = sampleScene(); useImage(c, c.width, c.height, true);
+  Object.assign(S, { style: STYLE_NAMES[d.s] ? d.s : "slat", colour: COLOURS[d.c] ? d.c : 0, width: +d.w || 5, height: +d.h || 1.8, dir: d.d === -1 ? -1 : 1,
+    wall: d.l === "open" ? "open" : "solid", site: SITE_NAMES[d.si] ? d.si : "home", space: SPACE_NAMES[d.sp] ? d.sp : "full", slope: SLOPE_NAMES[d.sl] ? d.sl : "flat",
+    extras: { safety: /safety/.test(d.x || ""), keypad: /keypad/.test(d.x || ""), lights: /lights/.test(d.x || "") }, widthManual: true });
+  $("#width").value = S.width.toFixed(1); $("#height").value = String(S.height);
+  setTimeout(() => showResult(d.t), 50);
 }
 
 /* animation */
@@ -1023,19 +1188,26 @@ function playOpen(dur = 2600) {
 /* ---------- Quote ---------- */
 $("#toQuote").addEventListener("click", () => {
   const c = document.createElement("canvas"); c.width = S.iw; c.height = S.ih;
-  const keep = S.t; S.t = 0;
+  const keep = { t: S.t, view3d: S.view3d, night: S.night, zone: S.zone };
+  Object.assign(S, { t: 0, view3d: false, night: false, zone: false });
   render(c.getContext("2d"), S.iw, S.ih, { gate: true });
-  S.t = keep;
+  Object.assign(S, keep);
   $("#snap").src = c.toDataURL("image/jpeg", .85);
   const T = TYPES[S.type], col = COLOURS[S.colour][0];
+  const info = G3() && G3().info();
+  const parts = info ? info.parts.filter(([k]) => k !== "Colour" && k !== "Infill") : [];
+  const n = spaceNeed();
   const rows = [
     ["Gate", T.name], ...(T.panel ? [["Style", STYLE_NAMES[S.style]]] : []), ["Colour", col],
     ["Opening width", `${S.width.toFixed(1)} m${S.widthManual || S.isSample ? "" : " (estimate)"}`], ["Gate height", `${S.height.toFixed(1)} m`],
+    ...parts,
+    ...(n ? [["Space needed", n.text.replace(/<[^>]+>/g, "")]] : []),
     ["Site", SITE_NAMES[S.site]], ["Space beside opening", SPACE_NAMES[S.space]], ["Ground", SLOPE_NAMES[S.slope]],
   ];
   $("#summary").innerHTML = rows.map(([k, v]) => `<li><span>${k}</span><b>${v}</b></li>`).join("");
   $("#qGate").value = `${T.name}${T.panel ? ", " + STYLE_NAMES[S.style].toLowerCase() : ""}, ${col.toLowerCase()}, ${S.width.toFixed(1)} m x ${S.height.toFixed(1)} m`;
-  $("#qNotes").value = `Sent from the Gate Visualiser. ${SITE_NAMES[S.site]} site, ${SLOPE_NAMES[S.slope].toLowerCase()} ground, ${SPACE_NAMES[S.space].toLowerCase()} of clear space beside the opening.${S.type === S.recType ? " This is the gate the visualiser recommended." : ""}`;
+  const ex = T.panel ? Object.keys(S.extras).filter((k) => S.extras[k]).map((k) => ({ safety: "safety beams and warning light", keypad: "keypad and intercom post", lights: "post lights" })[k]) : [];
+  $("#qNotes").value = `Sent from the Gate Visualiser. ${SITE_NAMES[S.site]} site, ${SLOPE_NAMES[S.slope].toLowerCase()} ground. Clear space beside the opening: ${SPACE_NAMES[S.space].toLowerCase()}.${ex.length ? " Extras: " + ex.join(", ") + "." : ""}${S.type === S.recType ? " This is the gate the visualiser recommended." : ""}`;
   $("#bizField").style.display = S.site === "home" ? "none" : "";
   go("s-quote");
 });
@@ -1063,24 +1235,29 @@ document.addEventListener("click", (e) => { const b = e.target.closest("[data-go
 /* ---------- Hero demo: sample scene with a sliding gate opening and closing ---------- */
 (function heroDemo() {
   const cv = $("#demo"), g = cv.getContext("2d"), scene = sampleScene();
-  const types = ["sliding", "telescopic", "swing", "bollards"], styles = ["slat", "picket", "slat", "slat"];
+  const types = ["sliding", "telescopic", "swing", "bollards"], styles = ["slat", "picket", "solid", "slat"];
   let i = 0, t0 = performance.now();
   function frame(now) {
+    requestAnimationFrame(frame);
+    if (!$("#s-start").classList.contains("active")) return;   // only draw while it can be seen
     const el = (now - t0) / 1000, cycle = 5.2;
     if (el > cycle) { t0 = now; i = (i + 1) % types.length; }
     const ph = ((now - t0) / 1000) / cycle;
     const t = ph < .15 ? 0 : ph < .45 ? (ph - .15) / .3 : ph < .65 ? 1 : ph < .95 ? 1 - (ph - .65) / .3 : 0;
     g.drawImage(scene, 0, 0, cv.width, cv.height);
     const P = SAMPLE_PTS.map((p) => [p[0] * cv.width, p[1] * cv.height]);
-    drawGate(g, P, { W: 5, Hm: 1.8, type: types[i], style: styles[i], col: COLOURS[i % 2 ? 2 : 0][1], t, dir: 1 });
+    const opts = { W: 5, Hm: types[i] === "bollards" ? 1.8 : 1.8, type: types[i], style: styles[i], col: COLOURS[i % 2 ? 2 : 0][1], colourName: "", styleName: "", t, dir: 1,
+      extras: { safety: true, keypad: false, lights: false }, wall: "solid", space: "full" };
+    if (!(G3() && G3().draw(g, cv.width, cv.height, P, opts, t, { photo: scene }))) drawGate(g, P, opts);
     g.fillStyle = "rgba(33,37,41,.85)"; g.fillRect(14, cv.height - 44, 200, 30);
     g.fillStyle = "#fff"; g.font = "600 14px Inter, sans-serif"; g.fillText(TYPES[types[i]].name, 26, cv.height - 24);
-    requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 })();
 
+openShared();
 })();
 </script>
+<script type="module" src="gate3d.js"></script>
 </body>
 </html>
