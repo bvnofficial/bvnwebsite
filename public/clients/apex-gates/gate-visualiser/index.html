@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gate Visualiser | Apex Gates</title>
+<meta name="description" content="Take a photo of your driveway or site entrance and see which automatic gate suits it, drawn straight into your photo.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#212529">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D61D09; --red-deep:#B52111; --char:#212529; --graph:#3F3E41; --grey:#F2F2F2;
+  --line:#E2E4E8; --muted:#6C727A; --ok:#1F9D55; --radius:14px;
+  --head:'Barlow Condensed',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--char);font-family:var(--body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+
+/* Header */
+.top{position:sticky;top:0;z-index:20;background:var(--char);color:#fff;border-bottom:3px solid var(--red)}
+.top .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.top img{height:34px;width:auto;background:#fff;border-radius:6px;padding:3px 6px}
+.top .name{font-family:var(--head);font-size:22px;letter-spacing:.5px;text-transform:uppercase;line-height:1}
+.top .name small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.3px;text-transform:none;color:#B9BEC5;margin-top:3px}
+.top .call{margin-left:auto;background:var(--red);color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:9px 14px;border-radius:999px;white-space:nowrap}
+.top .call:hover{background:var(--red-deep)}
+
+/* Steps bar */
+.steps{max-width:1180px;margin:0 auto;padding:14px 16px 0;display:flex;gap:6px}
+.steps span{flex:1;height:5px;border-radius:5px;background:var(--line);transition:background .4s}
+.steps span.on{background:var(--red)}
+
+main{max-width:1180px;margin:0 auto;padding:12px 16px 48px}
+.screen{display:none;animation:fade .45s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+h1,h2,h3{font-family:var(--head);text-transform:uppercase;letter-spacing:.4px;margin:0;line-height:1.02}
+h1{font-size:clamp(38px,7vw,64px)}
+h2{font-size:clamp(28px,4.4vw,40px)}
+h3{font-size:20px}
+.lead{font-size:17px;line-height:1.55;color:#3a3f45;max-width:640px}
+.kicker{display:inline-block;font-weight:700;font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+
+/* Start */
+.hero{display:grid;gap:28px;align-items:center;padding:18px 0 8px}
+@media(min-width:900px){.hero{grid-template-columns:1.05fr .95fr;padding-top:36px}}
+.hero h1 em{font-style:normal;color:var(--red)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 14px}
+.btn{appearance:none;border:0;cursor:pointer;border-radius:12px;padding:15px 20px;font-weight:700;font-size:16px;display:inline-flex;align-items:center;gap:10px;transition:transform .15s,background .2s,box-shadow .2s;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--red);color:#fff;box-shadow:0 8px 22px rgba(214,29,9,.28)}
+.btn.primary:hover{background:var(--red-deep)}
+.btn.dark{background:var(--char);color:#fff}
+.btn.ghost{background:var(--grey);color:var(--char)}
+.btn.ghost:hover{background:#e6e7e9}
+.btn.full{width:100%;justify-content:center}
+.btn svg{width:20px;height:20px;flex:none}
+.how{display:grid;gap:10px;margin-top:20px;padding:0;list-style:none}
+.how li{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.45;color:#3a3f45}
+.how b{flex:none;width:28px;height:28px;border-radius:50%;background:var(--char);color:#fff;display:grid;place-items:center;font-size:13px}
+.demo-card{position:relative;border-radius:20px;overflow:hidden;background:var(--char);box-shadow:0 24px 60px rgba(33,37,41,.25);aspect-ratio:16/10}
+.demo-card canvas{width:100%;height:100%;display:block}
+.demo-card .tag{position:absolute;left:14px;top:14px;background:rgba(33,37,41,.85);color:#fff;font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;backdrop-filter:blur(4px)}
+.demo-card .tag i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#35d07f;margin-right:6px;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.note{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* Work area */
+.work{display:grid;gap:20px;margin-top:10px}
+@media(min-width:960px){.work{grid-template-columns:minmax(0,1.45fr) minmax(320px,.8fr);align-items:start}}
+.stage-wrap{position:relative;border-radius:var(--radius);overflow:hidden;background:#111;box-shadow:0 14px 40px rgba(0,0,0,.18)}
+@media(min-width:960px){.stage-wrap{position:sticky;top:78px}}
+#stage{display:block;width:100%;touch-action:none;cursor:crosshair}
+.stage-bar{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+.stage-bar>*{pointer-events:auto}
+.pill{background:rgba(33,37,41,.86);color:#fff;border:0;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);display:inline-flex;align-items:center;gap:7px;user-select:none;-webkit-user-select:none}
+.pill.red{background:var(--red)}
+.pill svg{width:16px;height:16px}
+.scan{position:absolute;left:10px;top:10px;right:10px;display:flex;justify-content:flex-start}
+.scan span{background:rgba(33,37,41,.88);color:#fff;font-size:13px;font-weight:600;padding:8px 12px;border-radius:10px;line-height:1.35;max-width:100%;backdrop-filter:blur(6px)}
+.scan span b{color:#FFB4A8}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.panel+.panel{margin-top:14px}
+.panel h3{margin-bottom:12px}
+.field{margin-bottom:16px}
+.field>label,.field>.lbl{display:block;font-weight:600;font-size:14px;margin-bottom:8px}
+.field .hint{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer;transition:all .18s}
+.chip:hover{border-color:#c6c9ce}
+.chip.on{background:var(--char);border-color:var(--char);color:#fff}
+.chip.rec{position:relative}
+.chip.rec::after{content:"";position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:var(--red);border:2px solid #fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.input,select.input,textarea.input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:16px;background:#fff}
+.input:focus{outline:none;border-color:var(--char)}
+.unit{position:relative}
+.unit::after{content:attr(data-unit);position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.auto{display:inline-block;background:#FFF1EF;color:var(--red-deep);font-size:11px;font-weight:700;letter-spacing:.4px;padding:3px 7px;border-radius:6px;margin-left:6px;vertical-align:1px}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.sw{width:42px;height:42px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.sw.on{box-shadow:0 0 0 2.5px var(--char);transform:scale(1.06)}
+.swname{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* Recommendation */
+.rec-card{background:var(--char);color:#fff;border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+.rec-card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--red),#ff6a3d)}
+.rec-card .kicker{color:#ff8a78}
+.rec-card h2{font-size:34px;margin-bottom:10px}
+.rec-card p{margin:0;color:#D5D9DE;line-height:1.55;font-size:15px}
+.rec-card .facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.rec-card .facts span{background:rgba(255,255,255,.1);border-radius:8px;padding:6px 9px;font-size:12.5px;font-weight:600}
+.rec-card .confirm{margin-top:12px;font-size:12.5px;color:#AEB4BB}
+
+/* Quote */
+.quote{display:grid;gap:20px;margin-top:10px}
+@media(min-width:900px){.quote{grid-template-columns:.9fr 1.1fr;align-items:start}}
+.snap{border-radius:var(--radius);overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.15)}
+.summary{list-style:none;margin:14px 0 0;padding:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.summary li{display:flex;justify-content:space-between;gap:12px;padding:11px 14px;font-size:14px;border-bottom:1px solid var(--line)}
+.summary li:last-child{border-bottom:0}
+.summary li span{color:var(--muted)}
+.summary li b{text-align:right}
+.done{text-align:center;max-width:560px;margin:40px auto}
+.done .tick{width:84px;height:84px;margin:0 auto 18px;border-radius:50%;background:var(--ok);display:grid;place-items:center;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+.done .tick svg{width:44px;height:44px;color:#fff}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.back{background:none;border:0;color:var(--muted);font-weight:600;cursor:pointer;padding:8px 0;font-size:14px}
+.back:hover{color:var(--char)}
+.foot{max-width:1180px;margin:0 auto;padding:22px 16px 40px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+.loader{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="in">
+    <img src="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png" alt="Apex Gates">
+    <div class="name">Gate Visualiser<small>Perth's automatic gate specialist since 2005</small></div>
+    <a class="call" href="tel:0477884422">Call 0477 88 44 22</a>
+  </div>
+</header>
+
+<div class="steps" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+
+<main>
+
+<!-- 1. Start -->
+<section class="screen active" id="s-start">
+  <div class="hero">
+    <div>
+      <span class="kicker">Free gate visualiser</span>
+      <h1>See your new gate <em>before we build it</em></h1>
+      <p class="lead">Take a photo of your driveway or site entrance. We work out which automatic gate suits the space, draw it into your photo, and fill in your quote request for you.</p>
+      <div class="actions">
+        <label class="btn primary" for="cam">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          Take a photo
+        </label>
+        <label class="btn dark" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16"/></svg>
+          Upload a photo
+        </label>
+        <button class="btn ghost" id="sample">Try a sample site</button>
+      </div>
+      <input class="sr" type="file" id="cam" accept="image/*" capture="environment">
+      <input class="sr" type="file" id="file" accept="image/*">
+      <ul class="how">
+        <li><b>1</b>Stand on the street side, facing the opening, and fit both gate posts in the photo.</li>
+        <li><b>2</b>Mark the opening and answer three quick questions about the space.</li>
+        <li><b>3</b>See the gate that suits your site, try styles and colours, then send it to us for a quote.</li>
+      </ul>
+      <p class="note" style="margin-top:16px">Your photo stays on your phone until you choose to send it.</p>
+    </div>
+    <div class="demo-card">
+      <canvas id="demo" width="800" height="500" aria-label="Example of a sliding gate drawn onto a driveway photo"></canvas>
+      <span class="tag"><i></i>Live preview</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Mark the opening -->
+<section class="screen" id="s-mark">
+  <button class="back" data-go="s-start">&larr; Use a different photo</button>
+  <div class="work">
+    <div class="stage-wrap" id="wrap">
+      <canvas id="stage" aria-label="Your photo. Drag the four dots to the corners of the gate opening."></canvas>
+      <div class="scan" id="scan"></div>
+    </div>
+    <div>
+      <div class="panel">
+        <h3>Mark the opening</h3>
+        <p class="note" style="margin:0 0 4px">Drag the two <b>bottom dots</b> to the foot of each post, then the <b>top dots</b> to the height you want the gate.</p>
+      </div>
+      <div class="panel">
+        <div class="field">
+          <span class="lbl">Type of site <span id="siteAuto"></span></span>
+          <div class="chips" data-key="site">
+            <button class="chip" data-v="home">Home</button>
+            <button class="chip" data-v="commercial">Commercial</button>
+            <button class="chip" data-v="industrial">Industrial or mining</button>
+            <button class="chip" data-v="carpark">Car park</button>
+          </div>
+        </div>
+        <div class="row2 field">
+          <div>
+            <label for="width">Opening width <span id="widthAuto"></span></label>
+            <div class="unit" data-unit="m"><input class="input" id="width" type="number" inputmode="decimal" min="1" max="30" step="0.1"></div>
+          </div>
+          <div>
+            <label for="height">Gate height</label>
+            <select class="input" id="height">
+              <option value="1.2">1.2 m</option><option value="1.5">1.5 m</option>
+              <option value="1.8" selected>1.8 m</option><option value="2.1">2.1 m</option>
+              <option value="2.4">2.4 m</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">Clear space beside the opening <span class="hint">along the fence or wall</span></span>
+          <div class="chips" data-key="space">
+            <button class="chip" data-v="full">As long as the opening</button>
+            <button class="chip" data-v="half">About half</button>
+            <button class="chip" data-v="none">Very little</button>
+          </div>
+        </div>
+        <div class="field" id="dirField">
+          <span class="lbl">Which side has that space?</span>
+          <div class="chips" data-key="dir">
+            <button class="chip" data-v="-1">Left</button>
+            <button class="chip" data-v="1">Right</button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">The ground across the opening</span>
+          <div class="chips" data-key="slope">
+            <button class="chip" data-v="flat">Level</button>
+            <button class="chip" data-v="gentle">Gentle slope</button>
+            <button class="chip" data-v="steep">Steep slope</button>
+          </div>
+        </div>
+        <button class="btn primary full" id="toResult">Show my gate</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Result -->
+<section class="screen" id="s-result">
+  <button class="back" data-go="s-mark">&larr; Change the opening or answers</button>
+  <div class="work">
+    <div id="stageSlot"></div>
+    <div>
+      <div class="rec-card" id="rec"></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="field">
+          <span class="lbl">Gate type</span>
+          <div class="chips" data-key="type" id="typeChips"></div>
+        </div>
+        <div class="field" id="styleField">
+          <span class="lbl">Style</span>
+          <div class="chips" data-key="style">
+            <button class="chip" data-v="slat">Horizontal slat</button>
+            <button class="chip" data-v="picket">Vertical picket</button>
+            <button class="chip" data-v="palisade">Security palisade</button>
+            <button class="chip" data-v="mesh">Welded mesh</button>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:6px">
+          <span class="lbl">Colour</span>
+          <div class="swatches" id="swatches"></div>
+          <div class="swname" id="swname"></div>
+        </div>
+      </div>
+      <button class="btn primary full" id="toQuote" style="margin-top:14px">Get a quote for this gate</button>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Quote -->
+<section class="screen" id="s-quote">
+  <button class="back" data-go="s-result">&larr; Back to my gate</button>
+  <div class="quote">
+    <div>
+      <span class="kicker">Your gate</span>
+      <h2>Quote request</h2>
+      <p class="note" style="margin:8px 0 14px">We've filled in the gate details from your photo. Add your contact details and send it through.</p>
+      <div class="snap"><img id="snap" alt="Your photo with the chosen gate drawn in"></div>
+      <ul class="summary" id="summary"></ul>
+    </div>
+    <form class="panel" id="qform" novalidate>
+      <h3>Your details</h3>
+      <div class="row2 field">
+        <div><label for="qName">Name</label><input class="input" id="qName" required autocomplete="name"></div>
+        <div><label for="qPhone">Phone</label><input class="input" id="qPhone" required type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="row2 field">
+        <div><label for="qEmail">Email</label><input class="input" id="qEmail" type="email" autocomplete="email"></div>
+        <div><label for="qSuburb">Suburb</label><input class="input" id="qSuburb" required autocomplete="address-level2"></div>
+      </div>
+      <div class="field" id="bizField"><label for="qBiz">Business or site name</label><input class="input" id="qBiz" autocomplete="organization"></div>
+      <div class="field"><label for="qGate">Gate</label><input class="input" id="qGate"></div>
+      <div class="field"><label for="qNotes">Notes for our team</label><textarea class="input" id="qNotes" rows="4"></textarea></div>
+      <button class="btn primary full" type="submit">Send my quote request</button>
+      <p class="note" style="margin:12px 0 0">Measurements from a photo are estimates. We confirm everything on a free site visit before you commit.</p>
+    </form>
+  </div>
+</section>
+
+<!-- 5. Done -->
+<section class="screen" id="s-done">
+  <div class="done">
+    <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2>Thanks, <span id="doneName">we've got it</span></h2>
+    <p class="lead" style="margin:12px auto">Your photo and gate details are with the Apex Gates team. We'll call you to book a free site measure.</p>
+    <p class="note">Preview version: nothing has been sent. In the live version this request goes straight into Apex's job system.</p>
+    <div class="actions" style="justify-content:center">
+      <button class="btn dark" data-go="s-result">Try another style</button>
+      <button class="btn ghost" data-go="s-start">Start again</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <span>Apex Gates &middot; Unit 4, 30 Enterprise Crescent, Malaga WA 6090 &middot; WA owned and operated since 2005</span>
+  <span>Gates drawn into photos are an impression only. Sizes are confirmed on site.</span>
+</footer>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- State ---------- */
+const S = {
+  img: null, iw: 0, ih: 0,
+  pts: null,              // bl, br, tr, tl in 0..1 image coords
+  site: "home", width: 4.0, widthManual: false, height: 1.8,
+  space: "full", dir: 1, slope: "flat",
+  type: null, recType: null, style: "slat", colour: 0,
+  t: 0, target: 0, editing: true, before: false,
+  dets: [], scanned: false, isSample: false,
+};
+
+const COLOURS = [
+  ["Charcoal", "#34383D"], ["Satin black", "#17191C"], ["Monument grey", "#4A4C4F"],
+  ["Silver", "#A9AEB3"], ["Pearl white", "#ECEBE6"], ["Bronze", "#5B4A3B"], ["Apex red", "#C2210F"],
+];
+const TYPES = {
+  sliding:    { name: "Automatic sliding gate", short: "Sliding", panel: true },
+  cantilever: { name: "Cantilever sliding gate", short: "Cantilever", panel: true },
+  telescopic: { name: "Telescopic sliding gate", short: "Telescopic", panel: true },
+  swing:      { name: "Automatic swing gates", short: "Swing", panel: true },
+  bifold:     { name: "Bi-fold gates", short: "Bi-fold", panel: true },
+  boom:       { name: "Boom gate", short: "Boom gate", panel: false },
+  bollards:   { name: "Rising bollards", short: "Bollards", panel: false },
+};
+const STYLE_NAMES = { slat: "Horizontal slat", picket: "Vertical picket", palisade: "Security palisade", mesh: "Welded mesh" };
+const SITE_NAMES = { home: "Home", commercial: "Commercial", industrial: "Industrial or mining", carpark: "Car park" };
+const SPACE_NAMES = { full: "As long as the opening", half: "About half the opening", none: "Very little" };
+const SLOPE_NAMES = { flat: "Level", gentle: "Gentle slope", steep: "Steep slope" };
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* ---------- Recommendation rules (to be checked by Apex) ---------- */
+function recommend() {
+  const W = S.width, wide = W >= 6, biz = S.site !== "home";
+  if (S.site === "carpark") return {
+    type: "boom", alts: ["bollards", "sliding"],
+    why: "Car parks open and close all day for one vehicle at a time. A boom gate lifts in a few seconds and is built for hundreds of cycles a day.",
+  };
+  if (S.space === "full") {
+    if ((biz && wide) || S.slope === "steep" || S.site === "industrial") return {
+      type: "cantilever", alts: ["sliding", "telescopic", "bollards"],
+      why: "There's a clear run beside the opening, and " + (S.slope === "steep" ? "the ground slopes. A cantilever gate hangs from rollers beside the opening, so nothing runs across the driveway and the slope matters far less."
+        : "this is a wide working entry. A cantilever gate hangs from rollers beside the opening, so trucks and forklifts cross with no track on the ground."),
+    };
+    return {
+      type: "sliding", alts: ["cantilever", "telescopic", "swing"],
+      why: "There's a clear wall beside the opening as long as the opening itself, so the gate can slide straight back. A sliding gate needs no room to swing into your property and copes well with wind." +
+        (S.slope === "gentle" ? " On a gentle slope we level the track first." : ""),
+    };
+  }
+  if (S.space === "half") return {
+    type: "telescopic", alts: ["swing", "bifold", "sliding"],
+    why: "There's only about half the opening's length of clear space beside it. A telescopic gate splits into two panels that stack behind each other as it opens, so it needs about half the run of a standard sliding gate.",
+  };
+  if (S.slope === "flat") return {
+    type: "swing", alts: ["bifold", "telescopic"],
+    why: "There's no room for a gate to slide back, and the ground is level, so " + (W > 3.5 ? "a pair of swing gates" : "a swing gate") + " will open cleanly into the property.",
+  };
+  return {
+    type: "bifold", alts: ["swing", "telescopic"],
+    why: "There's no room for a gate to slide back, and the ground slopes. Bi-fold gates fold in half as they open, so they sweep a much smaller area than full swing gates and clear the rise more easily.",
+  };
+}
+
+/* ---------- Geometry ---------- */
+function homography(p0, p1, p2, p3) { // unit square (0,0)(1,0)(1,1)(0,1) -> p0 p1 p2 p3
+  const [x0, y0] = p0, [x1, y1] = p1, [x2, y2] = p2, [x3, y3] = p3;
+  const dx1 = x1 - x2, dx2 = x3 - x2, dx3 = x0 - x1 + x2 - x3;
+  const dy1 = y1 - y2, dy2 = y3 - y2, dy3 = y0 - y1 + y2 - y3;
+  let g = 0, h = 0;
+  if (Math.abs(dx3) > 1e-9 || Math.abs(dy3) > 1e-9) {
+    const den = dx1 * dy2 - dx2 * dy1;
+    g = (dx3 * dy2 - dx2 * dy3) / den;
+    h = (dx1 * dy3 - dx3 * dy1) / den;
+  }
+  const a = x1 - x0 + g * x1, b = x3 - x0 + h * x3, c = x0;
+  const d = y1 - y0 + g * y1, e = y3 - y0 + h * y3, f = y0;
+  return (u, v) => { const w = g * u + h * v + 1; return [(a * u + b * v + c) / w, (d * u + e * v + f) / w]; };
+}
+const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+function shade(hex, amt) {
+  const n = parseInt(hex.slice(1), 16);
+  let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  const f = (c) => Math.max(0, Math.min(255, Math.round(amt > 0 ? c + (255 - c) * amt : c * (1 + amt))));
+  return `rgb(${f(r)},${f(g)},${f(b)})`;
+}
+const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+/* ---------- Gate drawing ----------
+   Everything is drawn in metres on the gate's plane: X across (0 = left post), Y up (0 = ground).
+   The homography maps that plane onto the opening the customer marked. */
+function drawGate(ctx, P, opts) {
+  const { W, Hm, type, style, col, t, dir } = opts;
+  const H = homography(P[0], P[1], P[2], P[3]);
+  const M = (X, Y) => H(X / W, Y / Hm);
+  const poly = (pts, fill) => {
+    ctx.beginPath();
+    pts.forEach((p, i) => { const q = M(p[0], p[1]); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); });
+    ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+  };
+  const box = (x0, y0, x1, y1, fill) => poly([[x0, y0], [x1, y0], [x1, y1], [x0, y1]], fill);
+  const mx = (X) => dir === 1 ? X : W - X;               // mirror so every gate can be drawn opening to the right
+  const mbox = (x0, y0, x1, y1, fill) => box(mx(x0), y0, mx(x1), y1, fill);
+
+  // pixels per metre near the ground line, for blur sizes
+  const ppm = Math.hypot(P[1][0] - P[0][0], P[1][1] - P[0][1]) / W;
+
+  function shadow(x0, x1, depth = .16) {
+    ctx.save(); ctx.filter = `blur(${Math.max(2, ppm * .05)}px)`; ctx.globalAlpha = .38;
+    box(Math.min(x0, x1), -depth, Math.max(x0, x1), .02, "#000"); ctx.restore();
+  }
+
+  // A panel given its four corners on the plane (for swing leaves the far edge is pulled in and up).
+  function panel(c, Lw, colour) {
+    const Lh = Hm;
+    const at = (s, r) => { const bot = lerp(c.bl, c.br, s / Lw), top = lerp(c.tl, c.tr, s / Lw); return lerp(bot, top, r / Lh); };
+    const q = (s0, r0, s1, r1, fill) => poly([at(s0, r0), at(s1, r0), at(s1, r1), at(s0, r1)], fill);
+    const base = colour, hi = shade(colour, .22), lo = shade(colour, -.28);
+    const th = .05;
+    if (style === "slat") {
+      for (let r = th + .012; r + .07 < Lh - th; r += .105) { q(th, r, Lw - th, r + .085, base); q(th, r + .071, Lw - th, r + .085, hi); }
+    } else if (style === "picket") {
+      q(0, Lh * .5 - .03, Lw, Lh * .5 + .03, base);
+      for (let s = th + .035; s + .045 < Lw - th; s += .115) { q(s, th, s + .045, Lh - th, base); q(s + .032, th, s + .045, Lh - th, lo); }
+    } else if (style === "palisade") {
+      q(0, .3, Lw, .36, base); q(0, Lh - .42, Lw, Lh - .36, base);
+      for (let s = .06; s + .065 < Lw - .02; s += .15) {
+        q(s, .05, s + .065, Lh - .1, base); q(s + .045, .05, s + .065, Lh - .1, lo);
+        poly([at(s, Lh - .1), at(s + .065, Lh - .1), at(s + .0325, Lh + .02)], base);
+      }
+    } else { // mesh
+      ctx.save(); ctx.globalAlpha = .28; q(th, th, Lw - th, Lh - th, base); ctx.restore();
+      for (let s = th + .1; s < Lw - th; s += .1) q(s, th, s + .012, Lh - th, base);
+      for (let r = th + .1; r < Lh - th; r += .1) q(th, r, Lw - th, r + .012, base);
+    }
+    if (style !== "palisade") {
+      q(0, 0, Lw, th, lo); q(0, Lh - th, Lw, Lh, base); q(0, Lh - th, Lw, Lh - th + .012, hi);
+      q(0, 0, th, Lh, base); q(Lw - th, 0, Lw, Lh, base);
+    }
+  }
+  const rectCorners = (x0, x1, y0 = .03, y1 = Hm) => ({ bl: [mx(x0), y0], br: [mx(x1), y0], tr: [mx(x1), y1], tl: [mx(x0), y1] });
+  function posts(lift = .12) {
+    const pc = shade("#2A2D31", 0);
+    box(-.11, 0, 0, Hm + lift, pc); box(-.11, Hm + lift - .02, 0, Hm + lift, "#55595F");
+    box(W, 0, W + .11, Hm + lift, pc); box(W, Hm + lift - .02, W + .11, Hm + lift, "#55595F");
+  }
+
+  ctx.save();
+  ctx.lineJoin = "round";
+  const o = ease(t);
+
+  if (type === "sliding" || type === "cantilever" || type === "telescopic") {
+    const travel = W * 1.02;
+    if (type === "sliding") {
+      box(mx(-.1) , 0, mx(W * 2.1), .025, "#4b4f55");                          // ground track
+      mbox(W + .18, 0, W + .5, .38, "#2C2F33"); mbox(W + .18, .34, W + .5, .38, "#474B51"); // motor
+      shadow(mx(o * travel), mx(W + o * travel + .12));
+      panel(rectCorners(o * travel, W + .12 + o * travel), W + .12, col);
+      posts();
+    } else if (type === "cantilever") {
+      const L = W * 1.42;
+      [W + .25, W + .25 + W * .3].forEach((x) => { mbox(x, 0, x + .1, .42, "#2A2D31"); mbox(x - .08, .12, x + .18, .24, "#55595F"); });
+      mbox(W + .55 + W * .3, 0, W + .85 + W * .3, .38, "#2C2F33");
+      shadow(mx(o * travel), mx(L + o * travel));
+      panel(rectCorners(o * travel, L + o * travel, .1, Hm), L, col);
+      // diagonal brace on the tail
+      const x0 = W + .05 + o * travel, x1 = L - .05 + o * travel;
+      poly([[mx(x0), .15], [mx(x0 + .05), .15], [mx(x1), Hm - .1], [mx(x1 - .05), Hm - .1]], shade(col, -.15));
+      posts();
+    } else {
+      const la = W * .56;
+      box(mx(-.1), 0, mx(W * 1.7), .025, "#4b4f55");
+      mbox(W + .2, 0, W + .5, .38, "#2C2F33");
+      const aOff = o * W, bOff = o * (W - W * .44);
+      shadow(mx(aOff), mx(W + bOff));
+      panel(rectCorners(aOff, aOff + la), la, shade(col, -.12));               // back leaf
+      panel(rectCorners(W * .44 + bOff, W + bOff), la, col);                     // front leaf
+      posts();
+    }
+  } else if (type === "swing" || type === "bifold") {
+    const double = W > 3.5 || type === "bifold";
+    const L = double ? W / 2 : W;
+    const phi = o * (type === "swing" ? 1.45 : 1.35);
+    posts();
+    const leaves = double ? [1, -1] : [dir];
+    leaves.forEach((side) => {
+      const hinge = side === 1 ? 0 : W, s = side;
+      const X = (d) => hinge + s * d;
+      const sh = shade(col, -.3 * Math.sin(phi));
+      if (type === "swing") {
+        const ex = L * Math.cos(phi), k = .12 * L * Math.sin(phi);
+        shadow(X(0), X(ex));
+        const c = { bl: [X(0), .03], br: [X(ex), .03 + k], tr: [X(ex), Hm - k * 1.4], tl: [X(0), Hm] };
+        if (s === -1) [c.bl, c.br, c.tr, c.tl] = [c.br, c.bl, c.tl, c.tr];
+        panel(c, L, sh);
+        box(X(0) - .04, .5, X(0) + .04 * s + .35 * s * Math.cos(phi), .58, "#2C2F33"); // swing motor arm
+      } else {
+        const half = L / 2, fx = half * Math.cos(phi), k = .14 * half * Math.sin(phi);
+        const p1 = { bl: [X(0), .03], br: [X(fx), .03 + k], tr: [X(fx), Hm - k * 1.4], tl: [X(0), Hm] };
+        const p2 = { bl: [X(fx), .03 + k], br: [X(2 * fx), .03], tr: [X(2 * fx), Hm], tl: [X(fx), Hm - k * 1.4] };
+        [p1, p2].forEach((c) => { if (s === -1) [c.bl, c.br, c.tr, c.tl] = [c.br, c.bl, c.tl, c.tr]; });
+        shadow(X(0), X(2 * fx));
+        panel(p1, half, sh); panel(p2, half, shade(col, -.12 * Math.sin(phi)));
+      }
+    });
+  } else if (type === "boom") {
+    const hx0 = mx(.05), hx1 = mx(.42);
+    shadow(hx0, hx1, .12);
+    box(Math.min(hx0, hx1), 0, Math.max(hx0, hx1), 1.05, col);
+    box(Math.min(hx0, hx1), .98, Math.max(hx0, hx1), 1.05, shade(col, .25));
+    box(Math.min(hx0, hx1) + .05, .7, Math.max(hx0, hx1) - .05, .9, shade(col, -.35));
+    const lightOn = o > .95 ? "#35d07f" : "#ff3b2f";
+    box(Math.min(hx0, hx1) + .12, .76, Math.max(hx0, hx1) - .12, .84, lightOn);
+    // rest post
+    box(mx(W - .2), 0, mx(W - .12), .85, "#2A2D31"); box(mx(W - .26), .8, mx(W - .06), .86, "#2A2D31");
+    // arm: rotate in the gate plane, aspect is true metres
+    const pv = [mx(.24), .93], ang = o * 1.52, len = W - .3, th = .085;
+    const ux = Math.cos(ang) * dir, uy = Math.sin(ang), nx = -Math.sin(ang) * dir, ny = Math.cos(ang);
+    const pt = (s, w) => [pv[0] + ux * s + nx * w, pv[1] + uy * s + ny * w];
+    for (let s = 0; s < len; s += .45) {
+      const s1 = Math.min(len, s + .45), stripe = Math.round(s / .45) % 2 ? "#C2210F" : "#F7F7F5";
+      poly([pt(s, -th / 2), pt(s1, -th / 2), pt(s1, th / 2), pt(s, th / 2)], stripe);
+    }
+    poly([pt(-.12, -th), pt(.12, -th), pt(.12, th), pt(-.12, th)], "#2C2F33");
+  } else if (type === "bollards") {
+    const n = Math.max(2, Math.round(W / 1.4) + 1), r = .135, span = W - .5;
+    for (let i = 0; i < n; i++) {
+      const cx = .25 + span * (n === 1 ? .5 : i / (n - 1));
+      box(cx - r - .07, -.03, cx + r + .07, .01, "#5A5E63");
+      const hgt = .95 * (1 - o * .985);
+      if (hgt < .02) continue;
+      ctx.save(); ctx.filter = `blur(${Math.max(1.5, ppm * .03)}px)`; ctx.globalAlpha = .3; box(cx - r, -.06, cx + r + .08, 0, "#000"); ctx.restore();
+      box(cx - r, 0, cx + r, hgt, col);
+      box(cx - r, 0, cx - r * .45, hgt, shade(col, .25));
+      box(cx + r * .4, 0, cx + r, hgt, shade(col, -.3));
+      if (hgt > .25) { box(cx - r, hgt - .2, cx + r, hgt - .12, "#F2C230"); box(cx - r, hgt - .06, cx + r, hgt - .035, "#ff3b2f"); }
+      box(cx - r, hgt - .02, cx + r, hgt + .015, shade(col, .4));
+    }
+  }
+  ctx.restore();
+}
+
+/* ---------- Sample scene (drawn, so it runs offline and stays private) ---------- */
+function sampleScene() {
+  const c = document.createElement("canvas"); c.width = 1600; c.height = 1000;
+  const g = c.getContext("2d");
+  let sky = g.createLinearGradient(0, 0, 0, 470); sky.addColorStop(0, "#7FB3E3"); sky.addColorStop(1, "#DCEAF5");
+  g.fillStyle = sky; g.fillRect(0, 0, 1600, 470);
+  // house behind
+  g.fillStyle = "#8C5A46"; g.beginPath(); g.moveTo(520, 330); g.lineTo(800, 210); g.lineTo(1080, 330); g.fill();
+  g.fillStyle = "#EFE6D6"; g.fillRect(560, 330, 480, 220);
+  g.fillStyle = "#B9BDC2"; g.fillRect(650, 400, 300, 150);
+  g.fillStyle = "rgba(0,0,0,.08)"; for (let y = 412; y < 550; y += 22) g.fillRect(650, y, 300, 3);
+  g.fillStyle = "#445566"; g.fillRect(990, 380, 36, 60);
+  // trees
+  [[120, 360, 120, "#4E7A3A"], [300, 380, 90, "#5B8A43"], [1320, 350, 130, "#4A7337"], [1500, 390, 100, "#5E8C46"], [480, 400, 70, "#557F3E"]]
+    .forEach(([x, y, r, col]) => { g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.fillStyle = "rgba(255,255,255,.07)"; g.beginPath(); g.arc(x - r * .3, y - r * .3, r * .55, 0, 7); g.fill(); });
+  // lawn and inner driveway
+  g.fillStyle = "#7FA855"; g.fillRect(0, 470, 1600, 190);
+  g.fillStyle = "#CFCAC0"; g.beginPath(); g.moveTo(650, 550); g.lineTo(950, 550); g.lineTo(1060, 652); g.lineTo(540, 652); g.fill();
+  // walls
+  const wall = (x0, x1) => {
+    g.fillStyle = "#E8DDC8"; g.fillRect(x0, 455, x1 - x0, 197);
+    g.fillStyle = "#CDBFA5"; g.fillRect(x0, 448, x1 - x0, 14);
+    g.fillStyle = "rgba(0,0,0,.05)"; for (let x = x0; x < x1; x += 160) g.fillRect(x, 462, 2, 190);
+  };
+  wall(0, 470); wall(1130, 1600);
+  // piers
+  const pier = (x) => {
+    g.fillStyle = "#A65A3A"; g.fillRect(x, 410, 72, 242);
+    g.fillStyle = "#8E4A2F"; g.fillRect(x - 6, 400, 84, 14);
+    g.fillStyle = "rgba(255,255,255,.18)";
+    for (let y = 422; y < 650; y += 16) { g.fillRect(x, y, 72, 2); const off = ((y - 422) / 16) % 2 ? 36 : 0; for (let bx = x + off; bx < x + 72; bx += 36) g.fillRect(bx, y, 2, 16); }
+  };
+  pier(470); pier(1058);
+  // foreground verge, crossover, kerb
+  g.fillStyle = "#86AD5C"; g.fillRect(0, 652, 1600, 348);
+  g.fillStyle = "rgba(0,0,0,.18)"; g.fillRect(0, 652, 1600, 10);
+  g.fillStyle = "#D3CEC4"; g.beginPath(); g.moveTo(540, 652); g.lineTo(1060, 652); g.lineTo(1290, 1000); g.lineTo(310, 1000); g.fill();
+  g.strokeStyle = "rgba(0,0,0,.12)"; g.lineWidth = 3; g.beginPath(); g.moveTo(800, 652); g.lineTo(800, 1000); g.moveTo(440, 820); g.lineTo(1170, 820); g.stroke();
+  g.fillStyle = "#A9A69F"; g.fillRect(0, 930, 1600, 22); g.fillStyle = "#77746E"; g.fillRect(0, 952, 1600, 48);
+  // grain
+  const id = g.getImageData(0, 0, 1600, 1000), d = id.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - .5) * 14; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+  g.putImageData(id, 0, 0);
+  return c;
+}
+const SAMPLE_PTS = [[542 / 1600, 652 / 1000], [1058 / 1600, 652 / 1000], [1058 / 1600, 465 / 1000], [542 / 1600, 465 / 1000]];
+
+/* ---------- Stage ---------- */
+const stage = $("#stage"), sctx = stage.getContext("2d");
+let cw = 0, ch = 0, dpr = 1;
+function sizeStage() {
+  if (!S.img) return;
+  const wrapW = stage.parentElement.clientWidth || 600;
+  const maxH = Math.max(260, window.innerHeight * (window.innerWidth < 960 ? .52 : .72));
+  let w = wrapW, h = w * S.ih / S.iw;
+  if (h > maxH) { h = maxH; w = h * S.iw / S.ih; }
+  dpr = Math.min(2.5, window.devicePixelRatio || 1);
+  cw = w; ch = h;
+  stage.style.width = w + "px"; stage.style.height = h + "px"; stage.style.margin = "0 auto";
+  stage.width = Math.round(w * dpr); stage.height = Math.round(h * dpr);
+  draw();
+}
+const toPx = (p, w, h) => [p[0] * w, p[1] * h];
+
+function gateOpts() {
+  return { W: S.width, Hm: S.type === "boom" || S.type === "bollards" ? Math.max(S.height, 1.2) : S.height,
+           type: S.type, style: S.style, col: COLOURS[S.colour][1], t: S.t, dir: S.dir };
+}
+
+function render(ctx, w, h, { gate = true, handles = false, dets = false } = {}) {
+  ctx.clearRect(0, 0, w, h);
+  ctx.drawImage(S.img, 0, 0, w, h);
+  const P = S.pts.map((p) => toPx(p, w, h));
+  if (dets && S.dets.length) {
+    ctx.save(); ctx.lineWidth = 2; ctx.font = "600 12px Inter, sans-serif";
+    S.dets.forEach((d) => {
+      const [x, y, bw, bh] = d.bbox.map((v, i) => v * (i % 2 ? h / S.ih : w / S.iw));
+      ctx.strokeStyle = "#FFB000"; ctx.setLineDash([6, 4]); ctx.strokeRect(x, y, bw, bh); ctx.setLineDash([]);
+      const label = `${d.class} ${Math.round(d.score * 100)}%`;
+      ctx.fillStyle = "#FFB000"; ctx.fillRect(x, y - 18, ctx.measureText(label).width + 10, 18);
+      ctx.fillStyle = "#111"; ctx.fillText(label, x + 5, y - 5);
+    });
+    ctx.restore();
+  }
+  if (gate && S.type && !S.before) drawGate(ctx, P, gateOpts());
+  if (handles) {
+    ctx.save();
+    ctx.fillStyle = "rgba(214,29,9,.12)"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.setLineDash([7, 5]);
+    ctx.beginPath(); P.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.strokeStyle = "#D61D09"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(...P[0]); ctx.lineTo(...P[1]); ctx.stroke();
+    const labels = ["Post", "Post", "Top", "Top"];
+    P.forEach((p, i) => {
+      ctx.beginPath(); ctx.arc(p[0], p[1], 13, 0, 7); ctx.fillStyle = i < 2 ? "#D61D09" : "#fff"; ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = i < 2 ? "#fff" : "#D61D09"; ctx.stroke();
+      ctx.font = "700 11px Inter, sans-serif"; ctx.textAlign = "center";
+      const ly = i < 2 ? p[1] + 30 : p[1] - 22;
+      ctx.fillStyle = "rgba(33,37,41,.85)"; const tw = ctx.measureText(labels[i]).width + 12;
+      ctx.fillRect(p[0] - tw / 2, ly - 12, tw, 17); ctx.fillStyle = "#fff"; ctx.fillText(labels[i], p[0], ly);
+    });
+    ctx.restore();
+  }
+}
+function draw() {
+  if (!S.img || !cw) return;
+  sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  render(sctx, cw, ch, { gate: !S.editing, handles: S.editing, dets: S.editing });
+}
+
+/* dragging the corners */
+let drag = -1;
+function evPt(e) { const r = stage.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; }
+stage.addEventListener("pointerdown", (e) => {
+  if (!S.editing) return;
+  const p = evPt(e); let best = -1, bd = 1e9;
+  S.pts.forEach((q, i) => { const d = Math.hypot((q[0] - p[0]) * cw, (q[1] - p[1]) * ch); if (d < bd) { bd = d; best = i; } });
+  if (bd < 44) { drag = best; stage.setPointerCapture(e.pointerId); e.preventDefault(); }
+});
+stage.addEventListener("pointermove", (e) => {
+  if (drag < 0) return;
+  const p = evPt(e); S.pts[drag] = [Math.min(1, Math.max(0, p[0])), Math.min(1, Math.max(0, p[1]))];
+  if (!S.widthManual) estimateWidth();
+  draw();
+});
+["pointerup", "pointercancel"].forEach((ev) => stage.addEventListener(ev, () => { drag = -1; }));
+window.addEventListener("resize", () => { sizeStage(); });
+
+/* ---------- Photo scan (runs on the phone with a free object detector) ---------- */
+let modelP = null;
+function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+function getModel() {
+  if (!modelP) modelP = loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js")
+    .then(() => loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"))
+    .then(() => window.cocoSsd.load({ base: "lite_mobilenet_v2" }));
+  return modelP;
+}
+function setScan(html) { $("#scan").innerHTML = html ? `<span>${html}</span>` : ""; }
+
+async function scanPhoto() {
+  S.dets = []; S.scanned = false;
+  setScan('<i class="loader"></i>Scanning your photo for cars, trucks and the opening...');
+  try {
+    const model = await getModel();
+    const preds = await model.detect(S.img, 12, .45);
+    S.dets = preds.filter((p) => ["car", "truck", "bus", "motorcycle", "person"].includes(p.class));
+  } catch (err) { S.dets = []; }
+  S.scanned = true;
+  const cars = S.dets.filter((d) => d.class === "car").length, trucks = S.dets.filter((d) => d.class === "truck" || d.class === "bus").length;
+  if (!S.siteTouched) {
+    S.site = trucks ? "industrial" : cars >= 3 ? "carpark" : S.isSample ? "home" : cars ? "home" : S.site;
+    syncChips(); $("#siteAuto").innerHTML = (cars || trucks) ? '<span class="auto">FROM PHOTO</span>' : "";
+  }
+  const parts = [];
+  if (cars) parts.push(`${cars} car${cars > 1 ? "s" : ""}`);
+  if (trucks) parts.push(`${trucks} truck${trucks > 1 ? "s" : ""}`);
+  const measured = estimateWidth();
+  if (S.isSample) setScan("Sample site: a 5.0 m driveway with a long wall on the right. Drag the dots to try your own shape.");
+  else if (parts.length) setScan(`Found <b>${parts.join(" and ")}</b>. ${measured ? `Opening estimated at <b>${S.width.toFixed(1)} m</b> using the vehicle for scale.` : "Enter the opening width if you know it."}`);
+  else setScan("No vehicles found to measure from. Enter the opening width if you know it.");
+  draw();
+}
+
+// Use a detected car as a ruler: about 1.85 m wide front on, 4.6 m long side on.
+function estimateWidth() {
+  if (!S.dets.length || S.widthManual || S.isSample) return false;
+  const P = S.pts.map((p) => [p[0] * S.iw, p[1] * S.ih]);
+  const baseY = (P[0][1] + P[1][1]) / 2, openPx = Math.hypot(P[1][0] - P[0][0], P[1][1] - P[0][1]);
+  const cars = S.dets.filter((d) => d.class === "car");
+  if (!cars.length) return false;
+  const car = cars.sort((a, b) => Math.abs(a.bbox[1] + a.bbox[3] - baseY) - Math.abs(b.bbox[1] + b.bbox[3] - baseY))[0];
+  const [, , bw, bh] = car.bbox;
+  const metres = bw / bh > 1.9 ? 4.6 : 1.85;
+  const w = Math.round(Math.min(20, Math.max(2, openPx * metres / bw)) * 10) / 10;
+  S.width = w; $("#width").value = w.toFixed(1);
+  $("#widthAuto").innerHTML = '<span class="auto">ESTIMATE</span>';
+  return true;
+}
+
+/* ---------- Loading a photo ---------- */
+function useImage(img, w, h, sample) {
+  S.img = img; S.iw = w; S.ih = h; S.isSample = sample;
+  S.pts = sample ? SAMPLE_PTS.map((p) => p.slice()) : [[.24, .8], [.76, .8], [.76, .52], [.24, .52]];
+  S.widthManual = false; S.siteTouched = false; S.editing = true; S.type = null; S.t = 0; S.target = 0;
+  if (sample) { Object.assign(S, { site: "home", width: 5.0, space: "full", dir: 1, slope: "flat" }); }
+  $("#width").value = S.width.toFixed(1); $("#widthAuto").innerHTML = ""; $("#siteAuto").innerHTML = "";
+  syncChips();
+  go("s-mark");
+  setTimeout(() => { $("#wrap").prepend(stage); sizeStage(); scanPhoto(); }, 0);
+}
+function fromFile(file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file), img = new Image();
+  img.onload = () => {
+    const max = 1600, k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    useImage(c, c.width, c.height, false);
+  };
+  img.src = url;
+}
+$("#cam").addEventListener("change", (e) => fromFile(e.target.files[0]));
+$("#file").addEventListener("change", (e) => fromFile(e.target.files[0]));
+$("#sample").addEventListener("click", () => { const c = sampleScene(); useImage(c, c.width, c.height, true); });
+
+/* ---------- Controls ---------- */
+function syncChips() {
+  $$(".chips[data-key]").forEach((g) => {
+    const k = g.dataset.key;
+    $$(".chip", g).forEach((c) => c.classList.toggle("on", String(S[k]) === c.dataset.v));
+  });
+  $("#dirField").style.display = S.space === "none" && S.width > 3.5 ? "none" : "";
+}
+document.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip"); if (!chip) return;
+  const k = chip.parentElement.dataset.key, v = chip.dataset.v;
+  S[k] = k === "dir" ? Number(v) : v;
+  if (k === "site") { S.siteTouched = true; $("#siteAuto").innerHTML = ""; }
+  if (k === "type") { S.t = 0; S.target = 0; playOpen(900); }
+  syncChips(); if (k === "type" || k === "style") updateResultUI(); draw();
+});
+$("#width").addEventListener("input", (e) => { const v = parseFloat(e.target.value); if (v > 0) { S.width = v; S.widthManual = true; $("#widthAuto").innerHTML = ""; } });
+$("#height").addEventListener("change", (e) => { S.height = parseFloat(e.target.value); draw(); });
+
+function buildSwatches() {
+  $("#swatches").innerHTML = COLOURS.map(([n, c], i) => `<button class="sw${i === S.colour ? " on" : ""}" style="background:${c}" data-i="${i}" aria-label="${n}" title="${n}"></button>`).join("");
+  $("#swname").textContent = COLOURS[S.colour][0];
+}
+$("#swatches").addEventListener("click", (e) => {
+  const b = e.target.closest(".sw"); if (!b) return;
+  S.colour = Number(b.dataset.i); buildSwatches(); draw();
+});
+
+/* ---------- Result ---------- */
+let rec = null;
+$("#toResult").addEventListener("click", () => {
+  rec = recommend(); S.recType = rec.type; S.type = rec.type; S.editing = false; S.t = 0; S.target = 0;
+  go("s-result");
+  $("#stageSlot").appendChild(stageWrapForResult());
+  updateResultUI(); buildSwatches();
+  setTimeout(() => { sizeStage(); setTimeout(() => playOpen(), 700); }, 0);
+});
+
+let resultWrap = null;
+function stageWrapForResult() {
+  if (!resultWrap) {
+    resultWrap = document.createElement("div"); resultWrap.className = "stage-wrap";
+    resultWrap.innerHTML = `<div class="stage-bar">
+        <button class="pill red" id="openBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 5l11 7-11 7z"/></svg><span>Open gate</span></button>
+        <button class="pill" id="beforeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Hold to see before</button>
+        <button class="pill" id="adjustBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>Adjust corners</button>
+      </div>`;
+    resultWrap.querySelector("#openBtn").addEventListener("click", () => playOpen());
+    const bb = resultWrap.querySelector("#beforeBtn");
+    const on = (e) => { e.preventDefault(); S.before = true; draw(); }, off = () => { S.before = false; draw(); };
+    bb.addEventListener("pointerdown", on); ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => bb.addEventListener(ev, off));
+    resultWrap.querySelector("#adjustBtn").addEventListener("click", () => { go("s-mark"); $("#wrap").prepend(stage); S.editing = true; setTimeout(sizeStage, 0); });
+  }
+  resultWrap.prepend(stage);
+  return resultWrap;
+}
+
+function updateResultUI() {
+  const T = TYPES[S.type], isRec = S.type === S.recType;
+  const facts = [`${S.width.toFixed(1)} m opening`, `${S.height.toFixed(1)} m high`, SITE_NAMES[S.site], SLOPE_NAMES[S.slope]];
+  const why = isRec ? rec.why : altWhy(S.type);
+  const extra = S.slope === "steep" && T.panel ? " On steep ground Apex recommends a lighter aluminium gate, so it stays easy to open by hand in a power cut." : "";
+  $("#rec").innerHTML = `<span class="kicker">${isRec ? "Recommended for your site" : "Your choice"}</span>
+    <h2>${T.name}</h2><p>${why}${extra}</p>
+    <div class="facts">${facts.map((f) => `<span>${f}</span>`).join("")}</div>
+    <div class="confirm">Based on your photo and answers. Apex confirms the right gate on a free site measure.</div>`;
+  const order = [S.recType, ...rec.alts, ...Object.keys(TYPES).filter((k) => k !== S.recType && !rec.alts.includes(k))];
+  $("#typeChips").innerHTML = order.map((k) => `<button class="chip${k === S.type ? " on" : ""}${k === S.recType ? " rec" : ""}" data-v="${k}">${TYPES[k].short}</button>`).join("");
+  $("#styleField").style.display = T.panel ? "" : "none";
+  $("#openBtn span") && ($("#openBtn span").textContent = S.target ? "Close gate" : "Open gate");
+}
+function altWhy(type) {
+  return {
+    sliding: "Slides along a track beside the opening. Needs clear space as long as the opening.",
+    cantilever: "Hangs from rollers beside the opening, so nothing runs across the driveway. Needs a run about one and a half times the opening.",
+    telescopic: "Two panels that stack as they open, so it needs about half the run of a standard sliding gate.",
+    swing: "Opens into the property on hinges. Needs level ground and room for the gates to swing.",
+    bifold: "Folds in half as it opens, so it sweeps a smaller area than swing gates.",
+    boom: "A lifting arm for car parks and traffic control. Fast, and built for constant use.",
+    bollards: "Rise out of the ground to stop vehicles, and sink flush to let them through. For high security entries.",
+  }[type];
+}
+
+/* animation */
+let raf = 0;
+function playOpen(dur = 2600) {
+  S.target = S.target ? 0 : 1;
+  const from = S.t, to = S.target, start = performance.now();
+  const realDur = dur * Math.abs(to - from) || 1;
+  cancelAnimationFrame(raf);
+  const step = (now) => {
+    const k = Math.min(1, (now - start) / realDur);
+    S.t = from + (to - from) * k; draw();
+    if (k < 1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+  const ob = $("#openBtn span"); if (ob) ob.textContent = S.target ? "Close gate" : "Open gate";
+}
+
+/* ---------- Quote ---------- */
+$("#toQuote").addEventListener("click", () => {
+  const c = document.createElement("canvas"); c.width = S.iw; c.height = S.ih;
+  const keep = S.t; S.t = 0;
+  render(c.getContext("2d"), S.iw, S.ih, { gate: true });
+  S.t = keep;
+  $("#snap").src = c.toDataURL("image/jpeg", .85);
+  const T = TYPES[S.type], col = COLOURS[S.colour][0];
+  const rows = [
+    ["Gate", T.name], ...(T.panel ? [["Style", STYLE_NAMES[S.style]]] : []), ["Colour", col],
+    ["Opening width", `${S.width.toFixed(1)} m${S.widthManual || S.isSample ? "" : " (estimate)"}`], ["Gate height", `${S.height.toFixed(1)} m`],
+    ["Site", SITE_NAMES[S.site]], ["Space beside opening", SPACE_NAMES[S.space]], ["Ground", SLOPE_NAMES[S.slope]],
+  ];
+  $("#summary").innerHTML = rows.map(([k, v]) => `<li><span>${k}</span><b>${v}</b></li>`).join("");
+  $("#qGate").value = `${T.name}${T.panel ? ", " + STYLE_NAMES[S.style].toLowerCase() : ""}, ${col.toLowerCase()}, ${S.width.toFixed(1)} m x ${S.height.toFixed(1)} m`;
+  $("#qNotes").value = `Sent from the Gate Visualiser. ${SITE_NAMES[S.site]} site, ${SLOPE_NAMES[S.slope].toLowerCase()} ground, ${SPACE_NAMES[S.space].toLowerCase()} of clear space beside the opening.${S.type === S.recType ? " This is the gate the visualiser recommended." : ""}`;
+  $("#bizField").style.display = S.site === "home" ? "none" : "";
+  go("s-quote");
+});
+$("#qform").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const req = ["#qName", "#qPhone", "#qSuburb"].filter((id) => !$(id).value.trim());
+  $$("#qform .input").forEach((i) => i.style.borderColor = "");
+  if (req.length) { req.forEach((id) => $(id).style.borderColor = "#D61D09"); $(req[0]).focus(); return; }
+  $("#doneName").textContent = $("#qName").value.trim().split(" ")[0];
+  go("s-done");
+});
+
+/* ---------- Navigation ---------- */
+const ORDER = ["s-start", "s-mark", "s-result", "s-quote", "s-done"];
+function go(id) {
+  $$(".screen").forEach((s) => s.classList.toggle("active", s.id === id));
+  const n = Math.min(4, ORDER.indexOf(id) + 1);
+  $$(".steps span").forEach((s, i) => s.classList.toggle("on", i < n));
+  if (id === "s-mark") { S.editing = true; setTimeout(sizeStage, 0); }
+  if (id === "s-result" && S.type) { S.editing = false; $("#stageSlot").appendChild(stageWrapForResult()); setTimeout(sizeStage, 0); }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });
+
+/* ---------- Hero demo: sample scene with a sliding gate opening and closing ---------- */
+(function heroDemo() {
+  const cv = $("#demo"), g = cv.getContext("2d"), scene = sampleScene();
+  const types = ["sliding", "telescopic", "swing", "bollards"], styles = ["slat", "picket", "slat", "slat"];
+  let i = 0, t0 = performance.now();
+  function frame(now) {
+    const el = (now - t0) / 1000, cycle = 5.2;
+    if (el > cycle) { t0 = now; i = (i + 1) % types.length; }
+    const ph = ((now - t0) / 1000) / cycle;
+    const t = ph < .15 ? 0 : ph < .45 ? (ph - .15) / .3 : ph < .65 ? 1 : ph < .95 ? 1 - (ph - .65) / .3 : 0;
+    g.drawImage(scene, 0, 0, cv.width, cv.height);
+    const P = SAMPLE_PTS.map((p) => [p[0] * cv.width, p[1] * cv.height]);
+    drawGate(g, P, { W: 5, Hm: 1.8, type: types[i], style: styles[i], col: COLOURS[i % 2 ? 2 : 0][1], t, dir: 1 });
+    g.fillStyle = "rgba(33,37,41,.85)"; g.fillRect(14, cv.height - 44, 200, 30);
+    g.fillStyle = "#fff"; g.font = "600 14px Inter, sans-serif"; g.fillText(TYPES[types[i]].name, 26, cv.height - 24);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+})();
+</script>
+</body>
+</html>
