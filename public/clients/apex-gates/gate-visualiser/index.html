@@ -185,7 +185,7 @@ h3{font-size:20px}
 <section class="screen active" id="s-start">
   <div class="hero">
     <div>
-      <span class="kicker">Free gate visualiser</span>
+      <span class="kicker">Gate visualiser</span>
       <h1>See your new gate <em>before we build it</em></h1>
       <p class="lead">Take a photo of your driveway or site entrance. We work out which automatic gate suits the space, build it in 3D right in your photo, and fill in your quote request for you.</p>
       <div class="actions">
@@ -352,7 +352,7 @@ h3{font-size:20px}
       <div class="field"><label for="qGate">Gate</label><input class="input" id="qGate"></div>
       <div class="field"><label for="qNotes">Notes for our team</label><textarea class="input" id="qNotes" rows="4"></textarea></div>
       <button class="btn primary full" type="submit">Send my quote request</button>
-      <p class="note" style="margin:12px 0 0">Measurements from a photo are estimates. We confirm everything on a free site visit before you commit.</p>
+      <p class="note" style="margin:12px 0 0">Measurements from a photo are estimates. We confirm everything on a site visit before you commit.</p>
     </form>
   </div>
 </section>
@@ -362,7 +362,7 @@ h3{font-size:20px}
   <div class="done">
     <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
     <h2>Thanks, <span id="doneName">we've got it</span></h2>
-    <p class="lead" style="margin:12px auto">Your photo and gate details are with the Apex Gates team. We'll call you to book a free site measure.</p>
+    <p class="lead" style="margin:12px auto">Your photo and gate details are with the Apex Gates team. We'll call you to book a site measure.</p>
     <p class="note">Preview version: nothing has been sent. In the live version this request goes straight into Apex's job system.</p>
     <div class="actions" style="justify-content:center">
       <button class="btn dark" data-go="s-result">Try another style</button>
@@ -1126,7 +1126,7 @@ function updateResultUI() {
   $("#rec").innerHTML = `<span class="kicker">${isRec ? "Recommended for your site" : "Your choice"}</span>
     <h2>${T.name}</h2><p>${why}${extra}</p>
     <div class="facts">${facts.map((f) => `<span>${f}</span>`).join("")}</div>
-    <div class="confirm">Based on your photo and answers. Apex confirms the right gate on a free site measure.</div>`;
+    <div class="confirm">Based on your photo and answers. Apex confirms the right gate on a site measure.</div>`;
   $("#styleField").style.display = T.panel ? "" : "none";
   $("#extrasField").style.display = T.panel ? "" : "none";
   $("#wallField").style.display = ["sliding", "cantilever", "telescopic"].includes(S.type) ? "" : "none";
