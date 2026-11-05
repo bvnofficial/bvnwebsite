@@ -537,6 +537,21 @@ details p{margin:0;padding:0 0 22px;color:var(--muted);max-width:720px}
 .map{border:1px solid var(--line);min-height:420px;overflow:hidden;background:#1b1c1f}
 .map svg{width:100%;height:100%;display:block}
 
+/* 3D gate visualiser */
+.viz{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.viz h2{font-size:clamp(34px,4.4vw,60px);margin:14px 0 18px}
+.viz>div>p{color:var(--muted);font-size:18px;margin:0 0 22px}
+.vsteps{list-style:none;padding:0;margin:0 0 30px;display:grid;gap:14px;counter-reset:v}
+.vsteps li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;color:#d4d4d8}
+.vsteps li::before{counter-increment:v;content:counter(v);width:32px;height:32px;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:700;font-size:15px}
+.vpic{position:relative;aspect-ratio:4/3.2;overflow:hidden;border:1px solid var(--line)}
+.vpic img{width:100%;height:100%;object-fit:cover;filter:brightness(.75)}
+.vpic svg{position:absolute;left:12%;right:12%;bottom:14%;width:76%;height:auto;overflow:visible}
+.vpic svg rect,.vpic svg line{animation:draw 2.4s cubic-bezier(.6,0,.2,1) infinite alternate}
+@keyframes draw{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+.vtag{position:absolute;top:18px;left:18px;background:var(--red);color:#fff;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px}
+@media (max-width:1060px){.viz{grid-template-columns:1fr;gap:40px}}
+
 .cta-band{background:var(--red);padding:60px 0;color:#fff}
 .cta-band .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .cta-band h2{font-size:clamp(30px,3.6vw,46px)}
@@ -557,7 +572,9 @@ footer a:hover{color:#fff}
 .rv{opacity:0;transform:translateY(40px);transition:opacity .9s,transform 1s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
 .rv.in{opacity:1;transform:none}
 
-@media (max-width:1180px){nav ul{gap:16px}nav a{font-size:13px}}
+.brand{flex:none}
+@media (max-width:1320px){nav ul{gap:16px}nav a{font-size:13px}}
+@media (max-width:1200px){nav ul{display:none}.menu-btn{display:block}header .btn{display:none}}
 @media (max-width:1060px){
   nav ul{display:none}
   .menu-btn{display:block}
@@ -627,7 +644,7 @@ footer a:hover{color:#fff}
 <header>
   <div class="wrap">
     <a class="brand" href="index.html"><img decoding="async" src="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png" alt="Apex Gates, automatic gate specialist"></a>
-    <nav><ul><li><a href="residential.html">Homes and strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="products.html">Products</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
+    <nav><ul><li><a href="residential.html">Homes and strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="products.html">Products</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="projects.html">Projects</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D designer</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
     <a class="btn btn-red" href="#quote">Request a quote</a>
     <button class="menu-btn" aria-label="Open menu">Menu</button>
   </div>
@@ -662,7 +679,7 @@ footer a:hover{color:#fff}
         <fieldset class="mc"><legend>Single or double?</legend><div class="opts"><label class="pill"><input type="radio" name="leaves" value="Single"><span>Single</span></label><label class="pill"><input type="radio" name="leaves" value="Double"><span>Double</span></label><label class="pill"><input type="radio" name="leaves" value="Not sure"><span>Not sure</span></label></div></fieldset>
         <fieldset class="mc"><legend>Power at the gate</legend><div class="opts"><label class="pill"><input type="radio" name="power" value="Mains power available"><span>Mains power available</span></label><label class="pill"><input type="radio" name="power" value="Solar power needed"><span>Solar needed</span></label><label class="pill"><input type="radio" name="power" value="Not sure"><span>Not sure</span></label></div></fieldset>
         <button class="btn btn-red" type="button" id="qnext">Next: your details</button>
-        <small>Gate stuck right now? Call <a href="tel:0477884422">0477 88 44 22</a></small>
+        <small>Not sure yet? <a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">See your gate in 3D</a>. Gate stuck? Call <a href="tel:0477884422">0477 88 44 22</a></small>
       </div>
       <div class="qs" id="qs2" hidden>
         <div class="row2">
@@ -757,6 +774,23 @@ footer a:hover{color:#fff}
         <div class="cap" id="pcap">Cantilever gates</div>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="visualiser" style="background:var(--bg2)">
+  <div class="wrap viz">
+    <div>
+      <div class="lbl rv">Free 3D gate designer</div>
+      <h2 class="rv">See your new gate before we build it</h2>
+      <p class="rv">Take a photo of your driveway or site entrance. The designer works out which automatic gate suits the space, builds it in 3D right in your photo, and fills in your quote request for you.</p>
+      <ol class="vsteps rv">
+        <li>Stand on the street side and fit both gate posts in the photo.</li>
+        <li>Mark the opening and answer three quick questions about the space.</li>
+        <li>Try styles and colours, then send it to us for a quote.</li>
+      </ol>
+      <div class="ctas rv"><a class="btn btn-red" href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">Design your gate in 3D <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 8h13M9 3l5 5-5 5"/></svg></a></div>
+    </div>
+    <a class="vpic rv" href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html" aria-label="Open the 3D gate designer"><img decoding="async" loading="lazy" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/742154135_18209156335351989_782009221528721543_nfull.webp" alt="A driveway gate ready to be redesigned in 3D"><span class="vtag">Your photo, your gate</span><svg viewBox="0 0 300 120" fill="none" stroke="#ff5a3c" stroke-width="3" stroke-dasharray="900" aria-hidden="true"><rect x="2" y="10" width="296" height="108"/><line x1="150" y1="10" x2="150" y2="118"/><line x1="40" y1="10" x2="40" y2="118"/><line x1="78" y1="10" x2="78" y2="118"/><line x1="114" y1="10" x2="114" y2="118"/><line x1="186" y1="10" x2="186" y2="118"/><line x1="222" y1="10" x2="222" y2="118"/><line x1="260" y1="10" x2="260" y2="118"/></svg></a>
   </div>
 </section>
 
@@ -902,12 +936,12 @@ footer a:hover{color:#fff}
     <div class="fgrid">
       <div><p class="fh">Apex Gates</p><p style="margin:0;max-width:420px">Perth's automatic gate specialist for homes, strata and commercial sites. A WA owned and operated family company, established 2005. ABN 26 998 193 690.</p></div>
       <div><p class="fh">Products</p><ul><li><a href="cantilever-gates.html">Cantilever gates</a></li><li><a href="sliding-telescopic-gates.html">Sliding and telescopic gates</a></li><li><a href="swing-bifold-gates.html">Swing and bifold gates</a></li><li><a href="bollards-road-blockers.html">Bollards and road blockers</a></li><li><a href="turnstiles-pedestrian-gates.html">Turnstiles</a></li><li><a href="access-control-intercoms.html">Access control</a></li></ul></div>
-      <div><p class="fh">Properties</p><ul><li><a href="residential.html#homes">Homes</a></li><li><a href="residential.html#strata">Strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="repairs.html">Repairs and breakdowns</a></li></ul></div>
+      <div><p class="fh">Properties</p><ul><li><a href="residential.html#homes">Homes</a></li><li><a href="residential.html#strata">Strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="repairs.html">Repairs and breakdowns</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a></li></ul></div>
       <div><p class="fh">Contact</p><ul><li><a href="tel:0477884422">Office 0477 88 44 22</a></li><li><a href="mailto:info@apexgates.com.au">info@apexgates.com.au</a></li><li><a href="contact.html#area">Malaga WA</a></li><li><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a></li><li><a href="https://www.instagram.com/apexgates/">Instagram @apexgates</a></li></ul></div>
     </div>
     <div class="big" aria-hidden="true">Apex Gates</div>
     <div class="legal"><span>Apex Gates. ABN 26 998 193 690.</span><a href="privacy.html">Privacy</a></div>
-  <div class="ip-fnav"><a href="index.html">Home</a><a href="products.html">Products</a><a href="residential.html">Homes and strata</a><a href="commercial.html">Commercial</a><a href="service-contracts.html">Service contracts</a><a href="repairs.html">Repairs and breakdowns</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="faqs.html">FAQs</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a><a href="https://www.instagram.com/apexgates/">Instagram</a></div></div>
+  <div class="ip-fnav"><a href="index.html">Home</a><a href="products.html">Products</a><a href="residential.html">Homes and strata</a><a href="commercial.html">Commercial</a><a href="service-contracts.html">Service contracts</a><a href="repairs.html">Repairs and breakdowns</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="faqs.html">FAQs</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a><a href="https://www.instagram.com/apexgates/">Instagram</a></div></div>
 </footer>
 <div class="track" id="track"></div>
 

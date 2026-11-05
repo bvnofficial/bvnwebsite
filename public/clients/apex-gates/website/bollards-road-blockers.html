@@ -284,6 +284,21 @@ details p{margin:0;padding:0 0 22px;color:var(--muted);max-width:720px}
 .map{border:1px solid var(--line);min-height:420px;overflow:hidden;background:#1b1c1f}
 .map svg{width:100%;height:100%;display:block}
 
+/* 3D gate visualiser */
+.viz{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.viz h2{font-size:clamp(34px,4.4vw,60px);margin:14px 0 18px}
+.viz>div>p{color:var(--muted);font-size:18px;margin:0 0 22px}
+.vsteps{list-style:none;padding:0;margin:0 0 30px;display:grid;gap:14px;counter-reset:v}
+.vsteps li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;color:#d4d4d8}
+.vsteps li::before{counter-increment:v;content:counter(v);width:32px;height:32px;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:700;font-size:15px}
+.vpic{position:relative;aspect-ratio:4/3.2;overflow:hidden;border:1px solid var(--line)}
+.vpic img{width:100%;height:100%;object-fit:cover;filter:brightness(.75)}
+.vpic svg{position:absolute;left:12%;right:12%;bottom:14%;width:76%;height:auto;overflow:visible}
+.vpic svg rect,.vpic svg line{animation:draw 2.4s cubic-bezier(.6,0,.2,1) infinite alternate}
+@keyframes draw{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+.vtag{position:absolute;top:18px;left:18px;background:var(--red);color:#fff;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px}
+@media (max-width:1060px){.viz{grid-template-columns:1fr;gap:40px}}
+
 .cta-band{background:var(--red);padding:60px 0;color:#fff}
 .cta-band .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .cta-band h2{font-size:clamp(30px,3.6vw,46px)}
@@ -304,7 +319,9 @@ footer a:hover{color:#fff}
 .rv{opacity:0;transform:translateY(40px);transition:opacity .9s,transform 1s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
 .rv.in{opacity:1;transform:none}
 
-@media (max-width:1180px){nav ul{gap:16px}nav a{font-size:13px}}
+.brand{flex:none}
+@media (max-width:1320px){nav ul{gap:16px}nav a{font-size:13px}}
+@media (max-width:1200px){nav ul{display:none}.menu-btn{display:block}header .btn{display:none}}
 @media (max-width:1060px){
   nav ul{display:none}
   .menu-btn{display:block}
@@ -553,7 +570,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 <header>
   <div class="wrap">
     <a class="brand" href="index.html"><img decoding="async" src="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png" alt="Apex Gates, automatic gate specialist"></a>
-    <nav><ul><li><a href="residential.html">Homes and strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="products.html">Products</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
+    <nav><ul><li><a href="residential.html">Homes and strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="products.html">Products</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="projects.html">Projects</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D designer</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
     <a class="btn btn-red" href="#quote">Request a quote</a>
     <button class="menu-btn" aria-label="Open menu">Menu</button>
   </div>
@@ -563,6 +580,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 <p>Yes. Automatic bollards sit in a pit with drainage, so the install includes excavation and concrete. We plan this with you before work starts.</p></details><details><summary>Can bollards work with our existing access control?</summary>
 <p>In most cases, yes. We connect them to card readers, keypads, intercoms or your building system.</p></details></div></div></section><section class="ip-sec "><div class="wrap"><div class="ip-head"><p class="ip-eb">Also consider</p><h2>Related products</h2></div><div class="ip-grid"><a class="ip-card" href="cantilever-gates.html"><div class="ph"><img loading="lazy" decoding="async" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/741643343_18209155873351989_602918990545336849_nfull.webp" alt="2.4 metre Garrison cantilever gate installed by Apex Gates in Perth"></div><div class="bd"><h3>Cantilever gates</h3><p>No track at all. Ideal for wide openings, uneven ground and high wind sites.</p><span class="more">View cantilever gates</span></div></a><a class="ip-card" href="sliding-telescopic-gates.html"><div class="ph"><img loading="lazy" decoding="async" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/308181369_144900238237904_2246158353370278066_nfull.jpg" alt="BFT Kustos Ultra telescopic gate automation"></div><div class="bd"><h3>Sliding and telescopic gates</h3><p>Standard sliding gates, or telescopic gates that split into panels on separate tracks.</p><span class="more">View sliding and telescopic gates</span></div></a><a class="ip-card" href="swing-bifold-gates.html"><div class="ph"><img loading="lazy" decoding="async" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/747718466_18208788613351989_7813365603735508099_nfull.webp" alt="Automatic swing gates with articulated motors"></div><div class="bd"><h3>Swing and bifold gates</h3><p>Single, double and bifold swing gates, with motors that can sit out of view.</p><span class="more">View swing and bifold gates</span></div></a></div></div></section><section class="ip-sec ip-cta" id="quote"><div class="wrap"><div class="ip-cta-in">
 <div><p class="ip-eb">Request a quote</p><h2>Tell us about your site</h2><p>Tick a few boxes and we will come back to you with a price or a time for a site visit. Photos of the gate help us quote faster.</p><p>We also work outside the metro area. A travel surcharge applies to sites more than 30 minutes from our Malaga office.</p>
+<p><a class="btn ip-btn2" href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">See your gate in 3D first</a></p>
 <div class="phones"><a href="tel:0477884422"><small>Office</small>0477 88 44 22</a><a href="mailto:info@apexgates.com.au"><small>Email</small>info@apexgates.com.au</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/"><small>Facebook</small>Apex Gates</a><a href="https://www.instagram.com/apexgates/"><small>Instagram</small>@apexgates</a></div></div>
 <form class="ip-form" aria-label="Quote request">
 <fieldset class="ip-mc"><legend>Type of property</legend><div class="opts"><label class="ip-pill"><input type="radio" name="property" value="Home"><span>Home</span></label><label class="ip-pill"><input type="radio" name="property" value="Strata"><span>Strata</span></label><label class="ip-pill"><input type="radio" name="property" value="Commercial"><span>Commercial</span></label></div></fieldset><fieldset class="ip-mc"><legend>What do you need?</legend><div class="opts"><label class="ip-pill"><input type="radio" name="need" value="Automation"><span>Automation</span></label><label class="ip-pill"><input type="radio" name="need" value="New gate (fabrication)"><span>New gate (fabrication)</span></label><label class="ip-pill"><input type="radio" name="need" value="Maintenance or service"><span>Maintenance or service</span></label><label class="ip-pill"><input type="radio" name="need" value="Repair or breakdown"><span>Repair or breakdown</span></label><label class="ip-pill"><input type="radio" name="need" value="Something else"><span>Something else</span></label></div></fieldset><fieldset class="ip-mc"><legend>Sliding or swing gate?</legend><div class="opts"><label class="ip-pill"><input type="radio" name="gate" value="Sliding"><span>Sliding</span></label><label class="ip-pill"><input type="radio" name="gate" value="Swing"><span>Swing</span></label><label class="ip-pill"><input type="radio" name="gate" value="Other or not sure"><span>Other or not sure</span></label></div></fieldset><fieldset class="ip-mc"><legend>Single or double?</legend><div class="opts"><label class="ip-pill"><input type="radio" name="leaves" value="Single"><span>Single</span></label><label class="ip-pill"><input type="radio" name="leaves" value="Double"><span>Double</span></label><label class="ip-pill"><input type="radio" name="leaves" value="Not sure"><span>Not sure</span></label></div></fieldset><fieldset class="ip-mc"><legend>Power at the gate</legend><div class="opts"><label class="ip-pill"><input type="radio" name="power" value="Mains power available"><span>Mains power available</span></label><label class="ip-pill"><input type="radio" name="power" value="Solar power needed"><span>Solar power needed</span></label><label class="ip-pill"><input type="radio" name="power" value="Not sure"><span>Not sure</span></label></div></fieldset>
@@ -579,12 +597,12 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
     <div class="fgrid">
       <div><p class="fh">Apex Gates</p><p style="margin:0;max-width:420px">Perth's automatic gate specialist for homes, strata and commercial sites. A WA owned and operated family company, established 2005. ABN 26 998 193 690.</p></div>
       <div><p class="fh">Products</p><ul><li><a href="cantilever-gates.html">Cantilever gates</a></li><li><a href="sliding-telescopic-gates.html">Sliding and telescopic gates</a></li><li><a href="swing-bifold-gates.html">Swing and bifold gates</a></li><li><a href="bollards-road-blockers.html">Bollards and road blockers</a></li><li><a href="turnstiles-pedestrian-gates.html">Turnstiles</a></li><li><a href="access-control-intercoms.html">Access control</a></li></ul></div>
-      <div><p class="fh">Properties</p><ul><li><a href="residential.html#homes">Homes</a></li><li><a href="residential.html#strata">Strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="repairs.html">Repairs and breakdowns</a></li></ul></div>
+      <div><p class="fh">Properties</p><ul><li><a href="residential.html#homes">Homes</a></li><li><a href="residential.html#strata">Strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="repairs.html">Repairs and breakdowns</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a></li></ul></div>
       <div><p class="fh">Contact</p><ul><li><a href="tel:0477884422">Office 0477 88 44 22</a></li><li><a href="mailto:info@apexgates.com.au">info@apexgates.com.au</a></li><li><a href="contact.html#area">Malaga WA</a></li><li><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a></li><li><a href="https://www.instagram.com/apexgates/">Instagram @apexgates</a></li></ul></div>
     </div>
     <div class="big" aria-hidden="true">Apex Gates</div>
     <div class="legal"><span>Apex Gates. ABN 26 998 193 690.</span><a href="privacy.html">Privacy</a></div>
-  <div class="ip-fnav"><a href="index.html">Home</a><a href="products.html">Products</a><a href="residential.html">Homes and strata</a><a href="commercial.html">Commercial</a><a href="service-contracts.html">Service contracts</a><a href="repairs.html">Repairs and breakdowns</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="faqs.html">FAQs</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a><a href="https://www.instagram.com/apexgates/">Instagram</a></div></div>
+  <div class="ip-fnav"><a href="index.html">Home</a><a href="products.html">Products</a><a href="residential.html">Homes and strata</a><a href="commercial.html">Commercial</a><a href="service-contracts.html">Service contracts</a><a href="repairs.html">Repairs and breakdowns</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="faqs.html">FAQs</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a><a href="https://www.instagram.com/apexgates/">Instagram</a></div></div>
 </footer>
 <div class="track" id="track"></div>
 

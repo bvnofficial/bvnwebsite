@@ -30,6 +30,9 @@ img{max-width:100%;display:block}
 .top .name small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.3px;text-transform:none;color:#B9BEC5;margin-top:3px}
 .top .call{margin-left:auto;background:var(--red);color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:9px 14px;border-radius:999px;white-space:nowrap}
 .top .call:hover{background:var(--red-deep)}
+.top .site{margin-left:auto;color:#fff;font-size:14px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--red);white-space:nowrap}
+.top .site+.call{margin-left:0}
+@media(max-width:620px){.top .site{display:none}}
 @media(max-width:480px){.top .name{font-size:19px}.top .name small,.top .call .num{display:none}.top img{height:30px}}
 
 /* Steps bar */
@@ -167,8 +170,9 @@ h3{font-size:20px}
 
 <header class="top">
   <div class="in">
-    <img src="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png" alt="Apex Gates">
+    <a href="/clients/apex-gates/website/index.html"><img src="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png" alt="Apex Gates home page"></a>
     <div class="name">Gate Visualiser<small>Perth's automatic gate specialist since 2005</small></div>
+    <a class="site" href="/clients/apex-gates/website/index.html">Back to website</a>
     <a class="call" href="tel:0477884422">Call<span class="num"> 0477 88 44 22</span></a>
   </div>
 </header>
