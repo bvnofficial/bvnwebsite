@@ -292,7 +292,8 @@ details p{margin:0;padding:0 0 22px;color:var(--muted);max-width:720px}
 .vsteps li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;color:#d4d4d8}
 .vsteps li::before{counter-increment:v;content:counter(v);width:32px;height:32px;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:700;font-size:15px}
 .vpic{position:relative;aspect-ratio:4/3.2;overflow:hidden;border:1px solid var(--line)}
-.vpic img{width:100%;height:100%;object-fit:cover;filter:brightness(.75)}
+.vpic img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.vpic:hover img{transform:scale(1.04)}
 .vpic svg{position:absolute;left:12%;right:12%;bottom:14%;width:76%;height:auto;overflow:visible}
 .vpic svg rect,.vpic svg line{animation:draw 2.4s cubic-bezier(.6,0,.2,1) infinite alternate}
 @keyframes draw{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
