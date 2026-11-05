@@ -581,7 +581,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
   .g-boom .ip-gate .arm{width:80vw}
 }
 @media (prefers-reduced-motion:reduce){.ip-gate{display:none}.ip-hero *,.ip-txt>*{animation:none!important}.ip-pic.rv img{clip-path:none}}
-</style>
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}.ip-err{color:var(--red);font-weight:600;font-size:14px;margin:0}.ip-err a{color:inherit}button[disabled]{opacity:.7;cursor:wait}</style>
 </head>
 <body class="ip">
 
@@ -632,6 +632,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 <div class="two"><label>Email<input name="email" type="email" autocomplete="email"></label><label>Site suburb<input name="suburb"></label></div>
 <label>Photos of the gate (optional)<input name="photos" type="file" multiple accept="image/*"></label>
 <label>Anything else?<textarea name="details" rows="3" placeholder="Opening width, what is wrong, or anything else"></textarea></label>
+<label class="hp" aria-hidden="true">Leave this empty<input name="company_site" tabindex="-1" autocomplete="off"></label>
 <button class="btn btn-red" type="submit">Send my request</button>
 <small>We reply on the next business day. For a breakdown, call the office.</small>
 </form></div></div></section></main>
@@ -672,7 +673,19 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
   if(lb){const li=lb.querySelector('img'),lc=lb.querySelector('p');
     document.querySelectorAll('.ip-gi button').forEach(b=>b.addEventListener('click',()=>{const i=b.querySelector('img');li.src=i.src;li.alt=i.alt;lc.textContent=i.alt;lb.classList.add('open')}));
     lb.addEventListener('click',x=>{if(x.target!==li)lb.classList.remove('open')});addEventListener('keydown',x=>{if(x.key==='Escape')lb.classList.remove('open')})}
-  document.querySelectorAll('form').forEach(f=>{f.removeAttribute('onsubmit');f.addEventListener('submit',x=>{x.preventDefault();location.href='thank-you.html'})});
+
+  const API='https://www.bvnofficial.com/api/apex-gates-lead';
+  const shrink=async f=>{try{const b=await createImageBitmap(f),s=Math.min(1,1600/Math.max(b.width,b.height)),c=document.createElement('canvas');
+    c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);
+    return await new Promise(r=>c.toBlob(r,'image/jpeg',.82))}catch(e){return f.size<3e6?f:null}};
+  document.querySelectorAll('form').forEach(f=>{f.removeAttribute('onsubmit');f.addEventListener('submit',async x=>{x.preventDefault();
+    const b=f.querySelector('[type=submit]'),t=b.textContent;b.disabled=true;b.textContent='Sending...';
+    try{const fd=new FormData(f),fi=f.querySelector('input[type=file]');fd.delete('photos');
+      for(const p of [...(fi?fi.files:[])].slice(0,5)){const j=await shrink(p);if(j)fd.append('photos',j,'photo.jpg')}
+      fd.append('page',location.href);const r=await fetch(API,{method:'POST',body:fd});if(!r.ok)throw new Error(r.status);location.href='thank-you.html'}
+    catch(e){b.disabled=false;b.textContent=t;let m=f.querySelector('.ip-err');if(!m){m=document.createElement('p');m.className='ip-err';m.setAttribute('role','alert');b.after(m)}
+      m.innerHTML='That did not send. Please try again, or call <a href="tel:0477884422">0477 88 44 22</a>.'}})});
+
   const bar=document.querySelector('.mbar');
   if(bar){const fo=new IntersectionObserver(es=>es.forEach(x=>bar.classList.toggle('away',x.isIntersecting)),{threshold:.15});document.querySelectorAll('form').forEach(f=>fo.observe(f))}
 })();

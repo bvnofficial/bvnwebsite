@@ -113,6 +113,9 @@ form input:focus,form textarea:focus{outline:2px solid var(--red);border-color:v
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .ghost{border:1px solid #cdd3dc;background:#fff;border-radius:10px;padding:10px 13px;font-size:14px;font-weight:600;cursor:pointer}
 .ghost:hover{border-color:var(--char)}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.err{color:#d61d09;font-weight:600;font-size:14px;margin:0}.err a{color:inherit}
+button[disabled]{opacity:.7;cursor:wait}
 .done{text-align:center;padding:10px 0}
 .done h3{font-size:26px;margin-bottom:6px}
 .small{font-size:12px;color:var(--muted);margin:0}
@@ -267,10 +270,12 @@ const STEPS = [
       <div class="two"><label>Name<input name="name" autocomplete="name" required></label><label>Phone<input name="phone" type="tel" autocomplete="tel" required></label></div>
       <div class="two"><label>Email<input name="email" type="email" autocomplete="email"></label><label>Suburb<input name="suburb" autocomplete="address-level2"></label></div>
       <label>Anything else we should know?<textarea name="notes" rows="3" placeholder="A slope, a power point, the gate you have now"></textarea></label>
+      <label class="hp" aria-hidden="true">Leave this empty<input name="company_site" tabindex="-1" autocomplete="off"></label>
       <button class="send" type="submit">Send my design</button>
+      <p class="err" id="sendErr" role="alert" hidden>That did not send. Please try again, or call <a href="tel:0477884422">0477 88 44 22</a>.</p>
       <p class="small">We confirm every size on site before anything is made.</p>
     </form>
-    <div class="done" id="done" hidden><h3>Thanks, we have your design</h3><p>The Apex Gates team will call you to book a site visit.</p><p class="small">Draft preview: in the live website this goes straight to the Apex Gates office.</p></div>` },
+    <div class="done" id="done" hidden><h3>Thanks, we have your design</h3><p>The Apex Gates team will call you to book a site visit.</p></div>` },
 ];
 let open = "drive";
 
@@ -376,9 +381,26 @@ $("#steps").addEventListener("change", (e) => {
   const c = e.target.closest("input[type=checkbox][data-k]"); if (!c) return;
   set(c.dataset.k, c.checked); changed();
 });
-$("#steps").addEventListener("submit", (e) => {
+/* the design, a picture of it and the contact details go to the Apex Gates GHL account */
+$("#steps").addEventListener("submit", async (e) => {
   if (e.target.id !== "qform") return;
-  e.preventDefault(); e.target.hidden = true; $("#done").hidden = false;
+  e.preventDefault();
+  const f = e.target, btn = f.querySelector("[type=submit]"), label = btn.textContent;
+  btn.disabled = true; btn.textContent = "Sending..."; $("#sendErr").hidden = true;
+  try {
+    const fd = new FormData(f);
+    fd.append("form", "designer");
+    fd.append("design", lines().map(([k, v]) => `${k}: ${v}`).join("\n"));
+    fd.append("design_link", location.href);
+    fd.append("page", location.origin + location.pathname);
+    const pic = await (await fetch(B.snapshot())).blob();
+    fd.append("snapshot", pic, "design.jpg");
+    const r = await fetch("https://www.bvnofficial.com/api/apex-gates-lead", { method: "POST", body: fd });
+    if (!r.ok) throw new Error(r.status);
+    f.hidden = true; $("#done").hidden = false;
+  } catch (er) {
+    btn.disabled = false; btn.textContent = label; $("#sendErr").hidden = false;
+  }
 });
 document.addEventListener("click", async (e) => {
   if (e.target.id === "saveImg") { const a = document.createElement("a"); a.href = B.snapshot(); a.download = "apex-gates-design.jpg"; a.click(); }

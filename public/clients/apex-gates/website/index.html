@@ -633,7 +633,7 @@ footer a:hover{color:#fff}
 ::view-transition-new(root){animation:ipin .45s ease both}
 @keyframes ipout{to{opacity:0;transform:translateY(-10px)}}
 @keyframes ipin{from{opacity:0;transform:translateY(14px)}}
-.ip-fnav{display:flex;flex-wrap:wrap;gap:10px 22px;padding:22px 0 0;margin-top:28px;border-top:1px solid rgba(128,128,128,.28);font-size:14px}.ip-fnav a{text-decoration:none;opacity:.85}.ip-fnav a:hover{opacity:1;color:var(--red)}</style>
+.ip-fnav{display:flex;flex-wrap:wrap;gap:10px 22px;padding:22px 0 0;margin-top:28px;border-top:1px solid rgba(128,128,128,.28);font-size:14px}.ip-fnav a{text-decoration:none;opacity:.85}.ip-fnav a:hover{opacity:1;color:var(--red)}.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}.ip-err{color:var(--red);font-weight:600;font-size:14px;margin:0}.ip-err a{color:inherit}button[disabled]{opacity:.7;cursor:wait}</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -685,7 +685,7 @@ footer a:hover{color:#fff}
       </div>
     </div>
 
-    <form class="quote fade" id="quote" style="animation-delay:2.0s" aria-label="Quote request" onsubmit="event.preventDefault();location.href='thank-you.html'">
+    <form class="quote fade" id="quote" style="animation-delay:2.0s" aria-label="Quote request">
       <div class="qhead"><h2>Get a quote</h2><span class="qstep">Step <b id="qn">1</b> of 2</span></div>
       <div class="qbar"><i></i></div>
       <div class="qs" id="qs1">
@@ -708,7 +708,7 @@ footer a:hover{color:#fff}
           <div class="field"><label for="qsub">Site suburb</label><input id="qsub" name="suburb"></div>
         </div>
         <div class="field"><label for="qphoto">Photos of the gate (optional)</label><input id="qphoto" name="photos" type="file" multiple accept="image/*"></div>
-        <div class="qnav"><button class="btn back" type="button" id="qback">Back</button><button class="btn btn-red" type="submit">Send my request</button></div>
+        <label class="hp" aria-hidden="true">Leave this empty<input name="company_site" tabindex="-1" autocomplete="off"></label><div class="qnav"><button class="btn back" type="button" id="qback">Back</button><button class="btn btn-red" type="submit">Send my request</button></div>
         <small>We reply on the next business day.</small>
       </div>
     </form>
@@ -1004,5 +1004,18 @@ footer a:hover{color:#fff}
   if(bar&&'IntersectionObserver' in window){const fo=new IntersectionObserver(es=>es.forEach(e=>bar.classList.toggle('away',e.isIntersecting)),{threshold:.15});document.querySelectorAll('form').forEach(f=>fo.observe(f))}
 })();
 </script>
+<script>(()=>{
+  const API='https://www.bvnofficial.com/api/apex-gates-lead';
+  const shrink=async f=>{try{const b=await createImageBitmap(f),s=Math.min(1,1600/Math.max(b.width,b.height)),c=document.createElement('canvas');
+    c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);
+    return await new Promise(r=>c.toBlob(r,'image/jpeg',.82))}catch(e){return f.size<3e6?f:null}};
+  document.querySelectorAll('form').forEach(f=>{f.removeAttribute('onsubmit');f.addEventListener('submit',async x=>{x.preventDefault();
+    const b=f.querySelector('[type=submit]'),t=b.textContent;b.disabled=true;b.textContent='Sending...';
+    try{const fd=new FormData(f),fi=f.querySelector('input[type=file]');fd.delete('photos');
+      for(const p of [...(fi?fi.files:[])].slice(0,5)){const j=await shrink(p);if(j)fd.append('photos',j,'photo.jpg')}
+      fd.append('page',location.href);const r=await fetch(API,{method:'POST',body:fd});if(!r.ok)throw new Error(r.status);location.href='thank-you.html'}
+    catch(e){b.disabled=false;b.textContent=t;let m=f.querySelector('.ip-err');if(!m){m=document.createElement('p');m.className='ip-err';m.setAttribute('role','alert');b.after(m)}
+      m.innerHTML='That did not send. Please try again, or call <a href="tel:0477884422">0477 88 44 22</a>.'}})});
+})();</script>
 </body>
 </html>
