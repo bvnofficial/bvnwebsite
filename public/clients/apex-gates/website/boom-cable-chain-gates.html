@@ -55,8 +55,8 @@ section{padding:110px 0}
 /* swing gate intro, first visit only */
 .intro{position:fixed;inset:0;z-index:100;display:flex;perspective:1600px;pointer-events:none}
 .leaf{flex:1;background:#1f2023 repeating-linear-gradient(90deg,#2d2e32 0 12px,transparent 12px 58px);border:14px solid #2d2e32;border-top-width:22px;border-bottom-width:22px;position:relative;box-shadow:inset 0 0 0 4px var(--red)}
-.leaf.l{transform-origin:left center;animation:swingL 1.9s cubic-bezier(.6,0,.2,1) .7s forwards}
-.leaf.r{transform-origin:right center;animation:swingR 1.9s cubic-bezier(.6,0,.2,1) .7s forwards}
+.leaf.l{transform-origin:left center;animation:swingL 1.5s cubic-bezier(.6,0,.2,1) .35s forwards}
+.leaf.r{transform-origin:right center;animation:swingR 1.5s cubic-bezier(.6,0,.2,1) .35s forwards}
 .leaf::after{content:"";position:absolute;left:0;right:0;top:50%;height:18px;margin-top:-9px;background:#2d2e32;box-shadow:0 0 0 2px var(--red)}
 .plate{position:absolute;top:50%;right:0;transform:translateY(-50%);z-index:2;background:#fff;padding:14px 18px}
 .plate img{height:54px;width:auto}
@@ -299,6 +299,28 @@ details p{margin:0;padding:0 0 22px;color:var(--muted);max-width:720px}
 .vtag{position:absolute;top:18px;left:18px;background:var(--red);color:#fff;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px}
 @media (max-width:1060px){.viz{grid-template-columns:1fr;gap:40px}}
 
+/* access and comfort */
+.skip{position:absolute;left:12px;top:-60px;z-index:200;background:#fff;color:#212529;padding:10px 16px;font-weight:600;text-decoration:none;transition:top .2s}
+.skip:focus{top:12px}
+[id]{scroll-margin-top:96px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #ff7a5c;outline-offset:3px}
+header nav ul[style*="flex"] li{border-bottom:1px solid #eceef2}
+header nav ul[style*="flex"] a{display:block;padding:14px 0;font-size:16px}
+header nav ul[style*="flex"] a::after{display:none}
+/* phone action bar */
+.mbar{display:none}
+@media (max-width:760px){
+  .mbar{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:70;box-shadow:0 -8px 24px rgba(0,0,0,.35);transition:transform .35s}
+  .mbar a{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 10px;font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#fff;background:#212529}
+  .mbar a+a{background:var(--red)}
+  .mbar svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+  .mbar.away{transform:translateY(110%)}
+  body{padding-bottom:58px}
+}
+/* answers recap on step 2 */
+.recap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:#5f6166}
+.recap span{background:#fde9e5;color:#b52111;font-weight:600;padding:4px 10px;border-radius:999px}
+.recap:empty{display:none}
 .cta-band{background:var(--red);padding:60px 0;color:#fff}
 .cta-band .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .cta-band h2{font-size:clamp(30px,3.6vw,46px)}
@@ -320,7 +342,7 @@ footer a:hover{color:#fff}
 .rv.in{opacity:1;transform:none}
 
 .brand{flex:none}
-@media (max-width:1320px){nav ul{gap:16px}nav a{font-size:13px}}
+@media (max-width:1440px){nav ul{gap:15px}nav a{font-size:13px;letter-spacing:.04em}header .btn{padding:11px 16px;font-size:14px}}
 @media (max-width:1200px){nav ul{display:none}.menu-btn{display:block}header .btn{display:none}}
 @media (max-width:1060px){
   nav ul{display:none}
@@ -374,6 +396,8 @@ nav [aria-current=page]{color:var(--red)!important}
 .ip-eb{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin:0}
 .ip-hero{position:relative;overflow:hidden;padding:0}
 .ip-hero h1{font-size:clamp(40px,5.4vw,74px);margin:12px 0 18px;max-width:920px}
+.ip-hero h1,.ip-head h2,.ip-split h2,.ip-cta h2{overflow-wrap:break-word;hyphens:auto}
+@media (max-width:420px){.ip-hero h1{font-size:clamp(30px,9.4vw,40px)}.ip-head h2,.ip-split h2,.ip-cta h2{font-size:clamp(26px,8vw,34px)}}
 .ip-lead{font-size:clamp(18px,1.6vw,21px);max-width:680px;margin:0 0 30px;opacity:.92}
 .ip-ctas{display:flex;gap:12px;flex-wrap:wrap}
 .ip-btn2{border:2px solid currentColor!important;background:transparent;color:inherit}
@@ -427,12 +451,13 @@ nav [aria-current=page]{color:var(--red)!important}
 .dk .ip-eb{color:#ff7a5c}
 .ip-split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
 .ip-split.rev>.ip-pic{order:-1}
+.ip-split>*{min-width:0}
 .ip-pic{border-radius:var(--ip-r);overflow:hidden;position:relative;aspect-ratio:4/3.3;background:var(--ip-surf2)}
 .ip-pic img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1),clip-path 1.2s cubic-bezier(.7,0,.2,1)}
 .ip-pic:hover img{transform:scale(1.05)}
 .ip-pic.rv img{clip-path:inset(0 0 0 100%)}.ip-pic.rv.in img{clip-path:inset(0)}
-.ip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px}
-.ip-grid.three{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.ip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:22px}
+.ip-grid.three{grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
 .ip-card{background:var(--ip-surf);color:var(--ip-text);border:1px solid var(--ip-line);border-radius:var(--ip-r);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:transform .35s,box-shadow .35s,border-color .35s}
 a.ip-card:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(0,0,0,.16);border-color:var(--red)}
 .ip-card .ph{aspect-ratio:16/10;overflow:hidden;background:var(--ip-surf2)}
@@ -456,7 +481,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 .ip-chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
 .ip-chips a,.ip-chips span{font-size:14px;font-weight:600;padding:7px 13px;border-radius:999px;border:1px solid var(--ip-line);text-decoration:none;transition:background .2s,color .2s,border-color .2s}
 .ip-chips a:hover{background:var(--red);border-color:var(--red);color:#fff}
-.ip-steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
+.ip-steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:22px}
 .ip-step{border-top:3px solid var(--red);padding-top:18px}
 .ip-step::before{counter-increment:s;content:"0" counter(s);font-size:42px;font-weight:700;color:var(--red);display:block;line-height:1;margin-bottom:12px}
 .ip-step h3{font-size:20px;margin:0 0 6px}.ip-step p{margin:0;color:var(--ip-muted)}
@@ -484,7 +509,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 .ip-filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
 .ip-filter button{font:inherit;font-size:15px;font-weight:600;padding:9px 18px;border-radius:999px;border:1px solid var(--ip-line);background:var(--ip-surf);color:var(--ip-text);cursor:pointer;transition:background .2s,color .2s}
 .ip-filter button.on,.ip-filter button:hover{background:var(--red);border-color:var(--red);color:#fff}
-.ip-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.ip-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:20px}
 .ip-gi{margin:0;border-radius:var(--ip-r);overflow:hidden;background:var(--ip-surf);color:var(--ip-text);border:1px solid var(--ip-line);transition:opacity .4s,transform .4s}
 .ip-gi.hide{display:none}
 .ip-gi button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;aspect-ratio:4/3;overflow:hidden}
@@ -498,7 +523,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 .ip-lb.open{display:flex;animation:ipin .3s ease}
 .ip-lb img{max-width:min(1200px,100%);max-height:78vh;border-radius:8px;object-fit:contain}
 .ip-lb button{position:absolute;top:18px;right:18px;font:inherit;font-weight:700;background:#fff;color:#111;border:0;border-radius:999px;padding:10px 18px;cursor:pointer}
-.ip-locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+.ip-locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:22px}
 .ip-loc{background:var(--ip-surf);color:var(--ip-text);border:1px solid var(--ip-line);border-radius:var(--ip-r);padding:28px}
 .ip-loc h3{font-size:22px;margin:0 0 10px}.ip-loc p{margin:0 0 6px;color:var(--ip-muted)}
 .ip-loc a{color:var(--red);font-weight:700;text-decoration:none}
@@ -507,6 +532,8 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 .ip-cta{background:var(--ip-dark);color:var(--ip-dtext);position:relative;overflow:hidden}
 .ip-cta::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 8px,transparent 8px 60px);pointer-events:none}
 .ip-cta-in{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.ip-cta-in>*{min-width:0}
+.ip-cta .phones a{overflow-wrap:anywhere}
 .ip-cta p{color:var(--ip-dmuted);font-size:18px}
 .ip-cta .ip-eb{color:#ff7a5c}
 .ip-cta .phones{display:grid;gap:10px;margin-top:22px}
@@ -521,7 +548,12 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 .ip-form input:focus,.ip-form select:focus,.ip-form textarea:focus{outline:0;border-color:var(--red);box-shadow:0 0 0 3px rgba(214,29,9,.18)}
 .ip-form .btn{width:100%;justify-content:center;border:0;cursor:pointer;font-family:inherit;margin-top:4px}
 .ip-form small{color:var(--ip-muted);font-size:13px}
+.ip-form{grid-template-columns:minmax(0,1fr)}
+.ip-form>*{min-width:0}
+.ip-form .two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ip-form .two>*{min-width:0}
+.ip-form input,.ip-form select,.ip-form textarea{width:100%;min-width:0;max-width:100%}
 .ip-mc{border:0;padding:0;margin:0;min-width:0}
+@media (max-width:620px){.ip-form{padding:20px}}
 .ip-mc legend{font-size:14px;font-weight:600;padding:0;margin-bottom:8px}
 .ip-mc .opts{display:flex;flex-wrap:wrap;gap:8px}
 .ip-pill{position:relative;display:inline-flex!important;cursor:pointer}
@@ -552,6 +584,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 </head>
 <body class="ip">
 
+<a class="skip" href="#main">Skip to content</a>
 <script>try{if(sessionStorage.getItem('apexIntro'))document.documentElement.classList.add('seen');sessionStorage.setItem('apexIntro','1')}catch(e){}</script>
 
 <div class="topbar">
@@ -575,7 +608,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
     <button class="menu-btn" aria-label="Open menu">Menu</button>
   </div>
 </header>
-<main><section class="ip-hero dark g-swing"><div class="ip-media"><img decoding="async" fetchpriority="high" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/306067453_158731226811138_572310215405968610_nfull.jpg" alt="Solar powered cable gate at a remote site"><div class="ip-gate" aria-hidden="true"><i></i><i></i></div></div><div class="wrap"><div class="ip-txt"><div class="ip-crumbs"><a href="index.html">Home</a><span>/</span><a href="products.html">Products</a><span>/</span><span aria-current="page">Boom, cable and chain gates</span></div><p class="ip-eb">Products</p><h1>Boom, cable and chain gates</h1><p class="ip-lead">Automatic boom gates for car parks, depots and checkpoints, plus cable and chain gates for remote sites. Solar powered options run where there is no mains power.</p><div class="ip-ctas"><a class="btn btn-red" href="#quote">Request a quote</a><a class="btn ip-btn2" href="tel:0477884422">Call 0477 88 44 22</a></div></div></div></section><section class="ip-sec "><div class="wrap"><div class="ip-split"><div><p class="ip-eb">Overview</p><h2>Fast, simple vehicle control</h2><p>A boom gate opens in seconds, which keeps traffic moving at busy car parks, weighbridges and site checkpoints. Pair it with a card reader, intercom or camera and every vehicle is accounted for.</p><p>Cable and chain gates suit wide, remote entries where a full gate is not practical, such as access tracks and mine site roads. With a solar powered post and battery, they work far from any power point.</p><div class="ip-chips"><a href="commercial.html#mining">Mining and resources</a><a href="commercial.html#transport">Transport, airports and seaports</a></div></div><div class="ip-pic"><img loading="lazy" decoding="async" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/296065289_584513466415835_2499970062559941316_nfull.jpg" alt="Commercial cantilever security gate by Apex Gates"></div></div></div></section><section class="ip-sec alt"><div class="wrap"><div class="ip-head"><p class="ip-eb">Why it works</p><h2>What you get with boom, cable and chain gates</h2></div><div class="ip-grid "><div class="ip-tile"><h3>Quick to open</h3><p>Booms lift fast to keep queues short.</p></div><div class="ip-tile"><h3>Solar power</h3><p>Cable gates and some booms run on solar charged batteries.</p></div><div class="ip-tile"><h3>Any trigger</h3><p>Cards, keypads, remotes, intercoms, loops or cameras.</p></div><div class="ip-tile"><h3>Wide entries</h3><p>Cable and chain gates span openings a gate cannot.</p></div><div class="ip-tile"><h3>Vehicle loops</h3><p>Sensors stop the boom closing on a car.</p></div><div class="ip-tile"><h3>Servicing</h3><p>Arms, springs and motors checked on a schedule.</p></div></div></div></section><section class="ip-sec "><div class="wrap"><div class="ip-split rev"><div><p class="ip-eb">Options</p><h2>Built around your site</h2><p>Every site is different, so we fit boom, cable and chain gates with the parts your entry needs. Common options include:</p><ul class="ip-ticks"><li>Automatic boom gates</li><li>Cable gates</li><li>Chain gates</li><li>Solar powered posts</li><li>Card readers and intercoms</li><li>Vehicle loops</li></ul><p style="margin-top:18px">Suits: Car parks, Mining and remote sites, Depots and yards, Transport.</p></div><div class="ip-pic"><img loading="lazy" decoding="async" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/306067453_158731226811138_572310215405968610_nfull.jpg" alt="Solar powered cable gate at a remote site"></div></div></div></section><section class="ip-sec alt"><div class="wrap"><div class="ip-head"><p class="ip-eb">Questions</p><h2>Boom, cable and chain gates: common questions</h2></div><div class="ip-faq"><details><summary>Can a boom gate work without mains power?</summary>
+<main id="main"><section class="ip-hero dark g-swing"><div class="ip-media"><img decoding="async" fetchpriority="high" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/306067453_158731226811138_572310215405968610_nfull.jpg" alt="Solar powered cable gate at a remote site"><div class="ip-gate" aria-hidden="true"><i></i><i></i></div></div><div class="wrap"><div class="ip-txt"><div class="ip-crumbs"><a href="index.html">Home</a><span>/</span><a href="products.html">Products</a><span>/</span><span aria-current="page">Boom, cable and chain gates</span></div><p class="ip-eb">Products</p><h1>Boom, cable and chain gates</h1><p class="ip-lead">Automatic boom gates for car parks, depots and checkpoints, plus cable and chain gates for remote sites. Solar powered options run where there is no mains power.</p><div class="ip-ctas"><a class="btn btn-red" href="#quote">Request a quote</a><a class="btn ip-btn2" href="tel:0477884422">Call 0477 88 44 22</a></div></div></div></section><section class="ip-sec "><div class="wrap"><div class="ip-split"><div><p class="ip-eb">Overview</p><h2>Fast, simple vehicle control</h2><p>A boom gate opens in seconds, which keeps traffic moving at busy car parks, weighbridges and site checkpoints. Pair it with a card reader, intercom or camera and every vehicle is accounted for.</p><p>Cable and chain gates suit wide, remote entries where a full gate is not practical, such as access tracks and mine site roads. With a solar powered post and battery, they work far from any power point.</p><div class="ip-chips"><a href="commercial.html#mining">Mining and resources</a><a href="commercial.html#transport">Transport, airports and seaports</a></div></div><div class="ip-pic"><img loading="lazy" decoding="async" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/296065289_584513466415835_2499970062559941316_nfull.jpg" alt="Commercial cantilever security gate by Apex Gates"></div></div></div></section><section class="ip-sec alt"><div class="wrap"><div class="ip-head"><p class="ip-eb">Why it works</p><h2>What you get with boom, cable and chain gates</h2></div><div class="ip-grid "><div class="ip-tile"><h3>Quick to open</h3><p>Booms lift fast to keep queues short.</p></div><div class="ip-tile"><h3>Solar power</h3><p>Cable gates and some booms run on solar charged batteries.</p></div><div class="ip-tile"><h3>Any trigger</h3><p>Cards, keypads, remotes, intercoms, loops or cameras.</p></div><div class="ip-tile"><h3>Wide entries</h3><p>Cable and chain gates span openings a gate cannot.</p></div><div class="ip-tile"><h3>Vehicle loops</h3><p>Sensors stop the boom closing on a car.</p></div><div class="ip-tile"><h3>Servicing</h3><p>Arms, springs and motors checked on a schedule.</p></div></div></div></section><section class="ip-sec "><div class="wrap"><div class="ip-split rev"><div><p class="ip-eb">Options</p><h2>Built around your site</h2><p>Every site is different, so we fit boom, cable and chain gates with the parts your entry needs. Common options include:</p><ul class="ip-ticks"><li>Automatic boom gates</li><li>Cable gates</li><li>Chain gates</li><li>Solar powered posts</li><li>Card readers and intercoms</li><li>Vehicle loops</li></ul><p style="margin-top:18px">Suits: Car parks, Mining and remote sites, Depots and yards, Transport.</p></div><div class="ip-pic"><img loading="lazy" decoding="async" src="https://apexgates.com.au/wp-content/uploads/sb-instagram-feed-images/306067453_158731226811138_572310215405968610_nfull.jpg" alt="Solar powered cable gate at a remote site"></div></div></div></section><section class="ip-sec alt"><div class="wrap"><div class="ip-head"><p class="ip-eb">Questions</p><h2>Boom, cable and chain gates: common questions</h2></div><div class="ip-faq"><details><summary>Can a boom gate work without mains power?</summary>
 <p>Some can. Cable gates and some booms run on batteries charged by solar panels. We will tell you which suits your site.</p></details><details><summary>How long can a boom arm be?</summary>
 <p>It depends on the operator. Tell us the lane width and we will match the boom to it.</p></details><details><summary>Do you service boom gates from other suppliers?</summary>
 <p>Yes. We service all brands of automatic gates and boom gates.</p></details><details><summary>Is a boom gate secure enough on its own?</summary>
@@ -604,6 +637,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
     <div class="legal"><span>Apex Gates. ABN 26 998 193 690.</span><a href="privacy.html">Privacy</a></div>
   <div class="ip-fnav"><a href="index.html">Home</a><a href="products.html">Products</a><a href="residential.html">Homes and strata</a><a href="commercial.html">Commercial</a><a href="service-contracts.html">Service contracts</a><a href="repairs.html">Repairs and breakdowns</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="faqs.html">FAQs</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a><a href="https://www.instagram.com/apexgates/">Instagram</a></div></div>
 </footer>
+<nav class="mbar" aria-label="Quick actions"><a href="tel:0477884422"><svg viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 005 5L15 12l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2"/></svg>Call</a><a href="#quote"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z"/></svg>Get a quote</a></nav>
 <div class="track" id="track"></div>
 
 
@@ -629,6 +663,8 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
     document.querySelectorAll('.ip-gi button').forEach(b=>b.addEventListener('click',()=>{const i=b.querySelector('img');li.src=i.src;li.alt=i.alt;lc.textContent=i.alt;lb.classList.add('open')}));
     lb.addEventListener('click',x=>{if(x.target!==li)lb.classList.remove('open')});addEventListener('keydown',x=>{if(x.key==='Escape')lb.classList.remove('open')})}
   document.querySelectorAll('form').forEach(f=>{f.removeAttribute('onsubmit');f.addEventListener('submit',x=>{x.preventDefault();location.href='thank-you.html'})});
+  const bar=document.querySelector('.mbar');
+  if(bar){const fo=new IntersectionObserver(es=>es.forEach(x=>bar.classList.toggle('away',x.isIntersecting)),{threshold:.15});document.querySelectorAll('form').forEach(f=>fo.observe(f))}
 })();
 </script>
 </body>
