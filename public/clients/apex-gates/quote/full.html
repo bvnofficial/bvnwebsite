@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121214">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Apex Quote">
+<title>Apex Quote, full tool</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23d61d09'/%3E%3Cpath d='M9 24 16 8l7 16M11.8 18h8.4' stroke='%23fff' stroke-width='3' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500;62..125,700;62..125,800&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><i>A</i>APEX QUOTE<small>Internal</small></div>
+  <nav class="tabs" aria-label="Sections">
+    <button data-tab="build" class="on">Build</button>
+    <button data-tab="cuts">Cut list</button>
+    <button data-tab="quote">Quotation</button>
+    <button data-tab="quotes">Quotes</button>
+    <button data-tab="book">Price book</button>
+    <button data-tab="formulas">Formulas</button>
+  </nav>
+  <div class="qno"><span id="qclient">New quote</span><b id="qnoTop">Q-1001</b><em class="saved" id="saved">Saved</em></div>
+</header>
+<main>
+  <div class="view build" id="v-build"></div>
+  <div class="view" id="v-cuts"></div>
+  <div class="view" id="v-quote"></div>
+  <div class="view" id="v-quotes"></div>
+  <div class="view" id="v-book"></div>
+  <div class="view" id="v-formulas"></div>
+</main>
+<div class="mob" id="mob"></div>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="app.js?v=1"></script>
+</body>
+</html>
