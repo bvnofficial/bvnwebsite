@@ -6,6 +6,13 @@ import {
   isRaetzerGated,
   raetzerGateHtml,
 } from "@/lib/raetzer-gate";
+import {
+  APEX_QUOTE_TOKEN,
+  APEX_QUOTE_COOKIE,
+  APEX_QUOTE_HOME,
+  isApexQuoteGated,
+  apexQuoteGateHtml,
+} from "@/lib/apex-quote-gate";
 
 export async function middleware(request: NextRequest) {
   // Password gate for the private Raetzer client preview and its hosted site
@@ -13,6 +20,29 @@ export async function middleware(request: NextRequest) {
   // access cookie; without it, serve the branded password page (HTTP 401 so no
   // crawler indexes it).
   const path = request.nextUrl.pathname;
+
+  // Password gate for Apex Quote, the Apex Gates internal quoting tool. Its
+  // prices and margins are private, so every file under the path is gated.
+  if (isApexQuoteGated(path)) {
+    const cookie = request.cookies.get(APEX_QUOTE_COOKIE)?.value;
+    if (cookie !== APEX_QUOTE_TOKEN) {
+      const showError = request.nextUrl.searchParams.get("aq") === "bad";
+      const next = /\.\w+$/.test(path) ? path : APEX_QUOTE_HOME;
+      return new NextResponse(apexQuoteGateHtml(next, showError), {
+        status: 401,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+          "x-robots-tag": "noindex, nofollow",
+        },
+      });
+    }
+    if (!/\.\w+$/.test(path)) {
+      return NextResponse.redirect(new URL(APEX_QUOTE_HOME, request.url));
+    }
+    return NextResponse.next();
+  }
+
   if (isRaetzerGated(path)) {
     const cookie = request.cookies.get(RAETZER_COOKIE)?.value;
     if (cookie !== RAETZER_TOKEN) {
