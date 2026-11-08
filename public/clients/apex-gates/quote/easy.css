@@ -467,3 +467,26 @@ main{max-width:920px}
 @media (max-width:900px){.addgrid,.gedit{grid-template-columns:1fr}.gprev{position:static}}
 @media (max-width:620px){.two{grid-template-columns:1fr}.prow.wide{grid-template-columns:1fr}.pair{justify-content:flex-start}.dock .in.office{grid-template-columns:1fr}.dock .state{font-size:16px}}
 .card .lbl{font-weight:800;font-size:19px;margin:16px 0 10px}
+
+/* CEO dashboard: quotes and profit */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:6px 0 4px}
+.kpi{background:#fff;border:1px solid var(--line,#e3ddd0);border-radius:16px;padding:16px 18px}
+.kpi small{display:block;font-size:14px;font-weight:700;color:#6b6a66}
+.kpi b{display:block;font:800 30px "Archivo",sans-serif;margin:6px 0 2px}
+.kpi span{font-size:14px;color:#6b6a66}
+.qtable{display:grid;gap:0;background:#fff;border:1px solid var(--line,#e3ddd0);border-radius:14px;overflow:hidden}
+.card .qtable{border:none}
+.qr{display:grid;grid-template-columns:2.2fr 1.2fr 1.2fr 1fr 1fr;gap:10px;align-items:center;padding:12px 16px;border-top:1px solid #eee9de;font-size:16px}
+.qr:first-child{border-top:none}
+.qr.qh2{background:#f6f2e9;font-size:13px;font-weight:800;color:#6b6a66;text-transform:uppercase;letter-spacing:.04em}
+.qr small{display:block;font-size:13px;color:#7a7873;margin-top:2px}
+.qr .ok{color:#1d7a3e;font-weight:800}.qr .low{color:#b3261e;font-weight:800}
+.qr span small{font-weight:600}
+.pill{font-style:normal;font-size:13px;font-weight:800;padding:4px 10px;border-radius:99px;background:#eee9de;color:#3a3b40;white-space:nowrap}
+.pill.won{background:#d9f0e0;color:#1d7a3e}.pill.sent{background:#dde8f6;color:#24466e}.pill.lost{background:#f6dcda;color:#b3261e}
+@media (max-width:820px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .qr{grid-template-columns:1fr 1fr;font-size:15px}
+  .qr>:first-child{grid-column:1/-1}
+  .qr.qh2{display:none}
+}

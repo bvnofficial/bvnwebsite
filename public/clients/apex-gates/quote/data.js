@@ -488,10 +488,10 @@ export const TEMPLATES = [
     inputs: [
       text("text", "Description", "Custom item"),
       num("qty", "Quantity", 1, { unit: "", min: 0, max: 10000, step: 1 }),
-      num("unit", "Cost each (ex GST)", 100, { unit: "$", min: 0, max: 1000000, step: 1 }),
+      num("unit", "Customer price each (ex GST)", 100, { unit: "$", min: 0, max: 1000000, step: 1 }),
       seg("cat", "Counts as", [["materials", "Materials"], ["hardware", "Hardware"], ["labour", "Labour"], ["other", "Other"]], "other"),
     ],
     vars: [["finish", '"none"']],
-    direct: [{ cat: "cat", qty: "qty", unit: "unit" }],
+    direct: [{ cat: "cat", qty: "qty", unit: "unit", price: true }],
   },
 ];

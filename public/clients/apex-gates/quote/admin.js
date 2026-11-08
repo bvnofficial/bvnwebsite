@@ -1,6 +1,7 @@
-/* Apex Quote office page: the one place prices are changed, new equipment and
-   materials are added, and new gate types are set up. Saving sends it to the
-   server, and every tablet picks it up the next time it opens. */
+/* Simon's CEO dashboard: every quote the technicians made and what Apex makes
+   on it, plus the one place prices, markup, equipment, materials and gate types
+   are changed. Saving sends it to the server, and every tablet picks it up the
+   next time it opens. Technicians cannot open it. */
 import { PRICEBOOK, TEMPLATES } from "./data.js";
 import { runItem, priceQuote, defaults, money, byId } from "./engine.js";
 import { drawItem } from "./draw.js";
@@ -19,7 +20,7 @@ const ICON = {
   undo: I('<path d="M9 14L4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3"/>'),
 };
 
-const st = { office: false, loaded: false, work: null, dirty: false, updated: null, tab: "prices", shelf: "steel", find: "", gate: null, err: "", history: null, saving: false };
+const st = { office: false, loaded: false, work: null, dirty: false, updated: null, tab: "quotes", quotes: null, qfilter: "all", shelf: "steel", find: "", gate: null, err: "", history: null, saving: false };
 
 async function api(body) {
   const r = await fetch("data.json", { method: body ? "POST" : "GET", headers: body ? { "content-type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined, credentials: "same-origin", cache: "no-store" });
@@ -49,6 +50,7 @@ function render() {
   $(".nav").classList.toggle("hide", !st.office);
   if (!st.loaded) { m.innerHTML = `<p class="muted">Loading...</p>`; return; }
   if (!st.office) { m.innerHTML = viewLogin(); renderBar(); return; }
+  if (st.tab === "quotes") { m.innerHTML = viewQuotes(); if (!st.quotes && !st.qloading) loadQuotes(); }
   if (st.tab === "prices") m.innerHTML = viewPrices();
   if (st.tab === "add") m.innerHTML = viewAdd();
   if (st.tab === "gates") m.innerHTML = st.gate ? viewGateEditor() : viewGates();
@@ -66,12 +68,56 @@ function renderBar() {
 
 function viewLogin() {
   return `<div class="card pad" style="max-width:560px;margin:30px auto">
-    <h1 class="big-t" style="display:flex;gap:12px;align-items:center"><span style="width:44px;color:var(--red)">${ICON.lock}</span>Office only</h1>
-    <p style="font-size:19px;margin:0 0 16px">This is where prices are changed and new gates, equipment and materials are added. Every tablet uses what is saved here.</p>
-    <div class="fld"><label>Office password</label><input id="opw" type="password" autocomplete="current-password"></div>
+    <h1 class="big-t" style="display:flex;gap:12px;align-items:center"><span style="width:44px;color:var(--red)">${ICON.lock}</span>CEO only</h1>
+    <p style="font-size:19px;margin:0 0 16px">This is Simon's dashboard: every quote and what Apex makes on it, and where prices and markup are set. Technicians cannot open it.</p>
+    <div class="fld"><label>CEO password</label><input id="opw" type="password" autocomplete="current-password"></div>
     ${st.err ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>${esc(st.err)}</div></div>` : ""}
-    <button class="btn red wide" style="margin-top:16px" data-act="login">Open the office</button>
+    <button class="btn red wide" style="margin-top:16px" data-act="login">Open the dashboard</button>
     <a class="btn ghost wide" href="index.html" style="margin-top:10px;text-decoration:none">${ICON.back}Back to quoting</a></div>`;
+}
+
+/* every quote from every tablet, priced with the real costs */
+async function loadQuotes() {
+  st.qloading = true;
+  try { st.quotes = (await api({ action: "quotes" })).list || []; } catch (e) { st.quotes = []; say(e.message); }
+  st.qloading = false; render();
+}
+const STATUS = { draft: "Still working", sent: "Sent", won: "Going ahead", lost: "Said no" };
+function viewQuotes() {
+  const head = `<h1 class="big-t">Quotes and profit</h1><p class="hello" style="margin-top:-10px">Every quote the technicians make, with what Apex makes on it. Only you see this.</p>`;
+  if (!st.quotes) return head + `<p class="muted">Loading the quotes...</p>`;
+  const T = tpls();
+  const rows = st.quotes.map((q) => {
+    let P; try { P = priceQuote(q, T, pb()); } catch (e) { return null; }
+    const makes = P.exGst - P.tot.cost;
+    return { q, inc: P.inc, makes, margin: P.margin, what: q.items.map((it) => it.name || byId(T, it.tpl)?.name || "Item").join(", ") };
+  }).filter(Boolean).sort((a, b) => (b.q.updated || 0) - (a.q.updated || 0));
+  const since = new Date(); since.setDate(1); since.setHours(0, 0, 0, 0);
+  const month = rows.filter((r) => (r.q.created || 0) >= since.getTime());
+  const won = month.filter((r) => r.q.status === "won");
+  const sum = (list, k) => list.reduce((a, r) => a + r[k], 0);
+  const avg = month.length ? sum(month, "makes") / Math.max(1, month.reduce((a, r) => a + r.inc / (1 + pb().settings.gst / 100), 0)) : 0;
+  const kpi = (label, value, sub) => `<div class="kpi"><small>${label}</small><b>${value}</b>${sub ? `<span>${sub}</span>` : ""}</div>`;
+  const kpis = `<div class="kpis">
+    ${kpi("Quotes this month", month.length, `${won.length} going ahead`)}
+    ${kpi("Quoted this month", money(sum(month, "inc")), "customer prices with GST")}
+    ${kpi("Apex makes on them", money(sum(month, "makes")), `${(avg * 100).toFixed(0)}% on average`)}
+    ${kpi("Won this month", money(sum(won, "inc")), `Apex makes ${money(sum(won, "makes"))}`)}
+  </div>`;
+  const techs = {};
+  for (const r of month) { const k = r.q.tech || "No name given"; const t = (techs[k] ||= { n: 0, won: 0, inc: 0, makes: 0 }); t.n++; t.inc += r.inc; t.makes += r.makes; if (r.q.status === "won") t.won++; }
+  const techList = Object.entries(techs).sort((a, b) => b[1].makes - a[1].makes);
+  const team = techList.length ? `<section class="card pad" style="margin-top:16px"><h2 class="qh">Each technician this month</h2>
+    <div class="qtable"><div class="qr qh2"><span>Name</span><span>Quotes</span><span>Going ahead</span><span>Quoted</span><span>Apex makes</span></div>
+    ${techList.map(([n, t]) => `<div class="qr"><b>${esc(n)}</b><span>${t.n}</span><span>${t.won}</span><span>${money(t.inc)}</span><span class="ok">${money(t.makes)}</span></div>`).join("")}</div></section>` : "";
+  const show = rows.filter((r) => st.qfilter === "all" || r.q.status === st.qfilter);
+  const filt = `<div class="segrow" style="margin:22px 0 12px">${[["all", "All"], ...Object.entries(STATUS)].map(([v, l]) => `<button class="${st.qfilter === v ? "on" : ""}" data-act="qf" data-v="${v}">${l}</button>`).join("")}</div>`;
+  const list = show.length ? `<div class="qtable big"><div class="qr qh2"><span>Customer</span><span>Who quoted</span><span>Where it is up to</span><span>Customer pays</span><span>Apex makes</span></div>
+    ${show.map((r) => `<div class="qr"><div><b>${esc(r.q.client?.name || "No name yet")}</b><small>${esc(r.q.no || "")} · ${new Date(r.q.updated || r.q.created).toLocaleDateString("en-AU", { day: "numeric", month: "short" })} · ${esc(r.what)}</small></div>
+      <span>${esc(r.q.tech || "No name given")}</span><span><i class="pill ${r.q.status}">${STATUS[r.q.status] || "Still working"}</i></span><span>${money(r.inc)}</span>
+      <span class="${r.margin * 100 < pb().settings.minMargin ? "low" : "ok"}">${money(r.makes)}<small>${(r.margin * 100).toFixed(0)}%</small></span></div>`).join("")}</div>`
+    : `<p class="muted">${rows.length ? "No quotes here." : "No quotes yet. They show up here as soon as a technician starts one on their tablet."}</p>`;
+  return head + kpis + team + filt + list + `<button class="btn ghost small" style="margin-top:16px" data-act="qreload">Check for new quotes</button>`;
 }
 
 /* prices */
@@ -106,7 +152,7 @@ function viewPrices() {
         <div class="money-in"><span>$</span><input data-list="${sh[3]}" data-id="${x.id}" data-f="${sh[4]}" inputmode="decimal" value="${x[sh[4]]}"></div></div></div>`;
     }).join("") || `<p class="muted">Nothing matches.</p>`;
   }
-  const secret = sh[0] === "addon" ? `<div class="okmsg" style="margin-bottom:14px">${ICON.lock}Only the office sees these numbers. Technicians' tablets get every price with this already added, so they only ever see what the customer pays. They never see what Apex pays or how much is added on.</div>` : "";
+  const secret = sh[0] === "addon" ? `<div class="okmsg" style="margin-bottom:14px">${ICON.lock}Only you see these numbers. Technicians' tablets get every price with this already added, so they only ever see what the customer pays. They never see what Apex pays or how much is added on.</div>` : "";
   return `<h1 class="big-t">Prices</h1><p class="hello" style="margin-top:-10px">What things cost Apex, before GST. Change a number, then press <b>Save for everyone</b> at the bottom.</p>
   <div class="shelves">${SHELVES.map((s) => `<button class="shelf ${s[0] === sh[0] ? "on" : ""}" data-act="shelf" data-v="${s[0]}"><b>${s[1]}</b></button>`).join("")}</div>
   ${["addon", "paint"].includes(sh[0]) ? "" : `<div class="pbar"><div class="fld"><input data-find placeholder="Search ${sh[1].toLowerCase()}" value="${esc(st.find)}"></div><button class="btn dark small" data-act="rise">Prices went up by a %</button><button class="btn ghost small" data-act="tab" data-v="add">${ICON.plus}Add new</button></div>`}
@@ -214,7 +260,7 @@ function viewCompany() {
   </section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">More</h2><div style="display:flex;gap:10px;flex-wrap:wrap">
     <a class="btn ghost small" href="full.html" style="text-decoration:none">Full tool (cut lists and formulas)</a>
-    <button class="btn ghost small" data-act="logout">${ICON.lock}Lock the office on this device</button></div></section>`;
+    <button class="btn ghost small" data-act="logout">${ICON.lock}Sign out of the CEO dashboard on this device</button></div></section>`;
 }
 const histDate = (n) => { const m = n.match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d)-(\d\d)/); return m ? new Date(Date.UTC(+m[1], m[2] - 1, +m[3], +m[4], +m[5])).toLocaleString("en-AU", { weekday: "short", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }) : n; };
 
@@ -228,6 +274,8 @@ document.addEventListener("click", async (e) => {
   }
   if (a === "logout") { await api({ action: "logout" }).catch(() => {}); location.href = "index.html"; }
   if (a === "shelf") { st.shelf = b.dataset.v; st.find = ""; render(); }
+  if (a === "qf") { st.qfilter = b.dataset.v; render(); }
+  if (a === "qreload") { st.quotes = null; render(); }
   if (a === "rise") {
     const p = parseFloat(prompt("By how much did these prices go up? Type a number, for example 5 for 5%", "5"));
     if (!p) return;

@@ -58,6 +58,30 @@ export async function writeData(body: any) {
   await put(`history/${stamp}.json`);
 }
 
+/* quotes the technicians make, one file each, so the CEO dashboard sees them all */
+const QID = /^[a-z0-9]{4,16}$/;
+export async function saveQuote(q: any) {
+  if (!q || !QID.test(String(q.id || ""))) throw new Error("Bad quote");
+  const b = await bucket();
+  const { error } = await b.upload(`quotes/${q.id}.json`, new Blob([JSON.stringify(q)], { type: "application/json" }), { upsert: true, contentType: "application/json" });
+  if (error) throw new Error(error.message);
+}
+export async function deleteQuote(id: string) {
+  if (!QID.test(id)) throw new Error("Bad quote");
+  const b = await bucket();
+  await b.remove([`quotes/${id}.json`]);
+}
+export async function listQuotes() {
+  const b = await bucket();
+  const { data } = await b.list("quotes", { limit: 300, sortBy: { column: "updated_at", order: "desc" } });
+  const files = (data || []).filter((f) => f.name.endsWith(".json"));
+  const out = await Promise.all(files.map(async (f) => {
+    const { data: blob } = await b.download(`quotes/${f.name}`);
+    try { return blob ? JSON.parse(await blob.text()) : null; } catch { return null; }
+  }));
+  return out.filter(Boolean);
+}
+
 export async function listHistory() {
   const b = await bucket();
   const { data } = await b.list("history", { limit: 40, sortBy: { column: "name", order: "desc" } });

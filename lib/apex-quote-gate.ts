@@ -45,7 +45,7 @@ export function apexQuoteGateHtml(next: string, showError: boolean): string {
   <div class="card">
     <div class="mark">A</div>
     <h1>APEX QUOTE</h1>
-    <p class="sub">The Apex Gates quoting tool, for the team only.</p>
+    <p class="sub">Technicians: use the team password to quote.<br>Simon: use the CEO password to open your dashboard.</p>
     ${err}
     <form method="POST" action="/api/apex-quote-unlock">
       <input type="hidden" name="next" value="${next.replace(/"/g, "&quot;")}">

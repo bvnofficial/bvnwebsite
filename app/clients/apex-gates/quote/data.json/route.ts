@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView } from "@/lib/apex-quote-store";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -38,6 +38,19 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
+  // any technician can send in the quotes they make, so the CEO dashboard sees them
+  if (body.action === "quote" || body.action === "unquote") {
+    try {
+      if (body.action === "quote") {
+        if (JSON.stringify(body.quote || {}).length > 400_000) return json({ error: "Too big" }, 400);
+        await saveQuote(body.quote);
+      } else await deleteQuote(String(body.id || ""));
+      return json({ ok: true });
+    } catch (e: any) {
+      return json({ error: e.message }, 500);
+    }
+  }
+
   if (!isOffice(req)) return json({ error: "Office password needed" }, 403);
   try {
     if (body.action === "save") {
@@ -48,6 +61,7 @@ export async function POST(req: NextRequest) {
       await writeData(d);
       return json({ ok: true, updated: d.updated });
     }
+    if (body.action === "quotes") return json({ ok: true, list: await listQuotes() });
     if (body.action === "history") return json({ ok: true, list: await listHistory() });
     if (body.action === "restore") {
       const d = await readHistory(String(body.name || ""));

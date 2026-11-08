@@ -138,7 +138,7 @@ export function runItem(tpl, values, pb) {
   const direct = [];
   for (const d of tpl.direct || []) {
     const amount = run(d.qty, "Quantity") * run(d.unit, "Unit cost");
-    if (amount) direct.push({ cat: typeof env[d.cat] === "string" ? env[d.cat] : d.cat, amount });
+    if (amount) direct.push({ cat: typeof env[d.cat] === "string" ? env[d.cat] : d.cat, amount, price: !!d.price });
   }
 
   // weight and coating area come straight from the cut list
@@ -225,7 +225,8 @@ export function priceQuote(quote, templates, pb) {
     }
     const f = byId(pb.finishes, r.finish);
     if (f && f.id !== "none") line.cost.finish += Math.max(f.min || 0, f.perM2 * r.area + (f.perKg || 0) * r.kg);
-    for (const d of r.direct) line.cost[d.cat in line.cost ? d.cat : "other"] += d.amount;
+    // a "price" line is what the customer pays, so its cost is worked back from the markup
+    for (const d of r.direct) { const c = d.cat in line.cost ? d.cat : "other"; line.cost[c] += d.price ? d.amount / up(c) : d.amount; }
     kgTotal += r.kg;
     r.warnings.forEach((w) => warnings.push(`${line.name}: ${w}`));
     r.errors.forEach((e) => errors.push(`${line.name}: ${e}`));

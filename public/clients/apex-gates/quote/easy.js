@@ -29,6 +29,9 @@ function load() {
     const d = JSON.parse(localStorage.getItem(KEY));
     if (d && d.pb && d.templates) {
       for (const t of TEMPLATES) if (!d.templates.find((x) => x.id === t.id)) d.templates.push(clone(t));
+      // the custom line now takes the customer price, on older devices too
+      const cu = d.templates.find((x) => x.id === "custom"), cn = TEMPLATES.find((x) => x.id === "custom");
+      if (cu && cn) { cu.direct = clone(cn.direct); cu.inputs = clone(cn.inputs); }
       for (const k of Object.keys(PRICEBOOK.settings)) if (!(k in d.pb.settings)) d.pb.settings[k] = PRICEBOOK.settings[k];
       if (!d.quotes.length) { const q = newQuote(d); d.quotes.push(q); d.current = q.id; }
       return d;
@@ -41,7 +44,27 @@ let saveT;
 function save() {
   const q = Q(); if (q) q.updated = Date.now();
   clearTimeout(saveT);
-  saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { say("Could not save on this device"); } }, 200);
+  saveT = setTimeout(() => { store(); sendT = setTimeout(sendQuotes, 1500); }, 200);
+}
+function store() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { say("Could not save on this device"); } }
+/* every quote also goes to the office, so the CEO dashboard sees all of them */
+let sendT, sending = false;
+async function sendQuotes() {
+  clearTimeout(sendT);
+  if (sending) return;
+  sending = true;
+  try {
+    for (const q of db.quotes) {
+      if (!q.items.length || (q.sent || 0) >= q.updated) continue;
+      const stamp = Date.now();
+      const { sent, sel, ...out } = q;
+      const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "quote", quote: out }) });
+      if (!r.ok) break;
+      q.sent = stamp;
+    }
+    store();
+  } catch (e) { /* no signal, try again later */ }
+  sending = false;
 }
 const Q = () => db.quotes.find((q) => q.id === db.current) || db.quotes[0];
 /* the office's shared prices and gate types, loaded from the server */
@@ -195,10 +218,10 @@ const LAYOUT = {
       { t: "ticks", list: [["crane", "Crane truck", "For heavy gates", "truck"], ["skip", "Skip bin", "For rubbish", "bin"]] },
     ]],
   ],
+  /* everyone types what the customer pays; the CEO also picks which markup it counts under */
   custom: [
-    ["Your own line", "other", "Anything not listed", [{ t: "text", k: "text", label: "What is it" }, { t: "nums", list: [["unit", "Our cost for one", [50, 100, 250, 500]], ["qty", "How many", [1, 2, 5, 10]]] }, { t: "pick", k: "cat", label: "What kind of cost", pic: "none" }]],
+    ["Your own line", "other", "Anything not listed", [{ t: "text", k: "text", label: "What is it" }, { t: "nums", list: [["unit", "Customer price for one, before GST", [50, 100, 250, 500]], ["qty", "How many", [1, 2, 5, 10]]] }, { t: "pick", k: "cat", label: "What kind of thing", pic: "none" }]],
   ],
-  /* technicians type what the customer pays, since they never see the markup */
   customTeam: [
     ["Your own line", "other", "Anything not listed", [{ t: "text", k: "text", label: "What is it" }, { t: "nums", list: [["unit", "Customer price for one, before GST", [50, 100, 250, 500]], ["qty", "How many", [1, 2, 5, 10]]] }]],
   ],
@@ -425,6 +448,7 @@ function viewQuote() {
       <div class="fld"><label>Name</label><input data-c="name" value="${esc(q.client.name)}" placeholder="Customer name"></div>
       <div class="fld"><label>Phone</label><input data-c="phone" inputmode="tel" value="${esc(q.client.phone)}" placeholder="Phone"></div>
       <div class="fld full"><label>Address</label><input data-c="address" value="${esc(q.client.address)}" placeholder="Street and suburb"></div>
+      <div class="fld full"><label>Your name (who made this quote)</label><input data-tech value="${esc(q.tech)}" placeholder="Technician name"></div>
     </div>
   </div>
   <div class="card pad qside">
@@ -539,12 +563,12 @@ function viewPrices() {
   }).join("") || `<p class="muted">Nothing matches.</p>`;
   return `<h1 class="big-t">Prices</h1>
   ${syncLine()}
-  ${boss() ? `<a class="btn dark wide" href="admin.html" style="text-decoration:none;margin:16px 0 20px">${ICON.pen}Change prices or add new things (office)</a>` : `<div style="height:16px"></div>`}
+  ${boss() ? `<a class="btn dark wide" href="admin.html" style="text-decoration:none;margin:16px 0 20px">${ICON.pen}Open the CEO dashboard</a>` : `<div style="height:16px"></div>`}
   <div class="shelves">${SHELVES.map((s) => `<button class="shelf ${s[0] === sh[0] ? "on" : ""}" data-act="shelf" data-v="${s[0]}">${ICON[s[2]]}<b>${s[1]}</b></button>`).join("")}</div>
   <div class="pbar"><div class="fld"><input data-find placeholder="Search ${sh[1].toLowerCase()}" value="${esc(ui.find)}"></div></div>
   <div class="plist">${rows}</div>
   <p class="muted" style="margin-top:22px">${boss() ? "What things cost Apex, before GST and before markup." : "What the customer pays for each, before GST."}</p>
-  ${boss() ? "" : `<a class="linkbtn" href="admin.html" style="margin-top:18px;display:inline-flex">${ICON.pen}Office login</a>`}`;
+`;
 }
 
 /* ---------- actions ---------- */
@@ -582,7 +606,7 @@ document.addEventListener("click", (e) => {
   }
   if (a === "open") { db.current = b.dataset.id; ui.tab = 0; save(); ui.view = "job"; render(); window.scrollTo(0, 0); }
   if (a === "copyjob") { const src = db.quotes.find((x) => x.id === b.dataset.id), n = { ...clone(src), id: uid(), no: `Q-${db.nextNo++}`, created: Date.now(), updated: Date.now(), status: "draft", signature: null }; db.quotes.push(n); save(); redraw(); say("Job copied"); }
-  if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
+  if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "unquote", id: b.dataset.id }) }).catch(() => {}); db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
 });
 document.addEventListener("change", (e) => {
@@ -595,6 +619,7 @@ document.addEventListener("input", (e) => {
   const el = e.target, q = Q();
   if (el.dataset.c) { q.client[el.dataset.c] = el.value; save(); }
   if (el.matches("[data-qn]")) { q.notes = el.value; save(); }
+  if (el.matches("[data-tech]")) { q.tech = db.lastTech = el.value; save(); }
   if (el.matches("[data-find]")) { ui.find = el.value; const pos = el.selectionStart; render(); const n = $("[data-find]"); n.focus(); n.setSelectionRange(pos, pos); }
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.dataset?.num) e.target.blur(); });
@@ -603,3 +628,5 @@ document.addEventListener("toggle", (e) => { if (e.target.matches?.("details.whe
 render();
 pull();
 window.addEventListener("focus", pull);
+sendQuotes();
+window.addEventListener("online", sendQuotes);
