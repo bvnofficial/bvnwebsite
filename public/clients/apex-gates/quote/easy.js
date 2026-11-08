@@ -50,6 +50,7 @@ function say(t) { const el = $("#saved"); el.textContent = t; el.classList.add("
 /* ---------- pictures ---------- */
 const I = (p, w = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const ICON = {
+  arrow: I('<path d="M5 12h14M13 6l6 6-6 6"/>', 2.6),
   plus: I('<path d="M12 5v14M5 12h14"/>', 2.6), minus: I('<path d="M5 12h14"/>', 2.6), tick: I('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 3),
   gate: I('<path d="M3 20V5M21 20V5M3 7h8.5v12H3M12.5 7H21v12h-8.5M6 7v12M9 7v12M15 7v12M18 7v12"/>'),
   ruler: I('<path d="M3 16l13-13 5 5-13 13zM7 12l2 2M10 9l2 2M13 6l2 2"/>'),
@@ -173,88 +174,88 @@ const LAYOUT = {
 const UNIT = { km: "km", remove: "hours", elec: "hours", hrs: "hours", unit: "dollars", qty: "" };
 
 /* ---------- ui state ---------- */
-const ui = { view: "job", shelf: "steel", find: "" };
+const ui = { view: "home", tab: 0, shelf: "steel", find: "" };
 
 function item() { const q = Q(); return q.items.find((i) => i.id === q.sel) || q.items[0]; }
 function run(it) { const t = tplOf(it.tpl); return t ? runItem(t, it.values, db.pb) : null; }
+const nameOf = (it) => it.name || NAMES[it.tpl]?.[0] || "Item";
 
 function render() {
-  document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.view === ui.view));
+  if (ui.view === "job" && !Q().items.length) ui.view = "pick";
+  const navOn = { home: "home", jobs: "jobs", prices: "prices" }[ui.view];
+  document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.view === navOn));
   const m = $("#main");
+  if (ui.view === "home") m.innerHTML = viewHome();
+  if (ui.view === "pick") m.innerHTML = viewPick();
   if (ui.view === "job") m.innerHTML = viewJob();
   if (ui.view === "quote") m.innerHTML = viewQuote();
   if (ui.view === "jobs") m.innerHTML = viewJobs();
   if (ui.view === "prices") m.innerHTML = viewPrices();
+  const dock = $("#dock");
+  dock.innerHTML = ui.view === "job" ? `<div class="in"><button class="btn ghost" data-act="view" data-v="pick">${ICON.plus}Add another</button><button class="btn red" data-act="view" data-v="quote">Show the quote ${ICON.arrow}</button></div>` : "";
+  dock.classList.toggle("hide", ui.view !== "job");
   scrollFix();
 }
 let keepY = null;
 function scrollFix() { if (keepY !== null) { window.scrollTo(0, keepY); keepY = null; } }
 function redraw() { keepY = window.scrollY; render(); }
 
-/* ---------- the job screen ---------- */
+/* ---------- home ---------- */
+function viewHome() {
+  const recent = [...db.quotes].filter((q) => q.items.length).sort((a, b) => b.updated - a.updated).slice(0, 3);
+  return `<h1 class="big-t">What do you want to do?</h1>
+  <div class="homegrid">
+    <button class="hometile red" data-act="newjob">${ICON.plus}<b>New quote</b><span>Draw up a gate or fence and get the price</span></button>
+    <button class="hometile" data-act="view" data-v="jobs">${ICON.folder}<b>My quotes</b><span>Open one you already started</span></button>
+    <button class="hometile" data-act="view" data-v="prices">${ICON.tag}<b>Prices</b><span>Change what steel, motors and labour cost</span></button>
+  </div>
+  ${recent.length ? `<h2 class="sub-t">Carry on where you left off</h2><div class="jobs">${recent.map((q) => `<button class="card recent" data-act="open" data-id="${q.id}"><span class="rp">${thumb(q.items[0])}</span><span class="rt"><b>${esc(q.client.name || "No name yet")}</b><small>${q.items.map(nameOf).join(", ")}</small></span><span class="amt">${money(price(q).inc)}</span></button>`).join("")}</div>` : ""}`;
+}
+
+/* ---------- pick what to add ---------- */
+function viewPick() {
+  const q = Q();
+  return `<h1 class="big-t">What are we quoting?</h1><p class="hello" style="margin-top:-8px">Tap a picture.</p>${typeGrid()}
+  ${q.items.length ? `<button class="btn ghost wide" style="margin-top:18px" data-act="view" data-v="job">Go back</button>` : ""}`;
+}
+
+/* ---------- the gate screen ---------- */
 function thumb(it) {
   const t = tplOf(it.tpl), r = run(it);
   if (t && t.draw !== "none" && r) return drawItem(t, r, db.pb);
-  return `<div style="width:56px;color:#3a3b40">${TYPE_ICON[it.tpl] || ICON.other}</div>`;
+  return `<span style="display:block;width:56px;margin:auto;color:#3a3b40">${TYPE_ICON[it.tpl] || ICON.other}</span>`;
 }
 function viewJob() {
   const q = Q(), P = price(q), it = item();
-  const lineOf = (id) => P.lines.find((l) => l.id === id);
-  const strip = q.items.map((x) => {
-    const l = lineOf(x.id);
-    return `<button class="chip ${it && x.id === it.id ? "on" : ""}" data-act="sel" data-id="${x.id}"><div class="pp">${thumb(x)}</div><b>${esc(x.name || NAMES[x.tpl]?.[0])}</b><small>${l ? money(l.sell * (1 + db.pb.settings.gst / 100)) : ""}</small></button>`;
-  }).join("");
-  const who = `<div class="card pad" style="margin-bottom:16px"><div class="who">
-    <div class="fld"><label>Customer name</label><input data-c="name" value="${esc(q.client.name)}" placeholder="Name"></div>
-    <div class="fld"><label>Phone</label><input data-c="phone" inputmode="tel" value="${esc(q.client.phone)}" placeholder="Phone"></div>
-    <div class="fld full"><label>Address</label><input data-c="address" value="${esc(q.client.address)}" placeholder="Street and suburb"></div>
-  </div></div>`;
-  if (!it) {
-    return `<p class="hello">Job ${esc(q.no)}</p><h1 class="big-t">What are we building?</h1>${who}
-      <div class="card pad"><p style="margin:0 0 6px;font-size:21px;font-weight:700">Tap a picture to start.</p><p class="muted" style="margin:0">You can add as many gates, fences and extras as the job needs.</p>${typeGrid()}</div>`;
-  }
-  const t = tplOf(it.tpl), r = run(it), l = lineOf(it.id);
-  return `<p class="hello">Job ${esc(q.no)}${q.client.name ? ` for ${esc(q.client.name)}` : ""}</p>
-  ${who}
-  <div class="strip">${strip}<button class="chip add" data-act="addpop">${ICON.plus}Add another</button></div>
-  <div class="bench">
-    <div class="boardwrap">
-      <div class="board">
-        <div class="head"><h2>${esc(it.name || NAMES[it.tpl]?.[0])}</h2><div class="acts">
-          <button class="iconbtn" data-act="dup">${ICON.copy}Copy</button><button class="iconbtn" data-act="del">${ICON.bin}Remove</button></div></div>
-        <div class="grid">${t.draw !== "none" ? drawItem(t, r, db.pb) : `<div class="nopic">${TYPE_ICON[it.tpl] || ICON.other}<p>${esc(cap(r.desc))}</p></div>`}</div>
-        <div class="says">${esc(cap(r.desc))}${r.kg ? `<div style="margin-top:10px"><span class="weight">${ICON.scale}Weighs about ${fmtNum(r.kg)} kg</span></div>` : ""}</div>
-        ${r.warnings.length ? `<div style="padding:0 18px 16px"><div class="warn">${ICON.warn}<div><b>Have a look at this</b><ul>${r.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div></div></div>` : ""}
-      </div>
-      ${l ? moneyPic(l.cost, l.sell, `This ${esc((it.name || NAMES[it.tpl]?.[0] || "item").toLowerCase())}`) : ""}
-      ${jobTotal(P)}
-    </div>
-    <div class="side">${(LAYOUT[it.tpl] || []).map((s) => section(s, t, it, r)).join("")}${fineDetails(t, it, r)}</div>
-  </div>`;
-}
-function jobTotal(P) {
-  const q = Q(), s = db.pb.settings, low = P.margin * 100 < s.minMargin;
-  return `<div class="jobtotal"><div><small>Whole job, customer pays (with GST)</small><b>${money(P.inc)}</b><small>${q.items.length} thing${q.items.length === 1 ? "" : "s"} on this job</small></div>
-    <button class="btn red" data-act="view" data-v="quote">${ICON.doc}Show the quote</button></div>
-    <div class="card pad"><div class="disc"><span>Discount for the customer</span><div class="stepper">
-      <button data-act="disc" data-d="-5" aria-label="Less discount">${ICON.minus}</button><output>${P.disc}%</output><button data-act="disc" data-d="5" aria-label="More discount">${ICON.plus}</button></div></div>
-      ${low ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>We only keep ${(P.margin * 100).toFixed(0)}% on this job. Apex aims for at least ${s.minMargin}%.</div></div>` : `<div class="okmsg" style="margin-top:12px">${ICON.tick}We keep ${money(P.exGst - P.tot.cost)} on this job (${(P.margin * 100).toFixed(0)}%).</div>`}
-    </div>`;
+  const t = tplOf(it.tpl), r = run(it), l = P.lines.find((x) => x.id === it.id);
+  const gst = 1 + db.pb.settings.gst / 100;
+  const secs = LAYOUT[it.tpl] || [];
+  if (ui.tab >= secs.length) ui.tab = 0;
+  const others = q.items.length > 1 ? `<div class="onquote"><span>On this quote:</span>${q.items.map((x) => `<button class="${x.id === it.id ? "on" : ""}" data-act="sel" data-id="${x.id}">${esc(nameOf(x))}</button>`).join("")}</div>` : "";
+  const keep = l ? l.sell - l.costTotal : 0;
+  return `${others}
+  <div class="titlerow"><h1>${esc(nameOf(it))}</h1><button class="linkbtn" data-act="del">${ICON.bin}Take it off</button></div>
+  <div class="board">
+    <div class="grid">${t.draw !== "none" ? drawItem(t, r, db.pb) : `<div class="nopic">${TYPE_ICON[it.tpl] || ICON.other}</div>`}</div>
+    <div class="pricebar"><div><small>Price for the customer, with GST</small><b>${l ? money(l.sell * gst) : "$0"}</b></div>
+      ${l && l.sell ? `<div class="makes">${ICON.coins}<span>Apex makes<b>${money(keep)}</b></span></div>` : ""}</div>
+    ${r.warnings.length ? `<div class="warn" style="margin:0 16px 16px">${ICON.warn}<div><b>Check this</b><ul>${r.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div></div>` : ""}
+    ${l && l.sell ? `<details class="where" ${ui.where ? "open" : ""}><summary>Where does the money go?</summary>${moneyPic(l.cost, l.sell)}</details>` : ""}
+  </div>
+  ${secs.length > 1 ? `<div class="tabs">${secs.map((s, i) => `<button class="${i === ui.tab ? "on" : ""}" data-act="tab" data-i="${i}">${ICON[s[1]] || ""}<b>${s[0]}</b></button>`).join("")}</div>` : ""}
+  ${secs[ui.tab] ? section(secs[ui.tab], t, it, r) : ""}
+  ${secs.length > 1 && ui.tab < secs.length - 1 ? `<button class="btn dark wide" style="margin-top:16px" data-act="tab" data-i="${ui.tab + 1}">Next: ${secs[ui.tab + 1][0]} ${ICON.arrow}</button>` : ""}`;
 }
 
 /* where the money goes, as one bar */
 const SLICES = [["materials", "Steel", "steel", "#55575d"], ["hardware", "Gate parts", "bolt", "#9a958a"], ["motors", "Motor and remotes", "motor", "#24466e"], ["labour", "Our team's time", "worker", "#e8a33a"], ["finish", "Paint or galvanising", "paint", "#7a5ea8"], ["other", "Other", "other", "#c9c2b2"]];
-function moneyPic(cost, sell, title) {
-  const s = db.pb.settings, gst = 1 + s.gst / 100;
+function moneyPic(cost, sell) {
   const parts = SLICES.map(([k, label, ic, col]) => ({ label, ic, col, v: cost[k] || 0 })).filter((p) => p.v > 0.5);
   const costTotal = parts.reduce((a, p) => a + p.v, 0), ours = Math.max(0, sell - costTotal), all = costTotal + ours || 1;
   const pct = (v) => ((v / all) * 100).toFixed(2);
-  return `<div class="card mpic"><h3>${title}</h3>
-    <div class="pays"><b>${money(sell * gst)}</b><span>customer pays, with GST</span></div>
-    <div class="mbar" role="img" aria-label="Where the money goes">${parts.map((p) => `<i style="width:${pct(p.v)}%;background:${p.col}"></i>`).join("")}<i style="width:${pct(ours)}%;background:var(--ok)"></i></div>
-    <p class="rule">Where the money goes, before GST</p>
+  return `<div class="mpic"><div class="mbar" role="img" aria-label="Where the money goes">${parts.map((p) => `<i style="width:${pct(p.v)}%;background:${p.col}"></i>`).join("")}<i style="width:${pct(ours)}%;background:var(--ok)"></i></div>
     <div class="mleg">${parts.map((p) => `<div>${ICON[p.ic]}<em style="background:${p.col}"></em><span>${p.label}</span><b>${money(p.v)}</b></div>`).join("")}
-      <div class="ours">${ICON.coins}<em style="background:var(--ok)"></em><span>Apex keeps</span><b>${money(ours)}</b></div></div></div>`;
+      <div class="ours">${ICON.coins}<em style="background:var(--ok)"></em><span>Apex makes</span><b>${money(ours)}</b></div></div><p class="rule">All before GST</p></div>`;
 }
 
 /* ---------- picture tiles ---------- */
@@ -315,7 +316,7 @@ function section([title, ic, hint, fields], t, it, r) {
         const metres = u === "mm" && v >= 1000 ? `<em> = ${(v / 1000).toLocaleString("en-AU", { maximumFractionDigits: 2 })} metres</em>` : "";
         return `<div class="nb"><b>${label}</b><div class="numrow"><button data-act="bump" data-k="${k}" data-d="${-bigStep}" aria-label="Less">${ICON.minus}</button>
           <input data-num="${k}" inputmode="decimal" value="${v}" aria-label="${label}"><button data-act="bump" data-k="${k}" data-d="${bigStep}" aria-label="More">${ICON.plus}</button></div>
-          <div class="unit">${u === "dollars" ? "dollars, before GST" : u}${metres}</div>
+          <div class="unit">${u === "dollars" ? "dollars, before GST" : metres ? `millimetres, that is ${(v / 1000).toLocaleString("en-AU", { maximumFractionDigits: 2 })} metres` : u === "mm" ? "millimetres" : u}</div>
           ${quick ? `<div class="quick">${quick.map((x) => `<button class="${x === v ? "on" : ""}" data-act="set" data-k="${k}" data-v="${x}" data-num="1">${u === "mm" && x >= 1000 ? (x / 1000).toLocaleString("en-AU") + " m" : fmtNum(x)}</button>`).join("")}</div>` : ""}</div>`;
       }).join("")}</div>`;
     }
@@ -336,7 +337,7 @@ function section([title, ic, hint, fields], t, it, r) {
     if (f.t === "text") return `<div class="fld" style="margin-bottom:12px"><label>${f.label}</label><input data-txt="${f.k}" value="${esc(it.values[f.k] ?? "")}"></div>`;
     return "";
   }).join("");
-  return `<section class="card sec"><h2>${ICON[ic] || ""}${title}</h2><p class="hint">${hint}</p>${body}</section>`;
+  return `<section class="card sec"><p class="hint">${hint}</p>${body}</section>`;
 }
 function countRow(t, it, k, label, help, ico) {
   const inp = t.inputs.find((i) => i.k === k); if (!inp) return "";
@@ -344,40 +345,12 @@ function countRow(t, it, k, label, help, ico) {
   return `<div class="count"><div style="display:flex;gap:12px;align-items:center">${ico ? `<span style="width:40px;flex:none;color:var(--ink2)">${ICON[ico]}</span>` : ""}<div><b>${label}</b>${help ? `<small>${help}</small>` : ""}</div></div>
     <div class="stepper"><button data-act="bump" data-k="${k}" data-d="-1" aria-label="One less">${ICON.minus}</button><output>${v}</output><button data-act="bump" data-k="${k}" data-d="1" aria-label="One more">${ICON.plus}</button></div></div>`;
 }
-/* everything the picture tiles do not cover, for the workshop */
-function fineDetails(t, it) {
-  const shown = new Set(["colour"]);
-  for (const s of LAYOUT[it.tpl] || []) for (const f of s[3]) {
-    if (f.k) shown.add(f.k);
-    (f.list || []).forEach((x) => shown.add(x[0]));
-    if (f.count) shown.add(f.count[0]);
-  }
-  const rest = t.inputs.filter((i) => !shown.has(i.k));
-  if (!rest.length) return "";
-  return `<details class="card sec more" ${ui.fineOpen ? "open" : ""}><summary>Workshop details (frame, hinges, locks, depths)</summary><p class="hint">These are already set to the usual. Change them only if the job needs it.</p><div class="fine">${rest.map((i) => {
-    const v = it.values[i.k] ?? i.def;
-    if (i.type === "num") return `<div class="fl"><b>${esc(i.label)}${i.unit ? ` (${esc(i.unit)})` : ""}</b><input type="text" inputmode="decimal" data-num="${i.k}" value="${v}"></div>`;
-    if (i.type === "seg") return `<div class="fl"><b>${esc(i.label)}</b><select data-sel="${i.k}" data-isnum="${typeof i.def === "number" ? 1 : 0}">${i.opts.map(([o, lab]) => `<option value="${esc(o)}" ${o == v ? "selected" : ""}>${esc(lab)}</option>`).join("")}</select></div>`;
-    if (i.type === "mat") return `<div class="fl"><b>${esc(i.label)}</b><select data-sel="${i.k}">${db.pb.materials.filter((m) => m.cat === i.filter).map((m) => `<option value="${m.id}" ${m.id === v ? "selected" : ""}>${esc(m.name)}</option>`).join("")}</select></div>`;
-    if (i.type === "bool") return `<div class="fl"><b>${esc(i.label)}</b><select data-sel="${i.k}" data-isnum="1"><option value="1" ${+v ? "selected" : ""}>Yes</option><option value="0" ${+v ? "" : "selected"}>No</option></select></div>`;
-    if (i.type === "text") return `<div class="fl"><b>${esc(i.label)}</b><input type="text" data-txt="${i.k}" value="${esc(v)}"></div>`;
-    return "";
-  }).join("")}</div></details>`;
-}
-
 function typeGrid() {
   return `<div class="typegrid">${db.templates.filter((t) => NAMES[t.id]).map((t) => {
     const pic = t.draw !== "none" ? drawItem(t, runItem(t, defaults(t), db.pb), db.pb) : `<div style="width:64px;color:#3a3b40">${TYPE_ICON[t.id] || ICON.other}</div>`;
     return `<button class="pick" data-act="add" data-t="${t.id}"><div class="pp">${pic}</div><b>${NAMES[t.id][0]}</b><small>${NAMES[t.id][1]}</small></button>`;
   }).join("")}</div>`;
 }
-function addPop() {
-  const m = document.createElement("div"); m.className = "pop";
-  m.innerHTML = `<div class="card widecard"><h3>What are we adding?</h3><p class="muted" style="margin:0">Tap a picture.</p>${typeGrid()}<button class="btn ghost wide" style="margin-top:16px" data-x="close">Cancel</button></div>`;
-  document.body.appendChild(m);
-  m.addEventListener("click", (e) => { if (e.target === m || e.target.closest("[data-x=close]")) m.remove(); else if (e.target.closest("[data-act=add]")) m.remove(); });
-}
-
 /* ---------- the quote for the customer ---------- */
 function includes(P) {
   const inc = [], exc = [];
@@ -402,14 +375,35 @@ function viewQuote() {
   const { inc, exc } = includes(P);
   const valid = q.created + s.validity * 864e5;
   const tickI = ICON.tick, noI = I('<path d="M6 6l12 12M18 6L6 18"/>', 2.6);
-  return `<div class="qtools noprint">
-    <button class="btn light small" data-act="view" data-v="job">Back to the job</button>
-    <button class="btn red small" data-act="sign">${ICON.pen}${q.signature ? "Sign again" : "Customer signs here"}</button>
-    <button class="btn dark small" data-act="print">${ICON.print}Print or save PDF</button>
-    <button class="btn ghost small" data-act="copytext">${ICON.copy}Copy for a text message</button>
+  const low = P.margin * 100 < s.minMargin;
+  return `<div class="noprint qwrap">
+  <button class="btn ghost small" data-act="view" data-v="job" style="margin-bottom:16px">Back to the gate</button>
+  <div class="card pad qside">
+    <h2 class="qh">${ICON.user}Who is it for?</h2>
+    <div class="who">
+      <div class="fld"><label>Name</label><input data-c="name" value="${esc(q.client.name)}" placeholder="Customer name"></div>
+      <div class="fld"><label>Phone</label><input data-c="phone" inputmode="tel" value="${esc(q.client.phone)}" placeholder="Phone"></div>
+      <div class="fld full"><label>Address</label><input data-c="address" value="${esc(q.client.address)}" placeholder="Street and suburb"></div>
+    </div>
   </div>
-  <div class="card pad noprint" style="max-width:860px;margin:0 auto 16px"><div class="fld"><label>A note for the customer (optional)</label><textarea data-qn rows="2" placeholder="Thanks for having us out today">${esc(q.notes)}</textarea></div>
-    <p class="lbl" style="font-weight:800;margin:14px 0 8px">Where is this job up to?</p><div class="statusbtns">${[["draft", "Still working"], ["sent", "Sent"], ["won", "Yes, go ahead"], ["lost", "Said no"]].map(([st, lab]) => `<button data-act="status" data-v="${st}" class="${q.status === st ? "on" : ""}">${lab}</button>`).join("")}</div></div>
+  <div class="card pad qside">
+    <h2 class="qh">${ICON.coins}The price</h2>
+    <div class="bigtotal"><small>Customer pays, with GST</small><b>${money(P.inc)}</b></div>
+    <div class="disc"><span>Discount</span><div class="stepper"><button data-act="disc" data-d="-5" aria-label="Less discount">${ICON.minus}</button><output>${P.disc}%</output><button data-act="disc" data-d="5" aria-label="More discount">${ICON.plus}</button></div></div>
+    ${low ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>Apex only makes ${money(P.exGst - P.tot.cost)} here (${(P.margin * 100).toFixed(0)}%). Aim for ${s.minMargin}% or more.</div></div>` : `<div class="okmsg" style="margin-top:12px">${ICON.tick}Apex makes ${money(P.exGst - P.tot.cost)} on this quote.</div>`}
+  </div>
+  <div class="card pad qside">
+    <h2 class="qh">${ICON.doc}Send it</h2>
+    <div class="sendgrid">
+      <button class="btn red" data-act="sign">${ICON.pen}${q.signature ? "Sign again" : "Customer signs now"}</button>
+      <button class="btn dark" data-act="print">${ICON.print}Print or PDF</button>
+      <button class="btn light" data-act="copytext">${ICON.copy}Copy for a text</button>
+    </div>
+    <p class="lbl" style="font-weight:800;margin:18px 0 8px">Where is it up to?</p><div class="statusbtns">${[["draft", "Still working"], ["sent", "Sent"], ["won", "Going ahead"], ["lost", "Said no"]].map(([st, lab]) => `<button data-act="status" data-v="${st}" class="${q.status === st ? "on" : ""}">${lab}</button>`).join("")}</div>
+    <div class="fld" style="margin-top:16px"><label>A note on the quote (you can leave this empty)</label><textarea data-qn rows="2" placeholder="Thanks for having us out today">${esc(q.notes)}</textarea></div>
+  </div>
+  <h2 class="sub-t" style="text-align:center">This is what the customer sees</h2>
+  </div>
   <article class="sheet">
     <div class="sh-top"><div><div class="brandmark">APEX<span> GATES</span></div><p>${esc(s.address)} · ${esc(s.phone)} · ${esc(s.email)}${s.abn ? ` · ABN ${esc(s.abn)}` : ""}</p></div>
       <div class="qno"><b>Quote ${esc(q.no)}</b>${dateStr(q.created)}<br>Good until ${dateStr(valid)}</div></div>
@@ -467,8 +461,8 @@ function viewJobs() {
   const list = [...db.quotes].sort((a, b) => b.updated - a.updated);
   const PL = { draft: "Still working", sent: "Sent", won: "Going ahead", lost: "Said no" };
   const won = db.quotes.filter((q) => q.status === "won");
-  return `<h1 class="big-t">All jobs</h1>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px"><button class="btn red" data-act="newjob">${ICON.plus}Start a new job</button>
+  return `<h1 class="big-t">My quotes</h1>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px"><button class="btn red" data-act="newjob">${ICON.plus}New quote</button>
     <div class="card pad" style="flex:1;min-width:240px;display:flex;align-items:center;gap:14px"><span style="width:40px;color:var(--ok)">${ICON.coins}</span><div><b style="font-size:24px">${money(won.reduce((a, q) => a + price(q).inc, 0))}</b><div class="muted">${won.length} job${won.length === 1 ? "" : "s"} going ahead</div></div></div></div>
   <div class="jobs">${list.map((q) => {
     const P = price(q);
@@ -520,14 +514,14 @@ document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-act]"); if (!b) return;
   const a = b.dataset.act, q = Q(), it = item();
   if (a === "view") { ui.view = b.dataset.v; render(); window.scrollTo(0, 0); }
-  if (a === "sel") { q.sel = b.dataset.id; save(); redraw(); }
-  if (a === "addpop") addPop();
+  if (a === "sel") { q.sel = b.dataset.id; ui.tab = 0; save(); redraw(); }
+  if (a === "tab") { ui.tab = +b.dataset.i; redraw(); }
   if (a === "add") {
-    const t = tplOf(b.dataset.t), n = { id: uid(), tpl: t.id, name: NAMES[t.id]?.[0] || t.name, values: defaults(t) };
-    q.items.push(n); q.sel = n.id; save(); ui.view = "job"; render(); window.scrollTo(0, 0); say(`${n.name} added`);
+    const t = tplOf(b.dataset.t), same = q.items.filter((x) => x.tpl === t.id).length;
+    const n = { id: uid(), tpl: t.id, name: (NAMES[t.id]?.[0] || t.name) + (same ? ` ${same + 1}` : ""), values: defaults(t) };
+    q.items.push(n); q.sel = n.id; ui.tab = 0; save(); ui.view = "job"; render(); window.scrollTo(0, 0);
   }
-  if (a === "dup" && it) { const n = { ...clone(it), id: uid() }; q.items.splice(q.items.indexOf(it) + 1, 0, n); q.sel = n.id; save(); redraw(); say("Copied"); }
-  if (a === "del" && it && confirm(`Remove the ${it.name || "item"} from this job?`)) { q.items = q.items.filter((x) => x !== it); q.sel = q.items[0]?.id || null; save(); redraw(); }
+  if (a === "del" && it && confirm(`Take the ${nameOf(it).toLowerCase()} off this quote?`)) { q.items = q.items.filter((x) => x !== it); q.sel = q.items[0]?.id || null; ui.tab = 0; save(); render(); window.scrollTo(0, 0); }
   if (a === "set") { setVal(b.dataset.k, b.dataset.num === "1" ? +b.dataset.v : b.dataset.v); redraw(); }
   if (a === "tog") { const t = tplOf(it.tpl), inp = t.inputs.find((i) => i.k === b.dataset.k); setVal(b.dataset.k, +(it.values[b.dataset.k] ?? inp.def) ? 0 : 1); redraw(); }
   if (a === "bump") {
@@ -541,8 +535,13 @@ document.addEventListener("click", (e) => {
   if (a === "print") window.print();
   if (a === "copytext") navigator.clipboard.writeText(quoteText()).then(() => say("Copied. Paste it into a text message"), () => say("Could not copy on this device"));
   if (a === "status") { q.status = b.dataset.v; save(); redraw(); }
-  if (a === "newjob") { const n = newQuote(db); db.quotes.push(n); db.current = n.id; save(); ui.view = "job"; render(); window.scrollTo(0, 0); }
-  if (a === "open") { db.current = b.dataset.id; save(); ui.view = "job"; render(); window.scrollTo(0, 0); }
+  if (a === "newjob") {
+    // reuse an empty quote instead of piling up blank ones
+    let n = db.quotes.find((x) => !x.items.length && !x.client.name);
+    if (!n) { n = newQuote(db); db.quotes.push(n); }
+    db.current = n.id; save(); ui.view = "pick"; render(); window.scrollTo(0, 0);
+  }
+  if (a === "open") { db.current = b.dataset.id; ui.tab = 0; save(); ui.view = "job"; render(); window.scrollTo(0, 0); }
   if (a === "copyjob") { const src = db.quotes.find((x) => x.id === b.dataset.id), n = { ...clone(src), id: uid(), no: `Q-${db.nextNo++}`, created: Date.now(), updated: Date.now(), status: "draft", signature: null }; db.quotes.push(n); save(); redraw(); say("Job copied"); }
   if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
@@ -560,8 +559,8 @@ document.addEventListener("click", (e) => {
 document.addEventListener("change", (e) => {
   const el = e.target;
   if (el.dataset.num) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.num, v); redraw(); } }
-  if (el.dataset.sel) { setVal(el.dataset.sel, el.dataset.isnum === "1" ? +el.value : el.value); ui.fineOpen = true; redraw(); }
   if (el.dataset.txt) { setVal(el.dataset.txt, el.value); redraw(); }
+  if (el.dataset.c) redraw();
   if (el.dataset.pb) { const x = byId(db.pb[el.dataset.pb], el.dataset.id); const v = parseFloat(el.value); if (x && !isNaN(v)) { x[el.dataset.f] = v; save(); say("Saved"); } }
   if (el.dataset.mk) { const v = parseFloat(el.value); if (!isNaN(v)) { db.pb.markup[el.dataset.mk] = v; save(); say("Saved"); } }
   if (el.dataset.set) { const v = parseFloat(el.value); if (!isNaN(v)) { db.pb.settings[el.dataset.set] = v; save(); say("Saved"); } }
@@ -578,6 +577,6 @@ document.addEventListener("input", (e) => {
   if (el.matches("[data-find]")) { ui.find = el.value; const pos = el.selectionStart; render(); const n = $("[data-find]"); n.focus(); n.setSelectionRange(pos, pos); }
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.dataset?.num) e.target.blur(); });
-document.addEventListener("toggle", (e) => { if (e.target.matches?.("details.more")) ui.fineOpen = e.target.open; }, true);
+document.addEventListener("toggle", (e) => { if (e.target.matches?.("details.where")) ui.where = e.target.open; }, true);
 
 render();
