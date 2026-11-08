@@ -24,6 +24,23 @@ async function bucket() {
   return sb.storage.from(BUCKET);
 }
 
+// What a technician's tablet gets: every price with the markup already added
+// and the markups set to zero, so what Apex pays and adds on never leaves the
+// server. Same as teamView() in the app's shared.js.
+export function teamView(data: any) {
+  if (!data || !data.pb) return data;
+  const d = JSON.parse(JSON.stringify(data));
+  const pb = d.pb, mk = pb.markup || {};
+  const up = (cat: string, v: any) => Math.round((Number(v) || 0) * (1 + (Number(mk[cat]) || 0) / 100) * 100) / 100;
+  for (const m of pb.materials || []) m.cost = up("materials", m.cost);
+  for (const h of pb.hardware || []) h.cost = up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost);
+  for (const l of pb.labour || []) l.rate = up("labour", l.rate);
+  for (const f of pb.finishes || []) { f.perM2 = up("finish", f.perM2); f.perKg = up("finish", f.perKg); f.min = up("finish", f.min); }
+  for (const k of Object.keys(mk)) mk[k] = 0;
+  if (pb.settings) pb.settings.minMargin = null;
+  return d;
+}
+
 export async function readData(): Promise<any | null> {
   const b = await bucket();
   const { data, error } = await b.download(FILE);

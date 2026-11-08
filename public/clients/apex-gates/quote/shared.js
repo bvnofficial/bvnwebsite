@@ -41,6 +41,21 @@ export function buildTemplates(base, pb, gates = {}) {
   return out;
 }
 
+/* what the technicians get: every price already has the markup added and the
+   markups are zero, so their tablets never learn what Apex pays or adds on.
+   Running it twice changes nothing. The server does the same before sending. */
+export function teamView(pb) {
+  const t = clone(pb), mk = t.markup || {};
+  const up = (cat, v) => Math.round((+v || 0) * (1 + (mk[cat] || 0) / 100) * 100) / 100;
+  for (const m of t.materials || []) m.cost = up("materials", m.cost);
+  for (const h of t.hardware || []) h.cost = up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost);
+  for (const l of t.labour || []) l.rate = up("labour", l.rate);
+  for (const f of t.finishes || []) { f.perM2 = up("finish", f.perM2); f.perKg = up("finish", f.perKg); f.min = up("finish", f.min); }
+  for (const k of Object.keys(mk)) mk[k] = 0;
+  if (t.settings) t.settings.minMargin = null;
+  return t;
+}
+
 /* bring a saved price book up to date with any new default fields */
 export function mergePricebook(saved, defaults) {
   const pb = clone(saved);

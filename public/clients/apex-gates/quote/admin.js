@@ -83,7 +83,7 @@ const SHELVES = [
   ["site", "Travel and hire", (p) => p.hardware.filter((h) => h.cat === "misc"), "hardware", "cost"],
   ["labour", "Our team per hour", (p) => p.labour, "labour", "rate"],
   ["paint", "Paint and galvanising", (p) => p.finishes.filter((f) => f.id !== "none"), "finishes", "perM2"],
-  ["addon", "How much we add on", () => [], "", ""],
+  ["addon", "Markup (office only)", () => [], "", ""],
 ];
 function viewPrices() {
   const sh = SHELVES.find((s) => s[0] === st.shelf) || SHELVES[0];
@@ -106,11 +106,12 @@ function viewPrices() {
         <div class="money-in"><span>$</span><input data-list="${sh[3]}" data-id="${x.id}" data-f="${sh[4]}" inputmode="decimal" value="${x[sh[4]]}"></div></div></div>`;
     }).join("") || `<p class="muted">Nothing matches.</p>`;
   }
+  const secret = sh[0] === "addon" ? `<div class="okmsg" style="margin-bottom:14px">${ICON.lock}Only the office sees these numbers. Technicians' tablets get every price with this already added, so they only ever see what the customer pays. They never see what Apex pays or how much is added on.</div>` : "";
   return `<h1 class="big-t">Prices</h1><p class="hello" style="margin-top:-10px">What things cost Apex, before GST. Change a number, then press <b>Save for everyone</b> at the bottom.</p>
   <div class="shelves">${SHELVES.map((s) => `<button class="shelf ${s[0] === sh[0] ? "on" : ""}" data-act="shelf" data-v="${s[0]}"><b>${s[1]}</b></button>`).join("")}</div>
   ${["addon", "paint"].includes(sh[0]) ? "" : `<div class="pbar"><div class="fld"><input data-find placeholder="Search ${sh[1].toLowerCase()}" value="${esc(st.find)}"></div><button class="btn dark small" data-act="rise">Prices went up by a %</button><button class="btn ghost small" data-act="tab" data-v="add">${ICON.plus}Add new</button></div>`}
   ${sh[3] === "hardware" ? `<p class="muted" style="margin:0 0 12px">"Offer on gates" puts the item in an Extras tab on every gate, so the team can add it.</p>` : ""}
-  <div class="plist">${rows}</div>`;
+  ${secret}<div class="plist">${rows}</div>`;
 }
 
 /* add new equipment and materials */
@@ -207,7 +208,7 @@ function viewCompany() {
   return `<h1 class="big-t">Company and quote details</h1>
   <section class="card pad"><h2 class="qh">On every quote</h2><div class="two">${f("company", "Company name")}${f("abn", "ABN")}${f("phone", "Phone")}${f("email", "Email")}${f("web", "Website")}${f("address", "Address")}</div>
     <div class="fld" style="margin-top:12px"><label>Terms at the bottom of the quote</label><textarea data-set="terms" data-type="text" rows="4">${esc(s.terms)}</textarea></div></section>
-  <section class="card pad" style="margin-top:16px"><h2 class="qh">Numbers</h2><div class="two">${f("gst", "GST %", "num")}${f("deposit", "Deposit asked for %", "num")}${f("validity", "Quote is good for (days)", "num")}${f("minMargin", "Warn when Apex makes under %", "num")}${f("round", "Round totals to the nearest $", "num")}${f("kerf", "Saw cut (mm)", "num")}</div></section>
+  <section class="card pad" style="margin-top:16px"><h2 class="qh">Numbers</h2><div class="two">${f("gst", "GST %", "num")}${f("deposit", "Deposit asked for %", "num")}${f("validity", "Quote is good for (days)", "num")}${f("minMargin", "Warn when Apex makes under %", "num")}${f("maxDisc", "Most discount a technician can give %", "num")}${f("round", "Round totals to the nearest $", "num")}${f("kerf", "Saw cut (mm)", "num")}</div></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">${ICON.undo}Undo a save</h2><p class="muted" style="margin-top:-6px">Every save is kept. Go back to an earlier one if something went wrong.</p>
     ${st.history ? (st.history.length ? `<div class="hist">${st.history.map((n) => `<div class="prow ro"><b>${esc(histDate(n))}</b><button class="btn ghost small" data-act="restore" data-n="${esc(n)}">Go back to this</button></div>`).join("")}</div>` : `<p class="muted">No earlier saves yet.</p>`) : `<button class="btn ghost small" data-act="history">Show earlier saves</button>`}
   </section>

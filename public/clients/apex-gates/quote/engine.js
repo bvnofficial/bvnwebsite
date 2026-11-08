@@ -271,7 +271,7 @@ export function priceQuote(quote, templates, pb) {
   const exGst = s.round ? Math.round(exGstRaw / s.round) * s.round : exGstRaw;
   const gst = exGst * (s.gst / 100);
   const margin = exGst ? (exGst - tot.cost) / exGst : 0;
-  if (lines.length && margin * 100 < s.minMargin) warnings.push(`Margin is ${(margin * 100).toFixed(1)}%, under your ${s.minMargin}% floor`);
+  if (lines.length && s.minMargin != null && margin * 100 < s.minMargin) warnings.push(`Margin is ${(margin * 100).toFixed(1)}%, under your ${s.minMargin}% floor`);
   return { lines, packs, sheetPacks, tot, disc, exGst, gst, inc: exGst + gst, margin, kg: kgTotal, warnings, errors, rounding: exGst - exGstRaw };
 }
 

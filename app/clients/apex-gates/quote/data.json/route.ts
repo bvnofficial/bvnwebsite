@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory } from "@/lib/apex-quote-store";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
-// middleware gate already checks that); only the office password can change it.
+// middleware gate already checks that), but only the office sees real costs and
+// markups; technicians get customer prices. Only the office password can change it.
 export const dynamic = "force-dynamic";
 
 const json = (body: any, status = 200) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
@@ -13,7 +14,8 @@ const isOffice = (req: NextRequest) => req.cookies.get(APEX_ADMIN_COOKIE)?.value
 export async function GET(req: NextRequest) {
   if (!isTeam(req)) return json({ error: "Locked" }, 401);
   try {
-    return json({ ok: true, office: isOffice(req), data: await readData() });
+    const data = await readData();
+    return json({ ok: true, office: isOffice(req), data: isOffice(req) ? data : teamView(data) });
   } catch (e: any) {
     return json({ ok: false, office: isOffice(req), data: null, error: e.message });
   }

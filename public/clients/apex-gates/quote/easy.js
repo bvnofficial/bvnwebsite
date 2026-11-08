@@ -4,7 +4,7 @@
 import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
 import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js";
 import { drawItem, steelColour } from "./draw.js";
-import { buildTemplates, mergePricebook, offered } from "./shared.js";
+import { buildTemplates, mergePricebook, offered, teamView } from "./shared.js";
 
 const KEY = "apexq.v1";
 const $ = (s, el = document) => el.querySelector(s);
@@ -49,16 +49,23 @@ let TPLS = [];
 const rebuild = () => { db.gates = db.gates || { custom: [], hidden: [] }; TPLS = buildTemplates(db.templates, db.pb, db.gates); };
 rebuild();
 const tplOf = (id) => TPLS.find((t) => t.id === id);
-const price = (q = Q()) => priceQuote(q, TPLS, db.pb);
+/* boss = this device is logged in to the office, so it may see costs and markup.
+   Technicians get prices with the markup already in and see only customer prices. */
+const boss = () => !!db.boss;
+const book = () => (boss() ? db.pb : teamView(db.pb));
+const price = (q = Q()) => priceQuote(q, TPLS, book());
+const maxDisc = () => (boss() ? 50 : +(db.pb.settings.maxDisc ?? 10));
 const sync = { state: "loading", at: 0 };
 async function pull() {
   try {
     const r = await fetch("data.json", { cache: "no-store", credentials: "same-origin" });
     const j = await r.json();
-    sync.office = !!j.office;
+    const was = boss();
+    db.boss = !!j.office;
+    if (was !== boss()) save();
     if (j.data && j.data.pb) {
-      if (j.data.updated !== db.serverUpdated) {
-        db.pb = mergePricebook(j.data.pb, PRICEBOOK); db.gates = j.data.gates || { custom: [], hidden: [] }; db.serverUpdated = j.data.updated;
+      if (j.data.updated !== db.serverUpdated || was !== boss()) {
+        db.pb = mergePricebook(j.data.pb, boss() ? PRICEBOOK : teamView(PRICEBOOK)); db.gates = j.data.gates || { custom: [], hidden: [] }; db.serverUpdated = j.data.updated;
         rebuild(); save();
       }
       sync.state = "ok"; sync.at = j.data.updated;
@@ -191,6 +198,10 @@ const LAYOUT = {
   custom: [
     ["Your own line", "other", "Anything not listed", [{ t: "text", k: "text", label: "What is it" }, { t: "nums", list: [["unit", "Our cost for one", [50, 100, 250, 500]], ["qty", "How many", [1, 2, 5, 10]]] }, { t: "pick", k: "cat", label: "What kind of cost", pic: "none" }]],
   ],
+  /* technicians type what the customer pays, since they never see the markup */
+  customTeam: [
+    ["Your own line", "other", "Anything not listed", [{ t: "text", k: "text", label: "What is it" }, { t: "nums", list: [["unit", "Customer price for one, before GST", [50, 100, 250, 500]], ["qty", "How many", [1, 2, 5, 10]]] }]],
+  ],
 };
 const UNIT = { km: "km", remove: "hours", elec: "hours", hrs: "hours", unit: "dollars", qty: "" };
 
@@ -203,9 +214,10 @@ const namesOf = (t) => NAMES[t.id] || [t.name, t.blurb || ""];
 const nameOf = (it) => it.name || (tplOf(it.tpl) ? namesOf(tplOf(it.tpl))[0] : "Item");
 /* the tabs for a thing: its base layout, plus the office's extras on gates */
 function layoutOf(t) {
-  const secs = (LAYOUT[t.base || t.id] || []).slice();
-  const ex = t.kind === "gate" ? offered(db.pb) : [];
-  if (ex.length) secs.push(["Extras", "plus", "Anything else for this gate", [{ t: "counts", list: ex.map((h) => [`x_${h.id}`, h.name, h.note || money(h.cost) + " each, before markup"]) }]]);
+  const b = t.base || t.id;
+  const secs = (LAYOUT[b === "custom" && !boss() ? "customTeam" : b] || []).slice();
+  const ex = t.kind === "gate" ? offered(book()) : [];
+  if (ex.length) secs.push(["Extras", "plus", "Anything else for this gate", [{ t: "counts", list: ex.map((h) => [`x_${h.id}`, h.name, h.note || money(h.cost) + (boss() ? " each, before markup" : " each, before GST")]) }]]);
   return secs;
 }
 
@@ -236,7 +248,7 @@ function viewHome() {
   <div class="homegrid">
     <button class="hometile red" data-act="newjob">${ICON.plus}<b>New quote</b><span>Draw up a gate or fence and get the price</span></button>
     <button class="hometile" data-act="view" data-v="jobs">${ICON.folder}<b>My quotes</b><span>Open one you already started</span></button>
-    <button class="hometile" data-act="view" data-v="prices">${ICON.tag}<b>Prices</b><span>Change what steel, motors and labour cost</span></button>
+    <button class="hometile" data-act="view" data-v="prices">${ICON.tag}<b>Prices</b><span>${boss() ? "Change what steel, motors and labour cost" : "Look up what things cost the customer"}</span></button>
   </div>
   ${recent.length ? `<h2 class="sub-t">Carry on where you left off</h2><div class="jobs">${recent.map((q) => `<button class="card recent" data-act="open" data-id="${q.id}"><span class="rp">${thumb(q.items[0])}</span><span class="rt"><b>${esc(q.client.name || "No name yet")}</b><small>${q.items.map(nameOf).join(", ")}</small></span><span class="amt">${money(price(q).inc)}</span></button>`).join("")}</div>` : ""}`;
 }
@@ -267,9 +279,9 @@ function viewJob() {
   <div class="board">
     <div class="grid">${t.draw !== "none" ? drawItem(t, r, db.pb) : `<div class="nopic">${TYPE_ICON[it.tpl] || ICON.other}</div>`}</div>
     <div class="pricebar"><div><small>Price for the customer, with GST</small><b>${l ? money(l.sell * gst) : "$0"}</b></div>
-      ${l && l.sell ? `<div class="makes">${ICON.coins}<span>Apex makes<b>${money(keep)}</b></span></div>` : ""}</div>
+      ${l && l.sell && boss() ? `<div class="makes">${ICON.coins}<span>Apex makes<b>${money(keep)}</b></span></div>` : ""}</div>
     ${r.warnings.length ? `<div class="warn" style="margin:0 16px 16px">${ICON.warn}<div><b>Check this</b><ul>${r.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div></div>` : ""}
-    ${l && l.sell ? `<details class="where" ${ui.where ? "open" : ""}><summary>Where does the money go?</summary>${moneyPic(l.cost, l.sell)}</details>` : ""}
+    ${l && l.sell && boss() ? `<details class="where" ${ui.where ? "open" : ""}><summary>Where does the money go?</summary>${moneyPic(l.cost, l.sell)}</details>` : ""}
   </div>
   ${secs.length > 1 ? `<div class="tabs">${secs.map((s, i) => `<button class="${i === ui.tab ? "on" : ""}" data-act="tab" data-i="${i}">${ICON[s[1]] || ""}<b>${s[0]}</b></button>`).join("")}</div>` : ""}
   ${secs[ui.tab] ? section(secs[ui.tab], t, it, r) : ""}
@@ -404,7 +416,7 @@ function viewQuote() {
   const { inc, exc } = includes(P);
   const valid = q.created + s.validity * 864e5;
   const tickI = ICON.tick, noI = I('<path d="M6 6l12 12M18 6L6 18"/>', 2.6);
-  const low = P.margin * 100 < s.minMargin;
+  const low = boss() && P.margin * 100 < s.minMargin;
   return `<div class="noprint qwrap">
   <button class="btn ghost small" data-act="view" data-v="job" style="margin-bottom:16px">Back to the gate</button>
   <div class="card pad qside">
@@ -419,7 +431,7 @@ function viewQuote() {
     <h2 class="qh">${ICON.coins}The price</h2>
     <div class="bigtotal"><small>Customer pays, with GST</small><b>${money(P.inc)}</b></div>
     <div class="disc"><span>Discount</span><div class="stepper"><button data-act="disc" data-d="-5" aria-label="Less discount">${ICON.minus}</button><output>${P.disc}%</output><button data-act="disc" data-d="5" aria-label="More discount">${ICON.plus}</button></div></div>
-    ${low ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>Apex only makes ${money(P.exGst - P.tot.cost)} here (${(P.margin * 100).toFixed(0)}%). Aim for ${s.minMargin}% or more.</div></div>` : `<div class="okmsg" style="margin-top:12px">${ICON.tick}Apex makes ${money(P.exGst - P.tot.cost)} on this quote.</div>`}
+    ${!boss() ? `<p class="muted" style="margin:12px 0 0">You can give up to ${maxDisc()}% off. Ask the office if they want more.</p>` : low ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>Apex only makes ${money(P.exGst - P.tot.cost)} here (${(P.margin * 100).toFixed(0)}%). Aim for ${s.minMargin}% or more.</div></div>` : `<div class="okmsg" style="margin-top:12px">${ICON.tick}Apex makes ${money(P.exGst - P.tot.cost)} on this quote.</div>`}
   </div>
   <div class="card pad qside">
     <h2 class="qh">${ICON.doc}Send it</h2>
@@ -503,13 +515,13 @@ function viewJobs() {
 
 /* ---------- prices ---------- */
 const SHELVES = [
-  ["steel", "Steel", "steel", () => db.pb.materials.filter((m) => !m.sheet)],
-  ["sheet", "Mesh and sheet", "look", () => db.pb.materials.filter((m) => m.sheet)],
-  ["parts", "Gate parts", "bolt", () => db.pb.hardware.filter((h) => !["motor", "access", "misc"].includes(h.cat))],
-  ["motors", "Motors and remotes", "motor", () => db.pb.hardware.filter((h) => h.cat === "motor" || h.cat === "access")],
-  ["site", "Travel and hire", "truck", () => db.pb.hardware.filter((h) => h.cat === "misc")],
-  ["labour", "Our team per hour", "worker", () => db.pb.labour],
-  ["paint", "Paint and galvanising", "paint", () => db.pb.finishes.filter((f) => f.id !== "none")],
+  ["steel", "Steel", "steel", () => book().materials.filter((m) => !m.sheet)],
+  ["sheet", "Mesh and sheet", "look", () => book().materials.filter((m) => m.sheet)],
+  ["parts", "Gate parts", "bolt", () => book().hardware.filter((h) => !["motor", "access", "misc"].includes(h.cat))],
+  ["motors", "Motors and remotes", "motor", () => book().hardware.filter((h) => h.cat === "motor" || h.cat === "access")],
+  ["site", "Travel and hire", "truck", () => book().hardware.filter((h) => h.cat === "misc")],
+  ["labour", "Our team per hour", "worker", () => book().labour],
+  ["paint", "Paint and galvanising", "paint", () => book().finishes.filter((f) => f.id !== "none")],
 ];
 function syncLine() {
   if (sync.state === "ok") return `<div class="okmsg">${ICON.tick}These are the office prices, shared by every tablet. Last changed ${new Date(sync.at).toLocaleString("en-AU", { day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}.</div>`;
@@ -527,11 +539,12 @@ function viewPrices() {
   }).join("") || `<p class="muted">Nothing matches.</p>`;
   return `<h1 class="big-t">Prices</h1>
   ${syncLine()}
-  <a class="btn dark wide" href="admin.html" style="text-decoration:none;margin:16px 0 20px">${ICON.pen}Change prices or add new things (office)</a>
+  ${boss() ? `<a class="btn dark wide" href="admin.html" style="text-decoration:none;margin:16px 0 20px">${ICON.pen}Change prices or add new things (office)</a>` : `<div style="height:16px"></div>`}
   <div class="shelves">${SHELVES.map((s) => `<button class="shelf ${s[0] === sh[0] ? "on" : ""}" data-act="shelf" data-v="${s[0]}">${ICON[s[2]]}<b>${s[1]}</b></button>`).join("")}</div>
   <div class="pbar"><div class="fld"><input data-find placeholder="Search ${sh[1].toLowerCase()}" value="${esc(ui.find)}"></div></div>
   <div class="plist">${rows}</div>
-  <p class="muted" style="margin-top:22px">What things cost Apex, before GST and before markup.</p>`;
+  <p class="muted" style="margin-top:22px">${boss() ? "What things cost Apex, before GST and before markup." : "What the customer pays for each, before GST."}</p>
+  ${boss() ? "" : `<a class="linkbtn" href="admin.html" style="margin-top:18px;display:inline-flex">${ICON.pen}Office login</a>`}`;
 }
 
 /* ---------- actions ---------- */
@@ -556,7 +569,7 @@ document.addEventListener("click", (e) => {
     v = Math.min(inp.max ?? 1e9, Math.max(inp.min ?? 0, Math.round(v * 100) / 100));
     setVal(b.dataset.k, v); redraw();
   }
-  if (a === "disc") { q.discount = Math.max(0, Math.min(50, (+q.discount || 0) + +b.dataset.d)); save(); redraw(); }
+  if (a === "disc") { q.discount = Math.max(0, Math.min(maxDisc(), (+q.discount || 0) + +b.dataset.d)); save(); redraw(); }
   if (a === "sign") openSign();
   if (a === "print") window.print();
   if (a === "copytext") navigator.clipboard.writeText(quoteText()).then(() => say("Copied. Paste it into a text message"), () => say("Could not copy on this device"));
