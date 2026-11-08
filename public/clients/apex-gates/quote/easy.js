@@ -4,6 +4,7 @@
 import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
 import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js";
 import { drawItem, steelColour } from "./draw.js";
+import { buildTemplates, mergePricebook, offered } from "./shared.js";
 
 const KEY = "apexq.v1";
 const $ = (s, el = document) => el.querySelector(s);
@@ -43,8 +44,28 @@ function save() {
   saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { say("Could not save on this device"); } }, 200);
 }
 const Q = () => db.quotes.find((q) => q.id === db.current) || db.quotes[0];
-const tplOf = (id) => db.templates.find((t) => t.id === id);
-const price = (q = Q()) => priceQuote(q, db.templates, db.pb);
+/* the office's shared prices and gate types, loaded from the server */
+let TPLS = [];
+const rebuild = () => { db.gates = db.gates || { custom: [], hidden: [] }; TPLS = buildTemplates(db.templates, db.pb, db.gates); };
+rebuild();
+const tplOf = (id) => TPLS.find((t) => t.id === id);
+const price = (q = Q()) => priceQuote(q, TPLS, db.pb);
+const sync = { state: "loading", at: 0 };
+async function pull() {
+  try {
+    const r = await fetch("data.json", { cache: "no-store", credentials: "same-origin" });
+    const j = await r.json();
+    sync.office = !!j.office;
+    if (j.data && j.data.pb) {
+      if (j.data.updated !== db.serverUpdated) {
+        db.pb = mergePricebook(j.data.pb, PRICEBOOK); db.gates = j.data.gates || { custom: [], hidden: [] }; db.serverUpdated = j.data.updated;
+        rebuild(); save();
+      }
+      sync.state = "ok"; sync.at = j.data.updated;
+    } else sync.state = j.ok ? "none" : "off";
+  } catch (e) { sync.state = "off"; }
+  if (!document.querySelector("input:focus, textarea:focus")) redraw();
+}
 function say(t) { const el = $("#saved"); el.textContent = t; el.classList.add("on"); clearTimeout(el.t); el.t = setTimeout(() => el.classList.remove("on"), 2200); }
 
 /* ---------- pictures ---------- */
@@ -178,7 +199,15 @@ const ui = { view: "home", tab: 0, shelf: "steel", find: "" };
 
 function item() { const q = Q(); return q.items.find((i) => i.id === q.sel) || q.items[0]; }
 function run(it) { const t = tplOf(it.tpl); return t ? runItem(t, it.values, db.pb) : null; }
-const nameOf = (it) => it.name || NAMES[it.tpl]?.[0] || "Item";
+const namesOf = (t) => NAMES[t.id] || [t.name, t.blurb || ""];
+const nameOf = (it) => it.name || (tplOf(it.tpl) ? namesOf(tplOf(it.tpl))[0] : "Item");
+/* the tabs for a thing: its base layout, plus the office's extras on gates */
+function layoutOf(t) {
+  const secs = (LAYOUT[t.base || t.id] || []).slice();
+  const ex = t.kind === "gate" ? offered(db.pb) : [];
+  if (ex.length) secs.push(["Extras", "plus", "Anything else for this gate", [{ t: "counts", list: ex.map((h) => [`x_${h.id}`, h.name, h.note || money(h.cost) + " each, before markup"]) }]]);
+  return secs;
+}
 
 function render() {
   if (ui.view === "job" && !Q().items.length) ui.view = "pick";
@@ -229,7 +258,7 @@ function viewJob() {
   const q = Q(), P = price(q), it = item();
   const t = tplOf(it.tpl), r = run(it), l = P.lines.find((x) => x.id === it.id);
   const gst = 1 + db.pb.settings.gst / 100;
-  const secs = LAYOUT[it.tpl] || [];
+  const secs = layoutOf(t);
   if (ui.tab >= secs.length) ui.tab = 0;
   const others = q.items.length > 1 ? `<div class="onquote"><span>On this quote:</span>${q.items.map((x) => `<button class="${x.id === it.id ? "on" : ""}" data-act="sel" data-id="${x.id}">${esc(nameOf(x))}</button>`).join("")}</div>` : "";
   const keep = l ? l.sell - l.costTotal : 0;
@@ -301,7 +330,7 @@ function section([title, ic, hint, fields], t, it, r) {
       const cur = it.values[f.k] ?? inp.def;
       const opts = inp.opts || (inp.type === "bool" ? [[1, "Yes"], [0, "No"]] : []);
       const tiles = opts.map(([v, lab]) => {
-        const w = (WORDS[f.k]?.[t.id] || WORDS[f.k])?.[v] || [lab, ""];
+        const w = (WORDS[f.k]?.[t.base || t.id] || WORDS[f.k])?.[v] || [lab, ""];
         const pic = f.pic === "none" ? "" : picFor(f.pic, t, it, f.k, v);
         return `<button class="pick ${pic ? "" : "textonly"} ${cur == v ? "on" : ""}" data-act="set" data-k="${f.k}" data-v="${esc(v)}" data-num="${typeof inp.def === "number" ? 1 : 0}">${pic ? `<div class="pp">${pic}</div>` : ""}<b>${esc(w[0])}</b>${w[1] ? `<small>${esc(w[1])}</small>` : ""}</button>`;
       }).join("");
@@ -346,9 +375,9 @@ function countRow(t, it, k, label, help, ico) {
     <div class="stepper"><button data-act="bump" data-k="${k}" data-d="-1" aria-label="One less">${ICON.minus}</button><output>${v}</output><button data-act="bump" data-k="${k}" data-d="1" aria-label="One more">${ICON.plus}</button></div></div>`;
 }
 function typeGrid() {
-  return `<div class="typegrid">${db.templates.filter((t) => NAMES[t.id]).map((t) => {
-    const pic = t.draw !== "none" ? drawItem(t, runItem(t, defaults(t), db.pb), db.pb) : `<div style="width:64px;color:#3a3b40">${TYPE_ICON[t.id] || ICON.other}</div>`;
-    return `<button class="pick" data-act="add" data-t="${t.id}"><div class="pp">${pic}</div><b>${NAMES[t.id][0]}</b><small>${NAMES[t.id][1]}</small></button>`;
+  return `<div class="typegrid">${TPLS.filter((t) => !t.hidden && (NAMES[t.id] || t.custom)).map((t) => {
+    const pic = t.draw !== "none" ? drawItem(t, runItem(t, defaults(t), db.pb), db.pb) : `<div style="width:64px;color:#3a3b40">${TYPE_ICON[t.base || t.id] || ICON.other}</div>`;
+    return `<button class="pick" data-act="add" data-t="${t.id}"><div class="pp">${pic}</div><b>${esc(namesOf(t)[0])}</b><small>${esc(namesOf(t)[1])}</small></button>`;
   }).join("")}</div>`;
 }
 /* ---------- the quote for the customer ---------- */
@@ -466,7 +495,7 @@ function viewJobs() {
     <div class="card pad" style="flex:1;min-width:240px;display:flex;align-items:center;gap:14px"><span style="width:40px;color:var(--ok)">${ICON.coins}</span><div><b style="font-size:24px">${money(won.reduce((a, q) => a + price(q).inc, 0))}</b><div class="muted">${won.length} job${won.length === 1 ? "" : "s"} going ahead</div></div></div></div>
   <div class="jobs">${list.map((q) => {
     const P = price(q);
-    return `<div class="card jobrow"><div><h3>${esc(q.client.name || "No name yet")}<span class="pill ${q.status}">${PL[q.status]}</span></h3><p>${esc(q.no)} · ${dateStr(q.updated)}${q.client.address ? ` · ${esc(q.client.address)}` : ""}<br>${q.items.map((i) => esc(i.name || NAMES[i.tpl]?.[0])).join(", ") || "Nothing added yet"}</p></div>
+    return `<div class="card jobrow"><div><h3>${esc(q.client.name || "No name yet")}<span class="pill ${q.status}">${PL[q.status]}</span></h3><p>${esc(q.no)} · ${dateStr(q.updated)}${q.client.address ? ` · ${esc(q.client.address)}` : ""}<br>${q.items.map((i) => esc(nameOf(i))).join(", ") || "Nothing added yet"}</p></div>
       <div class="amt">${money(P.inc)}</div>
       <div class="acts"><button class="btn dark small" data-act="open" data-id="${q.id}">Open</button><button class="btn ghost small" data-act="copyjob" data-id="${q.id}">${ICON.copy}Copy</button><button class="btn ghost small" data-act="deljob" data-id="${q.id}">${ICON.bin}Delete</button></div></div>`;
   }).join("")}</div>`;
@@ -474,38 +503,35 @@ function viewJobs() {
 
 /* ---------- prices ---------- */
 const SHELVES = [
-  ["steel", "Steel", "steel", () => db.pb.materials.filter((m) => !m.sheet), "materials", "each length"],
-  ["sheet", "Mesh and sheet", "look", () => db.pb.materials.filter((m) => m.sheet), "materials", "each sheet"],
-  ["parts", "Gate parts", "bolt", () => db.pb.hardware.filter((h) => !["motor", "access", "misc"].includes(h.cat)), "hardware", "each"],
-  ["motors", "Motors and remotes", "motor", () => db.pb.hardware.filter((h) => h.cat === "motor" || h.cat === "access"), "hardware", "each"],
-  ["site", "Travel and hire", "truck", () => db.pb.hardware.filter((h) => h.cat === "misc"), "hardware", "each"],
-  ["labour", "Our team per hour", "worker", () => db.pb.labour, "labour", "per hour"],
-  ["paint", "Paint and galvanising", "paint", () => db.pb.finishes.filter((f) => f.id !== "none"), "finishes", ""],
-  ["addon", "How much we add on", "tag", () => [], "markup", ""],
+  ["steel", "Steel", "steel", () => db.pb.materials.filter((m) => !m.sheet)],
+  ["sheet", "Mesh and sheet", "look", () => db.pb.materials.filter((m) => m.sheet)],
+  ["parts", "Gate parts", "bolt", () => db.pb.hardware.filter((h) => !["motor", "access", "misc"].includes(h.cat))],
+  ["motors", "Motors and remotes", "motor", () => db.pb.hardware.filter((h) => h.cat === "motor" || h.cat === "access")],
+  ["site", "Travel and hire", "truck", () => db.pb.hardware.filter((h) => h.cat === "misc")],
+  ["labour", "Our team per hour", "worker", () => db.pb.labour],
+  ["paint", "Paint and galvanising", "paint", () => db.pb.finishes.filter((f) => f.id !== "none")],
 ];
+function syncLine() {
+  if (sync.state === "ok") return `<div class="okmsg">${ICON.tick}These are the office prices, shared by every tablet. Last changed ${new Date(sync.at).toLocaleString("en-AU", { day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}.</div>`;
+  if (sync.state === "none") return `<div class="warn">${ICON.warn}<div>The office has not saved any prices yet, so these are the starting sample prices.</div></div>`;
+  if (sync.state === "loading") return `<div class="okmsg">${ICON.tick}Checking for the latest office prices...</div>`;
+  return `<div class="warn">${ICON.warn}<div>Could not reach the office prices right now. Showing the last prices this tablet saw.</div></div>`;
+}
 function viewPrices() {
   const sh = SHELVES.find((s) => s[0] === ui.shelf) || SHELVES[0];
-  let rows = "";
   const find = ui.find.toLowerCase();
-  if (sh[0] === "addon") {
-    const lab = { materials: "Steel and sheet", hardware: "Gate parts", motors: "Motors and remotes", labour: "Our team's time", finish: "Paint and galvanising", other: "Other" };
-    rows = Object.keys(db.pb.markup).map((k) => `<div class="prow"><div><b>${lab[k] || cap(k)}</b><small>We add this much on top of what it costs us</small></div><div class="money-in"><input data-mk="${k}" inputmode="decimal" value="${db.pb.markup[k]}"><em>%</em></div></div>`).join("")
-      + `<div class="prow"><div><b>Lowest we are happy to keep</b><small>You get a warning under this</small></div><div class="money-in"><input data-set="minMargin" inputmode="decimal" value="${db.pb.settings.minMargin}"><em>%</em></div></div>`
-      + `<div class="prow"><div><b>Deposit</b><small>Asked for on the quote</small></div><div class="money-in"><input data-set="deposit" inputmode="decimal" value="${db.pb.settings.deposit}"><em>%</em></div></div>`;
-  } else if (sh[0] === "paint") {
-    rows = sh[3]().map((f) => `<div class="prow"><div><b>${esc(f.name)}</b><small>Per square metre${f.perKg ? `, plus $${f.perKg} per kg` : ""}. Smallest charge $${f.min}</small></div><div class="money-in"><span>$</span><input data-fin="${f.id}" data-f="${f.perM2 ? "perM2" : "perKg"}" inputmode="decimal" value="${f.perM2 || f.perKg}"><em>${f.perM2 ? "m²" : "kg"}</em></div></div>`).join("");
-  } else {
-    rows = sh[3]().filter((x) => !find || x.name.toLowerCase().includes(find)).map((x) => {
-      const f = sh[0] === "labour" ? "rate" : "cost";
-      return `<div class="prow"><div><b>${esc(x.name)}</b><small>${sh[0] === "steel" && x.stock ? `${(x.stock / 1000).toLocaleString("en-AU")} m length` : esc(x.note || sh[5])}</small></div><div class="money-in"><span>$</span><input data-pb="${sh[4]}" data-id="${x.id}" data-f="${f}" inputmode="decimal" value="${x[f]}"></div></div>`;
-    }).join("") || `<p class="muted">Nothing matches.</p>`;
-  }
-  return `<h1 class="big-t">Prices</h1><p class="hello" style="margin-top:-10px;margin-bottom:16px">What things cost Apex, before GST. Change a number and every quote updates.</p>
+  const rows = sh[3]().filter((x) => !find || x.name.toLowerCase().includes(find)).map((x) => {
+    const v = sh[0] === "labour" ? `${money(x.rate)} an hour` : sh[0] === "paint" ? (x.perM2 ? `${money(x.perM2)} per m²` : `${money(x.perKg, true)} per kg`) : money(x.cost, x.cost < 20);
+    const note = sh[0] === "steel" && x.stock ? `${(x.stock / 1000).toLocaleString("en-AU")} m length` : x.note || "";
+    return `<div class="prow ro"><div><b>${esc(x.name)}</b>${note ? `<small>${esc(note)}</small>` : ""}</div><div class="pv">${v}</div></div>`;
+  }).join("") || `<p class="muted">Nothing matches.</p>`;
+  return `<h1 class="big-t">Prices</h1>
+  ${syncLine()}
+  <a class="btn dark wide" href="admin.html" style="text-decoration:none;margin:16px 0 20px">${ICON.pen}Change prices or add new things (office)</a>
   <div class="shelves">${SHELVES.map((s) => `<button class="shelf ${s[0] === sh[0] ? "on" : ""}" data-act="shelf" data-v="${s[0]}">${ICON[s[2]]}<b>${s[1]}</b></button>`).join("")}</div>
-  <div class="pbar">${["addon", "paint"].includes(sh[0]) ? "" : `<div class="fld"><input data-find placeholder="Search ${sh[1].toLowerCase()}" value="${esc(ui.find)}"></div><button class="btn dark small" data-act="rise">Prices went up</button>`}</div>
+  <div class="pbar"><div class="fld"><input data-find placeholder="Search ${sh[1].toLowerCase()}" value="${esc(ui.find)}"></div></div>
   <div class="plist">${rows}</div>
-  <div class="card pad" style="margin-top:22px"><b style="font-size:20px">Other tablets</b><p class="muted" style="margin:4px 0 12px">Prices are saved on this tablet. To copy them to another one, save them here and load them there.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost small" data-act="export">Save prices to a file</button><label class="btn ghost small">Load prices from a file<input type="file" accept=".json" data-import hidden></label><a class="btn ghost small" href="full.html" style="text-decoration:none">Full tool (cut lists and formulas)</a></div></div>`;
+  <p class="muted" style="margin-top:22px">What things cost Apex, before GST and before markup.</p>`;
 }
 
 /* ---------- actions ---------- */
@@ -518,7 +544,7 @@ document.addEventListener("click", (e) => {
   if (a === "tab") { ui.tab = +b.dataset.i; redraw(); }
   if (a === "add") {
     const t = tplOf(b.dataset.t), same = q.items.filter((x) => x.tpl === t.id).length;
-    const n = { id: uid(), tpl: t.id, name: (NAMES[t.id]?.[0] || t.name) + (same ? ` ${same + 1}` : ""), values: defaults(t) };
+    const n = { id: uid(), tpl: t.id, name: namesOf(t)[0] + (same ? ` ${same + 1}` : ""), values: defaults(t) };
     q.items.push(n); q.sel = n.id; ui.tab = 0; save(); ui.view = "job"; render(); window.scrollTo(0, 0);
   }
   if (a === "del" && it && confirm(`Take the ${nameOf(it).toLowerCase()} off this quote?`)) { q.items = q.items.filter((x) => x !== it); q.sel = q.items[0]?.id || null; ui.tab = 0; save(); render(); window.scrollTo(0, 0); }
@@ -545,30 +571,12 @@ document.addEventListener("click", (e) => {
   if (a === "copyjob") { const src = db.quotes.find((x) => x.id === b.dataset.id), n = { ...clone(src), id: uid(), no: `Q-${db.nextNo++}`, created: Date.now(), updated: Date.now(), status: "draft", signature: null }; db.quotes.push(n); save(); redraw(); say("Job copied"); }
   if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
-  if (a === "rise") {
-    const p = parseFloat(prompt("By how much did prices go up? Type a number, for example 5 for 5%", "5"));
-    if (!p) return;
-    const sh = SHELVES.find((s) => s[0] === ui.shelf), f = ui.shelf === "labour" ? "rate" : "cost";
-    sh[3]().forEach((x) => (x[f] = Math.round(x[f] * (1 + p / 100) * 100) / 100)); save(); redraw(); say(`${sh[1]} up ${p}%`);
-  }
-  if (a === "export") {
-    const blob = new Blob([JSON.stringify({ apexPrices: 1, pb: db.pb }, null, 2)], { type: "application/json" });
-    const l = document.createElement("a"); l.href = URL.createObjectURL(blob); l.download = `apex-prices-${new Date().toISOString().slice(0, 10)}.json`; l.click();
-  }
 });
 document.addEventListener("change", (e) => {
   const el = e.target;
   if (el.dataset.num) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.num, v); redraw(); } }
   if (el.dataset.txt) { setVal(el.dataset.txt, el.value); redraw(); }
   if (el.dataset.c) redraw();
-  if (el.dataset.pb) { const x = byId(db.pb[el.dataset.pb], el.dataset.id); const v = parseFloat(el.value); if (x && !isNaN(v)) { x[el.dataset.f] = v; save(); say("Saved"); } }
-  if (el.dataset.mk) { const v = parseFloat(el.value); if (!isNaN(v)) { db.pb.markup[el.dataset.mk] = v; save(); say("Saved"); } }
-  if (el.dataset.set) { const v = parseFloat(el.value); if (!isNaN(v)) { db.pb.settings[el.dataset.set] = v; save(); say("Saved"); } }
-  if (el.dataset.fin) { const x = byId(db.pb.finishes, el.dataset.fin); const v = parseFloat(el.value); if (x && !isNaN(v)) { x[el.dataset.f] = v; save(); say("Saved"); } }
-  if (el.matches("[data-import]")) {
-    const f = el.files[0]; if (!f) return;
-    f.text().then((t) => { const d = JSON.parse(t); const pb = d.pb || d; if (!pb.materials || !pb.hardware) throw 0; db.pb = pb; save(); render(); say("Prices loaded"); }).catch(() => say("That file is not an Apex prices file"));
-  }
 });
 document.addEventListener("input", (e) => {
   const el = e.target, q = Q();
@@ -580,3 +588,5 @@ document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.
 document.addEventListener("toggle", (e) => { if (e.target.matches?.("details.where")) ui.where = e.target.open; }, true);
 
 render();
+pull();
+window.addEventListener("focus", pull);
