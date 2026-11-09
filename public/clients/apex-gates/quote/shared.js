@@ -46,7 +46,7 @@ export function buildTemplates(base, pb, gates = {}) {
    Running it twice changes nothing. The server does the same before sending. */
 export function teamView(pb) {
   const t = clone(pb), mk = t.markup || {};
-  const up = (cat, v) => Math.round((+v || 0) * (1 + (mk[cat] || 0) / 100) * 100) / 100;
+  const up = (cat, v) => (+v || 0) * (1 + (mk[cat] || 0) / 100);
   for (const m of t.materials || []) m.cost = up("materials", m.cost);
   for (const h of t.hardware || []) h.cost = up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost);
   for (const l of t.labour || []) l.rate = up("labour", l.rate);

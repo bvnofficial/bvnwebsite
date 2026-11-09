@@ -31,7 +31,7 @@ export function teamView(data: any) {
   if (!data || !data.pb) return data;
   const d = JSON.parse(JSON.stringify(data));
   const pb = d.pb, mk = pb.markup || {};
-  const up = (cat: string, v: any) => Math.round((Number(v) || 0) * (1 + (Number(mk[cat]) || 0) / 100) * 100) / 100;
+  const up = (cat: string, v: any) => (Number(v) || 0) * (1 + (Number(mk[cat]) || 0) / 100);
   for (const m of pb.materials || []) m.cost = up("materials", m.cost);
   for (const h of pb.hardware || []) h.cost = up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost);
   for (const l of pb.labour || []) l.rate = up("labour", l.rate);
