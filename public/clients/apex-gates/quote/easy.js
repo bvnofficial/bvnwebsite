@@ -32,7 +32,8 @@ function load() {
       // the custom line now takes the customer price, on older devices too
       const cu = d.templates.find((x) => x.id === "custom"), cn = TEMPLATES.find((x) => x.id === "custom");
       if (cu && cn) { cu.direct = clone(cn.direct); cu.inputs = clone(cn.inputs); }
-      for (const k of Object.keys(PRICEBOOK.settings)) if (!(k in d.pb.settings)) d.pb.settings[k] = PRICEBOOK.settings[k];
+      // bring an older copy of the prices up to date: new kits, callout fees and settings
+      d.pb = mergePricebook(d.pb, d.boss ? PRICEBOOK : teamView(PRICEBOOK));
       if (!d.quotes.length) { const q = newQuote(d); d.quotes.push(q); d.current = q.id; }
       return d;
     }
