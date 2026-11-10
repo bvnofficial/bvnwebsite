@@ -272,7 +272,9 @@ export function priceQuote(quote, templates, pb) {
   }
   const disc = Math.min(Math.max(+quote.discount || 0, 0), 100);
   const exGstRaw = tot.sell * (1 - disc / 100);
-  const exGst = s.round ? Math.round(exGstRaw / s.round) * s.round : exGstRaw;
+  // budget prices for gates and fences are rounded; callouts, kits and parts keep their exact price
+  const build = lines.some((l) => l.tpl.kind === "gate" || l.tpl.kind === "fence");
+  const exGst = s.round && build ? Math.round(exGstRaw / s.round) * s.round : exGstRaw;
   const gst = exGst * (s.gst / 100);
   const margin = exGst ? (exGst - tot.cost) / exGst : 0;
   if (lines.length && s.minMargin != null && margin * 100 < s.minMargin) warnings.push(`Margin is ${(margin * 100).toFixed(1)}%, under your ${s.minMargin}% floor`);

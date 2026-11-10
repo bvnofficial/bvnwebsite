@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
 import { learnStats, askHelper, buildJob } from "@/lib/apex-quote-ai";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients } from "@/lib/apex-quote-store";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -54,6 +55,26 @@ export async function POST(req: NextRequest) {
   }
 
   // what past jobs needed, and the AI job helper, for every technician
+  // a link the customer can open without a password, to sign or pay
+  if (body.action === "share") {
+    const d = body.share;
+    if (!d || !d.qid || JSON.stringify(d).length > 1_500_000) return json({ error: "Nothing to send" }, 400);
+    try {
+      const old = body.token && /^[A-Za-z0-9]{20,40}$/.test(body.token) ? await readShare(body.token) : null;
+      const token = old && !old.accepted ? body.token : randomBytes(18).toString("base64").replace(/[^A-Za-z0-9]/g, "").slice(0, 24).padEnd(24, "x");
+      await saveShare(token, { ...d, created: Date.now() });
+      return json({ ok: true, token, url: `/clients/apex-gates/q/${token}` });
+    } catch (e: any) { return json({ error: e.message }, 500); }
+  }
+  // which links the customers have signed
+  if (body.action === "share-status") {
+    const out: Record<string, any> = {};
+    for (const t of (Array.isArray(body.tokens) ? body.tokens : []).slice(0, 50)) {
+      const s = await readShare(String(t)).catch(() => null);
+      if (s && s.accepted) out[t] = s.accepted;
+    }
+    return json({ ok: true, accepted: out });
+  }
   if (body.action === "clients") {
     try { return json({ ok: true, list: await findClients(String(body.q || "").slice(0, 80)) }); } catch (e: any) { return json({ ok: true, list: [] }); }
   }

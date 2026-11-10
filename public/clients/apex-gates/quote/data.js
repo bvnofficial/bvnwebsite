@@ -66,6 +66,15 @@ export const PRICEBOOK = {
     { id: "travel", cat: "misc", name: "Travel (per km, return)", cost: 1.1 },
     { id: "crane", cat: "misc", name: "Crane truck hire", cost: 650 },
     { id: "skip", cat: "misc", name: "Skip bin", cost: 380 },
+    // callout fees: sell is the customer price before GST (CHECK the amounts with Simon)
+    { id: "fee_std", cat: "misc", name: "Standard callout, first 30 minutes", cost: 42, sell: 150 },
+    { id: "fee_std_sen", cat: "misc", name: "Standard callout, seniors and pensioners", cost: 42, sell: 136.36 },
+    { id: "fee_urg_res", cat: "misc", name: "Urgent callout, home, first 30 minutes", cost: 42, sell: 196.36 },
+    { id: "fee_urg_com", cat: "misc", name: "Urgent callout, business, first 30 minutes", cost: 42, sell: 236.36 },
+    { id: "fee_after", cat: "misc", name: "After hours callout, first 30 minutes", cost: 62, sell: 272.73 },
+    { id: "fee_15", cat: "misc", name: "Extra 15 minutes on site", cost: 21, sell: 27.27 },
+    { id: "fee_15_ah", cat: "misc", name: "Extra 15 minutes after hours (time and a half)", cost: 31, sell: 40.91 },
+    { id: "fee_insp", cat: "misc", name: "Site inspection and written quote (free)", cost: 0, sell: 0 },
   ],
   labour: [
     { id: "fab", name: "Fabrication", rate: 95 },
@@ -78,9 +87,15 @@ export const PRICEBOOK = {
     { id: "galv", name: "Hot dip galvanised", perM2: 0, perKg: 1.6, min: 150 },
     { id: "duplex", name: "Galvanised and powder coat", perM2: 28, perKg: 1.6, min: 300 },
   ],
+  // kits: a motor or job package the office sets up once; on a quote every part can be changed or taken out
+  kits: [
+    { id: "k_swing2", name: "Double swing gate automation", note: "Motors, 2 remotes, keypad and safety beams", items: [{ kind: "item", id: "m_linear2", qty: 1 }, { kind: "item", id: "remote", qty: 2 }, { kind: "item", id: "keypad", qty: 1 }, { kind: "item", id: "eyes", qty: 1 }, { kind: "hours", id: "install", qty: 6 }] },
+    { id: "k_swing1", name: "Single swing gate automation", note: "Motor, 2 remotes and safety beams", items: [{ kind: "item", id: "m_linear1", qty: 1 }, { kind: "item", id: "remote", qty: 2 }, { kind: "item", id: "eyes", qty: 1 }, { kind: "hours", id: "install", qty: 4 }] },
+    { id: "k_slide", name: "Sliding gate automation, up to 600 kg", note: "Motor, rack, 2 remotes, keypad and safety beams", items: [{ kind: "item", id: "m_slide600", qty: 1 }, { kind: "item", id: "rack", qty: 6 }, { kind: "item", id: "remote", qty: 2 }, { kind: "item", id: "keypad", qty: 1 }, { kind: "item", id: "eyes", qty: 1 }, { kind: "hours", id: "install", qty: 5 }] },
+  ],
   markup: { materials: 45, hardware: 40, motors: 30, labour: 45, finish: 30, other: 25 },
   settings: {
-    gst: 10, kerf: 3, minOffcut: 0, sheetWaste: 10, round: 10, minMargin: 25, maxDisc: 10, validity: 30, deposit: 50, invoiceDays: 7, payHow: "",
+    gst: 10, kerf: 3, minOffcut: 0, sheetWaste: 10, round: 10, minMargin: 25, maxDisc: 10, validity: 30, deposit: 50, invoiceDays: 7, payHow: "", payCard: "", payPaypal: "", payLater: "",
     company: "Apex Gates", abn: "", phone: "0477 88 44 22", email: "info@apexgates.com.au", web: "apexgates.com.au",
     address: "Perth, Western Australia",
     terms: "Prices are subject to a final site measure. A deposit is due on acceptance, with the balance on completion. Electrical supply to the gate is by others unless listed. Colours are matched from the Dulux powder coat range.",
@@ -481,6 +496,30 @@ export const TEMPLATES = [
     vars: [["finish", '"none"']],
     items: [{ id: "travel", qty: "km" }, { id: "crane", qty: "crane" }, { id: "skip", qty: "skip" }],
     labour: [{ rate: "install", label: "Remove old gate", hours: "remove" }, { rate: "elec", label: "Electrician", hours: "elec" }],
+  },
+  {
+    id: "service", name: "Service call", kind: "part", draw: "none",
+    describe: "Service call: {what}",
+    inputs: [
+      text("what", "What is wrong", "Gate not opening"),
+      seg("when", "When", [["std", "Standard"], ["urgent", "Urgent, same day"], ["after", "After hours"]], "std"),
+      seg("who", "For a", [["res", "Home"], ["com", "Business"]], "res"),
+      bool("senior", "Pensioner or senior", 0),
+      bool("insp", "Only a look and a quote (free)", 0),
+      num("mins", "Time on site", 30, { unit: "minutes", min: 0, max: 600, step: 15 }),
+    ],
+    vars: [["finish", '"none"'], ["extra", "if(insp, 0, max(0, ceil((mins - 30) / 15)))"]],
+    // the first 30 minutes are in the callout, then every 15 minutes is charged
+    items: [
+      { id: "fee_insp", qty: "insp" },
+      { id: "fee_std", qty: 'if(!insp && when == "std" && !senior, 1, 0)' },
+      { id: "fee_std_sen", qty: 'if(!insp && when == "std" && senior, 1, 0)' },
+      { id: "fee_urg_res", qty: 'if(!insp && when == "urgent" && who == "res", 1, 0)' },
+      { id: "fee_urg_com", qty: 'if(!insp && when == "urgent" && who == "com", 1, 0)' },
+      { id: "fee_after", qty: 'if(!insp && when == "after", 1, 0)' },
+      { id: "fee_15", qty: 'if(when == "after", 0, extra)' },
+      { id: "fee_15_ah", qty: 'if(when == "after", extra, 0)' },
+    ],
   },
   {
     id: "custom", name: "Custom line", kind: "part", draw: "none",

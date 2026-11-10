@@ -95,6 +95,7 @@ async function pull() {
     } else sync.state = j.ok ? "none" : "off";
   } catch (e) { sync.state = "off"; }
   await pullLearn();
+  await checkSigned();
   if (!document.querySelector("input:focus, textarea:focus")) redraw();
 }
 function say(t) { const el = $("#saved"); el.textContent = t; el.classList.add("on"); clearTimeout(el.t); el.t = setTimeout(() => el.classList.remove("on"), 2200); }
@@ -140,9 +141,10 @@ const ICON = {
   chat: I('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'),
   mic: I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
   hammer: I('<path d="M14 4l6 6-3 3-6-6zM11 7L3 15l3 3 8-8"/>'),
+  box: I('<path d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/>'),
   camera: I('<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>'),
 };
-const TYPE_ICON = { auto: ICON.motor, site: ICON.truck, custom: ICON.other };
+const TYPE_ICON = { auto: ICON.motor, site: ICON.truck, custom: ICON.other, service: ICON.worker };
 
 /* plain words for each kind of thing */
 const NAMES = {
@@ -150,6 +152,7 @@ const NAMES = {
   bifold: ["Bifold gate", "Folds in half as it opens"], ped: ["Walk through gate", "Small gate for people"], fence: ["Fence", "Panels between posts"],
   posts: ["Posts only", "Just the posts"], auto: ["Motor and remotes", "For a gate already there"], site: ["Travel and site work", "Travel, removal, crane, bins"],
   custom: ["Something else", "Type your own line"],
+  service: ["Service call", "Callout, repair or inspection"],
 };
 const WORDS = {
   L: { swing: { 1: ["One gate", ""], 2: ["Two gates", "Meet in the middle"] }, bifold: { 1: ["One side folds", ""], 2: ["Both sides fold", ""] } },
@@ -217,6 +220,15 @@ const LAYOUT = {
     ["Extras", "remote", "Tick what they want", [{ t: "ticks", list: [["eyes", "Safety eyes", "Stops the gate if a car is in the way", "eye"], ["keypad", "Keypad", "Open with a code", "keypad"], ["intercom", "Video intercom", "See who is at the gate", "phone"], ["solar", "Solar power", "No power at the gate", "sun"], ["battery", "Battery backup", "Works in a power cut", "battery"], ["loop", "Car sensor", "Opens when a car drives up", "car"]], count: ["remotes", "Remotes", "How many remotes", "remote"] }]],
     ["Time", "worker", "How long to fit it", [{ t: "nums", list: [["hrs", "Hours", [1, 2, 3, 4, 6]]] }]],
   ],
+  service: [
+    ["The call", "worker", "What is the callout for", [
+      { t: "text", k: "what", label: "What is wrong" },
+      { t: "pick", k: "when", label: "When", pic: "none" },
+      { t: "pick", k: "who", label: "For a", pic: "none" },
+      { t: "ticks", list: [["senior", "Pensioner or senior", "The seniors price", "user"], ["insp", "Only a look and a quote", "Free, nothing to pay", "doc"]] },
+      { t: "nums", list: [["mins", "Time on site", [30, 45, 60, 90, 120]]] },
+    ]],
+  ],
   site: [
     ["Travel and site work", "truck", "Anything extra on the day", [
       { t: "nums", list: [["km", "Travel there and back", [0, 20, 50, 100, 200]], ["remove", "Taking out the old gate", [0, 1, 2, 4]], ["elec", "Electrician", [0, 1, 2, 4]]] },
@@ -231,7 +243,7 @@ const LAYOUT = {
     ["Your own line", "other", "Anything not listed", [{ t: "text", k: "text", label: "What is it" }, { t: "nums", list: [["unit", "Customer price for one, before GST", [50, 100, 250, 500]], ["qty", "How many", [1, 2, 5, 10]]] }]],
   ],
 };
-const UNIT = { km: "km", remove: "hours", elec: "hours", hrs: "hours", unit: "dollars", qty: "" };
+const UNIT = { km: "km", remove: "hours", elec: "hours", hrs: "hours", unit: "dollars", qty: "", mins: "minutes" };
 
 /* ---------- ui state ---------- */
 const ui = { view: "home", tab: 0, shelf: "steel", find: "" };
@@ -243,6 +255,7 @@ const nameOf = (it) => it.name || (tplOf(it.tpl) ? namesOf(tplOf(it.tpl))[0] : "
 /* the tabs for a thing: its base layout, plus the office's extras on gates */
 function layoutOf(t) {
   const b = t.base || t.id;
+  if (b === "kit") return [["In the kit", "box", "Take out what this job does not need, or add more", [{ t: "counts", list: t.inputs.map((i) => [i.k, i.label, `${money(custPrice(i.ref.kind, i.ref.id), true)} ${i.ref.kind === "hours" ? "an hour" : "each"}, before GST`]) }]]];
   const secs = (LAYOUT[b === "custom" && !boss() ? "customTeam" : b] || []).slice();
   const ex = t.kind === "gate" ? offered(book()) : [];
   if (ex.length) secs.push(["Extras", "plus", "Anything else for this gate", [{ t: "counts", list: ex.map((h) => [`x_${h.id}`, h.name, h.note || money(h.cost) + (boss() ? " each, before markup" : " each, before GST")]) }]]);
@@ -387,8 +400,8 @@ function section([title, ic, hint, fields], t, it, r) {
         const bigStep = u === "mm" ? 100 : step;
         const metres = u === "mm" && v >= 1000 ? `<em> = ${(v / 1000).toLocaleString("en-AU", { maximumFractionDigits: 2 })} metres</em>` : "";
         return `<div class="nb"><b>${label}</b><div class="numrow"><button data-act="bump" data-k="${k}" data-d="${-bigStep}" aria-label="Less">${ICON.minus}</button>
-          <input data-num="${k}" inputmode="decimal" value="${v}" aria-label="${label}"><button data-act="bump" data-k="${k}" data-d="${bigStep}" aria-label="More">${ICON.plus}</button></div>
-          <div class="unit">${u === "dollars" ? "dollars, before GST" : metres ? `millimetres, that is ${(v / 1000).toLocaleString("en-AU", { maximumFractionDigits: 2 })} metres` : u === "mm" ? "millimetres" : u}</div>
+          ${u === "mm" ? `<input data-numm="${k}" inputmode="decimal" value="${+(v / 1000).toFixed(3)}" aria-label="${label} in metres">` : `<input data-num="${k}" inputmode="decimal" value="${v}" aria-label="${label}">`}<button data-act="bump" data-k="${k}" data-d="${bigStep}" aria-label="More">${ICON.plus}</button></div>
+          <div class="unit">${u === "dollars" ? "dollars, before GST" : u === "mm" ? "metres" : u === "minutes" && v > 30 ? `minutes, the first 30 are in the callout` : u}</div>
           ${quick ? `<div class="quick">${quick.map((x) => `<button class="${x === v ? "on" : ""}" data-act="set" data-k="${k}" data-v="${x}" data-num="1">${u === "mm" && x >= 1000 ? (x / 1000).toLocaleString("en-AU") + " m" : fmtNum(x)}</button>`).join("")}</div>` : ""}</div>`;
       }).join("")}</div>`;
     }
@@ -415,11 +428,11 @@ function countRow(t, it, k, label, help, ico) {
   const inp = t.inputs.find((i) => i.k === k); if (!inp) return "";
   const v = +(it.values[k] ?? inp.def);
   return `<div class="count"><div style="display:flex;gap:12px;align-items:center">${ico ? `<span style="width:40px;flex:none;color:var(--ink2)">${ICON[ico]}</span>` : ""}<div><b>${label}</b>${help ? `<small>${help}</small>` : ""}</div></div>
-    <div class="stepper"><button data-act="bump" data-k="${k}" data-d="-1" aria-label="One less">${ICON.minus}</button><output>${v}</output><button data-act="bump" data-k="${k}" data-d="1" aria-label="One more">${ICON.plus}</button></div></div>`;
+    <div class="stepper"><button data-act="bump" data-k="${k}" data-d="${-(inp.step || 1)}" aria-label="One less">${ICON.minus}</button><output>${fmtNum(v)}</output><button data-act="bump" data-k="${k}" data-d="${inp.step || 1}" aria-label="One more">${ICON.plus}</button></div></div>`;
 }
 function typeGrid() {
-  return `<div class="typegrid">${TPLS.filter((t) => !t.hidden && (NAMES[t.id] || t.custom)).map((t) => {
-    const pic = t.draw !== "none" ? drawItem(t, runItem(t, defaults(t), db.pb), db.pb) : `<div style="width:64px;color:#3a3b40">${TYPE_ICON[t.base || t.id] || ICON.other}</div>`;
+  return `<div class="typegrid">${TPLS.filter((t) => !t.hidden && (NAMES[t.id] || t.custom || t.kit)).map((t) => {
+    const pic = t.draw !== "none" ? drawItem(t, runItem(t, defaults(t), db.pb), db.pb) : `<div style="width:64px;color:#3a3b40">${t.kit ? ICON.box : TYPE_ICON[t.base || t.id] || ICON.other}</div>`;
     return `<button class="pick" data-act="add" data-t="${t.id}"><div class="pp">${pic}</div><b>${esc(namesOf(t)[0])}</b><small>${esc(namesOf(t)[1])}</small></button>`;
   }).join("")}</div>`;
 }
@@ -476,7 +489,8 @@ function viewQuote() {
       <button class="btn red" data-act="sign">${ICON.pen}${q.signature ? "Sign again" : "Customer signs now"}</button>
       <button class="btn dark" data-act="print">${ICON.print}Print or PDF</button>
       <button class="btn light" data-act="copytext">${ICON.copy}Copy for a text</button>
-    </div>
+      <button class="btn green" data-act="sendlink" data-v="quote" ${ui.linkBusy ? "disabled" : ""}>${ICON.phone}${q.share ? "Send the link again" : "Send a link to sign"}</button>
+    </div>${linkPanel(q, "quote")}
     <p class="lbl" style="font-weight:800;margin:18px 0 8px">Where is it up to?</p><div class="statusbtns">${[["draft", "Still working"], ["sent", "Sent"], ["won", "Going ahead"], ["lost", "Said no"]].map(([st, lab]) => `<button data-act="status" data-v="${st}" class="${q.status === st ? "on" : ""}">${lab}</button>`).join("")}</div>
     <div class="fld" style="margin-top:16px"><label>A note on the quote (you can leave this empty)</label><textarea data-qn rows="2" placeholder="Thanks for having us out today">${esc(q.notes)}</textarea></div>
   </div>
@@ -488,7 +502,7 @@ function viewQuote() {
     <p class="forwho">For <b>${esc(q.client.name || "the customer")}</b>${q.client.address ? `, ${esc(q.client.address)}` : ""}${q.client.phone ? ` · ${esc(q.client.phone)}` : ""}</p>
     ${q.notes ? `<div class="note">${esc(q.notes)}</div>` : ""}
     <h2><i>1</i>What we will build</h2>
-    ${P.lines.map((l, i) => `<div class="plan">${l.tpl.draw !== "none" ? `<div class="dr">${drawItem(l.tpl, l.r, db.pb)}</div>` : ""}<div class="tx"><div><b>${esc(l.name)}</b><p>${esc(cap(l.desc))}</p></div><div class="pr">${money(shown[i])}</div></div></div>`).join("") || `<p class="muted">Nothing added yet.</p>`}
+    ${P.lines.map((l, i) => `<div class="plan">${l.tpl.draw !== "none" ? `<div class="dr">${drawItem(l.tpl, l.r, db.pb)}</div>` : ""}<div class="tx"><div><b>${esc(l.name)}</b><p>${esc(lineDesc(l))}</p></div><div class="pr">${money(shown[i])}</div></div></div>`).join("") || `<p class="muted">Nothing added yet.</p>`}
     <h2><i>2</i>The price</h2>
     <div class="total-box">${P.disc ? `<span>Discount</span><b>${P.disc}% off</b>` : ""}<span>Price before GST</span><b>${money(P.exGst)}</b><span>GST</span><b>${money(P.gst, true)}</b>
       <span class="grand">Total</span><b>${money(P.inc, true)}</b>${s.deposit ? `<span>Deposit to get started (${s.deposit}%)</span><b>${money((P.inc * s.deposit) / 100, true)}</b>` : ""}</div>
@@ -500,6 +514,14 @@ function viewQuote() {
     ${q.signature ? `<div class="stamp">ACCEPTED</div>` : ""}
     <p class="terms">${esc(s.terms)}</p>
   </article>`;
+}
+/* what a line says to the customer; a kit lists what is really in it */
+function lineDesc(l) {
+  // customers read sizes in metres
+  if (l.tpl.base !== "kit") return cap(l.desc).replace(/(\d{1,3}(?:,\d{3})+|\d+) mm/g, (m, n) => `${(parseFloat(n.replace(/,/g, "")) / 1000).toLocaleString("en-AU", { maximumFractionDigits: 2 })} m`);
+  const parts = l.r.items.filter((h) => h.qty > 0).map((h) => `${h.qty > 1 ? fmtNum(h.qty) + " x " : ""}${h.name}`);
+  if (l.r.labour.some((x) => x.hours > 0)) parts.push("fitted and set up by the Apex team");
+  return parts.join(", ") || "Nothing in this kit yet";
 }
 function quoteText() {
   const q = Q(), P = price(q), s = db.pb.settings;
@@ -547,7 +569,7 @@ function builderCard() {
 }
 /* what the tool can quote, in a form the helper can read */
 function typesSpec() {
-  return TPLS.filter((t) => !t.hidden && (NAMES[t.id] || t.custom)).map((t) => ({
+  return TPLS.filter((t) => !t.hidden && (NAMES[t.id] || t.custom || t.kit)).map((t) => ({
     id: t.id, name: namesOf(t)[0], about: namesOf(t)[1] || t.blurb || "",
     inputs: t.inputs.filter((i) => !String(i.k).startsWith("x_")).map((i) => {
       const o = { k: i.k, label: i.label, type: i.type };
@@ -609,6 +631,57 @@ function builtBanner(q) {
   return `<div class="card pad helper builtnote"><p class="aisay">${ICON.chat}<span>${esc(ui.built.say || "Here is a first go. Check it and change anything.")}</span></p>
     ${ui.built.questions.length ? `<div class="incl-list warnish"><b>Check these on site:</b>${ui.built.questions.map((x) => `<span>${ICON.warn}${esc(x)}</span>`).join("")}</div>` : ""}
     <button class="btn ghost small" data-act="builtok" style="margin-top:10px">${ICON.tick}Got it</button></div>`;
+}
+
+/* ---------- a link the customer opens to sign or pay ---------- */
+function shareData(q, kind) {
+  const s = db.pb.settings, g = 1 + s.gst / 100;
+  const company = { name: s.company, address: s.address, phone: s.phone, email: s.email, abn: s.abn, web: s.web };
+  const pay = { card: s.payCard, paypal: s.payPaypal, later: s.payLater, how: s.payHow };
+  const client = { name: q.client.name, address: q.client.address };
+  if (kind === "invoice") {
+    const M = jobMoney(q), P = M.P, base = P.tot.sell * (1 - P.disc / 100), k = base ? P.exGst / base : 1, j = jobOf(q);
+    const lines = P.lines.map((l) => ({ name: l.name, desc: lineDesc(l), amount: l.sell * (1 - P.disc / 100) * k * g }))
+      .concat(M.E.lines.filter((x) => x.charged).map((x) => ({ name: x.name, desc: `${fmtNum(x.qty)}${x.kind === "hours" ? " hours" : ""} added ${x.stage === "made" ? "in the workshop" : "on site"}`, amount: x.sell * g })));
+    const at = j.invoice ? j.invoice.at : Date.now();
+    return { kind, qid: q.id, no: j.invoice ? j.invoice.no : q.no, date: at, due: at + (+s.invoiceDays || 7) * 864e5, company, client, lines, pay,
+      totals: { exGst: M.exGst, gst: M.gst, inc: M.inc, paid: M.deposit, balance: Math.max(0, M.inc - M.deposit) }, terms: `Thank you for choosing ${s.company}.` };
+  }
+  const P = price(q), base = P.tot.sell * (1 - P.disc / 100), k = base ? P.exGst / base : 1, { inc, exc } = includes(P);
+  return { kind: "quote", qid: q.id, no: q.no, date: q.created, valid: q.created + s.validity * 864e5, company, client, note: q.notes, pay,
+    lines: P.lines.map((l) => ({ name: l.name, desc: lineDesc(l), amount: l.sell * (1 - P.disc / 100) * k * g, svg: l.tpl.draw !== "none" ? drawItem(l.tpl, l.r, db.pb) : "" })),
+    totals: { exGst: P.exGst, gst: P.gst, inc: P.inc, discount: P.disc, deposit: s.deposit ? (P.inc * s.deposit) / 100 : 0 }, inc, exc, terms: s.terms };
+}
+async function sendLink(q, kind) {
+  ui.linkBusy = true; redraw();
+  try {
+    const key = kind === "invoice" ? "invShare" : "share";
+    const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "share", token: q[key] && q[key].token, share: shareData(q, kind) }) });
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Could not make the link");
+    q[key] = { token: j.token, at: Date.now() }; if (kind === "quote" && q.status === "draft") q.status = "sent";
+    ui.link = { qid: q.id, kind, url: location.origin + j.url }; save();
+  } catch (e) { say(e.message || "No signal, try again"); }
+  ui.linkBusy = false; redraw();
+}
+function linkPanel(q, kind) {
+  if (!ui.link || ui.link.qid !== q.id || ui.link.kind !== kind) return "";
+  const u = ui.link.url, who = q.client.name ? q.client.name.split(" ")[0] : "";
+  const msg = kind === "invoice" ? `Hi${who ? " " + who : ""}, here is your invoice from ${db.pb.settings.company}. You can pay it here: ${u}` : `Hi${who ? " " + who : ""}, here is your quote from ${db.pb.settings.company}. You can look over it and sign it here: ${u}`;
+  return `<div class="linkbox"><b>The link is ready</b><input readonly value="${esc(u)}" onclick="this.select()">
+    <div class="sendgrid"><a class="btn green" href="sms:${esc(q.client.phone || "")}?&body=${encodeURIComponent(msg)}">${ICON.phone}Text it</a>
+    <a class="btn dark" href="mailto:${esc(q.client.email || "")}?subject=${encodeURIComponent((kind === "invoice" ? "Your invoice " : "Your quote ") + q.no)}&body=${encodeURIComponent(msg)}">${ICON.doc}Email it</a>
+    <button class="btn light" data-act="copylink">${ICON.copy}Copy</button></div></div>`;
+}
+/* customers who signed through their link: their quote goes ahead on this tablet too */
+async function checkSigned() {
+  const open = db.quotes.filter((q) => q.share && q.share.token && q.status !== "won");
+  if (!open.length) return;
+  try {
+    const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "share-status", tokens: open.map((q) => q.share.token) }) });
+    const j = await r.json(); let n = 0;
+    for (const q of open) { const a = j.accepted && j.accepted[q.share.token]; if (a) { q.status = "won"; q.signature = { img: a.sig, name: a.name, date: a.at }; n++; } }
+    if (n) { save(); say(`${n} customer${n === 1 ? "" : "s"} signed. Going ahead`); }
+  } catch (e) { /* try again later */ }
 }
 
 /* ---------- finding a client brought in from AroFlo ---------- */
@@ -820,7 +893,7 @@ function partPicker() {
 function viewInvoice(q, M, st) {
   const j = jobOf(q), s = db.pb.settings, g = 1 + s.gst / 100;
   const P = M.P, base = P.tot.sell * (1 - P.disc / 100), k = base ? P.exGst / base : 1;
-  const rows = P.lines.map((l) => [l.name, cap(l.desc), l.sell * (1 - P.disc / 100) * k * g]).concat(M.E.lines.filter((x) => x.charged).map((x) => [x.name, `${fmtNum(x.qty)}${x.kind === "hours" ? (x.qty === 1 ? " hour" : " hours") : ""} added ${x.stage === "made" ? "in the workshop" : "on site"}`, x.sell * g]));
+  const rows = P.lines.map((l) => [l.name, lineDesc(l), l.sell * (1 - P.disc / 100) * k * g]).concat(M.E.lines.filter((x) => x.charged).map((x) => [x.name, `${fmtNum(x.qty)}${x.kind === "hours" ? (x.qty === 1 ? " hour" : " hours") : ""} added ${x.stage === "made" ? "in the workshop" : "on site"}`, x.sell * g]));
   const inv = j.invoice;
   const no = inv ? inv.no : `INV-${String(q.no).replace(/^Q-/, "")}`;
   const at = inv ? inv.at : Date.now(), due = at + (+s.invoiceDays || 7) * 864e5;
@@ -831,9 +904,9 @@ function viewInvoice(q, M, st) {
       <div class="invsum"><span>The quote</span><b>${money(P.inc, true)}</b><span>Extras charged</span><b>${money(M.E.sell * g, true)}</b>${M.E.lines.some((x) => !x.charged) ? `<span class="muted">Extras Apex pays for</span><b class="muted">not charged</b>` : ""}<span class="grand">Total</span><b class="grand">${money(M.inc, true)}</b></div>
       <div class="fld" style="margin-top:14px"><label>Deposit the customer already paid, with GST</label><input data-dep inputmode="decimal" value="${M.deposit || ""}" placeholder="0"></div>
       <div class="sendgrid" style="margin-top:14px">${inv ? "" : `<button class="btn red" data-act="invmake">${ICON.doc}Make the invoice</button>`}
-        ${inv ? `<button class="btn dark" data-act="print">${ICON.print}Print or PDF</button><button class="btn light" data-act="invtext">${ICON.copy}Copy for a text</button>` : ""}
+        ${inv ? `<button class="btn dark" data-act="print">${ICON.print}Print or PDF</button><button class="btn green" data-act="sendlink" data-v="invoice" ${ui.linkBusy ? "disabled" : ""}>${ICON.phone}Send a link to pay</button><button class="btn light" data-act="invtext">${ICON.copy}Copy for a text</button>` : ""}
         ${inv && !j.paid ? `<button class="btn green" data-act="paid">${ICON.tick}Paid in full</button>` : ""}</div>
-      ${j.paid ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}Paid on ${dateStr(j.paid)}. This job is finished.</div>` : ""}
+      ${linkPanel(q, "invoice")}${j.paid ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}Paid on ${dateStr(j.paid)}. This job is finished.</div>` : ""}
     </section><h2 class="sub-t" style="text-align:center">This is what the customer sees</h2></div>`;
   return ctrl + `<article class="sheet">
     <div class="sh-top"><div><div class="brandmark">APEX<span> GATES</span></div><p>${esc(s.address)} · ${esc(s.phone)} · ${esc(s.email)}${s.abn ? ` · ABN ${esc(s.abn)}` : ""}</p></div>
@@ -947,6 +1020,8 @@ document.addEventListener("click", (e) => {
   if (a === "copyjob") { const src = db.quotes.find((x) => x.id === b.dataset.id), n = { ...clone(src), id: uid(), no: `Q-${db.nextNo++}`, created: Date.now(), updated: Date.now(), status: "draft", signature: null }; db.quotes.push(n); save(); redraw(); say("Job copied"); }
   if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "unquote", id: b.dataset.id }) }).catch(() => {}); db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
+  if (a === "sendlink") sendLink(q, b.dataset.v);
+  if (a === "copylink") navigator.clipboard.writeText(ui.link.url).then(() => say("Link copied"), () => say("Could not copy on this device"));
   /* the builder and client search */
   if (a === "build") { ui.bsaid = ($("[data-bsaid]") || {}).value || ui.bsaid || ""; buildQuote(); }
   if (a === "bmic") { listenInto("bsaid"); }
@@ -994,6 +1069,7 @@ document.addEventListener("click", (e) => {
 document.addEventListener("change", (e) => {
   const el = e.target;
   if (el.dataset.num) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.num, v); redraw(); } }
+  if (el.dataset.numm) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.numm, Math.round(v * 1000)); redraw(); } }
   if (el.dataset.txt) { setVal(el.dataset.txt, el.value); redraw(); }
   if (el.dataset.c) redraw();
   if (el.matches("[data-dep]")) redraw();
@@ -1011,7 +1087,7 @@ document.addEventListener("input", (e) => {
   if (el.matches("[data-pfind]")) { ui.pfind = el.value; const pos = el.selectionStart; redraw(); const n = $("[data-pfind]"); n.focus(); n.setSelectionRange(pos, pos); }
   if (el.matches("[data-find]")) { ui.find = el.value; const pos = el.selectionStart; render(); const n = $("[data-find]"); n.focus(); n.setSelectionRange(pos, pos); }
 });
-document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.dataset?.num) e.target.blur(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.target.dataset?.num || e.target.dataset?.numm)) e.target.blur(); });
 document.addEventListener("toggle", (e) => { if (e.target.matches?.("details.where")) ui.where = e.target.open; }, true);
 
 render();

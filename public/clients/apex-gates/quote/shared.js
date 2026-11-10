@@ -38,7 +38,23 @@ export function buildTemplates(base, pb, gates = {}) {
     if (g.name) t.describe = `${g.name}: ` + (t.describe || "").replace(/^[^,]*,\s*/, "");
     out.push(t.kind === "gate" ? addExtras(t, pb) : t);
   }
+  for (const k of pb.kits || []) out.push(kitTemplate(k, pb, hidden));
   return out;
+}
+
+/* a kit becomes something to quote: each part or hour is a count the team can
+   change on the quote, and setting it to 0 takes it out for that job */
+export function kitTemplate(k, pb, hidden = new Set()) {
+  const name = (x) => x.kind === "hours" ? ((pb.labour || []).find((l) => l.id === x.id) || {}).name || "Labour" : ((pb.hardware || []).find((h) => h.id === x.id) || {}).name || x.id;
+  const list = (k.items || []).filter((x) => x.id);
+  return {
+    id: "kit_" + k.id, name: k.name, blurb: k.note || "", base: "kit", kit: true, kind: "part", draw: "none", hidden: hidden.has("kit_" + k.id),
+    describe: k.name,
+    inputs: list.map((x, i) => ({ k: "q" + i, label: x.kind === "hours" ? name(x) + " (hours)" : name(x), type: "num", def: +x.qty || 0, unit: x.kind === "hours" ? "hours" : "", min: 0, max: 200, step: x.kind === "hours" ? 0.5 : 1, ref: { kind: x.kind, id: x.id } })),
+    vars: [["finish", '"none"']],
+    items: list.map((x, i) => (x.kind === "hours" ? null : { id: x.id, qty: "q" + i })).filter(Boolean),
+    labour: list.map((x, i) => (x.kind === "hours" ? { rate: x.id, label: name(x), hours: "q" + i } : null)).filter(Boolean),
+  };
 }
 
 /* what the technicians get: every price already has the markup added and the

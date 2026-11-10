@@ -116,3 +116,25 @@ export async function findClients(q: string) {
   const hay = (c: any) => `${c.name} ${c.contact} ${c.address} ${c.phone} ${c.email} ${c.code}`.toLowerCase();
   return clientCache.list.filter((c) => { const h = hay(c); return words.every((w) => h.includes(w)); }).slice(0, 8);
 }
+
+/* links sent to customers: a frozen copy of a quote or invoice they can open,
+   sign and pay from their phone, without the team password */
+const TOKEN = /^[A-Za-z0-9]{20,40}$/;
+export async function saveShare(token: string, data: any) {
+  if (!TOKEN.test(token)) throw new Error("Bad link");
+  const b = await bucket();
+  const { error } = await b.upload(`shares/${token}.json`, new Blob([JSON.stringify(data)], { type: "application/json" }), { upsert: true, contentType: "application/json" });
+  if (error) throw new Error(error.message);
+}
+export async function readShare(token: string) {
+  if (!TOKEN.test(token)) return null;
+  const b = await bucket();
+  const { data } = await b.download(`shares/${token}.json`);
+  return data ? JSON.parse(await data.text()) : null;
+}
+export async function readQuote(id: string) {
+  if (!QID.test(id)) return null;
+  const b = await bucket();
+  const { data } = await b.download(`quotes/${id}.json`);
+  return data ? JSON.parse(await data.text()) : null;
+}

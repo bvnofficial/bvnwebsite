@@ -567,3 +567,7 @@ main{max-width:920px}
 .found button{text-align:left;border:2px solid var(--line2);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
 .found b{display:block;font-size:18px}.found small{color:var(--muted);font-size:15px}
 @media (max-width:700px){.talkbtns.three{grid-template-columns:1fr 1fr}.talkbtns.three .btn.dark{grid-column:1/-1}}
+.linkbox{margin-top:14px;background:var(--okbg);border-radius:14px;padding:14px;display:grid;gap:10px}
+.linkbox b{color:var(--ok);font-size:19px}
+.linkbox input{width:100%;border:2px solid var(--line2);border-radius:10px;padding:10px;font-size:15px;background:#fff}
+.linkbox a.btn{text-decoration:none}

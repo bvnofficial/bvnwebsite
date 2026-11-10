@@ -53,6 +53,7 @@ function render() {
   if (st.tab === "quotes") { m.innerHTML = viewQuotes(); if (!st.quotes && !st.qloading) loadQuotes(); }
   if (st.tab === "prices") m.innerHTML = viewPrices();
   if (st.tab === "add") m.innerHTML = viewAdd();
+  if (st.tab === "kits") m.innerHTML = viewKits();
   if (st.tab === "gates") m.innerHTML = st.gate ? viewGateEditor() : viewGates();
   if (st.tab === "company") m.innerHTML = viewCompany();
   renderBar();
@@ -284,6 +285,46 @@ function viewAdd() {
   <p class="muted">New steel shows up in the frame, infill and post choices. New gate types are added on the <b>Gates</b> tab.</p>`;
 }
 
+/* kits: set up once, every part can still be changed on a quote */
+const kitSell = (x) => {
+  const p = pb(), up = (c) => 1 + ((p.markup || {})[c] || 0) / 100;
+  if (x.kind === "hours") { const l = p.labour.find((l) => l.id === x.id); return l ? l.rate * up("labour") : 0; }
+  const h = p.hardware.find((h) => h.id === x.id); if (!h) return 0;
+  return h.sell > 0 ? h.sell : h.cost * up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware");
+};
+function viewKits() {
+  const kits = (pb().kits ||= []);
+  if (st.kit) return viewKitEditor(kits.find((k) => k.id === st.kit));
+  return `<h1 class="big-t">Kits</h1><p class="hello" style="margin-top:-10px">A kit is a package you sell often, like a motor with remotes, keypad and beams. The team adds it to a quote with one tap, then takes out or adds anything for that job.</p>
+  <button class="btn red" data-act="kitnew" style="margin-bottom:16px">${ICON.plus}Make a new kit</button>
+  <div class="gtypes">${kits.map((k) => {
+    const total = (k.items || []).reduce((a, x) => a + kitSell(x) * (+x.qty || 0), 0);
+    return `<div class="card gtype"><div class="gx"><b>${esc(k.name)}</b><small>${esc(k.note || "")}</small>
+      <small>${(k.items || []).length} things · ${money(total)} before GST</small>
+      <div style="display:flex;gap:8px;margin-top:10px"><button class="btn ghost small" data-act="kitedit" data-id="${k.id}">${ICON.pen}Change</button><button class="btn ghost small" data-act="kitdel" data-id="${k.id}">${ICON.bin}Delete</button></div></div></div>`;
+  }).join("") || `<p class="muted">No kits yet.</p>`}</div>`;
+}
+function viewKitEditor(k) {
+  if (!k) { st.kit = null; return viewKits(); }
+  const p = pb();
+  const opts = (x) => x.kind === "hours"
+    ? p.labour.map((l) => `<option value="${l.id}" ${l.id === x.id ? "selected" : ""}>${esc(l.name)}</option>`).join("")
+    : [["motor", "Motors"], ["access", "Remotes and access"], ["part", "Parts"], ["misc", "Service and travel"]].map(([c, lab]) => `<optgroup label="${lab}">${p.hardware.filter((h) => (c === "part" ? !["motor", "access", "misc"].includes(h.cat) : h.cat === c)).map((h) => `<option value="${h.id}" ${h.id === x.id ? "selected" : ""}>${esc(h.name)}</option>`).join("")}</optgroup>`).join("");
+  const total = k.items.reduce((a, x) => a + kitSell(x) * (+x.qty || 0), 0);
+  return `<button class="btn ghost small" data-act="kitback" style="margin-bottom:14px">${ICON.back}All kits</button>
+  <h1 class="big-t">${esc(k.name || "New kit")}</h1>
+  <section class="card pad"><div class="two"><div class="fld"><label>Name the team sees</label><input data-kit="name" value="${esc(k.name)}"></div>
+    <div class="fld"><label>Short note</label><input data-kit="note" value="${esc(k.note || "")}" placeholder="For example: motor, 2 remotes, keypad and beams"></div></div>
+    <p class="lbl" style="margin-top:16px">What is in it</p>
+    ${k.items.map((x, n) => `<div class="partrow"><select data-ki="${n}" data-f="id">${opts(x)}</select>
+      <input data-ki="${n}" data-f="qty" inputmode="decimal" value="${x.qty}" style="width:90px"><span class="muted">${x.kind === "hours" ? "hours" : "x"} · ${money(kitSell(x) * (+x.qty || 0))}</span>
+      <button class="linkbtn" data-act="kitrow" data-n="${n}">${ICON.bin}</button></div>`).join("")}
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn ghost small" data-act="kitadd" data-v="item">${ICON.plus}A part</button><button class="btn ghost small" data-act="kitadd" data-v="hours">${ICON.plus}Time</button></div>
+    <div class="okmsg" style="margin-top:16px">${ICON.tick}The customer pays ${money(total)} before GST for the whole kit.</div>
+  </section>
+  <button class="btn green wide" data-act="kitback" style="margin-top:14px">${ICON.tick}Done. Press Save for everyone at the bottom when you are finished</button>`;
+}
+
 /* gate types */
 function card(t) {
   const pic = t.draw !== "none" ? drawItem(t, runItem(t, defaults(t), pb()), pb()) : "";
@@ -348,6 +389,8 @@ function viewCompany() {
   <section class="card pad"><h2 class="qh">On every quote</h2><div class="two">${f("company", "Company name")}${f("abn", "ABN")}${f("phone", "Phone")}${f("email", "Email")}${f("web", "Website")}${f("address", "Address")}</div>
     <div class="fld" style="margin-top:12px"><label>Terms at the bottom of the quote</label><textarea data-set="terms" data-type="text" rows="4">${esc(s.terms)}</textarea></div></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">Numbers</h2><div class="two">${f("gst", "GST %", "num")}${f("deposit", "Deposit asked for %", "num")}${f("validity", "Quote is good for (days)", "num")}${f("minMargin", "Warn when Apex makes under %", "num")}${f("maxDisc", "Most discount a technician can give %", "num")}${f("round", "Round totals to the nearest $", "num")}${f("kerf", "Saw cut (mm)", "num")}${f("invoiceDays", "Invoices are due in (days)", "num")}</div>
+    <div class="two" style="margin-top:12px">${f("payCard", "Card payment link (from Square or Stripe)")}${f("payPaypal", "PayPal.me link (for example https://paypal.me/apexgates)")}${f("payLater", "Pay over time link (Afterpay or Zip, through Square or Stripe)")}</div>
+    <p class="muted" style="margin:6px 0 0">These show as Pay buttons on the link the customer gets. Leave one empty to hide it.</p>
     <div class="fld" style="margin-top:12px"><label>How customers pay (printed on every invoice, for example bank name, BSB and account)</label><textarea data-set="payHow" data-type="text" rows="3">${esc(s.payHow)}</textarea></div></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">${ICON.undo}Undo a save</h2><p class="muted" style="margin-top:-6px">Every save is kept. Go back to an earlier one if something went wrong.</p>
     ${st.history ? (st.history.length ? `<div class="hist">${st.history.map((n) => `<div class="prow ro"><b>${esc(histDate(n))}</b><button class="btn ghost small" data-act="restore" data-n="${esc(n)}">Go back to this</button></div>`).join("")}</div>` : `<p class="muted">No earlier saves yet.</p>`) : `<button class="btn ghost small" data-act="history">Show earlier saves</button>`}
@@ -361,6 +404,12 @@ const histDate = (n) => { const m = n.match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d)-(\d\d
 /* ---------- actions ---------- */
 document.addEventListener("change", async (e) => {
   const el = e.target;
+  if (el.dataset && (el.dataset.kit || el.dataset.ki)) {
+    const k = pb().kits.find((k) => k.id === st.kit); if (!k) return;
+    if (el.dataset.kit) k[el.dataset.kit] = el.value;
+    else { const x = k.items[+el.dataset.ki]; if (el.dataset.f === "qty") x.qty = Math.max(0, parseFloat(el.value) || 0); else x.id = el.value; }
+    changed(); render(); return;
+  }
   if (!el.dataset || !el.dataset.imp || !el.files || !el.files[0]) return;
   const rows = parseCSV(await el.files[0].text());
   if (el.dataset.imp === "stock") importStock(rows); else importClients(rows);
@@ -374,6 +423,12 @@ document.addEventListener("click", async (e) => {
   }
   if (a === "logout") { await api({ action: "logout" }).catch(() => {}); location.href = "index.html"; }
   if (a === "shelf") { st.shelf = b.dataset.v; st.find = ""; render(); }
+  if (a === "kitnew") { const k = { id: "k" + uid(), name: "New kit", note: "", items: [] }; (pb().kits ||= []).push(k); st.kit = k.id; changed(); render(); }
+  if (a === "kitedit") { st.kit = b.dataset.id; render(); scrollTo(0, 0); }
+  if (a === "kitback") { st.kit = null; render(); scrollTo(0, 0); }
+  if (a === "kitdel" && confirm("Delete this kit? Quotes already made keep their prices.")) { pb().kits = pb().kits.filter((k) => k.id !== b.dataset.id); changed(); render(); }
+  if (a === "kitadd") { const k = pb().kits.find((k) => k.id === st.kit); k.items.push(b.dataset.v === "hours" ? { kind: "hours", id: "install", qty: 1 } : { kind: "item", id: pb().hardware[0].id, qty: 1 }); changed(); render(); }
+  if (a === "kitrow") { const k = pb().kits.find((k) => k.id === st.kit); k.items.splice(+b.dataset.n, 1); changed(); render(); }
   if (a === "qf") { st.qfilter = b.dataset.v; render(); }
   if (a === "qreload") { st.quotes = null; st.learn = null; st.lloading = false; render(); }
   if (a === "rise") {
