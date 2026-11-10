@@ -149,3 +149,54 @@ export async function readQuote(id: string) {
   const { data } = await b.download(`quotes/${id}.json`);
   return data ? JSON.parse(await data.text()) : null;
 }
+
+/* stock on the shelf and supplier bills: small JSON files, read fresh each time */
+async function readJSON(name: string, fallback: any) {
+  const b = await bucket();
+  const { data } = await b.download(name);
+  return data ? JSON.parse(await data.text()) : fallback;
+}
+async function writeJSON(name: string, value: any) {
+  const b = await bucket();
+  const { error } = await b.upload(name, new Blob([JSON.stringify(value)], { type: "application/json" }), { upsert: true, contentType: "application/json", cacheControl: "0" });
+  if (error) throw new Error(error.message);
+}
+type Stock = { items: Record<string, { qty: number; min: number }>; log: any[] };
+export const readStock = async (): Promise<Stock> => readJSON("stock/stock.json", { items: {}, log: [] });
+const lowOf = (s: Stock) => Object.entries(s.items).filter(([, v]) => v.min > 0 && v.qty <= v.min).map(([id, v]) => ({ id, qty: v.qty, min: v.min }));
+/* parts taken for a job (negative) or received from a supplier (positive); only items the office tracks */
+export async function moveStock(lines: { id: string; qty: number }[], why: string, who = "") {
+  const s = await readStock();
+  for (const l of lines) {
+    const it = s.items[l.id]; const q = Number(l.qty) || 0;
+    if (!it || !q) continue;
+    it.qty = Math.round((it.qty + q) * 100) / 100;
+    s.log.unshift({ at: Date.now(), id: l.id, qty: q, why: String(why).slice(0, 120), who: String(who).slice(0, 60) });
+  }
+  s.log = s.log.slice(0, 300);
+  await writeJSON("stock/stock.json", s);
+  return { items: s.items, low: lowOf(s) };
+}
+export async function setStock(id: string, qty: number | null, min: number | null) {
+  const s = await readStock();
+  if (qty === null && min === null) delete s.items[id];
+  else {
+    const it = (s.items[id] ||= { qty: 0, min: 0 });
+    if (qty !== null) { s.log.unshift({ at: Date.now(), id, qty: qty - it.qty, why: "Counted by the office" }); it.qty = qty; }
+    if (min !== null) it.min = min;
+  }
+  s.log = s.log.slice(0, 300);
+  await writeJSON("stock/stock.json", s);
+  return { items: s.items, low: lowOf(s) };
+}
+export const stockLow = async () => lowOf(await readStock());
+export const readBills = async (): Promise<any[]> => readJSON("stock/bills.json", []);
+export async function saveBill(bill: any) {
+  const list = await readBills();
+  list.unshift(bill);
+  await writeJSON("stock/bills.json", list.slice(0, 2000));
+}
+
+/* the job board: jobs brought in from the old system, with their status */
+export const readJobs = async (): Promise<any[]> => readJSON("jobs/jobs.json", []);
+export const writeJobs = async (list: any[]) => writeJSON("jobs/jobs.json", list.slice(0, 5000));

@@ -217,3 +217,56 @@ export async function buildJob(input: BuildInput) {
     questions: (out.questions || []).slice(0, 3).map((x: any) => String(x).slice(0, 200)),
   };
 }
+
+/* ---------- the bill reader: a supplier invoice in, lines matched to Apex's stock out ---------- */
+const BILL_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["supplier", "invoice_no", "date", "lines", "total_ex_gst", "gst"],
+  properties: {
+    supplier: { type: "string" },
+    invoice_no: { type: "string" },
+    date: { type: "string" },
+    lines: {
+      type: "array",
+      items: {
+        type: "object", additionalProperties: false, required: ["desc", "part_no", "qty", "unit_ex_gst", "match_id"],
+        properties: { desc: { type: "string" }, part_no: { type: "string" }, qty: { type: "number" }, unit_ex_gst: { type: "number" }, match_id: { type: "string" } },
+      },
+    },
+    total_ex_gst: { type: "number" },
+    gst: { type: "number" },
+  },
+};
+const BILL_SYSTEM = `You read supplier invoices and receipts for Apex Gates, a gate automation company in Perth, Western Australia.
+Copy every product line from the document: description, the supplier's part number if shown, quantity, and the unit price before GST (if the document only shows prices with GST, divide by 1.1). Ignore freight-only notes unless charged as a line.
+Give the supplier name, invoice number, the date as YYYY-MM-DD, the total before GST and the GST.
+For each line, set match_id to the id of the matching item in the stock list you are given (match on part number first, then on the product), or an empty string when nothing in the list is clearly the same product. Never guess a match.`;
+
+export async function readBill(input: { file: string; stock: { id: string; name: string; part?: string }[] }) {
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error("The helper is not set up yet");
+  const m = typeof input.file === "string" ? input.file.match(/^data:(image\/(?:jpeg|png|webp)|application\/pdf);base64,(.+)$/) : null;
+  if (!m) throw new Error("Use a photo or a PDF of the bill");
+  const doc = m[1] === "application/pdf"
+    ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: m[2] } }
+    : { type: "image", source: { type: "base64", media_type: m[1], data: m[2] } };
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const params: any = {
+    model: MODEL,
+    max_tokens: 8000,
+    betas: ["server-side-fallback-2026-07-01"],
+    fallbacks: "default",
+    system: BILL_SYSTEM,
+    output_config: { effort: "low", format: { type: "json_schema", schema: BILL_SCHEMA } },
+    messages: [{ role: "user", content: [doc, { type: "text", text: JSON.stringify({ stock: input.stock }) }] }],
+  };
+  const res: any = await client.beta.messages.create(params);
+  if (res.stop_reason === "refusal") throw new Error("The helper could not read that one");
+  const out = JSON.parse((res.content || []).filter((b: any) => b.type === "text").map((b: any) => b.text).join(""));
+  const ids = new Set(input.stock.map((s) => s.id));
+  return {
+    supplier: String(out.supplier || "").slice(0, 120), no: String(out.invoice_no || "").slice(0, 60), date: String(out.date || "").slice(0, 10),
+    lines: (out.lines || []).slice(0, 200).map((l: any) => ({ desc: String(l.desc || "").slice(0, 200), part: String(l.part_no || "").slice(0, 60), qty: Math.max(0, +l.qty || 0), unit: Math.max(0, +l.unit_ex_gst || 0), id: ids.has(l.match_id) ? l.match_id : "" })),
+    total: +out.total_ex_gst || 0, gst: +out.gst || 0,
+  };
+}

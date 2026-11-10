@@ -5,7 +5,7 @@
 import { PRICEBOOK, TEMPLATES } from "./data.js";
 import { runItem, priceQuote, defaults, money, byId } from "./engine.js";
 import { drawItem } from "./draw.js";
-import { buildTemplates, mergePricebook, priceExtras, stageOf } from "./shared.js";
+import { buildTemplates, mergePricebook, priceExtras, stageOf, GROUPS, groupOf } from "./shared.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -54,6 +54,8 @@ function render() {
   if (st.tab === "prices") m.innerHTML = viewPrices();
   if (st.tab === "add") m.innerHTML = viewAdd();
   if (st.tab === "kits") m.innerHTML = viewKits();
+  if (st.tab === "jobs") { m.innerHTML = viewJobsBoard(); if (!st.jobs && !st.jloading) loadJobs(); }
+  if (st.tab === "stock") { m.innerHTML = viewStock(); if (!st.stock && !st.sloading) loadStock(); }
   if (st.tab === "gates") m.innerHTML = st.gate ? viewGateEditor() : viewGates();
   if (st.tab === "company") m.innerHTML = viewCompany();
   renderBar();
@@ -100,7 +102,7 @@ function learnPanel() {
 /* every quote from every tablet, priced with the real costs */
 async function loadQuotes() {
   st.qloading = true;
-  try { st.quotes = (await api({ action: "quotes" })).list || []; } catch (e) { st.quotes = []; say(e.message); }
+  try { st.quotes = (await api({ action: "quotes" })).list || []; const k = await api({ action: "stock-full" }); st.stock = k.stock; st.bills = k.bills || []; } catch (e) { st.quotes = st.quotes || []; say(e.message); }
   st.qloading = false; render();
 }
 const STATUS = { draft: "Still working", sent: "Sent", won: "Going ahead", lost: "Said no" };
@@ -116,7 +118,10 @@ function viewQuotes() {
     // a job's extras change both what the customer pays and what Apex makes
     const E = priceExtras(q.job, pb()), g = 1 + pb().settings.gst / 100;
     const quoted = P.exGst - P.tot.cost, makes = quoted + E.sell - E.cost, ex = P.exGst + E.sell;
-    return { q, inc: ex * g, makes, quoted, extras: E.lines.length, margin: ex ? makes / ex : 0, what: q.items.map((it) => it.name || byId(T, it.tpl)?.name || "Item").join(", ") };
+    // supplier bills logged against this job replace the price book's guess for materials and parts
+    const billed = (st.bills || []).filter((b) => b.qid === q.id).reduce((a, b) => a + (b.total || 0), 0);
+    const real = billed ? ex - ((P.tot.byCat.labour || {}).cost || 0) - E.cost - billed : null;
+    return { q, inc: ex * g, makes, quoted, billed, real, extras: E.lines.length, margin: ex ? makes / ex : 0, what: q.items.map((it) => it.name || byId(T, it.tpl)?.name || "Item").join(", ") };
   }).filter(Boolean).sort((a, b) => (b.q.updated || 0) - (a.q.updated || 0));
   const since = new Date(); since.setDate(1); since.setHours(0, 0, 0, 0);
   const month = rows.filter((r) => (r.q.created || 0) >= since.getTime());
@@ -142,9 +147,15 @@ function viewQuotes() {
   const list = show.length ? `<div class="qtable big"><div class="qr qh2"><span>Customer</span><span>Who quoted</span><span>Where it is up to</span><span>Customer pays</span><span>Apex makes</span></div>
     ${show.map((r) => `<div class="qr"><div><b>${esc(r.q.client?.name || "No name yet")}</b><small>${esc(r.q.no || "")} · ${new Date(r.q.updated || r.q.created).toLocaleDateString("en-AU", { day: "numeric", month: "short" })} · ${esc(r.what)}</small></div>
       <span>${esc(r.q.tech || "No name given")}</span><span><i class="pill ${r.q.status} ${stageKey(r.q)}">${stageName(r.q)}</i></span><span>${money(r.inc)}</span>
-      <span class="${r.margin * 100 < pb().settings.minMargin ? "low" : "ok"}">${money(r.makes)}<small>${(r.margin * 100).toFixed(0)}%${r.extras ? ` · quoted ${money(r.quoted)}` : ""}</small></span></div>`).join("")}</div>`
+      <span class="${r.margin * 100 < pb().settings.minMargin ? "low" : "ok"}">${money(r.makes)}<small>${(r.margin * 100).toFixed(0)}%${r.extras ? ` · quoted ${money(r.quoted)}` : ""}${r.billed ? ` · after real bills ${money(r.real)}` : ""}</small></span></div>`).join("")}</div>`
     : `<p class="muted">${rows.length ? "No quotes here." : "No quotes yet. They show up here as soon as a technician starts one on their tablet."}</p>`;
-  return head + kpis + team + learnPanel() + filt + list + `<button class="btn ghost small" style="margin-top:16px" data-act="qreload">Check for new quotes</button>`;
+  const low = st.stock ? Object.entries(st.stock.items || {}).filter(([, v]) => v.min > 0 && v.qty <= v.min) : [];
+  const lowNote = low.length ? `<div class="warn" style="margin:12px 0">${ICON.warn}<div><b>Running low:</b> ${low.map(([id, v]) => `${esc(itemName(id))} (${v.qty} left)`).join(", ")}. <button class="linkbtn" data-act="tab" data-v="stock">Open Stock</button></div></div>` : "";
+  const byGroup = GROUPS.map(([k, l]) => { const rs = month.filter((r) => groupOf(r.q) === k); return [l, rs.length, sum(rs, "inc"), sum(rs, "makes"), rs.filter((r) => r.q.status === "won").length]; }).filter((g) => g[1]);
+  const groups = byGroup.length ? `<section class="card pad" style="margin-top:16px"><h2 class="qh">Where the money comes from this month</h2>
+    <div class="qtable"><div class="qr qh2"><span>Kind of job</span><span>Quotes</span><span>Going ahead</span><span>Quoted</span><span>Apex makes</span></div>
+    ${byGroup.map((g) => `<div class="qr"><b>${g[0]}</b><span>${g[1]}</span><span>${g[4]}</span><span>${money(g[2])}</span><span class="ok">${money(g[3])}</span></div>`).join("")}</div></section>` : "";
+  return head + lowNote + kpis + groups + team + learnPanel() + filt + list + `<button class="btn ghost small" style="margin-top:16px" data-act="qreload">Check for new quotes</button>`;
 }
 
 /* prices */
@@ -244,13 +255,69 @@ async function importClients(rows) {
   catch (e) { st.clientMsg = "Could not save the clients: " + e.message; }
   render();
 }
+/* jobs from the old system: one row per job (the export repeats a job once per part) */
+const JOB_STEPS = ["Booked", "Dispatched", "Waiting for parts", "Done, office to check", "Ready to invoice", "Invoiced"];
+function jobGroup(type, desc) {
+  const t = `${type} ${desc}`.toLowerCase();
+  if (/callout|call out|repair|fault|urgent/.test(t)) return "callout";
+  if (/service|maintenance|pm extra/.test(t)) return "service";
+  if (/install|new motor|supply & install/.test(t)) return "install";
+  if (/supply only|pick ?up|drop ?off/.test(t)) return "supply";
+  return "";
+}
+function stepOf(status) {
+  const s = String(status).toLowerCase();
+  if (/finish|complete/.test(s)) return "Done, office to check";
+  if (/dispatch|progress|started/.test(s)) return "Dispatched";
+  if (/parts|hold|wait/.test(s)) return "Waiting for parts";
+  if (/invoic/.test(s)) return "Invoiced";
+  return "Booked";
+}
+async function importJobs(rows) {
+  const seen = new Map();
+  for (const r of rows) {
+    const code = r["Job Code"]; const date = r["Start Date *"] || "";
+    if (!code || !/\d{1,2}-[A-Za-z]{3}-\d{4}/.test(date)) continue; // the export has broken rows from notes; keep only real jobs
+    if (seen.has(code)) continue;
+    const type = r["Job Type *"] || "", desc = r["Service Description"] || "";
+    seen.set(code, { code, client: r["Client Name *"] || "", type, status: stepOf(r["Job Status *"]), date, time: r["Start Time *"] || "", tech: (r["Fieldworker Name"] || "").replace(/\s+/g, " ").trim(),
+      desc, address: [r["Street 1"], r["Suburb"]].filter(Boolean).join(", "), phone: r["Mobile"] || r["Phone"] || "", group: jobGroup(type, desc) });
+  }
+  const list = [...seen.values()];
+  try { await api({ action: "jobs-save", list, merge: true }); st.jobMsg = `Brought in ${list.length} current jobs. They are on the Jobs tab.`; st.jobs = null; }
+  catch (e) { st.jobMsg = "Could not save the jobs: " + e.message; }
+  render();
+}
+async function loadJobs() {
+  st.jloading = true;
+  try { st.jobs = (await api({ action: "jobs" })).list || []; if (!st.quotes) st.quotes = (await api({ action: "quotes" })).list || []; } catch (e) { st.jobs = []; say(e.message); }
+  st.jloading = false; render();
+}
+function viewJobsBoard() {
+  if (!st.jobs) return `<h1 class="big-t">Jobs</h1><p class="muted">Loading the jobs...</p>`;
+  const f = st.jfilter || "open";
+  const fromQuotes = (st.quotes || []).filter((q) => q.status === "won").map((q) => ({ quote: true, code: q.no, client: q.client?.name || "", type: (GROUPS.find((g) => g[0] === groupOf(q)) || [])[1] || "", status: ({ won: "Booked", made: "Made in the workshop", fitted: "Done, office to check", invoiced: "Invoiced", paid: "Paid" })[stageOf(q)], date: new Date(q.updated || q.created).toLocaleDateString("en-AU"), tech: q.tech || "", desc: q.items.map((i) => i.name).join(", "), address: q.client?.address || "" }));
+  const all = st.jobs.concat(fromQuotes);
+  const open = (j) => !["Invoiced", "Paid"].includes(j.status);
+  const show = all.filter((j) => (f === "open" ? open(j) : f === "all" ? true : j.status === f));
+  const count = (s) => all.filter((j) => j.status === s).length;
+  const chips = [["open", `Not finished (${all.filter(open).length})`], ...JOB_STEPS.map((s) => [s, `${s} (${count(s)})`]), ["all", "All"]];
+  return `<h1 class="big-t">Jobs</h1><p class="hello" style="margin-top:-10px">Every job, from the old system and from Apex Quote. When a technician finishes, it moves to "Done, office to check". Check the time, parts and photos, then move it to "Ready to invoice".</p>
+  <div class="segrow" style="margin:6px 0 14px;flex-wrap:wrap">${chips.map(([v, l]) => `<button class="${f === v ? "on" : ""}" data-act="jf" data-v="${esc(v)}">${esc(l)}</button>`).join("")}</div>
+  <div class="jobcards">${show.map((j) => `<div class="card pad jobc"><div class="jh"><b>${esc(j.client || "No client")}</b><span class="pill">${esc(j.code)}</span></div>
+    <small>${esc([j.date, j.time].filter(Boolean).join(" "))}${j.tech ? " · " + esc(j.tech) : ""}${j.type ? " · " + esc(j.type) : ""}</small>
+    ${j.address ? `<small>${esc(j.address)}</small>` : ""}<p>${esc(String(j.desc).slice(0, 220))}</p>
+    ${j.quote ? `<span class="muted">${esc(j.status)}, moves on the tablet</span>` : `<select data-js="${esc(j.code)}">${JOB_STEPS.map((s) => `<option ${s === j.status ? "selected" : ""}>${s}</option>`).join("")}</select>`}</div>`).join("") || `<p class="muted">No jobs here. Bring in the current jobs on Add new, from AroFlo.</p>`}</div>`;
+}
 function viewImport() {
   return `<section class="card pad" style="margin-bottom:16px"><h2 class="qh">${ICON.plus}Bring in from AroFlo</h2>
     <p class="muted" style="margin-top:-6px">Export from AroFlo as CSV, then pick the file here. Prices come in exactly as AroFlo has them, before GST.</p>
     <div class="two"><label class="filebox"><b>Stock items</b><small>InventoryItems.csv</small><input type="file" accept=".csv,text/csv" data-imp="stock"></label>
-      <label class="filebox"><b>Clients</b><small>Clients.csv</small><input type="file" accept=".csv,text/csv" data-imp="clients"></label></div>
+      <label class="filebox"><b>Clients</b><small>Clients.csv</small><input type="file" accept=".csv,text/csv" data-imp="clients"></label>
+      <label class="filebox"><b>Current jobs</b><small>Jobs.csv</small><input type="file" accept=".csv,text/csv" data-imp="jobs"></label></div>
     ${st.stockMsg ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}<span>${esc(st.stockMsg)} Press <b>Save for everyone</b> to send the stock to the tablets.</span></div>` : ""}
-    ${st.clientMsg ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}<span>${esc(st.clientMsg)}</span></div>` : ""}</section>`;
+    ${st.clientMsg ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}<span>${esc(st.clientMsg)}</span></div>` : ""}
+    ${st.jobMsg ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}<span>${esc(st.jobMsg)}</span></div>` : ""}</section>`;
 }
 
 /* add new equipment and materials */
@@ -283,6 +350,68 @@ function viewAdd() {
     <button class="btn red wide" style="margin-top:14px" data-act="addm">${ICON.plus}Add it</button>
   </section></div>
   <p class="muted">New steel shows up in the frame, infill and post choices. New gate types are added on the <b>Gates</b> tab.</p>`;
+}
+
+/* ---------- stock on the shelf and supplier bills ---------- */
+async function loadStock() {
+  st.sloading = true;
+  try { const j = await api({ action: "stock-full" }); st.stock = j.stock; st.bills = j.bills || []; if (!st.quotes) st.quotes = (await api({ action: "quotes" })).list || []; } catch (e) { st.stock = { items: {}, log: [] }; st.bills = []; say(e.message); }
+  st.sloading = false; render();
+}
+const itemName = (id) => (pb().hardware.find((h) => h.id === id) || {}).name || id;
+function openJobs() { return (st.quotes || []).filter((q) => q.status === "won" && !(q.job && q.job.paid)); }
+function fileData(file) {
+  return new Promise((ok, bad) => {
+    if (file.type === "application/pdf") { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = () => bad(new Error("Could not read that file")); r.readAsDataURL(file); return; }
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => { const k = Math.min(1, 2000 / Math.max(img.width, img.height)), c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url); ok(c.toDataURL("image/jpeg", 0.85)); };
+    img.onerror = () => bad(new Error("Could not read that photo")); img.src = url;
+  });
+}
+function viewStock() {
+  if (!st.stock) return `<h1 class="big-t">Stock</h1><p class="muted">Loading the stock...</p>`;
+  const items = st.stock.items || {};
+  const low = Object.entries(items).filter(([, v]) => v.min > 0 && v.qty <= v.min);
+  const find = (st.sfind || "").toLowerCase();
+  const tracked = Object.keys(items);
+  const shown = find ? pb().hardware.filter((h) => h.name.toLowerCase().includes(find) || (h.part || "").toLowerCase().includes(find)).slice(0, 40) : pb().hardware.filter((h) => tracked.includes(h.id));
+  const lowCard = `<section class="card pad ${low.length ? "lowcard" : ""}"><h2 class="qh">${low.length ? ICON.warn : ICON.tick}${low.length ? `${low.length} thing${low.length === 1 ? " is" : "s are"} running low` : "Nothing is running low"}</h2>
+    ${low.map(([id, v]) => `<div class="prow ro"><b>${esc(itemName(id))}</b><span class="pv">${v.qty} left, warn at ${v.min}</span></div>`).join("")}
+    <p class="muted" style="margin:8px 0 0">When a technician finishes a job, the parts they used come off here. You see it as soon as something drops to its warning level.</p></section>`;
+  const b = st.bill;
+  const billCard = `<section class="card pad" style="margin-top:16px"><h2 class="qh">${ICON.plus}A supplier bill</h2>
+    ${!b ? `<p class="muted" style="margin-top:-6px">Take a photo of the bill, or pick the PDF the supplier emailed. The helper reads every line and matches it to your stock. You check it, then save.</p>
+      <div class="two"><label class="filebox"><b>Photo or PDF of the bill</b><small>${st.billBusy ? "Reading it..." : "Tap to choose"}</small><input type="file" accept="image/*,application/pdf" data-bill></label>
+      <button class="filebox" data-act="billtype"><b>Type it in</b><small>No photo? Add the lines yourself</small></button></div>
+      ${st.billErr ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>${esc(st.billErr)}</div></div>` : ""}`
+    : `<div class="two"><div class="fld"><label>Supplier</label><input data-bf="supplier" value="${esc(b.supplier)}"></div><div class="fld"><label>Bill number</label><input data-bf="no" value="${esc(b.no)}"></div></div>
+      <div class="fld" style="margin-top:10px"><label>For which job (so it counts in that job's real cost)</label><select data-bf="qid"><option value="">Not for a job, stock for the shelf</option>${openJobs().map((q) => `<option value="${q.id}" ${b.qid === q.id ? "selected" : ""}>${esc(q.no)} ${esc(q.client?.name || "")}</option>`).join("")}</select></div>
+      <div class="billlines">${b.lines.map((l, n) => `<div class="bl"><div class="fld"><label>What</label><input data-bl="${n}" data-f="desc" value="${esc(l.desc)}"></div>
+        <div class="fld"><label>How many</label><input data-bl="${n}" data-f="qty" inputmode="decimal" value="${l.qty}"></div>
+        <div class="fld"><label>Each, before GST</label><input data-bl="${n}" data-f="unit" inputmode="decimal" value="${l.unit}"></div>
+        <div class="fld"><label>Same as our item</label><select data-bl="${n}" data-f="id"><option value="">Not in our list</option>${pb().hardware.filter((h) => h.cat !== "misc").map((h) => `<option value="${h.id}" ${h.id === l.id ? "selected" : ""}>${esc(h.name)}</option>`).join("")}</select></div>
+        <button class="linkbtn" data-act="billrow" data-n="${n}">${ICON.bin}</button></div>`).join("")}</div>
+      <button class="btn ghost small" data-act="billadd">${ICON.plus}Another line</button>
+      <p style="font-size:20px;margin:14px 0"><b>Total ${money(b.lines.reduce((a, l) => a + (+l.qty || 0) * (+l.unit || 0), 0), true)}</b> before GST</p>
+      <button class="tick ${b.addStock ? "on" : ""}" data-act="billtog" data-v="addStock"><span class="bx">${ICON.tick}</span><span><b>Put it on the shelf</b><small>Adds the matched items to the stock counts</small></span></button>
+      <button class="tick ${b.updateCost ? "on" : ""}" data-act="billtog" data-v="updateCost" style="margin-top:8px"><span class="bx">${ICON.tick}</span><span><b>Use these as our new costs</b><small>Updates what each matched item costs Apex</small></span></button>
+      <div style="display:flex;gap:10px;margin-top:14px"><button class="btn green" data-act="billsave">${ICON.tick}Save the bill</button><button class="btn ghost" data-act="billcancel">Cancel</button></div>`}
+  </section>`;
+  const list = `<section class="card pad" style="margin-top:16px"><h2 class="qh">On the shelf</h2>
+    <div class="pbar"><div class="fld"><input data-sfind placeholder="Search to add something to the shelf" value="${esc(st.sfind || "")}"></div></div>
+    ${shown.map((h) => { const v = items[h.id]; return `<div class="prow wide"><div><b>${esc(h.name)}</b><small>${v ? (v.min > 0 && v.qty <= v.min ? "Running low" : "On the shelf") : "Not counted yet"}</small></div>
+      <div class="pair"><div class="money-in"><span>count</span><input data-sq="${h.id}" inputmode="decimal" value="${v ? v.qty : ""}"></div><div class="money-in"><span>warn at</span><input data-sm="${h.id}" inputmode="decimal" value="${v ? v.min : ""}"></div></div></div>`; }).join("") || `<p class="muted">${find ? "Nothing matches." : "Nothing counted yet. Search above for the motors, wheels and rollers you keep, and type how many you have."}</p>`}</section>`;
+  const bills = (st.bills || []).length ? `<section class="card pad" style="margin-top:16px"><h2 class="qh">Recent bills</h2>${st.bills.slice(0, 15).map((x) => `<div class="prow ro"><div><b>${esc(x.supplier || "Supplier")} ${esc(x.no)}</b><small>${new Date(x.at).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}${x.job ? " · " + esc(x.job) : ""}</small></div><span class="pv">${money(x.total, true)}</span></div>`).join("")}</section>` : "";
+  return `<h1 class="big-t">Stock</h1>${lowCard}${billCard}${list}${bills}`;
+}
+async function readBillFile(file) {
+  st.billBusy = true; st.billErr = ""; render();
+  try {
+    const data = await fileData(file);
+    const j = await api({ action: "bill-read", file: data, stock: pb().hardware.filter((h) => h.cat !== "misc").map((h) => ({ id: h.id, name: h.name, part: h.part || "" })) });
+    st.bill = { ...j.bill, addStock: true, updateCost: false };
+  } catch (e) { st.billErr = e.message; }
+  st.billBusy = false; render();
 }
 
 /* kits: set up once, every part can still be changed on a quote */
@@ -404,6 +533,19 @@ const histDate = (n) => { const m = n.match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d)-(\d\d
 /* ---------- actions ---------- */
 document.addEventListener("change", async (e) => {
   const el = e.target;
+  if (el.dataset && el.dataset.bill !== undefined && el.files && el.files[0]) { readBillFile(el.files[0]); return; }
+  if (el.dataset && el.dataset.bf) { st.bill[el.dataset.bf] = el.value; return; }
+  if (el.dataset && el.dataset.js) {
+    const j = st.jobs.find((x) => x.code === el.dataset.js); if (j) j.status = el.value;
+    try { await api({ action: "job-status", code: el.dataset.js, status: el.value }); say("Moved to " + el.value); } catch (e) { say(e.message); }
+    render(); return;
+  }
+  if (el.dataset && el.dataset.bl) { const l = st.bill.lines[+el.dataset.bl]; l[el.dataset.f] = el.dataset.f === "qty" || el.dataset.f === "unit" ? parseFloat(el.value) || 0 : el.value; render(); return; }
+  if (el.dataset && (el.dataset.sq || el.dataset.sm)) {
+    const id = el.dataset.sq || el.dataset.sm, v = el.value.trim() === "" ? null : parseFloat(el.value) || 0;
+    try { const j = await api({ action: "stock-set", id, qty: el.dataset.sq ? v : undefined, min: el.dataset.sm ? v : undefined }); st.stock.items = j.items; say("Saved"); } catch (e) { say(e.message); }
+    render(); return;
+  }
   if (el.dataset && (el.dataset.kit || el.dataset.ki)) {
     const k = pb().kits.find((k) => k.id === st.kit); if (!k) return;
     if (el.dataset.kit) k[el.dataset.kit] = el.value;
@@ -412,7 +554,7 @@ document.addEventListener("change", async (e) => {
   }
   if (!el.dataset || !el.dataset.imp || !el.files || !el.files[0]) return;
   const rows = parseCSV(await el.files[0].text());
-  if (el.dataset.imp === "stock") importStock(rows); else importClients(rows);
+  if (el.dataset.imp === "stock") importStock(rows); else if (el.dataset.imp === "jobs") importJobs(rows); else importClients(rows);
 });
 document.addEventListener("click", async (e) => {
   const b = e.target.closest("[data-act]"); if (!b) return;
@@ -423,6 +565,19 @@ document.addEventListener("click", async (e) => {
   }
   if (a === "logout") { await api({ action: "logout" }).catch(() => {}); location.href = "index.html"; }
   if (a === "shelf") { st.shelf = b.dataset.v; st.find = ""; render(); }
+  if (a === "billtype") { st.bill = { supplier: "", no: "", date: "", qid: "", lines: [{ desc: "", qty: 1, unit: 0, id: "" }], addStock: true, updateCost: false }; render(); }
+  if (a === "billadd") { st.bill.lines.push({ desc: "", qty: 1, unit: 0, id: "" }); render(); }
+  if (a === "billrow") { st.bill.lines.splice(+b.dataset.n, 1); render(); }
+  if (a === "billtog") { st.bill[b.dataset.v] = !st.bill[b.dataset.v]; render(); }
+  if (a === "billcancel") { st.bill = null; render(); }
+  if (a === "billsave") {
+    const bl = st.bill, q = (st.quotes || []).find((x) => x.id === bl.qid);
+    try {
+      const j = await api({ action: "bill-save", addStock: bl.addStock, bill: { ...bl, job: q ? `${q.no} ${q.client?.name || ""}`.trim() : "" } });
+      if (bl.updateCost) { let n = 0; for (const l of bl.lines) { const h = pb().hardware.find((h) => h.id === l.id); if (h && +l.unit > 0) { h.cost = +l.unit; n++; } } if (n) changed(); }
+      st.bill = null; st.stock = null; st.quotes = null; say(bl.updateCost ? "Bill saved. Press Save for everyone to send the new costs" : "Bill saved"); render();
+    } catch (e) { say(e.message); }
+  }
   if (a === "kitnew") { const k = { id: "k" + uid(), name: "New kit", note: "", items: [] }; (pb().kits ||= []).push(k); st.kit = k.id; changed(); render(); }
   if (a === "kitedit") { st.kit = b.dataset.id; render(); scrollTo(0, 0); }
   if (a === "kitback") { st.kit = null; render(); scrollTo(0, 0); }
@@ -430,6 +585,7 @@ document.addEventListener("click", async (e) => {
   if (a === "kitadd") { const k = pb().kits.find((k) => k.id === st.kit); k.items.push(b.dataset.v === "hours" ? { kind: "hours", id: "install", qty: 1 } : { kind: "item", id: pb().hardware[0].id, qty: 1 }); changed(); render(); }
   if (a === "kitrow") { const k = pb().kits.find((k) => k.id === st.kit); k.items.splice(+b.dataset.n, 1); changed(); render(); }
   if (a === "qf") { st.qfilter = b.dataset.v; render(); }
+  if (a === "jf") { st.jfilter = b.dataset.v; render(); }
   if (a === "qreload") { st.quotes = null; st.learn = null; st.lloading = false; render(); }
   if (a === "rise") {
     const p = parseFloat(prompt("By how much did these prices go up? Type a number, for example 5 for 5%", "5"));
@@ -503,6 +659,7 @@ document.addEventListener("input", (e) => {
   const el = e.target;
   if (el.dataset.add) { const [o, k] = el.dataset.add.split("."); (o === "h" ? st.addH : st.addM)[k] = el.value; }
   if (el.dataset.g) st.gate[el.dataset.g] = el.value;
+  if (el.matches("[data-sfind]")) { st.sfind = el.value; const pos = el.selectionStart; render(); const n = $("[data-sfind]"); n.focus(); n.setSelectionRange(pos, pos); }
   if (el.matches("[data-find]")) { st.find = el.value; const pos = el.selectionStart; render(); const n = $("[data-find]"); n.focus(); n.setSelectionRange(pos, pos); }
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "opw") $("[data-act=login]").click(); });

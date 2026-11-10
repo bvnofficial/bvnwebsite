@@ -4,7 +4,7 @@
 import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
 import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js";
 import { drawItem, steelColour } from "./draw.js";
-import { buildTemplates, mergePricebook, offered, teamView, priceExtras, STAGES, stageOf } from "./shared.js";
+import { buildTemplates, mergePricebook, offered, teamView, priceExtras, STAGES, stageOf, GROUPS, groupOf } from "./shared.js";
 
 const KEY = "apexq.v1";
 const $ = (s, el = document) => el.querySelector(s);
@@ -95,6 +95,7 @@ async function pull() {
     } else sync.state = j.ok ? "none" : "off";
   } catch (e) { sync.state = "off"; }
   await pullLearn();
+  await pullStock();
   await checkSigned();
   if (!document.querySelector("input:focus, textarea:focus")) redraw();
 }
@@ -473,6 +474,7 @@ function viewQuote() {
       <div class="fld full"><label>Address</label><input data-c="address" value="${esc(q.client.address)}" placeholder="Street and suburb"></div>
       <div class="fld full"><label>Your name (who made this quote)</label><input data-tech value="${esc(q.tech)}" placeholder="Technician name"></div>
     </div>
+    <p class="lbl" style="font-weight:800;margin:16px 0 8px">What kind of job</p><div class="statusbtns">${GROUPS.map(([k, l]) => `<button data-act="group" data-v="${k}" class="${groupOf(q) === k ? "on" : ""}">${l}</button>`).join("")}</div>
   </div>
   <div class="card pad qside">
     <h2 class="qh">${ICON.coins}The price</h2>
@@ -718,6 +720,29 @@ function quoteSummary(q) {
 }
 const catalogue = () => db.pb.hardware.map((h) => ({ kind: "item", id: h.id, name: h.name })).concat(db.pb.labour.map((l) => ({ kind: "hours", id: l.id, name: l.name })));
 
+/* what is on the shelf: counts the office keeps, no costs */
+let STOCK = {};
+async function pullStock() {
+  try { const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "stock" }) }); const j = await r.json(); if (j.ok) STOCK = j.items || {}; } catch (e) { /* keep the last we had */ }
+}
+const shelf = (id) => { const v = STOCK[id]; return v ? `<span class="stockn ${v.min > 0 && v.qty <= v.min ? "low" : ""}">${fmtNum(v.qty)} on the shelf</span>` : ""; };
+/* when a job is put in, the parts it used come off the shelf (once) */
+async function takeStock(q) {
+  const j = jobOf(q); if (j.stockTaken) return;
+  const used = {};
+  for (const l of price(q).lines) for (const h of l.r.items) used[h.id] = (used[h.id] || 0) + h.qty;
+  for (const x of j.extras || []) if (x.kind === "item" && x.qty > 0) used[x.id] = (used[x.id] || 0) + x.qty;
+  const lines = Object.entries(used).filter(([id, n]) => STOCK[id] && n > 0).map(([id, qty]) => ({ id, qty }));
+  j.stockTaken = Date.now(); save();
+  if (!lines.length) return;
+  try {
+    const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "stock-use", lines, no: q.no, who: q.tech || db.lastTech || "" }) });
+    const k = await r.json();
+    if (k.low && k.low.length) say(`Running low: ${k.low.map((x) => `${partName("item", x.id, "")} (${fmtNum(x.qty)} left)`).join(", ")}. The office can see it.`);
+    await pullStock();
+  } catch (e) { j.stockTaken = 0; save(); }
+}
+
 /* what past jobs of the same kind needed, from the server */
 let LEARN = {};
 async function pullLearn() {
@@ -886,7 +911,7 @@ function partPicker() {
   const f = (ui.pfind || "").toLowerCase();
   const list = book().hardware.filter((h) => h.cat !== "misc" && (!f || h.name.toLowerCase().includes(f))).slice(0, 30);
   return `<div class="picker"><div class="fld"><input data-pfind placeholder="Search parts" value="${esc(ui.pfind || "")}"></div>
-    <div class="plist">${list.map((h) => `<button class="prow pickrow" data-act="expart" data-id="${h.id}"><b>${esc(h.name)}</b><span class="pv">${money(h.cost, h.cost < 20)}</span></button>`).join("")}</div></div>`;
+    <div class="plist">${list.map((h) => `<button class="prow pickrow" data-act="expart" data-id="${h.id}"><b>${esc(h.name)}${shelf(h.id)}</b><span class="pv">${money(h.cost, h.cost < 20)}</span></button>`).join("")}</div></div>`;
 }
 
 /* the tax invoice: the quote, the extras, less any deposit */
@@ -971,7 +996,7 @@ function viewPrices() {
   const rows = sh[3]().filter((x) => !find || x.name.toLowerCase().includes(find)).map((x) => {
     const v = sh[0] === "labour" ? `${money(x.rate)} an hour` : sh[0] === "paint" ? (x.perM2 ? `${money(x.perM2)} per m²` : `${money(x.perKg, true)} per kg`) : money(x.cost, x.cost < 20);
     const note = sh[0] === "steel" && x.stock ? `${(x.stock / 1000).toLocaleString("en-AU")} m length` : x.note || "";
-    return `<div class="prow ro"><div><b>${esc(x.name)}</b>${note ? `<small>${esc(note)}</small>` : ""}</div><div class="pv">${v}</div></div>`;
+    return `<div class="prow ro"><div><b>${esc(x.name)}${shelf(x.id)}</b>${note ? `<small>${esc(note)}</small>` : ""}</div><div class="pv">${v}</div></div>`;
   }).join("") || `<p class="muted">Nothing matches.</p>`;
   return `<h1 class="big-t">Prices</h1>
   ${syncLine()}
@@ -1021,6 +1046,7 @@ document.addEventListener("click", (e) => {
   if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "unquote", id: b.dataset.id }) }).catch(() => {}); db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
   if (a === "sendlink") sendLink(q, b.dataset.v);
+  if (a === "group") { q.group = b.dataset.v; save(); redraw(); }
   if (a === "copylink") navigator.clipboard.writeText(ui.link.url).then(() => say("Link copied"), () => say("Could not copy on this device"));
   /* the builder and client search */
   if (a === "build") { ui.bsaid = ($("[data-bsaid]") || {}).value || ui.bsaid || ""; buildQuote(); }
@@ -1036,6 +1062,7 @@ document.addEventListener("click", (e) => {
   if (a === "work") { ui.view = "work"; ui.stage = null; ui.ai = null; render(); window.scrollTo(0, 0); }
   if (a === "openwork") { db.current = b.dataset.id; ui.view = "work"; ui.stage = null; ui.ai = null; store(); render(); window.scrollTo(0, 0); }
   if (a === "stage") { ui.stage = b.dataset.v; ui.ai = null; ui.pick = ui.own = false; render(); window.scrollTo(0, 0); }
+  if (a === "stagedone" && b.dataset.v === "fitted") takeStock(q);
   if (a === "stagedone") { jobOf(q)[b.dataset.v] = Date.now(); ui.stage = null; ui.ai = null; save(); render(); window.scrollTo(0, 0); say(b.dataset.v === "made" ? "Workshop done. Next: put it in" : "Done on site. Next: the invoice"); }
   if (a === "ans") {
     const j = jobOf(q), key = b.dataset.key, v = b.dataset.v;

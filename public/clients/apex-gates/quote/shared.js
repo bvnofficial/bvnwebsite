@@ -110,6 +110,16 @@ export function priceExtras(job, pb) {
   return { lines, sell: lines.reduce((a, l) => a + l.sell, 0), cost: lines.reduce((a, l) => a + l.cost, 0) };
 }
 
+/* the money groups Simon wants to see (and Xero codes): where the money comes from */
+export const GROUPS = [["install", "New install"], ["callout", "Callout or repair"], ["service", "Service or maintenance"], ["supply", "Supply only"]];
+export function groupOf(q) {
+  if (q.group) return q.group;
+  const t = (q.items || []).map((i) => String(i.tpl));
+  if (t.includes("service")) return "callout";
+  if (t.some((x) => /^(swing|slide|cant|bifold|ped|fence|auto)$/.test(x) || x.startsWith("kit_") || x.startsWith("g"))) return "install";
+  return t.length ? "supply" : "install";
+}
+
 /* where a job is up to, after the customer said yes */
 export const STAGES = [["won", "Signed"], ["made", "Made"], ["fitted", "Put in"], ["invoiced", "Invoiced"], ["paid", "Paid"]];
 export function stageOf(q) {

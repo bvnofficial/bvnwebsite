@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
-import { learnStats, askHelper, buildJob } from "@/lib/apex-quote-ai";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare } from "@/lib/apex-quote-store";
+import { learnStats, askHelper, buildJob, readBill } from "@/lib/apex-quote-ai";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -75,6 +75,14 @@ export async function POST(req: NextRequest) {
     }
     return json({ ok: true, accepted: out });
   }
+  // what is on the shelf (counts only, never costs), and parts the team used on a job
+  if (body.action === "stock") {
+    try { const s = await readStock(); return json({ ok: true, items: s.items }); } catch (e: any) { return json({ ok: true, items: {} }); }
+  }
+  if (body.action === "stock-use") {
+    const lines = (Array.isArray(body.lines) ? body.lines : []).slice(0, 200).map((l: any) => ({ id: String(l.id || ""), qty: -Math.abs(+l.qty || 0) }));
+    try { const r = await moveStock(lines, `Used on ${String(body.no || "a job").slice(0, 30)}`, String(body.who || "")); return json({ ok: true, low: r.low }); } catch (e: any) { return json({ error: e.message }, 500); }
+  }
   if (body.action === "clients") {
     try { return json({ ok: true, list: await findClients(String(body.q || "").slice(0, 80)) }); } catch (e: any) { return json({ ok: true, list: [] }); }
   }
@@ -116,6 +124,36 @@ export async function POST(req: NextRequest) {
       if (!list) return json({ error: "No clients" }, 400);
       await saveClients(list.map((c: any) => ({ code: String(c.code || "").slice(0, 30), name: String(c.name || "").slice(0, 120), contact: String(c.contact || "").slice(0, 80), address: String(c.address || "").slice(0, 200), phone: String(c.phone || "").slice(0, 40), email: String(c.email || "").slice(0, 120), terms: String(c.terms || "").slice(0, 40) })));
       return json({ ok: true, count: list.length });
+    }
+    if (body.action === "stock-full") { const s = await readStock(); return json({ ok: true, stock: s, bills: (await readBills()).slice(0, 100) }); }
+    if (body.action === "stock-set") return json({ ok: true, ...(await setStock(String(body.id || ""), body.qty === null || body.qty === undefined ? null : +body.qty || 0, body.min === null || body.min === undefined ? null : +body.min || 0)) });
+    if (body.action === "bill-read") {
+      if (String(body.file || "").length > 4_000_000) return json({ error: "That file is too big. Try a photo instead" }, 400);
+      try { return json({ ok: true, bill: await readBill({ file: body.file, stock: body.stock || [] }) }); }
+      catch (e: any) { console.error("apex bill:", e?.message); return json({ error: "The helper could not read the bill right now. Type the lines in instead." }, 502); }
+    }
+    if (body.action === "bill-save") {
+      const b = body.bill || {};
+      const bill = { id: Date.now().toString(36), at: Date.now(), supplier: String(b.supplier || "").slice(0, 120), no: String(b.no || "").slice(0, 60), date: String(b.date || "").slice(0, 10), qid: String(b.qid || "").slice(0, 20), job: String(b.job || "").slice(0, 120),
+        lines: (Array.isArray(b.lines) ? b.lines : []).slice(0, 200).map((l: any) => ({ desc: String(l.desc || "").slice(0, 200), part: String(l.part || "").slice(0, 60), qty: +l.qty || 0, unit: +l.unit || 0, id: String(l.id || "").slice(0, 60) })) };
+      (bill as any).total = bill.lines.reduce((a: number, l: any) => a + l.qty * l.unit, 0);
+      await saveBill(bill);
+      let low: any[] = [];
+      if (body.addStock) low = (await moveStock(bill.lines.filter((l: any) => l.id).map((l: any) => ({ id: l.id, qty: l.qty })), `Bought from ${bill.supplier || "a supplier"} ${bill.no}`.trim())).low;
+      return json({ ok: true, bill, low });
+    }
+    if (body.action === "jobs") return json({ ok: true, list: await readJobs() });
+    if (body.action === "jobs-save") {
+      const clip = (v: any, n: number) => String(v ?? "").slice(0, n);
+      const list = (Array.isArray(body.list) ? body.list : []).slice(0, 5000).map((j: any) => ({ code: clip(j.code, 30), client: clip(j.client, 120), type: clip(j.type, 60), status: clip(j.status, 40), date: clip(j.date, 20), time: clip(j.time, 10), tech: clip(j.tech, 60), desc: clip(j.desc, 600), address: clip(j.address, 200), phone: clip(j.phone, 40), group: clip(j.group, 40) }));
+      if (body.merge) { const old = await readJobs(); const seen = new Set(list.map((j: any) => j.code)); await writeJobs(list.concat(old.filter((j: any) => !seen.has(j.code)))); }
+      else await writeJobs(list);
+      return json({ ok: true, count: list.length });
+    }
+    if (body.action === "job-status") {
+      const list = await readJobs(); const j = list.find((x: any) => x.code === String(body.code || ""));
+      if (!j) return json({ error: "No such job" }, 404);
+      j.status = String(body.status || "").slice(0, 40); await writeJobs(list); return json({ ok: true });
     }
     if (body.action === "quotes") return json({ ok: true, list: await listQuotes() });
     if (body.action === "history") return json({ ok: true, list: await listHistory() });

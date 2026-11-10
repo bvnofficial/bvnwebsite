@@ -571,3 +571,15 @@ main{max-width:920px}
 .linkbox b{color:var(--ok);font-size:19px}
 .linkbox input{width:100%;border:2px solid var(--line2);border-radius:10px;padding:10px;font-size:15px;background:#fff}
 .linkbox a.btn{text-decoration:none}
+.lowcard{border-color:var(--red)}.lowcard .qh svg{color:var(--red)}
+.billlines{display:grid;gap:10px;margin:14px 0}
+.bl{display:grid;grid-template-columns:2fr 1fr 1fr 2fr auto;gap:8px;align-items:end;padding-bottom:10px;border-bottom:2px dashed var(--line)}
+.bl select{width:100%;min-height:64px;border:3px solid var(--line2);border-radius:14px;padding:8px;font-size:16px;background:#fff}
+button.filebox{text-align:left;font:inherit}
+.stockn{display:inline-block;margin-left:8px;font-size:14px;font-weight:700;color:var(--ok)}.stockn.low{color:var(--red)}
+@media (max-width:820px){.bl{grid-template-columns:1fr 1fr}.bl .fld:first-child,.bl .fld:nth-child(4){grid-column:1/-1}}
+.jobcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.jobc .jh{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.jobc small{display:block;color:var(--muted);font-size:15px;margin-top:4px}
+.jobc p{font-size:16px;margin:8px 0 10px}
+.jobc select{width:100%;min-height:52px;border:3px solid var(--line2);border-radius:12px;padding:8px;font-size:17px;background:#fff}
