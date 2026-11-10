@@ -87,6 +87,10 @@ export async function POST(req: NextRequest) {
   if (body.action === "clients") {
     try { return json({ ok: true, list: await findClients(String(body.q || "").slice(0, 80)) }); } catch (e: any) { return json({ ok: true, list: [] }); }
   }
+  // the live 3D while a technician types or talks: plain rules only, no AI cost
+  if (body.action === "preview") {
+    try { return json({ ok: true, answer: basicBuild(body.input || { said: "", types: [], prices: [] }) }); } catch { return json({ ok: false }); }
+  }
   if (body.action === "learn") {
     try { return json({ ok: true, stats: await learnStats() }); } catch (e: any) { return json({ error: e.message }, 500); }
   }

@@ -583,3 +583,18 @@ button.filebox{text-align:left;font:inherit}
 .jobc small{display:block;color:var(--muted);font-size:15px;margin-top:4px}
 .jobc p{font-size:16px;margin:8px 0 10px}
 .jobc select{width:100%;min-height:52px;border:3px solid var(--line2);border-radius:12px;padding:8px;font-size:17px;background:#fff}
+
+/* the gate in 3D */
+iframe.viz{position:fixed;z-index:20;border:0;border-radius:14px;display:none;background:#dfe8ef}
+.viz3d{position:relative;height:290px;border-radius:14px;background:#dfe8ef;margin-top:12px}
+.viz3d.big{height:380px;margin:0;width:100%;align-self:stretch;justify-self:stretch}
+.vizcap{position:absolute;left:10px;bottom:-30px;font-size:15px;font-weight:700;color:var(--blue)}
+.builder .viz3d{margin-bottom:34px}
+.v3tog{display:flex;margin-left:auto;margin-right:12px;background:#fff;border:2px solid var(--line2);border-radius:12px;overflow:hidden}
+.v3tog button{border:0;background:#fff;padding:8px 14px;font-weight:800;font-size:16px;display:flex;gap:6px;align-items:center;cursor:pointer}
+.v3tog button svg{width:18px;height:18px}
+.v3tog button.on{background:var(--ink);color:#fff}
+
+@media (max-width:700px){.viz3d{height:240px}.viz3d.big{height:300px}}
+.board .grid{position:relative}
+@media (max-width:700px){.titlerow{flex-wrap:wrap}.v3tog{order:3;margin:8px 0 0}}

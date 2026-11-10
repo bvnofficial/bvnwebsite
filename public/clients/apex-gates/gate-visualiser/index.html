@@ -39,6 +39,10 @@ a{color:inherit}
 
 /* layout: 3D view and the side panel */
 .app{display:grid;grid-template-columns:minmax(0,1fr) var(--panel);height:calc(100vh - var(--top));height:calc(100dvh - var(--top))}
+/* picture only, inside the Apex quoting tool: the tool sends the design */
+body.embed{overflow:hidden}
+body.embed .top,body.embed .panel,body.embed #help,body.embed #hint{display:none}
+body.embed .app{grid-template-columns:1fr;height:100vh;height:100dvh}
 .stage{position:relative;overflow:hidden;background:#dfe8ef;touch-action:none}
 .stage canvas{display:block}
 .loading{position:absolute;inset:0;display:grid;place-items:center;font-weight:600;color:var(--muted)}
@@ -195,6 +199,8 @@ const DEFAULT = {
 function deepMerge(a, b) { for (const k in b) a[k] = b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) ? deepMerge(a[k] || {}, b[k]) : b[k]; return a; }
 let S = structuredClone(DEFAULT);
 try { const h = location.hash.slice(1); if (h.startsWith("d=")) S = deepMerge(structuredClone(DEFAULT), JSON.parse(decodeURIComponent(escape(atob(h.slice(2)))))); } catch (e) {}
+const EMBED = new URLSearchParams(location.search).has("embed");
+if (EMBED) document.body.classList.add("embed");
 
 const $ = (s, r = document) => r.querySelector(s);
 const get = (p) => p.split(".").reduce((o, k) => o[k], S);
@@ -420,6 +426,13 @@ B.mount($("#stage"), $("#hint"), (id) => {
 $("#loading").remove();
 keepPlaced(); B.update(S); B.jump("street");
 renderSteps();
+// the quoting tool sends the gate the technician is describing; only from this same site
+window.addEventListener("message", (e) => {
+  if (e.origin !== location.origin || !e.data || e.data.type !== "apex-design") return;
+  S = deepMerge(structuredClone(DEFAULT), e.data.state || {});
+  keepPlaced(); B.update(S); renderSteps();
+});
+if (EMBED && window.parent !== window) window.parent.postMessage({ type: "apex-design-ready" }, location.origin);
 setTimeout(() => { $("#help").style.opacity = 0; }, 9000);
 </script>
 </body>

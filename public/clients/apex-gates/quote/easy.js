@@ -280,6 +280,8 @@ function render() {
   dock.innerHTML = ui.view === "job" ? `<div class="in"><button class="btn ghost" data-act="view" data-v="pick">${ICON.plus}Add another</button><button class="btn red" data-act="view" data-v="quote">Show the quote ${ICON.arrow}</button></div>` : "";
   dock.classList.toggle("hide", ui.view !== "job");
   scrollFix();
+  if (ui.view === "job" && ui.view3d) { const it = item(); const d = it && designOf(Q().items.filter((x) => x === it || ["ped", "fence"].includes((tplOf(x.tpl) || {}).base || x.tpl))); if (d) vizShow(d); else vizPlace(); }
+  else vizPlace();
 }
 let keepY = null;
 function scrollFix() { if (keepY !== null) { window.scrollTo(0, keepY); keepY = null; } }
@@ -321,9 +323,9 @@ function viewJob() {
   const others = q.items.length > 1 ? `<div class="onquote"><span>On this quote:</span>${q.items.map((x) => `<button class="${x.id === it.id ? "on" : ""}" data-act="sel" data-id="${x.id}">${esc(nameOf(x))}</button>`).join("")}</div>` : "";
   const keep = l ? l.sell - l.costTotal : 0;
   return `${builtBanner(q)}${others}
-  <div class="titlerow"><h1>${esc(nameOf(it))}</h1><button class="linkbtn" data-act="del">${ICON.bin}Take it off</button></div>
+  <div class="titlerow"><h1>${esc(nameOf(it))}</h1>${designOf([it]) ? `<div class="v3tog"><button data-act="v3" data-v="0" class="${ui.view3d ? "" : "on"}">Drawing</button><button data-act="v3" data-v="1" class="${ui.view3d ? "on" : ""}">${ICON.box}3D</button></div>` : ""}<button class="linkbtn" data-act="del">${ICON.bin}Take it off</button></div>
   <div class="board">
-    <div class="grid">${t.draw !== "none" ? drawItem(t, r, db.pb) : `<div class="nopic">${TYPE_ICON[it.tpl] || ICON.other}</div>`}</div>
+    <div class="grid">${ui.view3d && designOf([it]) ? `<div class="viz3d big" data-viz></div>` : t.draw !== "none" ? drawItem(t, r, db.pb) : `<div class="nopic">${TYPE_ICON[it.tpl] || ICON.other}</div>`}</div>
     <div class="pricebar"><div><small>Price for the customer, with GST</small><b>${l ? money(l.sell * gst) : "$0"}</b></div>
       ${l && l.sell && boss() ? `<div class="makes">${ICON.coins}<span>Apex makes<b>${money(keep)}</b></span></div>` : ""}</div>
     ${r.warnings.length ? `<div class="warn" style="margin:0 16px 16px">${ICON.warn}<div><b>Check this</b><ul>${r.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div></div>` : ""}
@@ -559,11 +561,73 @@ function openSign() {
   });
 }
 
+/* ---------- the gate in 3D, from the website's 3D designer ---------- */
+/* one 3D view kept running and laid over whichever box asks for it, so it never reloads */
+let VIZ = null, vizReady = false, vizState = null;
+const clampN = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const STYLE3D = { picket: "picket", slat: "slat", palisade: "palisade", mesh: "mesh", sheet: "solid" };
+function designOf(items) {
+  const base = (it) => { const t = tplOf(it.tpl); return t ? t.base || t.id : it.tpl; };
+  const val = (it, k) => { const t = tplOf(it.tpl), i = t && t.inputs.find((x) => x.k === k); return it.values[k] ?? (i ? i.def : undefined); };
+  const d = { F: 14, house: true, showZone: false, drive: { on: false }, ped: { on: false }, fence: { style: "none" } };
+  const g = items.find((it) => ["swing", "slide", "cant", "bifold"].includes(base(it)));
+  if (g) {
+    const b = base(g), type = { swing: "swing", slide: "sliding", cant: "cantilever", bifold: "bifold" }[b];
+    const motor = b === "slide" || b === "cant" ? val(g, "motor") : val(g, "auto");
+    d.drive = { on: true, type, leaves: +(val(g, "L") || 2), style: STYLE3D[val(g, "infill")] || "picket", col: steelColour(val(g, "colour")), W: clampN((+val(g, "W") || 4000) / 1000, 2.4, 9), H: clampN((+val(g, "H") || 1800) / 1000, 1.2, 2.4), auto: motor !== "none", x: 4.2, hinge: val(g, "dir") === "right" ? "right" : "left" };
+  }
+  const pd = items.find((it) => base(it) === "ped");
+  if (pd) d.ped = { on: true, match: false, style: STYLE3D[val(pd, "infill")] || "picket", col: steelColour(val(pd, "colour")), W: clampN((+val(pd, "W") || 1000) / 1000, .8, 1.5), H: clampN((+val(pd, "H") || 1800) / 1000, 1.2, 2.4), x: g ? 4.2 + d.drive.W + 1 : 6 };
+  const fc = items.find((it) => base(it) === "fence");
+  if (fc) d.fence = { style: STYLE3D[val(fc, "infill")] || "picket", match: false, col: steelColour(val(fc, "colour")), H: clampN((+val(fc, "pierH") || 1800) / 1000, .9, 2.4), plinth: 0, bay: clampN((+val(fc, "bay") || 2400) / 1000, 1.5, 3) };
+  d.F = clampN(Math.max(14, (g ? d.drive.W : 0) + (pd ? d.ped.W : 0) + 6), 8, 30);
+  return g || pd || fc ? d : null;
+}
+function vizShow(state) {
+  vizState = state;
+  if (state && !VIZ) {
+    VIZ = document.createElement("iframe");
+    VIZ.className = "viz"; VIZ.title = "The gate in 3D";
+    VIZ.src = "/clients/apex-gates/gate-visualiser/index.html?embed=1";
+    document.body.appendChild(VIZ);
+  }
+  vizPost(); vizPlace();
+}
+function vizPost() { if (VIZ && vizReady && vizState) VIZ.contentWindow.postMessage({ type: "apex-design", state: vizState }, location.origin); }
+function vizPlace() {
+  if (!VIZ) return;
+  const ph = document.querySelector("[data-viz]:not([hidden])");
+  if (!ph || !vizState) { VIZ.style.display = "none"; return; }
+  const r = ph.getBoundingClientRect(), top = ($(".bar") || { offsetHeight: 0 }).offsetHeight;
+  Object.assign(VIZ.style, { display: "block", left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", clipPath: `inset(${Math.max(0, top - r.top)}px 0 0 0)` });
+}
+window.addEventListener("message", (e) => { if (e.origin === location.origin && e.data && e.data.type === "apex-design-ready") { vizReady = true; vizPost(); } });
+window.addEventListener("scroll", vizPlace, { passive: true });
+window.addEventListener("resize", vizPlace);
+/* while they type or talk: the basic helper reads the words (free, no AI) and the 3D follows */
+let prevT;
+function previewWords(text) {
+  clearTimeout(prevT);
+  prevT = setTimeout(async () => {
+    if (text.trim().length < 6) return;
+    try {
+      const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "preview", input: { said: text, types: typesSpec().map((t) => ({ id: t.id })), prices: [] } }) });
+      const j = await r.json(); if (!j.ok) return;
+      const items = (j.answer.items || []).map((it) => { const t = tplOf(it.tpl); return t ? { tpl: t.id, values: setFromHelper(t, it.values) } : null; }).filter(Boolean);
+      const d = designOf(items);
+      const ph = $("[data-viz]"); if (ph) ph.hidden = !d;
+      const cap = $("[data-vizcap]"); if (cap && d) cap.textContent = j.answer.say.replace(/ Check the sizes.*$/, "");
+      if (d) vizShow(d);
+    } catch (e) { /* the 3D just waits for the next words */ }
+  }, 650);
+}
+
 /* ---------- the job builder: say it or snap it, the helper sets up the quote ---------- */
 function builderCard() {
   return `<section class="card pad helper builder"><h2 class="qh">${ICON.chat}Tell the helper about the job</h2>
     <p class="muted" style="margin:-4px 0 12px">Say what the customer wants, or take a photo of the spot. The helper picks the gate, sizes, motor and parts. You check it and change anything.</p>
     <textarea data-bsaid rows="3" placeholder="For example: double swing gate for a 4 metre driveway, black, with a motor, keypad and 2 remotes">${esc(ui.bsaid || "")}</textarea>
+    <div class="viz3d" data-viz ${vizState && ui.view === "pick" ? "" : "hidden"}><span class="vizcap" data-vizcap>Live 3D: it changes as you talk</span></div>
     ${ui.bphoto ? `<div class="bphoto"><img src="${ui.bphoto}" alt="Site photo"><button class="linkbtn" data-act="bphotodel">${ICON.bin}Take it off</button></div>` : ""}
     <div class="talkbtns three"><button class="btn ghost" data-act="bmic">${ICON.mic}${listening ? "Listening..." : "Talk"}</button>
       <label class="btn ghost">${ICON.camera}Photo<input type="file" accept="image/*" capture="environment" data-bphoto hidden></label>
@@ -833,7 +897,7 @@ function listenInto(field) {
   if (!SR) return say("Talking is not available on this device. Type it instead");
   if (listening) { listening.stop(); return; }
   const r = new SR(); r.lang = "en-AU"; r.interimResults = false;
-  r.onresult = (e) => { ui[field] = ((ui[field] ? ui[field] + " " : "") + e.results[0][0].transcript).trim(); redraw(); };
+  r.onresult = (e) => { ui[field] = ((ui[field] ? ui[field] + " " : "") + e.results[0][0].transcript).trim(); redraw(); if (field === "bsaid") previewWords(ui.bsaid); };
   r.onend = () => { listening = null; redraw(); };
   listening = r; r.start(); redraw();
 }
@@ -1048,6 +1112,7 @@ document.addEventListener("click", (e) => {
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
   if (a === "sendlink") sendLink(q, b.dataset.v);
   if (a === "group") { q.group = b.dataset.v; save(); redraw(); }
+  if (a === "v3") { ui.view3d = b.dataset.v === "1"; redraw(); }
   if (a === "copylink") navigator.clipboard.writeText(ui.link.url).then(() => say("Link copied"), () => say("Could not copy on this device"));
   /* the builder and client search */
   if (a === "build") { ui.bsaid = ($("[data-bsaid]") || {}).value || ui.bsaid || ""; buildQuote(); }
@@ -1109,7 +1174,7 @@ document.addEventListener("input", (e) => {
   if (el.matches("[data-qn]")) { q.notes = el.value; save(); }
   if (el.matches("[data-tech]")) { q.tech = db.lastTech = el.value; save(); }
   if (el.matches("[data-said]")) ui.said = el.value;
-  if (el.matches("[data-bsaid]")) ui.bsaid = el.value;
+  if (el.matches("[data-bsaid]")) { ui.bsaid = el.value; previewWords(el.value); }
   if (el.matches("[data-cfind]")) { ui.cfind = el.value; findClient(el.value); }
   if (el.matches("[data-dep]")) { jobOf(q).depositPaid = parseFloat(el.value) || 0; save(); }
   if (el.matches("[data-pfind]")) { ui.pfind = el.value; const pos = el.selectionStart; redraw(); const n = $("[data-pfind]"); n.focus(); n.setSelectionRange(pos, pos); }
