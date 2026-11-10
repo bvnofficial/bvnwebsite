@@ -200,3 +200,28 @@ export async function saveBill(bill: any) {
 /* the job board: jobs brought in from the old system, with their status */
 export const readJobs = async (): Promise<any[]> => readJSON("jobs/jobs.json", []);
 export const writeJobs = async (list: any[]) => writeJSON("jobs/jobs.json", list.slice(0, 5000));
+
+/* sample data for showing the system: quotes with ids starting "smpl", bills from
+   "Sample" suppliers and shelf counts marked "Sample count". One call removes it all. */
+export async function sampleStock(id: string, qty: number, min: number) {
+  const s = await readStock();
+  s.items[id] = { qty, min };
+  s.log.unshift({ at: Date.now(), id, qty, why: "Sample count" });
+  await writeJSON("stock/stock.json", s);
+}
+export async function clearSamples() {
+  const b = await bucket();
+  const { data } = await b.list("quotes", { limit: 1000 });
+  const gone = (data || []).filter((f) => f.name.startsWith("smpl")).map((f) => `quotes/${f.name}`);
+  if (gone.length) await b.remove(gone);
+  const bills = await readBills();
+  await writeJSON("stock/bills.json", bills.filter((x) => !String(x.supplier || "").startsWith("Sample")));
+  const s = await readStock();
+  for (const id of Object.keys(s.items)) {
+    const moves = s.log.filter((l) => l.id === id);
+    if (moves.length && moves.every((l) => l.why === "Sample count" || /^Used on Q-S/.test(l.why))) delete s.items[id];
+  }
+  s.log = s.log.filter((l) => l.why !== "Sample count" && !/^Used on Q-S/.test(l.why));
+  await writeJSON("stock/stock.json", s);
+  return gone.length;
+}

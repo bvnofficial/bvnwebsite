@@ -521,6 +521,8 @@ function viewCompany() {
     <div class="two" style="margin-top:12px">${f("payCard", "Card payment link (from Square or Stripe)")}${f("payPaypal", "PayPal.me link (for example https://paypal.me/apexgates)")}${f("payLater", "Pay over time link (Afterpay or Zip, through Square or Stripe)")}</div>
     <p class="muted" style="margin:6px 0 0">These show as Pay buttons on the link the customer gets. Leave one empty to hide it.</p>
     <div class="fld" style="margin-top:12px"><label>How customers pay (printed on every invoice, for example bank name, BSB and account)</label><textarea data-set="payHow" data-type="text" rows="3">${esc(s.payHow)}</textarea></div></section>
+  <section class="card pad" style="margin-top:16px"><h2 class="qh">Sample data</h2><p class="muted" style="margin-top:-6px">The sample jobs (customers named "Sample:"), the sample supplier bill and the sample shelf counts were put in to show how everything works. Remove them before the team starts using it for real.</p>
+    <button class="btn ghost small" data-act="clearsamples">${ICON.bin}Remove the sample data</button></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">${ICON.undo}Undo a save</h2><p class="muted" style="margin-top:-6px">Every save is kept. Go back to an earlier one if something went wrong.</p>
     ${st.history ? (st.history.length ? `<div class="hist">${st.history.map((n) => `<div class="prow ro"><b>${esc(histDate(n))}</b><button class="btn ghost small" data-act="restore" data-n="${esc(n)}">Go back to this</button></div>`).join("")}</div>` : `<p class="muted">No earlier saves yet.</p>`) : `<button class="btn ghost small" data-act="history">Show earlier saves</button>`}
   </section>
@@ -586,6 +588,9 @@ document.addEventListener("click", async (e) => {
   if (a === "kitrow") { const k = pb().kits.find((k) => k.id === st.kit); k.items.splice(+b.dataset.n, 1); changed(); render(); }
   if (a === "qf") { st.qfilter = b.dataset.v; render(); }
   if (a === "jf") { st.jfilter = b.dataset.v; render(); }
+  if (a === "clearsamples" && confirm("Remove all the sample jobs, the sample bill and the sample shelf counts?")) {
+    try { const j = await api({ action: "samples-clear" }); st.quotes = null; st.stock = null; st.bills = null; st.learn = null; st.lloading = false; say(`Removed ${j.removed} sample jobs and the sample stock`); } catch (e) { say(e.message); }
+  }
   if (a === "qreload") { st.quotes = null; st.learn = null; st.lloading = false; render(); }
   if (a === "rise") {
     const p = parseFloat(prompt("By how much did these prices go up? Type a number, for example 5 for 5%", "5"));

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
 import { learnStats, askHelper, buildJob, readBill } from "@/lib/apex-quote-ai";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs } from "@/lib/apex-quote-store";
+import { basicBuild, basicHelper } from "@/lib/apex-quote-basic";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs, sampleStock, clearSamples } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -94,8 +95,10 @@ export async function POST(req: NextRequest) {
     try {
       return json({ ok: true, answer: await buildJob(body.input) });
     } catch (e: any) {
+      // the AI could not answer: the basic helper still sets up the quote from the words
       console.error("apex builder:", e?.message);
-      return json({ error: "The helper is not available right now. Tap a picture below to start the quote yourself." }, 502);
+      try { return json({ ok: true, answer: basicBuild(body.input) }); }
+      catch { return json({ error: "The helper is not available right now. Tap a picture below to start the quote yourself." }, 502); }
     }
   }
   if (body.action === "ai") {
@@ -105,7 +108,8 @@ export async function POST(req: NextRequest) {
     } catch (e: any) {
       // the technician sees a plain message; the real reason stays in the server log
       console.error("apex helper:", e?.message);
-      return json({ error: "The helper is not available right now. Use the questions and buttons on this screen instead." }, 502);
+      try { return json({ ok: true, answer: basicHelper(body.input) }); }
+      catch { return json({ error: "The helper is not available right now. Use the questions and buttons on this screen instead." }, 502); }
     }
   }
 
@@ -155,6 +159,8 @@ export async function POST(req: NextRequest) {
       if (!j) return json({ error: "No such job" }, 404);
       j.status = String(body.status || "").slice(0, 40); await writeJobs(list); return json({ ok: true });
     }
+    if (body.action === "stock-sample") { await sampleStock(String(body.id || ""), +body.qty || 0, +body.min || 0); return json({ ok: true }); }
+    if (body.action === "samples-clear") return json({ ok: true, removed: await clearSamples() });
     if (body.action === "quotes") return json({ ok: true, list: await listQuotes() });
     if (body.action === "history") return json({ ok: true, list: await listHistory() });
     if (body.action === "restore") {
