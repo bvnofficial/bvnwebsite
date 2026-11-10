@@ -52,7 +52,7 @@ export async function writeData(body: any) {
   const b = await bucket();
   const json = JSON.stringify(body);
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const put = (name: string) => b.upload(name, new Blob([json], { type: "application/json" }), { upsert: true, contentType: "application/json" });
+  const put = (name: string) => b.upload(name, new Blob([json], { type: "application/json" }), { upsert: true, contentType: "application/json", cacheControl: "0" });
   const main = await put(FILE);
   if (main.error) throw new Error(main.error.message);
   await put(`history/${stamp}.json`);
@@ -63,7 +63,7 @@ const QID = /^[a-z0-9]{4,16}$/;
 export async function saveQuote(q: any) {
   if (!q || !QID.test(String(q.id || ""))) throw new Error("Bad quote");
   const b = await bucket();
-  const { error } = await b.upload(`quotes/${q.id}.json`, new Blob([JSON.stringify(q)], { type: "application/json" }), { upsert: true, contentType: "application/json" });
+  const { error } = await b.upload(`quotes/${q.id}.json`, new Blob([JSON.stringify(q)], { type: "application/json" }), { upsert: true, contentType: "application/json", cacheControl: "0" });
   if (error) throw new Error(error.message);
 }
 export async function deleteQuote(id: string) {
@@ -101,7 +101,7 @@ export async function readHistory(name: string) {
 let clientCache: { at: number; list: any[] } | null = null;
 export async function saveClients(list: any[]) {
   const b = await bucket();
-  const { error } = await b.upload("clients.json", new Blob([JSON.stringify(list)], { type: "application/json" }), { upsert: true, contentType: "application/json" });
+  const { error } = await b.upload("clients.json", new Blob([JSON.stringify(list)], { type: "application/json" }), { upsert: true, contentType: "application/json", cacheControl: "0" });
   if (error) throw new Error(error.message);
   clientCache = { at: Date.now(), list };
 }
@@ -123,14 +123,25 @@ const TOKEN = /^[A-Za-z0-9]{20,40}$/;
 export async function saveShare(token: string, data: any) {
   if (!TOKEN.test(token)) throw new Error("Bad link");
   const b = await bucket();
-  const { error } = await b.upload(`shares/${token}.json`, new Blob([JSON.stringify(data)], { type: "application/json" }), { upsert: true, contentType: "application/json" });
+  const { error } = await b.upload(`shares/${token}.json`, new Blob([JSON.stringify(data)], { type: "application/json" }), { upsert: true, contentType: "application/json", cacheControl: "0" });
   if (error) throw new Error(error.message);
 }
 export async function readShare(token: string) {
   if (!TOKEN.test(token)) return null;
   const b = await bucket();
   const { data } = await b.download(`shares/${token}.json`);
-  return data ? JSON.parse(await data.text()) : null;
+  if (!data) return null;
+  const d = JSON.parse(await data.text());
+  // the signature is its own file, written once, so a cached copy of the link can never hide it
+  const signed = await b.download(`signed/${token}.json`);
+  if (signed.data) d.accepted = JSON.parse(await signed.data.text());
+  return d;
+}
+export async function saveSigned(token: string, accepted: any) {
+  if (!TOKEN.test(token)) throw new Error("Bad link");
+  const b = await bucket();
+  const { error } = await b.upload(`signed/${token}.json`, new Blob([JSON.stringify(accepted)], { type: "application/json" }), { upsert: false, contentType: "application/json", cacheControl: "0" });
+  if (error && !/exists|duplicate/i.test(error.message)) throw new Error(error.message);
 }
 export async function readQuote(id: string) {
   if (!QID.test(id)) return null;
