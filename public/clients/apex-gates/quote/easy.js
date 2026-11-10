@@ -140,6 +140,7 @@ const ICON = {
   chat: I('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'),
   mic: I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
   hammer: I('<path d="M14 4l6 6-3 3-6-6zM11 7L3 15l3 3 8-8"/>'),
+  camera: I('<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>'),
 };
 const TYPE_ICON = { auto: ICON.motor, site: ICON.truck, custom: ICON.other };
 
@@ -286,7 +287,7 @@ function viewHome() {
 /* ---------- pick what to add ---------- */
 function viewPick() {
   const q = Q();
-  return `<h1 class="big-t">What are we quoting?</h1><p class="hello" style="margin-top:-8px">Tap a picture.</p>${typeGrid()}
+  return `<h1 class="big-t">What are we quoting?</h1>${builderCard()}<p class="hello" style="margin:22px 0 10px">Or tap a picture and set it up yourself.</p>${typeGrid()}
   ${q.items.length ? `<button class="btn ghost wide" style="margin-top:18px" data-act="view" data-v="job">Go back</button>` : ""}`;
 }
 
@@ -304,7 +305,7 @@ function viewJob() {
   if (ui.tab >= secs.length) ui.tab = 0;
   const others = q.items.length > 1 ? `<div class="onquote"><span>On this quote:</span>${q.items.map((x) => `<button class="${x.id === it.id ? "on" : ""}" data-act="sel" data-id="${x.id}">${esc(nameOf(x))}</button>`).join("")}</div>` : "";
   const keep = l ? l.sell - l.costTotal : 0;
-  return `${others}
+  return `${builtBanner(q)}${others}
   <div class="titlerow"><h1>${esc(nameOf(it))}</h1><button class="linkbtn" data-act="del">${ICON.bin}Take it off</button></div>
   <div class="board">
     <div class="grid">${t.draw !== "none" ? drawItem(t, r, db.pb) : `<div class="nopic">${TYPE_ICON[it.tpl] || ICON.other}</div>`}</div>
@@ -451,6 +452,8 @@ function viewQuote() {
   <button class="btn ghost small" data-act="view" data-v="job" style="margin-bottom:16px">Back to the gate</button>
   <div class="card pad qside">
     <h2 class="qh">${ICON.user}Who is it for?</h2>
+    <div class="fld cfind"><label>Find a client Apex already has</label><input data-cfind value="${esc(ui.cfind || "")}" placeholder="Type a name, street, phone or email">
+      ${(ui.found || []).length ? `<div class="found">${ui.found.map((c, i) => `<button data-act="cpick" data-i="${i}"><b>${esc(c.name)}</b><small>${esc([c.contact, c.address, c.phone].filter(Boolean).join(" · "))}${c.terms && !/cod/i.test(c.terms) ? ` · ${esc(c.terms)}` : ""}</small></button>`).join("")}</div>` : ui.cfind && ui.cfind.length > 1 ? `<p class="muted" style="margin:8px 0 0">No match. Type the new client below.</p>` : ""}</div>
     <div class="who">
       <div class="fld"><label>Name</label><input data-c="name" value="${esc(q.client.name)}" placeholder="Customer name"></div>
       <div class="fld"><label>Phone</label><input data-c="phone" inputmode="tel" value="${esc(q.client.phone)}" placeholder="Phone"></div>
@@ -529,6 +532,97 @@ function openSign() {
       save(); m.remove(); render(); say("Signed. Marked as going ahead");
     }
   });
+}
+
+/* ---------- the job builder: say it or snap it, the helper sets up the quote ---------- */
+function builderCard() {
+  return `<section class="card pad helper builder"><h2 class="qh">${ICON.chat}Tell the helper about the job</h2>
+    <p class="muted" style="margin:-4px 0 12px">Say what the customer wants, or take a photo of the spot. The helper picks the gate, sizes, motor and parts. You check it and change anything.</p>
+    <textarea data-bsaid rows="3" placeholder="For example: double swing gate for a 4 metre driveway, black, with a motor, keypad and 2 remotes">${esc(ui.bsaid || "")}</textarea>
+    ${ui.bphoto ? `<div class="bphoto"><img src="${ui.bphoto}" alt="Site photo"><button class="linkbtn" data-act="bphotodel">${ICON.bin}Take it off</button></div>` : ""}
+    <div class="talkbtns three"><button class="btn ghost" data-act="bmic">${ICON.mic}${listening ? "Listening..." : "Talk"}</button>
+      <label class="btn ghost">${ICON.camera}Photo<input type="file" accept="image/*" capture="environment" data-bphoto hidden></label>
+      <button class="btn dark" data-act="build" ${ui.building ? "disabled" : ""}>${ICON.chat}${ui.building ? "Setting it up..." : "Build the quote"}</button></div>
+    ${ui.berr ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>${esc(ui.berr)}</div></div>` : ""}</section>`;
+}
+/* what the tool can quote, in a form the helper can read */
+function typesSpec() {
+  return TPLS.filter((t) => !t.hidden && (NAMES[t.id] || t.custom)).map((t) => ({
+    id: t.id, name: namesOf(t)[0], about: namesOf(t)[1] || t.blurb || "",
+    inputs: t.inputs.filter((i) => !String(i.k).startsWith("x_")).map((i) => {
+      const o = { k: i.k, label: i.label, type: i.type };
+      if (i.type === "num") Object.assign(o, { unit: i.unit || "", min: i.min, max: i.max, default: i.def });
+      if (i.type === "seg") o.options = (i.opts || []).map(([v, l]) => ({ value: String(v), label: l }));
+      if (i.type === "mat") o.options = db.pb.materials.filter((m) => m.cat === i.filter).map((m) => ({ value: m.id, label: m.name }));
+      if (i.type === "bool") o.options = [{ value: "1", label: "Yes" }, { value: "0", label: "No" }];
+      return o;
+    }),
+  }));
+}
+function setFromHelper(t, values) {
+  const v = defaults(t);
+  for (const { k, v: raw } of values) {
+    const i = t.inputs.find((x) => x.k === k); if (!i) continue;
+    if (i.type === "num") { const n = parseFloat(raw); if (!isNaN(n)) v[k] = Math.min(i.max ?? 1e9, Math.max(i.min ?? 0, n)); }
+    else if (i.type === "bool") v[k] = /^(1|yes|true)$/i.test(raw) ? 1 : 0;
+    else if (i.type === "seg") { const o = (i.opts || []).find((o) => String(o[0]) === raw || String(o[1]).toLowerCase() === raw.toLowerCase()); if (o) v[k] = o[0]; }
+    else if (i.type === "mat") { if (db.pb.materials.some((m) => m.id === raw && m.cat === i.filter)) v[k] = raw; }
+    else v[k] = raw;
+  }
+  return v;
+}
+async function buildQuote() {
+  const said = ui.bsaid || "";
+  if (!said.trim() && !ui.bphoto) return say("Say or type what the job is, or add a photo");
+  ui.building = true; ui.berr = ""; redraw();
+  const input = { said, image: ui.bphoto || undefined, types: typesSpec(), prices: catalogue(),
+    learned: Object.entries(LEARN).map(([t, s]) => ({ type: t, jobs: s.jobs, added: Object.values(s.extras).filter((e) => e.n >= 2).map((e) => e.name || e.id) })) };
+  try {
+    const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "build", input }) });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || "The helper did not answer");
+    const a = j.answer, q = Q();
+    if (!a.items.length && !a.parts.length) throw new Error(a.say || "The helper could not work out the job. Tap a picture below instead.");
+    for (const it of a.items) {
+      const t = tplOf(it.tpl); if (!t) continue;
+      q.items.push({ id: uid(), tpl: t.id, name: it.name || namesOf(t)[0], values: setFromHelper(t, it.values) });
+    }
+    for (const x of a.parts) addQuoteLine(q, x);
+    q.sel = q.items[0] && q.items[0].id;
+    q.notes = q.notes || "";
+    ui.built = { qid: q.id, say: a.say, questions: a.questions };
+    ui.bsaid = ""; ui.bphoto = null; save();
+    ui.view = "job"; ui.tab = 0;
+  } catch (e) { ui.berr = e.message || "No signal, try again"; }
+  ui.building = false; render(); window.scrollTo(0, 0);
+}
+/* photos are made small before they go anywhere */
+function shrinkPhoto(file) {
+  return new Promise((ok, bad) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => { const k = Math.min(1, 1280 / Math.max(img.width, img.height)), c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url); ok(c.toDataURL("image/jpeg", 0.8)); };
+    img.onerror = () => bad(new Error("Could not read that photo")); img.src = url;
+  });
+}
+function builtBanner(q) {
+  if (!ui.built || ui.built.qid !== q.id) return "";
+  return `<div class="card pad helper builtnote"><p class="aisay">${ICON.chat}<span>${esc(ui.built.say || "Here is a first go. Check it and change anything.")}</span></p>
+    ${ui.built.questions.length ? `<div class="incl-list warnish"><b>Check these on site:</b>${ui.built.questions.map((x) => `<span>${ICON.warn}${esc(x)}</span>`).join("")}</div>` : ""}
+    <button class="btn ghost small" data-act="builtok" style="margin-top:10px">${ICON.tick}Got it</button></div>`;
+}
+
+/* ---------- finding a client brought in from AroFlo ---------- */
+let findT;
+function findClient(text) {
+  clearTimeout(findT);
+  findT = setTimeout(async () => {
+    if (text.trim().length < 2) { ui.found = []; redraw(); return; }
+    try {
+      const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "clients", q: text }) });
+      const j = await r.json(); ui.found = j.list || [];
+    } catch (e) { ui.found = []; }
+    const pos = ($("[data-cfind]") || {}).selectionStart; redraw(); const n = $("[data-cfind]"); if (n) { n.focus(); n.setSelectionRange(pos, pos); }
+  }, 300);
 }
 
 /* ---------- the job: from signed quote to paid invoice ---------- */
@@ -634,12 +728,13 @@ async function askHelper(q, mode, said) {
   ui.aiBusy = false; redraw();
 }
 let listening = null;
-function listen() {
+function listen() { listenInto("said"); }
+function listenInto(field) {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return say("Talking is not available on this device. Type it instead");
   if (listening) { listening.stop(); return; }
   const r = new SR(); r.lang = "en-AU"; r.interimResults = false;
-  r.onresult = (e) => { ui.said = ((ui.said ? ui.said + " " : "") + e.results[0][0].transcript).trim(); redraw(); };
+  r.onresult = (e) => { ui[field] = ((ui[field] ? ui[field] + " " : "") + e.results[0][0].transcript).trim(); redraw(); };
   r.onend = () => { listening = null; redraw(); };
   listening = r; r.start(); redraw();
 }
@@ -852,6 +947,16 @@ document.addEventListener("click", (e) => {
   if (a === "copyjob") { const src = db.quotes.find((x) => x.id === b.dataset.id), n = { ...clone(src), id: uid(), no: `Q-${db.nextNo++}`, created: Date.now(), updated: Date.now(), status: "draft", signature: null }; db.quotes.push(n); save(); redraw(); say("Job copied"); }
   if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "unquote", id: b.dataset.id }) }).catch(() => {}); db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
+  /* the builder and client search */
+  if (a === "build") { ui.bsaid = ($("[data-bsaid]") || {}).value || ui.bsaid || ""; buildQuote(); }
+  if (a === "bmic") { listenInto("bsaid"); }
+  if (a === "bphotodel") { ui.bphoto = null; redraw(); }
+  if (a === "builtok") { ui.built = null; redraw(); }
+  if (a === "cpick") {
+    const c = ui.found[+b.dataset.i]; if (!c) return;
+    Object.assign(q.client, { name: c.name, phone: c.phone || q.client.phone, email: c.email || q.client.email, address: c.address || q.client.address, code: c.code, terms: c.terms });
+    ui.found = []; ui.cfind = ""; save(); redraw(); say("Client filled in");
+  }
   /* the job */
   if (a === "work") { ui.view = "work"; ui.stage = null; ui.ai = null; render(); window.scrollTo(0, 0); }
   if (a === "openwork") { db.current = b.dataset.id; ui.view = "work"; ui.stage = null; ui.ai = null; store(); render(); window.scrollTo(0, 0); }
@@ -892,6 +997,7 @@ document.addEventListener("change", (e) => {
   if (el.dataset.txt) { setVal(el.dataset.txt, el.value); redraw(); }
   if (el.dataset.c) redraw();
   if (el.matches("[data-dep]")) redraw();
+  if (el.matches("[data-bphoto]") && el.files && el.files[0]) shrinkPhoto(el.files[0]).then((d) => { ui.bphoto = d; redraw(); }, (e) => say(e.message));
 });
 document.addEventListener("input", (e) => {
   const el = e.target, q = Q();
@@ -899,6 +1005,8 @@ document.addEventListener("input", (e) => {
   if (el.matches("[data-qn]")) { q.notes = el.value; save(); }
   if (el.matches("[data-tech]")) { q.tech = db.lastTech = el.value; save(); }
   if (el.matches("[data-said]")) ui.said = el.value;
+  if (el.matches("[data-bsaid]")) ui.bsaid = el.value;
+  if (el.matches("[data-cfind]")) { ui.cfind = el.value; findClient(el.value); }
   if (el.matches("[data-dep]")) { jobOf(q).depositPaid = parseFloat(el.value) || 0; save(); }
   if (el.matches("[data-pfind]")) { ui.pfind = el.value; const pos = el.selectionStart; redraw(); const n = $("[data-pfind]"); n.focus(); n.setSelectionRange(pos, pos); }
   if (el.matches("[data-find]")) { ui.find = el.value; const pos = el.selectionStart; render(); const n = $("[data-find]"); n.focus(); n.setSelectionRange(pos, pos); }

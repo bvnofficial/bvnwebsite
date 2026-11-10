@@ -135,3 +135,85 @@ export async function askHelper(input: HelperInput) {
     unknown: (out.unknown || []).slice(0, 6).map((s: any) => String(s).slice(0, 80)),
   };
 }
+
+/* ---------- the job builder: words or a site photo in, a first quote out ---------- */
+const BUILD_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["say", "items", "parts", "questions"],
+  properties: {
+    say: { type: "string" },
+    items: {
+      type: "array",
+      items: {
+        type: "object", additionalProperties: false, required: ["tpl", "name", "values"],
+        properties: {
+          tpl: { type: "string" },
+          name: { type: "string" },
+          values: { type: "array", items: { type: "object", additionalProperties: false, required: ["k", "v"], properties: { k: { type: "string" }, v: { type: "string" } } } },
+        },
+      },
+    },
+    parts: {
+      type: "array",
+      items: {
+        type: "object", additionalProperties: false, required: ["kind", "id", "qty", "why"],
+        properties: { kind: { type: "string", enum: ["item", "hours"] }, id: { type: "string" }, qty: { type: "number" }, why: { type: "string" } },
+      },
+    },
+    questions: { type: "array", items: { type: "string" } },
+  },
+};
+
+const BUILD_SYSTEM = `You are the senior estimator at Apex Gates in Perth, Western Australia. A technician describes a job in their own words, sometimes with a photo of the site, and you set up the first version of the quote in the Apex quoting tool. They will check and edit everything, so give a sensible complete starting point rather than asking for every detail.
+
+You get a JSON message with:
+- said: the technician's words.
+- types: the things the tool can quote. Each has an id, a name and inputs. Each input has a key k, a type and its allowed values: "num" takes a number within min and max in the unit given (mm unless the unit says otherwise), "seg" and "mat" take one of the listed option values, "bool" takes "1" or "0", "text" takes words.
+- prices: Apex's price list (ids and names), for parts and hours that the types do not already include.
+- learned: what the team added on past jobs, if known.
+
+Reply with:
+- items: one entry per thing to quote, using a type id from types. Set only the inputs you have a reason to set; the rest keep sensible defaults. Use the exact option values listed. Motors, remotes, keypads and safety beams that a type can include through its own inputs go there, not in parts. Typical Perth sizes when nothing is said: driveway openings 3500 to 4500 mm, gates 1800 mm high, pedestrian gates 1000 mm wide. Name each item the way a customer would understand it, for example "Front driveway gate".
+- parts: extra items from prices that the types do not cover (kind "item", a count), or extra time (kind "hours", id "fab", "install" or "elec", in hours). Only ids from prices. Keep it short and only what the job clearly needs.
+- say: two or three short sentences telling the technician what you set up and what to check. Plain words, Australian spelling, no dashes.
+- questions: up to three short things you could not tell and that change the price most, for example the real opening width or whether there is power at the gate.
+If there is a photo, estimate sizes from it and say in say that they are estimates to measure on site.`;
+
+export type BuildInput = { said?: string; image?: string; types: any[]; prices: { kind: string; id: string; name: string }[]; learned?: any[] };
+
+export async function buildJob(input: BuildInput) {
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error("The helper is not set up yet");
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const { image, ...rest } = input;
+  const content: any[] = [];
+  const m = typeof image === "string" ? image.match(/^data:(image\/(?:jpeg|png|webp));base64,(.+)$/) : null;
+  if (m) content.push({ type: "image", source: { type: "base64", media_type: m[1], data: m[2] } });
+  content.push({ type: "text", text: JSON.stringify(rest) });
+  const params: any = {
+    model: MODEL,
+    max_tokens: 8000,
+    betas: ["server-side-fallback-2026-07-01"],
+    fallbacks: "default",
+    system: BUILD_SYSTEM,
+    output_config: { effort: "medium", format: { type: "json_schema", schema: BUILD_SCHEMA } },
+    messages: [{ role: "user", content }],
+  };
+  const res: any = await client.beta.messages.create(params);
+  if (res.stop_reason === "refusal") throw new Error("The helper could not answer that one");
+  const out = JSON.parse((res.content || []).filter((b: any) => b.type === "text").map((b: any) => b.text).join(""));
+
+  // only types, inputs and prices that really exist
+  const types = new Map(input.types.map((t: any) => [t.id, t]));
+  const items = new Set(input.prices.filter((p) => p.kind === "item").map((p) => p.id));
+  const qty = (n: any) => Math.min(100, Math.max(0, Math.round((+n || 0) * 4) / 4));
+  return {
+    say: String(out.say || "").slice(0, 600),
+    items: (out.items || []).filter((i: any) => types.has(i.tpl)).slice(0, 8).map((i: any) => {
+      const keys = new Set((types.get(i.tpl).inputs || []).map((x: any) => x.k));
+      return { tpl: i.tpl, name: String(i.name || "").slice(0, 60), values: (i.values || []).filter((v: any) => keys.has(v.k)).map((v: any) => ({ k: v.k, v: String(v.v).slice(0, 120) })) };
+    }),
+    parts: (out.parts || []).filter((p: any) => (p.kind === "item" ? items.has(p.id) : ["fab", "install", "elec"].includes(p.id)) && qty(p.qty) > 0).slice(0, 15).map((p: any) => ({ kind: p.kind, id: p.id, qty: qty(p.qty), why: String(p.why || "").slice(0, 160) })),
+    questions: (out.questions || []).slice(0, 3).map((x: any) => String(x).slice(0, 200)),
+  };
+}

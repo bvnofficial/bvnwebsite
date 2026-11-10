@@ -33,7 +33,7 @@ export function teamView(data: any) {
   const pb = d.pb, mk = pb.markup || {};
   const up = (cat: string, v: any) => (Number(v) || 0) * (1 + (Number(mk[cat]) || 0) / 100);
   for (const m of pb.materials || []) m.cost = up("materials", m.cost);
-  for (const h of pb.hardware || []) h.cost = up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost);
+  for (const h of pb.hardware || []) { h.cost = Number(h.sell) > 0 ? Number(h.sell) : up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost); delete h.sell; }
   for (const l of pb.labour || []) l.rate = up("labour", l.rate);
   for (const f of pb.finishes || []) { f.perM2 = up("finish", f.perM2); f.perKg = up("finish", f.perKg); f.min = up("finish", f.min); }
   for (const k of Object.keys(mk)) mk[k] = 0;
@@ -94,4 +94,25 @@ export async function readHistory(name: string) {
   const { data, error } = await b.download(`history/${name}`);
   if (error || !data) throw new Error("Not found");
   return JSON.parse(await data.text());
+}
+
+/* Apex's client list, brought in from AroFlo on the CEO dashboard. One private
+   file; the tablets only ever get the few matches for what they type. */
+let clientCache: { at: number; list: any[] } | null = null;
+export async function saveClients(list: any[]) {
+  const b = await bucket();
+  const { error } = await b.upload("clients.json", new Blob([JSON.stringify(list)], { type: "application/json" }), { upsert: true, contentType: "application/json" });
+  if (error) throw new Error(error.message);
+  clientCache = { at: Date.now(), list };
+}
+export async function findClients(q: string) {
+  if (!clientCache || Date.now() - clientCache.at > 300_000) {
+    const b = await bucket();
+    const { data } = await b.download("clients.json");
+    clientCache = { at: Date.now(), list: data ? JSON.parse(await data.text()) : [] };
+  }
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  const hay = (c: any) => `${c.name} ${c.contact} ${c.address} ${c.phone} ${c.email} ${c.code}`.toLowerCase();
+  return clientCache.list.filter((c) => { const h = hay(c); return words.every((w) => h.includes(w)); }).slice(0, 8);
 }

@@ -214,6 +214,8 @@ export function priceQuote(quote, templates, pb) {
       if (!x) { r.errors.push(`Item "${h.id}" is not in the price book`); continue; }
       const cat = x.cat === "motor" || x.cat === "access" ? "motors" : "hardware";
       line.cost[cat] += x.cost * h.qty;
+      // an item with its own sell price (from AroFlo) charges exactly that, whatever the markup
+      if (x.sell > 0) line.fixed = (line.fixed || 0) + (x.sell - x.cost * up(cat)) * h.qty;
       h.name = x.name; h.unit = x.cost; h.cat = cat;
     }
     for (const l of r.labour) {
@@ -265,6 +267,7 @@ export function priceQuote(quote, templates, pb) {
       tot.byCat[cat] = (tot.byCat[cat] || { cost: 0, sell: 0 });
       tot.byCat[cat].cost += v; tot.byCat[cat].sell += v * up(cat);
     }
+    l.sell += l.fixed || 0;
     tot.cost += l.costTotal; tot.sell += l.sell;
   }
   const disc = Math.min(Math.max(+quote.discount || 0, 0), 100);

@@ -48,7 +48,7 @@ export function teamView(pb) {
   const t = clone(pb), mk = t.markup || {};
   const up = (cat, v) => (+v || 0) * (1 + (mk[cat] || 0) / 100);
   for (const m of t.materials || []) m.cost = up("materials", m.cost);
-  for (const h of t.hardware || []) h.cost = up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost);
+  for (const h of t.hardware || []) { h.cost = h.sell > 0 ? h.sell : up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost); delete h.sell; }
   for (const l of t.labour || []) l.rate = up("labour", l.rate);
   for (const f of t.finishes || []) { f.perM2 = up("finish", f.perM2); f.perKg = up("finish", f.perKg); f.min = up("finish", f.min); }
   for (const k of Object.keys(mk)) mk[k] = 0;
@@ -86,7 +86,7 @@ export function priceExtras(job, pb) {
       full = (+x.price || 0) * qty; cost = full / up("other");
     } else {
       const h = (pb.hardware || []).find((h) => h.id === x.id); if (!h) continue;
-      cost = h.cost * qty; full = cost * up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware"); name = name || h.name;
+      cost = h.cost * qty; full = h.sell > 0 ? h.sell * qty : cost * up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware"); name = name || h.name;
     }
     const charged = x.charge !== false;
     lines.push({ ...x, qty, name, cost, full, sell: charged ? full : 0, charged });

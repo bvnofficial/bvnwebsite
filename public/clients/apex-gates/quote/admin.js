@@ -171,11 +171,11 @@ function viewPrices() {
       <div class="money-in"><span>min $</span><input data-list="finishes" data-id="${f.id}" data-f="min" inputmode="decimal" value="${f.min}"></div></div></div>`).join("");
   } else {
     rows = sh[2](pb()).filter((x) => !find || x.name.toLowerCase().includes(find)).map((x) => {
-      const note = sh[3] === "materials" && !x.sheet ? `${(x.stock / 1000).toLocaleString("en-AU")} m length` : sh[3] === "labour" ? "per hour" : x.note || "";
+      const note = sh[3] === "materials" && !x.sheet ? `${(x.stock / 1000).toLocaleString("en-AU")} m length` : sh[3] === "labour" ? "per hour" : x.sell > 0 ? `Customer price from AroFlo${x.part ? ", part " + x.part : ""}` : x.note || "";
       return `<div class="prow ${sh[3] === "hardware" ? "wide" : ""}"><div><b>${esc(x.name)}</b>${note ? `<small>${esc(note)}</small>` : ""}
         ${x.added ? `<button class="linkbtn" data-act="remove" data-list="${sh[3]}" data-id="${x.id}">${ICON.bin}Remove</button>` : ""}</div>
         <div class="pair">${sh[3] === "hardware" ? `<button class="offer ${x.offer ? "on" : ""}" data-act="offer" data-id="${x.id}">${x.offer ? ICON.tick : ""}Offer on gates</button>` : ""}
-        <div class="money-in"><span>$</span><input data-list="${sh[3]}" data-id="${x.id}" data-f="${sh[4]}" inputmode="decimal" value="${x[sh[4]]}"></div></div></div>`;
+        <div class="money-in"><span>$</span><input data-list="${sh[3]}" data-id="${x.id}" data-f="${x.sell > 0 ? "sell" : sh[4]}" inputmode="decimal" value="${x.sell > 0 ? x.sell : x[sh[4]]}"></div></div></div>`;
     }).join("") || `<p class="muted">Nothing matches.</p>`;
   }
   const secret = sh[0] === "addon" ? `<div class="okmsg" style="margin-bottom:14px">${ICON.lock}Only you see these numbers. Technicians' tablets get every price with this already added, so they only ever see what the customer pays. They never see what Apex pays or how much is added on.</div>` : "";
@@ -186,6 +186,72 @@ function viewPrices() {
   ${secret}<div class="plist">${rows}</div>`;
 }
 
+/* bring in Apex's stock and clients from AroFlo CSV exports */
+function parseCSV(text) {
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; continue; }
+    if (c === '"') q = true;
+    else if (c === ",") { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+    else f += c;
+  }
+  if (f || row.length) { row.push(f); rows.push(row); }
+  const head = (rows.shift() || []).map((h) => h.replace(/^\uFEFF/, "").trim());
+  return rows.filter((r) => r.some((x) => x.trim())).map((r) => Object.fromEntries(head.map((h, i) => [h, (r[i] || "").trim()])));
+}
+const numv = (v) => parseFloat(String(v || "").replace(/[^0-9.\-]/g, "")) || 0;
+const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 40);
+/* which shelf an AroFlo item belongs on, from its name */
+function aroCat(name) {
+  const n = name.toLowerCase();
+  if (/labou?r|call ?out|per hour|hourly|service|maintenance|attendance|inspection|diagnos/.test(n)) return "misc";
+  if (/r[e]?mote|mitto|swipe|transmitter|tx\d|keypad|key pad|reader|intercom|prox|card|fob|receiver|photo ?eye|beam|sensor|loop|detector|push ?button|key ?switch|antenna|aerial|gsm|wifi|smart controller|battery|batteries|solar/.test(n)) return "access";
+  if (/travel|delivery|freight|fuel|commission|program|site visit|testing|disposal|removal/.test(n)) return "misc";
+  if (/motor|operator|opener|gate kit|\bkit\b|\bd5\b|\bd10\b|\bd20\b|robus|\bats\b|barrier|boom|turnstile|unigate|vantage|icaro|deimos|ares|\bfaac\b|\bbft\b|centurion|ditec|nice /.test(n)) return "motor";
+  return "part";
+}
+function importStock(rows) {
+  const p = pb(), up = (c) => 1 + ((p.markup || {})[c === "motor" ? "motors" : c === "access" ? "motors" : "hardware"] || 0) / 100;
+  const keep = p.hardware.filter((h) => !h.aroflo);
+  const seen = new Set(keep.map((h) => h.id)), out = [], skipped = [];
+  for (const r of rows) {
+    const name = r["Item Name *"] || r["Item Name"] || "";
+    const price = numv(r["Price *"] || r["Price"]), cost = numv(r["Supplier Cost"]);
+    if (!name || price <= 0 || /^(credit|exclu|discount|less )/i.test(name)) { skipped.push(name); continue; }
+    const cat = aroCat(name);
+    let id = "af_" + slug(r["Part No"] || name); while (seen.has(id)) id += "_2";
+    seen.add(id);
+    // AroFlo holds the sell price (before GST); keep it exact, with the real cost when there is one
+    out.push({ id, cat, name, cost: Math.round((cost > 0 ? cost : price / up(cat)) * 100) / 100, sell: price, part: r["Part No"] || "", note: (r["Supplier Name"] || "").slice(0, 40), aroflo: true, added: true });
+  }
+  p.hardware = keep.concat(out);
+  const by = (c) => out.filter((x) => x.cat === c).length;
+  st.stockMsg = `Brought in ${out.length} items: ${by("motor")} motors and kits, ${by("access")} remotes, readers and access, ${by("part")} gate parts, ${by("misc")} service, labour and travel. Left out ${skipped.length} with no price, credits or exclusions.`;
+  changed(); render();
+}
+async function importClients(rows) {
+  const list = rows.filter((r) => (r["Company Name *"] || r["Company Name"]) && r["Status *"] !== "False").map((r) => ({
+    code: r["Client Code"] || "", name: r["Company Name *"] || r["Company Name"],
+    contact: [r["Contact First Name"], r["Contact Last Name"]].filter(Boolean).join(" "),
+    address: [r["Street 1 *"] || r["Street 1"], r["Street 2"], r["Suburb"], r["Postcode"]].filter(Boolean).join(", "),
+    phone: r["Mobile"] || r["Contact Mobile"] || r["Phone"] || r["Contact Phone"] || "",
+    email: r["Email"] || r["Contact Email"] || "", terms: r["Account Type *"] || "",
+  }));
+  try { await api({ action: "clients-save", list }); st.clientMsg = `Brought in ${list.length.toLocaleString("en-AU")} clients. The team can now search them on every quote.`; }
+  catch (e) { st.clientMsg = "Could not save the clients: " + e.message; }
+  render();
+}
+function viewImport() {
+  return `<section class="card pad" style="margin-bottom:16px"><h2 class="qh">${ICON.plus}Bring in from AroFlo</h2>
+    <p class="muted" style="margin-top:-6px">Export from AroFlo as CSV, then pick the file here. Prices come in exactly as AroFlo has them, before GST.</p>
+    <div class="two"><label class="filebox"><b>Stock items</b><small>InventoryItems.csv</small><input type="file" accept=".csv,text/csv" data-imp="stock"></label>
+      <label class="filebox"><b>Clients</b><small>Clients.csv</small><input type="file" accept=".csv,text/csv" data-imp="clients"></label></div>
+    ${st.stockMsg ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}<span>${esc(st.stockMsg)} Press <b>Save for everyone</b> to send the stock to the tablets.</span></div>` : ""}
+    ${st.clientMsg ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}<span>${esc(st.clientMsg)}</span></div>` : ""}</section>`;
+}
+
 /* add new equipment and materials */
 function viewAdd() {
   const seg = (name, opts, cur) => `<div class="segrow">${opts.map(([v, l]) => `<button class="${cur === v ? "on" : ""}" data-act="aseg" data-n="${name}" data-v="${v}">${l}</button>`).join("")}</div>`;
@@ -193,6 +259,7 @@ function viewAdd() {
   const m = (st.addM ||= { cat: "frame", name: "", cost: "", len: 6.5, size: "", kgm: "", w: 2400, h: 1200, kgm2: "" });
   const sheet = m.cat === "sheet";
   return `<h1 class="big-t">Add something new</h1>
+  ${viewImport()}
   <div class="addgrid">
   <section class="card pad">
     <h2 class="qh">Equipment or a part</h2><p class="muted" style="margin-top:-6px">Motors, remotes, hinges, locks, intercoms, hire and so on.</p>
@@ -292,6 +359,12 @@ function viewCompany() {
 const histDate = (n) => { const m = n.match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d)-(\d\d)/); return m ? new Date(Date.UTC(+m[1], m[2] - 1, +m[3], +m[4], +m[5])).toLocaleString("en-AU", { weekday: "short", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }) : n; };
 
 /* ---------- actions ---------- */
+document.addEventListener("change", async (e) => {
+  const el = e.target;
+  if (!el.dataset || !el.dataset.imp || !el.files || !el.files[0]) return;
+  const rows = parseCSV(await el.files[0].text());
+  if (el.dataset.imp === "stock") importStock(rows); else importClients(rows);
+});
 document.addEventListener("click", async (e) => {
   const b = e.target.closest("[data-act]"); if (!b) return;
   const a = b.dataset.act;

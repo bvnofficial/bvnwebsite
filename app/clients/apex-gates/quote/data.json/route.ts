@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
-import { learnStats, askHelper } from "@/lib/apex-quote-ai";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes } from "@/lib/apex-quote-store";
+import { learnStats, askHelper, buildJob } from "@/lib/apex-quote-ai";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -54,12 +54,30 @@ export async function POST(req: NextRequest) {
   }
 
   // what past jobs needed, and the AI job helper, for every technician
+  if (body.action === "clients") {
+    try { return json({ ok: true, list: await findClients(String(body.q || "").slice(0, 80)) }); } catch (e: any) { return json({ ok: true, list: [] }); }
+  }
   if (body.action === "learn") {
     try { return json({ ok: true, stats: await learnStats() }); } catch (e: any) { return json({ error: e.message }, 500); }
   }
+  if (body.action === "build") {
+    if (JSON.stringify(body.input || {}).length > 4_000_000) return json({ error: "That photo is too big" }, 400);
+    try {
+      return json({ ok: true, answer: await buildJob(body.input) });
+    } catch (e: any) {
+      console.error("apex builder:", e?.message);
+      return json({ error: "The helper is not available right now. Tap a picture below to start the quote yourself." }, 502);
+    }
+  }
   if (body.action === "ai") {
     if (JSON.stringify(body.input || {}).length > 60_000) return json({ error: "Too big" }, 400);
-    try { return json({ ok: true, answer: await askHelper(body.input) }); } catch (e: any) { return json({ error: e.message }, 502); }
+    try {
+      return json({ ok: true, answer: await askHelper(body.input) });
+    } catch (e: any) {
+      // the technician sees a plain message; the real reason stays in the server log
+      console.error("apex helper:", e?.message);
+      return json({ error: "The helper is not available right now. Use the questions and buttons on this screen instead." }, 502);
+    }
   }
 
   if (!isOffice(req)) return json({ error: "Office password needed" }, 403);
@@ -71,6 +89,12 @@ export async function POST(req: NextRequest) {
       d.updated = Date.now();
       await writeData(d);
       return json({ ok: true, updated: d.updated });
+    }
+    if (body.action === "clients-save") {
+      const list = Array.isArray(body.list) ? body.list.slice(0, 50_000) : null;
+      if (!list) return json({ error: "No clients" }, 400);
+      await saveClients(list.map((c: any) => ({ code: String(c.code || "").slice(0, 30), name: String(c.name || "").slice(0, 120), contact: String(c.contact || "").slice(0, 80), address: String(c.address || "").slice(0, 200), phone: String(c.phone || "").slice(0, 40), email: String(c.email || "").slice(0, 120), terms: String(c.terms || "").slice(0, 40) })));
+      return json({ ok: true, count: list.length });
     }
     if (body.action === "quotes") return json({ ok: true, list: await listQuotes() });
     if (body.action === "history") return json({ ok: true, list: await listHistory() });
