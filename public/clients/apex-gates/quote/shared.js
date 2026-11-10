@@ -68,3 +68,40 @@ export function mergePricebook(saved, defaults) {
   }
   return pb;
 }
+
+/* extras the team adds while making or putting in a job, priced like the quote:
+   parts from the price book, extra hours, or their own line at a customer price.
+   An extra the customer is not charged for still costs Apex. */
+export function priceExtras(job, pb) {
+  const mk = pb.markup || {}, up = (c) => 1 + (mk[c] || 0) / 100;
+  const lines = [];
+  for (const x of (job && job.extras) || []) {
+    const qty = +x.qty || 0;
+    if (qty <= 0) continue;
+    let cost = 0, full = 0, name = x.name;
+    if (x.kind === "hours") {
+      const r = (pb.labour || []).find((l) => l.id === x.id); if (!r) continue;
+      cost = r.rate * qty; full = cost * up("labour"); name = name || r.name;
+    } else if (x.kind === "own") {
+      full = (+x.price || 0) * qty; cost = full / up("other");
+    } else {
+      const h = (pb.hardware || []).find((h) => h.id === x.id); if (!h) continue;
+      cost = h.cost * qty; full = cost * up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware"); name = name || h.name;
+    }
+    const charged = x.charge !== false;
+    lines.push({ ...x, qty, name, cost, full, sell: charged ? full : 0, charged });
+  }
+  return { lines, sell: lines.reduce((a, l) => a + l.sell, 0), cost: lines.reduce((a, l) => a + l.cost, 0) };
+}
+
+/* where a job is up to, after the customer said yes */
+export const STAGES = [["won", "Signed"], ["made", "Made"], ["fitted", "Put in"], ["invoiced", "Invoiced"], ["paid", "Paid"]];
+export function stageOf(q) {
+  const j = q.job || {};
+  if (q.status !== "won") return null;
+  if (j.paid) return "paid";
+  if (j.invoice) return "invoiced";
+  if (j.fitted) return "fitted";
+  if (j.made) return "made";
+  return "won";
+}

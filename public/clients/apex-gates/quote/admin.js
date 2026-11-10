@@ -5,7 +5,7 @@
 import { PRICEBOOK, TEMPLATES } from "./data.js";
 import { runItem, priceQuote, defaults, money, byId } from "./engine.js";
 import { drawItem } from "./draw.js";
-import { buildTemplates, mergePricebook } from "./shared.js";
+import { buildTemplates, mergePricebook, priceExtras, stageOf } from "./shared.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -76,6 +76,26 @@ function viewLogin() {
     <a class="btn ghost wide" href="index.html" style="margin-top:10px;text-decoration:none">${ICON.back}Back to quoting</a></div>`;
 }
 
+/* what the team keeps adding on finished jobs, so the gate types can be fixed */
+async function loadLearn() {
+  try { st.learn = (await api({ action: "learn" })).stats || {}; } catch (e) { st.learn = {}; }
+  render();
+}
+function learnPanel() {
+  if (!st.learn) { if (!st.lloading) { st.lloading = true; loadLearn(); } return ""; }
+  const T = tpls(), rows = [];
+  for (const [tid, s] of Object.entries(st.learn)) {
+    const name = byId(T, tid)?.name || tid;
+    const often = Object.values(s.extras).filter((e) => e.n >= 2 && e.n / s.jobs >= 0.3).sort((a, b) => b.n - a.n);
+    const parts = often.map((e) => `${esc(e.name || byId(pb().hardware, e.id)?.name || e.id)} (${e.n} of ${s.jobs})`);
+    if (s.jobs >= 2 && s.fab / s.jobs >= 0.5) parts.push(`${(s.fab / s.jobs).toFixed(1)} more workshop hours`);
+    if (s.jobs >= 2 && s.install / s.jobs >= 0.5) parts.push(`${(s.install / s.jobs).toFixed(1)} more hours on site`);
+    if (parts.length) rows.push(`<div class="qr learn"><b>${esc(name)}</b><span>${parts.join(", ")}</span></div>`);
+  }
+  if (!rows.length) return `<section class="card pad" style="margin-top:16px"><h2 class="qh">What the team keeps adding</h2><p class="muted" style="margin:0">Nothing yet. When technicians finish jobs, the extras they add show up here, and their tablets start asking about them on the next job.</p></section>`;
+  return `<section class="card pad" style="margin-top:16px"><h2 class="qh">What the team keeps adding</h2><p class="muted" style="margin:-4px 0 10px">From finished jobs. If something is on most jobs, put it in that gate type on the Gates tab so it is quoted from the start.</p><div class="qtable">${rows.join("")}</div></section>`;
+}
+
 /* every quote from every tablet, priced with the real costs */
 async function loadQuotes() {
   st.qloading = true;
@@ -83,14 +103,19 @@ async function loadQuotes() {
   st.qloading = false; render();
 }
 const STATUS = { draft: "Still working", sent: "Sent", won: "Going ahead", lost: "Said no" };
+const STAGE = { won: "Going ahead", made: "Made", fitted: "Put in", invoiced: "Invoiced", paid: "Paid" };
+const stageName = (q) => (q.status === "won" ? STAGE[stageOf(q)] : STATUS[q.status] || "Still working");
+const stageKey = (q) => (q.status === "won" ? stageOf(q) : q.status || "draft");
 function viewQuotes() {
   const head = `<h1 class="big-t">Quotes and profit</h1><p class="hello" style="margin-top:-10px">Every quote the technicians make, with what Apex makes on it. Only you see this.</p>`;
   if (!st.quotes) return head + `<p class="muted">Loading the quotes...</p>`;
   const T = tpls();
   const rows = st.quotes.map((q) => {
     let P; try { P = priceQuote(q, T, pb()); } catch (e) { return null; }
-    const makes = P.exGst - P.tot.cost;
-    return { q, inc: P.inc, makes, margin: P.margin, what: q.items.map((it) => it.name || byId(T, it.tpl)?.name || "Item").join(", ") };
+    // a job's extras change both what the customer pays and what Apex makes
+    const E = priceExtras(q.job, pb()), g = 1 + pb().settings.gst / 100;
+    const quoted = P.exGst - P.tot.cost, makes = quoted + E.sell - E.cost, ex = P.exGst + E.sell;
+    return { q, inc: ex * g, makes, quoted, extras: E.lines.length, margin: ex ? makes / ex : 0, what: q.items.map((it) => it.name || byId(T, it.tpl)?.name || "Item").join(", ") };
   }).filter(Boolean).sort((a, b) => (b.q.updated || 0) - (a.q.updated || 0));
   const since = new Date(); since.setDate(1); since.setHours(0, 0, 0, 0);
   const month = rows.filter((r) => (r.q.created || 0) >= since.getTime());
@@ -103,6 +128,7 @@ function viewQuotes() {
     ${kpi("Quoted this month", money(sum(month, "inc")), "customer prices with GST")}
     ${kpi("Apex makes on them", money(sum(month, "makes")), `${(avg * 100).toFixed(0)}% on average`)}
     ${kpi("Won this month", money(sum(won, "inc")), `Apex makes ${money(sum(won, "makes"))}`)}
+    ${kpi("Waiting to be paid", money(sum(rows.filter((r) => stageKey(r.q) === "invoiced"), "inc")), `${rows.filter((r) => stageKey(r.q) === "invoiced").length} invoice${rows.filter((r) => stageKey(r.q) === "invoiced").length === 1 ? "" : "s"} out`)}
   </div>`;
   const techs = {};
   for (const r of month) { const k = r.q.tech || "No name given"; const t = (techs[k] ||= { n: 0, won: 0, inc: 0, makes: 0 }); t.n++; t.inc += r.inc; t.makes += r.makes; if (r.q.status === "won") t.won++; }
@@ -110,14 +136,14 @@ function viewQuotes() {
   const team = techList.length ? `<section class="card pad" style="margin-top:16px"><h2 class="qh">Each technician this month</h2>
     <div class="qtable"><div class="qr qh2"><span>Name</span><span>Quotes</span><span>Going ahead</span><span>Quoted</span><span>Apex makes</span></div>
     ${techList.map(([n, t]) => `<div class="qr"><b>${esc(n)}</b><span>${t.n}</span><span>${t.won}</span><span>${money(t.inc)}</span><span class="ok">${money(t.makes)}</span></div>`).join("")}</div></section>` : "";
-  const show = rows.filter((r) => st.qfilter === "all" || r.q.status === st.qfilter);
-  const filt = `<div class="segrow" style="margin:22px 0 12px">${[["all", "All"], ...Object.entries(STATUS)].map(([v, l]) => `<button class="${st.qfilter === v ? "on" : ""}" data-act="qf" data-v="${v}">${l}</button>`).join("")}</div>`;
+  const show = rows.filter((r) => st.qfilter === "all" || stageKey(r.q) === st.qfilter || (st.qfilter === "jobs" && r.q.status === "won" && stageKey(r.q) !== "paid"));
+  const filt = `<div class="segrow" style="margin:22px 0 12px">${[["all", "All"], ["draft", "Still working"], ["sent", "Sent"], ["jobs", "Jobs on the go"], ["invoiced", "Invoiced"], ["paid", "Paid"], ["lost", "Said no"]].map(([v, l]) => `<button class="${st.qfilter === v ? "on" : ""}" data-act="qf" data-v="${v}">${l}</button>`).join("")}</div>`;
   const list = show.length ? `<div class="qtable big"><div class="qr qh2"><span>Customer</span><span>Who quoted</span><span>Where it is up to</span><span>Customer pays</span><span>Apex makes</span></div>
     ${show.map((r) => `<div class="qr"><div><b>${esc(r.q.client?.name || "No name yet")}</b><small>${esc(r.q.no || "")} · ${new Date(r.q.updated || r.q.created).toLocaleDateString("en-AU", { day: "numeric", month: "short" })} · ${esc(r.what)}</small></div>
-      <span>${esc(r.q.tech || "No name given")}</span><span><i class="pill ${r.q.status}">${STATUS[r.q.status] || "Still working"}</i></span><span>${money(r.inc)}</span>
-      <span class="${r.margin * 100 < pb().settings.minMargin ? "low" : "ok"}">${money(r.makes)}<small>${(r.margin * 100).toFixed(0)}%</small></span></div>`).join("")}</div>`
+      <span>${esc(r.q.tech || "No name given")}</span><span><i class="pill ${r.q.status} ${stageKey(r.q)}">${stageName(r.q)}</i></span><span>${money(r.inc)}</span>
+      <span class="${r.margin * 100 < pb().settings.minMargin ? "low" : "ok"}">${money(r.makes)}<small>${(r.margin * 100).toFixed(0)}%${r.extras ? ` · quoted ${money(r.quoted)}` : ""}</small></span></div>`).join("")}</div>`
     : `<p class="muted">${rows.length ? "No quotes here." : "No quotes yet. They show up here as soon as a technician starts one on their tablet."}</p>`;
-  return head + kpis + team + filt + list + `<button class="btn ghost small" style="margin-top:16px" data-act="qreload">Check for new quotes</button>`;
+  return head + kpis + team + learnPanel() + filt + list + `<button class="btn ghost small" style="margin-top:16px" data-act="qreload">Check for new quotes</button>`;
 }
 
 /* prices */
@@ -254,7 +280,8 @@ function viewCompany() {
   return `<h1 class="big-t">Company and quote details</h1>
   <section class="card pad"><h2 class="qh">On every quote</h2><div class="two">${f("company", "Company name")}${f("abn", "ABN")}${f("phone", "Phone")}${f("email", "Email")}${f("web", "Website")}${f("address", "Address")}</div>
     <div class="fld" style="margin-top:12px"><label>Terms at the bottom of the quote</label><textarea data-set="terms" data-type="text" rows="4">${esc(s.terms)}</textarea></div></section>
-  <section class="card pad" style="margin-top:16px"><h2 class="qh">Numbers</h2><div class="two">${f("gst", "GST %", "num")}${f("deposit", "Deposit asked for %", "num")}${f("validity", "Quote is good for (days)", "num")}${f("minMargin", "Warn when Apex makes under %", "num")}${f("maxDisc", "Most discount a technician can give %", "num")}${f("round", "Round totals to the nearest $", "num")}${f("kerf", "Saw cut (mm)", "num")}</div></section>
+  <section class="card pad" style="margin-top:16px"><h2 class="qh">Numbers</h2><div class="two">${f("gst", "GST %", "num")}${f("deposit", "Deposit asked for %", "num")}${f("validity", "Quote is good for (days)", "num")}${f("minMargin", "Warn when Apex makes under %", "num")}${f("maxDisc", "Most discount a technician can give %", "num")}${f("round", "Round totals to the nearest $", "num")}${f("kerf", "Saw cut (mm)", "num")}${f("invoiceDays", "Invoices are due in (days)", "num")}</div>
+    <div class="fld" style="margin-top:12px"><label>How customers pay (printed on every invoice, for example bank name, BSB and account)</label><textarea data-set="payHow" data-type="text" rows="3">${esc(s.payHow)}</textarea></div></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">${ICON.undo}Undo a save</h2><p class="muted" style="margin-top:-6px">Every save is kept. Go back to an earlier one if something went wrong.</p>
     ${st.history ? (st.history.length ? `<div class="hist">${st.history.map((n) => `<div class="prow ro"><b>${esc(histDate(n))}</b><button class="btn ghost small" data-act="restore" data-n="${esc(n)}">Go back to this</button></div>`).join("")}</div>` : `<p class="muted">No earlier saves yet.</p>`) : `<button class="btn ghost small" data-act="history">Show earlier saves</button>`}
   </section>
@@ -275,7 +302,7 @@ document.addEventListener("click", async (e) => {
   if (a === "logout") { await api({ action: "logout" }).catch(() => {}); location.href = "index.html"; }
   if (a === "shelf") { st.shelf = b.dataset.v; st.find = ""; render(); }
   if (a === "qf") { st.qfilter = b.dataset.v; render(); }
-  if (a === "qreload") { st.quotes = null; render(); }
+  if (a === "qreload") { st.quotes = null; st.learn = null; st.lloading = false; render(); }
   if (a === "rise") {
     const p = parseFloat(prompt("By how much did these prices go up? Type a number, for example 5 for 5%", "5"));
     if (!p) return;

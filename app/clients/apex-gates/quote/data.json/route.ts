@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
+import { learnStats, askHelper } from "@/lib/apex-quote-ai";
 import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
 // markups; technicians get customer prices. Only the office password can change it.
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 const json = (body: any, status = 200) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
 const isTeam = (req: NextRequest) => req.cookies.get(APEX_QUOTE_COOKIE)?.value === APEX_QUOTE_TOKEN;
@@ -49,6 +51,15 @@ export async function POST(req: NextRequest) {
     } catch (e: any) {
       return json({ error: e.message }, 500);
     }
+  }
+
+  // what past jobs needed, and the AI job helper, for every technician
+  if (body.action === "learn") {
+    try { return json({ ok: true, stats: await learnStats() }); } catch (e: any) { return json({ error: e.message }, 500); }
+  }
+  if (body.action === "ai") {
+    if (JSON.stringify(body.input || {}).length > 60_000) return json({ error: "Too big" }, 400);
+    try { return json({ ok: true, answer: await askHelper(body.input) }); } catch (e: any) { return json({ error: e.message }, 502); }
   }
 
   if (!isOffice(req)) return json({ error: "Office password needed" }, 403);

@@ -4,7 +4,7 @@
 import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
 import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js";
 import { drawItem, steelColour } from "./draw.js";
-import { buildTemplates, mergePricebook, offered, teamView } from "./shared.js";
+import { buildTemplates, mergePricebook, offered, teamView, priceExtras, STAGES, stageOf } from "./shared.js";
 
 const KEY = "apexq.v1";
 const $ = (s, el = document) => el.querySelector(s);
@@ -94,6 +94,7 @@ async function pull() {
       sync.state = "ok"; sync.at = j.data.updated;
     } else sync.state = j.ok ? "none" : "off";
   } catch (e) { sync.state = "off"; }
+  await pullLearn();
   if (!document.querySelector("input:focus, textarea:focus")) redraw();
 }
 function say(t) { const el = $("#saved"); el.textContent = t; el.classList.add("on"); clearTimeout(el.t); el.t = setTimeout(() => el.classList.remove("on"), 2200); }
@@ -136,6 +137,9 @@ const ICON = {
   fence: I('<path d="M2 20h20M4 20V5M12 20V5M20 20V5M4 9h16M4 16h16M7 9v7M9.5 9v7M14.5 9v7M17 9v7"/>'),
   site: I('<path d="M3 18h18M5 18V9l4-3 4 3v9M15 18v-6h4v6M8 12h2"/>'),
   other: I('<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/>'),
+  chat: I('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'),
+  mic: I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
+  hammer: I('<path d="M14 4l6 6-3 3-6-6zM11 7L3 15l3 3 8-8"/>'),
 };
 const TYPE_ICON = { auto: ICON.motor, site: ICON.truck, custom: ICON.other };
 
@@ -255,6 +259,7 @@ function render() {
   if (ui.view === "quote") m.innerHTML = viewQuote();
   if (ui.view === "jobs") m.innerHTML = viewJobs();
   if (ui.view === "prices") m.innerHTML = viewPrices();
+  if (ui.view === "work") m.innerHTML = viewWork();
   const dock = $("#dock");
   dock.innerHTML = ui.view === "job" ? `<div class="in"><button class="btn ghost" data-act="view" data-v="pick">${ICON.plus}Add another</button><button class="btn red" data-act="view" data-v="quote">Show the quote ${ICON.arrow}</button></div>` : "";
   dock.classList.toggle("hide", ui.view !== "job");
@@ -266,13 +271,15 @@ function redraw() { keepY = window.scrollY; render(); }
 
 /* ---------- home ---------- */
 function viewHome() {
-  const recent = [...db.quotes].filter((q) => q.items.length).sort((a, b) => b.updated - a.updated).slice(0, 3);
+  const onGo = db.quotes.filter((q) => q.status === "won" && stageOf(q) !== "paid").sort((a, b) => b.updated - a.updated);
+  const recent = [...db.quotes].filter((q) => q.items.length && q.status !== "won").sort((a, b) => b.updated - a.updated).slice(0, 3);
   return `<h1 class="big-t">What do you want to do?</h1>
   <div class="homegrid">
     <button class="hometile red" data-act="newjob">${ICON.plus}<b>New quote</b><span>Draw up a gate or fence and get the price</span></button>
     <button class="hometile" data-act="view" data-v="jobs">${ICON.folder}<b>My quotes</b><span>Open one you already started</span></button>
     <button class="hometile" data-act="view" data-v="prices">${ICON.tag}<b>Prices</b><span>${boss() ? "Change what steel, motors and labour cost" : "Look up what things cost the customer"}</span></button>
   </div>
+  ${onGo.length ? `<h2 class="sub-t">Jobs on the go</h2><div class="jobs">${onGo.map((q) => `<button class="card recent" data-act="openwork" data-id="${q.id}"><span class="rp">${thumb(q.items[0])}</span><span class="rt"><b>${esc(q.client.name || "No name yet")}</b><small>${({ won: "Next: make it", made: "Next: put it in", fitted: "Next: send the invoice", invoiced: "Waiting to be paid" })[stageOf(q)]}</small></span><span class="amt">${money(jobMoney(q).inc)}</span></button>`).join("")}</div>` : ""}
   ${recent.length ? `<h2 class="sub-t">Carry on where you left off</h2><div class="jobs">${recent.map((q) => `<button class="card recent" data-act="open" data-id="${q.id}"><span class="rp">${thumb(q.items[0])}</span><span class="rt"><b>${esc(q.client.name || "No name yet")}</b><small>${q.items.map(nameOf).join(", ")}</small></span><span class="amt">${money(price(q).inc)}</span></button>`).join("")}</div>` : ""}`;
 }
 
@@ -457,6 +464,9 @@ function viewQuote() {
     <div class="disc"><span>Discount</span><div class="stepper"><button data-act="disc" data-d="-5" aria-label="Less discount">${ICON.minus}</button><output>${P.disc}%</output><button data-act="disc" data-d="5" aria-label="More discount">${ICON.plus}</button></div></div>
     ${!boss() ? `<p class="muted" style="margin:12px 0 0">You can give up to ${maxDisc()}% off. Ask the office if they want more.</p>` : low ? `<div class="warn" style="margin-top:12px">${ICON.warn}<div>Apex only makes ${money(P.exGst - P.tot.cost)} here (${(P.margin * 100).toFixed(0)}%). Aim for ${s.minMargin}% or more.</div></div>` : `<div class="okmsg" style="margin-top:12px">${ICON.tick}Apex makes ${money(P.exGst - P.tot.cost)} on this quote.</div>`}
   </div>
+  ${q.status === "won" ? `<div class="card pad qside jobcard"><h2 class="qh">${ICON.hammer}This job is going ahead</h2>
+    <p style="margin:0 0 12px">Now: <b>${({ won: "Make it in the workshop", made: "Put it in on site", fitted: "Send the invoice", invoiced: "Waiting to be paid", paid: "Finished and paid" })[stageOf(q)]}</b></p>
+    <button class="btn red wide" data-act="work">${ICON.arrow}Open the job</button></div>` : q.items.length ? helperCard(q, "quote") : ""}
   <div class="card pad qside">
     <h2 class="qh">${ICON.doc}Send it</h2>
     <div class="sendgrid">
@@ -521,6 +531,240 @@ function openSign() {
   });
 }
 
+/* ---------- the job: from signed quote to paid invoice ---------- */
+/* what the customer pays for one part or one hour, never the cost */
+function custPrice(kind, id) {
+  const t = teamView(db.pb);
+  if (kind === "hours") return (t.labour.find((l) => l.id === id) || {}).rate || 0;
+  return (t.hardware.find((h) => h.id === id) || {}).cost || 0;
+}
+function partName(kind, id, name) {
+  if (name) return name;
+  if (kind === "hours") return { fab: "Extra workshop time", install: "Extra time on site", elec: "Electrician" }[id] || "Extra time";
+  return (db.pb.hardware.find((h) => h.id === id) || {}).name || id;
+}
+const catOf = (id) => { const h = db.pb.hardware.find((x) => x.id === id); return !h ? "other" : h.cat === "motor" || h.cat === "access" ? "motors" : "hardware"; };
+/* how many of a part the quote already has */
+function inQuote(q, id) { return price(q).lines.reduce((a, l) => a + l.r.items.filter((h) => h.id === id).reduce((b, h) => b + h.qty, 0), 0); }
+function quoteSummary(q) {
+  return price(q).lines.map((l) => ({ name: l.name, what: cap(l.desc), parts: l.r.items.map((h) => ({ id: h.id, name: h.name, qty: h.qty })), hours: l.r.labour.map((x) => ({ id: x.rate, name: x.name, hours: x.hours * (x.crew || 1) })) }));
+}
+const catalogue = () => db.pb.hardware.map((h) => ({ kind: "item", id: h.id, name: h.name })).concat(db.pb.labour.map((l) => ({ kind: "hours", id: l.id, name: l.name })));
+
+/* what past jobs of the same kind needed, from the server */
+let LEARN = {};
+async function pullLearn() {
+  try {
+    const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "learn" }) });
+    const j = await r.json(); if (j.ok) LEARN = j.stats || {};
+  } catch (e) { /* keep the last we had */ }
+}
+function learnedFor(q) {
+  // own lines and site work say nothing about the kind of job
+  const tpls = [...new Set(q.items.map((i) => i.tpl))].filter((t) => t !== "custom" && t !== "site");
+  const out = {}, hrs = { fab: 0, install: 0 }; let jobs = 0;
+  for (const t of tpls) {
+    const s = LEARN[t]; if (!s) continue;
+    jobs = Math.max(jobs, s.jobs); hrs.fab = Math.max(hrs.fab, s.fab / s.jobs); hrs.install = Math.max(hrs.install, s.install / s.jobs);
+    for (const [k, e] of Object.entries(s.extras)) { const o = (out[k] ||= { ...e, jobs: s.jobs, rate: 0 }); o.rate = Math.max(o.rate, e.n / s.jobs); o.jobs = Math.max(o.jobs, s.jobs); o.n = Math.max(o.n, e.n); o.avg = e.qty / Math.max(1, e.n); }
+  }
+  return { items: Object.entries(out).map(([key, e]) => ({ key, ...e })).sort((a, b) => b.rate - a.rate), hrs, jobs, tpl: tpls.map((t) => namesOf(tplOf(t) || { name: "job" })[0].toLowerCase()) };
+}
+/* questions learnt from past jobs, without asking the AI */
+function learnedQuestions(q, stage) {
+  const L = learnedFor(q), asked = (q.job && q.job.asked) || {}, ex = (q.job && q.job.extras) || [];
+  const kinds = L.tpl.join(" or ") || "job";
+  const out = [];
+  for (const e of L.items) {
+    if (e.n < 2 || e.rate < 0.3 || asked[e.key]) continue;
+    if (e.kind === "item" && ex.some((x) => x.kind === "item" && x.id === e.id)) continue;
+    if (e.kind === "own" && ex.some((x) => x.kind === "own" && x.name.toLowerCase() === e.name.toLowerCase())) continue;
+    const qty = Math.max(1, Math.round(e.avg || 1)), nm = partName(e.kind, e.id, e.name).toLowerCase();
+    const have = e.kind === "item" ? inQuote(q, e.id) : 0;
+    // already on the quote: past jobs still needed more than the quote had
+    const text = have
+      ? `This quote has ${fmtNum(have)} x ${nm}. On ${e.n} of the last ${e.jobs} ${kinds} jobs the team needed ${qty} more than the quote had. ${stage === "quote" ? "Add more to this quote?" : "Did you need more on this job?"}`
+      : `On ${e.n} of the last ${e.jobs} ${kinds} jobs the team added ${qty > 1 ? qty + " x " : ""}${nm}. ${stage === "quote" ? `Add ${qty > 1 ? "them" : "one"} to this quote?` : `Did you need ${qty > 1 ? "them" : "one"} on this job?`}`;
+    out.push({ key: e.key, q: text, x: { kind: e.kind, id: e.id, name: e.name, qty, price: e.price } });
+  }
+  const hs = stage === "made" ? [["fab", L.hrs.fab, "in the workshop"]] : stage === "fitted" ? [["install", L.hrs.install, "on site"]] : [["fab", L.hrs.fab, "in the workshop"], ["install", L.hrs.install, "on site"]];
+  for (const h of hs) {
+    const hq = Math.round(h[1] * 2) / 2;
+    if (L.jobs < 2 || hq < 0.5 || asked["hours:" + h[0]]) continue;
+    out.push({ key: "hours:" + h[0], q: `Jobs like this have taken about ${fmtNum(hq)} more hour${hq === 1 ? "" : "s"} ${h[2]} than quoted. ${stage === "quote" ? "Add that time to this quote?" : "Did this one?"}`, x: { kind: "hours", id: h[0], qty: hq } });
+  }
+  return out.slice(0, 4);
+}
+
+function jobOf(q) { return (q.job ||= { extras: [], asked: {} }); }
+function addExtra(q, x, stage, source) {
+  const j = jobOf(q);
+  const same = j.extras.find((e) => e.kind === x.kind && (x.kind === "own" ? e.name.toLowerCase() === String(x.name).toLowerCase() : e.id === x.id) && e.stage === stage);
+  if (same) same.qty = Math.round((+same.qty + +x.qty) * 4) / 4;
+  else j.extras.push({ uid: uid(), kind: x.kind || "item", id: x.id || "", name: x.kind === "own" ? x.name : partName(x.kind, x.id, ""), qty: +x.qty || 1, price: +x.price || 0, stage, source, charge: true });
+}
+
+/* the money for a job: the quote, plus extras */
+function jobMoney(q) {
+  const P = price(q), E = priceExtras(q.job, book()), gst = 1 + db.pb.settings.gst / 100;
+  const exGst = P.exGst + E.sell;
+  return { P, E, exGst, gst: exGst * (gst - 1), inc: exGst * gst, deposit: q.job && q.job.depositPaid ? +q.job.depositPaid || 0 : 0 };
+}
+
+/* ask the helper about what the technician said, or to check a quote */
+async function askHelper(q, mode, said) {
+  ui.aiBusy = true; ui.aiErr = ""; redraw();
+  const L = learnedFor(q);
+  const input = {
+    mode, stage: ui.stage, said: said || "",
+    quote: quoteSummary(q),
+    extras: ((q.job && q.job.extras) || []).map((x) => ({ kind: x.kind, id: x.id, name: x.name, qty: x.qty })),
+    prices: catalogue(),
+    learned: L.items.slice(0, 25).map((e) => ({ kind: e.kind, id: e.id, name: partName(e.kind, e.id, e.name), jobs_needing_it: e.n, of_jobs: e.jobs })).concat(L.jobs ? [{ kind: "hours", id: "fab", name: "Extra workshop hours on average", hours: Math.round(L.hrs.fab * 10) / 10 }, { kind: "hours", id: "install", name: "Extra hours on site on average", hours: Math.round(L.hrs.install * 10) / 10 }] : []),
+  };
+  try {
+    const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "ai", input }) });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || "The helper did not answer");
+    const a = j.answer;
+    if (mode === "job") { for (const x of a.add) addExtra(q, x, ui.stage, "ai"); a.added = a.add.length; save(); }
+    ui.ai = { qid: q.id, mode, ...a };
+    if (mode === "job") ui.said = "";
+  } catch (e) { ui.aiErr = e.message || "No signal, try again"; }
+  ui.aiBusy = false; redraw();
+}
+let listening = null;
+function listen() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return say("Talking is not available on this device. Type it instead");
+  if (listening) { listening.stop(); return; }
+  const r = new SR(); r.lang = "en-AU"; r.interimResults = false;
+  r.onresult = (e) => { ui.said = ((ui.said ? ui.said + " " : "") + e.results[0][0].transcript).trim(); redraw(); };
+  r.onend = () => { listening = null; redraw(); };
+  listening = r; r.start(); redraw();
+}
+
+/* the helper's answer and its questions, shown the same way everywhere */
+function helperCard(q, stage) {
+  const mine = ui.ai && ui.ai.qid === q.id ? ui.ai : null;
+  const learned = learnedQuestions(q, stage);
+  const asked = (q.job && q.job.asked) || {};
+  const qs = learned.map((x) => ({ ...x, src: "learn" })).concat(mine ? mine.questions.filter((x, i) => !asked["ai:" + x.q]).map((x) => ({ key: "ai:" + x.q, q: x.q, x: x.kind === "none" ? null : { kind: x.kind, id: x.id, qty: x.qty }, src: "ai" })) : []);
+  const qBtns = (x) => {
+    const pay = x.x ? `data-kind="${x.x.kind}" data-id="${esc(x.x.id || "")}" data-name="${esc(x.x.name || "")}" data-qty="${x.x.qty}" data-price="${x.x.price || 0}"` : "";
+    const have = x.src === "ai" && x.x && x.x.kind === "item" ? inQuote(q, x.x.id) : 0;
+    return `<div class="askq"><p>${ICON.chat}<span>${esc(x.q)}</span></p>${have ? `<small class="incl">${ICON.tick}The quote already has ${fmtNum(have)} of these.</small>` : ""}
+      <div class="askbtns"><button class="btn green small" data-act="ans" data-key="${esc(x.key)}" data-v="yes" data-where="${stage}" ${pay}>${x.x ? `Yes, add ${x.x.kind === "hours" ? fmtNum(x.x.qty) + " h" : x.x.qty > 1 ? x.x.qty : "it"}` : "Yes"}</button>
+      <button class="btn ghost small" data-act="ans" data-key="${esc(x.key)}" data-v="no" data-where="${stage}">No</button>
+      ${x.x && x.x.kind === "item" ? `<button class="btn ghost small" data-act="ans" data-key="${esc(x.key)}" data-v="have" data-where="${stage}">It is on the quote</button>` : ""}</div></div>`;
+  };
+  const answer = mine ? `<div class="aians">${mine.say ? `<p class="aisay">${ICON.chat}<span>${esc(mine.say)}</span></p>` : ""}
+    ${mine.added ? `<div class="okmsg">${ICON.tick}Added ${mine.added} thing${mine.added === 1 ? "" : "s"} to the extras below. Check them and take off anything that is wrong.</div>` : ""}
+    ${mine.included.length ? `<div class="incl-list"><b>Already on the quote, nothing to add:</b>${mine.included.map((x) => `<span>${ICON.tick}${esc(x.name)}${x.qty ? ` (${fmtNum(x.qty)})` : ""}${x.note ? `: ${esc(x.note)}` : ""}</span>`).join("")}</div>` : ""}
+    ${mine.unknown.length ? `<div class="warn">${ICON.warn}<div>Not in the price list: ${mine.unknown.map(esc).join(", ")}. Add ${mine.unknown.length === 1 ? "it" : "them"} below as your own line with a price.</div></div>` : ""}</div>` : "";
+  const talk = stage === "quote"
+    ? `<button class="btn dark wide" data-act="aiquote" ${ui.aiBusy ? "disabled" : ""}>${ICON.chat}${ui.aiBusy ? "Checking..." : "Ask the helper to check this quote"}</button>`
+    : `<div class="talk"><label for="said">Tell the helper what you used that is not on the quote</label>
+      <textarea id="said" data-said rows="2" placeholder="For example: two more hinges, a drop bolt and an extra hour welding">${esc(ui.said || "")}</textarea>
+      <div class="talkbtns"><button class="btn ghost" data-act="mic">${ICON.mic}${listening ? "Listening... tap to stop" : "Talk instead"}</button><button class="btn dark" data-act="aijob" ${ui.aiBusy ? "disabled" : ""}>${ICON.chat}${ui.aiBusy ? "Thinking..." : "Ask the helper"}</button></div></div>`;
+  return `<section class="card pad helper"><h2 class="qh">${ICON.chat}${stage === "quote" ? "Before you send it" : "The helper"}</h2>
+    ${qs.length ? `<p class="muted" style="margin:-4px 0 10px">${stage === "quote" ? "Checked against what past jobs needed." : "From what past jobs needed."}</p>${qs.map(qBtns).join("")}` : stage === "quote" ? "" : `<p class="muted" style="margin:-4px 0 10px">No questions yet. The helper learns from every job the team finishes.</p>`}
+    ${answer}${ui.aiErr ? `<div class="warn">${ICON.warn}<div>${esc(ui.aiErr)}</div></div>` : ""}${talk}</section>`;
+}
+
+/* the job screen */
+function viewWork() {
+  const q = Q(), j = jobOf(q), cur = stageOf(q) || "won";
+  const order = STAGES.map((s) => s[0]);
+  const next = order[Math.min(order.indexOf(cur) + 1, order.length - 1)];
+  const st = ui.stage && order.indexOf(ui.stage) > 0 ? ui.stage : cur === "paid" ? "paid" : next;
+  ui.stage = st;
+  const M = jobMoney(q);
+  const track = `<div class="track">${STAGES.map(([k, l], i) => {
+    const done = order.indexOf(cur) >= i;
+    return `<button class="tstep ${done ? "done" : ""} ${k === st ? "on" : ""}" data-act="stage" data-v="${k}" ${i === 0 ? "disabled" : ""}><i>${done ? ICON.tick : i + 1}</i><b>${l}</b></button>`;
+  }).join("")}</div>`;
+  const head = `<button class="btn ghost small" data-act="view" data-v="quote" style="margin-bottom:14px">Back to the quote</button>
+    <h1 class="big-t" style="margin-bottom:4px">${esc(q.client.name || "The job")}</h1><p class="hello" style="margin-top:0">${esc(q.no)} · ${q.items.map(nameOf).map(esc).join(", ")}</p>${track}`;
+  let body = "";
+  if (st === "made" || st === "fitted") {
+    const quoted = quoteSummary(q);
+    const mine = j.extras.filter((x) => x.stage === st);
+    const E = priceExtras({ extras: mine }, book());
+    const others = j.extras.filter((x) => x.stage !== st).length;
+    body = `<h2 class="sub-t">${st === "made" ? "In the workshop" : "On site"}</h2>
+    <details class="card pad onquote-list"><summary>${ICON.list}What the quote already includes</summary>
+      ${quoted.map((l) => `<div class="ql"><b>${esc(l.name)}</b>${l.parts.map((p) => `<span>${fmtNum(p.qty)} x ${esc(p.name)}</span>`).join("")}${l.hours.map((h) => `<span>${fmtNum(h.hours)} h ${esc(h.name.toLowerCase())}</span>`).join("")}</div>`).join("")}</details>
+    ${helperCard(q, st)}
+    <section class="card pad"><h2 class="qh">${ICON.plus}Extras ${st === "made" ? "in the workshop" : "on site"}</h2>
+      ${mine.length ? E.lines.map((x) => `<div class="exrow"><div><b>${esc(x.name)}</b><small>${money(x.full / x.qty, true)} ${x.kind === "hours" ? "an hour" : "each"}, before GST${x.source === "ai" ? " · from the helper" : x.source === "learn" ? " · from past jobs" : ""}</small></div>
+        <div class="stepper sm"><button data-act="exq" data-u="${x.uid}" data-d="${x.kind === "hours" ? -0.5 : -1}" aria-label="Less">${ICON.minus}</button><output>${fmtNum(x.qty)}${x.kind === "hours" ? " h" : ""}</output><button data-act="exq" data-u="${x.uid}" data-d="${x.kind === "hours" ? 0.5 : 1}" aria-label="More">${ICON.plus}</button></div>
+        <button class="chg ${x.charged ? "on" : ""}" data-act="exc" data-u="${x.uid}">${x.charged ? `${ICON.tick}Charge the customer` : "Apex pays for it"}</button>
+        <button class="linkbtn" data-act="exdel" data-u="${x.uid}">${ICON.bin}</button></div>`).join("") : `<p class="muted">Nothing extra yet.</p>`}
+      <div class="addrow"><button class="btn ghost small" data-act="exhours" data-v="${st === "made" ? "fab" : "install"}">${ICON.plus}Extra hour</button>
+        <button class="btn ghost small" data-act="expick">${ICON.plus}A part from the list</button>
+        <button class="btn ghost small" data-act="exown">${ICON.plus}Your own line</button></div>
+      ${ui.pick ? partPicker() : ""}
+      ${ui.own ? `<div class="ownrow"><div class="fld"><label>What is it</label><input id="ownname" placeholder="For example: bag of rapid set concrete"></div><div class="fld"><label>Customer price for one, before GST</label><input id="ownprice" inputmode="decimal" placeholder="$"></div><button class="btn dark" data-act="ownadd">Add</button></div>` : ""}
+      ${mine.length ? `<p class="exsum">Extras charged ${st === "made" ? "in the workshop" : "on site"}: <b>${money(E.sell * (1 + db.pb.settings.gst / 100))}</b> with GST${others ? ` · ${others} more from the ${st === "made" ? "site" : "workshop"}` : ""}</p>` : ""}
+    </section>
+    <button class="btn green wide big" data-act="stagedone" data-v="${st}">${ICON.tick}${st === "made" ? "The workshop is done" : "It is in. All done on site"}</button>`;
+  }
+  if (st === "invoiced" || st === "paid") body = viewInvoice(q, M, st);
+  const bossNote = boss() ? `<div class="okmsg" style="margin-top:16px">${ICON.coins}Apex makes ${money(M.P.exGst - M.P.tot.cost + M.E.sell - M.E.cost)} on this job now (quoted ${money(M.P.exGst - M.P.tot.cost)}).</div>` : "";
+  return head + body + bossNote;
+}
+function partPicker() {
+  const f = (ui.pfind || "").toLowerCase();
+  const list = book().hardware.filter((h) => h.cat !== "misc" && (!f || h.name.toLowerCase().includes(f))).slice(0, 30);
+  return `<div class="picker"><div class="fld"><input data-pfind placeholder="Search parts" value="${esc(ui.pfind || "")}"></div>
+    <div class="plist">${list.map((h) => `<button class="prow pickrow" data-act="expart" data-id="${h.id}"><b>${esc(h.name)}</b><span class="pv">${money(h.cost, h.cost < 20)}</span></button>`).join("")}</div></div>`;
+}
+
+/* the tax invoice: the quote, the extras, less any deposit */
+function viewInvoice(q, M, st) {
+  const j = jobOf(q), s = db.pb.settings, g = 1 + s.gst / 100;
+  const P = M.P, base = P.tot.sell * (1 - P.disc / 100), k = base ? P.exGst / base : 1;
+  const rows = P.lines.map((l) => [l.name, cap(l.desc), l.sell * (1 - P.disc / 100) * k * g]).concat(M.E.lines.filter((x) => x.charged).map((x) => [x.name, `${fmtNum(x.qty)}${x.kind === "hours" ? (x.qty === 1 ? " hour" : " hours") : ""} added ${x.stage === "made" ? "in the workshop" : "on site"}`, x.sell * g]));
+  const inv = j.invoice;
+  const no = inv ? inv.no : `INV-${String(q.no).replace(/^Q-/, "")}`;
+  const at = inv ? inv.at : Date.now(), due = at + (+s.invoiceDays || 7) * 864e5;
+  const bal = M.inc - M.deposit;
+  const ctrl = `<div class="noprint">
+    ${!s.abn ? `<div class="warn" style="margin-bottom:14px">${ICON.warn}<div>A tax invoice needs the ABN. ${boss() ? "Add it on the CEO dashboard, Company tab." : "Ask the office to add the ABN."}</div></div>` : ""}
+    <section class="card pad"><h2 class="qh">${ICON.coins}The invoice</h2>
+      <div class="invsum"><span>The quote</span><b>${money(P.inc, true)}</b><span>Extras charged</span><b>${money(M.E.sell * g, true)}</b>${M.E.lines.some((x) => !x.charged) ? `<span class="muted">Extras Apex pays for</span><b class="muted">not charged</b>` : ""}<span class="grand">Total</span><b class="grand">${money(M.inc, true)}</b></div>
+      <div class="fld" style="margin-top:14px"><label>Deposit the customer already paid, with GST</label><input data-dep inputmode="decimal" value="${M.deposit || ""}" placeholder="0"></div>
+      <div class="sendgrid" style="margin-top:14px">${inv ? "" : `<button class="btn red" data-act="invmake">${ICON.doc}Make the invoice</button>`}
+        ${inv ? `<button class="btn dark" data-act="print">${ICON.print}Print or PDF</button><button class="btn light" data-act="invtext">${ICON.copy}Copy for a text</button>` : ""}
+        ${inv && !j.paid ? `<button class="btn green" data-act="paid">${ICON.tick}Paid in full</button>` : ""}</div>
+      ${j.paid ? `<div class="okmsg" style="margin-top:12px">${ICON.tick}Paid on ${dateStr(j.paid)}. This job is finished.</div>` : ""}
+    </section><h2 class="sub-t" style="text-align:center">This is what the customer sees</h2></div>`;
+  return ctrl + `<article class="sheet">
+    <div class="sh-top"><div><div class="brandmark">APEX<span> GATES</span></div><p>${esc(s.address)} · ${esc(s.phone)} · ${esc(s.email)}${s.abn ? ` · ABN ${esc(s.abn)}` : ""}</p></div>
+      <div class="qno"><b>Tax invoice ${esc(no)}</b>${dateStr(at)}<br>Please pay by ${dateStr(due)}<br>For quote ${esc(q.no)}</div></div>
+    <p class="forwho">For <b>${esc(q.client.name || "the customer")}</b>${q.client.address ? `, ${esc(q.client.address)}` : ""}</p>
+    <h2><i>1</i>What we did</h2>
+    <div class="invlines">${rows.map((r) => `<div><span><b>${esc(r[0])}</b><small>${esc(r[1])}</small></span><b>${money(r[2], true)}</b></div>`).join("")}</div>
+    <h2><i>2</i>To pay</h2>
+    <div class="total-box"><span>Price before GST</span><b>${money(M.exGst, true)}</b><span>GST</span><b>${money(M.gst, true)}</b><span class="grand">Total</span><b>${money(M.inc, true)}</b>
+      ${M.deposit ? `<span>Less deposit paid</span><b>${money(-M.deposit, true)}</b><span class="grand">Balance to pay</span><b>${money(bal, true)}</b>` : ""}</div>
+    ${s.payHow ? `<h2><i>3</i>How to pay</h2><p class="terms" style="font-size:15px">${esc(s.payHow)}</p>` : ""}
+    ${j.paid ? `<div class="stamp">PAID</div>` : ""}
+    <p class="terms">Thank you for choosing ${esc(s.company)}.</p></article>`;
+}
+function invoiceText(q) {
+  const M = jobMoney(q), s = db.pb.settings, j = jobOf(q);
+  return `${s.company} tax invoice ${j.invoice.no}\n${q.client.name ? `For ${q.client.name}\n` : ""}\nTotal ${money(M.inc, true)} with GST${M.deposit ? `\nLess deposit ${money(M.deposit, true)}\nBalance to pay ${money(M.inc - M.deposit, true)}` : ""}\nPlease pay by ${dateStr(j.invoice.at + (+s.invoiceDays || 7) * 864e5)}${s.payHow ? `\n${s.payHow}` : ""}\n\n${s.company} ${s.phone}`;
+}
+
+/* a quote line made from a helper suggestion, before the quote is sent */
+function addQuoteLine(q, x) {
+  const name = partName(x.kind, x.id, x.name);
+  const unit = x.kind === "own" ? +x.price || 0 : custPrice(x.kind, x.id);
+  q.items.push({ id: uid(), tpl: "custom", name, values: { text: name, qty: +x.qty || 1, unit: Math.round(unit * 100) / 100, cat: x.kind === "hours" ? "labour" : x.kind === "own" ? "other" : catOf(x.id) } });
+}
+
 /* ---------- all jobs ---------- */
 function viewJobs() {
   const list = [...db.quotes].sort((a, b) => b.updated - a.updated);
@@ -531,9 +775,9 @@ function viewJobs() {
     <div class="card pad" style="flex:1;min-width:240px;display:flex;align-items:center;gap:14px"><span style="width:40px;color:var(--ok)">${ICON.coins}</span><div><b style="font-size:24px">${money(won.reduce((a, q) => a + price(q).inc, 0))}</b><div class="muted">${won.length} job${won.length === 1 ? "" : "s"} going ahead</div></div></div></div>
   <div class="jobs">${list.map((q) => {
     const P = price(q);
-    return `<div class="card jobrow"><div><h3>${esc(q.client.name || "No name yet")}<span class="pill ${q.status}">${PL[q.status]}</span></h3><p>${esc(q.no)} · ${dateStr(q.updated)}${q.client.address ? ` · ${esc(q.client.address)}` : ""}<br>${q.items.map((i) => esc(nameOf(i))).join(", ") || "Nothing added yet"}</p></div>
+    return `<div class="card jobrow"><div><h3>${esc(q.client.name || "No name yet")}<span class="pill ${q.status}">${q.status === "won" ? ({ won: "Going ahead", made: "Made", fitted: "Put in", invoiced: "Invoiced", paid: "Paid" })[stageOf(q)] : PL[q.status]}</span></h3><p>${esc(q.no)} · ${dateStr(q.updated)}${q.client.address ? ` · ${esc(q.client.address)}` : ""}<br>${q.items.map((i) => esc(nameOf(i))).join(", ") || "Nothing added yet"}</p></div>
       <div class="amt">${money(P.inc)}</div>
-      <div class="acts"><button class="btn dark small" data-act="open" data-id="${q.id}">Open</button><button class="btn ghost small" data-act="copyjob" data-id="${q.id}">${ICON.copy}Copy</button><button class="btn ghost small" data-act="deljob" data-id="${q.id}">${ICON.bin}Delete</button></div></div>`;
+      <div class="acts">${q.status === "won" ? `<button class="btn red small" data-act="openwork" data-id="${q.id}">The job</button>` : ""}<button class="btn dark small" data-act="open" data-id="${q.id}">Open</button><button class="btn ghost small" data-act="copyjob" data-id="${q.id}">${ICON.copy}Copy</button><button class="btn ghost small" data-act="deljob" data-id="${q.id}">${ICON.bin}Delete</button></div></div>`;
   }).join("")}</div>`;
 }
 
@@ -608,18 +852,55 @@ document.addEventListener("click", (e) => {
   if (a === "copyjob") { const src = db.quotes.find((x) => x.id === b.dataset.id), n = { ...clone(src), id: uid(), no: `Q-${db.nextNo++}`, created: Date.now(), updated: Date.now(), status: "draft", signature: null }; db.quotes.push(n); save(); redraw(); say("Job copied"); }
   if (a === "deljob" && confirm("Delete this job? This cannot be undone.")) { fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "unquote", id: b.dataset.id }) }).catch(() => {}); db.quotes = db.quotes.filter((x) => x.id !== b.dataset.id); if (!db.quotes.length) { const n = newQuote(db); db.quotes.push(n); } if (!db.quotes.find((x) => x.id === db.current)) db.current = db.quotes[0].id; save(); redraw(); }
   if (a === "shelf") { ui.shelf = b.dataset.v; ui.find = ""; render(); }
+  /* the job */
+  if (a === "work") { ui.view = "work"; ui.stage = null; ui.ai = null; render(); window.scrollTo(0, 0); }
+  if (a === "openwork") { db.current = b.dataset.id; ui.view = "work"; ui.stage = null; ui.ai = null; store(); render(); window.scrollTo(0, 0); }
+  if (a === "stage") { ui.stage = b.dataset.v; ui.ai = null; ui.pick = ui.own = false; render(); window.scrollTo(0, 0); }
+  if (a === "stagedone") { jobOf(q)[b.dataset.v] = Date.now(); ui.stage = null; ui.ai = null; save(); render(); window.scrollTo(0, 0); say(b.dataset.v === "made" ? "Workshop done. Next: put it in" : "Done on site. Next: the invoice"); }
+  if (a === "ans") {
+    const j = jobOf(q), key = b.dataset.key, v = b.dataset.v;
+    j.asked[key] = v;
+    if (v === "yes" && b.dataset.kind) {
+      const x = { kind: b.dataset.kind, id: b.dataset.id, name: b.dataset.name, qty: +b.dataset.qty || 1, price: +b.dataset.price || 0 };
+      if (b.dataset.where === "quote") { addQuoteLine(q, x); say("Added to the quote"); }
+      else { addExtra(q, x, b.dataset.where, key.startsWith("ai:") ? "ai" : "learn"); say("Added to the extras"); }
+    }
+    save(); redraw();
+  }
+  if (a === "aijob") { const t = ($("[data-said]") || {}).value || ui.said || ""; if (!t.trim()) return say("Tell the helper what you used first"); ui.said = t; askHelper(q, "job", t); }
+  if (a === "aiquote") askHelper(q, "quote", "");
+  if (a === "mic") listen();
+  if (a === "exq") { const x = jobOf(q).extras.find((e) => e.uid === b.dataset.u); if (x) { x.qty = Math.max(0, Math.round((+x.qty + +b.dataset.d) * 4) / 4); if (!x.qty) jobOf(q).extras = jobOf(q).extras.filter((e) => e !== x); save(); redraw(); } }
+  if (a === "exc") { const x = jobOf(q).extras.find((e) => e.uid === b.dataset.u); if (x) { x.charge = x.charge === false; save(); redraw(); } }
+  if (a === "exdel") { jobOf(q).extras = jobOf(q).extras.filter((e) => e.uid !== b.dataset.u); save(); redraw(); }
+  if (a === "exhours") { addExtra(q, { kind: "hours", id: b.dataset.v, qty: 1 }, ui.stage, "tap"); save(); redraw(); }
+  if (a === "expick") { ui.pick = !ui.pick; ui.own = false; redraw(); }
+  if (a === "expart") { addExtra(q, { kind: "item", id: b.dataset.id, qty: 1 }, ui.stage, "tap"); ui.pick = false; save(); redraw(); say("Added"); }
+  if (a === "exown") { ui.own = !ui.own; ui.pick = false; redraw(); }
+  if (a === "ownadd") {
+    const n = $("#ownname").value.trim(), pr = parseFloat($("#ownprice").value);
+    if (!n || !(pr >= 0)) return say("Type what it is and its price");
+    addExtra(q, { kind: "own", name: n, qty: 1, price: pr }, ui.stage, "tap"); ui.own = false; save(); redraw();
+  }
+  if (a === "invmake") { const j = jobOf(q); j.invoice = { no: `INV-${String(q.no).replace(/^Q-/, "")}`, at: Date.now() }; save(); redraw(); say("Invoice made. Print it or send it"); }
+  if (a === "invtext") navigator.clipboard.writeText(invoiceText(q)).then(() => say("Copied. Paste it into a text message"), () => say("Could not copy on this device"));
+  if (a === "paid" && confirm("Mark this job as paid in full?")) { jobOf(q).paid = Date.now(); save(); redraw(); say("Paid. Job finished"); }
 });
 document.addEventListener("change", (e) => {
   const el = e.target;
   if (el.dataset.num) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.num, v); redraw(); } }
   if (el.dataset.txt) { setVal(el.dataset.txt, el.value); redraw(); }
   if (el.dataset.c) redraw();
+  if (el.matches("[data-dep]")) redraw();
 });
 document.addEventListener("input", (e) => {
   const el = e.target, q = Q();
   if (el.dataset.c) { q.client[el.dataset.c] = el.value; save(); }
   if (el.matches("[data-qn]")) { q.notes = el.value; save(); }
   if (el.matches("[data-tech]")) { q.tech = db.lastTech = el.value; save(); }
+  if (el.matches("[data-said]")) ui.said = el.value;
+  if (el.matches("[data-dep]")) { jobOf(q).depositPaid = parseFloat(el.value) || 0; save(); }
+  if (el.matches("[data-pfind]")) { ui.pfind = el.value; const pos = el.selectionStart; redraw(); const n = $("[data-pfind]"); n.focus(); n.setSelectionRange(pos, pos); }
   if (el.matches("[data-find]")) { ui.find = el.value; const pos = el.selectionStart; render(); const n = $("[data-find]"); n.focus(); n.setSelectionRange(pos, pos); }
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.dataset?.num) e.target.blur(); });

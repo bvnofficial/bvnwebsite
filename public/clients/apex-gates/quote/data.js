@@ -80,7 +80,7 @@ export const PRICEBOOK = {
   ],
   markup: { materials: 45, hardware: 40, motors: 30, labour: 45, finish: 30, other: 25 },
   settings: {
-    gst: 10, kerf: 3, minOffcut: 0, sheetWaste: 10, round: 10, minMargin: 25, maxDisc: 10, validity: 30, deposit: 50,
+    gst: 10, kerf: 3, minOffcut: 0, sheetWaste: 10, round: 10, minMargin: 25, maxDisc: 10, validity: 30, deposit: 50, invoiceDays: 7, payHow: "",
     company: "Apex Gates", abn: "", phone: "0477 88 44 22", email: "info@apexgates.com.au", web: "apexgates.com.au",
     address: "Perth, Western Australia",
     terms: "Prices are subject to a final site measure. A deposit is due on acceptance, with the balance on completion. Electrical supply to the gate is by others unless listed. Colours are matched from the Dulux powder coat range.",
