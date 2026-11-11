@@ -385,7 +385,8 @@ header .btn{padding:12px 20px;white-space:nowrap}
 
 /* stats and marquee */
 .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg2)}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.stats .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.stats .star{color:#f5b301}
 .stats div{padding:36px 24px;border-left:1px solid var(--line)}
 .stats div:first-child{border-left:0}
 .stats b{display:block;font-family:Archivo,sans-serif;font-stretch:118%;font-size:clamp(40px,4.6vw,62px);line-height:1;color:#fff}
@@ -601,7 +602,7 @@ footer a:hover{color:#fff}
   .grid3{grid-template-columns:1fr 1fr}
   .steps{grid-template-columns:1fr 1fr}
   .stats .wrap{grid-template-columns:1fr 1fr}
-  .stats div:nth-child(3){border-left:0}
+  .stats div:nth-child(3){border-left:0;grid-column:1/-1}
   .stats div:nth-child(n+3){border-top:1px solid var(--line)}
   .logos{grid-template-columns:repeat(3,1fr)}
   .pview{display:none}
@@ -719,8 +720,7 @@ footer a:hover{color:#fff}
   <div class="wrap">
     <div><b data-count="2005" data-from="1985">2005</b><span>Established in WA</span></div>
     <div><b><span data-count="14600" data-comma="1">14,600</span>+</b><span>Jobs since 2005</span></div>
-    <div><b><span data-count="2.6" data-dec="1">2.6</span> t</b><span>Heaviest gate we have automated</span></div>
-    <div><b data-count="12">12</b><span>Leading brands supplied</span></div>
+    <div><b><span data-count="4.7" data-dec="1">4.7</span> <span class="star" aria-hidden="true">&#9733;</span></b><span>Google rating from 42 reviews</span></div>
   </div>
 </div>
 
