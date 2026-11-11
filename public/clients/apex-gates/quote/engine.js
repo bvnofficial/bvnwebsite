@@ -141,6 +141,17 @@ export function runItem(tpl, values, pb) {
     if (amount) direct.push({ cat: typeof env[d.cat] === "string" ? env[d.cat] : d.cat, amount, price: !!d.price });
   }
 
+  // made by Apex's fabricator: the fabricator's price replaces the steel, sheet, paint and
+  // workshop hours; hardware, motor and installation stay as they are
+  if (tpl.fabRate && env.make !== "steel") {
+    cuts.length = 0; sheets.length = 0;
+    for (let i = labour.length - 1; i >= 0; i--) if (labour[i].rate === "fab") labour.splice(i, 1);
+    env.finish = "none";
+    // fabq is stored as the customer price, so a technician's tablet never holds the fabricator's cost
+    if (+env.fabq > 0) direct.push({ cat: "hardware", amount: +env.fabq, price: true, fabq: true });
+    else { const q = run(tpl.fabRate.qty, "Fabricator size"); if (q > 0) items.push({ id: tpl.fabRate.id, qty: Math.round(q * 100) / 100 }); }
+  }
+
   // weight and coating area come straight from the cut list
   let kg = 0, area = 0;
   for (const c of cuts) {

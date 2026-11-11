@@ -17,6 +17,17 @@ function addExtras(t, pb) {
   return t;
 }
 
+/* Apex buys its gates from fabricators: gates and fences are priced from the
+   fabricator's rate (per m2 of opening, each, or per metre), unless "Apex makes it".
+   The office can put the fabricator's real quote on a gate, which replaces the rate. */
+const FAB = { swing: ["fab_swing", "W*H/1e6"], slide: ["fab_slide", "W*H/1e6"], cant: ["fab_cant", "W*H/1e6"], bifold: ["fab_bifold", "W*H/1e6"], ped: ["fab_ped", "1"], fence: ["fab_fence", "Len/1000"] };
+function addFab(t) {
+  const f = FAB[t.base || t.id]; if (!f) return t;
+  if (!t.inputs.find((i) => i.k === "make")) t.inputs.push({ k: "make", label: "Who makes it", type: "seg", opts: [["fab", "Our fabricator"], ["steel", "Apex makes it"]], def: "fab" }, { k: "fabq", label: "Fabricator's quote for this one (customer price)", type: "num", def: 0, unit: "dollars", min: 0, max: 1000000, step: 1 });
+  t.fabRate = { id: f[0], qty: f[1] };
+  return t;
+}
+
 /* gates = { custom: [...], hidden: [ids] } */
 export function buildTemplates(base, pb, gates = {}) {
   const hidden = new Set(gates.hidden || []);
@@ -24,7 +35,7 @@ export function buildTemplates(base, pb, gates = {}) {
     const c = clone(t);
     c.base = c.base || c.id;
     c.hidden = hidden.has(c.id);
-    return c.kind === "gate" ? addExtras(c, pb) : c;
+    return addFab(c.kind === "gate" ? addExtras(c, pb) : c);
   });
   for (const g of gates.custom || []) {
     const b = base.find((t) => t.id === g.base);
@@ -36,7 +47,7 @@ export function buildTemplates(base, pb, gates = {}) {
     if (+g.hours > 0) t.labour = (t.labour || []).concat({ rate: "install", label: "Extra work", hours: String(+g.hours) });
     if (+g.shopHours > 0) t.labour = (t.labour || []).concat({ rate: "fab", label: "Extra workshop time", hours: String(+g.shopHours) });
     if (g.name) t.describe = `${g.name}: ` + (t.describe || "").replace(/^[^,]*,\s*/, "");
-    out.push(t.kind === "gate" ? addExtras(t, pb) : t);
+    out.push(addFab(t.kind === "gate" ? addExtras(t, pb) : t));
   }
   for (const k of pb.kits || []) out.push(kitTemplate(k, pb, hidden));
   return out;

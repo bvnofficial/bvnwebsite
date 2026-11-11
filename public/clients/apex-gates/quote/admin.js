@@ -162,7 +162,8 @@ function viewQuotes() {
 const SHELVES = [
   ["steel", "Steel", (p) => p.materials.filter((m) => !m.sheet), "materials", "cost"],
   ["sheet", "Mesh and sheet", (p) => p.materials.filter((m) => m.sheet), "materials", "cost"],
-  ["parts", "Gate parts", (p) => p.hardware.filter((h) => !["motor", "access", "misc"].includes(h.cat)), "hardware", "cost"],
+  ["parts", "Gate parts", (p) => p.hardware.filter((h) => !["motor", "access", "misc", "fab"].includes(h.cat)), "hardware", "cost"],
+  ["fab", "Fabricators", (p) => p.hardware.filter((h) => h.cat === "fab"), "hardware", "cost"],
   ["motors", "Motors and remotes", (p) => p.hardware.filter((h) => h.cat === "motor" || h.cat === "access"), "hardware", "cost"],
   ["site", "Travel and hire", (p) => p.hardware.filter((h) => h.cat === "misc"), "hardware", "cost"],
   ["labour", "Our team per hour", (p) => p.labour, "labour", "rate"],

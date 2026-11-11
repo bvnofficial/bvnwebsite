@@ -66,6 +66,14 @@ export const PRICEBOOK = {
     { id: "travel", cat: "misc", name: "Travel (per km, return)", cost: 1.1 },
     { id: "crane", cat: "misc", name: "Crane truck hire", cost: 650 },
     { id: "skip", cat: "misc", name: "Skip bin", cost: 380 },
+    // what the fabricator charges Apex for a gate or fence, made and powder coated, posts included.
+    // STARTING RATES: Simon puts in his fabricator's real prices on the dashboard, Prices, Fabricators.
+    { id: "fab_swing", cat: "fab", name: "Fabricator: swing gate (per m2)", cost: 550, note: "Made and powder coated, per square metre of opening" },
+    { id: "fab_slide", cat: "fab", name: "Fabricator: sliding gate (per m2)", cost: 520, note: "Made and powder coated, per square metre of opening" },
+    { id: "fab_cant", cat: "fab", name: "Fabricator: cantilever gate (per m2)", cost: 650, note: "Made and powder coated, per square metre of opening" },
+    { id: "fab_bifold", cat: "fab", name: "Fabricator: bifold gate (per m2)", cost: 700, note: "Made and powder coated, per square metre of opening" },
+    { id: "fab_ped", cat: "fab", name: "Fabricator: pedestrian gate (each)", cost: 750, note: "Made and powder coated, with lock box" },
+    { id: "fab_fence", cat: "fab", name: "Fabricator: fencing (per metre)", cost: 240, note: "Panels and posts, made and powder coated, per metre run" },
     // callout fees: sell is the customer price before GST (CHECK the amounts with Simon)
     { id: "fee_std", cat: "misc", name: "Standard callout and investigate fault, first 30 minutes", cost: 42, sell: 236.36, note: "From AroFlo" },
     { id: "fee_std_sen", cat: "misc", name: "Standard callout, seniors discount", cost: 42, sell: 218.18, note: "From AroFlo" },

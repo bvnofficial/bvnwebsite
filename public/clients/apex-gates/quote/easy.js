@@ -245,7 +245,7 @@ const LAYOUT = {
     ["Your own line", "other", "Anything not listed", [{ t: "text", k: "text", label: "What is it" }, { t: "nums", list: [["unit", "Customer price for one, before GST", [50, 100, 250, 500]], ["qty", "How many", [1, 2, 5, 10]]] }]],
   ],
 };
-const UNIT = { km: "km", remove: "hours", elec: "hours", hrs: "hours", unit: "dollars", qty: "", mins: "minutes" };
+const UNIT = { fabq: "dollars", km: "km", remove: "hours", elec: "hours", hrs: "hours", unit: "dollars", qty: "", mins: "minutes" };
 
 /* ---------- ui state ---------- */
 const ui = { view: "home", tab: 0, shelf: "steel", find: "" };
@@ -259,6 +259,8 @@ function layoutOf(t) {
   const b = t.base || t.id;
   if (b === "kit") return [["In the kit", "box", "Take out what this job does not need, or add more", [{ t: "counts", list: t.inputs.map((i) => [i.k, i.label, `${money(custPrice(i.ref.kind, i.ref.id), true)} ${i.ref.kind === "hours" ? "an hour" : "each"}, before GST`]) }]]];
   const secs = (LAYOUT[b === "custom" && !boss() ? "customTeam" : b] || []).slice();
+  // who makes it; the fabricator's real quote is for the office only (it is a cost)
+  if (t.fabRate) secs.push(["Who makes it", "hammer", "Apex buys its gates from a fabricator", [{ t: "pick", k: "make", label: "Made by", pic: "none" }].concat(boss() ? [{ t: "fabq" }] : [])]);
   const ex = t.kind === "gate" ? offered(book()) : [];
   if (ex.length) secs.push(["Extras", "plus", "Anything else for this gate", [{ t: "counts", list: ex.map((h) => [`x_${h.id}`, h.name, h.note || money(h.cost) + (boss() ? " each, before markup" : " each, before GST")]) }]]);
   return secs;
@@ -428,6 +430,11 @@ function section([title, ic, hint, fields], t, it, r) {
       const cur = String(it.values.colour ?? "Monument").toLowerCase();
       return `<p class="lbl">Colour</p><div class="swatches">${COLOURS.map((c) => `<button class="sw ${cur === c.toLowerCase() ? "on" : ""}" data-act="set" data-k="colour" data-v="${c}"><i style="background:${steelColour(c)}"></i>${c}</button>`).join("")}</div>`;
     }
+    if (f.t === "fabq") {
+      // the office types what the fabricator charges; the quote keeps only the customer price
+      const upH = 1 + ((db.pb.markup || {}).hardware || 0) / 100, cur = +(it.values.fabq || 0);
+      return `<div class="fld" style="margin-top:12px"><label>Fabricator's quote for this one, what they charge Apex before GST (leave empty to use the rate)</label><input data-fabq inputmode="decimal" value="${cur ? Math.round((cur / upH) * 100) / 100 : ""}" placeholder="For example 3900"><small class="muted">The customer pays ${cur ? money(cur, true) : "the rate price"} before GST for this gate. Only the office sees this box.</small></div>`;
+    }
     if (f.t === "text") return `<div class="fld" style="margin-bottom:12px"><label>${f.label}</label><input data-txt="${f.k}" value="${esc(it.values[f.k] ?? "")}"></div>`;
     return "";
   }).join("");
@@ -450,6 +457,7 @@ function includes(P) {
   const inc = [], exc = [];
   const has = (f) => P.lines.some(f);
   if (has((l) => l.r.cuts.length)) inc.push("All steel made in our workshop to the sizes shown");
+  if (has((l) => l.tpl.fabRate && l.r.env.make !== "steel")) inc.push("Gate made and powder coated by our fabricator to the sizes shown");
   const fin = [...new Set(P.lines.filter((l) => l.r.finish && l.r.finish !== "none").map((l) => { const f = byId(db.pb.finishes, l.r.finish); return f ? f.name + (l.r.env.colour && l.r.finish !== "galv" ? ` in ${l.r.env.colour}` : "") : ""; }))].filter(Boolean);
   if (fin.length) inc.push(fin.join(", "));
   if (has((l) => l.r.labour.some((x) => x.rate === "install"))) inc.push("Put in by the Apex Gates team, with posts set and gates hung and adjusted");
@@ -1074,7 +1082,8 @@ function viewJobs() {
 const SHELVES = [
   ["steel", "Steel", "steel", () => book().materials.filter((m) => !m.sheet)],
   ["sheet", "Mesh and sheet", "look", () => book().materials.filter((m) => m.sheet)],
-  ["parts", "Gate parts", "bolt", () => book().hardware.filter((h) => !["motor", "access", "misc"].includes(h.cat))],
+  ["parts", "Gate parts", "bolt", () => book().hardware.filter((h) => !["motor", "access", "misc", "fab"].includes(h.cat))],
+  ["fab", "Made by our fabricator", "hammer", () => book().hardware.filter((h) => h.cat === "fab")],
   ["motors", "Motors and remotes", "motor", () => book().hardware.filter((h) => h.cat === "motor" || h.cat === "access")],
   ["site", "Travel and hire", "truck", () => book().hardware.filter((h) => h.cat === "misc")],
   ["labour", "Our team per hour", "worker", () => book().labour],
@@ -1210,6 +1219,7 @@ document.addEventListener("click", (e) => {
 document.addEventListener("change", (e) => {
   const el = e.target;
   if (el.dataset.num) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.num, v); redraw(); } }
+  if (el.matches("[data-fabq]")) { const upH = 1 + ((db.pb.markup || {}).hardware || 0) / 100, v = parseFloat(el.value) || 0; setVal("fabq", Math.round(v * upH * 100) / 100); redraw(); }
   if (el.dataset.numm) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.numm, Math.round(v * 1000)); redraw(); } }
   if (el.dataset.txt) { setVal(el.dataset.txt, el.value); redraw(); }
   if (el.dataset.c) redraw();
