@@ -43,8 +43,15 @@ export function teamView(data: any) {
 
 export async function readData(): Promise<any | null> {
   const b = await bucket();
-  const { data, error } = await b.download(FILE);
-  if (error || !data) return null;
+  // every save also writes a dated copy; the newest one is read, because a file
+  // name that is new each time can never be served stale from the storage cache
+  const { data: list } = await b.list("history", { limit: 1, sortBy: { column: "name", order: "desc" } });
+  const latest = list && list[0] && list[0].name.endsWith(".json") ? `history/${list[0].name}` : FILE;
+  const { data, error } = await b.download(latest);
+  if (error || !data) {
+    const old = await b.download(FILE);
+    return old.data ? JSON.parse(await old.data.text()) : null;
+  }
   return JSON.parse(await data.text());
 }
 
