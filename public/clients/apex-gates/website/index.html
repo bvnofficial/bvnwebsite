@@ -718,8 +718,8 @@ footer a:hover{color:#fff}
 <div class="stats">
   <div class="wrap">
     <div><b data-count="2005" data-from="1985">2005</b><span>Established in WA</span></div>
-    <div><b><span data-count="17">17</span> m</b><span>Hospital loading dock gate</span></div>
-    <div><b><span data-count="2.6" data-dec="1">2.6</span> t</b><span>Gate weight on that job</span></div>
+    <div><b><span data-count="14600" data-comma="1">14,600</span>+</b><span>Jobs since 2005</span></div>
+    <div><b><span data-count="2.6" data-dec="1">2.6</span> t</b><span>Heaviest gate we have automated</span></div>
     <div><b data-count="12">12</b><span>Leading brands supplied</span></div>
   </div>
 </div>
@@ -971,7 +971,7 @@ footer a:hover{color:#fff}
   document.querySelectorAll('[data-count]').forEach(el=>{
     const o=new IntersectionObserver(([e])=>{if(!e.isIntersecting)return;o.disconnect();
       const to=+el.dataset.count,from=+(el.dataset.from||0),dec=+(el.dataset.dec||0),s=performance.now(),d=reduce?1:1600;
-      const f=n=>{const p=Math.min(1,(n-s)/d),v=from+(to-from)*(1-Math.pow(1-p,4));el.textContent=v.toFixed(dec);if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)},{threshold:.6});o.observe(el)});
+      const f=n=>{const p=Math.min(1,(n-s)/d),v=from+(to-from)*(1-Math.pow(1-p,4));el.textContent=el.dataset.comma?Math.round(v).toLocaleString("en-AU"):v.toFixed(dec);if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)},{threshold:.6});o.observe(el)});
   const h=document.querySelector('header'),t=document.getElementById('track'),hi=document.getElementById('heroImg'),fi=document.getElementById('featImg'),fs=document.getElementById('featured');
   const onS=()=>{h.classList.toggle('small',scrollY>40);const m=document.documentElement.scrollHeight-innerHeight;t.style.transform='scaleX('+(m?scrollY/m:0)+')';
     if(reduce)return;hi.style.transform='translateY('+scrollY*0.3+'px)';
