@@ -187,7 +187,7 @@ function viewPrices() {
       const note = sh[3] === "materials" && !x.sheet ? `${(x.stock / 1000).toLocaleString("en-AU")} m length` : sh[3] === "labour" ? "per hour" : x.sell > 0 ? `Customer price from AroFlo${x.part ? ", part " + x.part : ""}` : x.note || "";
       return `<div class="prow ${sh[3] === "hardware" ? "wide" : ""}"><div><b>${esc(x.name)}</b>${note ? `<small>${esc(note)}</small>` : ""}
         ${x.added ? `<button class="linkbtn" data-act="remove" data-list="${sh[3]}" data-id="${x.id}">${ICON.bin}Remove</button>` : ""}</div>
-        <div class="pair">${sh[3] === "hardware" ? `<button class="offer ${x.offer ? "on" : ""}" data-act="offer" data-id="${x.id}">${x.offer ? ICON.tick : ""}Offer on gates</button>` : ""}
+        <div class="pair">${sh[3] === "hardware" && x.cat !== "fab" ? `<button class="offer ${x.offer ? "on" : ""}" data-act="offer" data-id="${x.id}">${x.offer ? ICON.tick : ""}Offer on gates</button>` : ""}
         <div class="money-in"><span>$</span><input data-list="${sh[3]}" data-id="${x.id}" data-f="${x.sell > 0 ? "sell" : sh[4]}" inputmode="decimal" value="${x.sell > 0 ? x.sell : x[sh[4]]}"></div></div></div>`;
     }).join("") || `<p class="muted">Nothing matches.</p>`;
   }
