@@ -339,7 +339,8 @@
     let html;
     try { html = VIEWS[role] ? VIEWS[role](p.slice(1)) : launcher(); }
     catch (e) { console.error(e); html = `<div class="empty">Something went wrong. <button class="btn" data-act="reset">Reset sample data</button></div>`; }
-    $("#app").innerHTML = html + (role ? switcher(role) : "");
+    // the live Apex CEO page has its own save bar at the bottom, so the sample switcher stays off it
+    $("#app").innerHTML = html + (role && !(role === "ceo" && p[1] === "apexceo") ? switcher(role) : "");
     if (key === lastKey || keepScroll) { window.scrollTo(0, y); const s2 = $(".page") || $(".fbody") || $(".pbody"); if (s2) s2.scrollTop = inner; }
     else window.scrollTo(0, 0);
     lastKey = key;
