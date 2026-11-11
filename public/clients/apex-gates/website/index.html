@@ -396,6 +396,12 @@ header .btn{padding:12px 20px;white-space:nowrap}
 .marquee span{font-family:Archivo,sans-serif;font-stretch:118%;font-size:28px;text-transform:uppercase;color:#4a4b50;display:inline-flex;align-items:center;gap:60px}
 .marquee span::after{content:"";width:10px;height:10px;background:var(--red);transform:rotate(45deg)}
 .marquee span.on{color:#fff}
+.clients{padding:34px 0 38px;border-bottom:1px solid var(--line)}
+.clients .lbl{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 16px}
+.clients .logos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.clients .logos div{background:#fff;border-radius:10px;height:84px;display:grid;place-items:center;padding:14px 18px}
+.clients .logos img{max-width:100%;max-height:46px;object-fit:contain}
+
 @keyframes mq{to{transform:translateX(-100%)}}
 
 /* property types */
@@ -727,6 +733,13 @@ footer a:hover{color:#fff}
 <div class="marquee" aria-label="Clients and property types">
   <div class="t"><span class="on">Homes</span><span>Strata</span><span class="on">Telstra</span><span>Mining</span><span class="on">Western Power</span><span>Airports</span><span class="on">Water Corporation</span><span>Seaports</span><span>Hospitals</span><span>Builders</span></div><div class="t" aria-hidden="true"><span class="on">Homes</span><span>Strata</span><span class="on">Telstra</span><span>Mining</span><span class="on">Western Power</span><span>Airports</span><span class="on">Water Corporation</span><span>Seaports</span><span>Hospitals</span><span>Builders</span></div>
 </div>
+
+<section class="clients" aria-label="Organisations we have worked for">
+  <div class="wrap">
+    <p class="lbl">Some of the organisations we have worked for</p>
+    <div class="logos"><div><img src="img/clients/bhp.svg" alt="BHP" loading="lazy" decoding="async"></div><div><img src="img/clients/alcoa.svg" alt="Alcoa" loading="lazy" decoding="async"></div><div><img src="img/clients/fortescue.svg" alt="Fortescue" loading="lazy" decoding="async"></div><div><img src="img/clients/bunnings.svg" alt="Bunnings" loading="lazy" decoding="async"></div><div><img src="img/clients/toll.svg" alt="Toll" loading="lazy" decoding="async"></div><div><img src="img/clients/linfox.svg" alt="Linfox" loading="lazy" decoding="async"></div><div><img src="img/clients/downer.svg" alt="Downer" loading="lazy" decoding="async"></div><div><img src="img/clients/lendlease.svg" alt="Lendlease" loading="lazy" decoding="async"></div><div><img src="img/clients/multiplex.svg" alt="Multiplex" loading="lazy" decoding="async"></div><div><img src="img/clients/veolia.svg" alt="Veolia" loading="lazy" decoding="async"></div><div><img src="img/clients/dnata.svg" alt="dnata, Perth Airport" loading="lazy" decoding="async"></div><div><img src="img/clients/rac.png" alt="RAC WA" loading="lazy" decoding="async"></div><div><img src="img/clients/murdoch-uni.png" alt="Murdoch University" loading="lazy" decoding="async"></div></div>
+  </div>
+</section>
 
 <section id="types">
   <div class="wrap">
