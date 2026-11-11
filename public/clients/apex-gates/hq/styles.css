@@ -451,3 +451,6 @@ textarea.inp{resize:vertical;min-height:80px}
   .ev.urgent::after{content:"!";padding:0 5px}
   .pnav .badge{right:-2px}
 }
+/* the live Apex CEO dashboard inside HQ */
+.apexframe{display:block;width:100%;height:calc(100vh - 63px);border:0;background:#f6f1e7}
+@media (max-width:900px){.apexframe{height:calc(100vh - 120px)}}

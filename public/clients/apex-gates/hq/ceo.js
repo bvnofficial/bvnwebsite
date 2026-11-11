@@ -10,6 +10,8 @@
   const ui = H.U.ui;
 
   const NAV = [
+    ["grp", "Apex CEO (live)"],
+    ["apexceo", "Apex CEO", "chart"],
     ["grp", "Sales (GHL)"],
     ["overview", "Overview", "home"], ["inbox", "Inbox", "inbox"], ["pipeline", "Pipeline", "pipe"], ["quotes", "Quotes", "quote"],
     ["grp", "Service (AroFlo)"],
@@ -17,7 +19,7 @@
     ["grp", "Business"],
     ["clients", "Clients", "users"], ["invoices", "Invoices", "dollar"], ["team", "Team", "team"]
   ];
-  const TITLES = { overview: "Overview", inbox: "Inbox", pipeline: "Pipeline", quotes: "Quotes", calendar: "Calendar", map: "Jobs map", jobs: "Jobs", maintenance: "Maintenance", assets: "Assets", stock: "Stock and orders", timesheets: "Timesheets", costing: "Job costing", clients: "Clients", invoices: "Invoices", team: "Team" };
+  const TITLES = { apexceo: "Apex CEO", overview: "Overview", inbox: "Inbox", pipeline: "Pipeline", quotes: "Quotes", calendar: "Calendar", map: "Jobs map", jobs: "Jobs", maintenance: "Maintenance", assets: "Assets", stock: "Stock and orders", timesheets: "Timesheets", costing: "Job costing", clients: "Clients", invoices: "Invoices", team: "Team" };
 
   function badges() {
     const s = S();
@@ -38,7 +40,7 @@
       `<button class="${view === n[0] ? "on" : ""}" data-act="go" data-to="ceo/${n[0]}">${I(n[2])}<span>${n[1]}</span>${b[n[0]] ? `<span class="badge">${b[n[0]]}</span>` : ""}</button>`).join("");
     const unread = S().notices.filter(n => n.role === "ceo" && n.unread).length;
     const body = VIEW[view](p.slice(1));
-    const full = view === "inbox" || view === "map";
+    const full = view === "inbox" || view === "map" || view === "apexceo";
     return `<div class="ceo">
       <aside class="side"><div class="brand"><img src="${H.LOGO}" alt=""><b>HQ</b></div><nav class="nav">${nav}</nav>
         <div class="sync"><div><i></i>GoHighLevel connected</div><div><i></i>AroFlo connected</div><div class="faint tiny" style="margin-top:4px">Synced ${fmtTime(H.nowISO())}</div></div></aside>
@@ -100,6 +102,9 @@
     return parts.filter(Boolean).join(" ");
   }
   const VIEW = {};
+  /* the live CEO dashboard from Apex Quote: quotes and profit, jobs, prices, kits, stock.
+     It keeps its own CEO password, so only Simon and Tatjana get in. */
+  VIEW.apexceo = () => `<iframe class="apexframe" src="/clients/apex-gates/quote/admin.html" title="Apex CEO"></iframe>`;
   VIEW.overview = () => {
     const s = S(), st = stats();
     const months = [];
