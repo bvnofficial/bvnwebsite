@@ -222,7 +222,10 @@ export function priceQuote(quote, templates, pb) {
       const rate = byId(pb.labour, l.rate);
       if (!rate) { r.errors.push(`Labour rate "${l.rate}" is not in the price book`); continue; }
       l.name = l.label || rate.name; l.unit = rate.rate;
-      line.cost.labour += rate.rate * l.hours * (l.rate === "install" ? (r.env.crew || 1) : 1);
+      const crewN = l.rate === "install" ? (r.env.crew || 1) : 1;
+      line.cost.labour += rate.rate * l.hours * crewN;
+      // a labour rate with its own sell price (Apex's AroFlo hourly rate) charges exactly that
+      if (rate.sell > 0) line.fixed = (line.fixed || 0) + (rate.sell - rate.rate * up("labour")) * l.hours * crewN;
       l.crew = l.rate === "install" ? r.env.crew || 1 : 1;
     }
     const f = byId(pb.finishes, r.finish);

@@ -417,7 +417,7 @@ async function readBillFile(file) {
 /* kits: set up once, every part can still be changed on a quote */
 const kitSell = (x) => {
   const p = pb(), up = (c) => 1 + ((p.markup || {})[c] || 0) / 100;
-  if (x.kind === "hours") { const l = p.labour.find((l) => l.id === x.id); return l ? l.rate * up("labour") : 0; }
+  if (x.kind === "hours") { const l = p.labour.find((l) => l.id === x.id); return l ? (l.sell > 0 ? l.sell : l.rate * up("labour")) : 0; }
   const h = p.hardware.find((h) => h.id === x.id); if (!h) return 0;
   return h.sell > 0 ? h.sell : h.cost * up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware");
 };
