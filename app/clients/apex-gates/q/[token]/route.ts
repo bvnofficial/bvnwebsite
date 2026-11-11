@@ -25,6 +25,11 @@ function page(token: string, d: any) {
     safeUrl(pay.later) && `<a class="pay later" href="${esc(safeUrl(pay.later))}" target="_blank" rel="noopener">Pay over time (Afterpay or Zip)</a>`,
   ].filter(Boolean).join("");
   const canPay = (!quote || acc) && due > 0 && (payBtns || pay.how);
+  // their own gate in 3D, from the same designer as the website (the design rides in the link)
+  let viz = "";
+  if (quote && d.design && typeof d.design === "object") {
+    try { viz = `/clients/apex-gates/gate-visualiser/index.html?embed=1#d=${Buffer.from(JSON.stringify(d.design), "utf8").toString("base64")}`; } catch { viz = ""; }
+  }
   return `<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
 <title>${esc(d.company?.name || "Apex Gates")} ${quote ? "quote" : "invoice"} ${esc(d.no)}</title>
 <style>
@@ -55,6 +60,7 @@ button,.pay{display:block;width:100%;text-align:center;font:inherit;font-weight:
     <div class="no"><b>${quote ? "Quote" : "Tax invoice"} ${esc(d.no)}</b>${day(d.date)}<br>${quote ? `Good until ${day(d.valid)}` : `Please pay by ${day(d.due)}`}</div></div>
   <p>For <b>${esc(d.client?.name || "you")}</b>${d.client?.address ? `, ${esc(d.client.address)}` : ""}</p>
   ${d.note ? `<p style="background:#f6f3ec;border-radius:10px;padding:12px">${esc(d.note)}</p>` : ""}
+  ${viz ? `<h2>Your gate in 3D</h2><p style="margin:-4px 0 10px;color:#666;font-size:15px">Drag to look around. Tap Open gates to see it open.</p><iframe src="${esc(viz)}" title="Your gate in 3D" style="width:100%;height:380px;border:0;border-radius:14px;background:#dfe8ef" loading="lazy"></iframe>` : ""}
   <h2>${quote ? "What we will do" : "What we did"}</h2>
   ${(d.lines || []).map((l: any) => `${safeSvg(l.svg) ? `<div class="dr">${safeSvg(l.svg)}</div>` : ""}<div class="line"><div><b>${esc(l.name)}</b><small>${esc(l.desc)}</small></div><b>${money(l.amount)}</b></div>`).join("")}
   <h2>The price</h2>

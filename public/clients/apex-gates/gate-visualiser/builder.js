@@ -91,6 +91,12 @@ const MAT = {
   zoneOk: new THREE.MeshBasicMaterial({ color: 0x1f9d55, transparent: true, opacity: .28, depthWrite: false }),
   zoneBad: new THREE.MeshBasicMaterial({ color: 0xd61d09, transparent: true, opacity: .32, depthWrite: false }),
   pick: new THREE.MeshBasicMaterial({ color: 0xd61d09, transparent: true, opacity: .0, depthWrite: false }),
+  beam: new THREE.MeshBasicMaterial({ color: 0xff2a1a, transparent: true, opacity: .75, depthWrite: false }),
+  beamHead: std({ color: 0x1a1c1f, emissive: 0xff2a1a, emissiveIntensity: .6 }),
+  screen: std({ color: 0x0b1726, emissive: 0x3a7bd5, emissiveIntensity: .9, roughness: .2 }),
+  keys: std({ color: 0x9aa0a6, metalness: .7, roughness: .3 }),
+  solar: std({ color: 0x0e2240, metalness: .5, roughness: .25, emissive: 0x0a1a33, emissiveIntensity: .3 }),
+  lamp: std({ color: 0xfff3d6, emissive: 0xffd28a, emissiveIntensity: 1.4 }),
 };
 export const FINISHES = {
   cream: { name: "Cream render", color: 0xe9dcc3 },
@@ -286,6 +292,52 @@ function pedGate(p) {
   return { group: g, animate: (o) => { hinge.rotation.y = s * o * 1.4; } };
 }
 
+/* ---------- the extras on the quote: beams, keypad, intercom, solar, lights ----------
+   Each is its own group so a newly added one can drop into place. */
+function extrasFor(st, ph) {
+  const e = st.extras || {}, out = {};
+  if (!st.drive.on) return out;
+  const pw = st.pier.w, x0 = st.drive.x, W = st.drive.W, front = pw / 2;
+  if (e.beams) {
+    const g = new THREE.Group();
+    [x0 - .07, x0 + W].forEach((x) => box(g, MAT.beamHead, x, .42, front, x + .07, .62, front + .07));
+    box(g, MAT.beam, x0, .51, front + .03, x0 + W, .525, front + .045, false);
+    out.beams = g;
+  }
+  if (e.keypad) {
+    // a gooseneck post on the verge, reachable from a car window
+    const g = new THREE.Group(), px = x0 - pw - .55, pz = 1.25;
+    box(g, MAT.concretePad, px - .18, -.01, pz - .18, px + .18, .04, pz + .18);
+    cyl(g, MAT.steel, .045, 1.15, px, .6, pz);
+    rod(cyl(g, MAT.steel, .035, 1, 0, 0, 0), new THREE.Vector3(px, 1.15, pz), new THREE.Vector3(px + .38, 1.32, pz), .035);
+    box(g, MAT.steel, px + .3, 1.12, pz - .06, px + .5, 1.42, pz + .06);
+    box(g, MAT.keys, px + .32, 1.16, pz + .06, px + .48, 1.38, pz + .075, false);
+    out.keypad = g;
+  }
+  if (e.intercom) {
+    const g = new THREE.Group(), pier = st.ped.on ? st.ped.x - pw : x0 - pw, cx = pier + pw / 2;
+    box(g, MAT.steel, cx - .1, 1.25, front, cx + .1, 1.62, front + .04);
+    box(g, MAT.screen, cx - .07, 1.42, front + .04, cx + .07, 1.56, front + .05, false);
+    box(g, MAT.keys, cx - .03, 1.3, front + .04, cx + .03, 1.36, front + .05, false);
+    out.intercom = g;
+  }
+  if (e.solar) {
+    const g = new THREE.Group(), px = x0 + W + pw + 1.3, pz = -1.6;
+    cyl(g, MAT.galv, .04, 2.3, px, 1.15, pz);
+    const panel = box(g, MAT.solar, -.45, -.02, -.32, .45, .02, .32);
+    panel.position.set(px, 2.35, pz); panel.rotation.x = .55;
+    out.solar = g;
+  }
+  if (e.lights) {
+    const g = new THREE.Group();
+    layout(st).piers.forEach((x) => box(g, MAT.lamp, x + pw / 2 - .07, ph + .1, -.07, x + pw / 2 + .07, ph + .26, .07, false));
+    out.lights = g;
+  }
+  return out;
+}
+let seenExtras = null;
+const pops = [];
+
 /* ---------- fencing: piers along the frontage, panels between them ---------- */
 export function layout(st) {
   const pw = st.pier.w, F = st.F;
@@ -460,6 +512,13 @@ export function update(st, rebuild = true) {
     }
   }
   zoneGroup.visible = !!st.showZone;
+  // extras on the quote; the ones just added grow into place
+  const ex = extrasFor(st, ph), now = performance.now();
+  Object.entries(ex).forEach(([k, g]) => {
+    root.add(g);
+    if (seenExtras && !seenExtras[k]) { g.position.y = 1.6; pops.push({ g, s: now }); }
+  });
+  seenExtras = Object.fromEntries(Object.keys(ex).map((k) => [k, 1]));
   // sun high to the front left, so the street face of the fence is lit
   const ext = st.F / 2 + 16;
   sun.target.position.set(st.F / 2, 0, -2); sun.position.set(st.F / 2 - 8, 16, 10);
@@ -517,6 +576,13 @@ function frame() {
     openT += (openTarget - openT) * .045 + Math.sign(openTarget - openT) * .004;
     openT = Math.min(1, Math.max(0, openT));
     Object.values(gates).forEach((g) => g.animate(openT));
+  }
+  for (let i = pops.length - 1; i >= 0; i--) {
+    // drops in from above with a small bounce
+    const k = Math.min(1, (performance.now() - pops[i].s) / 700);
+    const b = k < .7 ? 1 - Math.pow(k / .7, 2) : Math.sin(((k - .7) / .3) * Math.PI) * .12;
+    pops[i].g.position.y = 1.6 * Math.max(0, b);
+    if (k >= 1) { pops[i].g.position.y = 0; pops.splice(i, 1); }
   }
   renderer.render(scene, camera);
   placeLabel();

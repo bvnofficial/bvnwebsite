@@ -280,7 +280,11 @@ function render() {
   dock.innerHTML = ui.view === "job" ? `<div class="in"><button class="btn ghost" data-act="view" data-v="pick">${ICON.plus}Add another</button><button class="btn red" data-act="view" data-v="quote">Show the quote ${ICON.arrow}</button></div>` : "";
   dock.classList.toggle("hide", ui.view !== "job");
   scrollFix();
-  if (ui.view === "job" && ui.view3d) { const it = item(); const d = it && designOf(Q().items.filter((x) => x === it || ["ped", "fence"].includes((tplOf(x.tpl) || {}).base || x.tpl))); if (d) vizShow(d); else vizPlace(); }
+  if (ui.view === "job" && ui.view3d) {
+    const it = item(), q = Q();
+    const d = it && designOf(q.items.filter((x) => x === it || ["ped", "fence"].includes((tplOf(x.tpl) || {}).base || x.tpl)));
+    if (d) { d.extras = extrasOf(q.items); vizShow(d); } else vizPlace();
+  }
   else vizPlace();
 }
 let keepY = null;
@@ -328,6 +332,7 @@ function viewJob() {
     <div class="grid">${ui.view3d && designOf([it]) ? `<div class="viz3d big" data-viz></div>` : t.draw !== "none" ? drawItem(t, r, db.pb) : `<div class="nopic">${TYPE_ICON[it.tpl] || ICON.other}</div>`}</div>
     <div class="pricebar"><div><small>Price for the customer, with GST</small><b>${l ? money(l.sell * gst) : "$0"}</b></div>
       ${l && l.sell && boss() ? `<div class="makes">${ICON.coins}<span>Apex makes<b>${money(keep)}</b></span></div>` : ""}</div>
+    ${designOf([it]) ? gateSwitches(t, it) : ""}
     ${r.warnings.length ? `<div class="warn" style="margin:0 16px 16px">${ICON.warn}<div><b>Check this</b><ul>${r.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div></div>` : ""}
     ${l && l.sell && boss() ? `<details class="where" ${ui.where ? "open" : ""}><summary>Where does the money go?</summary>${moneyPic(l.cost, l.sell)}</details>` : ""}
   </div>
@@ -581,14 +586,39 @@ function designOf(items) {
   const fc = items.find((it) => base(it) === "fence");
   if (fc) d.fence = { style: STYLE3D[val(fc, "infill")] || "picket", match: false, col: steelColour(val(fc, "colour")), H: clampN((+val(fc, "pierH") || 1800) / 1000, .9, 2.4), plinth: 0, bay: clampN((+val(fc, "bay") || 2400) / 1000, 1.5, 3) };
   d.F = clampN(Math.max(14, (g ? d.drive.W : 0) + (pd ? d.ped.W : 0) + 6), 8, 30);
+  d.extras = extrasOf(items);
   return g || pd || fc ? d : null;
+}
+function extrasOf(items) {
+  const names = [];
+  for (const it of items) {
+    const t = tplOf(it.tpl); if (!t) continue;
+    let r; try { r = runItem(t, { ...defaults(t), ...it.values }, db.pb); } catch (e) { continue; }
+    for (const h of r.items || []) if (h.qty > 0) names.push(partName("item", h.id, "").toLowerCase());
+  }
+  const has = (re) => names.some((n) => re.test(n));
+  return { beams: has(/photo ?eye|beam|safety/), keypad: has(/keypad|key pad/), intercom: has(/intercom/), solar: has(/solar/), lights: has(/light|lamp/) };
+}
+/* the switches under the 3D: what is on this gate, one tap to add or take off */
+function gateSwitches(t, it) {
+  const inp = (k) => t.inputs.find((i) => i.k === k);
+  const val = (k) => it.values[k] ?? (inp(k) || {}).def;
+  const motorKey = inp("auto") ? "auto" : inp("motor") ? "motor" : null;
+  const chips = [], motorOn = motorKey ? val(motorKey) !== "none" : true;
+  if (motorKey) chips.push(["motor", "Motor", "motor", motorOn]);
+  // beams, keypad, solar and battery go with a motor, so they only count when it is on
+  [["eyes", "Safety beams", "eye"], ["keypad", "Keypad", "keypad"], ["solar", "Solar power", "sun"], ["battery", "Battery backup", "battery"]].forEach(([k, l, ic]) => { if (inp(k)) chips.push([k, l, ic, motorOn && +val(k) > 0]); });
+  if (!chips.length) return "";
+  const rem = inp("remotes") ? +val("remotes") : null;
+  return `<div class="onGate"><b>On this gate</b><div class="gchips">${chips.map(([k, l, ic, on]) => `<button class="gchip ${on ? "on" : ""}" data-act="chip" data-k="${k}">${ICON[ic] || ""}${l}${on ? ICON.tick : ICON.plus}</button>`).join("")}
+    ${rem !== null ? `<span class="gchip rem">${ICON.remote}Remotes<button data-act="bump" data-k="remotes" data-d="-1" aria-label="One less">${ICON.minus}</button><output>${rem}</output><button data-act="bump" data-k="remotes" data-d="1" aria-label="One more">${ICON.plus}</button></span>` : ""}</div></div>`;
 }
 function vizShow(state) {
   vizState = state;
   if (state && !VIZ) {
     VIZ = document.createElement("iframe");
     VIZ.className = "viz"; VIZ.title = "The gate in 3D";
-    VIZ.src = "/clients/apex-gates/gate-visualiser/index.html?embed=1";
+    VIZ.src = "/clients/apex-gates/gate-visualiser/index.html?embed=1&v=2";
     document.body.appendChild(VIZ);
   }
   vizPost(); vizPlace();
@@ -715,7 +745,8 @@ function shareData(q, kind) {
       totals: { exGst: M.exGst, gst: M.gst, inc: M.inc, paid: M.deposit, balance: Math.max(0, M.inc - M.deposit) }, terms: `Thank you for choosing ${s.company}.` };
   }
   const P = price(q), base = P.tot.sell * (1 - P.disc / 100), k = base ? P.exGst / base : 1, { inc, exc } = includes(P);
-  return { kind: "quote", qid: q.id, no: q.no, date: q.created, valid: q.created + s.validity * 864e5, company, client, note: q.notes, pay,
+  const design = (() => { const g = q.items.filter((x) => designOf([x])); const d = g.length && designOf(g); if (d) d.extras = extrasOf(q.items); return d || null; })();
+  return { kind: "quote", design, qid: q.id, no: q.no, date: q.created, valid: q.created + s.validity * 864e5, company, client, note: q.notes, pay,
     lines: P.lines.map((l) => ({ name: l.name, desc: lineDesc(l), amount: l.sell * (1 - P.disc / 100) * k * g, svg: l.tpl.draw !== "none" ? drawItem(l.tpl, l.r, db.pb) : "" })),
     totals: { exGst: P.exGst, gst: P.gst, inc: P.inc, discount: P.disc, deposit: s.deposit ? (P.inc * s.deposit) / 100 : 0 }, inc, exc, terms: s.terms };
 }
@@ -1113,6 +1144,23 @@ document.addEventListener("click", (e) => {
   if (a === "sendlink") sendLink(q, b.dataset.v);
   if (a === "group") { q.group = b.dataset.v; save(); redraw(); }
   if (a === "v3") { ui.view3d = b.dataset.v === "1"; redraw(); }
+  if (a === "chip" && it) {
+    const t = tplOf(it.tpl), k = b.dataset.k;
+    if (k === "motor") {
+      const mk = t.inputs.find((i) => i.k === "auto") ? "auto" : "motor", inp = t.inputs.find((i) => i.k === mk);
+      const cur = it.values[mk] ?? inp.def, first = inp.def !== "none" ? inp.def : (inp.opts.find((o) => o[0] !== "none") || [])[0];
+      setVal(mk, cur === "none" ? first : "none");
+    } else {
+      const inp = t.inputs.find((i) => i.k === k), mk = t.inputs.find((i) => i.k === "auto") ? "auto" : t.inputs.find((i) => i.k === "motor") ? "motor" : null;
+      const mInp = mk && t.inputs.find((i) => i.k === mk), motorOn = !mk || (it.values[mk] ?? mInp.def) !== "none";
+      if (!motorOn) {
+        // an accessory needs a motor: switch the motor on with it
+        setVal(mk, mInp.def !== "none" ? mInp.def : (mInp.opts.find((o) => o[0] !== "none") || [])[0]); setVal(k, 1); say("Motor added too, it needs one");
+      } else setVal(k, +(it.values[k] ?? inp.def) > 0 ? 0 : 1);
+    }
+    if (!ui.view3d && designOf([it])) ui.view3d = true;
+    redraw();
+  }
   if (a === "copylink") navigator.clipboard.writeText(ui.link.url).then(() => say("Link copied"), () => say("Could not copy on this device"));
   /* the builder and client search */
   if (a === "build") { ui.bsaid = ($("[data-bsaid]") || {}).value || ui.bsaid || ""; buildQuote(); }

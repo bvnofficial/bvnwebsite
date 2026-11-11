@@ -176,7 +176,7 @@ button[disabled]{opacity:.7;cursor:wait}
 <script type="module">
 // load the engine next to this page, whether or not the address ends in a slash
 const here = location.pathname.endsWith("/") || location.pathname.endsWith(".html") ? "" : location.pathname.split("/").pop() + "/";
-const B = await import(new URL(here + "builder.js", location.href).href);
+const B = await import(new URL(here + "builder.js?v=2", location.href).href); // bump when builder.js changes
 
 const COLOURS = [["Pearl white", "#ECEBE6"], ["Charcoal", "#34383D"], ["Satin black", "#17191C"], ["Monument grey", "#4A4C4F"],
   ["Silver", "#A9AEB3"], ["Bronze", "#5B4A3B"], ["Woodland grey", "#5E625C"], ["Apex red", "#C2210F"]];
