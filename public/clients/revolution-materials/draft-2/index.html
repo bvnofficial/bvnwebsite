@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Revolution Materials | Draft 2 Periodic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="/clients/revolution-materials/shared/data.js"></script>
+<script src="/clients/revolution-materials/shared/bar.js"></script>
+<style>
+:root{--bg:#f3f2ee;--ink:#111214;--muted:#6b6d72;--line:#d9d7d0;--card:#fff;--blue:#1f4bff;--d:"Space Grotesk",sans-serif;--m:"JetBrains Mono",monospace;
+--Fe:#8d8f96;--Cr:#2fb3a6;--Ni:#1f4bff;--Mo:#7a4dff;--Ti:#ff5a36;--Co:#0f86d8;--Cu:#d9772b;--Nb:#e0427a;--Al:#a7b0bd;--V:#3bb36b;--W:#59606b;--Mn:#c9a227;--Ta:#5f3dc4;--Zr:#18a0a0;--C:#333}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--d);line-height:1.55;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+header{position:sticky;top:0;z-index:40;background:rgba(243,242,238,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{height:66px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px}
+.logo .el{width:38px;height:38px;border:2px solid var(--ink);display:grid;place-items:center;font:700 15px var(--d);position:relative}
+.logo .el:after{content:"Rv";}
+.logo .el small{position:absolute;top:1px;left:3px;font:600 8px var(--m)}
+.nav nav{display:flex;gap:26px;font-size:14px}
+.nav nav a{position:relative}
+.nav nav a:after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--blue);transition:.3s}
+.nav nav a:hover:after{width:100%}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;font:500 14px var(--d);border:1.5px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;transition:.25s}
+.btn:hover{background:var(--blue);border-color:var(--blue)}
+.btn.o{background:transparent;color:var(--ink)}
+.btn.o:hover{background:var(--ink);color:#fff}
+.mono{font-family:var(--m);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:50px;align-items:center;padding-top:80px;padding-bottom:90px}
+h1{font:700 clamp(46px,6.6vw,94px)/.95 var(--d);letter-spacing:-.045em;margin:20px 0 26px}
+h1 em{font-style:normal;color:var(--blue)}
+.lead{font-size:19px;color:var(--muted);max-width:540px;margin-bottom:30px}
+.ptable{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;perspective:900px}
+.tile{aspect-ratio:1;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.8,.2,1);animation:drop .8s both}
+@keyframes drop{from{opacity:0;transform:translateY(-30px) rotateX(40deg)}}
+.tile:hover,.tile.flip{transform:rotateY(180deg)}
+.tile>div{position:absolute;inset:0;backface-visibility:hidden;border:1.5px solid var(--ink);background:var(--card);padding:7px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .f b{font:700 clamp(18px,2.2vw,30px)/1 var(--d)}
+.tile .f small{font:600 9px var(--m)}
+.tile .f i{font-style:normal;font-size:10px;color:var(--muted)}
+.tile .bk{transform:rotateY(180deg);color:#fff;font-size:11px;line-height:1.25;justify-content:center}
+.tile.ghost>div{border-style:dashed;border-color:var(--line);background:transparent}
+.tile.ghost{pointer-events:none}
+/* sections */
+section{padding:110px 0;border-top:1px solid var(--line)}
+.sh{display:grid;grid-template-columns:200px 1fr;gap:40px;margin-bottom:50px}
+.sh h2{font:700 clamp(32px,4.2vw,56px)/1 var(--d);letter-spacing:-.035em;max-width:800px}
+.sh p{color:var(--muted);margin-top:16px;max-width:560px;font-size:17px}
+/* alloy lab */
+.lab{display:grid;grid-template-columns:280px 1fr;gap:30px}
+.alist{display:flex;flex-direction:column;border:1.5px solid var(--ink)}
+.alist button{all:unset;cursor:pointer;padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-weight:500;transition:.2s}
+.alist button:last-child{border-bottom:0}
+.alist button:hover{background:#fff}
+.alist button.on{background:var(--ink);color:#fff}
+.alist button span{font:12px var(--m);opacity:.6}
+.stage{border:1.5px solid var(--ink);background:var(--card);padding:34px}
+.stage h3{font:700 44px/1 var(--d);letter-spacing:-.03em}
+.stage .uns{font:13px var(--m);color:var(--muted);margin:8px 0 26px}
+.bar{display:flex;height:74px;border:1.5px solid var(--ink);overflow:hidden}
+.bar div{height:100%;transition:width 1s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden}
+.bar div span{position:absolute;left:8px;top:8px;color:#fff;font:700 15px var(--d);white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin:20px 0 26px}
+.legend span{display:flex;align-items:center;gap:8px;font:13px var(--m)}
+.legend i{width:12px;height:12px;display:block}
+.stage p{color:var(--muted);font-size:16px;max-width:620px}
+.stage .use{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.stage .use span{padding:6px 11px;border:1px solid var(--line);font:12px var(--m)}
+/* families */
+.fam{display:grid;grid-template-columns:repeat(5,1fr);border:1.5px solid var(--ink)}
+.fam>div{padding:28px 22px 24px;border-right:1px solid var(--line);min-height:300px;display:flex;flex-direction:column;transition:.3s;background:var(--bg)}
+.fam>div:last-child{border-right:0}
+.fam>div:hover{background:var(--ink);color:#fff}
+.fam>div:hover .mono,.fam>div:hover p{color:#bbb}
+.fam .big{font:700 70px/1 var(--d);letter-spacing:-.04em}
+.fam h3{font:700 20px var(--d);margin-top:auto}
+.fam p{font-size:14px;color:var(--muted);margin:6px 0 14px}
+.count{font:600 13px var(--m);color:var(--blue)}
+/* fasteners */
+.fx{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1.5px solid var(--ink)}
+.fx>div{padding:26px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fx>div:nth-child(3n){border-right:0}
+.fx>div:nth-child(n+4){border-bottom:0}
+.fx h4{font:700 22px var(--d);display:flex;justify-content:space-between;margin-bottom:12px}
+.fx h4 span{font:12px var(--m);color:var(--muted)}
+.fx ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.fx li{font-size:13px;padding:5px 9px;background:#fff;border:1px solid var(--line)}
+.sizes{margin-top:40px;border:1.5px solid var(--ink);background:#fff;padding:28px}
+.ruler{position:relative;height:60px;margin:18px 0 10px;background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px) bottom/100% 14px no-repeat,repeating-linear-gradient(90deg,var(--ink) 0 1.5px,transparent 1.5px 50px) bottom/100% 26px no-repeat;border-bottom:1.5px solid var(--ink)}
+.ruler .thumb{position:absolute;bottom:30px;transform:translateX(-50%);font:700 20px var(--d);white-space:nowrap;transition:left .1s}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.sizeout{display:flex;justify-content:space-between;font:13px var(--m);color:var(--muted)}
+/* promises */
+.pr{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.pr div{border-top:3px solid var(--ink);padding-top:20px}
+.pr .n{font:700 46px/1 var(--d);letter-spacing:-.03em}
+.pr h4{font:700 18px var(--d);margin:22px 0 8px}
+.pr p{font-size:14px;color:var(--muted)}
+/* enquiry */
+.enq{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid var(--ink)}
+.enq .l{background:var(--ink);color:#fff;padding:48px}
+.enq .l h2{font:700 50px/1 var(--d);letter-spacing:-.035em;margin:16px 0}
+.enq .l p{color:#aaa}
+.enq .l .c{margin-top:40px;display:grid;gap:10px;font:14px var(--m)}
+form{padding:48px;background:#fff;display:grid;gap:14px}
+label{font:12px var(--m);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:grid;gap:6px}
+input,select,textarea{font:16px var(--d);padding:12px 0;border:0;border-bottom:1.5px solid var(--line);background:transparent;outline:none;color:var(--ink);transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+textarea{min-height:90px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+footer{padding:40px 0 110px;border-top:1px solid var(--line);font:13px var(--m);color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.rv{opacity:0;transform:translateY(30px);transition:.9s cubic-bezier(.2,.8,.2,1)}.rv.in{opacity:1;transform:none}
+@media(max-width:1000px){.hero,.lab,.enq{grid-template-columns:1fr}.fam{grid-template-columns:1fr 1fr}.fam>div{border-bottom:1px solid var(--line)}.fx{grid-template-columns:1fr 1fr}.fx>div{border:0!important;border-bottom:1px solid var(--line)!important}.pr{grid-template-columns:1fr 1fr}.sh{grid-template-columns:1fr;gap:10px}.nav nav{display:none}.alist{flex-direction:row;overflow:auto}.alist button{border-bottom:0;border-right:1px solid var(--line);white-space:nowrap}}
+@media(max-width:600px){.fam,.fx,.pr,.two{grid-template-columns:1fr}.enq .l,form{padding:28px}.ptable{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="logo" href="#"><span class="el"><small>01</small></span>Revolution Materials</a>
+  <nav><a href="#lab">Alloy lab</a><a href="#metals">Metals</a><a href="#fasteners">Fasteners</a><a href="#enquire">Contact</a></nav>
+  <a class="btn" href="#enquire">Request a quote</a>
+</div></header>
+
+<div class="wrap hero">
+  <div>
+    <span class="mono">Specialty metals and alloy fasteners / Melbourne</span>
+    <h1>We speak <em>alloy</em> fluently.</h1>
+    <p class="lead">Nickel, titanium, stainless and alloy steels sourced to ASTM, DIN, BS or your own drawing. Hover an element to see what we make with it.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="#enquire">Request a quote</a><a class="btn o" href="#lab">Open the alloy lab</a></div>
+  </div>
+  <div class="ptable" id="pt"></div>
+</div>
+
+<section id="lab"><div class="wrap">
+  <div class="sh rv"><span class="mono">01 / Alloy lab</span><div><h2>See what is inside the metal.</h2><p>Pick an alloy to see its nominal chemistry. Every grade we supply comes with full mill certification.</p></div></div>
+  <div class="lab rv">
+    <div class="alist" id="alist"></div>
+    <div class="stage" id="stage"></div>
+  </div>
+</div></section>
+
+<section id="metals"><div class="wrap">
+  <div class="sh rv"><span class="mono">02 / Metals</span><div><h2>Five families, every form.</h2><p id="formsLine"></p></div></div>
+  <div class="fam rv" id="fam"></div>
+</div></section>
+
+<section id="fasteners"><div class="wrap">
+  <div class="sh rv"><span class="mono">03 / Fasteners</span><div><h2>Special alloy fasteners, small orders welcome.</h2><p>Heat treatment, coatings, testing and certification available on every order.</p></div></div>
+  <div class="fx rv" id="fx"></div>
+  <div class="sizes rv">
+    <span class="mono">Size range check</span>
+    <div class="ruler"><div class="thumb" id="th">M24</div></div>
+    <input type="range" min="3" max="200" value="24" id="sz">
+    <div class="sizeout"><span>3 mm (1/8")</span><span id="szmsg">We make this size</span><span>200 mm (8")</span></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sh rv"><span class="mono">04 / Why us</span><div><h2>Prompt service without the excuses.</h2></div></div>
+  <div class="pr rv" id="pr"></div>
+</div></section>
+
+<section id="enquire"><div class="wrap">
+  <div class="enq rv">
+    <div class="l"><span class="mono" style="color:#888">05 / Enquire</span><h2>Send us your spec.</h2><p>Grade, form, size and quantity. We reply with price and lead time.</p><div class="c" id="ct"></div></div>
+    <form data-rfq>
+      <div class="two"><label>Name<input required></label><label>Company<input></label></div>
+      <div class="two"><label>Email<input type="email" required></label><label>Phone<input></label></div>
+      <div class="two"><label>Material<select id="sm"></select></label><label>Form<select id="sf"></select></label></div>
+      <label>Grade, size and quantity<textarea id="req"></textarea></label>
+      <button class="btn">Send enquiry</button>
+    </form>
+  </div>
+</div></section>
+
+<footer><div class="wrap" id="ft"></div></footer>
+
+<script>
+const R=RM;
+const EL=[["Fe",26,"Iron","Base of every steel and stainless grade we supply."],["Cr",24,"Chromium","10.5% or more makes steel stainless."],["Ni",28,"Nickel","Base of Inconel, Monel, Hastelloy and Incoloy."],["Mo",42,"Molybdenum","Adds pitting resistance in 316, 904L and C-276."],["Ti",22,"Titanium","Grades 1 to 18, CP and alloyed."],["Co",27,"Cobalt","Cobalt based medical and wear alloys."],
+["Cu",29,"Copper","Monel, cupro nickel and bronzes."],["Nb",41,"Niobium","Gives Inconel 625 and 718 their strength."],["Al",13,"Aluminium","With vanadium makes Ti 6Al-4V."],["V",23,"Vanadium","Strengthens titanium Grade 5 and 9."],["W",74,"Tungsten","Part of Hastelloy C-276 and C-22."],["Mn",25,"Manganese","Key to Nitronic and alloy steels."],
+["Ta",73,"Tantalum","Pure tantalum for extreme corrosion service."],["Zr",40,"Zirconium","Zirconium 702 and 705."],["C",6,"Carbon","Low carbon L grades weld cleaner."],["",0],["",0],["",0]];
+document.getElementById('pt').innerHTML=EL.map((e,i)=>e[0]?`<div class="tile" style="animation-delay:${i*45}ms"><div class="f"><small>${e[1]}</small><b>${e[0]}</b><i>${e[2]}</i></div><div class="bk" style="background:var(--${e[0]},#333)">${e[3]}</div></div>`:`<div class="tile ghost"><div></div></div>`).join('');
+// auto flip a random tile to invite interaction
+setInterval(()=>{const t=[...document.querySelectorAll('.tile:not(.ghost)')];const x=t[Math.random()*t.length|0];x.classList.add('flip');setTimeout(()=>x.classList.remove('flip'),1800)},2600);
+// alloy lab (nominal %)
+const A=[
+ {n:"316L",u:"UNS S31603",c:{Fe:69.9,Cr:17,Ni:11,Mo:2.1},d:"Molybdenum gives it better corrosion resistance than 304. Low carbon for welding.",use:["Marine","Food and pharma","Chemical"]},
+ {n:"2205 Duplex",u:"UNS S31803",c:{Fe:68,Cr:22,Ni:5,Mo:3,Mn:2},d:"Roughly twice the yield strength of 316 with strong chloride stress corrosion resistance.",use:["Oil and gas","Desalination","Pulp and paper"]},
+ {n:"Inconel 625",u:"UNS N06625",c:{Ni:62,Cr:21.5,Mo:9,Nb:3.7,Fe:2.5,Ti:.3,Al:.3},d:"Nickel chrome moly alloy with added niobium. Outstanding corrosion resistance across a wide range of environments.",use:["Offshore","Aerospace","Chemical"]},
+ {n:"Inconel 718",u:"UNS N07718",c:{Ni:54,Cr:19,Fe:17.3,Nb:5.2,Mo:3.1,Ti:.9,Al:.5},d:"Excellent creep rupture strength to 700 °C and exceptional resistance to chloride stress corrosion cracking.",use:["Turbines","Aerospace","Fasteners"]},
+ {n:"Hastelloy C-276",u:"UNS N10276",c:{Ni:57,Mo:16,Cr:16,Fe:5,W:4,Co:2},d:"One of the most corrosion resistant alloys available, for the harshest chemical service.",use:["Chemical","Pollution control","Pulp and paper"]},
+ {n:"Monel 400",u:"UNS N04400",c:{Ni:66,Cu:31.6,Fe:1.2,Mn:1.2},d:"Nickel copper alloy with excellent general corrosion resistance and high strength.",use:["Marine","Valves and pumps","Fasteners"]},
+ {n:"Ti Grade 5",u:"UNS R56400",c:{Ti:89.5,Al:6.5,V:4},d:"High strength titanium alloy used in critical aircraft structural components.",use:["Aerospace","Motorsport","Medical"]}];
+const al=document.getElementById('alist'),st=document.getElementById('stage');
+al.innerHTML=A.map((a,i)=>`<button data-i="${i}">${a.n}<span>${a.u.split(' ')[1]}</span></button>`).join('');
+function show(i){const a=A[i];al.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',j==i));
+ const ks=Object.keys(a.c);
+ st.innerHTML=`<span class="mono">Nominal composition, %</span><h3 style="margin-top:12px">${a.n}</h3><div class="uns">${a.u}</div><div class="bar">${ks.map(k=>`<div data-w="${a.c[k]}" style="width:0;background:var(--${k})"><span>${a.c[k]>=6?k:''}</span></div>`).join('')}</div><div class="legend">${ks.map(k=>`<span><i style="background:var(--${k})"></i>${k} ${a.c[k]}</span>`).join('')}</div><p>${a.d}</p><div class="use">${a.use.map(u=>`<span>${u}</span>`).join('')}</div><div style="margin-top:28px"><a class="btn" href="#enquire" onclick="document.getElementById('req').value='${a.n} (${a.u}). Form: , Size: , Qty: '">Quote ${a.n}</a></div>`;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>st.querySelectorAll('.bar div').forEach(d=>d.style.width=d.dataset.w+'%')));}
+al.onclick=e=>{const b=e.target.closest('button');if(b)show(+b.dataset.i)};show(0);
+// families
+document.getElementById('formsLine').textContent='Available as '+R.forms.join(', ').toLowerCase()+'.';
+document.getElementById('fam').innerHTML=R.metals.map(m=>`<div><span class="mono">${m.key}</span><div class="big">${m.sym}</div><h3>${m.name}</h3><p>${m.short}</p><span class="count">${m.grades.length}+ grades listed</span></div>`).join('');
+document.getElementById('fx').innerHTML=R.fasteners.map(f=>`<div><h4>${f.name}<span>${f.items.length} types</span></h4><ul>${f.items.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+const sz=document.getElementById('sz'),th=document.getElementById('th');
+function upd(){const v=+sz.value;th.style.left=((v-3)/197*100)+'%';th.textContent='M'+v;document.getElementById('szmsg').textContent=`M${v} is in range. ${v>=64?'Large diameter, made to order.':'Common stock size.'}`}
+sz.oninput=upd;upd();
+document.getElementById('pr').innerHTML=R.promises.map((p,i)=>`<div><div class="n">${R.proof[i].n}${R.proof[i].u?' '+R.proof[i].u:''}</div><span class="mono">${R.proof[i].l}</span><h4>${p.t}</h4><p>${p.d}</p></div>`).join('');
+document.getElementById('sm').innerHTML=R.metals.map(m=>`<option>${m.name}</option>`).join('')+'<option>Fasteners</option>';
+document.getElementById('sf').innerHTML=R.forms.map(f=>`<option>${f}</option>`).join('');
+document.getElementById('ct').innerHTML=`<a href="tel:${R.tel}">${R.phone1}</a><a href="mailto:${R.email}">${R.email}</a><span>${R.address}</span>`;
+document.getElementById('ft').innerHTML=`<span>&copy; ${new Date().getFullYear()} ${R.legal}</span><span>${R.address}</span>`;
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

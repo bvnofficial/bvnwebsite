@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Revolution Materials | Draft 4 Grade Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="/clients/revolution-materials/shared/data.js"></script>
+<script src="/clients/revolution-materials/shared/bar.js"></script>
+<style>
+:root{--bg:#ffffff;--soft:#f4f6f9;--ink:#0d1420;--mut:#5d6878;--line:#e3e7ee;--pri:#0e5bd8;--pri2:#0a3f99;--ok:#13a36b;--f:"Manrope",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);line-height:1.55;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.01em}
+.logo i{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#c7ced8,#6b7686 45%,#e9edf2 55%,#8a95a5);display:block;position:relative;overflow:hidden}
+.logo i:after{content:"";position:absolute;inset:-50%;background:linear-gradient(110deg,transparent 40%,#fff9 50%,transparent 60%);animation:sheen 3.5s infinite}
+@keyframes sheen{from{transform:translateX(-60%)}to{transform:translateX(60%)}}
+.nav nav{display:flex;gap:6px}
+.nav nav a{padding:9px 14px;border-radius:9px;font-weight:600;font-size:14px;color:var(--mut)}
+.nav nav a:hover{background:var(--soft);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;font:700 14px var(--f);border:0;cursor:pointer;background:var(--pri);color:#fff;transition:.2s}
+.btn:hover{background:var(--pri2)}
+.btn.s{background:var(--soft);color:var(--ink)}
+.basket{position:relative}
+.basket b{position:absolute;top:-7px;right:-7px;min-width:21px;height:21px;border-radius:999px;background:var(--ok);color:#fff;font-size:11px;display:grid;place-items:center;transform:scale(0);transition:.3s cubic-bezier(.3,1.6,.5,1)}
+.basket b.on{transform:scale(1)}
+.basket.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.12)}}
+/* hero */
+.hero{position:relative;padding:90px 0 70px;overflow:hidden;background:var(--soft)}
+.mesh{position:absolute;inset:-20%;filter:blur(60px);opacity:.75}
+.mesh span{position:absolute;border-radius:50%;animation:float 14s ease-in-out infinite alternate}
+.mesh span:nth-child(1){width:520px;height:520px;background:#cfe0ff;left:5%;top:0}
+.mesh span:nth-child(2){width:460px;height:460px;background:#e7ebf1;right:8%;top:10%;animation-delay:-4s}
+.mesh span:nth-child(3){width:380px;height:380px;background:#d6f2e6;left:40%;bottom:0;animation-delay:-8s}
+@keyframes float{to{transform:translate(60px,-40px) scale(1.15)}}
+.hero .wrap{position:relative;text-align:center}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--mut)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px #13a36b22}
+h1{font:800 clamp(40px,6vw,78px)/1.02 var(--f);letter-spacing:-.045em;margin:22px auto 18px;max-width:900px}
+h1 span{background:linear-gradient(90deg,var(--pri),#4aa3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);font-size:19px;max-width:640px;margin:0 auto 34px}
+.search{max-width:760px;margin:0 auto;position:relative}
+.sbox{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--line);border-radius:18px;padding:8px 8px 8px 22px;box-shadow:0 20px 60px #0d14201a;transition:.2s}
+.sbox:focus-within{border-color:var(--pri);box-shadow:0 20px 60px #0e5bd82e}
+.sbox svg{width:22px;flex:none;color:var(--mut)}
+.sbox input{flex:1;border:0;outline:none;font:600 19px var(--f);padding:14px 0;background:transparent;color:var(--ink);min-width:0}
+.quick{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.quick button{all:unset;cursor:pointer;padding:8px 13px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--mut);transition:.2s}
+.quick button:hover{border-color:var(--pri);color:var(--pri)}
+.results{max-width:760px;margin:18px auto 0;text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px #0d142014;display:none}
+.results.on{display:block;animation:drop .25s}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}}
+.res{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);transition:.15s}
+.res:hover{background:var(--soft)}
+.res .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;background:var(--soft)}
+.res .t{flex:1;min-width:0}
+.res .t b{display:block;font-size:16px}
+.res .t small{color:var(--mut);font-size:13px}
+.res mark{background:#ffe98a;border-radius:3px;padding:0 1px}
+.res button{all:unset;cursor:pointer;padding:8px 14px;border-radius:10px;background:var(--soft);font-weight:700;font-size:13px;color:var(--pri);white-space:nowrap}
+.res button.in{background:var(--ok);color:#fff}
+.nores{padding:22px;color:var(--mut)}
+.nores b{color:var(--ink)}
+.stats{display:flex;justify-content:center;gap:50px;margin-top:50px;flex-wrap:wrap}
+.stats div{text-align:center}
+.stats b{font:800 34px var(--f);letter-spacing:-.03em;display:block}
+.stats span{color:var(--mut);font-size:13px;font-weight:600}
+section{padding:100px 0}
+.sh{text-align:center;max-width:700px;margin:0 auto 50px}
+.sh .k{font-weight:700;font-size:13px;color:var(--pri);letter-spacing:.08em;text-transform:uppercase}
+.sh h2{font:800 clamp(32px,4vw,50px)/1.08 var(--f);letter-spacing:-.035em;margin:12px 0}
+.sh p{color:var(--mut);font-size:17px}
+/* families */
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.card{border:1px solid var(--line);border-radius:20px;padding:24px;transition:.3s;cursor:pointer;background:#fff;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-5px);box-shadow:0 24px 50px #0d142014;border-color:#cdd5e1}
+.card .sym{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff;margin-bottom:40px;background:linear-gradient(135deg,#9aa5b5,#495466)}
+.card:nth-child(2) .sym{background:linear-gradient(135deg,#4aa3ff,#0e5bd8)}
+.card:nth-child(3) .sym{background:linear-gradient(135deg,#ff9a6b,#d8481e)}
+.card:nth-child(4) .sym{background:linear-gradient(135deg,#3fd0a0,#0e8a62)}
+.card:nth-child(5) .sym{background:linear-gradient(135deg,#a98bff,#6233d6)}
+.card h3{font-size:18px;font-weight:800}
+.card p{color:var(--mut);font-size:14px;margin:6px 0 14px}
+.card .go{font-weight:700;font-size:13px;color:var(--pri)}
+/* fasteners */
+.fwrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fbox{background:var(--soft);border-radius:22px;padding:30px}
+.fbox h3{font-size:22px;font-weight:800;margin-bottom:16px}
+.ftag{display:flex;flex-wrap:wrap;gap:7px}
+.ftag span{background:#fff;border:1px solid var(--line);padding:7px 11px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+.ftag span:hover{border-color:var(--pri);color:var(--pri)}
+.fgroup{margin-bottom:18px}
+.fgroup small{display:block;font-weight:700;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
+.step{padding:28px;border-radius:20px;border:1px solid var(--line);position:relative}
+.step:before{counter-increment:s;content:counter(s);width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;margin-bottom:20px}
+.step h4{font-size:17px;font-weight:800;margin-bottom:6px}
+.step p{color:var(--mut);font-size:14px}
+/* enquiry */
+.enq{background:var(--ink);color:#fff;border-radius:28px;padding:56px;display:grid;grid-template-columns:1fr 1.1fr;gap:40px}
+.enq h2{font:800 44px/1.05 var(--f);letter-spacing:-.035em;margin-bottom:14px}
+.enq p{color:#a8b2c2}
+.enq .c{margin-top:30px;display:grid;gap:8px;color:#d5dbe5;font-weight:600}
+.bk{background:#ffffff0d;border:1px solid #ffffff1a;border-radius:16px;padding:16px;margin-top:26px}
+.bk .row{display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid #ffffff14;font-size:14px}
+.bk .row:last-child{border-bottom:0}
+.bk .row button{all:unset;cursor:pointer;color:#8b95a5;font-size:12px}
+.bk .row input{width:70px;background:#ffffff12;border:1px solid #ffffff22;border-radius:7px;color:#fff;padding:5px 8px;font:600 13px var(--f)}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start}
+form input,form textarea{font:500 15px var(--f);padding:14px 16px;border-radius:12px;border:1px solid #ffffff22;background:#ffffff0d;color:#fff;outline:none}
+form input:focus,form textarea:focus{border-color:#4aa3ff}
+form textarea{grid-column:1/-1;min-height:110px}
+form .btn{grid-column:1/-1;justify-content:center;padding:16px}
+footer{padding:40px 0 110px;color:var(--mut);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;border-top:1px solid var(--line);padding-top:30px}
+.up{opacity:0;transform:translateY(26px);transition:.8s cubic-bezier(.2,.8,.2,1)}.up.in{opacity:1;transform:none}
+@media(max-width:1000px){.cards{grid-template-columns:1fr 1fr}.fwrap,.enq{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.nav nav{display:none}.enq{padding:32px 22px}}
+@media(max-width:560px){.cards,.steps,form{grid-template-columns:1fr}.res button{padding:8px 10px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="logo" href="#"><i></i>Revolution Materials</a>
+  <nav><a href="#families">Metals</a><a href="#fasteners">Fasteners</a><a href="#how">How it works</a><a href="#quote">Contact</a></nav>
+  <a class="btn basket" id="bkBtn" href="#quote">Quote list<b id="bkN">0</b></a>
+</div></header>
+
+<div class="hero">
+  <div class="mesh"><span></span><span></span><span></span></div>
+  <div class="wrap">
+    <span class="pill"><i></i>Sourcing specialty metals for Australian industry since the early 1980s</span>
+    <h1>Find your grade.<br><span>Get it quoted today.</span></h1>
+    <p class="sub">Search nickel alloys, titanium, stainless, alloy steels and special alloy fasteners. Add what you need to your quote list and send it in one go.</p>
+    <div class="search">
+      <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" autocomplete="off"><button class="btn" id="go">Search</button></div>
+      <div class="quick" id="quick"></div>
+      <div class="results" id="res"></div>
+    </div>
+    <div class="stats"><div><b data-c="5">0</b><span>metal families</span></div><div><b data-c="9">0</b><span>product forms</span></div><div><b id="gc">0</b><span>grades searchable</span></div><div><b>3 to 200 mm</b><span>fastener sizes</span></div></div>
+  </div>
+</div>
+
+<section id="families"><div class="wrap">
+  <div class="sh up"><span class="k">Metals</span><h2>Browse by family</h2><p>Every grade supplied with full certification, in the form you need.</p></div>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<section id="fasteners" style="padding-top:0"><div class="wrap">
+  <div class="sh up"><span class="k">Fasteners</span><h2>Special alloy fasteners</h2><p>Click any type or material to add it to your quote list. Small orders are a specialty.</p></div>
+  <div class="fwrap up"><div class="fbox" id="ftypes"><h3>Types</h3></div><div class="fbox" id="fmats"><h3>Materials</h3></div></div>
+</div></section>
+
+<section id="how" style="background:var(--soft)"><div class="wrap">
+  <div class="sh up"><span class="k">How it works</span><h2>From search to certified delivery</h2></div>
+  <div class="steps up">
+    <div class="step"><h4>Search or send a spec</h4><p>Find your grade above, or upload a drawing with the standard you work to.</p></div>
+    <div class="step"><h4>We source it</h4><p>From our network of rolling mills, specialist makers and stockists worldwide.</p></div>
+    <div class="step"><h4>Price and lead time</h4><p>You get a clear quote with delivery timing, for one piece or a full shipment.</p></div>
+    <div class="step"><h4>Certified delivery</h4><p>Mill certificates, heat treatment, coatings and testing as required.</p></div>
+  </div>
+</div></section>
+
+<section id="quote"><div class="wrap">
+  <div class="enq up">
+    <div>
+      <h2>Your quote list</h2>
+      <p>Add quantities and sizes, then send. We reply with price and lead time.</p>
+      <div class="bk" id="bk"></div>
+      <div class="c" id="ct"></div>
+    </div>
+    <form data-rfq><input placeholder="Name" required><input placeholder="Company"><input type="email" placeholder="Email" required><input placeholder="Phone"><textarea id="msg" placeholder="Sizes, forms, standards and anything else we should know"></textarea><button class="btn">Send quote request</button></form>
+  </div>
+</div></section>
+<footer><div class="wrap" id="ft"></div></footer>
+
+<script>
+const R=RM,$=id=>document.getElementById(id);
+// build search index
+const IDX=[];
+R.metals.forEach(m=>m.grades.forEach(g=>IDX.push({n:g,f:m.name,s:m.sym})));
+R.fastenerMaterials.forEach(m=>m.list.split(/,\s*/).forEach(g=>IDX.push({n:g.replace(/^ASTM .*?: /,''),f:'Fastener material, '+m.name,s:'Fx'})));
+R.fasteners.forEach(f=>f.items.forEach(x=>IDX.push({n:x+' '+f.name.toLowerCase().replace(/s$/,''),f:'Fastener, '+f.name,s:'Fx'})));
+R.forms.forEach(x=>IDX.push({n:x,f:'Product form',s:'Fm'}));
+$('gc').dataset.c=IDX.length;
+const basket=[];
+function hl(t,q){if(!q)return t;const i=t.toLowerCase().indexOf(q.toLowerCase());return i<0?t:t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length)}
+function search(q){q=q.trim();const box=$('res');if(!q){box.classList.remove('on');return}
+  const words=q.toLowerCase().split(/\s+/);
+  const hits=IDX.filter(x=>words.every(w=>(x.n+' '+x.f).toLowerCase().includes(w))).slice(0,8);
+  box.innerHTML=hits.length?hits.map(h=>`<div class="res"><span class="ic">${h.s}</span><span class="t"><b>${hl(h.n,words[0])}</b><small>${h.f}</small></span><button data-n="${h.n}" class="${basket.includes(h.n)?'in':''}">${basket.includes(h.n)?'Added':'Add to quote'}</button></div>`).join('')
+   :`<div class="nores"><b>No exact match for "${q}".</b> That is normal for unusual grades. Sourcing grades that are not stocked in Australia is what we do. <button class="btn" style="margin-left:6px" data-n="${q.replace(/"/g,'')}">Ask us to find it</button></div>`;
+  box.classList.add('on');}
+$('q').addEventListener('input',e=>search(e.target.value));
+$('go').onclick=()=>search($('q').value);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(!b)return;add(b.dataset.n);b.classList.add('in');b.textContent='Added'});
+function add(n){if(basket.includes(n))return;basket.push(n);renderBk();const bb=$('bkBtn');bb.classList.remove('bump');void bb.offsetWidth;bb.classList.add('bump');rmToast(n+' added to your quote list')}
+function renderBk(){$('bkN').textContent=basket.length;$('bkN').classList.toggle('on',basket.length>0);
+  $('bk').innerHTML=basket.length?basket.map((b,i)=>`<div class="row"><span>${b}</span><span style="display:flex;gap:10px;align-items:center"><input placeholder="Qty"><button data-r="${i}">remove</button></span></div>`).join(''):'<div class="row" style="color:#8b95a5">Nothing added yet. Search above or tap a fastener type.</div>';
+  $('msg').value=basket.length?'Quote list:\n'+basket.map(b=>'- '+b).join('\n'):'';}
+$('bk').addEventListener('click',e=>{if(e.target.dataset.r){basket.splice(+e.target.dataset.r,1);renderBk()}});
+renderBk();
+// typewriter placeholder
+const ph=["Inconel 625 bar","B8M studbolts","Titanium Grade 5 plate","Hastelloy C-276 pipe","Monel 400 nuts","2205 Duplex flanges"];let pi=0,pc=0,del=false;
+setInterval(()=>{const w=ph[pi];$('q').placeholder='Try "'+w.slice(0,pc)+'"';if(!del){pc++;if(pc>w.length+12)del=true}else{pc--;if(pc<=0){del=false;pi=(pi+1)%ph.length}}},85);
+$('quick').innerHTML=["Inconel 718","316L","Titanium Grade 2","Monel 400","Capscrews","Hastelloy"].map(x=>`<button>${x}</button>`).join('');
+$('quick').onclick=e=>{if(e.target.tagName=='BUTTON'){$('q').value=e.target.textContent;search(e.target.textContent)}};
+// cards
+$('cards').innerHTML=R.metals.map(m=>`<div class="card up" data-q="${m.name.split(' ')[0]}"><div class="sym">${m.sym}</div><h3>${m.name}</h3><p>${m.short}</p><span class="go">Search ${m.grades.length}+ grades</span></div>`).join('');
+$('cards').onclick=e=>{const c=e.target.closest('.card');if(!c)return;const m=R.metals.find(x=>x.name.startsWith(c.dataset.q));$('q').value=m.grades[0];scrollTo({top:0,behavior:'smooth'});setTimeout(()=>search(m.grades[0]),400)};
+$('ftypes').innerHTML+=R.fasteners.map(f=>`<div class="fgroup"><small>${f.name}</small><div class="ftag">${f.items.map(x=>`<span data-n="${x} (${f.name.toLowerCase()})">${x}</span>`).join('')}</div></div>`).join('');
+$('fmats').innerHTML+=R.fastenerMaterials.map(m=>`<div class="fgroup"><small>${m.name}</small><div class="ftag">${m.list.split(/,\s*/).slice(0,8).map(x=>`<span data-n="${x} fasteners">${x}</span>`).join('')}</div></div>`).join('');
+$('ct').innerHTML=`<a href="tel:${R.tel}">${R.phone1}</a><a href="mailto:${R.email}">${R.email}</a><span>${R.address}</span>`;
+$('ft').innerHTML=`<span>&copy; ${new Date().getFullYear()} ${R.legal}</span><span>${R.address}</span><span>${R.phone1}</span>`;
+// counters + reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target;io.unobserve(el);
+  if(el.dataset.c){const to=+el.dataset.c,t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1200);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)}else el.classList.add('in')}),{threshold:.15});
+document.querySelectorAll('.up,[data-c]').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

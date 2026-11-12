@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Revolution Materials | Draft 5 Chrome 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script src="/clients/revolution-materials/shared/data.js"></script>
+<script src="/clients/revolution-materials/shared/bar.js"></script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<style>
+:root{--bg:#07080a;--line:rgba(255,255,255,.1);--text:#eef0f3;--mut:#8c929c;--acc:#9fd3ff;--f:"Sora",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--f);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1200px;margin:0 auto;padding:0 26px}
+header{position:fixed;inset:0 0 auto;z-index:30;mix-blend-mode:difference}
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;letter-spacing:.24em;font-size:13px}
+.nav nav{display:flex;gap:28px;font-size:13px;letter-spacing:.06em}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font:600 14px var(--f);border:1px solid #fff;color:#000;background:#fff;cursor:pointer;transition:.25s}
+.btn:hover{background:transparent;color:#fff}
+.btn.o{background:transparent;color:#fff;border-color:#ffffff40}
+.btn.o:hover{border-color:#fff}
+/* 3d scroll stage */
+#stage{height:420vh;position:relative}
+.sticky{position:sticky;top:0;height:100vh;overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.glow{position:absolute;inset:0;background:radial-gradient(60% 50% at 70% 50%,#9fd3ff14,transparent 70%);pointer-events:none}
+.copy{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);pointer-events:none}
+.copy .wrap{position:relative;height:340px}
+.panel{position:absolute;left:26px;max-width:520px;opacity:0;transform:translateY(30px);transition:.7s cubic-bezier(.2,.8,.2,1)}
+.panel.on{opacity:1;transform:none;pointer-events:auto}
+.k{font-size:12px;letter-spacing:.3em;color:var(--acc);text-transform:uppercase}
+.panel h1,.panel h2{font:800 clamp(40px,6vw,86px)/.98 var(--f);letter-spacing:-.045em;margin:16px 0 20px}
+.panel h2{font-size:clamp(34px,4.6vw,64px)}
+.panel p{color:var(--mut);font-size:18px;max-width:460px;margin-bottom:26px}
+.chrome{background:linear-gradient(180deg,#fff 0%,#c9ced6 40%,#6d737c 52%,#e9edf2 64%,#9aa1ab 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.swatches{position:absolute;right:26px;bottom:90px;display:flex;flex-direction:column;gap:10px;z-index:5}
+.sw{display:flex;align-items:center;gap:12px;justify-content:flex-end;cursor:pointer;font-size:13px;color:var(--mut);transition:.2s;background:none;border:0;font-family:var(--f)}
+.sw i{width:34px;height:34px;border-radius:50%;border:2px solid transparent;display:block;box-shadow:inset 0 -6px 12px #0006,inset 0 6px 10px #fff6;transition:.2s}
+.sw.on{color:#fff}.sw.on i{border-color:#fff;transform:scale(1.1)}
+.prog{position:absolute;left:26px;bottom:90px;display:flex;gap:8px;z-index:5}
+.prog span{width:34px;height:3px;border-radius:2px;background:#ffffff26;overflow:hidden}
+.prog span b{display:block;height:100%;width:0;background:#fff}
+.hint{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);font-size:11px;letter-spacing:.3em;color:var(--mut);animation:bob 2s infinite}
+@keyframes bob{50%{transform:translate(-50%,6px)}}
+.spec{position:absolute;right:26px;top:96px;font-size:12px;color:var(--mut);text-align:right;line-height:1.9;letter-spacing:.06em}
+.spec b{color:#fff;font-weight:600}
+/* content */
+section{padding:120px 0;position:relative;z-index:2;background:var(--bg)}
+.sh h2{font:800 clamp(34px,4.6vw,60px)/1 var(--f);letter-spacing:-.04em;margin:14px 0 50px;max-width:760px}
+.fam{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.fc{border-radius:22px;padding:24px;min-height:320px;display:flex;flex-direction:column;position:relative;overflow:hidden;border:1px solid var(--line);background:linear-gradient(160deg,#16181c,#0b0c0e);transition:.4s;transform-style:preserve-3d}
+.fc:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#ffffff1c 48%,transparent 60%);transform:translateX(-120%);transition:.9s}
+.fc:hover:after{transform:translateX(120%)}
+.fc .s{font:800 58px/1 var(--f)}
+.fc h3{font-size:19px;font-weight:700;margin-top:auto}
+.fc p{color:var(--mut);font-size:14px;margin-top:6px}
+.fc ul{list-style:none;margin-top:14px;font-size:12px;color:#c0c5cc;display:flex;flex-wrap:wrap;gap:5px}
+.fc li{padding:4px 8px;border-radius:6px;background:#ffffff0d}
+.ft{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fb{padding:28px;border-radius:22px;border:1px solid var(--line);background:#0e0f12}
+.fb h4{font-size:20px;font-weight:700;margin-bottom:12px}
+.fb p{color:var(--mut);font-size:14px}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:70px}
+.nums div{padding:30px 0;border-top:1px solid var(--line)}
+.nums b{font:800 50px/1 var(--f);letter-spacing:-.04em}
+.nums span{display:block;color:var(--mut);margin-top:8px;font-size:14px}
+.enq{border-radius:30px;padding:60px;border:1px solid var(--line);background:radial-gradient(80% 120% at 100% 0%,#1b2a38,transparent 60%),#0d0e11;display:grid;grid-template-columns:1fr 1.1fr;gap:44px}
+.enq h2{font:800 50px/1 var(--f);letter-spacing:-.04em;margin:14px 0}
+.enq p,.enq .c{color:var(--mut)}
+.enq .c{display:grid;gap:8px;margin-top:30px}
+.enq .c a{color:#fff}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+form input,form textarea,form select{font:400 15px var(--f);padding:15px 18px;border-radius:14px;border:1px solid var(--line);background:#ffffff08;color:#fff;outline:none}
+form select option{color:#000}
+form input:focus,form textarea:focus{border-color:var(--acc)}
+form textarea{grid-column:1/-1;min-height:120px}
+form .btn{grid-column:1/-1;justify-content:center}
+footer{padding:40px 0 110px;color:var(--mut);font-size:13px;border-top:1px solid var(--line);position:relative;z-index:2;background:var(--bg)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.r{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}.r.in{opacity:1;transform:none}
+.nogl{position:absolute;inset:0;display:none;place-items:center;color:var(--mut)}
+@media(max-width:1000px){.fam{grid-template-columns:1fr 1fr}.ft,.enq{grid-template-columns:1fr}.nums{grid-template-columns:1fr 1fr}.nav nav{display:none}.enq{padding:32px 22px}.spec{display:none}.copy{top:auto;bottom:150px;transform:none}.copy .wrap{height:300px}.panel p{font-size:15px}.swatches{flex-direction:row;bottom:auto;top:84px;right:20px}.sw span{display:none}}
+@media(max-width:560px){.fam,form,.nums{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><a class="logo" href="#">REVOLUTION MATERIALS</a><nav><a href="#metals">Metals</a><a href="#fasteners">Fasteners</a><a href="#enquire">Contact</a></nav><a class="btn" href="#enquire">Get a quote</a></div></header>
+
+<div id="stage"><div class="sticky">
+  <canvas id="gl"></canvas><div class="glow"></div><div class="nogl" id="nogl">3D preview needs WebGL</div>
+  <div class="spec" id="spec"></div>
+  <div class="copy"><div class="wrap">
+    <div class="panel on" data-p="0"><span class="k">Specialty metals / Melbourne</span><h1>Engineered<br><span class="chrome">to hold.</span></h1><p>Special alloy fasteners and specialty metals for the jobs where standard steel gives up.</p></div>
+    <div class="panel" data-p="1"><span class="k">01 / Materials</span><h2>Nickel. Titanium.<br>Stainless. Alloy.</h2><p>Inconel, Monel, Hastelloy, duplex and titanium grades sourced from mills worldwide. Switch the metal on the right.</p></div>
+    <div class="panel" data-p="2"><span class="k">02 / Fasteners</span><h2>3 mm to 200 mm.<br>One piece or thousands.</h2><p>Bolts, studs, screws, nuts and washers made to ASTM, DIN and BS. Small orders are a specialty.</p></div>
+    <div class="panel" data-p="3"><span class="k">03 / Certified</span><h2>Every part.<br><span class="chrome">Certified.</span></h2><p>Full mill certification, heat treatment, coatings and testing available.</p><a class="btn" href="#enquire">Request a quote</a></div>
+  </div></div>
+  <div class="prog" id="prog"><span><b></b></span><span><b></b></span><span><b></b></span><span><b></b></span></div>
+  <div class="swatches" id="sws"></div>
+  <div class="hint" id="hint">SCROLL TO ASSEMBLE</div>
+</div></div>
+
+<section id="metals"><div class="wrap">
+  <div class="sh r"><span class="k">Materials</span><h2>Five families of specialty metal.</h2></div>
+  <div class="fam" id="fam"></div>
+</div></section>
+
+<section id="fasteners" style="padding-top:0"><div class="wrap">
+  <div class="sh r"><span class="k">Fasteners</span><h2>Special alloy fasteners, made to your standard.</h2></div>
+  <div class="ft" id="ft"></div>
+  <div class="nums" id="nums"></div>
+</div></section>
+
+<section id="enquire" style="padding-top:0"><div class="wrap">
+  <div class="enq r">
+    <div><span class="k">Enquire</span><h2>What are you building?</h2><p>Send the grade, form, size and quantity. We reply with price and lead time.</p><div class="c" id="ct"></div></div>
+    <form data-rfq><input placeholder="Name" required><input placeholder="Company"><input type="email" placeholder="Email" required><input placeholder="Phone"><select id="sel" style="grid-column:1/-1"></select><textarea placeholder="Grade, form, size, quantity and certification"></textarea><button class="btn">Send enquiry</button></form>
+  </div>
+</div></section>
+<footer><div class="wrap" id="foot"></div></footer>
+
+<script>
+const R=RM,$=id=>document.getElementById(id);
+$('fam').innerHTML=R.metals.map(m=>`<div class="fc r"><div class="s chrome">${m.sym}</div><h3>${m.name}</h3><p>${m.short}</p><ul>${m.grades.slice(0,5).map(g=>`<li>${g}</li>`).join('')}</ul></div>`).join('');
+$('ft').innerHTML=R.fasteners.map(f=>`<div class="fb r"><h4>${f.name}</h4><p>${f.items.join(', ')}</p></div>`).join('');
+$('nums').innerHTML=R.proof.map(p=>`<div class="r"><b>${p.n}${p.u?' '+p.u:''}</b><span>${p.l}</span></div>`).join('');
+$('sel').innerHTML='<option>What do you need?</option>'+R.metals.map(m=>`<option>${m.name}</option>`).join('')+'<option>Fasteners</option>';
+$('ct').innerHTML=`<a href="tel:${R.tel}">${R.phone1}</a><a href="mailto:${R.email}">${R.email}</a><span>${R.address}</span>`;
+$('foot').innerHTML=`<span>&copy; ${new Date().getFullYear()} ${R.legal}</span><span>${R.address}</span>`;
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+const cv=document.getElementById('gl');
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(e){document.getElementById('nogl').style.display='grid';throw e}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene();
+const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new RoomEnvironment(),.04).texture;
+const cam=new THREE.PerspectiveCamera(32,1,.1,100);
+const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(4,6,5);scene.add(key);
+const rim=new THREE.DirectionalLight(0x9fd3ff,2.5);rim.position.set(-6,2,-4);scene.add(rim);
+
+const METALS=[
+ {n:"Stainless 316",c:0xd9dde3,r:.22,spec:"ASTM A193 B8M"},
+ {n:"Titanium Gr 5",c:0x9a9aa6,r:.32,spec:"Ti 6Al-4V, UNS R56400"},
+ {n:"Inconel 718",c:0xb8b2a6,r:.28,spec:"UNS N07718"},
+ {n:"Alloy B7",c:0x3a3d42,r:.38,spec:"ASTM A193 B7, black oxide"},
+ {n:"Al bronze",c:0xd0a35c,r:.26,spec:"Aluminium bronze, BS 2874"}];
+const mat=new THREE.MeshStandardMaterial({color:METALS[0].c,metalness:1,roughness:METALS[0].r});
+
+// bolt
+const bolt=new THREE.Group();
+const head=new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.05,.62,6,1),mat);head.position.y=2.2;
+const chamfer=new THREE.Mesh(new THREE.CylinderGeometry(.92,1.05,.08,24),mat);chamfer.position.y=2.55;
+const washerFace=new THREE.Mesh(new THREE.CylinderGeometry(.95,.95,.06,48),mat);washerFace.position.y=1.86;
+const shank=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,4.2,64),mat);shank.position.y=-.25;
+bolt.add(head,chamfer,washerFace,shank);
+// thread helix
+class Helix extends THREE.Curve{constructor(r,turns,h){super();this.r=r;this.t=turns;this.h=h}getPoint(t,o=new THREE.Vector3()){const a=t*Math.PI*2*this.t;return o.set(Math.cos(a)*this.r,-t*this.h,Math.sin(a)*this.r)}}
+const thread=new THREE.Mesh(new THREE.TubeGeometry(new Helix(.5,15,3.0),1400,.07,8,false),mat);thread.position.y=1.0;bolt.add(thread);
+const tip=new THREE.Mesh(new THREE.CylinderGeometry(.5,.38,.14,48),mat);tip.position.y=-2.42;bolt.add(tip);
+scene.add(bolt);
+// nut
+const sh=new THREE.Shape();for(let i=0;i<6;i++){const a=Math.PI/3*i;const x=Math.cos(a)*1.05,z=Math.sin(a)*1.05;i?sh.lineTo(x,z):sh.moveTo(x,z)}sh.closePath();
+const hole=new THREE.Path();hole.absarc(0,0,.56,0,Math.PI*2,true);sh.holes.push(hole);
+const ng=new THREE.ExtrudeGeometry(sh,{depth:.75,bevelEnabled:true,bevelThickness:.05,bevelSize:.05,bevelSegments:3,curveSegments:48});ng.rotateX(Math.PI/2);ng.translate(0,.375,0);
+const nut=new THREE.Mesh(ng,mat);scene.add(nut);
+// washer
+const wg=new THREE.RingGeometry(.58,1.25,64);const washer=new THREE.Mesh(new THREE.CylinderGeometry(1.25,1.25,.1,64,1,true),mat);
+const wtop=new THREE.Mesh(wg,mat);wtop.rotation.x=-Math.PI/2;wtop.position.y=.05;const wbot=wtop.clone();wbot.rotation.x=Math.PI/2;wbot.position.y=-.05;
+const washerG=new THREE.Group();washerG.add(wtop,wbot,washer);scene.add(washerG);
+// floor shadow glow
+const disc=new THREE.Mesh(new THREE.CircleGeometry(3,64),new THREE.MeshBasicMaterial({color:0x9fd3ff,transparent:true,opacity:.05}));disc.rotation.x=-Math.PI/2;disc.position.y=-3.2;scene.add(disc);
+
+const group=new THREE.Group();scene.add(group);[bolt,nut,washerG,disc].forEach(o=>group.add(o));
+
+// swatches
+const sws=document.getElementById('sws');
+sws.innerHTML=METALS.map((m,i)=>`<button class="sw ${i?'':'on'}" data-i="${i}"><span>${m.n}</span><i style="background:#${m.c.toString(16).padStart(6,'0')}"></i></button>`).join('');
+let target={c:new THREE.Color(METALS[0].c),r:METALS[0].r},cur=0;
+function setSpec(){const m=METALS[cur];document.getElementById('spec').innerHTML=`HEX BOLT M20 x 120<br>MATERIAL <b>${m.n}</b><br>${m.spec}<br>CERT EN 10204 3.1`}
+sws.onclick=e=>{const b=e.target.closest('.sw');if(!b)return;cur=+b.dataset.i;sws.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x==b));target={c:new THREE.Color(METALS[cur].c),r:METALS[cur].r};setSpec()};setSpec();
+
+function size(){const w=cv.clientWidth,h=cv.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();group.position.x=w>1000?2.4:0;group.position.y=w>1000?0:1.4}
+addEventListener('resize',size);size();
+let mx=0,my=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+const stage=document.getElementById('stage'),panels=[...document.querySelectorAll('.panel')],bars=[...document.querySelectorAll('.prog b')];
+let sp=0;
+function prog(){const r=stage.getBoundingClientRect();return Math.min(1,Math.max(0,-r.top/(r.height-innerHeight)))}
+const clock=new THREE.Clock();
+(function loop(){const t=clock.getElapsedTime();const p=prog();sp+=(p-sp)*.08;
+  // assembly: washer drops then nut screws down
+  const w=Math.min(1,sp/.35),n=Math.min(1,Math.max(0,(sp-.25)/.6));
+  washerG.position.y=THREE.MathUtils.lerp(-5.2,1.78,easeOut(w));washerG.rotation.y=t*.4;
+  nut.position.y=THREE.MathUtils.lerp(-6.2,.98,easeOut(n));nut.rotation.y=n*Math.PI*2*6;
+  group.rotation.y=t*.25+sp*Math.PI*1.2+mx*.6;group.rotation.x=.18+my*.25-sp*.15;group.rotation.z=-.35+sp*.35;
+  cam.position.set(0,1.2-sp*.6,13-sp*2.2);cam.lookAt(group.position.x*.0,0,0);
+  mat.color.lerp(target.c,.08);mat.roughness+=(target.r-mat.roughness)*.08;
+  const idx=Math.min(3,Math.floor(p*4.0001));panels.forEach((el,i)=>el.classList.toggle('on',i===idx));
+  bars.forEach((b,i)=>b.style.width=Math.min(1,Math.max(0,p*4-i))*100+'%');
+  document.getElementById('hint').style.opacity=p>.05?0:1;
+  renderer.render(scene,cam);requestAnimationFrame(loop)})();
+function easeOut(x){return 1-Math.pow(1-x,3)}
+</script>
+</body>
+</html>

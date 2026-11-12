@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Revolution Materials | Draft 1 Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/clients/revolution-materials/shared/data.js"></script>
+<script src="/clients/revolution-materials/shared/bar.js"></script>
+<style>
+:root{--bg:#0a0908;--bg2:#12100e;--card:#171411;--line:rgba(255,255,255,.08);--text:#f4efe9;--muted:#a39a90;--hot:#ff6a1a;--hot2:#ffb13b;--d:"Archivo",sans-serif;--s:"Inter",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--s);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+header{position:fixed;inset:0 0 auto;z-index:50;transition:.3s}
+header.solid{background:rgba(10,9,8,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{font:900 18px var(--d);letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.logo i{width:30px;height:30px;border-radius:7px;background:conic-gradient(from 200deg,var(--hot),var(--hot2),#fff3,var(--hot));display:block;box-shadow:0 0 24px #ff6a1a66}
+.nav nav{display:flex;gap:28px;font-size:14px;color:var(--muted)}
+.nav nav a:hover{color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:10px;font:700 14px var(--s);border:0;cursor:pointer;transition:.25s}
+.btn.hot{background:linear-gradient(135deg,var(--hot),var(--hot2));color:#140a02;box-shadow:0 8px 30px #ff6a1a44}
+.btn.hot:hover{transform:translateY(-2px);box-shadow:0 14px 40px #ff6a1a77}
+.btn.ghost{border:1px solid var(--line);color:#fff;background:#ffffff08}
+.btn.ghost:hover{background:#ffffff14}
+/* hero */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
+#sparks{position:absolute;inset:0;width:100%;height:100%}
+.hero:after{content:"";position:absolute;left:50%;bottom:-40%;width:1200px;height:800px;transform:translateX(-50%);background:radial-gradient(closest-side,#ff6a1a55,transparent);pointer-events:none;animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.55;transform:translateX(-50%) scale(1.08)}}
+.hero .wrap{position:relative;z-index:2}
+.eyebrow{display:inline-flex;gap:10px;align-items:center;font:600 12px var(--s);letter-spacing:.18em;text-transform:uppercase;color:var(--hot2);padding:8px 14px;border:1px solid #ffb13b33;border-radius:999px;background:#ffb13b0d}
+.eyebrow b{width:7px;height:7px;border-radius:50%;background:var(--hot);box-shadow:0 0 12px var(--hot);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.3}}
+h1{font:900 clamp(44px,8.4vw,116px)/.92 var(--d);letter-spacing:-.035em;margin:26px 0 24px;text-transform:uppercase}
+h1 .molten{background:linear-gradient(90deg,var(--hot),var(--hot2),#fff,var(--hot2),var(--hot));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+@keyframes flow{to{background-position:300% 0}}
+.hero p.lead{font-size:clamp(17px,1.6vw,20px);color:var(--muted);max-width:620px;margin-bottom:34px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.scroll{position:absolute;bottom:90px;left:24px;font-size:12px;color:var(--muted);letter-spacing:.2em;writing-mode:vertical-rl;z-index:2}
+/* marquee */
+.marquee{border-block:1px solid var(--line);background:var(--bg2);overflow:hidden;padding:18px 0}
+.track{display:flex;gap:46px;width:max-content;animation:mq 50s linear infinite;font:800 22px var(--d);color:#ffffff38;text-transform:uppercase}
+.track span:nth-child(3n){color:var(--hot)}
+@keyframes mq{to{transform:translateX(-50%)}}
+section{padding:120px 0}
+.sh{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:54px;flex-wrap:wrap}
+.sh h2{font:900 clamp(34px,4.6vw,62px)/1 var(--d);letter-spacing:-.03em;text-transform:uppercase;max-width:700px}
+.sh p{color:var(--muted);max-width:420px}
+.k{font:600 12px var(--s);letter-spacing:.2em;color:var(--hot2);text-transform:uppercase;margin-bottom:14px;display:block}
+/* metals */
+.metals{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.m{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;min-height:340px;overflow:hidden;cursor:pointer;transition:.35s;display:flex;flex-direction:column}
+.m:before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at var(--x,50%) var(--y,0%),#ff6a1a2e,transparent 45%);opacity:0;transition:.3s}
+.m:hover:before{opacity:1}
+.m:hover{transform:translateY(-6px);border-color:#ff6a1a55}
+.m .sym{font:900 64px/1 var(--d);color:transparent;-webkit-text-stroke:1.5px #ffffff40;transition:.35s}
+.m:hover .sym{-webkit-text-stroke-color:var(--hot);text-shadow:0 0 30px #ff6a1a66}
+.m h3{font:800 20px var(--d);margin:auto 0 8px;position:relative}
+.m p{font-size:14px;color:var(--muted);position:relative}
+.m .more{font-size:13px;color:var(--hot2);margin-top:14px;position:relative}
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:80;display:none}
+.drawer.open{display:block}
+.drawer .shade{position:absolute;inset:0;background:#000a;backdrop-filter:blur(4px);animation:fade .3s}
+.drawer .panel{position:absolute;right:0;top:0;bottom:0;width:min(520px,100%);background:#120f0d;border-left:1px solid var(--line);padding:40px 34px;overflow:auto;animation:slide .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes slide{from{transform:translateX(100%)}}
+@keyframes fade{from{opacity:0}}
+.panel .x{position:absolute;top:18px;right:20px;font-size:26px;background:none;border:0;color:#fff;cursor:pointer}
+.panel h3{font:900 38px var(--d);text-transform:uppercase;margin:10px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.chip{padding:8px 13px;border-radius:9px;background:#ffffff0a;border:1px solid var(--line);font-size:13px;cursor:pointer;transition:.2s}
+.chip:hover,.chip.sel{background:#ff6a1a22;border-color:var(--hot);color:#fff}
+.fact{padding:16px;border-radius:12px;background:linear-gradient(135deg,#ff6a1a1f,transparent);border:1px solid #ff6a1a33;font-size:14px;margin-bottom:20px}
+/* forms grid */
+.forms{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.forms div{background:var(--bg);padding:30px;font:800 20px var(--d);display:flex;justify-content:space-between;align-items:center;transition:.3s}
+.forms div:hover{background:#17120e;color:var(--hot2)}
+.forms small{font:600 12px var(--s);color:var(--muted)}
+/* fasteners */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.tab{padding:12px 20px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--muted);font:600 14px var(--s);cursor:pointer;transition:.25s}
+.tab.on{background:#fff;color:#000}
+.fpanel{display:grid;grid-template-columns:1fr 1.1fr;gap:30px;align-items:center}
+.flist{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flist div{padding:16px 18px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:500;animation:pop .45s both}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}}
+.bolt{aspect-ratio:1;border-radius:24px;background:radial-gradient(circle at 50% 40%,#2a211a,#0d0b09);border:1px solid var(--line);display:grid;place-items:center;position:relative;overflow:hidden}
+.bolt svg{width:70%;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bolt .spec{position:absolute;bottom:18px;left:18px;right:18px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+/* mats table */
+.mats{margin-top:60px;border-top:1px solid var(--line)}
+.mats div{display:grid;grid-template-columns:260px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--line)}
+.mats b{font:800 17px var(--d)}
+.mats span{color:var(--muted);font-size:15px}
+/* proof */
+.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.p{padding:34px 26px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.p .n{font:900 54px/1 var(--d);background:linear-gradient(180deg,#fff,#ffffff80);-webkit-background-clip:text;background-clip:text;color:transparent}
+.p .n em{font-style:normal;font-size:22px;color:var(--hot2);-webkit-text-fill-color:var(--hot2)}
+.p .l{color:var(--muted);margin-top:8px}
+.promises{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:70px}
+.promises h4{font:800 18px var(--d);margin:16px 0 8px}
+.promises p{color:var(--muted);font-size:14px}
+.promises .num{font:900 14px var(--d);color:var(--hot)}
+/* enquiry */
+.enq{display:grid;grid-template-columns:1fr 1.15fr;gap:50px;background:linear-gradient(135deg,#1c130c,#0f0c0a);border:1px solid #ff6a1a2a;border-radius:28px;padding:60px;position:relative;overflow:hidden}
+.enq:before{content:"";position:absolute;right:-200px;top:-200px;width:500px;height:500px;background:radial-gradient(closest-side,#ff6a1a33,transparent)}
+.enq h2{font:900 clamp(34px,4vw,54px)/1 var(--d);text-transform:uppercase;margin-bottom:18px}
+.enq .c{color:var(--muted);margin:24px 0 0;display:grid;gap:10px;font-size:15px}
+.enq .c a{color:#fff}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative}
+input,select,textarea{width:100%;padding:15px 16px;border-radius:11px;background:#0008;border:1px solid var(--line);color:#fff;font:15px var(--s);outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--hot)}
+textarea{grid-column:1/-1;min-height:120px;resize:vertical}
+form .full{grid-column:1/-1}
+form .btn{justify-content:center}
+.upload{grid-column:1/-1;padding:16px;border:1px dashed #ffffff30;border-radius:11px;color:var(--muted);font-size:14px;text-align:center}
+footer{padding:60px 0 110px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.reveal{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:980px){.metals{grid-template-columns:1fr 1fr}.forms{grid-template-columns:1fr 1fr}.fpanel,.enq{grid-template-columns:1fr}.proof,.promises{grid-template-columns:1fr 1fr}.nav nav{display:none}.enq{padding:34px 24px}.mats div{grid-template-columns:1fr;gap:4px}}
+@media(max-width:560px){.metals,.forms,.proof,.promises,form{grid-template-columns:1fr}.flist{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header id="hdr"><div class="wrap nav">
+  <a class="logo" href="#"><i></i>REVOLUTION MATERIALS</a>
+  <nav><a href="#metals">Metals</a><a href="#fasteners">Fasteners</a><a href="#why">Why us</a><a href="#enquire">Contact</a></nav>
+  <a class="btn hot" href="#enquire">Request a quote</a>
+</div></header>
+
+<section class="hero">
+  <canvas id="sparks"></canvas>
+  <div class="wrap">
+    <span class="eyebrow"><b></b>Laverton North, Melbourne. Supplying Australia since the early 1980s</span>
+    <h1>Metals that<br><span class="molten">survive</span><br>the job.</h1>
+    <p class="lead">Nickel alloys, titanium, stainless and alloy steels, plus special alloy fasteners from 3 mm to 200 mm. Sourced to your exact specification, fully certified, and small orders are welcome.</p>
+    <div class="cta"><a class="btn hot" href="#enquire">Request a quote</a><a class="btn ghost" href="#metals">Browse materials</a></div>
+  </div>
+  <div class="scroll">SCROLL</div>
+</section>
+
+<div class="marquee"><div class="track" id="track"></div></div>
+
+<section id="metals"><div class="wrap">
+  <div class="sh reveal"><div><span class="k">01 Materials</span><h2>Five families. One supplier.</h2></div><p>Tap a family to see the grades we source. Can't see yours? We have found stranger.</p></div>
+  <div class="metals" id="metalGrid"></div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="sh reveal"><div><span class="k">02 Forms</span><h2>Any shape you need it in.</h2></div></div>
+  <div class="forms reveal" id="forms"></div>
+</div></section>
+
+<section id="fasteners" style="background:var(--bg2)"><div class="wrap">
+  <div class="sh reveal"><div><span class="k">03 Fasteners</span><h2>Special alloy fasteners.</h2></div><p>Heat treatment, surface coatings, testing and certification available on every order.</p></div>
+  <div class="tabs reveal" id="tabs"></div>
+  <div class="fpanel">
+    <div class="flist" id="flist"></div>
+    <div class="bolt reveal">
+      <svg viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#ffb13b"/><stop offset=".5" stop-color="#5a4535"/><stop offset="1" stop-color="#ff6a1a"/></linearGradient></defs>
+        <polygon points="100,18 171,59 171,141 100,182 29,141 29,59" fill="none" stroke="url(#g)" stroke-width="5"/>
+        <polygon points="100,40 152,70 152,130 100,160 48,130 48,70" fill="#ffffff06" stroke="#ffffff22" stroke-width="2"/>
+        <circle cx="100" cy="100" r="34" fill="#0a0908" stroke="url(#g)" stroke-width="4"/>
+        <circle cx="100" cy="100" r="22" fill="none" stroke="#ffffff22" stroke-width="2" stroke-dasharray="4 5"/></svg>
+      <div class="spec"><span>M3 to M200</span><span>1/8" to 8"</span><span>Certified</span></div>
+    </div>
+  </div>
+  <div class="mats reveal" id="mats"></div>
+</div></section>
+
+<section id="why"><div class="wrap">
+  <div class="sh reveal"><div><span class="k">04 Why Revolution</span><h2>The right material. The right spec. The right time.</h2></div></div>
+  <div class="proof" id="proof"></div>
+  <div class="promises" id="promises"></div>
+</div></section>
+
+<section id="enquire" style="padding-top:20px"><div class="wrap">
+  <div class="enq reveal">
+    <div>
+      <span class="k">05 Enquire</span>
+      <h2>Tell us what you need.</h2>
+      <p style="color:var(--muted)">Grade, form, size and quantity. Attach a drawing if you have one. We reply with price and lead time.</p>
+      <div class="c" id="contact"></div>
+    </div>
+    <form data-rfq>
+      <input placeholder="Your name" required><input placeholder="Company">
+      <input type="email" placeholder="Email" required><input placeholder="Phone">
+      <select id="fam"><option>Material family</option></select>
+      <select><option>Product form</option></select>
+      <textarea placeholder="Grade, size, quantity, standard (ASTM, DIN, BS) and any certification needed"></textarea>
+      <div class="upload">Drop a drawing or spec sheet here (PDF, DWG, JPG)</div>
+      <button class="btn hot full">Send my enquiry</button>
+    </form>
+  </div>
+</div></section>
+
+<footer><div class="wrap" id="foot"></div></footer>
+
+<div class="drawer" id="drawer"><div class="shade"></div><div class="panel" id="panel"></div></div>
+
+<script>
+const R=window.RM;
+// marquee
+const words=[].concat(...R.metals.map(m=>m.grades.slice(0,5)));
+document.getElementById('track').innerHTML=[...words,...words].map(w=>`<span>${w}</span>`).join('');
+// metals
+document.getElementById('metalGrid').innerHTML=R.metals.map((m,i)=>`<div class="m reveal" style="transition-delay:${i*80}ms" data-i="${i}"><div class="sym">${m.sym}</div><h3>${m.name}</h3><p>${m.short}</p><div class="more">${m.grades.length}+ grades. View</div></div>`).join('');
+document.querySelectorAll('.m').forEach(el=>{
+  el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();el.style.setProperty('--x',e.clientX-r.left+'px');el.style.setProperty('--y',e.clientY-r.top+'px')});
+  el.addEventListener('click',()=>openDrawer(+el.dataset.i));
+});
+const dr=document.getElementById('drawer');
+function openDrawer(i){const m=R.metals[i];
+  document.getElementById('panel').innerHTML=`<button class="x" onclick="closeDrawer()">&times;</button><span class="k">${m.sym}</span><h3>${m.name}</h3><p style="color:var(--muted)">${m.short}</p><div class="chips">${m.grades.map(g=>`<span class="chip">${g}</span>`).join('')}</div><div class="fact">${m.fact}</div><p style="color:var(--muted);font-size:14px;margin-bottom:20px">Select the grades you need, then send them through as one enquiry.</p><a class="btn hot" href="#enquire" onclick="pick('${m.name}')">Quote selected grades</a>`;
+  dr.classList.add('open');
+  dr.querySelectorAll('.chip').forEach(c=>c.onclick=()=>c.classList.toggle('sel'));}
+function closeDrawer(){dr.classList.remove('open')}
+function pick(n){const sel=[...dr.querySelectorAll('.chip.sel')].map(c=>c.textContent);closeDrawer();
+  document.querySelector('#enquire textarea').value=n+': '+(sel.length?sel.join(', '):'grade to confirm')+'\nForm and size: \nQuantity: ';}
+dr.querySelector('.shade').onclick=closeDrawer;
+// forms
+document.getElementById('forms').innerHTML=R.forms.map((f,i)=>`<div>${f}<small>0${i+1}</small></div>`).join('');
+// fasteners
+const tabs=document.getElementById('tabs'),fl=document.getElementById('flist');
+tabs.innerHTML=R.fasteners.map((f,i)=>`<button class="tab ${i?'':'on'}" data-i="${i}">${f.name}</button>`).join('');
+function showF(i){fl.innerHTML=R.fasteners[i].items.map((x,j)=>`<div style="animation-delay:${j*45}ms">${x}</div>`).join('');tabs.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j==i))}
+tabs.onclick=e=>{if(e.target.dataset.i)showF(e.target.dataset.i)};showF(0);
+document.getElementById('mats').innerHTML=R.fastenerMaterials.map(m=>`<div><b>${m.name}</b><span>${m.list}</span></div>`).join('');
+// proof
+document.getElementById('proof').innerHTML=R.proof.map(p=>`<div class="p reveal"><div class="n" data-n="${p.n}">${p.n}${p.u?`<em> ${p.u}</em>`:''}</div><div class="l">${p.l}</div></div>`).join('');
+document.getElementById('promises').innerHTML=R.promises.map((p,i)=>`<div class="reveal" style="transition-delay:${i*90}ms"><span class="num">0${i+1}</span><h4>${p.t}</h4><p>${p.d}</p></div>`).join('');
+document.getElementById('fam').innerHTML+=R.metals.map(m=>`<option>${m.name}</option>`).join('')+'<option>Fasteners</option>';
+document.querySelectorAll('select')[1].innerHTML+=R.forms.map(f=>`<option>${f}</option>`).join('');
+document.getElementById('contact').innerHTML=`<a href="tel:${R.tel}">${R.phone1}</a><a href="mailto:${R.email}">${R.email}</a><span>${R.address}</span>`;
+document.getElementById('foot').innerHTML=`<span>&copy; ${new Date().getFullYear()} ${R.legal}</span><span>${R.address}</span><span>${R.phone1} &middot; ${R.phone2}</span>`;
+// header + reveal
+addEventListener('scroll',()=>document.getElementById('hdr').classList.toggle('solid',scrollY>40));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+// sparks
+const cv=document.getElementById('sparks'),cx=cv.getContext('2d');let W,H,P=[],mx=-999,my=-999;
+function rs(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio}rs();addEventListener('resize',rs);
+cv.parentElement.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)*devicePixelRatio;my=(e.clientY-r.top)*devicePixelRatio;for(let i=0;i<3;i++)spawn(mx,my,1)});
+function spawn(x,y,burst){P.push({x,y,vx:(Math.random()-.5)*(burst?6:2.2),vy:-(Math.random()*(burst?5:4)+1.5),l:1,s:Math.random()*2+1})}
+(function loop(){cx.globalCompositeOperation='source-over';cx.fillStyle='rgba(10,9,8,.28)';cx.fillRect(0,0,W,H);cx.globalCompositeOperation='lighter';
+  for(let i=0;i<4;i++)spawn(W*(.3+Math.random()*.4),H+10);
+  P=P.filter(p=>p.l>0);for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vy+=.035;p.vx*=.99;p.l-=.009;
+    const g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.s*6*devicePixelRatio);g.addColorStop(0,`rgba(255,${150+p.l*90|0},60,${p.l})`);g.addColorStop(1,'rgba(255,90,20,0)');
+    cx.fillStyle=g;cx.beginPath();cx.arc(p.x,p.y,p.s*6*devicePixelRatio,0,7);cx.fill();}
+  if(P.length>900)P.splice(0,P.length-900);requestAnimationFrame(loop)})();
+</script>
+</body>
+</html>
