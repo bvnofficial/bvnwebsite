@@ -150,7 +150,7 @@ const ICONS={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-
 const I=n=>`<svg class="ico" viewBox="0 0 24 24">${ICONS[n]||""}</svg>`;
 
 /* ============ catalogue ============ */
-const GR={"316":"Stainless 316","304":"Stainless 304","2205":"Duplex 2205","2507":"Super Duplex 2507","ti5":"Titanium Gr 5","ti2":"Titanium Gr 2","625":"Inconel 625","718":"Inconel 718","400":"Monel 400","c276":"Hastelloy C-276","b7":"Alloy B7","albr":"Aluminium Bronze"};
+const GR={"316":"Stainless 316","304":"Stainless 304","2205":"Duplex 2205","f255":"Ferralium 255","ti5":"Titanium Gr 5","ti2":"Titanium Gr 2","625":"Inconel 625","718":"Inconel 718","400":"Monel 400","c276":"Hastelloy C-276","b7":"Alloy B7","albr":"Aluminium Bronze"};
 const STAGES=["New enquiry","Quoting","Quote sent","Follow up","Won","Lost"];
 const STAGE_TAG={"New enquiry":"or","Quoting":"blue","Quote sent":"","Follow up":"warn","Won":"ok","Lost":"bad"};
 const SRC_ICON={"3D Part Builder":"cube","Grade Finder":"search","Google search":"search","Phone call":"phone","Email":"msg","Repeat customer":"users"};
@@ -182,7 +182,7 @@ function seed(){
     {id:"o13",c:"c13",title:"304 set screws, top up stock",stage:"New enquiry",src:"Phone call",at:t-5*HR,certs:[],lines:[L("M8 x 16 set screw","304",2000,"pcs",.32,"t=set&m=304&d=8&L=16&q=2000")],note:"Called in, wants price and lead time today."},
     {id:"o2",c:"c2",title:"Titanium fasteners and plate, hull fit out",stage:"Quoting",src:"3D Part Builder",at:t-1.3*DAY,certs:["EN 10204 3.1"],lines:[L("M12 x 40 socket cap screw","ti5",250,"pcs",14.80,"t=sock&m=ti5&d=12&L=40&q=250"),L("Plate 6 mm, 1000 x 2000","ti2",1,"sheet",2480)]},
     {id:"o8",c:"c8",title:"Duplex 2205 plate, tank job",stage:"Quoting",src:"Google search",at:t-2*DAY,certs:["EN 10204 3.1","NATA tested"],lines:[L("Plate 10 mm, 1500 x 3000","2205",4,"sheets",5575)]},
-    {id:"o5",c:"c5",title:"Super duplex studs, RO pressure vessels",stage:"Quote sent",src:"3D Part Builder",at:t-2*DAY,sent:t-2*DAY,certs:["EN 10204 3.1","PREN report"],lines:[L("M16 x 110 stud, full thread","2507",800,"pcs",11.20,"t=stud&m=2507&d=16&L=110&th=full&n=1&q=800"),L("M16 heavy hex nut","2507",1600,"pcs",1.55)]},
+    {id:"o5",c:"c5",title:"Super duplex studs, RO pressure vessels",stage:"Quote sent",src:"3D Part Builder",at:t-2*DAY,sent:t-2*DAY,certs:["EN 10204 3.1","PREN report"],lines:[L("M16 x 110 stud, full thread","f255",800,"pcs",11.20,"t=stud&m=f255&d=16&L=110&th=full&n=1&q=800"),L("M16 heavy hex nut","f255",1600,"pcs",1.55)]},
     {id:"o12",c:"c12",title:"Inconel 625 sheet, heater repair",stage:"Quote sent",src:"Repeat customer",at:t-3*DAY,sent:t-1*DAY,certs:["EN 10204 3.1"],lines:[L("Sheet 3 mm, 1219 x 2438","625",4,"sheets",3200)]},
     {id:"o3",c:"c3",title:"B7 studs and 2H nuts, Unit 2 outage",stage:"Follow up",src:"Email",at:t-8*DAY,sent:t-6*DAY,certs:["EN 10204 3.1"],lines:[L("M24 x 200 stud, full thread","b7",1200,"pcs",6.20,"t=stud&m=b7&d=24&L=200&th=full&n=1&q=1200"),L("M24 2H heavy hex nut","b7",2400,"pcs",.98)]},
     {id:"o4",c:"c4",title:"Hastelloy C-276 bar, agitator shafts",stage:"Follow up",src:"Grade Finder",at:t-11*DAY,sent:t-9*DAY,certs:["EN 10204 3.1","PMI report"],lines:[L("Round bar 50 mm x 3 m","c276",4,"lengths",3650)]},
@@ -195,12 +195,12 @@ function seed(){
   const M=(me,text,ago,extra)=>Object.assign({me,text,at:t-ago},extra||{});
   const convos=[
     {id:"v1",c:"c1",o:"o1",ch:"Website RFQ",unread:true,msgs:[M(false,"Hi Jim, need these for the pump skid rebuild. Can you do 3.1 certs and get them to Altona North before the 28th?",18*MIN,{rfq:"o1"})],ai:"Hi Daniel, thanks for the RFQ. All 400 sets are in 316 and we can supply 3.1 certs with country of origin. I'll have pricing to you within the hour and can deliver to Altona North by the 26th. Jim"},
-    {id:"v9",c:"c9",o:"o9",ch:"Email",unread:true,msgs:[M(false,"Found Monel 400 on your site. We have a seawater cooling line on the platform. Is 400 fine or should we be on K-500 for the bolting? Need about 300 sets, M16 x 70.",2.2*HR)],ai:"Hi Kate, for seawater cooling bolting at M16, Monel 400 is the usual pick and it is what we stock. K-500 is worth it only if you need the extra strength, and it costs about 40 percent more. I'll quote both so you can compare. Jim"},
+    {id:"v9",c:"c9",o:"o9",ch:"Email",unread:true,msgs:[M(false,"Found Monel 400 on your site. We have a seawater cooling line on the platform. Is 400 fine or should we be on K-500 for the bolting? Need about 300 sets, M16 x 70.",2.2*HR)],ai:"Hi Kate, for seawater cooling bolting at M16, Monel 400 is the usual pick. We supply both 400 and K-500, and K-500 is worth it only if you need the extra strength. I'll quote both so you can compare. Jim"},
     {id:"v13",c:"c13",o:"o13",ch:"Call",unread:false,msgs:[M(false,"Missed call. AI receptionist took a message: Josh from Sunshine Hydraulics wants a price on 2000 x M8 x 16 304 set screws and a lead time today.",5*HR,{sys:true}),M(true,"Thanks Josh, got your message. Pricing coming this afternoon.",4.8*HR)],ai:"Hi Josh, 2000 x M8 x 16 304 set screws come to $640 plus GST, in stock, and can go out tomorrow. Reply YES and we'll send the invoice. Jim"},
     {id:"v2",c:"c2",o:"o2",ch:"SMS",unread:false,msgs:[M(false,"Sent through the builder. Also need a sheet of Gr 2 plate, 6 mm.",1.3*DAY,{rfq:"o2"}),M(true,"Got it Priya. Checking the plate size with the mill, back to you tomorrow.",1.2*DAY)],ai:"Hi Priya, the 1000 x 2000 Gr 2 plate is confirmed. Full quote for the screws and plate coming today. Jim"},
     {id:"v3",c:"c3",o:"o3",ch:"Email",unread:false,msgs:[M(false,"Please quote 1200 x M24 x 200 B7 studs with 2 x 2H nuts each for the Unit 2 outage.",8*DAY),M(true,"Quote attached, Graham. Stock is held for 14 days.",6*DAY,{doc:"Q-2611-03"})],ai:"Hi Graham, checking in on the B7 studs for the Unit 2 outage. The stock is still held for you until Friday. Want me to lock it in? Jim"},
     {id:"v4",c:"c4",o:"o4",ch:"Email",unread:false,msgs:[M(false,"Do you have C-276 bar in 50 mm? Need 4 x 3 m with PMI.",11*DAY),M(true,"Yes, quote attached with PMI included.",9*DAY,{doc:"Q-2611-01"})],ai:"Hi Sophie, following up on the C-276 bar quote. We can also cut to length if that helps the agitator shafts. Any questions on the PMI reports? Jim"},
-    {id:"v5",c:"c5",o:"o5",ch:"Website RFQ",unread:false,msgs:[M(false,"Studs for the RO pressure vessels, PREN report needed.",2*DAY,{rfq:"o5"}),M(true,"Quote sent with PREN report, Mark.",2*DAY,{doc:"Q-2611-07"})],ai:"Hi Mark, just checking the 2507 stud quote landed. Happy to talk through the PREN numbers. Jim"},
+    {id:"v5",c:"c5",o:"o5",ch:"Website RFQ",unread:false,msgs:[M(false,"Studs for the RO pressure vessels, PREN report needed.",2*DAY,{rfq:"o5"}),M(true,"Quote sent with PREN report, Mark.",2*DAY,{doc:"Q-2611-07"})],ai:"Hi Mark, just checking Ferralium 255 stud quote landed. Happy to talk through the PREN numbers. Jim"},
     {id:"v11",c:"c11",o:"o11",ch:"SMS",unread:false,msgs:[M(false,"PO 44871 sent for the 718 studs. Thanks Jim.",4*DAY),M(true,"Received, thanks Ryan. Dispatch Thursday.",4*DAY)],ai:"Hi Ryan, your 718 studs left today. Tracking is in your email. Jim"}
   ];
   const notices=[
@@ -213,7 +213,7 @@ function seed(){
   ];
   return {contacts,opps,convos,notices,seq:0};
 }
-const KEY="rmhq-demo-1";
+const KEY="rmhq-demo-2";
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S||!S.opps)S=seed();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -372,7 +372,7 @@ function quoteModal(id){
 VIEW.demand=()=>{
   const g={};S.opps.forEach(o=>o.lines.forEach(l=>{const x=g[l.g]||(g[l.g]={n:0,v:0,won:0,cl:0});x.n++;x.v+=l.qty*l.p;if(o.stage==="Won")x.won++;if(["Won","Lost"].includes(o.stage))x.cl++}));
   const rows=Object.entries(g).sort((a,b)=>b[1].v-a[1].v);const mx=rows[0][1].v;
-  const fam={Stainless:["316","304"],Duplex:["2205","2507"],Titanium:["ti5","ti2"],Nickel:["625","718","400","c276"],Other:["b7","albr"]};
+  const fam={Stainless:["316","304"],Duplex:["2205","f255"],Titanium:["ti5","ti2"],Nickel:["625","718","400","c276"],Other:["b7","albr"]};
   const fv=Object.entries(fam).map(([k,ks])=>[k,ks.reduce((a,x)=>a+(g[x]?g[x].v:0),0)]).sort((a,b)=>b[1]-a[1]);const fm=fv[0][1];
   const sizes=[["M8",1],["M10",1],["M12",1],["M16",3],["M20",3],["M24",1]];
   return `<div class="g">
