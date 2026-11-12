@@ -36,15 +36,31 @@ h1{font-size:clamp(36px,5vw,64px);font-weight:800;letter-spacing:-.04em;line-hei
 .note{margin-top:40px;padding:24px;border-radius:18px;border:1px dashed rgba(255,255,255,.16);color:#9aa1ab;font-size:15px}
 .note b{color:#fff}
 footer{margin-top:50px;color:#6b727c;font-size:13px}
-@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.feat{display:grid;grid-template-columns:1.35fr 1fr;border:1px solid rgba(232,96,16,.45);border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#1a120c,#111316 60%);margin-bottom:22px;transition:.3s;box-shadow:0 20px 60px rgba(232,96,16,.12);animation:in .7s forwards;opacity:0}
+.feat:hover{transform:translateY(-4px);box-shadow:0 26px 70px rgba(232,96,16,.22)}
+.feat:hover .shot:after{opacity:1}
+.feat .info{padding:34px;display:flex;flex-direction:column;justify-content:center}
+.feat h2{font-size:34px}
+.feat .go{margin-top:22px;align-self:flex-start;background:#E86010;color:#fff;font-weight:700;padding:12px 20px;border-radius:999px;font-size:14px}
+@media(max-width:860px){.grid,.feat{grid-template-columns:1fr}.feat .info{padding:24px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <span class="k">BVN for Revolution Materials</span>
-  <h1>Five directions for the new Metals and Fasteners site</h1>
+  <h1>Five directions for the new Metals and Fasteners site, plus a 3D Part Builder</h1>
   <p class="lead">Each draft uses your real product range. Click through them, play with the interactive parts, and tell us which one feels most like Revolution Materials. We can also mix pieces from different drafts.</p>
   <div class="meta"><span>Prepared for <b>Jim Picot</b></span><span>Scope <b>Metals and Fasteners only</b></span><span>Goal <b>More quality enquiries</b></span></div>
+  <a class="feat" href="/clients/revolution-materials/builder" target="_blank" rel="noopener">
+    <div class="shot"><iframe src="/clients/revolution-materials/builder#t=hex&m=316&d=16&L=80" loading="lazy" tabindex="-1" title="3D Part Builder preview"></iframe></div>
+    <div class="info">
+      <span class="n">THE SHOWPIECE</span>
+      <h2>3D Part Builder</h2>
+      <p>Customers build the exact bolt, stud, nut or washer they need in 3D. They pick the grade and size, watch the nut thread on, see it at real size on their phone, download the CAD file, and send it for pricing. Every request arrives with the full spec and weight already worked out.</p>
+      <div class="tags"><span>Real ISO threads</span><span>12 grades</span><span>CAD download</span><span>Phone AR</span><span>Quote list</span></div>
+      <span class="go">Open the builder</span>
+    </div>
+  </a>
   <div class="grid" id="g"></div>
   <div class="note"><b>These are design drafts.</b> Forms show a demo message only. In the live build every enquiry goes straight into the GoHighLevel CRM with an instant text and email alert, so no lead gets missed.</div>
   <footer>Prepared by BVN &middot; bvnofficial.com</footer>

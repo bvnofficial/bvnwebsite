@@ -5,7 +5,8 @@
     ["draft-2", "Periodic"],
     ["draft-3", "Blueprint"],
     ["draft-4", "Grade Finder"],
-    ["draft-5", "Chrome 3D"]
+    ["draft-5", "Chrome 3D"],
+    ["builder", "3D Builder"]
   ];
   var here = location.pathname.split("/").filter(Boolean).pop();
   var css = document.createElement("style");
@@ -26,7 +27,7 @@
   bar.className = "bvn-bar";
   var html = '<span class="tag">BVN draft</span>';
   drafts.forEach(function (d, i) {
-    html += '<a href="/clients/revolution-materials/' + d[0] + '" class="' + (d[0] === here ? "on" : "") + '">' + (i + 1) + " " + d[1] + "</a>";
+    html += '<a href="/clients/revolution-materials/' + d[0] + '" class="' + (d[0] === here ? "on" : "") + '">' + (d[0].indexOf("draft") === 0 ? (i + 1) + " " : "") + d[1] + "</a>";
   });
   html += '<a href="/clients/revolution-materials">All drafts</a>';
   bar.innerHTML = html;
