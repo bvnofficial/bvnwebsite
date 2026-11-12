@@ -14,7 +14,7 @@
     ["apexceo", "Apex CEO", "chart"],
     ["grp", "Sales (GHL)"],
     ["overview", "Overview", "home"], ["inbox", "Inbox", "inbox"], ["pipeline", "Pipeline", "pipe"], ["quotes", "Quotes", "quote"],
-    ["grp", "Service (AroFlo)"],
+    ["grp", "Service (Apex app)"],
     ["calendar", "Calendar", "cal"], ["map", "Map", "map"], ["jobs", "Jobs", "tool"], ["maintenance", "Maintenance", "repeat"], ["assets", "Assets", "gate"], ["stock", "Stock", "box"], ["timesheets", "Timesheets", "clock"], ["costing", "Job costing", "chart"],
     ["grp", "Business"],
     ["clients", "Clients", "users"], ["invoices", "Invoices", "dollar"], ["team", "Team", "team"]
@@ -43,7 +43,7 @@
     const full = view === "inbox" || view === "map" || view === "apexceo";
     return `<div class="ceo">
       <aside class="side"><div class="brand"><img src="${H.LOGO}" alt=""><b>HQ</b></div><nav class="nav">${nav}</nav>
-        <div class="sync"><div><i></i>GoHighLevel connected</div><div><i></i>AroFlo connected</div><div class="faint tiny" style="margin-top:4px">Synced ${fmtTime(H.nowISO())}</div></div></aside>
+        <div class="sync"><div><i></i>GoHighLevel connected</div><div><i></i>Apex app connected</div><div class="faint tiny" style="margin-top:4px">Synced ${fmtTime(H.nowISO())}</div></div></aside>
       <div class="main">
         <header class="top"><h1>${TITLES[view]}</h1>
           <div class="search"><span>${I("search")}</span><input class="inp" placeholder="Search clients, jobs, quotes" data-input="search" value="${esc(ui.q || "")}" aria-label="Search"><div id="sres"></div></div>
@@ -219,14 +219,14 @@
         <div class="chips" style="margin-top:8px"><span class="tag">${esc(c.type)}</span>${c.plan ? `<span class="tag ok">${c.plan} plan</span>` : ""}${c.since === 2026 ? '<span class="tag blue">New</span>' : ""}</div></div>
       <div class="sec"><div class="kv"><span>Phone</span><span>${esc(c.phone)}</span><span>Email</span><span class="ellipsis">${esc(c.email)}</span><span>Site</span><span>${esc(c.address)}</span></div></div>
       ${opp ? `<div class="sec"><div class="k">Opportunity</div><div class="b">${esc(opp.title)}</div><div class="row small" style="margin-top:4px"><span class="tag dark">${opp.stage}</span><span class="b">${money(opp.value)}</span><span class="muted">from ${esc(opp.source)}</span></div></div>` : ""}
-      <div class="sec"><div class="k">Jobs in AroFlo</div>${jobs.length ? jobs.map(j => `<div class="small" style="padding:4px 0;cursor:pointer" data-act="job" data-id="${j.id}"><b>${j.id}</b> ${esc(j.title)}<br>${statusTag(j.status)} <span class="muted">${j.start ? dayLabel(j.start) : ""}</span></div>`).join("") : '<div class="small muted">No jobs yet</div>'}</div>
+      <div class="sec"><div class="k">Jobs</div>${jobs.length ? jobs.map(j => `<div class="small" style="padding:4px 0;cursor:pointer" data-act="job" data-id="${j.id}"><b>${j.id}</b> ${esc(j.title)}<br>${statusTag(j.status)} <span class="muted">${j.start ? dayLabel(j.start) : ""}</span></div>`).join("") : '<div class="small muted">No jobs yet</div>'}</div>
       <div class="sec"><div class="k">Gates on site</div>${c.assets.length ? c.assets.map(a => `<div class="small" style="padding:3px 0">${esc(a.name)}<br><span class="muted">${esc(a.kind)}</span></div>`).join("") : '<div class="small muted">None recorded</div>'}</div>`;
   }
 
   /* ---------- pipeline ---------- */
   VIEW.pipeline = () => {
     const s = S();
-    return `<div class="toolbar"><span class="muted">Drag a card to move it. Moving a deal to Won creates the job in AroFlo.</span><span class="grow"></span><button class="btn" data-act="newLead">${I("plus")} Add lead</button></div>
+    return `<div class="toolbar"><span class="muted">Drag a card to move it. Moving a deal to Won creates the job in the Apex app.</span><span class="grow"></span><button class="btn" data-act="newLead">${I("plus")} Add lead</button></div>
       <div class="kanban">${STAGES.map(g => {
         const list = s.opps.filter(o => o.stage === g);
         return `<div class="kcol" data-stage="${g}"><div class="kh"><b>${g}</b><span>${list.length} · ${kfmt(list.reduce((a, o) => a + o.value, 0))}</span></div>
@@ -243,7 +243,7 @@
     o.stage = stage; o.at = H.nowISO();
     if (stage === "Won" && o.clientId && !s.jobs.find(j => j.clientId === o.clientId && j.type === "Install" && j.status !== "Completed")) {
       s.jobs.push(newJob({ clientId: o.clientId, type: "Install", title: o.title, dur: 6, status: "To schedule" }));
-      H.toast(`${H.clientName(o)} won. Install job created in AroFlo, ready to schedule.`);
+      H.toast(`${H.clientName(o)} won. Install job created, ready to schedule.`);
     } else H.toast(`${H.clientName(o)} moved to ${stage}`);
     H.save(); H.render(true);
   }
@@ -358,7 +358,7 @@
     const s = S(), j = o.jobId ? J(o.jobId) : null;
     const v = j ? { client: j.clientId, type: j.type, title: j.title, tech: j.tech || "jake", dur: j.dur, pri: j.priority, notes: j.notes, start: j.start } : { client: o.client || "c1", type: o.type || "Service", title: o.title || "", tech: o.tech || "jake", dur: o.dur || 1.5, pri: "Normal", notes: "", start: o.start };
     if (!v.start) v.start = H.findSlot(v.tech, v.dur, 0) || A.at(1, 8);
-    H.modal(H.mhead(j ? `Reschedule ${j.id}` : "New booking", j ? esc(j.title) : "Creates the job in AroFlo and texts the client") + `<div class="mb"><div class="fgrid">
+    H.modal(H.mhead(j ? `Reschedule ${j.id}` : "New booking", j ? esc(j.title) : "Creates the job and texts the client") + `<div class="mb"><div class="fgrid">
       <div class="full"><label class="f">Client</label><select class="inp" id="bkClient" ${j ? "disabled" : ""}>${s.clients.map(c => `<option value="${c.id}" ${c.id === v.client ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
       <div><label class="f">Job type</label><select class="inp" id="bkType" ${j ? "disabled" : ""}>${Object.keys(A.CHECKLISTS).map(t => `<option ${t === v.type ? "selected" : ""}>${t}</option>`).join("")}</select></div>
       <div><label class="f">Priority</label><select class="inp" id="bkPri">${["Normal", "Urgent"].map(t => `<option ${t === v.pri ? "selected" : ""}>${t}</option>`).join("")}</select></div>
@@ -514,7 +514,7 @@
     const st = r => r.booked ? `<span class="tag ok">Booked ${dayLabel(r.booked.start)}</span>` : `<span class="tag ${r.state === "Overdue" ? "red" : r.state === "Due soon" ? "warn" : ""}">${r.state === "OK" ? "Due " + fmtDay(r.due + "T00:00") : r.state === "Overdue" ? "Overdue " + -r.days + " days" : "Due in " + r.days + " days"}</span>`;
     const unbooked = rows.filter(r => r.days <= 21 && !r.booked).length;
     return `<div class="grid g4" style="margin-bottom:16px">${kpi("Clients on a plan", rows.length, "Recurring income", "up", "ceo/maintenance")}${kpi("Gates covered", rows.reduce((a, r) => a + r.c.assets.length, 0), "Every gate has a history", "", "ceo/assets")}${kpi("Due in 3 weeks", rows.filter(r => r.days <= 21).length, unbooked + " not booked", unbooked ? "dn" : "", "ceo/maintenance")}${kpi("Plan income a year", kfmt(rows.reduce((a, r) => a + ({ Monthly: 450 * 12, Quarterly: 1200 * 4, Biannual: 900 * 2 }[r.c.plan] || 0), 0)), "Before extra parts", "up", "ceo/maintenance")}</div>
-      <div class="toolbar"><span class="muted">Service schedules like AroFlo's periodic tasks. Reminders go to clients automatically a week before each visit.</span><span class="grow"></span><button class="btn primary" data-act="autoMaint" ${unbooked ? "" : "disabled"}>${I("spark")} Book all due services (${unbooked})</button></div>
+      <div class="toolbar"><span class="muted">Service schedules for maintenance contracts. Reminders go to clients automatically a week before each visit.</span><span class="grow"></span><button class="btn primary" data-act="autoMaint" ${unbooked ? "" : "disabled"}>${I("spark")} Book all due services (${unbooked})</button></div>
       <div class="card tblwrap"><table class="tbl resp"><thead><tr><th>Client</th><th>Plan</th><th>Gates</th><th>Last service</th><th>Next due</th><th>Status</th></tr></thead><tbody>
       ${rows.map(r => `<tr class="click" data-act="clientCard" data-id="${r.c.id}"><td data-l="Client"><b>${esc(r.c.name)}</b><div class="small muted">${esc(r.c.address.split(",")[1] || "")}</div></td><td data-l="Plan">${r.c.plan}</td><td data-l="Gates">${r.c.assets.length}</td><td data-l="Last">${r.last ? fmtDay(r.last) : "Never"}</td><td data-l="Next due">${fmtDay(r.due + "T00:00")}</td><td data-l="Status">${st(r)}</td></tr>`).join("")}</tbody></table></div>`;
   };

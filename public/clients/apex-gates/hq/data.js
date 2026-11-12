@@ -1,6 +1,6 @@
 /* Apex Gates HQ: sample data, price book and the quote engine.
    Everything here is sample data for the preview. The live version reads
-   leads and conversations from GHL and jobs from AroFlo. */
+   leads and conversations from GHL and jobs from the Apex app. */
 (function () {
   const pad = n => String(n).padStart(2, "0");
   const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;

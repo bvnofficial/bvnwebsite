@@ -216,7 +216,7 @@
 
   const PART = id => A.PARTS.find(p => p.id === id);
   const WAGE = 52; // labour cost per hour, for job costing
-  // what a job earns and costs (job costing, like AroFlo's task costing)
+  // what a job earns and costs (job costing)
   function jobCosting(j) {
     const c = C(j.clientId) || {};
     const parts = j.parts.reduce((s, p) => s + PART(p.id).price * p.q, 0);
@@ -359,7 +359,7 @@
     return `<div class="launch"><div class="in">
       <img class="logo" src="${LOGO}" alt="Apex Gates">
       <h1>One system for <em>Apex Gates</em>.<br>Owner, staff and clients.</h1>
-      <p class="lead">Leads and conversations from GoHighLevel, jobs and service work from AroFlo, all on one screen and branded for Apex Gates. Pick a side to look around. Everything is linked, so what you do on one side shows up on the others.</p>
+      <p class="lead">Leads and conversations from GoHighLevel, jobs and service work from the Apex app, all on one screen and branded for Apex Gates. Pick a side to look around. Everything is linked, so what you do on one side shows up on the others.</p>
       <div class="roles">
         <button class="role" data-act="go" data-to="ceo/overview"><span class="ri">${I("chart")}</span><h2>Owner HQ</h2>
           <ul><li>Morning brief and live numbers</li><li>Every SMS, email, web form and AI call in one inbox</li><li>Live map of jobs and vans</li><li>Calendar with smart booking</li><li>Quote machine that prices itself</li><li>Jobs, assets, stock, timesheets and job costing</li></ul><span class="go">Open as Simon ${I("right")}</span></button>
@@ -371,7 +371,7 @@
       <div class="flow">
         <div><b>1. Enquiry comes in</b>Website form, phone call answered by the AI receptionist, SMS, email or Facebook. All land in GHL.</div>
         <div><b>2. Quote and win</b>The quote machine prices it, the client accepts and signs in the portal, the deal moves to Won.</div>
-        <div><b>3. Job in AroFlo</b>The job is booked, the technician gets it on the phone, the client gets texts and live tracking.</div>
+        <div><b>3. Job in the Apex app</b>The job is booked, the technician gets it on the phone, the client gets texts and live tracking.</div>
         <div><b>4. Done and paid</b>Checklist, photos and signature on site. Report and invoice go out, the client pays online.</div>
       </div>
       <p class="built">Sample data only. Built for Apex Gates by BVN Official.</p>
