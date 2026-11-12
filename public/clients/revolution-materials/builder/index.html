@@ -179,6 +179,7 @@ table.dims td:last-child{text-align:right;font-family:var(--mono);color:#fff}
 <header class="top">
   <div class="brand"><i>RM</i><div>Revolution Materials<small>3D Part Builder</small></div></div>
   <div class="cta">
+    <a class="ph" href="/clients/revolution-materials/metals" style="color:var(--acc2);font-weight:600">Metal Calculator</a>
     <a class="ph" href="tel:+61390293469">Talk to us <b>03 9029 3469</b></a>
     <button class="basketBtn" id="openBasket">Quote list<span class="c" id="count">0</span></button>
   </div>
@@ -718,7 +719,7 @@ function weights(){
   let kit=main; if(withKit){ if(S.nut) kit+=nutV*ends; if(S.washer) kit+=wV*ends; }
   return {g:main*rho/1000, kit:kit*rho/1000, withKit:withKit&&(S.nut||S.washer)};
 }
-const fmtW=g=> g<1000? g.toFixed(g<10?1:0)+' g' : (g/1000).toFixed(g<10000?2:1)+' kg';
+const fmtW=g=> g<1000? g.toFixed(g<10?1:0)+' g' : g<1e6? (g/1000).toFixed(g<10000?2:g<100000?1:0)+' kg' : (g/1e6).toFixed(2)+' t';
 function name(){
   const t=TYPES.find(x=>x.id===S.type), d=S.d, P=ISO[d].P;
   if(S.type==='nut') return {k:t.name, h:'M'+d+' x '+P, std:t.std};
@@ -757,8 +758,10 @@ function updateText(){
 }
 
 /* ---------- Quote list ---------- */
-const basket=[];
-function thumb(){ renderer.render(scene,camera); const c=document.createElement('canvas'); c.width=c.height=112; const x=c.getContext('2d'); const s=renderer.domElement; const m=Math.min(s.width,s.height); x.drawImage(s,(s.width-m)/2,(s.height-m)/2,m,m,0,0,112,112); return c.toDataURL('image/png'); }
+const QKEY="rm-quote-list";
+const basket=(()=>{try{return JSON.parse(localStorage.getItem(QKEY))||[]}catch(e){return[]}})();
+addEventListener("storage",e=>{if(e.key===QKEY){basket.length=0;basket.push(...(JSON.parse(e.newValue)||[]));renderBasket();}});
+function thumb(){ if(!renderer.domElement.width||!renderer.domElement.height) return "data:image/gif;base64,R0lGODlhAQABAAAAACw="; renderer.render(scene,camera); const c=document.createElement('canvas'); c.width=c.height=112; const x=c.getContext('2d'); const s=renderer.domElement; const m=Math.min(s.width,s.height); x.drawImage(s,(s.width-m)/2,(s.height-m)/2,m,m,0,0,112,112); return c.toDataURL('image/png'); }
 $('add').onclick=()=>{
   const certs=[...document.querySelectorAll('#certs input:checked')].map(i=>i.value);
   basket.push({t:lineText(),q:S.qty,certs,img:thumb(),w:weights().kit*S.qty});
@@ -766,6 +769,7 @@ $('add').onclick=()=>{
   window.rmToast&&rmToast('Added to your quote list. Build another part or send the list for pricing.');
 };
 function renderBasket(){
+  try{localStorage.setItem(QKEY,JSON.stringify(basket))}catch(e){}
   $('count').textContent=basket.length;
   $('items').innerHTML= basket.length? basket.map((b,i)=>`<div class="li"><img src="${b.img}" alt=""><div><b>${b.q} x ${b.t}</b><small>${b.certs.join(', ')||'No certificates selected'}</small><small>Approx ${fmtW(b.w)} total</small></div><button class="rm" data-i="${i}" aria-label="Remove">&times;</button></div>`).join('')
    : '<div class="empty">Nothing here yet. Build a part and press <b>Add to quote list</b>.</div>';
@@ -774,6 +778,7 @@ $('items').onclick=e=>{const b=e.target.closest('.rm'); if(!b) return; basket.sp
 const openB=o=>{$('drawer').classList.toggle('open',o);$('scrim').classList.toggle('open',o);};
 $('openBasket').onclick=()=>openB(true); $('closeBasket').onclick=()=>openB(false); $('scrim').onclick=()=>openB(false);
 $('rfq').addEventListener('submit',()=>{ setTimeout(()=>{ basket.length=0; renderBasket(); openB(false); },400); });
+renderBasket();
 
 /* ---------- Export ---------- */
 const fileBase=()=>('RM_'+name().k+'_'+name().h+'_'+S.mat).replace(/[^A-Za-z0-9]+/g,'_');

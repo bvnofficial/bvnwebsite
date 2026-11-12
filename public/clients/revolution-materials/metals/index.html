@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Metal Calculator | Revolution Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0d10;--panel:#12151a;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.16);--tx:#eef0f3;--mut:#8e96a3;--acc:#E86010;--acc2:#ff8a3d;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+/* top bar */
+.top{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--line);background:rgba(11,13,16,.9);backdrop-filter:blur(10px);position:relative;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.01em}
+.brand i{width:30px;height:30px;border-radius:8px;background:conic-gradient(from 210deg,#ff9a4d,#E86010,#7a2a05,#ff9a4d);display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff;box-shadow:0 0 24px rgba(232,96,16,.35)}
+.brand small{display:block;font-weight:500;color:var(--mut);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.top .cta{display:flex;gap:10px;align-items:center}
+.top .ph{color:var(--mut);font-size:13px;text-decoration:none}
+.top .ph b{color:var(--tx)}
+.basketBtn{position:relative;border:1px solid var(--line2);background:transparent;border-radius:999px;padding:8px 14px;font-weight:600;font-size:13px}
+.basketBtn .c{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:99px;background:var(--acc);color:#fff;font-size:11px;margin-left:6px;transition:transform .3s}
+.basketBtn .c.bump{transform:scale(1.4)}
+/* layout */
+.app{display:grid;grid-template-columns:330px 1fr 340px;height:calc(100vh - 58px);min-height:640px}
+.side{overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding:20px 18px 110px}
+.side.r{border-right:0;border-left:1px solid var(--line)}
+.side::-webkit-scrollbar{width:8px}.side::-webkit-scrollbar-thumb{background:#262a31;border-radius:8px}
+.h{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin:22px 0 10px;display:flex;justify-content:space-between;align-items:center}
+.h:first-child{margin-top:0}
+.h em{font-style:normal;color:var(--tx);letter-spacing:0;text-transform:none;font-family:var(--mono);font-size:12px}
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.type{border:1px solid var(--line);background:#161a20;border-radius:12px;padding:10px 6px 9px;text-align:center;font-size:11.5px;font-weight:600;color:#c7ccd4;transition:.2s}
+.type svg{display:block;margin:0 auto 6px;width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.6;opacity:.85}
+.type:hover{border-color:var(--line2);color:#fff}
+.type.on{border-color:var(--acc);background:linear-gradient(180deg,rgba(232,96,16,.16),rgba(232,96,16,.04));color:#fff}
+.mats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mat{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#161a20;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:600;text-align:left;color:#c7ccd4;transition:.2s}
+.mat:hover{border-color:var(--line2);color:#fff}
+.mat.on{border-color:var(--acc);color:#fff}
+.mat i{flex:none;width:18px;height:18px;border-radius:50%;box-shadow:inset -3px -3px 6px rgba(0,0,0,.45),inset 2px 2px 4px rgba(255,255,255,.35)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:#161a20;border-radius:8px;padding:6px 0;width:calc((100% - 30px)/6);font-family:var(--mono);font-size:12px;color:#c7ccd4;transition:.15s}
+.chip:hover{border-color:var(--line2);color:#fff}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.chip:disabled{opacity:.25;cursor:not-allowed}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:4px;background:#262b33;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:5px solid var(--acc);box-shadow:0 0 0 6px rgba(232,96,16,.15)}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#fff;border:5px solid var(--acc)}
+.rl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:#5d6570;margin-top:8px}
+.seg{display:flex;background:#161a20;border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{flex:1;border:0;background:transparent;border-radius:7px;padding:7px;font-size:12px;font-weight:600;color:var(--mut);transition:.2s}
+.seg button.on{background:#2a2f37;color:#fff}
+.tog{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;color:#c7ccd4;cursor:pointer;user-select:none}
+.tog:last-child{border-bottom:0}
+.tog input{display:none}
+.tog .sw{width:34px;height:20px;border-radius:20px;background:#2a2f37;position:relative;transition:.2s;flex:none}
+.tog .sw:after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.2s}
+.tog input:checked+.sw{background:var(--acc)}
+.tog input:checked+.sw:after{left:17px}
+.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#161a20}
+.qty button{width:40px;height:40px;border:0;background:transparent;font-size:18px;color:var(--mut)}
+.qty button:hover{color:#fff;background:#1d2128}
+.qty input{flex:1;min-width:0;height:40px;border:0;background:transparent;text-align:center;font-family:var(--mono);font-size:15px;outline:none}
+.big{width:100%;margin-top:18px;border:0;border-radius:12px;padding:14px;font-weight:700;font-size:14px;background:linear-gradient(135deg,var(--acc2),var(--acc));color:#fff;box-shadow:0 10px 30px rgba(232,96,16,.3);transition:.2s}
+.big:hover{transform:translateY(-1px);box-shadow:0 14px 34px rgba(232,96,16,.42)}
+/* viewer */
+.view{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 50% 35%,#20252d 0%,#12151a 55%,#0b0d10 100%)}
+.view canvas{display:block;outline:none}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(80% 70% at 50% 50%,#000 30%,transparent 80%);pointer-events:none}
+#c3{position:absolute;inset:0}
+.lbls{position:absolute;inset:0;pointer-events:none}
+.dl{font-family:var(--mono);font-size:11.5px;font-weight:600;color:#fff;background:rgba(232,96,16,.92);padding:3px 7px;border-radius:6px;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.title{position:absolute;left:24px;top:20px;pointer-events:none;z-index:2}
+.title .k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc2);font-weight:700}
+.title h1{font-size:clamp(22px,2.6vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:6px}
+.title p{color:var(--mut);font-size:13px;margin-top:6px;font-family:var(--mono)}
+.chipsTop{position:absolute;right:20px;top:20px;display:flex;gap:6px;z-index:2}
+.pill{border:1px solid var(--line2);background:rgba(18,21,26,.75);backdrop-filter:blur(8px);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;color:#c7ccd4;transition:.2s}
+.pill:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.pill.on{color:#fff;border-color:var(--acc);background:rgba(232,96,16,.2)}
+.dock{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);display:flex;gap:6px;padding:6px;border-radius:16px;background:rgba(18,21,26,.82);backdrop-filter:blur(12px);border:1px solid var(--line2);z-index:2;box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.dock button{border:0;background:transparent;border-radius:11px;padding:9px 13px;font-size:12.5px;font-weight:600;color:#c7ccd4;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:.2s}
+.dock button:hover{background:rgba(255,255,255,.07);color:#fff}
+.dock button.hot{background:var(--acc);color:#fff}
+.dock button.hot:hover{background:var(--acc2)}
+.dock svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
+.dock .sep{width:1px;background:var(--line2);margin:6px 2px}
+.hint{position:absolute;left:24px;bottom:84px;font-size:11.5px;color:#5d6570;pointer-events:none;z-index:1}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut);font-size:13px;z-index:3;transition:opacity .5s}
+.loading.gone{opacity:0;pointer-events:none}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid #262b33;border-top-color:var(--acc);animation:sp 1s linear infinite;margin:0 auto 12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* menu */
+.menu{position:absolute;bottom:130px;left:50%;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:#161a20;border:1px solid var(--line2);border-radius:14px;padding:6px;min-width:250px;transition:.2s;z-index:4;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.menu.open{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.menu button{display:flex;width:100%;text-align:left;border:0;background:transparent;border-radius:9px;padding:10px 12px;gap:10px;align-items:center}
+.menu button:hover{background:#20252d}
+.menu b{display:block;font-size:13px}
+.menu small{display:block;color:var(--mut);font-size:11.5px}
+.menu .ext{font-family:var(--mono);font-size:11px;font-weight:600;background:#262b33;border-radius:6px;padding:4px 7px;color:var(--acc2);min-width:44px;text-align:center}
+/* spec */
+.specCard{background:linear-gradient(180deg,#171b21,#14171c);border:1px solid var(--line);border-radius:16px;padding:16px}
+.desig{font-family:var(--mono);font-size:12.5px;color:#d6dae0;line-height:1.55}
+.desig b{color:#fff}
+table.dims{width:100%;border-collapse:collapse;margin-top:12px;font-size:12.5px}
+table.dims td{padding:7px 0;border-top:1px solid var(--line)}
+table.dims td:first-child{color:var(--mut)}
+table.dims td:last-child{text-align:right;font-family:var(--mono);color:#fff}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.kpi{background:#0f1216;border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.kpi small{display:block;color:var(--mut);font-size:11px}
+.kpi b{display:block;font-family:var(--mono);font-size:17px;margin-top:3px;letter-spacing:-.02em}
+.kpi b span{font-size:11px;color:var(--mut);font-weight:400}
+.note{font-size:11.5px;color:#5d6570;margin-top:10px}
+.certs label{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;color:#c7ccd4;cursor:pointer}
+.certs label:last-child{border-bottom:0}
+.certs input{accent-color:var(--acc);margin-top:3px}
+.certs small{display:block;color:#6b737e;font-size:11.5px}
+/* basket drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.3s;z-index:50}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(460px,100vw);background:#12151a;border-left:1px solid var(--line2);transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);z-index:51;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer header{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;border-bottom:1px solid var(--line)}
+.drawer header h3{font-size:18px;letter-spacing:-.02em}
+.x{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:transparent;font-size:18px;color:var(--mut)}
+.drawer .body{flex:1;overflow-y:auto;padding:18px 22px}
+.li{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px;background:#161a20;animation:pop .4s}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.li canvas,.li img{width:56px;height:56px;border-radius:10px;background:radial-gradient(#2a3039,#14171c)}
+.li b{font-size:13px;display:block}
+.li small{display:block;color:var(--mut);font-size:11.5px;font-family:var(--mono);margin-top:2px}
+.li .rm{border:0;background:transparent;color:#6b737e;font-size:18px;padding:4px 8px}
+.li .rm:hover{color:#fff}
+.empty{color:var(--mut);text-align:center;padding:40px 10px;font-size:13px}
+.drawer form{padding:16px 22px 22px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.drawer form input,.drawer form textarea{border:1px solid var(--line2);background:#0f1216;border-radius:10px;padding:11px 12px;font-size:13px;outline:none;width:100%}
+.drawer form input:focus,.drawer form textarea:focus{border-color:var(--acc)}
+.drawer form .f{grid-column:1/-1}
+.drawer form .big{margin-top:4px}
+.drawer form .small{font-size:11.5px;color:#6b737e;grid-column:1/-1}
+/* AR modal */
+.modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(5,6,8,.78);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:.3s;padding:20px}
+.modal.open{opacity:1;pointer-events:auto}
+.modal .box{width:min(720px,100%);background:#12151a;border:1px solid var(--line2);border-radius:20px;overflow:hidden}
+.modal .box header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.modal model-viewer{width:100%;height:min(60vh,460px);background:radial-gradient(#232831,#101318);--poster-color:transparent}
+.modal .foot{padding:14px 18px;color:var(--mut);font-size:13px}
+.arBtn{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);border:0;border-radius:999px;padding:12px 20px;font-weight:700;background:var(--acc);color:#fff}
+/* intro */
+.intro{position:absolute;inset:0;pointer-events:none;z-index:2}
+@media(max-width:1180px){.app{grid-template-columns:300px 1fr}.side.r{display:none}.specMobile{display:block!important}}
+@media(max-width:820px){
+ .app{display:flex;flex-direction:column;height:auto}
+ .view{height:68vh;min-height:420px;order:-1}
+ .side{border:0;padding-bottom:30px}
+ .top .ph{display:none}
+ .dock{bottom:14px;max-width:calc(100% - 20px);overflow-x:auto}
+ .dock .lbl{display:none}
+ .hint{display:none}
+ .menu{bottom:70px}
+ .chipsTop{top:16px;right:12px;flex-direction:column;align-items:flex-end}
+ .pill{padding:6px 10px;font-size:11px}
+ body{padding-bottom:70px}
+}
+/* ---- Metal Calculator additions ---- */
+.title{max-width:calc(100% - 270px)}@media(max-width:820px){.title{max-width:none}}
+.fams{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.fam{border:1px solid var(--line);background:#161a20;border-radius:12px;padding:9px 4px 8px;text-align:center;color:#c7ccd4;transition:.2s}
+.fam b{display:block;font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.fam small{display:block;font-size:10px;margin-top:5px;color:var(--mut);line-height:1.2}
+.fam:hover{border-color:var(--line2);color:#fff}
+.fam.on{border-color:var(--acc);background:linear-gradient(180deg,rgba(232,96,16,.18),rgba(232,96,16,.04));color:#fff}
+.fam.on small{color:#ffb27f}
+.grades{display:flex;flex-wrap:wrap;gap:5px;max-height:172px;overflow-y:auto;padding:2px 2px 2px 0}
+.grades::-webkit-scrollbar{width:6px}.grades::-webkit-scrollbar-thumb{background:#262a31;border-radius:6px}
+.gr{border:1px solid var(--line);background:#161a20;border-radius:8px;padding:6px 9px;font-size:12px;font-weight:600;color:#c7ccd4;transition:.15s}
+.gr:hover{border-color:var(--line2);color:#fff}.gr.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.other{margin-top:8px;display:flex;gap:6px}
+.other input,.fields input,.std{flex:1;min-width:0;border:1px solid var(--line);background:#0f1216;border-radius:10px;padding:9px 11px;font-size:13px;outline:none}
+.other input:focus,.fields input:focus{border-color:var(--acc)}
+.forms{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.form{border:1px solid var(--line);background:#161a20;border-radius:12px;padding:9px 5px 8px;text-align:center;font-size:11px;font-weight:600;color:#c7ccd4;line-height:1.25;transition:.2s}
+.form svg{display:block;margin:0 auto 5px;width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.6;opacity:.85}
+.form:hover{border-color:var(--line2);color:#fff}.form.on{border-color:var(--acc);background:linear-gradient(180deg,rgba(232,96,16,.16),rgba(232,96,16,.04));color:#fff}
+.form.link{border-style:dashed}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fields label{display:block;font-size:11.5px;color:var(--mut);font-weight:600}
+.fields .in{display:flex;align-items:center;margin-top:5px;position:relative}
+.fields .in input{font-family:var(--mono);padding-right:40px;width:100%}
+.fields .in span{position:absolute;right:11px;font-size:11px;color:#5d6570;font-family:var(--mono)}
+.fields .wide{grid-column:1/-1}
+.pipes{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.pipes button{border:1px solid var(--line);background:#161a20;border-radius:7px;padding:5px 8px;font-family:var(--mono);font-size:11px;color:#c7ccd4}
+.pipes button:hover,.pipes button.on{border-color:var(--acc);color:#fff}
+.std{width:100%;appearance:none;background:#0f1216 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e96a3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;cursor:pointer}
+.fact{margin-top:14px;padding:12px 13px;border-radius:12px;background:rgba(232,96,16,.08);border:1px solid rgba(232,96,16,.25);font-size:12.5px;color:#e9d6c8}
+.fact b{color:#ffb27f;display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px}
+.xlink{color:var(--acc2);font-weight:600;text-decoration:none}
+.top .nav2{display:flex;gap:6px}
+.top .nav2 a{color:var(--mut);text-decoration:none;font-size:13px;font-weight:600;padding:7px 11px;border-radius:999px;border:1px solid transparent}
+.top .nav2 a:hover{color:#fff}.top .nav2 a.on{color:#fff;border-color:var(--line2)}
+@media(max-width:820px){.top .nav2{display:none}.fams small{font-size:9px}}
+
+</style>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><i>RM</i><div>Revolution Materials<small>Metal Calculator</small></div></div>
+  <nav class="nav2"><a class="on" href="/clients/revolution-materials/metals">Metal Calculator</a><a href="/clients/revolution-materials/builder">3D Part Builder</a></nav>
+  <div class="cta">
+    <a class="ph" href="tel:+61390293469">Talk to us <b>03 9029 3469</b></a>
+    <button class="basketBtn" id="openBasket">Quote list<span class="c" id="count">0</span></button>
+  </div>
+</header>
+
+<div class="app">
+  <aside class="side" id="left">
+    <div class="h">1. Metal <em id="famName"></em></div>
+    <div class="fams" id="fams"></div>
+
+    <div class="h">2. Grade <em id="grName"></em></div>
+    <div class="grades" id="grades"></div>
+    <div class="other"><input id="otherG" placeholder="Other grade? Type it here"></div>
+
+    <div class="h">3. Form</div>
+    <div class="forms" id="forms"></div>
+
+    <div id="barWrap">
+      <div class="h">Bar shape</div>
+      <div class="seg" id="barShape"><button data-v="round" class="on">Round</button><button data-v="hex">Hex</button><button data-v="square">Square</button><button data-v="flat">Flat</button></div>
+    </div>
+
+    <div class="h">4. Size</div>
+    <div class="fields" id="fields"></div>
+    <div class="pipes" id="pipes"></div>
+
+    <div class="h">Quantity <em id="qUnit">pieces</em></div>
+    <div class="qty"><button id="qm" aria-label="Less">&minus;</button><input id="qty" type="number" min="1" value="1" inputmode="numeric"><button id="qp" aria-label="More">+</button></div>
+
+    <div class="specMobile" style="display:none;margin-top:6px" id="specM"></div>
+
+    <button class="big" id="add">Add to quote list</button>
+  </aside>
+
+  <main class="view" id="view">
+    <div class="grid-bg"></div>
+    <div id="c3"></div>
+    <div class="lbls" id="lbls"></div>
+    <div class="title"><div class="k" id="tK">Bar and billet</div><h1 id="tH">Round bar 50 mm</h1><p id="tP">Stainless 316</p></div>
+    <div class="chipsTop">
+      <button class="pill on" id="dimsBtn">Dimensions</button>
+      <button class="pill on" id="spinBtn">Auto spin</button>
+    </div>
+    <div class="hint" id="hint">Drag to rotate. Scroll or pinch to zoom.</div>
+    <div class="dock">
+      <button id="vIso" title="Three quarter view"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg><span class="lbl">3/4</span></button>
+      <button id="vEnd" title="End view"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl">End</span></button>
+      <button id="vTop" title="Top view"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/></svg><span class="lbl">Top</span></button>
+      <span class="sep"></span>
+      <button id="specBtn" class="hot" title="Print a spec sheet"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/></svg><span class="lbl">Spec sheet</span></button>
+    </div>
+    <div class="loading" id="loading"><div><div class="spin"></div>Loading the 3D view</div></div>
+  </main>
+
+  <aside class="side r" id="right">
+    <div id="spec"></div>
+    <div class="h">Specification</div>
+    <select class="std" id="std" aria-label="Standard">
+      <option>ASTM / ASME</option><option>DIN / EN</option><option>BS</option><option>Werkstoff number</option><option>To my drawing</option>
+    </select>
+    <div class="h">Certification and testing</div>
+    <div class="certs" id="certs">
+      <label><input type="checkbox" value="Mill certificate" checked><span>Mill certificate<small>Material traceable to the heat</small></span></label>
+      <label><input type="checkbox" value="Heat treatment"><span>Heat treatment<small>To your condition or spec</small></span></label>
+      <label><input type="checkbox" value="Testing"><span>Testing<small>PMI, hardness, mechanical or ultrasonic</small></span></label>
+      <label><input type="checkbox" value="Cut to size"><span>Cut to size<small>We cut each piece to the size above</small></span></label>
+    </div>
+    <div class="fact" id="fact"></div>
+  </aside>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Quote list">
+  <header><h3>Your quote list</h3><button class="x" id="closeBasket" aria-label="Close">&times;</button></header>
+  <div class="body" id="items"></div>
+  <form data-rfq id="rfq">
+    <input required placeholder="Your name">
+    <input placeholder="Company">
+    <input required type="email" placeholder="Email">
+    <input placeholder="Phone">
+    <textarea class="f" rows="3" placeholder="Delivery location, timing, or anything else we should know"></textarea>
+    <button class="big f" type="submit">Send for pricing</button>
+    <span class="small">Metals and fasteners go on the same list. Jim replies with price and lead time, and every line lands in the CRM with its full size and grade.</span>
+  </form>
+</aside>
+
+<script src="/clients/revolution-materials/shared/data.js"></script>
+<script src="/clients/revolution-materials/shared/bar.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+const $=id=>document.getElementById(id);
+const RM=window.RM;
+
+/* ---------- grades: names come from Jim's site (shared/data.js); densities are nominal, g/cm3 ---------- */
+const RHO={
+ "303":8.0,"304 / 304L / 304H":7.93,"316 / 316L / 316H":8.0,"316Ti":8.0,"316LMo":8.0,"317 / 317L":8.0,"309 / 309S":7.9,"310 / 310S":7.9,"321":7.92,"347":7.96,"348":7.96,"410 / 410S":7.75,"416":7.75,"420":7.74,"431":7.7,"17-4PH":7.8,"904L":7.95,"254 SMO":8.0,"2205 Duplex":7.8,"Ferralium 255":7.81,"Nitronic 50":7.88,"Nitronic 60":7.62,
+ "Nickel 200 / 201":8.89,"Monel 400":8.8,"Monel K-500":8.44,"Inconel 600":8.47,"Inconel 601":8.11,"Inconel 617":8.36,"Inconel 625":8.44,"Inconel 718":8.19,"Inconel X-750":8.28,"Inconel 725":8.31,"Hastelloy B-2":9.22,"Hastelloy B-3":9.22,"Hastelloy C-22":8.69,"Hastelloy C-276":8.89,"Hastelloy X":8.22,"Incoloy 800 / 800HT":7.94,"Incoloy 825":8.14,"Incoloy 925":8.08,"Nimonic 75":8.37,"Nimonic 80A":8.19,"Nimonic 90":8.18,"Carpenter 20":8.08,
+ "CP Grade 1":4.51,"CP Grade 2":4.51,"CP Grade 3":4.51,"CP Grade 4":4.54,"Grade 5 (6Al-4V)":4.43,"Grade 6":4.48,"Grade 7":4.51,"Grade 9 (3Al-2.5V)":4.48,"Grade 11":4.51,"Grade 12":4.51,"Grade 16":4.51,"Grade 17":4.51,"Grade 18":4.48,
+ "Copper nickel alloys":8.94,"Nickel silvers":8.73,"Cobalt based medical alloys":8.3,"Pure molybdenum":10.22,"Molybdenum alloys":10.16,"Tantalum":16.6,"Zirconium 702 / 705":6.51,"Maraging tool steels":8.0,"Thermocouple alloys":8.7,"Controlled expansion alloys":8.1,"Electrical resistance alloys":8.3,"Magnetic and electronic alloys":8.7
+};
+const APPROX=new Set(["Copper nickel alloys","Nickel silvers","Cobalt based medical alloys","Molybdenum alloys","Maraging tool steels","Thermocouple alloys","Controlled expansion alloys","Electrical resistance alloys","Magnetic and electronic alloys"]);
+const FAM_RHO={stainless:7.95,nickel:8.4,titanium:4.5,alloy:7.85,other:8.5};
+const FAM_COL={stainless:['#cfd3d8',.22,1],nickel:['#c4c1b8',.25,1],titanium:['#a9a49c',.32,1],alloy:['#5c6067',.42,.85],other:['#b8bcc4',.28,1]};
+const GR_COL={"Copper nickel alloys":'#c9a27e',"Nickel silvers":'#d8d5cc',"Tantalum":'#9aa3b5',"Pure molybdenum":'#b9bdc4',"Zirconium 702 / 705":'#aeb2b6'};
+const CARBON='#4a4e55';
+
+/* ---------- forms: his site's list, in his order ---------- */
+const ICON={
+ plate:'<path d="M3 15l9-5 9 5-9 5z"/><path d="M3 15v2l9 5 9-5v-2"/>',
+ coil:'<ellipse cx="9" cy="12" rx="4" ry="8"/><ellipse cx="9" cy="12" rx="1.6" ry="3.4"/><path d="M9 4h8a4 8 0 0 1 0 16H9"/>',
+ bar:'<ellipse cx="5" cy="12" rx="2.5" ry="4"/><path d="M5 8h14a2.5 4 0 0 1 0 8H5"/>',
+ tube:'<ellipse cx="5" cy="12" rx="3" ry="5"/><ellipse cx="5" cy="12" rx="1.5" ry="2.6"/><path d="M5 7h14a3 5 0 0 1 0 10H5"/>',
+ flange:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="5.5" r="1"/><circle cx="12" cy="18.5" r="1"/><circle cx="5.5" cy="12" r="1"/><circle cx="18.5" cy="12" r="1"/>',
+ wire:'<ellipse cx="12" cy="12" rx="8" ry="4"/><ellipse cx="12" cy="10" rx="8" ry="4"/><ellipse cx="12" cy="14" rx="8" ry="4"/>',
+ clad:'<path d="M3 13l9-5 9 5-9 5z"/><path d="M3 13v3l9 5 9-5v-3"/><path d="M3 11l9-5 9 5" opacity=".6"/>',
+ expanded:'<path d="M3 6l3 3-3 3M9 6l3 3-3 3 3 3M15 6l3 3-3 3M21 6l-3 3 3 3M6 15l3 3M12 15l3 3M18 15l3 3"/>',
+ fast:'<path d="M9 3h6v4H9z"/><path d="M10 7v14M14 7v14M10 10l4 1.5M10 13l4 1.5M10 16l4 1.5"/>'
+};
+const FORMS=[["plate","Sheet and plate"],["coil","Coil, strip and foil"],["bar","Bar and billet"],["tube","Tube and pipe"],["flange","Fittings and flanges"],["wire","Drawn wire and wire rod"],["clad","Clad plate"],["expanded","Expanded metal"],["fast","Fasteners"]];
+/* fields: [key,label,unit,default] */
+const FIELDS={
+ plate:[["t","Thickness","mm",10],["w","Width","mm",1500],["l","Length","mm",3000]],
+ coil:[["t","Thickness","mm",1],["w","Width","mm",300],["Lm","Length","m",50]],
+ round:[["d","Diameter","mm",50],["l","Length","mm",3000]],
+ hex:[["s","Across flats","mm",36],["l","Length","mm",3000]],
+ square:[["a","Side","mm",40],["l","Length","mm",3000]],
+ flat:[["w","Width","mm",75],["t","Thickness","mm",12],["l","Length","mm",3000]],
+ tube:[["od","Outside diameter","mm",60.3],["wt","Wall","mm",3.91],["l","Length","mm",6000]],
+ flange:[["od","Outside diameter","mm",165],["id","Bore","mm",62],["t","Thickness","mm",20],["n","Bolt holes","",4],["h","Hole diameter","mm",18]],
+ wire:[["d","Diameter","mm",3],["Lm","Length","m",500]],
+ clad:[["tb","Base thickness","mm",20],["tc","Cladding","mm",3],["w","Width","mm",1500],["l","Length","mm",3000]],
+ expanded:[["w","Sheet width","mm",1200],["l","Sheet length","mm",2400],["t","Strand thickness","mm",1.6]]
+};
+/* common pipe sizes, schedule 40 */
+const PIPES=[['1/2"',21.3,2.77],['3/4"',26.7,2.87],['1"',33.4,3.38],['1 1/2"',48.3,3.68],['2"',60.3,3.91],['3"',88.9,5.49],['4"',114.3,6.02],['6"',168.3,7.11]];
+
+const S={fam:0,grade:"316 / 316L / 316H",other:"",form:"bar",shape:"round",dims:{},qty:1,dimsOn:true,spin:true};
+const shapeKey=()=>S.form==="bar"?S.shape:S.form;
+const famObj=()=>RM.metals[S.fam];
+const gradeName=()=>S.other.trim()||S.grade;
+const rho=()=>S.other.trim()?FAM_RHO[famObj().key]:(RHO[S.grade]||FAM_RHO[famObj().key]);
+const dimsFor=k=>{const o=S.dims[k]||(S.dims[k]={});FIELDS[k].forEach(f=>{if(o[f[0]]==null)o[f[0]]=f[3]});return o;};
+
+/* hash state, so a link opens the same item */
+function readHash(){
+  const p=new URLSearchParams(location.hash.slice(1));if(!p.has("f"))return;
+  const fi=RM.metals.findIndex(m=>m.key===p.get("f"));if(fi>=0)S.fam=fi;
+  if(p.get("g"))S.grade=p.get("g");if(p.get("o"))S.other=p.get("o");
+  if(p.get("form")&&FORMS.some(x=>x[0]===p.get("form")))S.form=p.get("form");
+  if(p.get("shape"))S.shape=p.get("shape");
+  const k=shapeKey();if(FIELDS[k]){const d=dimsFor(k);FIELDS[k].forEach(f=>{const v=parseFloat(p.get(f[0]));if(v>0)d[f[0]]=v})}
+  if(+p.get("q")>0)S.qty=+p.get("q");
+}
+function writeHash(){
+  const p=new URLSearchParams({f:famObj().key,g:S.grade,form:S.form});if(S.other.trim())p.set("o",S.other.trim());if(S.form==="bar")p.set("shape",S.shape);
+  const k=shapeKey();if(FIELDS[k])Object.entries(dimsFor(k)).forEach(([a,b])=>p.set(a,b));p.set("q",S.qty);
+  history.replaceState(null,"","#"+p.toString());
+}
+
+/* ---------- maths ---------- */
+const PI=Math.PI;
+function calc(){
+  const k=shapeKey(),d=dimsFor(k),r=rho();let vol=0,perM=null,area=null,w=null,extra=[];
+  const kg=v=>v*r*1e-6;
+  switch(k){
+    case"plate":vol=d.t*d.w*d.l;area=d.w*d.l/1e6;break;
+    case"coil":vol=d.t*d.w*d.Lm*1000;perM=kg(d.t*d.w*1000);{const id=508,od=Math.sqrt(id*id+4*d.t*d.Lm*1000/PI);extra.push(["Coil OD on a 508 mm core",Math.round(od)+" mm"])}break;
+    case"round":vol=PI/4*d.d*d.d*d.l;perM=kg(PI/4*d.d*d.d*1000);break;
+    case"hex":vol=Math.sqrt(3)/2*d.s*d.s*d.l;perM=kg(Math.sqrt(3)/2*d.s*d.s*1000);extra.push(["Across corners",(d.s*2/Math.sqrt(3)).toFixed(1)+" mm"]);break;
+    case"square":vol=d.a*d.a*d.l;perM=kg(d.a*d.a*1000);break;
+    case"flat":vol=d.w*d.t*d.l;perM=kg(d.w*d.t*1000);break;
+    case"tube":{const id=Math.max(0,d.od-2*d.wt);vol=PI/4*(d.od*d.od-id*id)*d.l;perM=kg(PI/4*(d.od*d.od-id*id)*1000);extra.push(["Inside diameter",id.toFixed(2)+" mm"])}break;
+    case"flange":{const n=Math.round(d.n);vol=(PI/4*(d.od*d.od-d.id*d.id)-n*PI/4*d.h*d.h)*d.t;extra.push(["Bolt circle",((d.od+d.id)/2).toFixed(0)+" mm"])}break;
+    case"wire":vol=PI/4*d.d*d.d*d.Lm*1000;perM=kg(PI/4*d.d*d.d*1000);break;
+    case"clad":{const base=d.tb*d.w*d.l*7.85e-6,cl=d.tc*d.w*d.l*r*1e-6;w=base+cl;area=d.w*d.l/1e6;extra.push(["Base layer","Carbon steel, "+fmtW(base)],["Cladding",gradeName()+", "+fmtW(cl)])}break;
+    case"expanded":area=d.w*d.l/1e6;break;
+  }
+  if(w==null&&k!=="expanded")w=kg(vol);
+  return {w,perM,area,extra};
+}
+function fmtW(kg){if(kg==null)return"On quote";if(kg<1)return Math.round(kg*1000)+" g";if(kg<100)return kg.toFixed(2)+" kg";if(kg<1000)return Math.round(kg)+" kg";return (kg/1000).toFixed(2)+" t";}
+const num=v=>(+v).toLocaleString("en-AU",{maximumFractionDigits:2});
+function title(){
+  const k=shapeKey(),d=dimsFor(k);
+  switch(k){
+    case"plate":return (d.t<=3?"Sheet ":"Plate ")+num(d.t)+" mm, "+num(d.w)+" x "+num(d.l);
+    case"coil":return (d.t<.2?"Foil ":"Strip ")+num(d.t)+" x "+num(d.w)+" mm, "+num(d.Lm)+" m";
+    case"round":return "Round bar "+num(d.d)+" mm x "+num(d.l);
+    case"hex":return "Hex bar "+num(d.s)+" mm A/F x "+num(d.l);
+    case"square":return "Square bar "+num(d.a)+" mm x "+num(d.l);
+    case"flat":return "Flat bar "+num(d.w)+" x "+num(d.t)+" mm x "+num(d.l);
+    case"tube":{const p=PIPES.find(x=>x[1]===d.od&&x[2]===d.wt);return (p?p[0]+" Sch 40 pipe":"Tube "+num(d.od)+" x "+num(d.wt)+" mm")+" x "+num(d.l);}
+    case"flange":return "Flange "+num(d.od)+" OD x "+num(d.id)+" bore x "+num(d.t)+" mm";
+    case"wire":return "Wire "+num(d.d)+" mm, "+num(d.Lm)+" m";
+    case"clad":return "Clad plate "+num(d.tb)+" + "+num(d.tc)+" mm, "+num(d.w)+" x "+num(d.l);
+    case"expanded":return "Expanded sheet "+num(d.w)+" x "+num(d.l)+" mm";
+  }
+}
+
+/* ---------- UI ---------- */
+function buildFams(){
+  $("fams").innerHTML=RM.metals.map((m,i)=>`<button class="fam ${i===S.fam?"on":""}" data-i="${i}"><b>${m.sym}</b><small>${m.name.replace(" Steels","").replace(" Alloys","").replace("Other Metals","Other")}</small></button>`).join("");
+}
+function buildGrades(){
+  const m=famObj();if(!m.grades.includes(S.grade)&&!S.other)S.grade=m.grades[0];
+  $("grades").innerHTML=m.grades.map(g=>`<button class="gr ${g===S.grade&&!S.other.trim()?"on":""}">${g}</button>`).join("");
+  $("otherG").value=S.other;
+}
+function buildForms(){
+  $("forms").innerHTML=FORMS.map(f=>`<button class="form ${f[0]===S.form?"on":""} ${f[0]==="fast"?"link":""}" data-f="${f[0]}"><svg viewBox="0 0 24 24">${ICON[f[0]]}</svg>${f[1]}</button>`).join("");
+}
+function buildFields(){
+  const k=shapeKey(),d=dimsFor(k);
+  $("barWrap").style.display=S.form==="bar"?"":"none";
+  document.querySelectorAll("#barShape button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.shape));
+  $("fields").innerHTML=FIELDS[k].map((f,i)=>`<div class="${FIELDS[k].length%2&&i===FIELDS[k].length-1?"wide":""}"><label>${f[1]}<span class="in"><input type="number" min="0" step="any" data-k="${f[0]}" value="${d[f[0]]}" inputmode="decimal"><span>${f[2]}</span></span></label></div>`).join("");
+  $("pipes").innerHTML=k==="tube"?PIPES.map(p=>`<button class="${p[1]===d.od&&p[2]===d.wt?"on":""}" data-od="${p[1]}" data-wt="${p[2]}">${p[0]}</button>`).join(""):"";
+  $("qUnit").textContent=k==="coil"?"coils":k==="wire"?"coils":k==="plate"||k==="clad"||k==="expanded"?"sheets":"pieces";
+}
+function spec(){
+  const c=calc(),m=famObj();
+  const rows=[["Grade",gradeName()],["Metal family",m.name],["Form",FORMS.find(f=>f[0]===S.form)[1]],["Density",rho().toFixed(2)+" g/cm³"+(APPROX.has(S.grade)||S.other.trim()?" (approx)":"")]].concat(c.perM!=null?[["Weight per metre",fmtW(c.perM)]]:[]).concat(c.area!=null?[["Area each",c.area.toFixed(2)+" m²"]]:[]).concat(c.extra);
+  const tot=c.w==null?null:c.w*S.qty;
+  return `<div class="specCard"><div class="desig"><b>${esc(title())}</b><br>${esc(gradeName())}</div>
+   <div class="kpis"><div class="kpi"><small>Weight each</small><b>${fmtW(c.w)}</b></div><div class="kpi"><small>Order weight</small><b>${fmtW(tot)}</b></div></div>
+   <table class="dims">${rows.map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join("")}</table>
+   <div class="note">${S.form==="expanded"?"Expanded metal weight depends on the mesh pattern, so it is confirmed on the quote.":"Calculated from nominal density for planning. Your quote confirms the final weight."}</div></div>`;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function refresh(rebuild){
+  if(rebuild){buildFams();buildGrades();buildForms();buildFields();}
+  const m=famObj();
+  $("famName").textContent=m.name;$("grName").textContent=gradeName();
+  $("tK").textContent=FORMS.find(f=>f[0]===S.form)[1];$("tH").textContent=title();$("tP").textContent=gradeName()+" · "+m.name;
+  const sp=spec();$("spec").innerHTML=sp;$("specM").innerHTML=sp;
+  $("fact").innerHTML=`<b>From Revolution Materials</b>${esc(m.fact)}`;
+  $("qty").value=S.qty;
+  writeHash();build();
+}
+$("fams").onclick=e=>{const b=e.target.closest(".fam");if(!b)return;S.fam=+b.dataset.i;S.other="";S.grade=famObj().grades[0];refresh(true);};
+$("grades").onclick=e=>{const b=e.target.closest(".gr");if(!b)return;S.grade=b.textContent;S.other="";buildGrades();refresh();};
+$("otherG").oninput=e=>{S.other=e.target.value;document.querySelectorAll(".gr").forEach(b=>b.classList.toggle("on",!S.other.trim()&&b.textContent===S.grade));refresh();};
+$("forms").onclick=e=>{const b=e.target.closest(".form");if(!b)return;
+  if(b.dataset.f==="fast"){location.href="/clients/revolution-materials/builder";return;}
+  S.form=b.dataset.f;buildForms();buildFields();refresh();framed=false;};
+$("barShape").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.shape=b.dataset.v;buildFields();refresh();framed=false;};
+$("fields").oninput=e=>{const i=e.target.closest("input");if(!i)return;const v=parseFloat(i.value);if(!(v>0))return;
+  const k=shapeKey(),d=dimsFor(k);d[i.dataset.k]=i.dataset.k==="n"?Math.max(0,Math.min(48,Math.round(v))):v;
+  if(k==="tube"&&d.wt*2>=d.od)d.wt=+(d.od/2-.5).toFixed(2);if(k==="flange"&&d.id>=d.od)d.id=d.od*.5;
+  document.querySelectorAll("#pipes button").forEach(b=>b.classList.toggle("on",+b.dataset.od===d.od&&+b.dataset.wt===d.wt));refresh();};
+$("fields").addEventListener("change",()=>{framed=false;fit();});
+$("pipes").onclick=e=>{const b=e.target.closest("button");if(!b)return;const d=dimsFor("tube");d.od=+b.dataset.od;d.wt=+b.dataset.wt;buildFields();refresh();framed=false;fit();};
+$("qm").onclick=()=>{S.qty=Math.max(1,S.qty-1);refresh();};
+$("qp").onclick=()=>{S.qty++;refresh();};
+$("qty").oninput=e=>{const v=parseInt(e.target.value);if(v>0){S.qty=v;$("spec").innerHTML=spec();$("specM").innerHTML=spec();writeHash();}};
+
+/* ---------- 3D ---------- */
+const view=$("view"),host=$("c3");
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+host.appendChild(renderer.domElement);
+const lr=new CSS2DRenderer();lr.domElement.style.position="absolute";lr.domElement.style.inset="0";lr.domElement.style.pointerEvents="none";$("lbls").appendChild(lr.domElement);
+const scene=new THREE.Scene();
+const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new RoomEnvironment(),.04).texture;
+const key=new THREE.DirectionalLight(0xffffff,1.6);key.position.set(3,5,4);scene.add(key);
+const rim=new THREE.DirectionalLight(0xffb27f,.9);rim.position.set(-4,2,-3);scene.add(rim);
+scene.add(new THREE.AmbientLight(0xffffff,.25));
+const camera=new THREE.PerspectiveCamera(32,1,.1,1e6);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.08;controls.autoRotateSpeed=1.1;
+let group=new THREE.Group();scene.add(group);
+const shadow=new THREE.Mesh(new THREE.CircleGeometry(1,64),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.28}));shadow.rotation.x=-PI/2;scene.add(shadow);
+{const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d");const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,"rgba(0,0,0,.9)");g.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=g;x.fillRect(0,0,128,128);shadow.material.map=new THREE.CanvasTexture(c);shadow.material.needsUpdate=true;}
+
+function metalMat(col){
+  const k=famObj().key,[c,r,m]=FAM_COL[k];
+  return new THREE.MeshStandardMaterial({color:col||GR_COL[S.grade]||c,metalness:m,roughness:r,envMapIntensity:1.15});
+}
+function label(text,pos){const el=document.createElement("div");el.className="dl";el.textContent=text;const o=new CSS2DObject(el);o.position.copy(pos);return o;}
+function ring(R,r,seg){const s=new THREE.Shape();s.absarc(0,0,R,0,PI*2,false);if(r>0){const h=new THREE.Path();h.absarc(0,0,r,0,PI*2,true);s.holes.push(h);}return s;}
+
+/* long parts are shortened on screen (the label keeps the true length) */
+const vis=(len,cross)=>Math.min(len,cross*10);
+function build(){
+  scene.remove(group);group.traverse(o=>{if(o.geometry)o.geometry.dispose();});group=new THREE.Group();
+  const k=shapeKey(),d=dimsFor(k),M=metalMat(),L=[];
+  const add=(g,m)=>{const me=new THREE.Mesh(g,m||M);group.add(me);return me;};
+  if(k==="round"||k==="hex"){const R=k==="round"?d.d/2:d.s/Math.sqrt(3),l=vis(d.l,R*2);const g=new THREE.CylinderGeometry(R,R,l,k==="round"?72:6,1);g.rotateZ(PI/2);if(k==="hex")g.rotateX(PI/6);add(g);
+    L.push(label((k==="round"?"Ø ":"A/F ")+num(k==="round"?d.d:d.s),new THREE.Vector3(-l/2,R*1.35,0)),label(num(d.l)+" mm",new THREE.Vector3(0,R*1.35,0)));}
+  if(k==="square"||k==="flat"){const a=k==="square"?d.a:d.w,b=k==="square"?d.a:d.t,l=vis(d.l,Math.max(a,b));add(new THREE.BoxGeometry(l,b,a));
+    L.push(label(k==="square"?num(d.a)+" sq":num(d.w)+" x "+num(d.t),new THREE.Vector3(-l/2,b*.9+a*.15,0)),label(num(d.l)+" mm",new THREE.Vector3(0,b*.9+a*.15,0)));}
+  if(k==="tube"){const R=d.od/2,r=Math.max(0,R-d.wt),l=vis(d.l,d.od*1.2);const g=new THREE.ExtrudeGeometry(ring(R,r),{depth:l,bevelEnabled:false,curveSegments:64});g.translate(0,0,-l/2);g.rotateY(PI/2);add(g);
+    L.push(label("OD "+num(d.od)+" x "+num(d.wt)+" wall",new THREE.Vector3(-l/2,R*1.4,0)),label(num(d.l)+" mm",new THREE.Vector3(0,R*1.4,0)));}
+  if(k==="plate"||k==="expanded"){const t=Math.max(d.t,Math.max(d.w,d.l)*.004);
+    if(k==="plate"){add(new THREE.BoxGeometry(d.l,t,d.w));}
+    else{const s=new THREE.Shape();s.moveTo(-d.l/2,-d.w/2);s.lineTo(d.l/2,-d.w/2);s.lineTo(d.l/2,d.w/2);s.lineTo(-d.l/2,d.w/2);s.lineTo(-d.l/2,-d.w/2);
+      const nx=22,ny=Math.max(6,Math.round(nx*d.w/d.l)),px=d.l/nx,py=d.w/ny,hx=px*.38,hy=py*.3;
+      for(let i=0;i<nx;i++)for(let j=0;j<ny;j++){const cx=-d.l/2+px*(i+.5)+(j%2?px*.25:-px*.25),cy=-d.w/2+py*(j+.5);if(Math.abs(cx)+hx>d.l/2-px*.15)continue;const h=new THREE.Path();h.moveTo(cx-hx,cy);h.lineTo(cx,cy-hy);h.lineTo(cx+hx,cy);h.lineTo(cx,cy+hy);h.lineTo(cx-hx,cy);s.holes.push(h);}
+      const g=new THREE.ExtrudeGeometry(s,{depth:t*1.5,bevelEnabled:false});g.rotateX(-PI/2);add(g);}
+    L.push(label(num(d.l)+" mm",new THREE.Vector3(0,t*2,d.w/2)),label(num(d.w)+" mm",new THREE.Vector3(d.l/2,t*2,0)),label(num(d.t)+" mm thick",new THREE.Vector3(-d.l/2,t*2,d.w/2)));}
+  if(k==="clad"){const s=Math.max(d.w,d.l)*.004,tb=Math.max(d.tb,s),tc=Math.max(d.tc,s*.5);const b=add(new THREE.BoxGeometry(d.l,tb,d.w),new THREE.MeshStandardMaterial({color:CARBON,metalness:.75,roughness:.55}));b.position.y=tb/2;const c=add(new THREE.BoxGeometry(d.l*.9,tc,d.w));c.position.set(-d.l*.05,tb+tc/2,0);
+    L.push(label(gradeName()+" "+num(d.tc)+" mm",new THREE.Vector3(-d.l/2,tb+tc*3,d.w/2)),label("Carbon steel "+num(d.tb)+" mm",new THREE.Vector3(d.l/2,tb*.5,d.w/2)));}
+  if(k==="coil"){const ID=508,OD=Math.min(2000,Math.sqrt(ID*ID+4*d.t*d.Lm*1000/PI)),w=d.w;const g=new THREE.ExtrudeGeometry(ring(OD/2,ID/2),{depth:w,bevelEnabled:false,curveSegments:96});g.translate(0,0,-w/2);add(g);
+    for(let i=1;i<7;i++){const rr=ID/2+(OD/2-ID/2)*i/7;const t=new THREE.Mesh(new THREE.TorusGeometry(rr,Math.max(.4,OD*.0012),6,96),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.25}));t.position.z=w/2+.5;group.add(t);}
+    L.push(label(num(d.t)+" x "+num(d.w)+" mm strip",new THREE.Vector3(0,OD/2*1.15,0)),label(num(d.Lm)+" m on the coil",new THREE.Vector3(0,-OD/2*1.15,0)));}
+  if(k==="wire"){const D=600,turns=14,r=Math.max(d.d/2,D*.012),pitch=r*2.3;const pts=[];for(let i=0;i<=turns*64;i++){const a=i/64*PI*2;pts.push(new THREE.Vector3(Math.cos(a)*D/2,Math.sin(a)*D/2,i/64*pitch));}
+    const g=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),turns*64,r,10,false);g.translate(0,0,-turns*pitch/2);add(g);
+    L.push(label("Ø "+num(d.d)+" mm wire",new THREE.Vector3(0,D/2*1.25,0)),label(num(d.Lm)+" m",new THREE.Vector3(0,-D/2*1.25,0)));}
+  if(k==="flange"){const R=d.od/2,s=ring(R,Math.min(d.id/2,R*.95)),n=Math.round(d.n),pcd=(d.od+d.id)/4;for(let i=0;i<n;i++){const a=i/n*PI*2+PI/n,h=new THREE.Path();h.absarc(Math.cos(a)*pcd,Math.sin(a)*pcd,Math.min(d.h/2,(R-d.id/2)*.4),0,PI*2,true);s.holes.push(h);}
+    const g=new THREE.ExtrudeGeometry(s,{depth:d.t,bevelEnabled:true,bevelSize:Math.min(1.5,d.t*.05),bevelThickness:Math.min(1.5,d.t*.05),bevelSegments:2,curveSegments:72});g.rotateX(-PI/2);add(g);
+    L.push(label("OD "+num(d.od),new THREE.Vector3(R,d.t*1.5,0)),label("Bore "+num(d.id),new THREE.Vector3(0,d.t*1.6,0)),label(n+" holes Ø "+num(d.h),new THREE.Vector3(-R*.7,d.t*1.5,R*.7)));}
+  L.forEach(o=>{o.element.style.display=S.dimsOn?"":"none";group.add(o);});
+  scene.add(group);
+  const box=new THREE.Box3().setFromObject(group),c=box.getCenter(new THREE.Vector3());group.position.sub(new THREE.Vector3(c.x,box.min.y,c.z));
+  const sz=box.getSize(new THREE.Vector3());shadow.scale.setScalar(Math.max(sz.x,sz.z)*.7);shadow.position.y=-.5;
+  fit();
+}
+let framed=false,camGoal=null,view3="iso";
+function fit(force){
+  const box=new THREE.Box3().setFromObject(group),sph=box.getBoundingSphere(new THREE.Sphere());const R=sph.radius||1;
+  const vf=THREE.MathUtils.degToRad(camera.fov),hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);const dist=R/Math.sin(Math.min(vf,hf)/2)*1.3;
+  const dirs={iso:new THREE.Vector3(.85,.6,1.15),end:new THREE.Vector3(1,.12,.06),top:new THREE.Vector3(.001,1,.25)};
+  const k=shapeKey();let dir=dirs[view3].clone();if(view3==="end"&&(k==="coil"||k==="wire"))dir=new THREE.Vector3(.05,.12,1);
+  if(view3==="end"&&k==="flange")dir=new THREE.Vector3(.001,1,.05);
+  dir.normalize();const target=sph.center.clone();
+  camera.near=R/200;camera.far=R*200;camera.updateProjectionMatrix();
+  controls.minDistance=R*.4;controls.maxDistance=R*8;
+  target.y+=R*.08;const pos=target.clone().add(dir.multiplyScalar(dist));
+  if(!framed||force){framed=true;camGoal={pos,target};if(!force){camera.position.copy(pos);controls.target.copy(target);camGoal=null;}}
+}
+$("vIso").onclick=()=>{view3="iso";fit(true);};$("vEnd").onclick=()=>{view3="end";fit(true);};$("vTop").onclick=()=>{view3="top";fit(true);};
+$("dimsBtn").onclick=e=>{S.dimsOn=!S.dimsOn;e.currentTarget.classList.toggle("on",S.dimsOn);build();};
+$("spinBtn").onclick=e=>{S.spin=!S.spin;e.currentTarget.classList.toggle("on",S.spin);};
+let drag=false;controls.addEventListener("start",()=>{drag=true;camGoal=null;});controls.addEventListener("end",()=>{drag=false;});
+function size(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h);lr.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
+addEventListener("resize",()=>{size();framed=false;fit();});
+function tick(){
+  if(camGoal){controls.target.lerp(camGoal.target,.12);camera.position.lerp(camGoal.pos,.12);if(camera.position.distanceTo(camGoal.pos)<camGoal.pos.length()*.002)camGoal=null;}
+  controls.autoRotate=S.spin&&!drag&&!camGoal;controls.update();renderer.render(scene,camera);lr.render(scene,camera);
+  requestAnimationFrame(tick);
+}
+
+/* ---------- quote list (shared with the 3D Part Builder; item weights are stored in grams, like the builder) ---------- */
+const QKEY="rm-quote-list";
+const basket=(()=>{try{return JSON.parse(localStorage.getItem(QKEY))||[]}catch(e){return[]}})();
+const saveB=()=>{try{localStorage.setItem(QKEY,JSON.stringify(basket))}catch(e){}};
+function thumb(){if(!renderer.domElement.width||!renderer.domElement.height)return"data:image/gif;base64,R0lGODlhAQABAAAAACw=";renderer.render(scene,camera);const c=document.createElement("canvas");c.width=c.height=112;const x=c.getContext("2d"),s=renderer.domElement,m=Math.min(s.width,s.height);x.drawImage(s,(s.width-m)/2,(s.height-m)/2,m,m,0,0,112,112);return c.toDataURL("image/png");}
+function renderBasket(){
+  $("count").textContent=basket.length;
+  $("items").innerHTML=basket.length?basket.map((b,i)=>`<div class="li"><img src="${b.img}" alt=""><div><b>${b.q} x ${esc(b.t)}</b><small>${esc(b.certs.join(", ")||"No certificates selected")}</small><small>${b.w?"Approx "+fmtW(b.w/1000)+" total":"Weight on the quote"}</small></div><button class="rm" data-i="${i}" aria-label="Remove">&times;</button></div>`).join(""):'<div class="empty">Nothing here yet. Size a metal and press <b>Add to quote list</b>. Fasteners from the 3D Part Builder land here too.</div>';
+  saveB();
+}
+const openB=o=>{$("drawer").classList.toggle("open",o);$("scrim").classList.toggle("open",o);};
+$("openBasket").onclick=()=>openB(true);$("closeBasket").onclick=()=>openB(false);$("scrim").onclick=()=>openB(false);
+$("items").onclick=e=>{const b=e.target.closest(".rm");if(!b)return;basket.splice(+b.dataset.i,1);renderBasket();};
+$("rfq").addEventListener("submit",()=>{setTimeout(()=>{basket.length=0;renderBasket();openB(false);},400);});
+addEventListener("storage",e=>{if(e.key===QKEY){basket.length=0;basket.push(...(JSON.parse(e.newValue)||[]));renderBasket();}});
+$("add").onclick=()=>{
+  const c=calc(),certs=[...document.querySelectorAll("#certs input:checked")].map(i=>i.value);certs.unshift($("std").value);
+  basket.push({t:title()+", "+gradeName(),q:S.qty,certs,img:thumb(),w:c.w==null?null:c.w*S.qty*1000});renderBasket();
+  const n=$("count");n.classList.remove("bump");void n.offsetWidth;n.classList.add("bump");
+  window.rmToast&&rmToast("Added to your quote list. Add fasteners from the 3D Part Builder and send it all in one go.");
+};
+$("specBtn").onclick=()=>{
+  const c=calc(),w=open("","_blank");if(!w)return;const img=thumb();
+  w.document.write(`<title>${esc(title())}</title><body style="font:14px Inter,Arial,sans-serif;max-width:720px;margin:30px auto;color:#111"><div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #E86010;padding-bottom:10px"><b style="font-size:20px">Revolution Materials</b><span>Metal specification</span></div><h2>${esc(title())}</h2><p>${esc(gradeName())}, ${esc(famObj().name)}</p><img src="${img}" style="width:220px;border-radius:12px;background:#222"><div>${$("spec").querySelector("table").outerHTML}</div><p>Weight each: <b>${fmtW(c.w)}</b> &nbsp; Quantity: <b>${S.qty}</b> &nbsp; Order weight: <b>${fmtW(c.w==null?null:c.w*S.qty)}</b></p><p>Specification: ${esc($("std").value)}</p><p style="color:#666;font-size:12px">Weights are calculated from nominal density. Revolution Materials, Laverton North VIC. 03 9029 3469</p><script>onload=()=>print()<\/script>`);w.document.close();
+};
+
+readHash();buildFams();buildGrades();buildForms();buildFields();size();refresh();renderBasket();
+$("loading").classList.add("gone");tick();
+window.__rmc={S,refresh,fit,calc};
+</script>
+</body>
+</html>
