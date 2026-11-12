@@ -284,7 +284,7 @@ async function vfind(id: string, date: string) {
 const clip = (v: any, n: number) => String(v ?? "").slice(0, n);
 export const VSTEPS = ["booked", "onway", "onsite", "done", "cancelled"];
 function cleanVisit(v: any) {
-  return { id: /^[a-z0-9]{4,20}$/.test(v.id) ? v.id : Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+  return { id: typeof v.id === "string" && /^[a-z0-9]{4,20}$/.test(v.id) ? v.id : Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
     code: clip(v.code, 30), qid: clip(v.qid, 30), kind: clip(v.kind, 30), client: clip(v.client, 120), contact: clip(v.contact, 80), address: clip(v.address, 200), phone: clip(v.phone, 40),
     desc: clip(v.desc, 1200), tech: clip(v.tech, 60), helper: clip(v.helper, 60), date: vday(v.date) === NODATE ? "" : vday(v.date), start: /^\d{2}:\d{2}$/.test(v.start) ? v.start : "08:00",
     hours: Math.min(12, Math.max(0.5, Number(v.hours) || 2)), status: VSTEPS.includes(v.status) ? v.status : "booked", office: clip(v.office, 600),
