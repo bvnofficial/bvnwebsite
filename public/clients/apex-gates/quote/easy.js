@@ -5,6 +5,7 @@ import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
 import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js";
 import { drawItem, steelColour } from "./draw.js";
 import { buildTemplates, mergePricebook, offered, teamView, priceExtras, STAGES, stageOf, GROUPS, groupOf } from "./shared.js";
+import { makeMyJobs } from "./myjobs.js";
 
 const KEY = "apexq.v1";
 const $ = (s, el = document) => el.querySelector(s);
@@ -105,6 +106,7 @@ function say(t) { const el = $("#saved"); el.textContent = t; el.classList.add("
 /* ---------- pictures ---------- */
 const I = (p, w = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const ICON = {
+  call: I('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'), pin: I('<path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>'),
   arrow: I('<path d="M5 12h14M13 6l6 6-6 6"/>', 2.6),
   plus: I('<path d="M12 5v14M5 12h14"/>', 2.6), minus: I('<path d="M5 12h14"/>', 2.6), tick: I('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 3),
   gate: I('<path d="M3 20V5M21 20V5M3 7h8.5v12H3M12.5 7H21v12h-8.5M6 7v12M9 7v12M15 7v12M18 7v12"/>'),
@@ -249,6 +251,18 @@ const UNIT = { fabq: "dollars", km: "km", remove: "hours", elec: "hours", hrs: "
 
 /* ---------- ui state ---------- */
 const ui = { view: "home", tab: 0, shelf: "steel", find: "" };
+/* the jobs the office booked for whoever uses this tablet */
+const MJ = makeMyJobs({ esc, say, render: () => render(), icon: ICON, onView: () => ui.view === "myjobs" || ui.view === "home",
+  techs: () => String(db.pb.settings.techs || "").split(/\n|,/).map((x) => x.trim()).filter(Boolean),
+  company: () => db.pb.settings.company || "Apex Gates",
+  openQuote: (qid) => { if (!db.quotes.find((q) => q.id === qid)) return false; db.current = qid; ui.view = "work"; ui.stage = null; ui.ai = null; store(); render(); window.scrollTo(0, 0); return true; },
+  startQuote: (v) => {
+    let n = db.quotes.find((x) => !x.items.length && !x.client.name);
+    if (!n) { n = newQuote(db); db.quotes.push(n); }
+    Object.assign(n.client, { name: v.client || "", phone: v.phone || "", address: v.address || "" });
+    if (MJ.state.me) n.tech = db.lastTech = MJ.state.me;
+    db.current = n.id; save(); ui.view = "pick"; render(); window.scrollTo(0, 0);
+  } });
 
 function item() { const q = Q(); return q.items.find((i) => i.id === q.sel) || q.items[0]; }
 function run(it) { const t = tplOf(it.tpl); return t ? runItem(t, it.values, db.pb) : null; }
@@ -268,10 +282,11 @@ function layoutOf(t) {
 
 function render() {
   if (ui.view === "job" && !Q().items.length) ui.view = "pick";
-  const navOn = { home: "home", jobs: "jobs", prices: "prices" }[ui.view];
+  const navOn = { home: "home", jobs: "jobs", prices: "prices", myjobs: "myjobs" }[ui.view];
   document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.view === navOn));
   const m = $("#main");
   if (ui.view === "home") m.innerHTML = viewHome();
+  if (ui.view === "myjobs") m.innerHTML = MJ.view();
   if (ui.view === "pick") m.innerHTML = viewPick();
   if (ui.view === "job") m.innerHTML = viewJob();
   if (ui.view === "quote") m.innerHTML = viewQuote();
@@ -299,6 +314,7 @@ function viewHome() {
   const recent = [...db.quotes].filter((q) => q.items.length && q.status !== "won").sort((a, b) => b.updated - a.updated).slice(0, 3);
   return `<h1 class="big-t">What do you want to do?</h1>
   <div class="homegrid">
+    <button class="hometile dark" data-act="view" data-v="myjobs">${ICON.truck}<b>My jobs${MJ.state.me && MJ.state.list && MJ.countToday() ? ` <span class="cnt">${MJ.countToday()}</span>` : ""}</b><span>${MJ.state.me ? "What the office booked for you today" : "See the jobs the office booked for you"}</span></button>
     <button class="hometile red" data-act="newjob">${ICON.plus}<b>New quote</b><span>Draw up a gate or fence and get the price</span></button>
     <button class="hometile" data-act="view" data-v="jobs">${ICON.folder}<b>My quotes</b><span>Open one you already started</span></button>
     <button class="hometile" data-act="view" data-v="prices">${ICON.tag}<b>Prices</b><span>${boss() ? "Change what steel, motors and labour cost" : "Look up what things cost the customer"}</span></button>
@@ -536,7 +552,7 @@ function viewQuote() {
 /* what a line says to the customer; a kit lists what is really in it */
 function lineDesc(l) {
   // customers read sizes in metres
-  if (l.tpl.base !== "kit") return cap(l.desc).replace(/(\d{1,3}(?:,\d{3})+|\d+) mm/g, (m, n) => `${(parseFloat(n.replace(/,/g, "")) / 1000).toLocaleString("en-AU", { maximumFractionDigits: 2 })} m`);
+  if (l.tpl.base !== "kit") return cap(l.desc).replace(/(\d{1,3}(?:,\d{3})+|\d+) mm\b/g, (m, n) => `${(parseFloat(n.replace(/,/g, "")) / 1000).toLocaleString("en-AU", { maximumFractionDigits: 2 })} m`);
   const parts = l.r.items.filter((h) => h.qty > 0).map((h) => `${h.qty > 1 ? fmtNum(h.qty) + " x " : ""}${h.name}`);
   if (l.r.labour.some((x) => x.hours > 0)) parts.push("fitted and set up by the Apex team");
   return parts.join(", ") || "Nothing in this kit yet";
@@ -1116,6 +1132,7 @@ function viewPrices() {
 /* ---------- actions ---------- */
 function setVal(k, v) { const it = item(); if (!it) return; it.values[k] = v; save(); }
 document.addEventListener("click", (e) => {
+  if (e.target.closest("[data-mj]")) { MJ.onClick(e); return; }
   const b = e.target.closest("[data-act]"); if (!b) return;
   const a = b.dataset.act, q = Q(), it = item();
   if (a === "view") { ui.view = b.dataset.v; render(); window.scrollTo(0, 0); }
@@ -1227,6 +1244,7 @@ document.addEventListener("change", (e) => {
   if (el.matches("[data-bphoto]") && el.files && el.files[0]) shrinkPhoto(el.files[0]).then((d) => { ui.bphoto = d; redraw(); }, (e) => say(e.message));
 });
 document.addEventListener("input", (e) => {
+  if (MJ.onInput(e)) return;
   const el = e.target, q = Q();
   if (el.dataset.c) { q.client[el.dataset.c] = el.value; save(); }
   if (el.matches("[data-qn]")) { q.notes = el.value; save(); }

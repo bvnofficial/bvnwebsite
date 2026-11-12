@@ -232,3 +232,100 @@ export async function clearSamples() {
   await writeJSON("stock/stock.json", s);
   return gone.length;
 }
+
+/* ---------- scheduling and dispatch ----------
+   Every booked visit is its own small file: visits/<date>_<id>~<time saved>.json
+   (date "0000-00-00" while it still needs a day). Each save writes a new file name
+   and removes the old one, so a tablet can never be handed a stale copy, and the
+   date in the name lets a week be found without opening every job ever booked. */
+const NODATE = "0000-00-00";
+const vday = (d: any) => (/^\d{4}-\d{2}-\d{2}$/.test(String(d || "")) ? String(d) : NODATE);
+type VFile = { name: string; date: string; id: string; ts: number };
+function vparse(name: string): VFile | null {
+  const m = /^(\d{4}-\d{2}-\d{2})_([a-z0-9]+)~(\d+)\.json$/.exec(name);
+  return m ? { name, date: m[1], id: m[2], ts: +m[3] } : null;
+}
+async function vlist(prefix: string): Promise<VFile[]> {
+  const b = await bucket(), out: VFile[] = [];
+  for (let offset = 0; offset < 20000; offset += 1000) {
+    const { data } = await b.list("visits", { limit: 1000, offset, search: prefix, sortBy: { column: "name", order: "asc" } });
+    for (const f of data || []) { const v = vparse(f.name); if (v && v.name.startsWith(prefix)) out.push(v); }
+    if (!data || data.length < 1000) break;
+  }
+  return out;
+}
+function newest(files: VFile[]) {
+  const best = new Map<string, VFile>();
+  for (const f of files) { const o = best.get(f.id); if (!o || f.ts > o.ts) best.set(f.id, f); }
+  return Array.from(best.values());
+}
+async function vread(files: VFile[]) {
+  const b = await bucket();
+  const got = await Promise.all(files.map(async (f) => { const { data } = await b.download(`visits/${f.name}`); return data ? JSON.parse(await data.text()) : null; }));
+  return got.filter(Boolean);
+}
+const months = (from: string, to: string) => {
+  const out: string[] = []; let [y, m] = from.split("-").map(Number); const [ty, tm] = to.split("-").map(Number);
+  while ((y < ty || (y === ty && m <= tm)) && out.length < 14) { out.push(`${y}-${String(m).padStart(2, "0")}`); m++; if (m > 12) { m = 1; y++; } }
+  return out;
+};
+export async function listVisits(from: string, to: string, undated = false) {
+  const f = vday(from), t = vday(to);
+  const sets = f === NODATE || t === NODATE ? [] : await Promise.all(months(f, t).map(vlist));
+  let files = newest(sets.flat()).filter((v) => v.date >= f && v.date <= t);
+  if (undated) files = files.concat(newest(await vlist(NODATE)));
+  const list = await vread(files);
+  return list.sort((a: any, b: any) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`));
+}
+async function vfind(id: string, date: string) {
+  const files = newest(await vlist(`${vday(date)}_${id}~`));
+  return files[0] || null;
+}
+const clip = (v: any, n: number) => String(v ?? "").slice(0, n);
+export const VSTEPS = ["booked", "onway", "onsite", "done", "cancelled"];
+function cleanVisit(v: any) {
+  return { id: /^[a-z0-9]{4,20}$/.test(v.id) ? v.id : Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    code: clip(v.code, 30), qid: clip(v.qid, 30), kind: clip(v.kind, 30), client: clip(v.client, 120), contact: clip(v.contact, 80), address: clip(v.address, 200), phone: clip(v.phone, 40),
+    desc: clip(v.desc, 1200), tech: clip(v.tech, 60), helper: clip(v.helper, 60), date: vday(v.date) === NODATE ? "" : vday(v.date), start: /^\d{2}:\d{2}$/.test(v.start) ? v.start : "08:00",
+    hours: Math.min(12, Math.max(0.5, Number(v.hours) || 2)), status: VSTEPS.includes(v.status) ? v.status : "booked", office: clip(v.office, 600),
+    notes: clip(v.notes, 2000), log: (Array.isArray(v.log) ? v.log : []).slice(-60), created: Number(v.created) || Date.now() };
+}
+async function vwrite(v: any, old: VFile | null) {
+  const b = await bucket(); const ts = Date.now(); v.updated = ts;
+  const name = `${vday(v.date)}_${v.id}~${ts}.json`;
+  const { error } = await b.upload(`visits/${name}`, new Blob([JSON.stringify(v)], { type: "application/json" }), { contentType: "application/json", cacheControl: "0" });
+  if (error) throw new Error(error.message);
+  if (old) await b.remove([`visits/${old.name}`]);
+  return v;
+}
+/* the office books or changes a visit (a moved day is found from the day it was on) */
+export async function saveVisit(input: any, who: string) {
+  const v = cleanVisit(input || {});
+  const old = input?.id ? await vfind(v.id, input.was ?? input.date) : null;
+  if (old) {
+    const prev = (await vread([old]))[0] || {};
+    v.log = prev.log || [];
+    v.created = prev.created || v.created;
+    if (prev.tech !== v.tech || prev.date !== v.date || prev.start !== v.start) v.log.push({ at: Date.now(), who, what: `Booked for ${v.tech || "nobody yet"}${v.date ? ` on ${v.date} at ${v.start}` : ""}` });
+    if (prev.status !== v.status) v.log.push({ at: Date.now(), who, what: `Marked ${v.status}` });
+  } else v.log = [{ at: Date.now(), who, what: `Booked for ${v.tech || "nobody yet"}${v.date ? ` on ${v.date} at ${v.start}` : ""}` }];
+  return vwrite(v, old);
+}
+export async function deleteVisit(id: string, date: string) {
+  const f = await vfind(id, date);
+  if (f) await (await bucket()).remove([`visits/${f.name}`]);
+  return !!f;
+}
+/* a technician moves the job along from the tablet: on the way, on site, done */
+export async function stepVisit(id: string, date: string, status: string, who: string, note: string) {
+  const f = await vfind(id, date);
+  if (!f) return null;
+  const v = (await vread([f]))[0];
+  if (!v) return null;
+  const words: Record<string, string> = { booked: "Back to booked", onway: "On the way", onsite: "Arrived on site", done: "Finished the job" };
+  if (status && words[status]) { v.status = status; v.log = (v.log || []).concat({ at: Date.now(), who: clip(who, 60), what: words[status] + (note ? `: ${clip(note, 400)}` : "") }); }
+  else if (note) v.log = (v.log || []).concat({ at: Date.now(), who: clip(who, 60), what: `Note: ${clip(note, 400)}` });
+  if (status === "done" && note) v.notes = clip([v.notes, note].filter(Boolean).join("\n"), 2000);
+  v.log = v.log.slice(-60);
+  return vwrite(v, f);
+}

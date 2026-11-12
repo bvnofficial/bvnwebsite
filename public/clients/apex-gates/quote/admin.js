@@ -6,6 +6,7 @@ import { PRICEBOOK, TEMPLATES } from "./data.js";
 import { runItem, priceQuote, defaults, money, byId } from "./engine.js";
 import { drawItem } from "./draw.js";
 import { buildTemplates, mergePricebook, priceExtras, stageOf, GROUPS, groupOf } from "./shared.js";
+import { makeDispatch } from "./dispatch.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -43,6 +44,10 @@ const tpls = () => buildTemplates(TEMPLATES, pb(), st.work.gates);
 function changed() { st.dirty = true; renderBar(); }
 function say(t) { const el = $("#saved"); el.textContent = t; el.classList.add("on"); clearTimeout(el.t); el.t = setTimeout(() => el.classList.remove("on"), 2600); }
 
+/* the people the office books jobs for, from Company */
+const techs = () => String(pb().settings.techs || "").split(/\n|,/).map((x) => x.trim()).filter(Boolean);
+const DP = makeDispatch({ api, esc, say, render: () => render(), techs, quotes: () => st.quotes, jobs: () => st.jobs, icon: ICON, onTab: () => st.tab === "jobs" && st.jview !== "list" });
+
 /* ---------- screens ---------- */
 function render() {
   const m = $("#main");
@@ -54,7 +59,12 @@ function render() {
   if (st.tab === "prices") m.innerHTML = viewPrices();
   if (st.tab === "add") m.innerHTML = viewAdd();
   if (st.tab === "kits") m.innerHTML = viewKits();
-  if (st.tab === "jobs") { m.innerHTML = viewJobsBoard(); if (!st.jobs && !st.jloading) loadJobs(); }
+  if (st.tab === "jobs") {
+    if (!st.jobs && !st.jloading) loadJobs();
+    const seg = `<div class="jtop"><h1 class="big-t" style="margin:0">Jobs</h1><div class="segrow" style="margin:0">${[["cal", "Week by technician"], ["list", "Every job"]].map(([v, l]) => `<button class="${(st.jview || "cal") === v ? "on" : ""}" data-act="jview" data-v="${v}">${l}</button>`).join("")}</div></div>`;
+    m.innerHTML = seg + (st.jview === "list" ? viewJobsBoard().replace('<h1 class="big-t">Jobs</h1>', "") : DP.view());
+  }
+  m.classList.toggle("wide", st.tab === "jobs" && st.jview !== "list");
   if (st.tab === "stock") { m.innerHTML = viewStock(); if (!st.stock && !st.sloading) loadStock(); }
   if (st.tab === "gates") m.innerHTML = st.gate ? viewGateEditor() : viewGates();
   if (st.tab === "company") m.innerHTML = viewCompany();
@@ -308,7 +318,7 @@ function viewJobsBoard() {
   <div class="jobcards">${show.map((j) => `<div class="card pad jobc"><div class="jh"><b>${esc(j.client || "No client")}</b><span class="pill">${esc(j.code)}</span></div>
     <small>${esc([j.date, j.time].filter(Boolean).join(" "))}${j.tech ? " · " + esc(j.tech) : ""}${j.type ? " · " + esc(j.type) : ""}</small>
     ${j.address ? `<small>${esc(j.address)}</small>` : ""}<p>${esc(String(j.desc).slice(0, 220))}</p>
-    ${j.quote ? `<span class="muted">${esc(j.status)}, moves on the tablet</span>` : `<select data-js="${esc(j.code)}">${JOB_STEPS.map((s) => `<option ${s === j.status ? "selected" : ""}>${s}</option>`).join("")}</select>`}</div>`).join("") || `<p class="muted">No jobs here. Bring in the current jobs on Add new, from AroFlo.</p>`}</div>`;
+    ${j.quote ? `<span class="muted">${esc(j.status)}, moves on the tablet</span>` : `<select data-js="${esc(j.code)}">${JOB_STEPS.map((s) => `<option ${s === j.status ? "selected" : ""}>${s}</option>`).join("")}</select>`}</div>`).join("") || `<p class="muted">No jobs here. Book one on Week by technician, or bring in jobs from the old system on Add new.</p>`}</div>`;
 }
 function viewImport() {
   return `<section class="card pad" style="margin-bottom:16px"><h2 class="qh">${ICON.plus}Bring in from AroFlo</h2>
@@ -522,6 +532,8 @@ function viewCompany() {
     <div class="two" style="margin-top:12px">${f("payCard", "Card payment link (from Square or Stripe)")}${f("payPaypal", "PayPal.me link (for example https://paypal.me/apexgates)")}${f("payLater", "Pay over time link (Afterpay or Zip, through Square or Stripe)")}</div>
     <p class="muted" style="margin:6px 0 0">These show as Pay buttons on the link the customer gets. Leave one empty to hide it.</p>
     <div class="fld" style="margin-top:12px"><label>How customers pay (printed on every invoice, for example bank name, BSB and account)</label><textarea data-set="payHow" data-type="text" rows="3">${esc(s.payHow)}</textarea></div></section>
+  <section class="card pad" style="margin-top:16px"><h2 class="qh">The team</h2><p class="muted" style="margin-top:-6px">Everyone jobs can be booked for, one name per line. They pick their name on the tablet to see their jobs.</p>
+    <div class="fld"><label>Technicians</label><textarea data-set="techs" data-type="text" rows="4">${esc(s.techs)}</textarea></div></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">Sample data</h2><p class="muted" style="margin-top:-6px">The sample jobs (customers named "Sample:"), the sample supplier bill and the sample shelf counts were put in to show how everything works. Remove them before the team starts using it for real.</p>
     <button class="btn ghost small" data-act="clearsamples">${ICON.bin}Remove the sample data</button></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">${ICON.undo}Undo a save</h2><p class="muted" style="margin-top:-6px">Every save is kept. Go back to an earlier one if something went wrong.</p>
@@ -560,8 +572,10 @@ document.addEventListener("change", async (e) => {
   if (el.dataset.imp === "stock") importStock(rows); else if (el.dataset.imp === "jobs") importJobs(rows); else importClients(rows);
 });
 document.addEventListener("click", async (e) => {
+  if (st.tab === "jobs" && e.target.closest("[data-dp]")) { DP.onClick(e); return; }
   const b = e.target.closest("[data-act]"); if (!b) return;
   const a = b.dataset.act;
+  if (a === "jview") { st.jview = b.dataset.v; render(); return; }
   if (a === "tab") { st.tab = b.dataset.v; st.gate = null; render(); scrollTo(0, 0); }
   if (a === "login") {
     try { await api({ action: "login", password: $("#opw").value }); st.err = ""; await load(); } catch (err) { st.err = err.message; render(); }
@@ -663,6 +677,7 @@ document.addEventListener("change", (e) => {
 });
 document.addEventListener("input", (e) => {
   const el = e.target;
+  if (st.tab === "jobs" && DP.onInput(e)) return;
   if (el.dataset.add) { const [o, k] = el.dataset.add.split("."); (o === "h" ? st.addH : st.addM)[k] = el.value; }
   if (el.dataset.g) st.gate[el.dataset.g] = el.value;
   if (el.matches("[data-sfind]")) { st.sfind = el.value; const pos = el.selectionStart; render(); const n = $("[data-sfind]"); n.focus(); n.setSelectionRange(pos, pos); }

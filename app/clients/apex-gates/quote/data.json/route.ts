@@ -3,7 +3,7 @@ import { randomBytes } from "crypto";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
 import { learnStats, askHelper, buildJob, readBill } from "@/lib/apex-quote-ai";
 import { basicBuild, basicHelper } from "@/lib/apex-quote-basic";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs, sampleStock, clearSamples } from "@/lib/apex-quote-store";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs, sampleStock, clearSamples, listVisits, saveVisit, deleteVisit, stepVisit } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -91,6 +91,17 @@ export async function POST(req: NextRequest) {
   if (body.action === "preview") {
     try { return json({ ok: true, answer: basicBuild(body.input || { said: "", types: [], prices: [] }) }); } catch { return json({ ok: false }); }
   }
+  if (body.action === "visits") {
+    // the week's bookings; a technician's tablet shows its own, the office sees all and the ones still to book
+    try { return json({ ok: true, list: await listVisits(String(body.from || ""), String(body.to || ""), !!body.undated && isOffice(req)) }); }
+    catch (e: any) { return json({ error: e.message }, 500); }
+  }
+  if (body.action === "visit-step") {
+    try {
+      const v = await stepVisit(String(body.id || ""), String(body.date || ""), String(body.status || ""), String(body.who || ""), String(body.note || ""));
+      return v ? json({ ok: true, visit: v }) : json({ error: "The office has changed this job. Pull it up again." }, 409);
+    } catch (e: any) { return json({ error: e.message }, 500); }
+  }
   if (body.action === "learn") {
     try { return json({ ok: true, stats: await learnStats() }); } catch (e: any) { return json({ error: e.message }, 500); }
   }
@@ -163,6 +174,8 @@ export async function POST(req: NextRequest) {
       if (!j) return json({ error: "No such job" }, 404);
       j.status = String(body.status || "").slice(0, 40); await writeJobs(list); return json({ ok: true });
     }
+    if (body.action === "visit-save") return json({ ok: true, visit: await saveVisit(body.visit, "Office") });
+    if (body.action === "visit-del") return json({ ok: true, gone: await deleteVisit(String(body.id || ""), String(body.date || "")) });
     if (body.action === "stock-sample") { await sampleStock(String(body.id || ""), +body.qty || 0, +body.min || 0); return json({ ok: true }); }
     if (body.action === "samples-clear") return json({ ok: true, removed: await clearSamples() });
     if (body.action === "quotes") return json({ ok: true, list: await listQuotes() });
