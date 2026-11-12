@@ -398,3 +398,9 @@ export async function saveDay(input: any) {
   d.log = (prev?.log || []).concat({ at: Date.now(), who: "Office", what: d.checked && !prev?.checked ? "checked" : "changed" }).slice(-40);
   return twrite(d, f || null);
 }
+/* the office removes a day put in by mistake */
+export async function deleteDay(tech: string, date: string) {
+  const f = (await tlist(`${vday(date)}_${slug(tech)}.`))[0];
+  if (f) await (await bucket()).remove([`time/${f.name}`]);
+  return !!f;
+}
