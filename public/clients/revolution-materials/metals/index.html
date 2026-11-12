@@ -205,9 +205,10 @@ table.dims td:last-child{text-align:right;font-family:var(--mono);color:#fff}
 .fact b{color:#ffb27f;display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px}
 .xlink{color:var(--acc2);font-weight:600;text-decoration:none}
 .top .nav2{display:flex;gap:6px}
-.top .nav2 a{color:var(--mut);text-decoration:none;font-size:13px;font-weight:600;padding:7px 11px;border-radius:999px;border:1px solid transparent}
-.top .nav2 a:hover{color:#fff}.top .nav2 a.on{color:#fff;border-color:var(--line2)}
-@media(max-width:820px){.top .nav2{display:none}.fams small{font-size:9px}}
+.top .nav2 a{color:var(--mut);text-decoration:none;font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.top .nav2 a:hover{color:#fff}.top .nav2 a.on{color:#fff;border-color:var(--line2);background:rgba(255,255,255,.04)}
+@media(max-width:820px){.top{flex-wrap:wrap;height:auto;padding:10px 14px;row-gap:10px}.top .nav2{order:3;width:100%;background:#161a20;border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px}.top .nav2 a{flex:1;text-align:center;font-size:12.5px;padding:8px 6px;border-radius:9px}.top .nav2 a.on{background:var(--acc);border-color:var(--acc)}}
+@media(max-width:820px){.fams small{font-size:9px}}
 
 </style>
 <script type="importmap">
