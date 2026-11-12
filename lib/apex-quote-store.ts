@@ -234,7 +234,7 @@ export async function clearSamples() {
 }
 
 /* ---------- scheduling and dispatch ----------
-   Every booked visit is its own small file: visits/<date>_<id>~<time saved>.json
+   Every booked visit is its own small file: visits/<date>_<id>.<time saved>.json
    (date "0000-00-00" while it still needs a day). Each save writes a new file name
    and removes the old one, so a tablet can never be handed a stale copy, and the
    date in the name lets a week be found without opening every job ever booked. */
@@ -242,7 +242,7 @@ const NODATE = "0000-00-00";
 const vday = (d: any) => (/^\d{4}-\d{2}-\d{2}$/.test(String(d || "")) ? String(d) : NODATE);
 type VFile = { name: string; date: string; id: string; ts: number };
 function vparse(name: string): VFile | null {
-  const m = /^(\d{4}-\d{2}-\d{2})_([a-z0-9]+)~(\d+)\.json$/.exec(name);
+  const m = /^(\d{4}-\d{2}-\d{2})_([a-z0-9]+)\.(\d+)\.json$/.exec(name);
   return m ? { name, date: m[1], id: m[2], ts: +m[3] } : null;
 }
 async function vlist(prefix: string): Promise<VFile[]> {
@@ -278,7 +278,7 @@ export async function listVisits(from: string, to: string, undated = false) {
   return list.sort((a: any, b: any) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`));
 }
 async function vfind(id: string, date: string) {
-  const files = newest(await vlist(`${vday(date)}_${id}~`));
+  const files = newest(await vlist(`${vday(date)}_${id}.`));
   return files[0] || null;
 }
 const clip = (v: any, n: number) => String(v ?? "").slice(0, n);
@@ -292,7 +292,7 @@ function cleanVisit(v: any) {
 }
 async function vwrite(v: any, old: VFile | null) {
   const b = await bucket(); const ts = Date.now(); v.updated = ts;
-  const name = `${vday(v.date)}_${v.id}~${ts}.json`;
+  const name = `${vday(v.date)}_${v.id}.${ts}.json`;
   const { error } = await b.upload(`visits/${name}`, new Blob([JSON.stringify(v)], { type: "application/json" }), { contentType: "application/json", cacheControl: "0" });
   if (error) throw new Error(error.message);
   if (old) await b.remove([`visits/${old.name}`]);
