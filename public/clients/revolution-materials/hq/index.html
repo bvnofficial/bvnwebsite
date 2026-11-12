@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#111316">
+<title>Revolution Materials HQ | CEO dashboard demo by BVN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--or:#E86010;--or-d:#C94F08;--or-s:#FDEFE6;--ink:#111316;--ink2:#1B1E23;--bg:#F3F4F6;--card:#fff;--line:#E3E5E9;--line2:#EEF0F3;--text:#16191D;--mut:#6B717A;--faint:#9AA0A8;
+--ok:#0E9F6E;--ok-s:#E3F6EE;--warn:#B45309;--warn-s:#FEF3E2;--bad:#C8261B;--bad-s:#FDECEA;--blue:#2563EB;--blue-s:#E8F0FE;--r:14px;--sh:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);--sh2:0 18px 48px rgba(16,24,40,.22)}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font:14px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}a{color:inherit}
+h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-weight:800}h3{font-size:15px;font-weight:700}
+.mut{color:var(--mut)}.faint{color:var(--faint)}.sm{font-size:12px}.xs{font-size:11px}.b{font-weight:600}.r{text-align:right}.nw{white-space:nowrap}
+.row{display:flex;align-items:center;gap:10px}.grow{flex:1;min-width:0}.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 13px;font-weight:600;font-size:13px;line-height:1;min-height:36px;white-space:nowrap;text-decoration:none;transition:background .15s,border-color .15s}
+.btn:hover{background:#F8F9FA;border-color:#CFD3D9}.btn.pri{background:var(--or);border-color:var(--or);color:#fff}.btn.pri:hover{background:var(--or-d)}
+.btn.dark{background:var(--ink);border-color:var(--ink);color:#fff}.btn.ghost{border-color:transparent;background:transparent}.btn.ghost:hover{background:rgba(0,0,0,.05)}
+.btn.s{min-height:28px;padding:5px 9px;font-size:12px;border-radius:8px}.btn svg,.ico{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--line2);color:#3d434b;white-space:nowrap}
+.tag.or{background:var(--or-s);color:#A8440A}.tag.ok{background:var(--ok-s);color:#08724F}.tag.warn{background:var(--warn-s);color:var(--warn)}.tag.bad{background:var(--bad-s);color:var(--bad)}.tag.blue{background:var(--blue-s);color:#1D4FC4}
+.inp{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;outline:none}.inp:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(232,96,16,.15)}
+/* layout */
+.app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+.side{background:var(--ink);color:#c9ced6;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:18px 12px}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px;color:#fff}
+.brand .mk{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ff8a3d,var(--or));display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:-.02em}
+.brand b{display:block;font-size:14px;line-height:1.1}.brand small{font-size:11px;color:#8a919c}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav .grp{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6b727c;padding:14px 10px 6px;font-weight:700}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;color:#c9ced6;padding:9px 10px;border-radius:9px;text-align:left;font-weight:500}
+.nav button:hover{background:rgba(255,255,255,.06);color:#fff}.nav button.on{background:rgba(232,96,16,.16);color:#fff}.nav button.on svg{color:var(--or)}
+.nav .bdg{margin-left:auto;background:var(--or);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px}
+.sync{margin-top:auto;font-size:12px;padding:12px 10px;border-top:1px solid rgba(255,255,255,.08)}
+.sync div{display:flex;align-items:center;gap:8px;margin:4px 0}.sync i{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+.sync a{color:#8a919c;text-decoration:none}.sync a:hover{color:#fff}
+.main{min-width:0;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:12px;padding:16px 26px;background:rgba(243,244,246,.9);backdrop-filter:blur(10px);position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line)}
+.top .srch{position:relative;width:min(340px,30vw)}.top .srch svg{position:absolute;left:11px;top:11px;color:var(--faint)}.top .srch input{padding-left:34px}
+.demo{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--or);background:var(--or-s);padding:4px 9px;border-radius:999px}
+.bell{position:relative}.bell .n{position:absolute;top:2px;right:2px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 4px}
+.npanel{position:absolute;right:0;top:44px;width:340px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh2);z-index:40;max-height:420px;overflow:auto}
+.page{padding:22px 26px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);min-width:0}
+.ch{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line2)}.ch h3{flex:1}.cb{padding:14px 16px}
+.g{display:grid;gap:16px}.g2{grid-template-columns:1.6fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.brief{background:linear-gradient(120deg,#16191d 0%,#22180f 100%);color:#e7e9ee;border:0;padding:20px 22px;position:relative;overflow:hidden}
+.brief:after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(232,96,16,.35),transparent 70%)}
+.brief .tag{background:rgba(232,96,16,.2);color:#ffb27f}.brief h2{font-size:24px;margin:10px 0 6px;color:#fff}.brief p{margin:0;max-width:860px;color:#c3c8d0;font-size:14.5px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.kpi{padding:14px 15px;cursor:pointer;transition:transform .15s,box-shadow .15s}.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,24,40,.1)}
+.kpi .l{font-size:12px;color:var(--mut);font-weight:500}.kpi .v{font-size:25px;font-weight:800;letter-spacing:-.03em;margin:4px 0 2px}.kpi .d{font-size:12px;color:var(--mut)}.kpi .d.up{color:var(--ok)}.kpi .d.dn{color:var(--bad)}
+.kpi.flash{animation:flash 1.6s}@keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--or)}100%{box-shadow:var(--sh)}}
+/* charts */
+.bars{display:flex;align-items:flex-end;gap:6px;height:170px;padding-top:16px;border-bottom:1px solid var(--line)}
+.bars .c{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative;cursor:default}
+.bars .c i{display:block;width:70%;max-width:30px;background:#F2B48C;border-radius:4px 4px 0 0;min-height:3px;transition:height .6s}
+.bars .c.cur i{background:var(--or)}.bars .c:hover i{filter:brightness(.92)}
+.bars .c em{font-style:normal;font-size:11px;color:var(--mut);margin-bottom:4px;font-weight:600}
+.blab{display:flex;gap:6px;margin-top:6px}.blab span{flex:1;text-align:center;font-size:10.5px;color:var(--faint)}
+.hb{display:grid;grid-template-columns:minmax(110px,150px) 1fr 52px;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+.hb .tr{height:10px;background:var(--line2);border-radius:999px;overflow:hidden}.hb .tr i{display:block;height:100%;background:var(--or);border-radius:999px}
+.hb.ok .tr i{background:var(--ok)}.hb b{text-align:right}
+/* lists */
+.li{display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--line2);cursor:pointer}.li:first-child{border-top:0}.li:hover{background:#FAFAFB}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff;flex:none}
+.feed .fi{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line2);font-size:13px}.feed .fi:first-child{border-top:0}.feed .t{margin-left:auto;color:var(--faint);font-size:11.5px;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--or);flex:none;margin-top:6px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}.tbl th{text-align:left;font-size:11.5px;color:var(--mut);font-weight:600;padding:10px 14px;border-bottom:1px solid var(--line);background:#FAFAFB;white-space:nowrap}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}.tbl tr.ck:hover td{background:#FAFAFB;cursor:pointer}.tbl tr:last-child td{border-bottom:0}
+.tw{overflow-x:auto}
+/* inbox */
+.inbox{display:grid;grid-template-columns:330px 1fr;height:calc(100vh - 69px)}
+.ilist{border-right:1px solid var(--line);background:#fff;overflow:auto}
+.ci{padding:13px 16px;border-bottom:1px solid var(--line2);cursor:pointer;display:flex;gap:11px}.ci:hover{background:#FAFAFB}.ci.on{background:var(--or-s)}
+.ci .p{font-size:12.5px;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.ci.unread b{font-weight:800}.ci.unread .p{color:var(--text)}
+.thread{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+.th{padding:14px 20px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.msgs{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:min(560px,80%);padding:10px 13px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:13.5px;white-space:pre-wrap}
+.m.me{align-self:flex-end;background:var(--ink);color:#fff;border-color:var(--ink)}.m small{display:block;font-size:10.5px;opacity:.6;margin-top:5px}
+.m.sys{align-self:center;background:transparent;border:1px dashed #cfd3d9;color:var(--mut);font-size:12px;max-width:90%}
+.rfqbox{border:1px solid #F2C3A4;background:#FFF8F3;border-radius:12px;padding:10px 12px;margin-top:6px;font-size:12.5px;color:var(--text)}
+.ai{margin:0 20px 10px;border:1px solid #F2C3A4;background:#FFF8F3;border-radius:12px;padding:11px 13px;font-size:13px}
+.ai .tag{background:var(--or);color:#fff}
+.comp{display:flex;gap:8px;padding:12px 20px 18px;background:#fff;border-top:1px solid var(--line)}.comp textarea{resize:none;height:44px}
+/* pipeline */
+.kan{display:grid;grid-template-columns:repeat(6,minmax(230px,1fr));gap:12px;overflow-x:auto;padding-bottom:10px}
+.col{background:#E9EBEF;border-radius:14px;padding:10px;min-height:300px;transition:background .15s}.col.over{background:#F8DCC8}
+.col h4{margin:2px 4px 10px;font-size:12.5px;display:flex;gap:8px;align-items:center}.col h4 span{color:var(--mut);font-weight:500}
+.op{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 12px;margin-bottom:8px;cursor:grab;box-shadow:var(--sh);transition:transform .12s}.op:hover{transform:translateY(-1px)}
+.op.drag{opacity:.4}.op .v{font-weight:800;font-size:15px}
+/* modal */
+.mod{position:fixed;inset:0;background:rgba(10,12,16,.5);display:grid;place-items:center;z-index:60;padding:16px;animation:fade .15s}
+.mod .box{background:#fff;border-radius:18px;width:min(860px,100%);max-height:92vh;overflow:auto;box-shadow:var(--sh2)}
+.mh{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line2);position:sticky;top:0;background:#fff;z-index:2}.mh h2{font-size:19px;flex:1}
+.mb{padding:18px 22px}.mf{display:flex;gap:10px;justify-content:flex-end;padding:14px 22px;border-top:1px solid var(--line2);position:sticky;bottom:0;background:#fff;flex-wrap:wrap}
+@keyframes fade{from{opacity:0}}
+.qtbl input{width:96px;text-align:right;padding:6px 8px}
+.tot{display:flex;justify-content:flex-end;gap:30px;padding:12px 14px;font-size:14px}.tot b{font-size:20px}
+/* toasts */
+.toasts{position:fixed;right:18px;bottom:18px;z-index:80;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.toast{background:var(--ink);color:#fff;border-radius:12px;padding:12px 15px;font-size:13.5px;box-shadow:var(--sh2);max-width:360px;animation:tin .3s;display:flex;gap:10px;align-items:flex-start}
+.toast.or{background:linear-gradient(135deg,#ff7a2a,var(--or))}@keyframes tin{from{opacity:0;transform:translateY(12px)}}
+.phone{position:fixed;top:16px;right:18px;z-index:85;width:330px;background:rgba(250,250,252,.97);backdrop-filter:blur(14px);border-radius:18px;box-shadow:var(--sh2);padding:12px 14px;display:flex;gap:11px;animation:pin .45s cubic-bezier(.2,.9,.3,1.2)}
+.phone .ic{width:38px;height:38px;border-radius:10px;background:#22c55e;display:grid;place-items:center;color:#fff;flex:none}
+@keyframes pin{from{opacity:0;transform:translateY(-40px)}}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;padding:6px 9px;border-radius:8px;z-index:90;white-space:nowrap;display:none}
+.empty{padding:30px;text-align:center;color:var(--mut)}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;animation:pl 1.4s infinite}@keyframes pl{0%{box-shadow:0 0 0 0 currentColor}100%{box-shadow:0 0 0 8px transparent}}
+.new{animation:newrow 2.4s}@keyframes newrow{0%,50%{background:#FFE7D6}}
+.seg{display:inline-flex;background:#E9EBEF;border-radius:10px;padding:3px}.seg button{border:0;background:transparent;padding:6px 11px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--mut)}.seg button.on{background:#fff;color:var(--text);box-shadow:var(--sh)}
+.mbar{display:none}
+@media(max-width:1280px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1000px){.g2,.g3{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:900px){
+ .app{grid-template-columns:minmax(0,1fr)}.side{position:fixed;left:0;top:0;bottom:0;width:250px;z-index:70;transform:translateX(-100%);transition:transform .25s}.side.open{transform:none;box-shadow:var(--sh2)}
+ .mbar{display:inline-flex}.top{padding:12px 14px;gap:8px}.top h1{font-size:19px}.top .srch{display:none}.page{padding:14px 14px 70px}
+ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi .v{font-size:21px}.li .btn{display:none}.brief h2{font-size:20px}.inbox{grid-template-columns:1fr;height:auto}.inbox.sel .ilist{display:none}.inbox:not(.sel) .thread{display:none}.thread{min-height:calc(100vh - 62px)}
+ .phone{left:12px;right:12px;width:auto}.demo{display:none}.top .newbtn span{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="mod"></div>
+<div class="toasts" id="toasts"></div>
+<div class="tip" id="tip"></div>
+<script>
+(function(){
+"use strict";
+/* ============ helpers ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=n=>"$"+Math.round(n).toLocaleString("en-AU");
+const money2=n=>"$"+n.toLocaleString("en-AU",{minimumFractionDigits:2,maximumFractionDigits:2});
+const kfmt=n=>n>=1000?"$"+(n/1000).toFixed(n>=100000?0:1).replace(/\.0$/,"")+"k":money(n);
+const MIN=60000,HR=60*MIN,DAY=24*HR;
+const now=()=>Date.now();
+const rel=t=>{const d=now()-t;if(d<MIN)return"just now";if(d<HR)return Math.floor(d/MIN)+" min ago";if(d<DAY)return Math.floor(d/HR)+" hr ago";const n=Math.floor(d/DAY);return n===1?"yesterday":n+" days ago"};
+const clock=t=>new Date(t).toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"});
+const COLORS=["#E86010","#2563EB","#0E9F6E","#7C3AED","#B45309","#0891B2","#BE185D","#4B5563"];
+const avatar=(name,i)=>`<span class="av" style="background:${COLORS[(i||name.length)%COLORS.length]}">${esc(name.split(" ").map(w=>w[0]).slice(0,2).join(""))}</span>`;
+const ICONS={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',inbox:'<path d="M4 4h16v12h-5l-2 3h-2l-2-3H4z"/>',pipe:'<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v5h-4z"/>',quote:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.6 3.5 5.2"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cube:'<path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',back:'<path d="M15 18l-6-6 6-6"/>',msg:'<path d="M4 5h16v11H8l-4 4z"/>',ok:'<path d="M5 12l5 5 9-10"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>',flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+const I=n=>`<svg class="ico" viewBox="0 0 24 24">${ICONS[n]||""}</svg>`;
+
+/* ============ catalogue ============ */
+const GR={"316":"Stainless 316","304":"Stainless 304","2205":"Duplex 2205","2507":"Super Duplex 2507","ti5":"Titanium Gr 5","ti2":"Titanium Gr 2","625":"Inconel 625","718":"Inconel 718","400":"Monel 400","c276":"Hastelloy C-276","b7":"Alloy B7","albr":"Aluminium Bronze"};
+const STAGES=["New enquiry","Quoting","Quote sent","Follow up","Won","Lost"];
+const STAGE_TAG={"New enquiry":"or","Quoting":"blue","Quote sent":"","Follow up":"warn","Won":"ok","Lost":"bad"};
+const SRC_ICON={"3D Part Builder":"cube","Grade Finder":"search","Google search":"search","Phone call":"phone","Email":"msg","Repeat customer":"users"};
+const BUILDER="/clients/revolution-materials/builder";
+
+/* ============ demo data (shaped like GHL contacts, opportunities and conversations) ============ */
+function seed(){
+  const t=now();
+  const contacts=[
+    ["c1","Westgate Process Engineering","Daniel Morris","Maintenance planner","Altona North VIC","0412 556 201"],
+    ["c2","Bass Strait Marine","Priya Nair","Purchasing officer","Port Melbourne VIC","0433 118 470"],
+    ["c3","Latrobe Power Maintenance","Graham Ellis","Shutdown coordinator","Morwell VIC","0408 902 335"],
+    ["c4","Hume Chemical Plant","Sophie Tran","Reliability engineer","Campbellfield VIC","0421 774 960"],
+    ["c5","Geelong Desal Services","Mark Fitzgerald","Mechanical lead","Geelong VIC","0417 330 812"],
+    ["c6","Kwinana Pump Services","Aaron Clarke","Workshop manager","Kwinana WA","0429 615 044"],
+    ["c7","Dandenong Valve Co","Lisa Romano","Buyer","Dandenong South VIC","0402 887 129"],
+    ["c8","Southern Cross Fabrication","Tom Walsh","Owner","Laverton North VIC","0411 290 673"],
+    ["c9","Pilbara Offshore Fitters","Kate Henderson","Procurement","Karratha WA","0438 446 517"],
+    ["c10","Bayside Boat Builders","Chris Papadopoulos","Director","Mordialloc VIC","0415 662 038"],
+    ["c11","Ballarat Mining Supplies","Ryan O'Connell","Branch manager","Ballarat VIC","0400 513 284"],
+    ["c12","Altona Petrochem Maintenance","Mei Lin Chen","Materials engineer","Altona VIC","0426 908 751"],
+    ["c13","Sunshine Hydraulics","Josh Baker","Storeman","Sunshine VIC","0419 224 590"],
+    ["c14","Corio Bay Refinery Services","Helen Wright","Contracts officer","Corio VIC","0407 771 362"]
+  ].map((c,i)=>({id:c[0],co:c[1],name:c[2],role:c[3],city:c[4],phone:c[5],email:c[2].split(" ")[0].toLowerCase()+"@"+c[1].toLowerCase().split(" ").slice(0,2).join("").replace(/[^a-z]/g,"")+".com.au",i}));
+  const L=(d,g,qty,u,p,b)=>({d,g,qty,u,p,b:b||null});
+  const opps=[
+    {id:"o1",c:"c1",title:"M20 316 bolt sets for pump skid",stage:"New enquiry",src:"3D Part Builder",at:t-18*MIN,certs:["EN 10204 3.1","Country of origin"],lines:[L("M20 x 120 hex bolt, part thread","316",400,"pcs",7.40,"t=hex&m=316&d=20&L=120&th=part&n=1&w=1&q=400"),L("M20 hex nut","316",400,"pcs",1.35),L("M20 flat washer","316",400,"pcs",.55)],note:"Needs delivery to Altona North before the 28th shutdown."},
+    {id:"o9",c:"c9",title:"Monel 400 bolting, seawater line",stage:"New enquiry",src:"Grade Finder",at:t-2.2*HR,certs:["EN 10204 3.1"],lines:[L("M16 x 70 hex bolt","400",300,"pcs",15.60,"t=hex&m=400&d=16&L=70&th=part&n=1&q=300"),L("M16 hex nut","400",300,"pcs",2.05)],note:"Asked if 400 or K-500 is better for this line."},
+    {id:"o13",c:"c13",title:"304 set screws, top up stock",stage:"New enquiry",src:"Phone call",at:t-5*HR,certs:[],lines:[L("M8 x 16 set screw","304",2000,"pcs",.32,"t=set&m=304&d=8&L=16&q=2000")],note:"Called in, wants price and lead time today."},
+    {id:"o2",c:"c2",title:"Titanium fasteners and plate, hull fit out",stage:"Quoting",src:"3D Part Builder",at:t-1.3*DAY,certs:["EN 10204 3.1"],lines:[L("M12 x 40 socket cap screw","ti5",250,"pcs",14.80,"t=sock&m=ti5&d=12&L=40&q=250"),L("Plate 6 mm, 1000 x 2000","ti2",1,"sheet",2480)]},
+    {id:"o8",c:"c8",title:"Duplex 2205 plate, tank job",stage:"Quoting",src:"Google search",at:t-2*DAY,certs:["EN 10204 3.1","NATA tested"],lines:[L("Plate 10 mm, 1500 x 3000","2205",4,"sheets",5575)]},
+    {id:"o5",c:"c5",title:"Super duplex studs, RO pressure vessels",stage:"Quote sent",src:"3D Part Builder",at:t-2*DAY,sent:t-2*DAY,certs:["EN 10204 3.1","PREN report"],lines:[L("M16 x 110 stud, full thread","2507",800,"pcs",11.20,"t=stud&m=2507&d=16&L=110&th=full&n=1&q=800"),L("M16 heavy hex nut","2507",1600,"pcs",1.55)]},
+    {id:"o12",c:"c12",title:"Inconel 625 sheet, heater repair",stage:"Quote sent",src:"Repeat customer",at:t-3*DAY,sent:t-1*DAY,certs:["EN 10204 3.1"],lines:[L("Sheet 3 mm, 1219 x 2438","625",4,"sheets",3200)]},
+    {id:"o3",c:"c3",title:"B7 studs and 2H nuts, Unit 2 outage",stage:"Follow up",src:"Email",at:t-8*DAY,sent:t-6*DAY,certs:["EN 10204 3.1"],lines:[L("M24 x 200 stud, full thread","b7",1200,"pcs",6.20,"t=stud&m=b7&d=24&L=200&th=full&n=1&q=1200"),L("M24 2H heavy hex nut","b7",2400,"pcs",.98)]},
+    {id:"o4",c:"c4",title:"Hastelloy C-276 bar, agitator shafts",stage:"Follow up",src:"Grade Finder",at:t-11*DAY,sent:t-9*DAY,certs:["EN 10204 3.1","PMI report"],lines:[L("Round bar 50 mm x 3 m","c276",4,"lengths",3650)]},
+    {id:"o14",c:"c14",title:"Titanium Gr 2 bar, heat exchanger",stage:"Follow up",src:"Google search",at:t-12*DAY,sent:t-7*DAY,certs:["EN 10204 3.1"],lines:[L("Round bar 25 mm x 3 m","ti2",6,"lengths",735)]},
+    {id:"o11",c:"c11",title:"Inconel 718 studs, crusher hydraulics",stage:"Won",src:"3D Part Builder",at:t-16*DAY,won:t-4*DAY,certs:["EN 10204 3.1"],lines:[L("M20 x 160 stud, full thread","718",600,"pcs",31.50,"t=stud&m=718&d=20&L=160&th=full&n=1&q=600")]},
+    {id:"o6",c:"c6",title:"Inconel 625 bar, pump shafts",stage:"Won",src:"Repeat customer",at:t-19*DAY,won:t-9*DAY,certs:["EN 10204 3.1"],lines:[L("Round bar 32 mm x 3 m","625",5,"lengths",1750)]},
+    {id:"o7",c:"c7",title:"316 nuts, valve assembly line",stage:"Won",src:"Grade Finder",at:t-13*DAY,won:t-11*DAY,certs:[],lines:[L("M10 hex nut","316",5000,"pcs",.29,"t=nut&m=316&d=10&q=5000")]},
+    {id:"o10",c:"c10",title:"Aluminium bronze shaft bar",stage:"Lost",src:"Google search",at:t-24*DAY,lost:"Price. Went with an overseas supplier.",certs:[],lines:[L("Round bar 60 mm x 3 m","albr",2,"lengths",1550)]}
+  ];
+  const M=(me,text,ago,extra)=>Object.assign({me,text,at:t-ago},extra||{});
+  const convos=[
+    {id:"v1",c:"c1",o:"o1",ch:"Website RFQ",unread:true,msgs:[M(false,"Hi Jim, need these for the pump skid rebuild. Can you do 3.1 certs and get them to Altona North before the 28th?",18*MIN,{rfq:"o1"})],ai:"Hi Daniel, thanks for the RFQ. All 400 sets are in 316 and we can supply 3.1 certs with country of origin. I'll have pricing to you within the hour and can deliver to Altona North by the 26th. Jim"},
+    {id:"v9",c:"c9",o:"o9",ch:"Email",unread:true,msgs:[M(false,"Found Monel 400 on your site. We have a seawater cooling line on the platform. Is 400 fine or should we be on K-500 for the bolting? Need about 300 sets, M16 x 70.",2.2*HR)],ai:"Hi Kate, for seawater cooling bolting at M16, Monel 400 is the usual pick and it is what we stock. K-500 is worth it only if you need the extra strength, and it costs about 40 percent more. I'll quote both so you can compare. Jim"},
+    {id:"v13",c:"c13",o:"o13",ch:"Call",unread:false,msgs:[M(false,"Missed call. AI receptionist took a message: Josh from Sunshine Hydraulics wants a price on 2000 x M8 x 16 304 set screws and a lead time today.",5*HR,{sys:true}),M(true,"Thanks Josh, got your message. Pricing coming this afternoon.",4.8*HR)],ai:"Hi Josh, 2000 x M8 x 16 304 set screws come to $640 plus GST, in stock, and can go out tomorrow. Reply YES and we'll send the invoice. Jim"},
+    {id:"v2",c:"c2",o:"o2",ch:"SMS",unread:false,msgs:[M(false,"Sent through the builder. Also need a sheet of Gr 2 plate, 6 mm.",1.3*DAY,{rfq:"o2"}),M(true,"Got it Priya. Checking the plate size with the mill, back to you tomorrow.",1.2*DAY)],ai:"Hi Priya, the 1000 x 2000 Gr 2 plate is confirmed. Full quote for the screws and plate coming today. Jim"},
+    {id:"v3",c:"c3",o:"o3",ch:"Email",unread:false,msgs:[M(false,"Please quote 1200 x M24 x 200 B7 studs with 2 x 2H nuts each for the Unit 2 outage.",8*DAY),M(true,"Quote attached, Graham. Stock is held for 14 days.",6*DAY,{doc:"Q-2611-03"})],ai:"Hi Graham, checking in on the B7 studs for the Unit 2 outage. The stock is still held for you until Friday. Want me to lock it in? Jim"},
+    {id:"v4",c:"c4",o:"o4",ch:"Email",unread:false,msgs:[M(false,"Do you have C-276 bar in 50 mm? Need 4 x 3 m with PMI.",11*DAY),M(true,"Yes, quote attached with PMI included.",9*DAY,{doc:"Q-2611-01"})],ai:"Hi Sophie, following up on the C-276 bar quote. We can also cut to length if that helps the agitator shafts. Any questions on the PMI reports? Jim"},
+    {id:"v5",c:"c5",o:"o5",ch:"Website RFQ",unread:false,msgs:[M(false,"Studs for the RO pressure vessels, PREN report needed.",2*DAY,{rfq:"o5"}),M(true,"Quote sent with PREN report, Mark.",2*DAY,{doc:"Q-2611-07"})],ai:"Hi Mark, just checking the 2507 stud quote landed. Happy to talk through the PREN numbers. Jim"},
+    {id:"v11",c:"c11",o:"o11",ch:"SMS",unread:false,msgs:[M(false,"PO 44871 sent for the 718 studs. Thanks Jim.",4*DAY),M(true,"Received, thanks Ryan. Dispatch Thursday.",4*DAY)],ai:"Hi Ryan, your 718 studs left today. Tracking is in your email. Jim"}
+  ];
+  const notices=[
+    {text:"New 3D Part Builder RFQ from Westgate Process Engineering, 400 sets M20 316",at:t-18*MIN,go:"inbox/v1",unread:true},
+    {text:"Kate Henderson (Pilbara Offshore Fitters) asked about Monel 400 vs K-500",at:t-2.2*HR,go:"inbox/v9",unread:true},
+    {text:"AI receptionist took a call from Sunshine Hydraulics",at:t-5*HR,go:"inbox/v13",unread:false},
+    {text:"Mei Lin Chen opened your Inconel 625 sheet quote 3 times",at:t-7*HR,go:"quotes",unread:false},
+    {text:"Ballarat Mining Supplies paid invoice INV-1182, $18,900",at:t-2*DAY,go:"pipeline",unread:false},
+    {text:"Follow up text sent to Corio Bay Refinery Services",at:t-3*DAY,go:"pipeline",unread:false}
+  ];
+  return {contacts,opps,convos,notices,seq:0};
+}
+const KEY="rmhq-demo-1";
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.opps)S=seed();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const C=id=>S.contacts.find(c=>c.id===id);
+const O=id=>S.opps.find(o=>o.id===id);
+const val=o=>o.lines.reduce((a,l)=>a+l.qty*l.p,0);
+const ui={view:"overview",sel:null,bell:false,q:"",period:"12w"};
+
+/* ============ stats ============ */
+function stats(){
+  const t=now(),o=S.opps;
+  const wk=o.filter(x=>t-x.at<7*DAY);
+  const open=o.filter(x=>!["Won","Lost"].includes(x.stage));
+  const sent=o.filter(x=>["Quote sent","Follow up"].includes(x.stage));
+  const won=o.filter(x=>x.stage==="Won"&&t-(x.won||x.at)<30*DAY);
+  const closed=o.filter(x=>["Won","Lost"].includes(x.stage));
+  const builder=wk.filter(x=>x.src==="3D Part Builder").length;
+  const unrep=S.convos.filter(v=>v.unread);
+  const stale=o.filter(x=>x.stage==="Follow up"||(x.stage==="Quote sent"&&t-(x.sent||x.at)>4*DAY));
+  return {wk,open,sent,won,closed,builder,unrep,stale,openV:open.reduce((a,x)=>a+val(x),0),sentV:sent.reduce((a,x)=>a+val(x),0),wonV:won.reduce((a,x)=>a+val(x),0),rate:closed.length?Math.round(closed.filter(x=>x.stage==="Won").length/closed.length*100):0};
+}
+function brief(st){
+  const h=new Date().getHours();
+  const parts=[];
+  if(st.unrep.length)parts.push(`${st.unrep.length} new ${st.unrep.length===1?"enquiry is":"enquiries are"} waiting on a reply, the oldest from ${C(st.unrep.slice().sort((x,y)=>last(x).at-last(y).at)[0].c).co}`);
+  parts.push(`${kfmt(st.sentV)} in quotes is sitting with customers`);
+  if(st.stale.length)parts.push(`${st.stale.length} of those ${st.stale.length===1?"needs":"need"} a follow up today (${st.stale.map(x=>C(x.c).co.split(" ")[0]).slice(0,3).join(", ")})`);
+  return {hi:`Good ${h<12?"morning":h<17?"afternoon":"evening"}, Jim`,txt:parts.join(". ")+`. The 3D Part Builder brought in ${st.builder} of this week's ${st.wk.length} enquiries, each with the full spec, weight and cert needs attached.`};
+}
+
+/* ============ layout ============ */
+const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Quotes","quote"],["grp","Insight"],["demand","Demand","chart"],["customers","Customers","users"]];
+const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Quotes",demand:"What customers ask for",customers:"Customers"};
+function render(){
+  const p=(location.hash.replace(/^#\/?/,"")||"overview").split("/");
+  ui.view=TITLES[p[0]]?p[0]:"overview";ui.sel=p[1]||null;
+  const body=VIEW[ui.view](stats());
+  const st=stats();
+  const badge={inbox:st.unrep.length,pipeline:st.stale.length};
+  const nav=NAV.map(n=>n[0]==="grp"?`<div class="grp">${n[1]}</div>`:`<button class="${ui.view===n[0]?"on":""}" data-go="${n[0]}">${I(n[2])}<span>${n[1]}</span>${badge[n[0]]?`<span class="bdg">${badge[n[0]]}</span>`:""}</button>`).join("");
+  const unread=S.notices.filter(n=>n.unread).length;
+  $("#app").innerHTML=`<div class="app">
+   <aside class="side" id="side"><div class="brand"><span class="mk">RM</span><div><b>Revolution HQ</b><small>Metals and Fasteners</small></div></div>
+    <nav class="nav">${nav}<div class="grp">Website</div>
+     <button onclick="window.open('${BUILDER}','_blank')">${I("cube")}<span>3D Part Builder</span>${I("ext")}</button>
+     <button onclick="location.href='/clients/revolution-materials'">${I("back")}<span>Website drafts</span></button></nav>
+    <div class="sync"><div><i></i>GoHighLevel connected</div><div><i></i>Website forms connected</div><div class="faint xs" style="margin:6px 0 8px">Synced ${clock(now())}</div><a href="#" data-act="reset">Reset demo data</a></div></aside>
+   <div class="main">
+    <header class="top"><button class="btn ghost mbar" data-act="menu" aria-label="Menu">${I("menu")}</button><h1>${TITLES[ui.view]}</h1><span class="demo">DEMO</span><span class="grow"></span>
+     <div class="srch"><svg class="ico" viewBox="0 0 24 24">${ICONS.search}</svg><input class="inp" id="q" placeholder="Search customers, grades, quotes" value="${esc(ui.q)}" aria-label="Search"></div>
+     <div class="bell"><button class="btn ghost" data-act="bell" aria-label="Notifications">${I("bell")}</button>${unread?`<span class="n">${unread}</span>`:""}${ui.bell?bellPanel():""}</div>
+     <button class="btn pri newbtn" data-act="sim" title="Sends a test enquiry through the 3D Part Builder">${I("plus")}<span>Test enquiry</span></button></header>
+    ${ui.view==="inbox"?body:`<div class="page">${body}</div>`}
+   </div></div>`;
+  const q=$("#q");if(q&&ui.focusQ){q.focus();q.setSelectionRange(q.value.length,q.value.length);ui.focusQ=false}
+  const ms=$(".msgs");if(ms)ms.scrollTop=ms.scrollHeight;
+}
+function bellPanel(){
+  return `<div class="npanel"><div class="ch"><h3>Notifications</h3><button class="btn s ghost" data-act="readall">Mark all read</button></div>${S.notices.slice(0,12).map(n=>`<div class="li" data-go="${n.go}"><span class="dot" style="${n.unread?"":"background:transparent"}"></span><span class="grow sm">${esc(n.text)}</span><span class="faint xs nw">${rel(n.at)}</span></div>`).join("")}</div>`;
+}
+const VIEW={};
+const HIST=[3,4,3,4,4,5,4,5,6,5,5];
+
+/* ---------- overview ---------- */
+VIEW.overview=st=>{
+  const b=brief(st);
+  const weeks=HIST.concat([st.wk.length]);
+  const wl=[];for(let i=11;i>=0;i--){const d=new Date(now()-i*7*DAY);wl.push(d.toLocaleDateString("en-AU",{day:"numeric",month:"short"}))}
+  const mx=Math.max(...weeks)*1.15;
+  const src={};S.opps.forEach(o=>src[o.src]=(src[o.src]||0)+1);
+  const srcs=Object.entries(src).sort((a,b)=>b[1]-a[1]);
+  const fun=STAGES.slice(0,5).map(g=>{const xs=S.opps.filter(o=>o.stage===g);return{g,n:xs.length,v:xs.reduce((a,o)=>a+val(o),0)}});
+  const fm=Math.max(...fun.map(f=>f.v),1);
+  const needs=[...st.unrep.map(v=>({k:"Reply",tag:"or",t:`${C(v.c).co} is waiting on a reply`,s:`${v.ch}, ${rel(v.msgs[v.msgs.length-1].at)}`,go:"inbox/"+v.id,btn:"Reply"})),
+    ...st.stale.map(o=>({k:"Follow up",tag:"warn",t:`${C(o.c).co}: ${o.title}`,s:`${money(val(o))} quote sent ${rel(o.sent||o.at)}, no answer yet`,act:"follow",id:o.id,btn:"Send follow up"}))];
+  return `<div class="g">
+  <div class="card brief"><div class="row"><span class="tag">${I("spark")} AI daily brief</span><span class="grow"></span><span class="sm" style="opacity:.6">${new Date().toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"})}</span></div><h2>${b.hi}</h2><p>${esc(b.txt)}</p></div>
+  <div class="kpis">
+   ${kpi("New enquiries, 7 days",st.wk.length,(st.wk.length-HIST[10]>=0?"+":"")+(st.wk.length-HIST[10])+" on last week","up","pipeline","k1")}
+   ${kpi("Open pipeline",kfmt(st.openV),st.open.length+" deals","","pipeline","k2")}
+   ${kpi("Quotes with customers",kfmt(st.sentV),st.sent.length+" quotes, "+st.stale.length+" to chase",st.stale.length?"dn":"","quotes","k3")}
+   ${kpi("Won, last 30 days",kfmt(st.wonV),"Win rate "+st.rate+"%","up","pipeline","k4")}
+   ${kpi("First reply time","11 min","Target is under 15 min","up","inbox","k5")}
+   ${kpi("From the 3D Builder",st.builder+" of "+st.wk.length,"Full spec on every one","","demand","k6")}
+  </div>
+  <div class="g g2">
+   <div class="card"><div class="ch"><h3>Needs you today</h3><span class="tag ${needs.length?"or":"ok"}">${needs.length||"All clear"}</span></div>
+    ${needs.length?needs.map(n=>`<div class="li" ${n.go?`data-go="${n.go}"`:""}><span class="tag ${n.tag}">${n.k}</span><div class="grow"><div class="b ell">${esc(n.t)}</div><div class="sm mut ell">${esc(n.s)}</div></div><button class="btn s" ${n.act?`data-act="${n.act}" data-id="${n.id}"`:`data-go="${n.go}"`}>${n.btn}</button></div>`).join(""):`<div class="empty">Nothing waiting. Every enquiry has a reply and every quote is current.</div>`}
+   </div>
+   <div class="card"><div class="ch"><h3>Activity</h3></div><div class="cb feed">${S.notices.slice(0,7).map(n=>`<div class="fi" data-go="${n.go}" style="cursor:pointer"><span>${esc(n.text)}</span><span class="t">${rel(n.at)}</span></div>`).join("")}</div></div>
+  </div>
+  <div class="g g3">
+   <div class="card"><div class="ch"><h3>Enquiries per week</h3><span class="mut sm">Last 12 weeks</span></div><div class="cb">
+    <div class="bars">${weeks.map((v,i)=>`<div class="c ${i===11?"cur":""}" data-tip="Week of ${wl[i]}: ${v} enquiries"><em>${i===11||i===0?v:""}</em><i style="height:${(v/mx*100).toFixed(1)}%"></i></div>`).join("")}</div>
+    <div class="blab">${wl.map((w,i)=>`<span>${i%3===0||i===11?w:""}</span>`).join("")}</div></div></div>
+   <div class="card"><div class="ch"><h3>Pipeline by stage</h3><span class="mut sm">${kfmt(st.openV)} open</span></div><div class="cb">${fun.map(f=>`<div class="hb ${f.g==="Won"?"ok":""}" data-tip="${f.g}: ${f.n} deals, ${money(f.v)}"><span>${f.g} <span class="faint">(${f.n})</span></span><span class="tr"><i style="width:${Math.max(3,f.v/fm*100)}%"></i></span><b>${kfmt(f.v)}</b></div>`).join("")}</div></div>
+   <div class="card"><div class="ch"><h3>Where enquiries come from</h3></div><div class="cb">${srcs.map(([k,n])=>`<div class="hb" data-tip="${k}: ${n} of ${S.opps.length} enquiries"><span class="row" style="gap:6px">${I(SRC_ICON[k]||"msg")}${k}</span><span class="tr"><i style="width:${n/srcs[0][1]*100}%"></i></span><b>${n}</b></div>`).join("")}
+    <p class="sm mut" style="margin:10px 0 0">Website tools (3D Part Builder and Grade Finder) bring in ${Math.round(((src["3D Part Builder"]||0)+(src["Grade Finder"]||0))/S.opps.length*100)}% of enquiries.</p></div></div>
+  </div></div>`;
+};
+const kpi=(l,v,d,cls,go,id)=>`<div class="card kpi" id="${id}" data-go="${go}"><div class="l">${l}</div><div class="v">${v}</div><div class="d ${cls}">${d}</div></div>`;
+
+/* ---------- inbox ---------- */
+const CH_TAG={"Website RFQ":"or","Email":"blue","SMS":"ok","Call":""};
+VIEW.inbox=()=>{
+  const list=S.convos.slice().sort((a,b)=>last(b).at-last(a).at).filter(v=>match(C(v.c).co+" "+C(v.c).name+" "+v.msgs.map(m=>m.text).join(" ")));
+  const v=S.convos.find(x=>x.id===ui.sel);
+  return `<div class="inbox ${v?"sel":""}"><div class="ilist">${list.map(x=>{const c=C(x.c),m=last(x);return `<div class="ci ${x.unread?"unread":""} ${v&&v.id===x.id?"on":""}" data-go="inbox/${x.id}">${avatar(c.name,c.i)}<div class="grow"><div class="row"><b class="grow ell">${esc(c.name)}</b><span class="xs faint nw">${rel(m.at)}</span></div><div class="xs mut ell" style="margin-bottom:3px">${esc(c.co)} <span class="tag ${CH_TAG[x.ch]}" style="margin-left:4px;padding:1px 6px">${x.ch}</span></div><div class="p">${m.me?"You: ":""}${esc(m.text)}</div></div></div>`}).join("")||'<div class="empty">No conversations match.</div>'}</div>
+   <div class="thread">${v?thread(v):'<div class="empty" style="margin:auto">Pick a conversation. Website RFQs, emails, texts and calls all land here from GoHighLevel.</div>'}</div></div>`;
+};
+const last=v=>v.msgs[v.msgs.length-1];
+function thread(v){
+  const c=C(v.c),o=O(v.o);
+  if(v.unread){v.unread=false;S.notices.forEach(n=>{if(n.go==="inbox/"+v.id)n.unread=false});save();setTimeout(()=>{const b=document.querySelector('[data-go="inbox"] .bdg');const n=stats().unrep.length;if(b){n?b.textContent=n:b.remove()}},0)}
+  return `<div class="th"><button class="btn ghost s mbar" data-go="inbox">${I("back")}</button>${avatar(c.name,c.i)}<div class="grow"><b>${esc(c.name)}</b> <span class="mut sm">${esc(c.role)}, ${esc(c.co)}</span><div class="xs mut">${esc(c.phone)} · ${esc(c.email)}</div></div>
+   ${o?`<span class="tag ${STAGE_TAG[o.stage]}">${o.stage}</span><button class="btn s" data-act="quote" data-id="${o.id}">${I("quote")} ${money(val(o))}</button>`:""}<button class="btn s" data-act="call" data-id="${c.id}">${I("phone")}</button></div>
+   <div class="msgs">${v.msgs.map(m=>m.sys?`<div class="m sys">${esc(m.text)}</div>`:`<div class="m ${m.me?"me":""}">${esc(m.text)}${m.rfq?rfqBox(O(m.rfq)):""}${m.doc?`<div class="rfqbox" style="background:#fff;color:var(--text)">${I("quote")} Quote ${m.doc}.pdf</div>`:""}<small>${m.me?"Jim":esc(c.name.split(" ")[0])}, ${clock(m.at)} ${new Date(m.at).toLocaleDateString("en-AU",{day:"numeric",month:"short"})} · ${v.ch}</small></div>`).join("")}</div>
+   ${v.ai?`<div class="ai"><div class="row" style="margin-bottom:6px"><span class="tag">${I("spark")} Suggested reply</span><span class="xs mut grow">Written from the RFQ and your stock list</span><button class="btn s" data-act="useai" data-id="${v.id}">Use this</button></div>${esc(v.ai)}</div>`:""}
+   <div class="comp"><textarea class="inp" id="reply" placeholder="Reply by ${v.ch==="SMS"||v.ch==="Call"?"SMS":"email"}"></textarea><button class="btn pri" data-act="send" data-id="${v.id}">${I("send")} Send</button></div>`;
+}
+function rfqBox(o){
+  if(!o)return"";
+  return `<div class="rfqbox"><div class="row" style="margin-bottom:6px"><b class="grow">${I("cube")} RFQ from ${esc(o.src)}</b></div>${o.lines.map(l=>`<div class="row sm"><span class="grow">${l.qty.toLocaleString()} x ${esc(l.d)}, ${GR[l.g]}</span>${l.b?`<a href="${BUILDER}#${l.b}" target="_blank" rel="noopener" class="xs" style="color:var(--or);font-weight:600">View in 3D</a>`:""}</div>`).join("")}${o.certs.length?`<div class="xs mut" style="margin-top:6px">Certs: ${o.certs.join(", ")}</div>`:""}${o.note?`<div class="xs mut">Note: ${esc(o.note)}</div>`:""}</div>`;
+}
+
+/* ---------- pipeline ---------- */
+VIEW.pipeline=()=>`<p class="mut sm" style="margin:0 0 14px">Drag a card to move it. Every move updates the opportunity in GoHighLevel and can trigger that stage's automation (follow up texts, review requests, reorder reminders).</p>
+ <div class="kan">${STAGES.map(g=>{const xs=S.opps.filter(o=>o.stage===g&&match(oppText(o)));return `<div class="col" data-stage="${g}"><h4><span class="tag ${STAGE_TAG[g]}">${g}</span><span>${xs.length} · ${kfmt(xs.reduce((a,o)=>a+val(o),0))}</span></h4>${xs.map(oppCard).join("")}</div>`}).join("")}</div>`;
+const oppText=o=>{const c=C(o.c);return [c.co,c.name,o.title,o.src,...o.lines.map(l=>l.d+" "+GR[l.g])].join(" ")};
+function oppCard(o){const c=C(o.c);return `<div class="op ${o.fresh?"new":""}" draggable="true" data-id="${o.id}" data-act="quote"><div class="xs mut ell">${esc(c.co)}</div><div class="b" style="margin:2px 0 6px">${esc(o.title)}</div><div class="row"><span class="v grow">${money(val(o))}</span><span class="tag" title="${esc(o.src)}">${I(SRC_ICON[o.src]||"msg")}</span></div><div class="xs faint" style="margin-top:6px">${o.stage==="Won"?"Won "+rel(o.won||o.at):o.sent?"Quote sent "+rel(o.sent):"Came in "+rel(o.at)}</div></div>`}
+
+/* ---------- quotes ---------- */
+VIEW.quotes=()=>{
+  const xs=S.opps.filter(o=>o.stage!=="Lost"&&match(oppText(o))).sort((a,b)=>STAGES.indexOf(a.stage)-STAGES.indexOf(b.stage)||b.at-a.at);
+  return `<div class="card"><div class="ch"><h3>Requests and quotes</h3><span class="mut sm">Click any row to price it and send the quote</span></div><div class="tw"><table class="tbl"><thead><tr><th>Customer</th><th>Items</th><th>Grades</th><th>Source</th><th>Status</th><th class="r">Value</th><th>Age</th></tr></thead><tbody>
+  ${xs.map(o=>{const c=C(o.c);return `<tr class="ck ${o.fresh?"new":""}" data-act="quote" data-id="${o.id}"><td><b>${esc(c.co)}</b><div class="xs mut">${esc(c.name)}</div></td><td>${o.lines.length} line${o.lines.length>1?"s":""}<div class="xs mut ell" style="max-width:260px">${esc(o.lines[0].d)}</div></td><td>${[...new Set(o.lines.map(l=>GR[l.g]))].join(", ")}</td><td><span class="tag">${I(SRC_ICON[o.src]||"msg")} ${o.src}</span></td><td><span class="tag ${STAGE_TAG[o.stage]}">${o.stage}</span></td><td class="r b">${money(val(o))}</td><td class="nw mut">${rel(o.at)}</td></tr>`}).join("")}</tbody></table></div></div>`;
+};
+function quoteModal(id){
+  const o=O(id),c=C(o.c);
+  const canSend=["New enquiry","Quoting"].includes(o.stage);
+  modal(`<div class="mh">${avatar(c.name,c.i)}<h2>${esc(o.title)}<div class="sm mut" style="font-weight:500;letter-spacing:0">${esc(c.co)} · ${esc(c.name)}, ${esc(c.role)}</div></h2><span class="tag ${STAGE_TAG[o.stage]}">${o.stage}</span><button class="btn ghost" data-act="close">${I("x")}</button></div>
+  <div class="mb"><div class="row" style="flex-wrap:wrap;gap:8px;margin-bottom:14px"><span class="tag">${I(SRC_ICON[o.src]||"msg")} ${o.src}</span><span class="tag">Came in ${rel(o.at)}</span>${o.certs.map(x=>`<span class="tag blue">${x}</span>`).join("")}</div>
+   ${o.note?`<p class="sm" style="margin:0 0 14px;background:#FAFAFB;border:1px solid var(--line2);border-radius:10px;padding:10px 12px"><b>Customer note:</b> ${esc(o.note)}</p>`:""}
+   <div class="tw" style="border:1px solid var(--line);border-radius:12px"><table class="tbl qtbl"><thead><tr><th>Item</th><th>Grade</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Line total</th><th></th></tr></thead><tbody>
+   ${o.lines.map((l,i)=>`<tr><td><b>${esc(l.d)}</b></td><td>${GR[l.g]}</td><td class="r nw">${l.qty.toLocaleString()} ${l.u}</td><td class="r">${canSend?`<input class="inp" type="number" step="0.01" min="0" value="${l.p}" data-line="${i}">`:money2(l.p)}</td><td class="r b" id="lt${i}">${money2(l.qty*l.p)}</td><td>${l.b?`<a class="btn s" href="${BUILDER}#${l.b}" target="_blank" rel="noopener">${I("cube")} 3D</a>`:""}</td></tr>`).join("")}
+   </tbody></table><div class="tot"><span class="mut">Subtotal <span id="qsub">${money2(val(o))}</span></span><span class="mut">GST <span id="qgst">${money2(val(o)*.1)}</span></span><span>Total <b id="qtot">${money2(val(o)*1.1)}</b></span></div></div>
+   ${canSend?`<p class="xs mut" style="margin:10px 2px 0">${I("spark")} Prices pre filled from your price list for these grades and sizes. Change any line and the total updates.</p>`:""}
+   ${o.lost?`<p class="sm" style="margin-top:12px"><span class="tag bad">Lost</span> ${esc(o.lost)}</p>`:""}
+  </div>
+  <div class="mf"><button class="btn" data-go="inbox/${(S.convos.find(v=>v.o===o.id)||{}).id||""}" ${S.convos.find(v=>v.o===o.id)?"":"disabled"}>${I("msg")} Conversation</button>
+   ${["Quote sent","Follow up"].includes(o.stage)?`<button class="btn" data-act="follow" data-id="${o.id}">${I("clock")} Send follow up</button><button class="btn pri" data-act="win" data-id="${o.id}">${I("ok")} Mark won</button>`:""}
+   ${canSend?`<button class="btn pri" data-act="sendq" data-id="${o.id}">${I("send")} Send quote by email and SMS</button>`:""}</div>`);
+}
+
+/* ---------- demand ---------- */
+VIEW.demand=()=>{
+  const g={};S.opps.forEach(o=>o.lines.forEach(l=>{const x=g[l.g]||(g[l.g]={n:0,v:0,won:0,cl:0});x.n++;x.v+=l.qty*l.p;if(o.stage==="Won")x.won++;if(["Won","Lost"].includes(o.stage))x.cl++}));
+  const rows=Object.entries(g).sort((a,b)=>b[1].v-a[1].v);const mx=rows[0][1].v;
+  const fam={Stainless:["316","304"],Duplex:["2205","2507"],Titanium:["ti5","ti2"],Nickel:["625","718","400","c276"],Other:["b7","albr"]};
+  const fv=Object.entries(fam).map(([k,ks])=>[k,ks.reduce((a,x)=>a+(g[x]?g[x].v:0),0)]).sort((a,b)=>b[1]-a[1]);const fm=fv[0][1];
+  const sizes=[["M8",1],["M10",1],["M12",1],["M16",3],["M20",3],["M24",1]];
+  return `<div class="g">
+  <div class="g g2"><div class="card"><div class="ch"><h3>Enquiry value by grade</h3><span class="mut sm">Last 30 days, all stages</span></div><div class="cb">${rows.map(([k,x])=>`<div class="hb" data-tip="${GR[k]}: ${x.n} lines, ${money(x.v)}"><span>${GR[k]}</span><span class="tr"><i style="width:${x.v/mx*100}%"></i></span><b>${kfmt(x.v)}</b></div>`).join("")}</div></div>
+   <div class="g" style="align-content:start"><div class="card"><div class="ch"><h3>By metal family</h3></div><div class="cb">${fv.map(([k,v])=>`<div class="hb" data-tip="${k}: ${money(v)}"><span>${k}</span><span class="tr"><i style="width:${v/fm*100}%"></i></span><b>${kfmt(v)}</b></div>`).join("")}</div></div>
+   <div class="card"><div class="ch"><h3>Fastener sizes asked for</h3></div><div class="cb">${sizes.map(([k,v])=>`<div class="hb" data-tip="${k}: ${v} RFQs"><span>${k}</span><span class="tr"><i style="width:${v/3*100}%"></i></span><b>${v}</b></div>`).join("")}</div></div></div></div>
+  <div class="card"><div class="ch"><h3>Grades people searched for that you don't list</h3><span class="tag or">From Grade Finder</span></div><div class="tw"><table class="tbl"><thead><tr><th>Searched for</th><th class="r">Searches, 30 days</th><th>Closest grade you stock</th><th></th></tr></thead><tbody>
+   ${[["Monel K-500",9,"Monel 400"],["Hastelloy C-22",7,"Hastelloy C-276"],["Titanium Gr 9",5,"Titanium Gr 5"],["Zeron 100",4,"Super Duplex 2507"],["Alloy 20",3,"Inconel 625"]].map(r=>`<tr><td><b>${r[0]}</b></td><td class="r">${r[1]}</td><td>${r[2]}</td><td class="r"><button class="btn s" data-act="source" data-g="${r[0]}">Ask the mill for a price</button></td></tr>`).join("")}
+   </tbody></table></div><p class="sm mut" style="margin:0;padding:12px 16px;border-top:1px solid var(--line2)">Every one of these searches still became a sourcing request in GoHighLevel, so no buyer left without being answered.</p></div></div>`;
+};
+
+/* ---------- customers ---------- */
+VIEW.customers=()=>{
+  const rows=S.contacts.filter(c=>match(c.co+" "+c.name+" "+c.city)).map(c=>{const os=S.opps.filter(o=>o.c===c.id);return{c,os,won:os.filter(o=>o.stage==="Won").reduce((a,o)=>a+val(o),0),open:os.filter(o=>!["Won","Lost"].includes(o.stage)).reduce((a,o)=>a+val(o),0),lastAt:Math.max(...os.map(o=>o.at),0)}}).sort((a,b)=>b.lastAt-a.lastAt);
+  return `<div class="card"><div class="tw"><table class="tbl"><thead><tr><th>Company</th><th>Contact</th><th>Location</th><th class="r">Won</th><th class="r">Open</th><th>Last enquiry</th><th></th></tr></thead><tbody>
+  ${rows.map(r=>`<tr class="${r.c.fresh?"new":""}"><td><b>${esc(r.c.co)}</b></td><td>${esc(r.c.name)}<div class="xs mut">${esc(r.c.role)}</div></td><td>${esc(r.c.city)}</td><td class="r">${r.won?money(r.won):'<span class="faint">None yet</span>'}</td><td class="r">${r.open?money(r.open):'<span class="faint">None</span>'}</td><td class="mut nw">${r.lastAt?rel(r.lastAt):""}</td><td class="r nw"><button class="btn s" data-act="call" data-id="${r.c.id}">${I("phone")}</button> ${r.os[0]?`<button class="btn s" data-act="quote" data-id="${r.os[0].id}">Open deal</button>`:""}</td></tr>`).join("")}
+  </tbody></table></div></div>`;
+};
+const match=s=>!ui.q||s.toLowerCase().includes(ui.q.toLowerCase());
+
+/* ============ actions ============ */
+function modal(h){$("#mod").innerHTML=`<div class="mod" data-act="bg"><div class="box">${h}</div></div>`}
+function closeModal(){$("#mod").innerHTML=""}
+function toast(msg,cls){const t=document.createElement("div");t.className="toast "+(cls||"");t.innerHTML=msg;$("#toasts").appendChild(t);setTimeout(()=>{t.style.transition=".3s";t.style.opacity=0;setTimeout(()=>t.remove(),300)},4200)}
+function phone(title,msg){const p=document.createElement("div");p.className="phone";p.innerHTML=`<span class="ic">${I("msg")}</span><div class="grow"><div class="row"><b class="grow sm">${esc(title)}</b><span class="xs faint">now</span></div><div class="sm">${esc(msg)}</div></div>`;document.body.appendChild(p);setTimeout(()=>{p.style.transition=".4s";p.style.opacity=0;p.style.transform="translateY(-20px)";setTimeout(()=>p.remove(),400)},5200)}
+function notice(text,go){S.notices.unshift({text,at:now(),go,unread:true})}
+function convoFor(o){let v=S.convos.find(x=>x.o===o.id);if(!v){v={id:"v"+o.id,c:o.c,o:o.id,ch:"Email",unread:false,msgs:[],ai:""};S.convos.push(v)}return v}
+
+const ACT={
+  menu(){$("#side").classList.toggle("open")},
+  bell(){ui.bell=!ui.bell;render()},
+  readall(){S.notices.forEach(n=>n.unread=false);ui.bell=false;save();render()},
+  reset(e){e.preventDefault();localStorage.removeItem(KEY);S=seed();location.hash="#/overview";render();toast("Demo data reset")},
+  close:closeModal,
+  bg(e){if(e.target.classList.contains("mod"))closeModal()},
+  quote(e,el){quoteModal(el.dataset.id)},
+  call(e,el){const c=C(el.dataset.id);modal(`<div class="mh"><h2>Calling ${esc(c.name)}</h2><button class="btn ghost" data-act="close">${I("x")}</button></div><div class="mb" style="text-align:center">${avatar(c.name,c.i)}<p class="b" style="margin:12px 0 2px">${esc(c.phone)}</p><p class="mut sm">Calls go through the GoHighLevel dialler. They are recorded, summarised and saved to ${esc(c.co)}'s record.</p><div class="row" style="justify-content:center;color:var(--ok)"><span class="pulse"></span><b>Ringing</b></div></div><div class="mf"><button class="btn pri" data-act="close">End call</button></div>`)},
+  useai(e,el){const v=S.convos.find(x=>x.id===el.dataset.id);const r=$("#reply");r.value=v.ai;r.focus()},
+  send(e,el){const v=S.convos.find(x=>x.id===el.dataset.id);const r=$("#reply");const t=r.value.trim();if(!t){r.focus();return}
+    v.msgs.push({me:true,text:t,at:now()});v.ai="";const o=O(v.o);if(o&&o.stage==="New enquiry")o.stage="Quoting";
+    notice(`You replied to ${C(v.c).name}`,"inbox/"+v.id);save();render();toast(`${I("ok")} Sent by ${v.ch==="SMS"||v.ch==="Call"?"SMS":"email"} through GoHighLevel`)},
+  sendq(e,el){const o=O(el.dataset.id);o.stage="Quote sent";o.sent=now();o.fresh=false;const n="Q-"+new Date().toISOString().slice(2,7).replace("-","")+"-"+String(10+S.opps.indexOf(o)).padStart(2,"0");
+    const v=convoFor(o);v.msgs.push({me:true,text:`Hi ${C(o.c).name.split(" ")[0]}, your quote is attached. ${money(val(o)*1.1)} including GST, stock held for 14 days. Reply here or give me a call with any questions. Jim`,at:now(),doc:n});v.ai="";
+    notice(`Quote ${n} sent to ${C(o.c).co}, ${money(val(o))}`,"quotes");save();closeModal();render();toast(`${I("send")} Quote ${n} sent by email and SMS. A follow up text goes out in 3 days if there is no reply.`,"or")},
+  follow(e,el){const o=O(el.dataset.id);o.stage="Quote sent";o.sent=now();const v=convoFor(o);
+    v.msgs.push({me:true,text:`Hi ${C(o.c).name.split(" ")[0]}, checking in on the ${o.title.toLowerCase()} quote. Stock is still held for you. Want me to lock it in? Jim`,at:now()});v.ai="";
+    notice(`Follow up sent to ${C(o.c).co}`,"inbox/"+v.id);save();closeModal();render();toast(`${I("ok")} Follow up text sent to ${esc(C(o.c).name)}`)},
+  win(e,el){const o=O(el.dataset.id);o.stage="Won";o.won=now();notice(`Won: ${C(o.c).co}, ${money(val(o))}`,"pipeline");save();closeModal();render();toast(`${I("ok")} Marked won. GoHighLevel sends the order confirmation and a review request after delivery.`,"or")},
+  source(e,el){el.outerHTML=`<span class="tag ok">${I("ok")} Request sent</span>`;toast(`Price request for ${esc(el.dataset.g)} sent to your mill contacts`)},
+  sim(){simulate()}
+};
+document.addEventListener("click",e=>{
+  const a=e.target.closest("[data-act]"),g=e.target.closest("[data-go]");
+  if(a&&!(a.dataset.act==="bg"&&e.target!==a)){
+    if(a.dataset.act==="quote"&&e.target.closest("a"))return;
+    const f=ACT[a.dataset.act];if(f){f(e,a);return}
+  }
+  if(g){const to=g.dataset.go;if(!to||to.endsWith("/"))return;closeModal();ui.bell=false;$("#side")&&$("#side").classList.remove("open");if(location.hash==="#/"+to)render();else location.hash="#/"+to}
+  else if(ui.bell&&!e.target.closest(".bell")){ui.bell=false;render()}
+});
+document.addEventListener("input",e=>{
+  if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
+  if(e.target.dataset.line!=null){const box=e.target.closest(".box");const id=box.querySelector("[data-act=sendq]").dataset.id;const o=O(id);const i=+e.target.dataset.line;o.lines[i].p=Math.max(0,parseFloat(e.target.value)||0);
+    $("#lt"+i).textContent=money2(o.lines[i].qty*o.lines[i].p);$("#qsub").textContent=money2(val(o));$("#qgst").textContent=money2(val(o)*.1);$("#qtot").textContent=money2(val(o)*1.1);save()}
+});
+addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+addEventListener("hashchange",render);
+/* drag and drop on the pipeline */
+let dragId=null;
+document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".op");if(!c)return;dragId=c.dataset.id;c.classList.add("drag");e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",dragId)});
+document.addEventListener("dragend",e=>{document.querySelectorAll(".op.drag").forEach(x=>x.classList.remove("drag"));document.querySelectorAll(".col.over").forEach(x=>x.classList.remove("over"))});
+document.addEventListener("dragover",e=>{const col=e.target.closest&&e.target.closest(".col");if(!col||!dragId)return;e.preventDefault();document.querySelectorAll(".col.over").forEach(x=>x!==col&&x.classList.remove("over"));col.classList.add("over")});
+document.addEventListener("drop",e=>{const col=e.target.closest&&e.target.closest(".col");if(!col||!dragId)return;e.preventDefault();const o=O(dragId),to=col.dataset.stage;dragId=null;if(o.stage===to){render();return}
+  o.stage=to;if(to==="Won")o.won=now();if(to==="Quote sent")o.sent=now();notice(`${C(o.c).co} moved to ${to}`,"pipeline");save();render();
+  toast(to==="Won"?`${I("ok")} Won. Order confirmation sent and Jim's phone pinged.`:to==="Follow up"?`Follow up text scheduled for tomorrow 9am`:to==="Lost"?`Moved to Lost. GoHighLevel will check in again in 90 days.`:`Moved to ${to}. GoHighLevel updated.`)});
+/* tooltips */
+const tip=$("#tip");
+document.addEventListener("mousemove",e=>{const t=e.target.closest&&e.target.closest("[data-tip]");if(!t){tip.style.display="none";return}tip.textContent=t.dataset.tip;tip.style.display="block";const w=tip.offsetWidth;tip.style.left=Math.min(innerWidth-w-8,e.clientX+12)+"px";tip.style.top=(e.clientY-34)+"px"});
+
+/* ============ live test enquiry ============ */
+const POOL=[
+  {co:"Laverton Steel Works",name:"Ben Kowalski",role:"Fitter",city:"Laverton VIC",phone:"0414 207 588",title:"Duplex 2205 studs, pump flange",lines:[["M20 x 140 stud, full thread","2205",240,"pcs",9.80,"t=stud&m=2205&d=20&L=140&th=full&n=1&q=240"],["M20 heavy hex nut","2205",480,"pcs",1.95]],certs:["EN 10204 3.1"],msg:"Built this in your 3D tool. Need 240 sets for a pump flange job, 3.1 certs please."},
+  {co:"Portland Aluminium Contractors",name:"Nicole Hart",role:"Planner",city:"Portland VIC",phone:"0431 562 904",title:"Titanium Gr 5 socket caps, pot line",lines:[["M16 x 50 socket cap screw","ti5",180,"pcs",19.40,"t=sock&m=ti5&d=16&L=50&q=180"]],certs:["EN 10204 3.1"],msg:"Pricing for Ti Gr 5 socket caps please. Shutdown in 3 weeks."},
+  {co:"Warrnambool Dairy Engineering",name:"Sam Duggan",role:"Maintenance lead",city:"Warrnambool VIC",phone:"0423 870 315",title:"316 hex bolts, CIP skid",lines:[["M12 x 60 hex bolt","316",1000,"pcs",1.95,"t=hex&m=316&d=12&L=60&th=part&n=1&w=1&q=1000"],["M12 hex nut","316",1000,"pcs",.42],["M12 flat washer","316",1000,"pcs",.18]],certs:["Country of origin"],msg:"Need 1000 sets for the CIP skid, food grade site so 316 only."}
+];
+function simulate(){
+  const p=POOL[S.seq%POOL.length];S.seq++;
+  const n=S.seq,cid="cx"+n,oid="ox"+n,vid="vx"+n;
+  S.contacts.push({id:cid,co:p.co,name:p.name,role:p.role,city:p.city,phone:p.phone,email:p.name.split(" ")[0].toLowerCase()+"@"+p.co.toLowerCase().split(" ").slice(0,2).join("").replace(/[^a-z]/g,"")+".com.au",i:20+n,fresh:true});
+  const o={id:oid,c:cid,title:p.title,stage:"New enquiry",src:"3D Part Builder",at:now(),certs:p.certs,lines:p.lines.map(l=>({d:l[0],g:l[1],qty:l[2],u:l[3],p:l[4],b:l[5]||null})),fresh:true};
+  S.opps.unshift(o);
+  S.convos.push({id:vid,c:cid,o:oid,ch:"Website RFQ",unread:true,msgs:[{me:false,text:p.msg,at:now(),rfq:oid}],ai:`Hi ${p.name.split(" ")[0]}, thanks for the RFQ. Everything on your list is a grade we supply${p.certs.length?" and we can include "+p.certs.join(" and "):""}. Pricing will be with you within the hour. Jim`});
+  notice(`New 3D Part Builder RFQ from ${p.co}, ${money(val(o))}`,"inbox/"+vid);
+  save();render();
+  phone("GoHighLevel","New RFQ: "+p.co+", "+p.lines[0][2]+" x "+p.lines[0][0]+" ("+GR[p.lines[0][1]]+"). Est. "+money(val(o))+".");
+  setTimeout(()=>toast(`${I("cube")} New enquiry from the 3D Part Builder. Contact, deal and conversation created in GoHighLevel. <a href="#/inbox/${vid}" style="color:#fff;font-weight:700">Open</a>`,"or"),700);
+  ["k1","k2","k6"].forEach(id=>{const k=document.getElementById(id);if(k){k.classList.remove("flash");void k.offsetWidth;k.classList.add("flash")}});
+}
+
+render();
+/* first visit: a test enquiry lands a few seconds in, so the demo shows itself */
+if(window===top&&!sessionStorage.getItem("rmhq-sim")){sessionStorage.setItem("rmhq-sim","1");setTimeout(()=>{if(ui.view==="overview")simulate()},6000)}
+})();
+</script>
+</body>
+</html>

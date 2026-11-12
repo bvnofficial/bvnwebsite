@@ -6,7 +6,8 @@
     ["draft-3", "Blueprint"],
     ["draft-4", "Grade Finder"],
     ["draft-5", "Chrome 3D"],
-    ["builder", "3D Builder"]
+    ["builder", "3D Builder"],
+    ["hq", "CEO Dashboard"]
   ];
   var here = location.pathname.split("/").filter(Boolean).pop();
   var css = document.createElement("style");
