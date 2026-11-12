@@ -153,7 +153,7 @@ const I=n=>`<svg class="ico" viewBox="0 0 24 24">${ICONS[n]||""}</svg>`;
 const GR={"316":"Stainless 316","304":"Stainless 304","2205":"Duplex 2205","f255":"Ferralium 255","ti5":"Titanium Gr 5","ti2":"Titanium Gr 2","625":"Inconel 625","718":"Inconel 718","400":"Monel 400","c276":"Hastelloy C-276","b7":"Alloy B7","albr":"Aluminium Bronze"};
 const STAGES=["New enquiry","Quoting","Quote sent","Follow up","Won","Lost"];
 const STAGE_TAG={"New enquiry":"or","Quoting":"blue","Quote sent":"","Follow up":"warn","Won":"ok","Lost":"bad"};
-const SRC_ICON={"3D Part Builder":"cube","Grade Finder":"search","Google search":"search","Phone call":"phone","Email":"msg","Repeat customer":"users"};
+const SRC_ICON={"Fastener Builder":"cube","Grade Finder":"search","Google search":"search","Phone call":"phone","Email":"msg","Repeat customer":"users"};
 const BUILDER="/clients/revolution-materials/builder";
 
 /* ============ demo data (shaped like GHL contacts, opportunities and conversations) ============ */
@@ -177,17 +177,17 @@ function seed(){
   ].map((c,i)=>({id:c[0],co:c[1],name:c[2],role:c[3],city:c[4],phone:c[5],email:c[2].split(" ")[0].toLowerCase()+"@"+c[1].toLowerCase().split(" ").slice(0,2).join("").replace(/[^a-z]/g,"")+".com.au",i}));
   const L=(d,g,qty,u,p,b)=>({d,g,qty,u,p,b:b||null});
   const opps=[
-    {id:"o1",c:"c1",title:"M20 316 bolt sets for pump skid",stage:"New enquiry",src:"3D Part Builder",at:t-18*MIN,certs:["EN 10204 3.1","Country of origin"],lines:[L("M20 x 120 hex bolt, part thread","316",400,"pcs",7.40,"t=hex&m=316&d=20&L=120&th=part&n=1&w=1&q=400"),L("M20 hex nut","316",400,"pcs",1.35),L("M20 flat washer","316",400,"pcs",.55)],note:"Needs delivery to Altona North before the 28th shutdown."},
+    {id:"o1",c:"c1",title:"M20 316 bolt sets for pump skid",stage:"New enquiry",src:"Fastener Builder",at:t-18*MIN,certs:["EN 10204 3.1","Country of origin"],lines:[L("M20 x 120 hex bolt, part thread","316",400,"pcs",7.40,"t=hex&m=316&d=20&L=120&th=part&n=1&w=1&q=400"),L("M20 hex nut","316",400,"pcs",1.35),L("M20 flat washer","316",400,"pcs",.55)],note:"Needs delivery to Altona North before the 28th shutdown."},
     {id:"o9",c:"c9",title:"Monel 400 bolting, seawater line",stage:"New enquiry",src:"Grade Finder",at:t-2.2*HR,certs:["EN 10204 3.1"],lines:[L("M16 x 70 hex bolt","400",300,"pcs",15.60,"t=hex&m=400&d=16&L=70&th=part&n=1&q=300"),L("M16 hex nut","400",300,"pcs",2.05)],note:"Asked if 400 or K-500 is better for this line."},
     {id:"o13",c:"c13",title:"304 set screws, top up stock",stage:"New enquiry",src:"Phone call",at:t-5*HR,certs:[],lines:[L("M8 x 16 set screw","304",2000,"pcs",.32,"t=set&m=304&d=8&L=16&q=2000")],note:"Called in, wants price and lead time today."},
-    {id:"o2",c:"c2",title:"Titanium fasteners and plate, hull fit out",stage:"Quoting",src:"3D Part Builder",at:t-1.3*DAY,certs:["EN 10204 3.1"],lines:[L("M12 x 40 socket cap screw","ti5",250,"pcs",14.80,"t=sock&m=ti5&d=12&L=40&q=250"),L("Plate 6 mm, 1000 x 2000","ti2",1,"sheet",2480)]},
+    {id:"o2",c:"c2",title:"Titanium fasteners and plate, hull fit out",stage:"Quoting",src:"Fastener Builder",at:t-1.3*DAY,certs:["EN 10204 3.1"],lines:[L("M12 x 40 socket cap screw","ti5",250,"pcs",14.80,"t=sock&m=ti5&d=12&L=40&q=250"),L("Plate 6 mm, 1000 x 2000","ti2",1,"sheet",2480)]},
     {id:"o8",c:"c8",title:"Duplex 2205 plate, tank job",stage:"Quoting",src:"Google search",at:t-2*DAY,certs:["EN 10204 3.1","NATA tested"],lines:[L("Plate 10 mm, 1500 x 3000","2205",4,"sheets",5575)]},
-    {id:"o5",c:"c5",title:"Super duplex studs, RO pressure vessels",stage:"Quote sent",src:"3D Part Builder",at:t-2*DAY,sent:t-2*DAY,certs:["EN 10204 3.1","PREN report"],lines:[L("M16 x 110 stud, full thread","f255",800,"pcs",11.20,"t=stud&m=f255&d=16&L=110&th=full&n=1&q=800"),L("M16 heavy hex nut","f255",1600,"pcs",1.55)]},
+    {id:"o5",c:"c5",title:"Super duplex studs, RO pressure vessels",stage:"Quote sent",src:"Fastener Builder",at:t-2*DAY,sent:t-2*DAY,certs:["EN 10204 3.1","PREN report"],lines:[L("M16 x 110 stud, full thread","f255",800,"pcs",11.20,"t=stud&m=f255&d=16&L=110&th=full&n=1&q=800"),L("M16 heavy hex nut","f255",1600,"pcs",1.55)]},
     {id:"o12",c:"c12",title:"Inconel 625 sheet, heater repair",stage:"Quote sent",src:"Repeat customer",at:t-3*DAY,sent:t-1*DAY,certs:["EN 10204 3.1"],lines:[L("Sheet 3 mm, 1219 x 2438","625",4,"sheets",3200)]},
     {id:"o3",c:"c3",title:"B7 studs and 2H nuts, Unit 2 outage",stage:"Follow up",src:"Email",at:t-8*DAY,sent:t-6*DAY,certs:["EN 10204 3.1"],lines:[L("M24 x 200 stud, full thread","b7",1200,"pcs",6.20,"t=stud&m=b7&d=24&L=200&th=full&n=1&q=1200"),L("M24 2H heavy hex nut","b7",2400,"pcs",.98)]},
     {id:"o4",c:"c4",title:"Hastelloy C-276 bar, agitator shafts",stage:"Follow up",src:"Grade Finder",at:t-11*DAY,sent:t-9*DAY,certs:["EN 10204 3.1","PMI report"],lines:[L("Round bar 50 mm x 3 m","c276",4,"lengths",3650)]},
     {id:"o14",c:"c14",title:"Titanium Gr 2 bar, heat exchanger",stage:"Follow up",src:"Google search",at:t-12*DAY,sent:t-7*DAY,certs:["EN 10204 3.1"],lines:[L("Round bar 25 mm x 3 m","ti2",6,"lengths",735)]},
-    {id:"o11",c:"c11",title:"Inconel 718 studs, crusher hydraulics",stage:"Won",src:"3D Part Builder",at:t-16*DAY,won:t-4*DAY,certs:["EN 10204 3.1"],lines:[L("M20 x 160 stud, full thread","718",600,"pcs",31.50,"t=stud&m=718&d=20&L=160&th=full&n=1&q=600")]},
+    {id:"o11",c:"c11",title:"Inconel 718 studs, crusher hydraulics",stage:"Won",src:"Fastener Builder",at:t-16*DAY,won:t-4*DAY,certs:["EN 10204 3.1"],lines:[L("M20 x 160 stud, full thread","718",600,"pcs",31.50,"t=stud&m=718&d=20&L=160&th=full&n=1&q=600")]},
     {id:"o6",c:"c6",title:"Inconel 625 bar, pump shafts",stage:"Won",src:"Repeat customer",at:t-19*DAY,won:t-9*DAY,certs:["EN 10204 3.1"],lines:[L("Round bar 32 mm x 3 m","625",5,"lengths",1750)]},
     {id:"o7",c:"c7",title:"316 nuts, valve assembly line",stage:"Won",src:"Grade Finder",at:t-13*DAY,won:t-11*DAY,certs:[],lines:[L("M10 hex nut","316",5000,"pcs",.29,"t=nut&m=316&d=10&q=5000")]},
     {id:"o10",c:"c10",title:"Aluminium bronze shaft bar",stage:"Lost",src:"Google search",at:t-24*DAY,lost:"Price. Went with an overseas supplier.",certs:[],lines:[L("Round bar 60 mm x 3 m","albr",2,"lengths",1550)]}
@@ -204,7 +204,7 @@ function seed(){
     {id:"v11",c:"c11",o:"o11",ch:"SMS",unread:false,msgs:[M(false,"PO 44871 sent for the 718 studs. Thanks Jim.",4*DAY),M(true,"Received, thanks Ryan. Dispatch Thursday.",4*DAY)],ai:"Hi Ryan, your 718 studs left today. Tracking is in your email. Jim"}
   ];
   const notices=[
-    {text:"New 3D Part Builder RFQ from Westgate Process Engineering, 400 sets M20 316",at:t-18*MIN,go:"inbox/v1",unread:true},
+    {text:"New Fastener Builder RFQ from Westgate Process Engineering, 400 sets M20 316",at:t-18*MIN,go:"inbox/v1",unread:true},
     {text:"Kate Henderson (Pilbara Offshore Fitters) asked about Monel 400 vs K-500",at:t-2.2*HR,go:"inbox/v9",unread:true},
     {text:"AI receptionist took a call from Sunshine Hydraulics",at:t-5*HR,go:"inbox/v13",unread:false},
     {text:"Mei Lin Chen opened your Inconel 625 sheet quote 3 times",at:t-7*HR,go:"quotes",unread:false},
@@ -213,7 +213,7 @@ function seed(){
   ];
   return {contacts,opps,convos,notices,seq:0};
 }
-const KEY="rmhq-demo-2";
+const KEY="rmhq-demo-3";
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S||!S.opps)S=seed();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -230,7 +230,7 @@ function stats(){
   const sent=o.filter(x=>["Quote sent","Follow up"].includes(x.stage));
   const won=o.filter(x=>x.stage==="Won"&&t-(x.won||x.at)<30*DAY);
   const closed=o.filter(x=>["Won","Lost"].includes(x.stage));
-  const builder=wk.filter(x=>x.src==="3D Part Builder").length;
+  const builder=wk.filter(x=>x.src==="Fastener Builder").length;
   const unrep=S.convos.filter(v=>v.unread);
   const stale=o.filter(x=>x.stage==="Follow up"||(x.stage==="Quote sent"&&t-(x.sent||x.at)>4*DAY));
   return {wk,open,sent,won,closed,builder,unrep,stale,openV:open.reduce((a,x)=>a+val(x),0),sentV:sent.reduce((a,x)=>a+val(x),0),wonV:won.reduce((a,x)=>a+val(x),0),rate:closed.length?Math.round(closed.filter(x=>x.stage==="Won").length/closed.length*100):0};
@@ -241,7 +241,7 @@ function brief(st){
   if(st.unrep.length)parts.push(`${st.unrep.length} new ${st.unrep.length===1?"enquiry is":"enquiries are"} waiting on a reply, the oldest from ${C(st.unrep.slice().sort((x,y)=>last(x).at-last(y).at)[0].c).co}`);
   parts.push(`${kfmt(st.sentV)} in quotes is sitting with customers`);
   if(st.stale.length)parts.push(`${st.stale.length} of those ${st.stale.length===1?"needs":"need"} a follow up today (${st.stale.map(x=>C(x.c).co.split(" ")[0]).slice(0,3).join(", ")})`);
-  return {hi:`Good ${h<12?"morning":h<17?"afternoon":"evening"}, Jim`,txt:parts.join(". ")+`. The 3D Part Builder brought in ${st.builder} of this week's ${st.wk.length} enquiries, each with the full spec, weight and cert needs attached.`};
+  return {hi:`Good ${h<12?"morning":h<17?"afternoon":"evening"}, Jim`,txt:parts.join(". ")+`. The Fastener Builder brought in ${st.builder} of this week's ${st.wk.length} enquiries, each with the full spec, weight and cert needs attached.`};
 }
 
 /* ============ layout ============ */
@@ -258,14 +258,14 @@ function render(){
   $("#app").innerHTML=`<div class="app">
    <aside class="side" id="side"><div class="brand"><span class="mk">RM</span><div><b>Revolution HQ</b><small>Metals and Fasteners</small></div></div>
     <nav class="nav">${nav}<div class="grp">Website</div>
-     <button onclick="window.open('${BUILDER}','_blank')">${I("cube")}<span>3D Part Builder</span>${I("ext")}</button>
+     <button onclick="window.open('${BUILDER}','_blank')">${I("cube")}<span>Fastener Builder</span>${I("ext")}</button>
      <button onclick="location.href='/clients/revolution-materials'">${I("back")}<span>Website drafts</span></button></nav>
     <div class="sync"><div><i></i>GoHighLevel connected</div><div><i></i>Website forms connected</div><div class="faint xs" style="margin:6px 0 8px">Synced ${clock(now())}</div><a href="#" data-act="reset">Reset demo data</a></div></aside>
    <div class="main">
     <header class="top"><button class="btn ghost mbar" data-act="menu" aria-label="Menu">${I("menu")}</button><h1>${TITLES[ui.view]}</h1><span class="demo">DEMO</span><span class="grow"></span>
      <div class="srch"><svg class="ico" viewBox="0 0 24 24">${ICONS.search}</svg><input class="inp" id="q" placeholder="Search customers, grades, quotes" value="${esc(ui.q)}" aria-label="Search"></div>
      <div class="bell"><button class="btn ghost" data-act="bell" aria-label="Notifications">${I("bell")}</button>${unread?`<span class="n">${unread}</span>`:""}${ui.bell?bellPanel():""}</div>
-     <button class="btn pri newbtn" data-act="sim" title="Sends a test enquiry through the 3D Part Builder">${I("plus")}<span>Test enquiry</span></button></header>
+     <button class="btn pri newbtn" data-act="sim" title="Sends a test enquiry through the Fastener Builder">${I("plus")}<span>Test enquiry</span></button></header>
     ${ui.view==="inbox"?body:`<div class="page">${body}</div>`}
    </div></div>`;
   const q=$("#q");if(q&&ui.focusQ){q.focus();q.setSelectionRange(q.value.length,q.value.length);ui.focusQ=false}
@@ -297,7 +297,7 @@ VIEW.overview=st=>{
    ${kpi("Quotes with customers",kfmt(st.sentV),st.sent.length+" quotes, "+st.stale.length+" to chase",st.stale.length?"dn":"","quotes","k3")}
    ${kpi("Won, last 30 days",kfmt(st.wonV),"Win rate "+st.rate+"%","up","pipeline","k4")}
    ${kpi("First reply time","11 min","Target is under 15 min","up","inbox","k5")}
-   ${kpi("From the 3D Builder",st.builder+" of "+st.wk.length,"Full spec on every one","","demand","k6")}
+   ${kpi("From the Fastener Builder",st.builder+" of "+st.wk.length,"Full spec on every one","","demand","k6")}
   </div>
   <div class="g g2">
    <div class="card"><div class="ch"><h3>Needs you today</h3><span class="tag ${needs.length?"or":"ok"}">${needs.length||"All clear"}</span></div>
@@ -311,7 +311,7 @@ VIEW.overview=st=>{
     <div class="blab">${wl.map((w,i)=>`<span>${i%3===0||i===11?w:""}</span>`).join("")}</div></div></div>
    <div class="card"><div class="ch"><h3>Pipeline by stage</h3><span class="mut sm">${kfmt(st.openV)} open</span></div><div class="cb">${fun.map(f=>`<div class="hb ${f.g==="Won"?"ok":""}" data-tip="${f.g}: ${f.n} deals, ${money(f.v)}"><span>${f.g} <span class="faint">(${f.n})</span></span><span class="tr"><i style="width:${Math.max(3,f.v/fm*100)}%"></i></span><b>${kfmt(f.v)}</b></div>`).join("")}</div></div>
    <div class="card"><div class="ch"><h3>Where enquiries come from</h3></div><div class="cb">${srcs.map(([k,n])=>`<div class="hb" data-tip="${k}: ${n} of ${S.opps.length} enquiries"><span class="row" style="gap:6px">${I(SRC_ICON[k]||"msg")}${k}</span><span class="tr"><i style="width:${n/srcs[0][1]*100}%"></i></span><b>${n}</b></div>`).join("")}
-    <p class="sm mut" style="margin:10px 0 0">Website tools (3D Part Builder and Grade Finder) bring in ${Math.round(((src["3D Part Builder"]||0)+(src["Grade Finder"]||0))/S.opps.length*100)}% of enquiries.</p></div></div>
+    <p class="sm mut" style="margin:10px 0 0">Website tools (Fastener Builder and Grade Finder) bring in ${Math.round(((src["Fastener Builder"]||0)+(src["Grade Finder"]||0))/S.opps.length*100)}% of enquiries.</p></div></div>
   </div></div>`;
 };
 const kpi=(l,v,d,cls,go,id)=>`<div class="card kpi" id="${id}" data-go="${go}"><div class="l">${l}</div><div class="v">${v}</div><div class="d ${cls}">${d}</div></div>`;
@@ -462,13 +462,13 @@ function simulate(){
   const p=POOL[S.seq%POOL.length];S.seq++;
   const n=S.seq,cid="cx"+n,oid="ox"+n,vid="vx"+n;
   S.contacts.push({id:cid,co:p.co,name:p.name,role:p.role,city:p.city,phone:p.phone,email:p.name.split(" ")[0].toLowerCase()+"@"+p.co.toLowerCase().split(" ").slice(0,2).join("").replace(/[^a-z]/g,"")+".com.au",i:20+n,fresh:true});
-  const o={id:oid,c:cid,title:p.title,stage:"New enquiry",src:"3D Part Builder",at:now(),certs:p.certs,lines:p.lines.map(l=>({d:l[0],g:l[1],qty:l[2],u:l[3],p:l[4],b:l[5]||null})),fresh:true};
+  const o={id:oid,c:cid,title:p.title,stage:"New enquiry",src:"Fastener Builder",at:now(),certs:p.certs,lines:p.lines.map(l=>({d:l[0],g:l[1],qty:l[2],u:l[3],p:l[4],b:l[5]||null})),fresh:true};
   S.opps.unshift(o);
   S.convos.push({id:vid,c:cid,o:oid,ch:"Website RFQ",unread:true,msgs:[{me:false,text:p.msg,at:now(),rfq:oid}],ai:`Hi ${p.name.split(" ")[0]}, thanks for the RFQ. Everything on your list is a grade we supply${p.certs.length?" and we can include "+p.certs.join(" and "):""}. Pricing will be with you within the hour. Jim`});
-  notice(`New 3D Part Builder RFQ from ${p.co}, ${money(val(o))}`,"inbox/"+vid);
+  notice(`New Fastener Builder RFQ from ${p.co}, ${money(val(o))}`,"inbox/"+vid);
   save();render();
   phone("GoHighLevel","New RFQ: "+p.co+", "+p.lines[0][2]+" x "+p.lines[0][0]+" ("+GR[p.lines[0][1]]+"). Est. "+money(val(o))+".");
-  setTimeout(()=>toast(`${I("cube")} New enquiry from the 3D Part Builder. Contact, deal and conversation created in GoHighLevel. <a href="#/inbox/${vid}" style="color:#fff;font-weight:700">Open</a>`,"or"),700);
+  setTimeout(()=>toast(`${I("cube")} New enquiry from the Fastener Builder. Contact, deal and conversation created in GoHighLevel. <a href="#/inbox/${vid}" style="color:#fff;font-weight:700">Open</a>`,"or"),700);
   ["k1","k2","k6"].forEach(id=>{const k=document.getElementById(id);if(k){k.classList.remove("flash");void k.offsetWidth;k.classList.add("flash")}});
 }
 

@@ -218,7 +218,7 @@ table.dims td:last-child{text-align:right;font-family:var(--mono);color:#fff}
 <body>
 <header class="top">
   <div class="brand"><i>RM</i><div>Revolution Materials<small>Metal Calculator</small></div></div>
-  <nav class="nav2"><a class="on" href="/clients/revolution-materials/metals">Metal Calculator</a><a href="/clients/revolution-materials/builder">3D Part Builder</a></nav>
+  <nav class="nav2"><a class="on" href="/clients/revolution-materials/metals">Metal Calculator</a><a href="/clients/revolution-materials/builder">Fastener Builder</a></nav>
   <div class="cta">
     <a class="ph" href="tel:+61390293469">Talk to us <b>03 9029 3469</b></a>
     <button class="basketBtn" id="openBasket">Quote list<span class="c" id="count">0</span></button>
@@ -565,14 +565,14 @@ function tick(){
   requestAnimationFrame(tick);
 }
 
-/* ---------- quote list (shared with the 3D Part Builder; item weights are stored in grams, like the builder) ---------- */
+/* ---------- quote list (shared with the Fastener Builder; item weights are stored in grams, like the builder) ---------- */
 const QKEY="rm-quote-list";
 const basket=(()=>{try{return JSON.parse(localStorage.getItem(QKEY))||[]}catch(e){return[]}})();
 const saveB=()=>{try{localStorage.setItem(QKEY,JSON.stringify(basket))}catch(e){}};
 function thumb(){if(!renderer.domElement.width||!renderer.domElement.height)return"data:image/gif;base64,R0lGODlhAQABAAAAACw=";renderer.render(scene,camera);const c=document.createElement("canvas");c.width=c.height=112;const x=c.getContext("2d"),s=renderer.domElement,m=Math.min(s.width,s.height);x.drawImage(s,(s.width-m)/2,(s.height-m)/2,m,m,0,0,112,112);return c.toDataURL("image/png");}
 function renderBasket(){
   $("count").textContent=basket.length;
-  $("items").innerHTML=basket.length?basket.map((b,i)=>`<div class="li"><img src="${b.img}" alt=""><div><b>${b.q} x ${esc(b.t)}</b><small>${esc(b.certs.join(", ")||"No certificates selected")}</small><small>${b.w?"Approx "+fmtW(b.w/1000)+" total":"Weight on the quote"}</small></div><button class="rm" data-i="${i}" aria-label="Remove">&times;</button></div>`).join(""):'<div class="empty">Nothing here yet. Size a metal and press <b>Add to quote list</b>. Fasteners from the 3D Part Builder land here too.</div>';
+  $("items").innerHTML=basket.length?basket.map((b,i)=>`<div class="li"><img src="${b.img}" alt=""><div><b>${b.q} x ${esc(b.t)}</b><small>${esc(b.certs.join(", ")||"No certificates selected")}</small><small>${b.w?"Approx "+fmtW(b.w/1000)+" total":"Weight on the quote"}</small></div><button class="rm" data-i="${i}" aria-label="Remove">&times;</button></div>`).join(""):'<div class="empty">Nothing here yet. Size a metal and press <b>Add to quote list</b>. Fasteners from the Fastener Builder land here too.</div>';
   saveB();
 }
 const openB=o=>{$("drawer").classList.toggle("open",o);$("scrim").classList.toggle("open",o);};
@@ -584,7 +584,7 @@ $("add").onclick=()=>{
   const c=calc(),certs=[...document.querySelectorAll("#certs input:checked")].map(i=>i.value);certs.unshift($("std").value);
   basket.push({t:title()+", "+gradeName(),q:S.qty,certs,img:thumb(),w:c.w==null?null:c.w*S.qty*1000});renderBasket();
   const n=$("count");n.classList.remove("bump");void n.offsetWidth;n.classList.add("bump");
-  window.rmToast&&rmToast("Added to your quote list. Add fasteners from the 3D Part Builder and send it all in one go.");
+  window.rmToast&&rmToast("Added to your quote list. Add fasteners from the Fastener Builder and send it all in one go.");
 };
 $("specBtn").onclick=()=>{
   const c=calc(),w=open("","_blank");if(!w)return;const img=thumb();

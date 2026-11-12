@@ -6,7 +6,7 @@
     ["draft-3", "Blueprint"],
     ["draft-4", "Grade Finder"],
     ["draft-5", "Chrome 3D"],
-    ["builder", "3D Builder"],
+    ["builder", "Fastener Builder"],
     ["metals", "Metal Calculator"],
     ["hq", "CEO Dashboard"]
   ];
@@ -24,7 +24,7 @@
     "background:#101317;color:#fff;font:500 14px/1.4 Inter,system-ui,sans-serif;border:1px solid rgba(255,255,255,.15);transition:.35s;pointer-events:none;max-width:90vw}" +
     ".bvn-toast.show{opacity:1;transform:translate(-50%,0)}" +
     "@media print{.bvn-bar{display:none}}" +
-    /* 3D Part Builder menu link, shared by every draft */
+    /* Fastener Builder menu link, shared by every draft */
     ".nav nav a.rm3d{display:inline-flex;align-items:center;gap:7px;padding:7px 8px 7px 14px;border-radius:999px;background:linear-gradient(135deg,#ff8a3d,#E86010);color:#fff!important;font-weight:700;letter-spacing:0;text-transform:none;" +
     "box-shadow:0 0 0 0 rgba(232,96,16,.55);animation:rm3dPulse 2.4s infinite;transition:transform .2s;text-decoration:none;white-space:nowrap;line-height:1}" +
     ".nav nav a.rm3d:hover{transform:translateY(-1px);background:linear-gradient(135deg,#ffa060,#f06a18)}" +
