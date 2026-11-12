@@ -678,3 +678,26 @@ main.wide{max-width:1500px}
 .etarow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.etarow b{width:100%}.etarow .btn{text-decoration:none}
 .tnote{white-space:pre-wrap;background:var(--okbg);border-radius:12px;padding:10px 12px;margin:0}
 @media (max-width:700px){.homegrid:has(.hometile.dark){grid-template-columns:1fr}.mjtime{min-width:70px;font-size:22px}}
+.clock{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--card);border:2px solid var(--line);border-left:10px solid var(--ok);border-radius:var(--r);padding:14px 18px;margin:6px 0 4px;box-shadow:var(--sh)}
+.clock b{display:block;font-size:21px}.clock small{display:block;color:var(--muted);font-size:16px}
+.clock.brk{border-left-color:#c27a00;background:#fffaf0}.clock.done{border-left-color:var(--line2)}
+.clockbtns{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- timesheets (CEO dashboard) ---------- */
+.tscard{margin-bottom:16px}
+.tscard .jh{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.tstot{flex:1;color:var(--muted);font-size:16px}.tstot b{color:var(--ink);font-size:20px}
+.tsscroll{overflow-x:auto}
+table.ts{width:100%;border-collapse:collapse;font-size:16px;min-width:860px}
+.ts th{text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line)}
+.ts td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ts td small{display:block;color:var(--muted);font-size:13px}
+.ts input{border:2px solid var(--line2);border-radius:10px;padding:6px 8px;font-size:16px;background:#fff;min-height:44px}
+.ts input[type=number]{width:74px;display:inline-block}
+.ts input:disabled{background:#f3efe6;color:var(--ink2)}
+.ts tr.off td{color:var(--muted)}
+.ts tr.forgot{background:#fff1ee}.ts tr.forgot small{color:var(--red);font-weight:700}
+.ts tr.ok{background:#f3faf5}
+.ts .tsnote{max-width:220px;white-space:normal}
+.ts .btn.small{min-height:44px;padding:6px 12px;font-size:15px}
+.ts td:first-child{white-space:nowrap;font-weight:700}.ts td:first-child small{font-weight:700}

@@ -32,6 +32,7 @@ export function makeMyJobs(ctx) {
       S.list = all.filter((v) => (v.tech === S.me || v.helper === S.me) && v.status !== "cancelled");
       S.at = Date.now(); put(CACHE, { me: S.me, list: S.list, at: S.at });
     } catch (e) { S.err = e.message; }
+    try { S.day = (await post({ action: "day", tech: S.me, date: from })).day; } catch (e) { /* the clock just stays hidden */ }
     S.loading = false; ctx.render();
   }
   const mine = () => S.list || [];
@@ -90,14 +91,39 @@ export function makeMyJobs(ctx) {
     return `<div class="jtop"><h1 class="big-t" style="margin:0">My jobs</h1>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost small" data-mj="reload">${S.loading ? "Checking..." : "Check for new jobs"}</button><button class="btn ghost small" data-mj="notme">Not ${esc(S.me.split(" ")[0])}?</button></div></div>
       ${S.err ? `<div class="warn">${ctx.icon.warn}<div>${esc(S.err)}. ${S.list ? `Showing what this tablet had at ${new Date(S.at).toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" })}.` : ""}</div></div>` : ""}
+      ${clockBar()}
       ${!S.list ? `<p class="muted">Getting your jobs...</p>` : ""}
       ${S.list ? `<h2 class="sub-t">Today${todays.length ? `, ${left ? `${left} to go` : "all done"}` : ""}</h2>
         ${todays.length ? `<div class="mjlist">${todays.map(jobCard).join("")}</div>` : `<p class="muted">Nothing booked for you today.</p>`}
         ${days.filter((d) => d !== t0).map((d) => `<h2 class="sub-t">${longDay(d)}</h2><div class="mjlist">${byDay[d].map(jobCard).join("")}</div>`).join("")}` : ""}`;
   }
 
+  /* the day clock: start, breaks, finish. The server stamps the time */
+  async function clock(what, note) {
+    try { S.day = (await post({ action: "clock", tech: S.me, date: iso(new Date()), what, note: note || "" })).day; }
+    catch (e) { say(e.message); }
+    ctx.render();
+  }
+  const hm = (t) => new Date(t).toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" });
+  const dur = (ms) => { const m = Math.max(0, Math.round(ms / 60000)); return `${Math.floor(m / 60)}h ${m % 60}m`; };
+  function worked(d) {
+    if (!d || !d.start) return 0;
+    const end = d.end || Date.now();
+    return end - d.start - (d.breaks || []).reduce((a, b) => a + ((b.to || Date.now()) - b.from), 0);
+  }
+  function clockBar() {
+    const d = S.day; if (!d) return "";
+    if (!d.start) return `<div class="clock"><div><b>Not started yet</b><small>Tap when you start work. It also starts by itself on your first On my way.</small></div><button class="btn green" data-mj="clock" data-v="start">${ctx.icon.tick}Start my day</button></div>`;
+    const brk = (d.breaks || []).find((b) => !b.to), breaks = (d.breaks || []).reduce((a, b) => a + ((b.to || Date.now()) - b.from), 0);
+    if (d.end) return `<div class="clock done"><div><b>Day done: ${hm(d.start)} to ${hm(d.end)}</b><small>${dur(worked(d))} worked${breaks >= 60000 ? `, ${dur(breaks)} break` : ""}${d.checked ? ". Checked by the office" : ""}</small></div>${d.checked ? "" : `<button class="btn ghost small" data-mj="clock" data-v="start">Back to work</button>`}</div>`;
+    return `<div class="clock${brk ? " brk" : ""}"><div><b>${brk ? `On a break since ${hm(brk.from)}` : `Started ${hm(d.start)}`}</b><small>${dur(worked(d))} worked so far${breaks >= 60000 ? `, ${dur(breaks)} break` : ""}</small></div>
+      <div class="clockbtns">${brk ? `<button class="btn dark small" data-mj="clock" data-v="resume">Back from break</button>` : `<button class="btn ghost small" data-mj="clock" data-v="break">Take a break</button>`}
+      <button class="btn red small" data-mj="clock" data-v="end">Finish my day</button></div></div>`;
+  }
+
   async function step(id, status, note) {
     const v = mine().find((x) => x.id === id); if (!v) return;
+    if (status === "onway" && S.day && !S.day.start && v.date === iso(new Date())) await clock("start");
     const was = v.status; v.status = status; ctx.render();
     try { const j = await post({ action: "visit-step", id, date: v.date, status, note: note || "", who: S.me }); Object.assign(v, j.visit); put(CACHE, { me: S.me, list: S.list, at: S.at }); }
     catch (e) { v.status = was; say(e.message); }
@@ -110,6 +136,14 @@ export function makeMyJobs(ctx) {
     if (a === "me") { S.me = b.dataset.v; put(ME, S.me); S.list = null; ctx.render(); return true; }
     if (a === "notme") { S.me = ""; put(ME, ""); S.list = null; ctx.render(); return true; }
     if (a === "reload") { load(); ctx.render(); return true; }
+    if (a === "clock") {
+      const v = b.dataset.v;
+      if (v === "end") {
+        const left = today().filter((x) => x.status !== "done").length;
+        if (!confirm(left ? `You still have ${left} job${left > 1 ? "s" : ""} not marked done today. Finish your day anyway?` : "Finish your day now?")) return true;
+      }
+      clock(v); return true;
+    }
     if (a === "toggle") { S.open = S.open === id ? null : id; S.eta = S.finish = null; ctx.render(); return true; }
     if (a === "eta") { S.eta = id; ctx.render(); return true; }
     if (a === "onway") {

@@ -6,9 +6,9 @@ import { stageOf } from "./shared.js";
 
 const pad = (n) => String(n).padStart(2, "0");
 export const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-const fromIso = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
-const monday = (d) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
-const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+export const fromIso = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+export const monday = (d) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+export const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
 /* "13-Nov-2026" from the old system, or "13/11/2026" */
 export function oldDate(s) {
@@ -21,7 +21,7 @@ const oldTime = (s) => { const m = /(\d{1,2}):(\d{2})\s*(am|pm)?/i.exec(String(s
 export const KINDS = ["Install", "Service", "Callout", "Repair", "Measure and quote", "Pick up or drop off"];
 export const VSTEP = { booked: "Booked", onway: "On the way", onsite: "On site", done: "Done", cancelled: "Cancelled" };
 export const nice = (t) => { const [h, m] = String(t || "08:00").split(":").map(Number); return `${h % 12 || 12}${m ? ":" + pad(m) : ""}${h < 12 ? "am" : "pm"}`; };
-const dayName = (d) => d.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+export const dayName = (d) => d.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
 const suburb = (a) => String(a || "").split(",").map((x) => x.trim()).filter(Boolean).pop() || "";
 export const mapLink = (a) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a)}`;
 

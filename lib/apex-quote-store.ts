@@ -329,3 +329,72 @@ export async function stepVisit(id: string, date: string, status: string, who: s
   v.log = v.log.slice(-60);
   return vwrite(v, f);
 }
+
+/* ---------- timesheets ----------
+   One small file per technician per day: time/<date>_<name>.<time saved>.json,
+   saved under a new name each time like the bookings. The tablet stamps start,
+   breaks and finish with the server's clock; only the office can change a time. */
+const slug = (s: string) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "x";
+type TFile = { name: string; date: string; who: string; ts: number };
+function tparse(name: string): TFile | null {
+  const m = /^(\d{4}-\d{2}-\d{2})_([a-z0-9-]+)\.(\d+)\.json$/.exec(name);
+  return m ? { name, date: m[1], who: m[2], ts: +m[3] } : null;
+}
+async function tlist(prefix: string): Promise<TFile[]> {
+  const b = await bucket(), out: TFile[] = [];
+  for (let offset = 0; offset < 20000; offset += 1000) {
+    const { data } = await b.list("time", { limit: 1000, offset, search: prefix, sortBy: { column: "name", order: "asc" } });
+    for (const f of data || []) { const t = tparse(f.name); if (t && t.name.startsWith(prefix)) out.push(t); }
+    if (!data || data.length < 1000) break;
+  }
+  const best = new Map<string, TFile>();
+  for (const f of out) { const k = `${f.date}_${f.who}`, o = best.get(k); if (!o || f.ts > o.ts) best.set(k, f); }
+  return Array.from(best.values());
+}
+async function tread(f: TFile) { const { data } = await (await bucket()).download(`time/${f.name}`); return data ? JSON.parse(await data.text()) : null; }
+async function twrite(day: any, old: TFile | null) {
+  const b = await bucket(), ts = Date.now(); day.updated = ts;
+  const { error } = await b.upload(`time/${day.date}_${slug(day.tech)}.${ts}.json`, new Blob([JSON.stringify(day)], { type: "application/json" }), { contentType: "application/json", cacheControl: "0" });
+  if (error) throw new Error(error.message);
+  if (old) await b.remove([`time/${old.name}`]);
+  return day;
+}
+const tnum = (v: any) => (Number(v) > 0 ? Math.round(Number(v)) : null);
+function cleanDay(d: any) {
+  return { tech: clip(d.tech, 60), date: vday(d.date), start: tnum(d.start), end: tnum(d.end),
+    breaks: (Array.isArray(d.breaks) ? d.breaks : []).slice(0, 12).map((x: any) => ({ from: tnum(x.from), to: tnum(x.to) })).filter((x: any) => x.from),
+    note: clip(d.note, 600), checked: !!d.checked, log: (Array.isArray(d.log) ? d.log : []).slice(-40) };
+}
+export async function readDay(tech: string, date: string) {
+  const f = (await tlist(`${vday(date)}_${slug(tech)}.`))[0];
+  return f ? await tread(f) : { tech, date: vday(date), start: null, end: null, breaks: [], note: "", checked: false, log: [] };
+}
+/* the tablet's buttons: start the day, take a break, back from the break, finish */
+export async function clockDay(tech: string, date: string, what: string, note = "") {
+  if (!tech.trim() || vday(date) === "0000-00-00") throw new Error("Pick your name first");
+  const f = (await tlist(`${vday(date)}_${slug(tech)}.`))[0];
+  const d = cleanDay(f ? await tread(f) : { tech, date });
+  const now = Date.now(), open = d.breaks.find((b: any) => !b.to);
+  if (d.checked) throw new Error("The office has already checked this day. Ask them to change it");
+  if (what === "start") { if (!d.start) d.start = now; d.end = null; }
+  else if (what === "break") { if (!d.start) d.start = now; if (!open) d.breaks.push({ from: now, to: null }); }
+  else if (what === "resume") { if (open) open.to = now; }
+  else if (what === "end") { if (open) open.to = now; if (!d.start) d.start = now; d.end = now; if (note) d.note = clip(note, 600); }
+  else throw new Error("Unknown");
+  d.log.push({ at: now, who: clip(tech, 60), what });
+  return twrite(d, f || null);
+}
+export async function listDays(from: string, to: string) {
+  const f = vday(from), t = vday(to);
+  const files = (await Promise.all(months(f, t).map(tlist))).flat().filter((x) => x.date >= f && x.date <= t);
+  return (await Promise.all(files.map(tread))).filter(Boolean);
+}
+/* the office fixes a forgotten tap or marks the day checked for pay */
+export async function saveDay(input: any) {
+  const d = cleanDay(input || {});
+  if (!d.tech || d.date === "0000-00-00") throw new Error("Missing name or day");
+  const f = (await tlist(`${d.date}_${slug(d.tech)}.`))[0];
+  const prev = f ? await tread(f) : null;
+  d.log = (prev?.log || []).concat({ at: Date.now(), who: "Office", what: d.checked && !prev?.checked ? "checked" : "changed" }).slice(-40);
+  return twrite(d, f || null);
+}
