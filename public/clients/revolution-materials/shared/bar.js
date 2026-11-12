@@ -21,7 +21,16 @@
     ".bvn-toast{position:fixed;left:50%;top:24px;transform:translate(-50%,-30px);opacity:0;z-index:10000;padding:14px 20px;border-radius:12px;" +
     "background:#101317;color:#fff;font:500 14px/1.4 Inter,system-ui,sans-serif;border:1px solid rgba(255,255,255,.15);transition:.35s;pointer-events:none;max-width:90vw}" +
     ".bvn-toast.show{opacity:1;transform:translate(-50%,0)}" +
-    "@media print{.bvn-bar{display:none}}";
+    "@media print{.bvn-bar{display:none}}" +
+    /* 3D Part Builder menu link, shared by every draft */
+    ".nav nav a.rm3d{display:inline-flex;align-items:center;gap:7px;padding:7px 8px 7px 14px;border-radius:999px;background:linear-gradient(135deg,#ff8a3d,#E86010);color:#fff!important;font-weight:700;letter-spacing:0;text-transform:none;" +
+    "box-shadow:0 0 0 0 rgba(232,96,16,.55);animation:rm3dPulse 2.4s infinite;transition:transform .2s;text-decoration:none;white-space:nowrap;line-height:1}" +
+    ".nav nav a.rm3d:hover{transform:translateY(-1px);background:linear-gradient(135deg,#ffa060,#f06a18)}" +
+    ".nav nav a.rm3d:after{display:none!important}" +
+    ".nav nav a.rm3d b{font-size:9.5px;letter-spacing:.08em;background:#fff;color:#E86010;border-radius:999px;padding:3px 6px;font-weight:800}" +
+    "@keyframes rm3dPulse{0%{box-shadow:0 0 0 0 rgba(232,96,16,.5)}70%{box-shadow:0 0 0 12px rgba(232,96,16,0)}100%{box-shadow:0 0 0 0 rgba(232,96,16,0)}}" +
+    "@media(max-width:900px){.nav nav{display:flex!important;gap:0!important}.nav nav a:not(.rm3d){display:none!important}.nav nav a.rm3d{font-size:12px;padding:6px 6px 6px 11px}}" +
+    "@media(max-width:520px){.nav>a.btn{display:none!important}.nav nav a.rm3d{padding:8px 12px}.nav nav a.rm3d b{display:none}}";
   document.head.appendChild(css);
   var bar = document.createElement("nav");
   bar.className = "bvn-bar";
