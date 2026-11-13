@@ -55,7 +55,7 @@ const CLIENTS: Client[] = [
     region: "Sauna and hot tub importer, Tasmania and NSW, AU + NZ",
     scope: "CEO + Marketing Dashboard · GoHighLevel",
     blurb:
-      "All in one CEO and marketing dashboard for a family owned sauna business: revenue, pipeline, leads by channel, cost per lead, ROAS, campaigns, city landing pages, GHL pipeline board, conversations, their real 176 product catalogue, warranty and reviews. Demo data until their GHL and WooCommerce are connected. Marketing setup in GHL comes first.",
+      "All in one CEO and marketing dashboard for a family owned sauna business: revenue, pipeline, leads by channel, cost per lead, ROAS, campaigns, city landing pages, GHL pipeline board, conversations, their real 176 product catalogue, warranty and reviews. Plus a Backyard Visualiser at /clients/shym-saunas/visualiser built from their real sauna catalogue. Demo data until their GHL and WooCommerce are connected. Marketing setup in GHL comes first.",
     href: "/clients/shym-saunas/dashboard",
     status: "active",
     accent: C.coral,
