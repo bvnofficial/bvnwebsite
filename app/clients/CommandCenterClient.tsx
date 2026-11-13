@@ -51,6 +51,17 @@ type Client = {
 
 const CLIENTS: Client[] = [
   {
+    name: "Shym Saunas and Spas",
+    region: "Sauna and hot tub importer, Tasmania and NSW, AU + NZ",
+    scope: "CEO + Marketing Dashboard · GoHighLevel",
+    blurb:
+      "All in one CEO and marketing dashboard for a family owned sauna business: revenue, pipeline, leads by channel, cost per lead, ROAS, campaigns, city landing pages, GHL pipeline board, conversations, their real 176 product catalogue, warranty and reviews. Demo data until their GHL and WooCommerce are connected. Marketing setup in GHL comes first.",
+    href: "/clients/shym-saunas/dashboard",
+    status: "active",
+    accent: C.coral,
+    tags: ["GoHighLevel", "Dashboard", "Marketing", "WooCommerce"],
+  },
+  {
     name: "Pratt Electrical GHL + Simpro CRM (application)",
     region: "Solar/electrical business, ongoing remote, hourly",
     scope: "GoHighLevel · Simpro · AI Calling · Lead Routing",
