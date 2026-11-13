@@ -103,6 +103,14 @@ h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-
 @keyframes fade{from{opacity:0}}
 .qtbl input{width:96px;text-align:right;padding:6px 8px}
 .tot{display:flex;justify-content:flex-end;gap:30px;padding:12px 14px;font-size:14px}.tot b{font-size:20px}
+/* invoices and reports */
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.inv{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:#fff}
+.inv .ih{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px}.inv .ih .no{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.paybox{display:flex;gap:12px;align-items:center;margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--ok-s);color:#08724F;font-size:13px}
+.paybox.bad{background:var(--bad-s);color:var(--bad)}.paybox.warn{background:var(--warn-s);color:var(--warn)}
+.bars.money .c em{font-size:10.5px}
+.tbl th.r{text-align:right}.wide .hb{grid-template-columns:minmax(150px,220px) 1fr 52px}
 /* toasts */
 .toasts{position:fixed;right:18px;bottom:18px;z-index:80;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
 .toast{background:var(--ink);color:#fff;border-radius:12px;padding:12px 15px;font-size:13.5px;box-shadow:var(--sh2);max-width:360px;animation:tin .3s;display:flex;gap:10px;align-items:flex-start}
@@ -116,12 +124,12 @@ h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-
 .new{animation:newrow 2.4s}@keyframes newrow{0%,50%{background:#FFE7D6}}
 .seg{display:inline-flex;background:#E9EBEF;border-radius:10px;padding:3px}.seg button{border:0;background:transparent;padding:6px 11px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--mut)}.seg button.on{background:#fff;color:var(--text);box-shadow:var(--sh)}
 .mbar{display:none}
-@media(max-width:1280px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1280px){.kpis{grid-template-columns:repeat(3,1fr)}.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1000px){.g2,.g3{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:900px){
  .app{grid-template-columns:minmax(0,1fr)}.side{position:fixed;left:0;top:0;bottom:0;width:250px;z-index:70;transform:translateX(-100%);transition:transform .25s}.side.open{transform:none;box-shadow:var(--sh2)}
  .mbar{display:inline-flex}.top{padding:12px 14px;gap:8px}.top h1{font-size:19px}.top .srch{display:none}.page{padding:14px 14px 70px}
- .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi .v{font-size:21px}.li .btn{display:none}.brief h2{font-size:20px}.inbox{grid-template-columns:1fr;height:auto}.inbox.sel .ilist{display:none}.inbox:not(.sel) .thread{display:none}.thread{min-height:calc(100vh - 62px)}
+ .kpis,.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}.inv{padding:14px}.inv .ih{flex-wrap:wrap}.kpi .v{font-size:21px}.li .btn{display:none}.brief h2{font-size:20px}.inbox{grid-template-columns:1fr;height:auto}.inbox.sel .ilist{display:none}.inbox:not(.sel) .thread{display:none}.thread{min-height:calc(100vh - 62px)}
  .phone{left:12px;right:12px;width:auto}.demo{display:none}.top .newbtn span{display:none}
 }
 </style>
@@ -146,7 +154,7 @@ const rel=t=>{const d=now()-t;if(d<MIN)return"just now";if(d<HR)return Math.floo
 const clock=t=>new Date(t).toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"});
 const COLORS=["#E86010","#2563EB","#0E9F6E","#7C3AED","#B45309","#0891B2","#BE185D","#4B5563"];
 const avatar=(name,i)=>`<span class="av" style="background:${COLORS[(i||name.length)%COLORS.length]}">${esc(name.split(" ").map(w=>w[0]).slice(0,2).join(""))}</span>`;
-const ICONS={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',inbox:'<path d="M4 4h16v12h-5l-2 3h-2l-2-3H4z"/>',pipe:'<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v5h-4z"/>',quote:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.6 3.5 5.2"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cube:'<path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',back:'<path d="M15 18l-6-6 6-6"/>',msg:'<path d="M4 5h16v11H8l-4 4z"/>',ok:'<path d="M5 12l5 5 9-10"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>',flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+const ICONS={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',inbox:'<path d="M4 4h16v12h-5l-2 3h-2l-2-3H4z"/>',pipe:'<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v5h-4z"/>',quote:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.6 3.5 5.2"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cube:'<path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',back:'<path d="M15 18l-6-6 6-6"/>',msg:'<path d="M4 5h16v11H8l-4 4z"/>',ok:'<path d="M5 12l5 5 9-10"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>',flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',inv:'<path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/>',rep:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>'};
 const I=n=>`<svg class="ico" viewBox="0 0 24 24">${ICONS[n]||""}</svg>`;
 
 /* ============ catalogue ============ */
@@ -208,18 +216,43 @@ function seed(){
     {text:"Kate Henderson (Pilbara Offshore Fitters) asked about Monel 400 vs K-500",at:t-2.2*HR,go:"inbox/v9",unread:true},
     {text:"AI receptionist took a call from Sunshine Hydraulics",at:t-5*HR,go:"inbox/v13",unread:false},
     {text:"Mei Lin Chen opened your Inconel 625 sheet quote 3 times",at:t-7*HR,go:"quotes",unread:false},
-    {text:"Ballarat Mining Supplies paid invoice INV-1182, $18,900",at:t-2*DAY,go:"pipeline",unread:false},
+    {text:"Ballarat Mining Supplies paid invoice INV-1182, $20,790",at:t-2*DAY,go:"invoices",unread:false},
     {text:"Follow up text sent to Corio Bay Refinery Services",at:t-3*DAY,go:"pipeline",unread:false}
   ];
-  return {contacts,opps,convos,notices,seq:0};
+  const IV=(no,c,o,title,lines,issued,paid,extra)=>Object.assign({no,c,o,title,lines,issued:t-issued*DAY,due:t-issued*DAY+30*DAY,paidAt:paid==null?null:t-paid*DAY},extra||{});
+  const one=(d,g,qty,u,p)=>[L(d,g,qty,u,p)];
+  const invoices=[
+    IV("INV-1182","c11","o11","Inconel 718 studs, crusher hydraulics",opps.find(o=>o.id==="o11").lines,4,2),
+    IV("INV-1179","c6","o6","Inconel 625 bar, pump shafts",opps.find(o=>o.id==="o6").lines,9,null,{viewed:true}),
+    IV("INV-1177","c7","o7","316 nuts, valve assembly line",opps.find(o=>o.id==="o7").lines,11,3),
+    IV("INV-1175","c5",null,"Ferralium 255 studs, stage 1",one("M16 x 90 stud, full thread","f255",800,"pcs",12.05),20,null,{viewed:true}),
+    IV("INV-1171","c4",null,"Stainless 316 round bar, cut lengths",one("Round bar 40 mm, cut to 500 mm","316",36,"pcs",65),41,null,{reminded:t-4*DAY}),
+    IV("INV-1168","c8",null,"Duplex 2205 plate, cut to size",one("Plate 8 mm, 1200 x 2400","2205",2,"sheets",3410),52,null),
+    IV("INV-1165","c3",null,"B7 studs and 2H nuts, Unit 1 outage",[L("M24 x 180 stud, full thread","b7",1600,"pcs",5.90),L("M24 2H heavy hex nut","b7",3200,"pcs",.95)],60,31),
+    IV("INV-1160","c1",null,"316 hex bolt sets, cooling tower",one("M16 x 80 hex bolt set","316",800,"sets",6.20),75,50),
+    IV("INV-1158","c2",null,"Titanium Gr 2 sheet",one("Sheet 3 mm, 1000 x 2000","ti2",3,"sheets",2450),80,47)
+  ];
+  notices.splice(3,0,{text:"Invoice INV-1168 to Southern Cross Fabrication is 22 days overdue",at:t-6*HR,go:"invoices",unread:false});
+  return {contacts,opps,convos,notices,invoices,seq:0};
 }
-const KEY="rmhq-demo-3";
+const KEY="rmhq-demo-4";
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.opps)S=seed();
+if(!S||!S.opps||!S.invoices)S=seed();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const C=id=>S.contacts.find(c=>c.id===id);
 const O=id=>S.opps.find(o=>o.id===id);
 const val=o=>o.lines.reduce((a,l)=>a+l.qty*l.p,0);
+const ivTot=v=>val(v)*1.1;
+const ivStatus=v=>v.paidAt?"Paid":v.draft?"Draft":now()>v.due?"Overdue":"Unpaid";
+const IV_TAG={Paid:"ok",Draft:"",Overdue:"bad",Unpaid:"warn"};
+const dshort=t=>new Date(t).toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+const daysLate=v=>Math.floor((now()-v.due)/DAY);
+function makeInvoice(o){
+  if(S.invoices.some(v=>v.o===o.id))return null;
+  const n=Math.max(...S.invoices.map(v=>+v.no.slice(4)))+1;
+  const v={no:"INV-"+n,c:o.c,o:o.id,title:o.title,lines:o.lines.map(l=>Object.assign({},l)),issued:now(),due:now()+30*DAY,paidAt:null,draft:true,fresh:true};
+  S.invoices.unshift(v);return v;
+}
 const ui={view:"overview",sel:null,bell:false,q:"",period:"12w"};
 
 /* ============ stats ============ */
@@ -245,14 +278,14 @@ function brief(st){
 }
 
 /* ============ layout ============ */
-const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Quotes","quote"],["grp","Insight"],["demand","Demand","chart"],["customers","Customers","users"]];
-const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Quotes",demand:"What customers ask for",customers:"Customers"};
+const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Quotes","quote"],["invoices","Invoices","inv"],["grp","Insight"],["demand","Demand","chart"],["reports","Reports","rep"],["customers","Customers","users"]];
+const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Quotes",invoices:"Invoices",demand:"What customers ask for",reports:"Reports",customers:"Customers"};
 function render(){
   const p=(location.hash.replace(/^#\/?/,"")||"overview").split("/");
   ui.view=TITLES[p[0]]?p[0]:"overview";ui.sel=p[1]||null;
   const body=VIEW[ui.view](stats());
   const st=stats();
-  const badge={inbox:st.unrep.length,pipeline:st.stale.length};
+  const badge={inbox:st.unrep.length,pipeline:st.stale.length,invoices:S.invoices.filter(v=>ivStatus(v)==="Overdue").length};
   const nav=NAV.map(n=>n[0]==="grp"?`<div class="grp">${n[1]}</div>`:`<button class="${ui.view===n[0]?"on":""}" data-go="${n[0]}">${I(n[2])}<span>${n[1]}</span>${badge[n[0]]?`<span class="bdg">${badge[n[0]]}</span>`:""}</button>`).join("");
   const unread=S.notices.filter(n=>n.unread).length;
   $("#app").innerHTML=`<div class="app">
@@ -288,7 +321,8 @@ VIEW.overview=st=>{
   const fun=STAGES.slice(0,5).map(g=>{const xs=S.opps.filter(o=>o.stage===g);return{g,n:xs.length,v:xs.reduce((a,o)=>a+val(o),0)}});
   const fm=Math.max(...fun.map(f=>f.v),1);
   const needs=[...st.unrep.map(v=>({k:"Reply",tag:"or",t:`${C(v.c).co} is waiting on a reply`,s:`${v.ch}, ${rel(v.msgs[v.msgs.length-1].at)}`,go:"inbox/"+v.id,btn:"Reply"})),
-    ...st.stale.map(o=>({k:"Follow up",tag:"warn",t:`${C(o.c).co}: ${o.title}`,s:`${money(val(o))} quote sent ${rel(o.sent||o.at)}, no answer yet`,act:"follow",id:o.id,btn:"Send follow up"}))];
+    ...st.stale.map(o=>({k:"Follow up",tag:"warn",t:`${C(o.c).co}: ${o.title}`,s:`${money(val(o))} quote sent ${rel(o.sent||o.at)}, no answer yet`,act:"follow",id:o.id,btn:"Send follow up"})),
+    ...S.invoices.filter(v=>ivStatus(v)==="Overdue").map(v=>({k:"Overdue",tag:"bad",t:`${C(v.c).co}: invoice ${v.no}`,s:`${money(ivTot(v))}, ${daysLate(v)} days overdue`,act:"remind",id:v.no,btn:"Send reminder"}))];
   return `<div class="g">
   <div class="card brief"><div class="row"><span class="tag">${I("spark")} AI daily brief</span><span class="grow"></span><span class="sm" style="opacity:.6">${new Date().toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"})}</span></div><h2>${b.hi}</h2><p>${esc(b.txt)}</p></div>
   <div class="kpis">
@@ -386,10 +420,83 @@ VIEW.demand=()=>{
 
 /* ---------- customers ---------- */
 VIEW.customers=()=>{
-  const rows=S.contacts.filter(c=>match(c.co+" "+c.name+" "+c.city)).map(c=>{const os=S.opps.filter(o=>o.c===c.id);return{c,os,won:os.filter(o=>o.stage==="Won").reduce((a,o)=>a+val(o),0),open:os.filter(o=>!["Won","Lost"].includes(o.stage)).reduce((a,o)=>a+val(o),0),lastAt:Math.max(...os.map(o=>o.at),0)}}).sort((a,b)=>b.lastAt-a.lastAt);
-  return `<div class="card"><div class="tw"><table class="tbl"><thead><tr><th>Company</th><th>Contact</th><th>Location</th><th class="r">Won</th><th class="r">Open</th><th>Last enquiry</th><th></th></tr></thead><tbody>
-  ${rows.map(r=>`<tr class="${r.c.fresh?"new":""}"><td><b>${esc(r.c.co)}</b></td><td>${esc(r.c.name)}<div class="xs mut">${esc(r.c.role)}</div></td><td>${esc(r.c.city)}</td><td class="r">${r.won?money(r.won):'<span class="faint">None yet</span>'}</td><td class="r">${r.open?money(r.open):'<span class="faint">None</span>'}</td><td class="mut nw">${r.lastAt?rel(r.lastAt):""}</td><td class="r nw"><button class="btn s" data-act="call" data-id="${r.c.id}">${I("phone")}</button> ${r.os[0]?`<button class="btn s" data-act="quote" data-id="${r.os[0].id}">Open deal</button>`:""}</td></tr>`).join("")}
+  const rows=S.contacts.filter(c=>match(c.co+" "+c.name+" "+c.city)).map(c=>{const os=S.opps.filter(o=>o.c===c.id);return{c,os,won:os.filter(o=>o.stage==="Won").reduce((a,o)=>a+val(o),0),open:os.filter(o=>!["Won","Lost"].includes(o.stage)).reduce((a,o)=>a+val(o),0),lastAt:Math.max(...os.map(o=>o.at),0),owe:S.invoices.filter(v=>v.c===c.id&&!v.paidAt&&!v.draft).reduce((a,v)=>a+ivTot(v),0)}}).sort((a,b)=>b.lastAt-a.lastAt);
+  return `<div class="card"><div class="tw"><table class="tbl"><thead><tr><th>Company</th><th>Contact</th><th>Location</th><th class="r">Won</th><th class="r">Open</th><th class="r">Owing</th><th>Last enquiry</th><th></th></tr></thead><tbody>
+  ${rows.map(r=>`<tr class="${r.c.fresh?"new":""}"><td><b>${esc(r.c.co)}</b></td><td>${esc(r.c.name)}<div class="xs mut">${esc(r.c.role)}</div></td><td>${esc(r.c.city)}</td><td class="r">${r.won?money(r.won):'<span class="faint">None yet</span>'}</td><td class="r">${r.open?money(r.open):'<span class="faint">None</span>'}</td><td class="r">${r.owe?`<a href="#/invoices" style="color:var(--or);font-weight:600">${money(r.owe)}</a>`:'<span class="faint">None</span>'}</td><td class="mut nw">${r.lastAt?rel(r.lastAt):""}</td><td class="r nw"><button class="btn s" data-act="call" data-id="${r.c.id}">${I("phone")}</button> ${r.os[0]?`<button class="btn s" data-act="quote" data-id="${r.os[0].id}">Open deal</button>`:""}</td></tr>`).join("")}
   </tbody></table></div></div>`;
+};
+
+/* ---------- invoices ---------- */
+VIEW.invoices=()=>{
+  const xs=S.invoices.filter(v=>match(C(v.c).co+" "+C(v.c).name+" "+v.no+" "+v.title));
+  const ord={Draft:0,Overdue:1,Unpaid:2,Paid:3};
+  xs.sort((a,b)=>ord[ivStatus(a)]-ord[ivStatus(b)]||b.issued-a.issued);
+  const by=k=>S.invoices.filter(v=>ivStatus(v)===k);
+  const sum=a=>a.reduce((t,v)=>t+ivTot(v),0);
+  const paid30=S.invoices.filter(v=>v.paidAt&&now()-v.paidAt<30*DAY);
+  const pd=S.invoices.filter(v=>v.paidAt);const avg=pd.length?Math.round(pd.reduce((t,v)=>t+(v.paidAt-v.issued)/DAY,0)/pd.length):0;
+  const owing=[...by("Unpaid"),...by("Overdue")];
+  return `<div class="g">
+  <div class="kpis k4">
+   ${kpi("Owed to you",kfmt(sum(owing)),owing.length+" invoices unpaid","","invoices","i1")}
+   ${kpi("Overdue",kfmt(sum(by("Overdue"))),by("Overdue").length+" past the due date",by("Overdue").length?"dn":"up","invoices","i2")}
+   ${kpi("Paid, last 30 days",kfmt(sum(paid30)),paid30.length+" invoices","up","invoices","i3")}
+   ${kpi("Average days to pay",avg+" days","Terms are 30 days",avg<=30?"up":"dn","reports","i4")}
+  </div>
+  <div class="card"><div class="ch"><h3>Invoices</h3><span class="mut sm">Sent from GoHighLevel. Customers pay by card or bank transfer from the link.</span></div><div class="tw"><table class="tbl"><thead><tr><th>Invoice</th><th>Customer</th><th>For</th><th>Issued</th><th>Due</th><th>Status</th><th class="r">Total inc GST</th><th></th></tr></thead><tbody>
+  ${xs.map(v=>{const c=C(v.c),k=ivStatus(v);return `<tr class="ck ${v.fresh?"new":""}" data-act="inv" data-id="${v.no}"><td class="b nw">${v.no}</td><td><b>${esc(c.co)}</b><div class="xs mut">${esc(c.name)}</div></td><td><div class="ell" style="max-width:240px">${esc(v.title)}</div></td><td class="nw mut">${dshort(v.issued)}</td><td class="nw ${k==="Overdue"?"":"mut"}">${v.draft?"":dshort(v.due)}${k==="Overdue"?`<div class="xs" style="color:var(--bad)">${daysLate(v)} days late</div>`:""}</td><td><span class="tag ${IV_TAG[k]}">${k}</span>${v.viewed&&k!=="Paid"?`<div class="xs faint" style="margin-top:3px">Opened</div>`:""}</td><td class="r b">${money2(ivTot(v))}</td><td class="r nw">${k==="Draft"?`<button class="btn s pri" data-act="sendinv" data-id="${v.no}">Send</button>`:k==="Paid"?`<span class="xs faint">Paid ${dshort(v.paidAt)}</span>`:`<button class="btn s" data-act="remind" data-id="${v.no}">Remind</button>`}</td></tr>`}).join("")||'<tr><td colspan="8" class="empty">No invoices match.</td></tr>'}
+  </tbody></table></div><p class="sm mut" style="margin:0;padding:12px 16px;border-top:1px solid var(--line2)">Mark a deal as won and a draft invoice is made from the quote, ready to send. Unpaid invoices get an automatic reminder 3 days before and 7 days after the due date.</p></div></div>`;
+};
+const IV=no=>S.invoices.find(v=>v.no===no);
+function invModal(no){
+  const v=IV(no),c=C(v.c),k=ivStatus(v);
+  modal(`<div class="mh"><h2>Invoice ${v.no}<div class="sm mut" style="font-weight:500;letter-spacing:0">${esc(c.co)} · ${esc(v.title)}</div></h2><span class="tag ${IV_TAG[k]}">${k}</span><button class="btn ghost" data-act="close">${I("x")}</button></div>
+  <div class="mb"><div class="inv"><div class="ih"><div class="grow"><div class="xs mut b" style="letter-spacing:.1em">TAX INVOICE</div><div class="no">${v.no}</div><div class="sm mut">Revolution Materials · 39 Little Boundary Road, Laverton North VIC 3026</div></div>
+   <div class="sm"><div class="xs mut b" style="letter-spacing:.1em">BILL TO</div><b>${esc(c.co)}</b><div>${esc(c.name)}</div><div class="mut">${esc(c.city)}</div></div>
+   <div class="sm"><div class="xs mut b" style="letter-spacing:.1em">DATES</div><div>Issued ${dshort(v.issued)}</div><div>Due ${v.draft?"30 days after sending":dshort(v.due)}</div></div></div>
+   <div class="tw" style="border:1px solid var(--line);border-radius:12px"><table class="tbl"><thead><tr><th>Item</th><th>Grade</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Line total</th></tr></thead><tbody>
+   ${v.lines.map(l=>`<tr><td><b>${esc(l.d)}</b></td><td>${GR[l.g]}</td><td class="r nw">${l.qty.toLocaleString()} ${l.u}</td><td class="r">${money2(l.p)}</td><td class="r b">${money2(l.qty*l.p)}</td></tr>`).join("")}
+   </tbody></table><div class="tot"><span class="mut">Subtotal ${money2(val(v))}</span><span class="mut">GST ${money2(val(v)*.1)}</span><span>Total <b>${money2(ivTot(v))}</b></span></div></div>
+   ${k==="Paid"?`<div class="paybox">${I("ok")}<span class="grow">Paid in full on ${dshort(v.paidAt)}, ${Math.round((v.paidAt-v.issued)/DAY)} days after it was sent.</span></div>`
+    :k==="Overdue"?`<div class="paybox bad">${I("clock")}<span class="grow">${daysLate(v)} days overdue.${v.reminded?" Last reminder sent "+rel(v.reminded)+".":""}${v.viewed?" The customer has opened it.":""}</span></div>`
+    :k==="Unpaid"?`<div class="paybox warn">${I("clock")}<span class="grow">Due ${dshort(v.due)}.${v.viewed?" The customer has opened it.":" Not opened yet."}</span></div>`
+    :`<div class="paybox warn">${I("spark")}<span class="grow">Draft made from the won quote. Check it, then send by email and SMS with a pay link.</span></div>`}
+  </div></div>
+  <div class="mf">${v.o?`<button class="btn" data-act="quote" data-id="${v.o}">${I("quote")} Open deal</button>`:""}
+   ${k==="Draft"?`<button class="btn pri" data-act="sendinv" data-id="${v.no}">${I("send")} Send invoice</button>`:k==="Paid"?`<button class="btn" data-act="close">Close</button>`:`<button class="btn" data-act="remind" data-id="${v.no}">${I("clock")} Send reminder</button><button class="btn pri" data-act="paid" data-id="${v.no}">${I("ok")} Mark paid</button>`}</div>`);
+}
+
+/* ---------- reports ---------- */
+const SALES12=[48,52,61,55,58,66,59,63,71,68,72,75];
+const SRC12=[["Repeat customer",64,41,286],["Google search",58,17,112],["Fastener Builder",46,19,138],["Grade Finder",39,14,97],["Email",33,11,74],["Phone call",29,12,41]];
+const TOPC=[["Latrobe Power Maintenance",92],["Altona Petrochem Maintenance",78],["Ballarat Mining Supplies",64],["Kwinana Pump Services",51],["Westgate Process Engineering",47]];
+const TOPG=[["Stainless 316",168],["Inconel 625",121],["Alloy B7",96],["Duplex 2205",88],["Titanium Gr 5",61]];
+function months(){const out=[],d=new Date();for(let i=11;i>=0;i--){const m=new Date(d.getFullYear(),d.getMonth()-i,1);out.push(m.toLocaleDateString("en-AU",{month:"short"}))}return out}
+VIEW.reports=()=>{
+  const ml=months(),tot=SALES12.reduce((a,b)=>a+b,0),mx=Math.max(...SALES12)*1.15;
+  const enq=SRC12.reduce((a,r)=>a+r[1],0),won=SRC12.reduce((a,r)=>a+r[2],0);
+  const fy=(()=>{const m=new Date().getMonth();const n=m>=6?m-5:m+7;return SALES12.slice(12-n).reduce((a,b)=>a+b,0)})();
+  const hb=rows=>{const m=rows[0][1];return rows.map(([k,v])=>`<div class="hb" data-tip="${esc(k)}: $${v}k sales, 12 months"><span class="ell">${esc(k)}</span><span class="tr"><i style="width:${v/m*100}%"></i></span><b>$${v}k</b></div>`).join("")};
+  const h1=SALES12.slice(0,6).reduce((a,b)=>a+b,0),h2=SALES12.slice(6).reduce((a,b)=>a+b,0);
+  return `<div class="g">
+  <div class="row" style="flex-wrap:wrap"><p class="mut sm grow" style="margin:0">Sales and enquiry figures for the last 12 months, built from the won deals and invoices in GoHighLevel. Amounts are ex GST.</p><button class="btn s" data-act="csv">${I("dl")} Download CSV</button></div>
+  <div class="kpis k4">
+   ${kpi("Sales, 12 months","$"+tot+"k","+"+Math.round((h2/h1-1)*100)+"% on the 6 months before","up","reports","r1")}
+   ${kpi("Sales this financial year","$"+fy+"k","Since 1 July","","reports","r2")}
+   ${kpi("Win rate",Math.round(won/enq*100)+"%",won+" of "+enq+" enquiries won","up","pipeline","r3")}
+   ${kpi("Average order","$"+(tot/won).toFixed(1)+"k","Across "+won+" orders","","reports","r4")}
+  </div>
+  <div class="card"><div class="ch"><h3>Sales by month</h3><span class="mut sm">Won and invoiced, ex GST</span></div><div class="cb">
+   <div class="bars money">${SALES12.map((v,i)=>`<div class="c ${i===11?"cur":""}" data-tip="${ml[i]}: $${v}k sales"><em>$${v}k</em><i style="height:${(v/mx*100).toFixed(1)}%"></i></div>`).join("")}</div>
+   <div class="blab">${ml.map(m=>`<span>${m}</span>`).join("")}</div></div></div>
+  <div class="card"><div class="ch"><h3>Enquiries by source</h3><span class="mut sm">Last 12 months</span></div><div class="tw"><table class="tbl"><thead><tr><th>Source</th><th class="r">Enquiries</th><th class="r">Won</th><th class="r">Win rate</th><th class="r">Sales</th><th style="width:26%"></th></tr></thead><tbody>
+   ${SRC12.map(r=>`<tr><td><span class="row nw" style="gap:7px">${I(SRC_ICON[r[0]]||"msg")}<b>${r[0]}</b></span></td><td class="r">${r[1]}</td><td class="r">${r[2]}</td><td class="r">${Math.round(r[2]/r[1]*100)}%</td><td class="r b">$${r[3]}k</td><td style="min-width:90px"><div class="hb" style="grid-template-columns:1fr;padding:0" data-tip="${r[0]}: $${r[3]}k sales"><span class="tr"><i style="width:${r[3]/SRC12[0][3]*100}%"></i></span></div></td></tr>`).join("")}
+   <tr><td><b>Total</b></td><td class="r b">${enq}</td><td class="r b">${won}</td><td class="r b">${Math.round(won/enq*100)}%</td><td class="r b">$${SRC12.reduce((a,r)=>a+r[3],0)}k</td><td></td></tr>
+   </tbody></table></div></div>
+  <div class="g g2 wide" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+   <div class="card"><div class="ch"><h3>Top customers</h3><span class="mut sm">Sales, 12 months</span></div><div class="cb">${hb(TOPC)}</div></div>
+   <div class="card"><div class="ch"><h3>Top grades</h3><span class="mut sm">Sales, 12 months</span></div><div class="cb">${hb(TOPG)}</div></div>
+  </div></div>`;
 };
 const match=s=>!ui.q||s.toLowerCase().includes(ui.q.toLowerCase());
 
@@ -420,9 +527,15 @@ const ACT={
   follow(e,el){const o=O(el.dataset.id);o.stage="Quote sent";o.sent=now();const v=convoFor(o);
     v.msgs.push({me:true,text:`Hi ${C(o.c).name.split(" ")[0]}, checking in on the ${o.title.toLowerCase()} quote. Stock is still held for you. Want me to lock it in? Jim`,at:now()});v.ai="";
     notice(`Follow up sent to ${C(o.c).co}`,"inbox/"+v.id);save();closeModal();render();toast(`${I("ok")} Follow up text sent to ${esc(C(o.c).name)}`)},
-  win(e,el){const o=O(el.dataset.id);o.stage="Won";o.won=now();notice(`Won: ${C(o.c).co}, ${money(val(o))}`,"pipeline");save();closeModal();render();toast(`${I("ok")} Marked won. GoHighLevel sends the order confirmation and a review request after delivery.`,"or")},
+  win(e,el){const o=O(el.dataset.id);o.stage="Won";o.won=now();const iv=makeInvoice(o);notice(`Won: ${C(o.c).co}, ${money(val(o))}`,"pipeline");save();closeModal();render();toast(`${I("ok")} Marked won. ${iv?`Draft invoice ${iv.no} is ready to send. <a href="#/invoices" style="color:#fff;font-weight:700">Open</a>`:"Order confirmation sent."}`,"or")},
   source(e,el){el.outerHTML=`<span class="tag ok">${I("ok")} Request sent</span>`;toast(`Price request for ${esc(el.dataset.g)} sent to your mill contacts`)},
-  sim(){simulate()}
+  sim(){simulate()},
+  inv(e,el){invModal(el.dataset.id)},
+  sendinv(e,el){const v=IV(el.dataset.id);v.draft=false;v.issued=now();v.due=now()+30*DAY;v.fresh=false;notice(`Invoice ${v.no} sent to ${C(v.c).co}, ${money(ivTot(v))}`,"invoices");save();closeModal();render();toast(`${I("send")} Invoice ${v.no} sent by email and SMS with a pay link`,"or")},
+  remind(e,el){const v=IV(el.dataset.id);v.reminded=now();notice(`Payment reminder sent to ${C(v.c).co} for ${v.no}`,"invoices");save();closeModal();render();toast(`${I("ok")} Reminder for ${v.no} sent to ${esc(C(v.c).name)} by email and SMS, with the pay link`)},
+  paid(e,el){const v=IV(el.dataset.id);v.paidAt=now();notice(`${C(v.c).co} paid ${v.no}, ${money(ivTot(v))}`,"invoices");save();closeModal();render();phone("GoHighLevel","Payment received: "+C(v.c).co+" paid "+v.no+", "+money(ivTot(v))+".")},
+  csv(){const ml=months();const rows=[["Month","Sales ex GST (AUD)"],...SALES12.map((v,i)=>[ml[i],v*1000]),[],["Source","Enquiries","Won","Sales ex GST (AUD)"],...SRC12.map(r=>[r[0],r[1],r[2],r[3]*1000])];
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([rows.map(r=>r.join(",")).join("\n")],{type:"text/csv"}));a.download="revolution-materials-report.csv";a.click();toast(`${I("dl")} Report downloaded`)}
 };
 document.addEventListener("click",e=>{
   const a=e.target.closest("[data-act]"),g=e.target.closest("[data-go]");
@@ -446,8 +559,8 @@ document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.clo
 document.addEventListener("dragend",e=>{document.querySelectorAll(".op.drag").forEach(x=>x.classList.remove("drag"));document.querySelectorAll(".col.over").forEach(x=>x.classList.remove("over"))});
 document.addEventListener("dragover",e=>{const col=e.target.closest&&e.target.closest(".col");if(!col||!dragId)return;e.preventDefault();document.querySelectorAll(".col.over").forEach(x=>x!==col&&x.classList.remove("over"));col.classList.add("over")});
 document.addEventListener("drop",e=>{const col=e.target.closest&&e.target.closest(".col");if(!col||!dragId)return;e.preventDefault();const o=O(dragId),to=col.dataset.stage;dragId=null;if(o.stage===to){render();return}
-  o.stage=to;if(to==="Won")o.won=now();if(to==="Quote sent")o.sent=now();notice(`${C(o.c).co} moved to ${to}`,"pipeline");save();render();
-  toast(to==="Won"?`${I("ok")} Won. Order confirmation sent and Jim's phone pinged.`:to==="Follow up"?`Follow up text scheduled for tomorrow 9am`:to==="Lost"?`Moved to Lost. GoHighLevel will check in again in 90 days.`:`Moved to ${to}. GoHighLevel updated.`)});
+  o.stage=to;let iv=null;if(to==="Won"){o.won=now();iv=makeInvoice(o)}if(to==="Quote sent")o.sent=now();notice(`${C(o.c).co} moved to ${to}`,"pipeline");save();render();
+  toast(to==="Won"?`${I("ok")} Won. ${iv?"Draft invoice "+iv.no+" is ready to send.":"Order confirmation sent."}`:to==="Follow up"?`Follow up text scheduled for tomorrow 9am`:to==="Lost"?`Moved to Lost. GoHighLevel will check in again in 90 days.`:`Moved to ${to}. GoHighLevel updated.`)});
 /* tooltips */
 const tip=$("#tip");
 document.addEventListener("mousemove",e=>{const t=e.target.closest&&e.target.closest("[data-tip]");if(!t){tip.style.display="none";return}tip.textContent=t.dataset.tip;tip.style.display="block";const w=tip.offsetWidth;tip.style.left=Math.min(innerWidth-w-8,e.clientX+12)+"px";tip.style.top=(e.clientY-34)+"px"});
