@@ -7,6 +7,7 @@ import { runItem, priceQuote, defaults, money, byId } from "./engine.js";
 import { drawItem } from "./draw.js";
 import { buildTemplates, mergePricebook, priceExtras, stageOf, GROUPS, groupOf } from "./shared.js";
 import { makeDispatch } from "./dispatch.js";
+import { makeTimesheets } from "./timesheets.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -48,6 +49,8 @@ function say(t) { const el = $("#saved"); el.textContent = t; el.classList.add("
 const techs = () => String(pb().settings.techs || "").split(/\n|,/).map((x) => x.trim()).filter(Boolean);
 const DP = makeDispatch({ api, esc, say, render: () => render(), techs, quotes: () => st.quotes, jobs: () => st.jobs, icon: ICON, onTab: () => st.tab === "jobs" && st.jview !== "list" });
 
+const TS = makeTimesheets({ api, esc, say, render: () => render(), techs, icon: ICON });
+
 /* ---------- screens ---------- */
 function render() {
   const m = $("#main");
@@ -64,7 +67,8 @@ function render() {
     const seg = `<div class="jtop"><h1 class="big-t" style="margin:0">Jobs</h1><div class="segrow" style="margin:0">${[["cal", "Week by technician"], ["list", "Every job"]].map(([v, l]) => `<button class="${(st.jview || "cal") === v ? "on" : ""}" data-act="jview" data-v="${v}">${l}</button>`).join("")}</div></div>`;
     m.innerHTML = seg + (st.jview === "list" ? viewJobsBoard().replace('<h1 class="big-t">Jobs</h1>', "") : DP.view());
   }
-  m.classList.toggle("wide", st.tab === "jobs" && st.jview !== "list");
+  m.classList.toggle("wide", (st.tab === "jobs" && st.jview !== "list") || st.tab === "times");
+  if (st.tab === "times") m.innerHTML = TS.view();
   if (st.tab === "stock") { m.innerHTML = viewStock(); if (!st.stock && !st.sloading) loadStock(); }
   if (st.tab === "gates") m.innerHTML = st.gate ? viewGateEditor() : viewGates();
   if (st.tab === "company") m.innerHTML = viewCompany();
@@ -548,6 +552,7 @@ const histDate = (n) => { const m = n.match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d)-(\d\d
 /* ---------- actions ---------- */
 document.addEventListener("change", async (e) => {
   const el = e.target;
+  if (st.tab === "times" && TS.onChange(e)) return;
   if (el.dataset && el.dataset.bill !== undefined && el.files && el.files[0]) { readBillFile(el.files[0]); return; }
   if (el.dataset && el.dataset.bf) { st.bill[el.dataset.bf] = el.value; return; }
   if (el.dataset && el.dataset.js) {
@@ -573,10 +578,11 @@ document.addEventListener("change", async (e) => {
 });
 document.addEventListener("click", async (e) => {
   if (st.tab === "jobs" && e.target.closest("[data-dp]")) { DP.onClick(e); return; }
+  if (st.tab === "times" && e.target.closest("[data-ts]")) { TS.onClick(e); return; }
   const b = e.target.closest("[data-act]"); if (!b) return;
   const a = b.dataset.act;
   if (a === "jview") { st.jview = b.dataset.v; render(); return; }
-  if (a === "tab") { st.tab = b.dataset.v; st.gate = null; render(); scrollTo(0, 0); }
+  if (a === "tab") { st.tab = b.dataset.v; st.gate = null; if (st.tab === "times") TS.reload(); render(); scrollTo(0, 0); }
   if (a === "login") {
     try { await api({ action: "login", password: $("#opw").value }); st.err = ""; await load(); } catch (err) { st.err = err.message; render(); }
   }

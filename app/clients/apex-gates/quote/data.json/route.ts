@@ -3,7 +3,7 @@ import { randomBytes } from "crypto";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
 import { learnStats, askHelper, buildJob, readBill } from "@/lib/apex-quote-ai";
 import { basicBuild, basicHelper } from "@/lib/apex-quote-basic";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs, sampleStock, clearSamples, listVisits, saveVisit, deleteVisit, stepVisit } from "@/lib/apex-quote-store";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs, sampleStock, clearSamples, listVisits, saveVisit, deleteVisit, stepVisit, readDay, clockDay, listDays, saveDay, deleteDay } from "@/lib/apex-quote-store";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -102,6 +102,14 @@ export async function POST(req: NextRequest) {
       return v ? json({ ok: true, visit: v }) : json({ error: "The office has changed this job. Pull it up again." }, 409);
     } catch (e: any) { return json({ error: e.message }, 500); }
   }
+  if (body.action === "day") {
+    try { return json({ ok: true, day: await readDay(String(body.tech || ""), String(body.date || "")) }); }
+    catch (e: any) { return json({ error: e.message }, 500); }
+  }
+  if (body.action === "clock") {
+    try { return json({ ok: true, day: await clockDay(String(body.tech || ""), String(body.date || ""), String(body.what || ""), String(body.note || "")) }); }
+    catch (e: any) { return json({ error: e.message }, 400); }
+  }
   if (body.action === "learn") {
     try { return json({ ok: true, stats: await learnStats() }); } catch (e: any) { return json({ error: e.message }, 500); }
   }
@@ -174,6 +182,9 @@ export async function POST(req: NextRequest) {
       if (!j) return json({ error: "No such job" }, 404);
       j.status = String(body.status || "").slice(0, 40); await writeJobs(list); return json({ ok: true });
     }
+    if (body.action === "days") return json({ ok: true, list: await listDays(String(body.from || ""), String(body.to || "")) });
+    if (body.action === "day-del") return json({ ok: true, gone: await deleteDay(String(body.tech || ""), String(body.date || "")) });
+    if (body.action === "day-save") return json({ ok: true, day: await saveDay(body.day) });
     if (body.action === "visit-save") return json({ ok: true, visit: await saveVisit(body.visit, "Office") });
     if (body.action === "visit-del") return json({ ok: true, gone: await deleteVisit(String(body.id || ""), String(body.date || "")) });
     if (body.action === "stock-sample") { await sampleStock(String(body.id || ""), +body.qty || 0, +body.min || 0); return json({ ok: true }); }
