@@ -69,6 +69,9 @@ export async function middleware(request: NextRequest) {
     // own gates above / inside their pages.
     "/clients/progardfilms", "/clients/regal-homes", "/clients/shym-saunas",
   ];
+  // Client-brand demo sites that redirect unauthenticated visitors to /login.
+  const PRIVATE_CLIENT_PREFIXES = ["/clients/progardfilms", "/clients/regal-homes", "/clients/shym-saunas"];
+  const isPrivateClient = PRIVATE_CLIENT_PREFIXES.some((p) => path === p || path.startsWith(p + "/"));
   const needsAuth =
     path === "/login" ||
     path === "/register" ||
@@ -84,7 +87,7 @@ export async function middleware(request: NextRequest) {
   if (!supabaseUrl || !supabaseKey) {
     // Env vars not set — block /dashboard but let everything else through.
     // (/leads has its own password gate inside the page, not Supabase auth.)
-    if (request.nextUrl.pathname.startsWith("/dashboard")) {
+    if (request.nextUrl.pathname.startsWith("/dashboard") || isPrivateClient) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       return NextResponse.redirect(url);
@@ -118,7 +121,7 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     // Protect /dashboard — redirect unauthenticated users to /login
-    if (!user && request.nextUrl.pathname.startsWith("/dashboard")) {
+    if (!user && (request.nextUrl.pathname.startsWith("/dashboard") || isPrivateClient)) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       return NextResponse.redirect(url);
