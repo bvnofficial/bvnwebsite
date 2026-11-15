@@ -62,7 +62,13 @@ export async function middleware(request: NextRequest) {
   // other request (all public pages, API routes, etc.) skips it, which keeps
   // middleware near-free on the bulk of traffic instead of doing a Supabase
   // auth round-trip on every single request. Big Fluid CPU saver.
-  const AUTH_PREFIXES = ["/dashboard", "/credits", "/command", "/admin", "/leads", "/apps/pro"];
+  const AUTH_PREFIXES = [
+    "/dashboard", "/credits", "/command", "/admin", "/leads", "/apps/pro",
+    // Client-brand demo sites and portals kept private (login-gated) so client
+    // names are not publicly reachable. Raetzer, Apex and TintGard have their
+    // own gates above / inside their pages.
+    "/clients/progardfilms", "/clients/regal-homes", "/clients/shym-saunas",
+  ];
   const needsAuth =
     path === "/login" ||
     path === "/register" ||
