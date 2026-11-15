@@ -19,7 +19,7 @@ export type RecommendedTool = {
   tagline: string;
   /** Longer, honest description of what it is and why it is used. */
   description: string;
-  /** Benjamin's real, first-person take. */
+  /** BVN's real, first-person take. */
   take: string;
   /** What the visitor gets free for signing up through the link (no credits). */
   bonuses: { title: string; detail: string }[];

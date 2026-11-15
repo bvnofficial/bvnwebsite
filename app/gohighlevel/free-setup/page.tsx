@@ -73,7 +73,7 @@ export default function FreeSetupPage() {
       "A starter automation snapshot, a free 30 minute setup call, a build SOP pack and a free first workflow audit, free when you start GoHighLevel through the BVN affiliate link.",
     price: "0",
     priceCurrency: "USD",
-    seller: { "@type": "Person", name: "Benjamin Vincent Yson", url: `${SITE_URL}/benjaminyson` },
+    seller: { "@type": "Person", name: "BVN", url: `${SITE_URL}/benjaminyson` },
   };
 
   return (

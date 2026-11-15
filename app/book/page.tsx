@@ -53,9 +53,9 @@ function icsFor(iso: string, name: string): string {
   return [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BVN//Booking//EN", "BEGIN:VEVENT",
     `UID:${uid}`, `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
-    `SUMMARY:Call with Benjamin (BVN)`,
-    `DESCRIPTION:30 minute call with Benjamin Vincent Yson (BVN). We will send the meeting link before the call. Questions? WhatsApp +63 981 655 6555.`,
-    "ORGANIZER;CN=Benjamin Vincent Yson:mailto:bvn@bvnofficial.com",
+    `SUMMARY:Call with BVN (BVN)`,
+    `DESCRIPTION:30 minute call with BVN (BVN). We will send the meeting link before the call. Questions? WhatsApp +63 981 655 6555.`,
+    "ORGANIZER;CN=BVN:mailto:bvn@bvnofficial.com",
     `ATTENDEE;CN=${name}:mailto:noreply@bvnofficial.com`,
     "END:VEVENT", "END:VCALENDAR",
   ].join("\r\n");
@@ -122,7 +122,7 @@ export default function BookPage() {
           </div>
           <h1 className="font-heading font-extrabold text-2xl text-white mb-2">You&apos;re booked in</h1>
           <p className="text-white/70 text-base mb-1">{prettyWhen}</p>
-          <p className="text-white/50 text-sm mb-6">A 30 minute call with Benjamin. I&apos;ll send the meeting link before we talk.</p>
+          <p className="text-white/50 text-sm mb-6">A 30 minute call with BVN. I&apos;ll send the meeting link before we talk.</p>
           <div className="flex flex-col gap-3">
             <button onClick={downloadIcs} className="inline-flex items-center justify-center gap-2 bg-orange text-white font-bold px-6 py-3 rounded-xl hover:opacity-90 transition">
               <Calendar size={18} /> Add to my calendar
@@ -145,7 +145,7 @@ export default function BookPage() {
             <Video size={12} /> Free 30 minute call
           </div>
           <h1 className="font-heading font-extrabold text-4xl md:text-5xl text-white leading-tight mb-4">
-            Book a call with <span className="text-gradient">Benjamin</span>
+            Book a call with <span className="text-gradient">BVN</span>
           </h1>
           <p className="text-white/60 text-lg">
             Pick a time that suits you. No cost, no pressure. I&apos;ll show you exactly what I&apos;d build for your business.

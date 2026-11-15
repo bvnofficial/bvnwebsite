@@ -1,4 +1,4 @@
-// Benjamin Vincent Yson's handwritten signature, embedded for the certificate
+// BVN's handwritten signature, embedded for the certificate
 // PDF (drawn above the printed name). Transparent-background PNG, margins
 // trimmed. Generated from Desktop/signature.png. Server-only asset.
 export const BVN_SIGNATURE_PNG_BASE64 =

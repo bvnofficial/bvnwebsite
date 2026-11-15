@@ -72,7 +72,7 @@ export async function POST(request: Request) {
         "",
         "You have got this.",
         "",
-        "Benjamin Vincent Yson",
+        "BVN",
         "BVN · bvnofficial.com",
       ].join("\n"),
     });

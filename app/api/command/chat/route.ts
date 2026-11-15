@@ -6,7 +6,7 @@ import { profile, pipeline, today } from "@/data/command-center";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// Build a compact snapshot of Benjamin's current state so BVN answers grounded.
+// Build a compact snapshot of BVN's current state so BVN answers grounded.
 function buildContext(): string {
   const clients = pipeline
     .map((c) => `- ${c.name} [${c.stage}, ${c.health}]: ${c.next}`)
@@ -23,7 +23,7 @@ ${tasks}
 TARGET ROLES: ${profile.targetRoles.join("; ")}`;
 }
 
-const SYSTEM = `You are "BVN", Benjamin Vincent Yson's personal command-center assistant. You speak to Benjamin himself, not to clients or website visitors. You are practical, direct, and warm, like a sharp chief of staff who knows his business.
+const SYSTEM = `You are "BVN", BVN's personal command-center assistant. You speak to BVN himself, not to clients or website visitors. You are practical, direct, and warm, like a sharp chief of staff who knows his business.
 
 Ground every answer in the CURRENT STATE below. If something is not in that state or you are unsure, say so plainly rather than guessing. Keep spoken answers short (1 to 3 sentences) unless he asks for detail. Never use dashes as punctuation. When he asks what to do next, prioritise high-priority tasks and blocked clients.
 

@@ -93,7 +93,7 @@ export default function TcePortals() {
 
         {/* Footer */}
         <div style={{ marginTop: 34, paddingTop: 22, borderTop: `1px solid ${C.border}`, display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 13, color: C.muted }}>Sample built by Benjamin Yson · BVN — illustrative data</div>
+          <div style={{ fontSize: 13, color: C.muted }}>Sample built by BVN · BVN — illustrative data</div>
           <Link href="/clients/tce-entertainment/milestones" style={{ display: "inline-flex", alignItems: "center", gap: 7, color: C.rose, fontSize: 13, textDecoration: "none", fontWeight: 700 }}>
             See the build plan <ArrowRight size={14} />
           </Link>

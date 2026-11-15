@@ -33,7 +33,7 @@ export default function IntroPage() {
             Introduction
           </div>
           <h1 style={{ fontSize: 38, fontWeight: 800, lineHeight: 1.1, margin: "8px 0 12px", letterSpacing: -0.6 }}>
-            Hi, I am Benjamin Yson.
+            Hi, welcome to BVN.
           </h1>
           <p style={{ fontSize: 16.5, color: C.sub, lineHeight: 1.6, margin: 0, maxWidth: 680 }}>
             A short introduction and a walk through my skill set, GoHighLevel and CRM automation, AI systems and
@@ -74,7 +74,7 @@ export default function IntroPage() {
 
         {/* Contact */}
         <div style={{ marginTop: 34, fontSize: 12.5, color: C.muted, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          Benjamin Yson · BVN Official
+          BVN Official
           <span style={{ color: C.border }}>|</span>
           <span>WhatsApp +63 981 655 6555</span>
           <span style={{ color: C.border }}>|</span>

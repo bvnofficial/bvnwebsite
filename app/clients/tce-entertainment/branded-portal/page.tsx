@@ -104,7 +104,7 @@ export default function TceBrandedPortal() {
       <div style={{ background: C.dark, color: "#EFE7DC" }}>
         <div style={{ maxWidth: 1040, margin: "0 auto", padding: "26px 22px", display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ fontFamily: SERIF, fontSize: 15, letterSpacing: 1.5 }}>TROY CURTIS <span style={{ color: C.gold }}>ENTERTAINMENT</span></div>
-          <div style={{ fontFamily: SANS, fontSize: 11.5, color: "#B8ADA0" }}>Sample by Benjamin Yson · BVN · styled in the TCE brand</div>
+          <div style={{ fontFamily: SANS, fontSize: 11.5, color: "#B8ADA0" }}>Sample by BVN · BVN · styled in the TCE brand</div>
         </div>
       </div>
     </main>

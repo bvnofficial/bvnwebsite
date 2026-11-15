@@ -214,7 +214,7 @@ export default function FklOpsDashboard() {
 
         {/* Footer */}
         <div style={{ marginTop: 26, display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 12, color: C.muted }}>Built by Benjamin Yson · BVN Official · sample data for preview</div>
+          <div style={{ fontSize: 12, color: C.muted }}>Built by BVN Official · sample data for preview</div>
           <div style={{ display: "flex", gap: 10 }}>
             <Link href="/book" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: C.bg, textDecoration: "none", background: C.white, borderRadius: 999, padding: "9px 16px" }}>Book a call</Link>
             <Link href="/case-studies" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: C.ink, textDecoration: "none", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 999, padding: "9px 16px" }}>More of my work</Link>

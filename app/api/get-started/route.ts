@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
         `Thanks for getting in touch about ${business}. I got your message and I'll get back to you personally, usually within a day.`,
         ``,
         `Talk soon,`,
-        `Benjamin Vincent Yson`,
+        `BVN`,
         `BVN · bvnofficial.com`,
       ].join('\n'),
     });

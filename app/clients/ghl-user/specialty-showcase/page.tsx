@@ -349,7 +349,7 @@ export default function GhlUserShowcase() {
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: C.coral }}>
-            <Workflow size={15} /> GHL User · Benjamin Yson
+            <Workflow size={15} /> GHL User · BVN
           </div>
           <h1 style={{ fontSize: 40, fontWeight: 800, lineHeight: 1.08, margin: "12px 0 14px", letterSpacing: -0.6 }}>
             You asked for a GHL user.
@@ -505,7 +505,7 @@ export default function GhlUserShowcase() {
 
         {/* Availability + contact */}
         <div style={{ marginTop: 34, textAlign: "center", fontSize: 12.5, color: C.muted, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
-          <CheckCircle2 size={14} color={C.green} /> Benjamin Yson · BVN Official
+          <CheckCircle2 size={14} color={C.green} /> BVN Official
           <span style={{ color: C.border }}>|</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><PhoneCall size={13} /> +63 981 655 6555</span>
           <span style={{ color: C.border }}>|</span>

@@ -251,7 +251,7 @@ const dotColorMap: Record<string, string> = {
   green: "bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.3)]",
 };
 
-export default function BenjaminYsonPage() {
+export default function BvnProfilePage() {
   return (
     <>
       {/* ── HERO ───────────────────────────────────────────── */}
@@ -275,9 +275,7 @@ export default function BenjaminYsonPage() {
             </div>
 
             <h1 className="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-tight mb-2">
-              Benjamin{" "}
-              <span className="text-gradient">Vincent</span>{" "}
-              Yson
+              <span className="text-gradient">BVN</span>
             </h1>
             <p className="font-accent font-semibold text-xs tracking-[0.2em] uppercase text-white/40 mb-5">
               GOHIGHLEVEL · AI AUTOMATION · MODERN WEB
@@ -305,7 +303,7 @@ export default function BenjaminYsonPage() {
               </GlowButton>
               <a
                 href="/benjamin-yson-cv.pdf"
-                download="Benjamin-Yson-CV.pdf"
+                download="BVN-CV.pdf"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-heading font-semibold text-sm border border-white/30 text-white hover:bg-white/10 hover:border-white/50 active:scale-95 transition-all duration-200"
               >
                 <Download size={15} /> Download CV
@@ -662,7 +660,7 @@ export default function BenjaminYsonPage() {
               className="space-y-4"
               onSubmit={(e) => {
                 e.preventDefault();
-                alert("Message sent! Benjamin will get back to you within 24 hours.");
+                alert("Message sent! BVN will get back to you within 24 hours.");
                 (e.target as HTMLFormElement).reset();
               }}
             >
@@ -723,7 +721,7 @@ export default function BenjaminYsonPage() {
       >
         <div className="max-w-2xl mx-auto">
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-white mb-4">
-            Ready to hire Benjamin?
+            Ready to hire BVN?
           </h2>
           <p className="text-white/60 text-lg mb-8">
             22+ years of experience. Available for remote work. Let&apos;s build something great.
@@ -734,7 +732,7 @@ export default function BenjaminYsonPage() {
             </GlowButton>
             <a
               href="/benjamin-yson-cv.pdf"
-              download="Benjamin-Yson-CV.pdf"
+              download="BVN-CV.pdf"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-heading font-semibold text-base border border-white/30 text-white hover:bg-white/10 hover:border-white/50 active:scale-95 transition-all duration-200"
             >
               <Download size={16} /> Download CV

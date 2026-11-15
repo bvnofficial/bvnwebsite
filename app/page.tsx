@@ -25,7 +25,7 @@ const homeFaqs: FaqItem[] = [
   {
     question: "What is BVN?",
     answer:
-      "BVN is a global digital marketing and business-automation agency trusted by 238+ clients worldwide. Founded by Benjamin Vincent Yson and based in Las Piñas, Metro Manila, Philippines, BVN combines high-impact marketing (social media, SEO, content, web) with intelligent operations automation (CRM, AI agents, HR & payroll) to help businesses scale.",
+      "BVN is a global digital marketing and business-automation agency trusted by 238+ clients worldwide. Based in Las Piñas, Metro Manila, Philippines, BVN combines high-impact marketing (social media, SEO, content, web) with intelligent operations automation (CRM, AI agents, HR & payroll) to help businesses scale.",
   },
   {
     question: "Does BVN work with international clients or only in the Philippines?",
@@ -45,7 +45,7 @@ const homeFaqs: FaqItem[] = [
   {
     question: "Who founded BVN?",
     answer:
-      "BVN was founded by Benjamin Vincent Yson, who leads the agency's marketing and operations-automation work for clients globally and in the Philippines.",
+      "BVN leads marketing and operations-automation work for clients globally and in the Philippines.",
   },
   {
     question: "How do I get started with BVN?",

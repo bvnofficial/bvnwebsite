@@ -21,7 +21,7 @@ type SR = {
 type SRCtor = new () => SR;
 
 // Free, keyless AI via Puter.js ("User Pays" model: no API key, no per-token
-// bill to Benjamin). Loaded lazily, only here on the command center.
+// bill to BVN). Loaded lazily, only here on the command center.
 type PuterChatPart = { text?: string };
 type PuterChatResult = AsyncIterable<PuterChatPart> & { message?: { content?: string } };
 type PuterAI = { ai: { chat: (msgs: unknown, opts?: { model?: string; stream?: boolean }) => Promise<PuterChatResult> } };
@@ -47,7 +47,7 @@ function ensurePuter(): Promise<PuterAI | null> {
   });
 }
 
-const SYSTEM_BASE = `You are "BVN", Benjamin Vincent Yson's personal command-center assistant. You speak to Benjamin himself, not to clients or website visitors. You are practical, direct, and warm, like a sharp chief of staff who knows his business. Ground every answer in the CURRENT STATE below. If something is not in that state or you are unsure, say so plainly rather than guessing. Keep spoken answers short (1 to 3 sentences) unless he asks for detail. Never use dashes as punctuation.`;
+const SYSTEM_BASE = `You are "BVN", BVN's personal command-center assistant. You speak to BVN himself, not to clients or website visitors. You are practical, direct, and warm, like a sharp chief of staff who knows his business. Ground every answer in the CURRENT STATE below. If something is not in that state or you are unsure, say so plainly rather than guessing. Keep spoken answers short (1 to 3 sentences) unless he asks for detail. Never use dashes as punctuation.`;
 
 export default function BvnAssistant({ context = "" }: { context?: string }) {
   const [messages, setMessages] = useState<Msg[]>([]);

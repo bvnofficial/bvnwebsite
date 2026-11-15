@@ -67,7 +67,7 @@ export const organizationSchema = {
   },
   founder: {
     "@type": "Person",
-    name: "Benjamin Vincent Yson",
+    name: "BVN",
     url: `${SITE_URL}/benjaminyson`,
   },
   sameAs: [

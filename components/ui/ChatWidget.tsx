@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 
-// Human chat: visitors message BVN directly and Benjamin replies from BVN OS.
+// Human chat: visitors message BVN directly and BVN replies from BVN OS.
 // Anonymous — a random conversation id in localStorage, no account needed.
 
 type Msg = { id: string; sender: "visitor" | "admin"; body: string; created_at: string };

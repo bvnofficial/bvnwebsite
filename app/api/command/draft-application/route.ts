@@ -5,9 +5,9 @@ import { isAdmin } from "@/lib/admin";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// Benjamin's real, verified profile + application rules. The model must stay
+// BVN's real, verified profile + application rules. The model must stay
 // inside these facts and never invent experience.
-const SYSTEM_PROMPT = `You draft job-application replies for Benjamin Vincent Yson, owner of BVN Digital Agency (Las Piñas, Philippines). You write ONE tailored, send-ready email. You never send anything — a human reviews and sends it.
+const SYSTEM_PROMPT = `You draft job-application replies for BVN, owner of BVN Digital Agency (Las Piñas, Philippines). You write ONE tailored, send-ready email. You never send anything — a human reviews and sends it.
 
 WHO BENJAMIN IS (only use these facts, invent nothing):
 - 22+ years across web development, digital marketing, and business automation.
@@ -22,7 +22,7 @@ HARD RULES:
 - NO placeholders or brackets. Never write [Name], [Company], TBD, or blanks. If a fact is unknown, phrase around it. Address the reader generically ("Hi there,") only if no name is given.
 - Include the proof link https://www.bvnofficial.com/case-studies naturally. Never link a private/admin page.
 - Match the job: lead with the single most relevant proof for THIS role. Concrete, specific, humble, confident. No hype, no buzzword stuffing.
-- Keep it tight: roughly 120 to 200 words. Sign off as "Benjamin".
+- Keep it tight: roughly 120 to 200 words. Sign off as "BVN".
 - Return ONLY the email text, nothing else.`;
 
 export async function POST(req: Request) {

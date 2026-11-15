@@ -325,7 +325,7 @@ export default function CarDetailingTemplate() {
         </Reveal>
 
         <div style={{ marginTop: 26, textAlign: "center", fontSize: 12.5, color: C.muted, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", paddingBottom: 30 }}>
-          <Check size={14} color={C.green} /> Benjamin Yson · BVN Official
+          <Check size={14} color={C.green} /> BVN Official
           <span style={{ color: C.border }}>|</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Phone size={13} /> +63 981 655 6555</span>
           <span style={{ color: C.border }}>|</span>

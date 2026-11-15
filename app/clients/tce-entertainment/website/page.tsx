@@ -193,7 +193,7 @@ export default function TceWebsite() {
       <footer style={{ background: C.dark, color: "#B8ADA0", borderTop: "1px solid #2A2621" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto", padding: "22px", display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ fontFamily: SERIF, fontSize: 15, letterSpacing: 1.5, color: "#EFE7DC" }}>TROY CURTIS <span style={{ color: C.gold }}>ENTERTAINMENT</span></div>
-          <div style={{ fontFamily: SANS, fontSize: 11.5 }}>Sample by Benjamin Yson · BVN · styled in the TCE brand</div>
+          <div style={{ fontFamily: SANS, fontSize: 11.5 }}>Sample by BVN · BVN · styled in the TCE brand</div>
         </div>
       </footer>
     </main>

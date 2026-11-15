@@ -307,7 +307,7 @@ export default function QuoteToBook() {
         {/* Footer */}
         <div style={{ marginTop: 42, paddingTop: 22, borderTop: `1px solid ${C.border}`, display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700 }}>Benjamin Yson</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>BVN Official</div>
             <div style={{ fontSize: 12, color: C.muted }}>Websites · Funnels · GoHighLevel · Automation · BVN</div>
           </div>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>

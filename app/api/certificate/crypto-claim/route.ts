@@ -7,7 +7,7 @@ import { CRYPTO_PAY, cryptoPayEnabled } from "@/lib/crypto-pay";
 // Records a PENDING crypto certificate claim (USDT on Ethereum / ERC20).
 // The student sends the transfer themselves, then submits this claim with their
 // name, email, and (optionally) the transaction hash. The row lands in the BVN
-// OS Approvals queue as provider "crypto", paid:false. Benjamin confirms the
+// OS Approvals queue as provider "crypto", paid:false. BVN confirms the
 // USDT arrived in his wallet and approves it, which flips it to paid and emails
 // the certificate — the exact same approve path QR Ph claims already use.
 export async function POST(req: Request) {

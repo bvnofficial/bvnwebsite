@@ -134,7 +134,7 @@ export default function GoHighLevelReviewPage() {
       name: "GoHighLevel",
       applicationCategory: "BusinessApplication",
     },
-    author: { "@type": "Person", name: "Benjamin Vincent Yson", url: `${SITE_URL}/benjaminyson` },
+    author: { "@type": "Person", name: "BVN", url: `${SITE_URL}/benjaminyson` },
     reviewRating: { "@type": "Rating", ratingValue: "4.6", bestRating: "5" },
     reviewBody:
       "GoHighLevel replaces a stack of separate tools with one CRM and automation platform. The learning curve is real, but a properly built account pays for itself. It is the platform I build almost every client system on.",

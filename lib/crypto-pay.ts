@@ -3,7 +3,7 @@
 // International students pay the certificate fee in USDT on Ethereum (ERC20).
 // They send to the address below, submit a claim (name, email, optional tx
 // hash), and the claim lands in the BVN OS Approvals queue as a pending
-// `provider: "crypto"` row. Benjamin confirms the transfer in his wallet and
+// `provider: "crypto"` row. BVN confirms the transfer in his wallet and
 // approves it, which flips the row to paid and emails the certificate PDF.
 //
 // A receiving address is public information, so it lives here as a constant.

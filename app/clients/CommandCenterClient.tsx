@@ -66,7 +66,7 @@ const CLIENTS: Client[] = [
     region: "Solar/electrical business, ongoing remote, hourly",
     scope: "GoHighLevel · Simpro · AI Calling · Lead Routing",
     blurb:
-      "Interactive demo for an ongoing CRM and automation role across GoHighLevel and Simpro at a solar/electrical business: the full lead lifecycle (enquiry, routing, AI call/speed-to-lead, appointment, quote in Simpro, sale and install, post-sale/reactivation) as a stepper, an interactive GHL-vs-Simpro division-of-labour explorer showing who owns what and how they sync, solar/electrical domain understanding, an ongoing-role weekly cadence (find, fix, improve, report), and real sanitized Regal screenshots. Simpro confirmed by Benjamin as real hands-on experience (apply full). Rate AUD $14/hr (fixed-monthly preference notable), availability 8am-5pm PHT overlapping AU hours. Workflow example = field-service two-way sync. Built with Claude Code.",
+      "Interactive demo for an ongoing CRM and automation role across GoHighLevel and Simpro at a solar/electrical business: the full lead lifecycle (enquiry, routing, AI call/speed-to-lead, appointment, quote in Simpro, sale and install, post-sale/reactivation) as a stepper, an interactive GHL-vs-Simpro division-of-labour explorer showing who owns what and how they sync, solar/electrical domain understanding, an ongoing-role weekly cadence (find, fix, improve, report), and real sanitized Regal screenshots. Simpro confirmed by BVN as real hands-on experience (apply full). Rate AUD $14/hr (fixed-monthly preference notable), availability 8am-5pm PHT overlapping AU hours. Workflow example = field-service two-way sync. Built with Claude Code.",
     href: "/clients/pratt-electrical/crm-automation-system",
     status: "pending",
     accent: C.amber,
@@ -77,7 +77,7 @@ const CLIENTS: Client[] = [
     region: "Australian telehealth company, full-time, AU hours",
     scope: "GHL Architecture · Patient Journey · Integrations",
     blurb:
-      "Interactive demo for architecting and owning a complex GHL system for an Australian telehealth business: the full patient journey (lead, call, consultation, payment, patient, ongoing care, reactivation) as an interactive stepper, an anatomy-of-a-complex-workflow explorer (triggers, branches, tags/custom fields, pipeline moves, integrations, waits/QA, each with the why) that substitutes for their required build-walkthrough video, a systems-thinking answer to their booking-drop troubleshooting question, WordPress/Make/webhook integrations, QA discipline, and real sanitized Regal screenshots via ProofTile. Zero patient data. Rate AUD $14/hr (from $8 USD basis, fixed-monthly preference noted), full AU business hours, start immediately. /intro included as personal intro; build-walkthrough handled by demo + written breakdown + live screen-share (Benjamin does not record). Built with Claude Code.",
+      "Interactive demo for architecting and owning a complex GHL system for an Australian telehealth business: the full patient journey (lead, call, consultation, payment, patient, ongoing care, reactivation) as an interactive stepper, an anatomy-of-a-complex-workflow explorer (triggers, branches, tags/custom fields, pipeline moves, integrations, waits/QA, each with the why) that substitutes for their required build-walkthrough video, a systems-thinking answer to their booking-drop troubleshooting question, WordPress/Make/webhook integrations, QA discipline, and real sanitized Regal screenshots via ProofTile. Zero patient data. Rate AUD $14/hr (from $8 USD basis, fixed-monthly preference noted), full AU business hours, start immediately. /intro included as personal intro; build-walkthrough handled by demo + written breakdown + live screen-share (BVN does not record). Built with Claude Code.",
     href: "/clients/telehealth-ghl/patient-system",
     status: "pending",
     accent: C.cyan,
@@ -88,7 +88,7 @@ const CLIENTS: Client[] = [
     region: "Real estate recruiting SaaS, full-time, codeword role",
     scope: "GHL SaaS · Snapshots · Multi-Sub · A2P",
     blurb:
-      "Interactive demo for a subscription real-estate-recruiting platform on GoHighLevel: the recruiting engine (GHL-native sites, forms, SMS/email follow-up, long-term nurture, pipelines, booking, reminders, missed-call automations, reactivation, dashboards), a recruit-journey stepper, a snapshot + SaaS-mode onboarding flow that answers their Q8 (customer #100 by config not rebuild), the A2P/LC Phone/domain/deliverability infrastructure grid, and REAL Regal screenshots via ProofTile (public/proof/regal-*.png, sanitized). Cites the field-service two-way sync as most-complex automation, the 34 sub-account agency + SaaS-mode config, and prospectmarketingco.com as a GHL-native site. Codeword GHL RECRUITING PLATFORM (first line of body). Desired salary PHP 75,000/mo (from Benjamin, ~$8/hr basis). Video requirement handled by honest substitute (interactive demo + written walkthrough + live screen-share; Benjamin does not record). Built with Claude Code.",
+      "Interactive demo for a subscription real-estate-recruiting platform on GoHighLevel: the recruiting engine (GHL-native sites, forms, SMS/email follow-up, long-term nurture, pipelines, booking, reminders, missed-call automations, reactivation, dashboards), a recruit-journey stepper, a snapshot + SaaS-mode onboarding flow that answers their Q8 (customer #100 by config not rebuild), the A2P/LC Phone/domain/deliverability infrastructure grid, and REAL Regal screenshots via ProofTile (public/proof/regal-*.png, sanitized). Cites the field-service two-way sync as most-complex automation, the 34 sub-account agency + SaaS-mode config, and prospectmarketingco.com as a GHL-native site. Codeword GHL RECRUITING PLATFORM (first line of body). Desired salary PHP 75,000/mo (from BVN, ~$8/hr basis). Video requirement handled by honest substitute (interactive demo + written walkthrough + live screen-share; BVN does not record). Built with Claude Code.",
     href: "/clients/real-estate-recruiting/ghl-saas-platform",
     status: "pending",
     accent: C.green,
@@ -99,7 +99,7 @@ const CLIENTS: Client[] = [
     region: "AI sales/systems consultancy, Australia, milestone contract",
     scope: "Multi-Tenant · n8n · Retell Voice · Dashboard",
     blurb:
-      "Interactive architecture demo for productising a proven AI sales stack into a repeatable multi-tenant system: the four layers (daily briefing engine, conversational SMS agent, Retell voice agent over Twilio AU, client dashboard), a CRM abstraction layer so HubSpot, GoHighLevel, Pipedrive, and Salesforce plug in without rewriting the agents, a config-driven provisioning stepper that answers their Q3 (client #40 in hours), a self-hosted n8n stack recommendation answering their Q2, the Milestone 1 foundation, and reliability. ~715hr, 7 milestones, M1 (~140hr) standalone start, paid per milestone on acceptance, paid test task before award. Confirmed honestly: real voice agent at volume (Q1 numbers pending from Benjamin), Twilio SIP + AU numbers, HubSpot API, multi-tenant n8n, live auth dashboards. Q4 AU call-minute cost to be a transparent modeled estimate. Money model fits (milestone fixed-price, no tracker). Built with Claude Code.",
+      "Interactive architecture demo for productising a proven AI sales stack into a repeatable multi-tenant system: the four layers (daily briefing engine, conversational SMS agent, Retell voice agent over Twilio AU, client dashboard), a CRM abstraction layer so HubSpot, GoHighLevel, Pipedrive, and Salesforce plug in without rewriting the agents, a config-driven provisioning stepper that answers their Q3 (client #40 in hours), a self-hosted n8n stack recommendation answering their Q2, the Milestone 1 foundation, and reliability. ~715hr, 7 milestones, M1 (~140hr) standalone start, paid per milestone on acceptance, paid test task before award. Confirmed honestly: real voice agent at volume (Q1 numbers pending from BVN), Twilio SIP + AU numbers, HubSpot API, multi-tenant n8n, live auth dashboards. Q4 AU call-minute cost to be a transparent modeled estimate. Money model fits (milestone fixed-price, no tracker). Built with Claude Code.",
     href: "/clients/productised-sales-ai/multi-tenant-build",
     status: "pending",
     accent: C.purple,
@@ -110,7 +110,7 @@ const CLIENTS: Client[] = [
     region: "Marketing/CRM ops, Australian day shift, company unnamed",
     scope: "GoHighLevel · Funnels · Pipelines · Automations",
     blurb:
-      "Interactive GoHighLevel operations demo for a marketing and CRM specialist role: one lead followed from an ad click through a funnel, form capture, missed call text back, booking with reminders, a nurture sequence, and into a KPI dashboard, plus a core-automations explorer, CRM hygiene, an honest Meta/Google Ads support block (support hand, not lead media buyer), and Zapier/Make integrations. Answers their three screening questions with GHL since 2018, several Australian clients across trades/field service, automotive, and professional services (no names shared), and GHL used for full marketing/CRM ops. No codeword required. Money kept open, no rate committed. HARD RULE flagged in email: Benjamin declines time trackers, so the application holds that line honestly and repositions on outcomes. Built with Claude Code.",
+      "Interactive GoHighLevel operations demo for a marketing and CRM specialist role: one lead followed from an ad click through a funnel, form capture, missed call text back, booking with reminders, a nurture sequence, and into a KPI dashboard, plus a core-automations explorer, CRM hygiene, an honest Meta/Google Ads support block (support hand, not lead media buyer), and Zapier/Make integrations. Answers their three screening questions with GHL since 2018, several Australian clients across trades/field service, automotive, and professional services (no names shared), and GHL used for full marketing/CRM ops. No codeword required. Money kept open, no rate committed. HARD RULE flagged in email: BVN declines time trackers, so the application holds that line honestly and repositions on outcomes. Built with Claude Code.",
     href: "/clients/ghl-marketing-ops/crm-engine",
     status: "pending",
     accent: C.cyan,
@@ -941,7 +941,7 @@ export default function CommandCenterClient() {
         >
           <Sparkles size={18} color={C.coral} />
           <span style={{ fontSize: 13.5, color: C.sub }}>
-            Every demo here was built and deployed by one person, Benjamin Yson, end to end.
+            Every demo here was built and deployed by one person, BVN, end to end.
           </span>
           <Link
             href="/benjaminyson"

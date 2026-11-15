@@ -328,7 +328,7 @@ export default function TceBuildStack() {
         {/* Footer */}
         <div style={{ marginTop: 44, paddingTop: 24, borderTop: `1px solid ${C.border}`, display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700 }}>Benjamin Yson</div>
+            <div style={{ fontSize: 15, fontWeight: 700 }}>BVN Official</div>
             <div style={{ fontSize: 13, color: C.muted }}>AI Automation & Applications · BVN</div>
           </div>
           <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>

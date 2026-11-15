@@ -458,7 +458,7 @@ export default function WebinarFunnel() {
 
         {/* Contact */}
         <div style={{ marginTop: 34, textAlign: "center", fontSize: 12.5, color: C.muted, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
-          <ShieldCheck size={14} color={C.green} /> Benjamin Yson · BVN Official
+          <ShieldCheck size={14} color={C.green} /> BVN Official
           <span style={{ color: C.border }}>|</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><PhoneCall size={13} /> +63 981 655 6555</span>
           <span style={{ color: C.border }}>|</span>
