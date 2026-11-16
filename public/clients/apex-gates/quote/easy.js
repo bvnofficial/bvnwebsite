@@ -251,6 +251,8 @@ const UNIT = { fabq: "dollars", km: "km", remove: "hours", elec: "hours", hrs: "
 
 /* ---------- ui state ---------- */
 const ui = { view: "home", tab: 0, shelf: "steel", find: "" };
+/* the 3D Gate Builder hands over a quote and asks for it to open straight away */
+try { if (sessionStorage.getItem("apexq.open") === "job") { sessionStorage.removeItem("apexq.open"); ui.view = "job"; } } catch (e) { /* private mode */ }
 /* the jobs the office booked for whoever uses this tablet */
 const MJ = makeMyJobs({ esc, say, render: () => render(), icon: ICON, onView: () => ui.view === "myjobs" || ui.view === "home",
   techs: () => String(db.pb.settings.techs || "").split(/\n|,/).map((x) => x.trim()).filter(Boolean),

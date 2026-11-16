@@ -18,8 +18,8 @@ svg{display:block}
 .logo{background:none;border:0;color:#fff;padding:0;display:flex;align-items:center;gap:12px;font-family:var(--head);font-weight:800;font-stretch:118%;letter-spacing:.05em;font-size:21px;white-space:nowrap;margin-right:auto}
 .logo i{width:42px;height:42px;border-radius:11px;background:var(--red);display:grid;place-items:center;font-style:normal;font-size:20px}
 .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.nav button{background:#2c2c31;border:0;color:#fff;border-radius:14px;padding:12px 18px;font-weight:700;font-size:18px;display:flex;align-items:center;gap:9px;min-height:56px}
-.nav button svg{width:24px;height:24px}
+.nav button,.nav a.navlink{background:#2c2c31;border:0;color:#fff;border-radius:14px;padding:12px 18px;font-weight:700;font-size:18px;display:flex;align-items:center;gap:9px;min-height:56px}
+.nav button svg,.nav a.navlink svg{width:24px;height:24px}
 .nav button.on{background:#fff;color:var(--ink)}
 
 main{max-width:1100px;margin:0 auto;padding:22px 18px 150px}
@@ -260,7 +260,7 @@ main{max-width:1100px;margin:0 auto;padding:22px 18px 150px}
   .bar{padding:10px 12px;flex-wrap:wrap}
   .logo{font-size:18px}
   .nav{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
-  .nav button{justify-content:center;padding:10px 6px;font-size:16px;flex-direction:column;gap:3px;min-height:62px}
+  .nav button,.nav a.navlink{justify-content:center;padding:10px 6px;font-size:16px;flex-direction:column;gap:3px;min-height:62px}
   main{padding:16px 14px 140px}
   .who{grid-template-columns:1fr}
   .thing{grid-template-columns:1fr}
@@ -701,3 +701,5 @@ table.ts{width:100%;border-collapse:collapse;font-size:16px;min-width:860px}
 .ts .tsnote{max-width:220px;white-space:normal}
 .ts .btn.small{min-height:44px;padding:6px 12px;font-size:15px}
 .ts td:first-child{white-space:nowrap;font-weight:700}.ts td:first-child small{font-weight:700}
+
+.nav a.navlink{text-decoration:none;color:#fff;cursor:pointer}
