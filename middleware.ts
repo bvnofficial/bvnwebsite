@@ -13,6 +13,7 @@ import {
   isApexQuoteGated,
   apexQuoteGateHtml,
 } from "@/lib/apex-quote-gate";
+import { RM_HQ_COOKIE, RM_HQ_HOME, isRmHqGated, rmHqAuthorised, rmHqGateHtml } from "@/lib/rm-hq-gate";
 
 export async function middleware(request: NextRequest) {
   // Password gate for the private Raetzer client preview and its hosted site
@@ -39,6 +40,25 @@ export async function middleware(request: NextRequest) {
     }
     if (!/\.\w+$/.test(path)) {
       return NextResponse.redirect(new URL(APEX_QUOTE_HOME, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Password gate for Revolution HQ, Jim Picot's live GoHighLevel dashboard.
+  // It shows real customer data, so every file under the path is gated.
+  if (isRmHqGated(path)) {
+    if (!(await rmHqAuthorised(request.cookies.get(RM_HQ_COOKIE)?.value))) {
+      return new NextResponse(rmHqGateHtml(request.nextUrl.searchParams.get("rm") === "bad"), {
+        status: 401,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+          "x-robots-tag": "noindex, nofollow",
+        },
+      });
+    }
+    if (!/\.\w+$/.test(path)) {
+      return NextResponse.redirect(new URL(RM_HQ_HOME, request.url));
     }
     return NextResponse.next();
   }
