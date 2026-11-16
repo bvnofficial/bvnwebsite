@@ -22,7 +22,8 @@ const GHL = "https://services.leadconnectorhq.com";
 const V = "2021-07-28";
 const V_CONV = "2021-04-15";
 
-type J = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line
+type J = Record<string, any>;
 
 let CACHE: { t: number; data: J } | null = null;
 const TTL_MS = 60_000;
