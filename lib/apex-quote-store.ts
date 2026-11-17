@@ -288,7 +288,8 @@ function cleanVisit(v: any) {
     code: clip(v.code, 30), qid: clip(v.qid, 30), kind: clip(v.kind, 30), client: clip(v.client, 120), contact: clip(v.contact, 80), address: clip(v.address, 200), phone: clip(v.phone, 40),
     desc: clip(v.desc, 1200), tech: clip(v.tech, 60), helper: clip(v.helper, 60), date: vday(v.date) === NODATE ? "" : vday(v.date), start: /^\d{2}:\d{2}$/.test(v.start) ? v.start : "08:00",
     hours: Math.min(12, Math.max(0.5, Number(v.hours) || 2)), status: VSTEPS.includes(v.status) ? v.status : "booked", office: clip(v.office, 600),
-    notes: clip(v.notes, 2000), log: (Array.isArray(v.log) ? v.log : []).slice(-60), created: Number(v.created) || Date.now() };
+    notes: clip(v.notes, 2000), log: (Array.isArray(v.log) ? v.log : []).slice(-60), created: Number(v.created) || Date.now(),
+    ghl: typeof v.ghl === "string" && /^[A-Za-z0-9]{10,40}$/.test(v.ghl) ? v.ghl : "" };
 }
 async function vwrite(v: any, old: VFile | null) {
   const b = await bucket(); const ts = Date.now(); v.updated = ts;
@@ -310,6 +311,11 @@ export async function saveVisit(input: any, who: string) {
     if (prev.status !== v.status) v.log.push({ at: Date.now(), who, what: `Marked ${v.status}` });
   } else v.log = [{ at: Date.now(), who, what: `Booked for ${v.tech || "nobody yet"}${v.date ? ` on ${v.date} at ${v.start}` : ""}` }];
   return vwrite(v, old);
+}
+/* one booking, for the GHL text and stage changes */
+export async function readVisit(id: string, date: string) {
+  const f = await vfind(id, date);
+  return f ? (await vread([f]))[0] || null : null;
 }
 export async function deleteVisit(id: string, date: string) {
   const f = await vfind(id, date);

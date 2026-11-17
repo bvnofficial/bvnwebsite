@@ -703,3 +703,10 @@ table.ts{width:100%;border-collapse:collapse;font-size:16px;min-width:860px}
 .ts td:first-child{white-space:nowrap;font-weight:700}.ts td:first-child small{font-weight:700}
 
 .nav a.navlink{text-decoration:none;color:#fff;cursor:pointer}
+.vcard.tb.ghl{border-left:4px solid #1f6fd6;background:#f2f7ff}
+.pill.ghlp{background:#1f6fd6;color:#fff;margin-left:8px}
+.ghlcard .stg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.ghlcard .stg div{background:#f6f6f4;border-radius:12px;padding:10px 12px}
+.ghlcard .stg b{display:block;font-size:22px}
+.ghlcard .ok{color:#1f9d55;font-weight:700}
+.ghlcard .no{color:#b01606;font-weight:700}

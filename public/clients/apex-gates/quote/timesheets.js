@@ -2,7 +2,7 @@
    break and finish taps on the tablet, with the hours on jobs and the driving
    worked out from the On my way, I'm here and Job finished taps. The office can
    fix a forgotten tap, tick each day as checked, and download the week for pay. */
-import { iso, fromIso, monday, addDays, dayName } from "./dispatch.js";
+import { iso, fromIso, monday, addDays, dayName } from "./dispatch.js?v=3";
 
 const pad = (n) => String(n).padStart(2, "0");
 const hhmm = (t) => { if (!t) return ""; const d = new Date(t); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };

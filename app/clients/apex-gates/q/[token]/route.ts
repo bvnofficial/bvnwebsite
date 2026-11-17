@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readShare, saveSigned, readQuote, saveQuote } from "@/lib/apex-quote-store";
+import { ghlQuoteWon } from "@/lib/apex-ghl";
 
 // The page an Apex Gates customer opens from a texted or emailed link: their
 // quote or invoice, a box to sign and accept, and the ways to pay. No password;
@@ -112,7 +113,13 @@ export async function POST(req: NextRequest, ctx: { params: { token: string } })
     await saveSigned(token, d.accepted);
     // mark the quote as going ahead, so the office and the tablet see it straight away
     const q = await readQuote(d.qid).catch(() => null);
-    if (q) { q.status = "won"; q.signature = { img: sig, name, date: d.accepted.at }; q.updated = Date.now(); await saveQuote(q).catch(() => {}); }
+    if (q) {
+      const was = q.status;
+      q.status = "won"; q.signature = { img: sig, name, date: d.accepted.at }; q.updated = Date.now();
+      // the customer's GHL deal goes to Sale, Won, with the signed total
+      if (was !== "won") { const id = await ghlQuoteWon(q, { inc: d.totals && d.totals.inc, signedBy: name, no: d.no }); if (id) q.ghl = id; }
+      await saveQuote(q).catch(() => {});
+    }
   }
   return NextResponse.redirect(new URL(`/clients/apex-gates/q/${token}`, req.url), 303);
 }

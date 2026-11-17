@@ -3,7 +3,8 @@ import { randomBytes } from "crypto";
 import { APEX_QUOTE_COOKIE, APEX_QUOTE_TOKEN } from "@/lib/apex-quote-gate";
 import { learnStats, askHelper, buildJob, readBill } from "@/lib/apex-quote-ai";
 import { basicBuild, basicHelper } from "@/lib/apex-quote-basic";
-import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs, sampleStock, clearSamples, listVisits, saveVisit, deleteVisit, stepVisit, readDay, clockDay, listDays, saveDay, deleteDay } from "@/lib/apex-quote-store";
+import { APEX_ADMIN_PW, APEX_ADMIN_TOKEN, APEX_ADMIN_COOKIE, readData, writeData, listHistory, readHistory, teamView, saveQuote, deleteQuote, listQuotes, saveClients, findClients, saveShare, readShare, readStock, moveStock, setStock, readBills, saveBill, readJobs, writeJobs, sampleStock, clearSamples, listVisits, saveVisit, deleteVisit, stepVisit, readDay, clockDay, listDays, saveDay, deleteDay, readVisit, readQuote } from "@/lib/apex-quote-store";
+import { ghlOn, ghlStatus, ghlSummary, ghlLeads, ghlBooked, ghlVisitDone, ghlQuoteWon, ghlText } from "@/lib/apex-ghl";
 
 // The shared Apex Quote data. Anyone with the team password can read it (the
 // middleware gate already checks that), but only the office sees real costs and
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
   if (!isTeam(req)) return json({ error: "Locked" }, 401);
   try {
     const data = await readData();
-    return json({ ok: true, office: isOffice(req), data: isOffice(req) ? data : teamView(data) });
+    return json({ ok: true, office: isOffice(req), ghl: ghlOn(), data: isOffice(req) ? data : teamView(data) });
   } catch (e: any) {
     return json({ ok: false, office: isOffice(req), data: null, error: e.message });
   }
@@ -47,7 +48,15 @@ export async function POST(req: NextRequest) {
     try {
       if (body.action === "quote") {
         if (JSON.stringify(body.quote || {}).length > 400_000) return json({ error: "Too big" }, 400);
-        await saveQuote(body.quote);
+        const q = body.quote || {};
+        const prev = q.status === "won" && ghlOn() ? await readQuote(String(q.id || "")).catch(() => null) : null;
+        if (prev && prev.ghl) q.ghl = prev.ghl;
+        await saveQuote(q);
+        // a quote that has just gone ahead moves the customer's GHL deal to Sale, Won
+        if (q.status === "won" && ghlOn() && (!prev || prev.status !== "won")) {
+          const id = await ghlQuoteWon(q);
+          if (id && q.ghl !== id) { q.ghl = id; await saveQuote(q).catch(() => {}); }
+        }
       } else await deleteQuote(String(body.id || ""));
       return json({ ok: true });
     } catch (e: any) {
@@ -99,8 +108,22 @@ export async function POST(req: NextRequest) {
   if (body.action === "visit-step") {
     try {
       const v = await stepVisit(String(body.id || ""), String(body.date || ""), String(body.status || ""), String(body.who || ""), String(body.note || ""));
+      if (v && String(body.status) === "done") await ghlVisitDone(v);
       return v ? json({ ok: true, visit: v }) : json({ error: "The office has changed this job. Pull it up again." }, 409);
     } catch (e: any) { return json({ error: e.message }, 500); }
+  }
+  // GHL: is it connected, and can Apex text from its own number
+  if (body.action === "ghl-status") {
+    try { return json({ ok: true, ...(await ghlStatus()) }); } catch { return json({ ok: true, on: false, sms: false }); }
+  }
+  // the "on my way" text from Apex's own GHL number, only ever to the phone on the booking
+  if (body.action === "ghl-text") {
+    try {
+      const v = await readVisit(String(body.id || ""), String(body.date || ""));
+      if (!v || !v.phone) return json({ error: "No phone number on this job" }, 400);
+      await ghlText({ name: v.contact || v.client, phone: v.phone }, String(body.message || "").slice(0, 600));
+      return json({ ok: true });
+    } catch (e: any) { return json({ error: e.message }, 502); }
   }
   if (body.action === "day") {
     try { return json({ ok: true, day: await readDay(String(body.tech || ""), String(body.date || "")) }); }
@@ -185,7 +208,13 @@ export async function POST(req: NextRequest) {
     if (body.action === "days") return json({ ok: true, list: await listDays(String(body.from || ""), String(body.to || "")) });
     if (body.action === "day-del") return json({ ok: true, gone: await deleteDay(String(body.tech || ""), String(body.date || "")) });
     if (body.action === "day-save") return json({ ok: true, day: await saveDay(body.day) });
-    if (body.action === "visit-save") return json({ ok: true, visit: await saveVisit(body.visit, "Office") });
+    if (body.action === "visit-save") {
+      const v = await saveVisit(body.visit, "Office");
+      if (body.ghlBook && v.ghl) await ghlBooked(v);
+      return json({ ok: true, visit: v });
+    }
+    if (body.action === "ghl-leads") { try { return json({ ok: true, list: await ghlLeads() }); } catch (e: any) { return json({ ok: false, list: [], error: e.message }); } }
+    if (body.action === "ghl-summary") { try { return json({ ok: true, ...(await ghlSummary()) }); } catch (e: any) { return json({ ok: false, error: e.message }); } }
     if (body.action === "visit-del") return json({ ok: true, gone: await deleteVisit(String(body.id || ""), String(body.date || "")) });
     if (body.action === "stock-sample") { await sampleStock(String(body.id || ""), +body.qty || 0, +body.min || 0); return json({ ok: true }); }
     if (body.action === "samples-clear") return json({ ok: true, removed: await clearSamples() });

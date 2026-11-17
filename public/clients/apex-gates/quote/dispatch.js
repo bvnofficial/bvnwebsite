@@ -28,13 +28,16 @@ export const mapLink = (a) => `https://www.google.com/maps/search/?api=1&query=$
 export function makeDispatch(ctx) {
   // ctx: api, esc, say, render, techs(), quotes(), jobs(), icon
   const { api, esc, say } = ctx;
-  const S = { week: iso(monday(new Date())), list: null, loading: false, edit: null, found: [], drag: null, timer: null };
+  const S = { week: iso(monday(new Date())), list: null, loading: false, edit: null, found: [], drag: null, timer: null, leads: [] };
 
   async function load(quiet) {
     if (S.loading) return;
     S.loading = true;
+    // new website leads waiting in Simon's GHL come in beside the week
+    const leads = api({ action: "ghl-leads" }).then((j) => { S.leads = j.list || []; S.ghlErr = j.ok === false ? j.error || "" : ""; }).catch(() => {});
     try { S.list = (await api({ action: "visits", from: S.week, to: iso(addDays(fromIso(S.week), 6)), undated: true })).list || []; }
     catch (e) { S.list = S.list || []; if (!quiet) say(e.message); }
+    await leads;
     S.loading = false;
     if (!S.edit) ctx.render();
   }
@@ -51,8 +54,14 @@ export function makeDispatch(ctx) {
     const fromQ = (ctx.quotes() || []).filter((q) => q.status === "won" && ["won", "made"].includes(stageOf(q)) && !have.has(q.id) && !q.booked)
       .map((q) => ({ src: "q", key: q.id, title: q.client?.name || "No name", sub: `${q.no} · ${stageOf(q) === "made" ? "made, ready to put in" : "signed, to make and put in"}`, prefill: { qid: q.id, code: q.no, kind: "Install", client: q.client?.name || "", phone: q.client?.phone || "", address: q.client?.address || "", desc: q.items.map((i) => i.name).join(", "), hours: 4 } }));
     const undated = (S.list || []).filter((v) => !v.date && v.status !== "cancelled").map((v) => ({ src: "v", key: v.id, title: v.client || "No name", sub: `${v.kind || "Job"} · needs a day`, visit: v }));
-    return undated.concat(fromQ);
+    const booked = new Set((S.list || []).map((v) => v.ghl).filter(Boolean));
+    const fromG = (S.leads || []).filter((l) => !booked.has(l.id)).map((l) => ({ src: "g", key: l.id, title: l.client || l.name || "No name",
+      sub: `GHL ${l.stage.toLowerCase()} · ${ago(l.created)}${l.address ? " · " + suburb(l.address) : ""}`,
+      prefill: { kind: "Measure and quote", client: l.client || l.name, contact: l.client || "", phone: l.phone, address: l.address, ghl: l.id, hours: 1,
+        desc: [`Website lead from GHL: ${l.name}`, l.source, l.email].filter(Boolean).join(". ") } }));
+    return fromG.concat(undated, fromQ);
   }
+  function ago(t) { if (!t) return "new"; const d = Math.floor((Date.now() - t) / 864e5); return d <= 0 ? "today" : d === 1 ? "yesterday" : `${d} days ago`; }
   /* jobs from the old system that fall on this week and are not booked here yet */
   function oldJobs() {
     const have = new Set((S.list || []).map((v) => v.code).filter(Boolean));
@@ -95,7 +104,7 @@ export function makeDispatch(ctx) {
     <div class="dptoday"><b>Today</b><span>${now.length ? `${now.length} job${now.length > 1 ? "s" : ""}, ${now.filter((v) => v.status === "done").length} done` : "Nothing booked"}</span>
       ${live.map((v) => `<span class="live s-${v.status}">${esc(v.tech || "Someone")} ${v.status === "onway" ? "is on the way to" : "is at"} ${esc(v.client)}</span>`).join("")}</div>`;
     const strip = tb.length ? `<section class="tobook"><h2 class="qh">To book <span class="muted">(${tb.length})</span></h2><p class="muted">Drag one onto a day, or tap it.</p>
-      <div class="tbl">${tb.map((t) => `<div class="vcard tb" draggable="true" data-drag="${t.src}:${esc(t.key)}" data-dp="${t.src === "v" ? "open" : "bookq"}" data-id="${esc(t.key)}"><b>${esc(t.title)}</b><small>${esc(t.sub)}</small></div>`).join("")}</div></section>` : "";
+      <div class="tbl">${tb.map((t) => `<div class="vcard tb${t.src === "g" ? " ghl" : ""}" draggable="true" data-drag="${t.src}:${esc(t.key)}" data-dp="${t.src === "v" ? "open" : t.src === "g" ? "bookg" : "bookq"}" data-id="${esc(t.key)}"><b>${esc(t.title)}</b><small>${esc(t.sub)}</small></div>`).join("")}</div></section>` : "";
     const grid = `<div class="wgrid" style="--days:7"><div class="wcorner"></div>${D.map((d) => `<div class="wday${iso(d) === today ? " today" : ""}">${dayName(d)}</div>`).join("")}
       ${R.map((tech) => `<div class="wtech">${esc(tech || "Not given to anyone")}</div>${D.map((d) => {
         const day = iso(d), list = inCell(tech, day), hrs = list.reduce((a, v) => a + (+v.hours || 0), 0);
@@ -116,7 +125,8 @@ export function makeDispatch(ctx) {
     if (v.tech && !techs.includes(v.tech)) T.push([v.tech, v.tech]);
     const f = (k, label, type = "text", attrs = "") => `<div class="fld"><label>${label}</label><input data-vf="${k}" type="${type}" value="${esc(v[k])}" ${attrs}></div>`;
     return `<div class="dpmodal" data-dp="shade"><div class="card pad dpform" role="dialog" aria-label="Book a job">
-      <div class="jh"><h2 class="qh" style="margin:0">${v.id ? "Change this job" : "Book a job"}</h2>${v.code ? `<span class="pill">${esc(v.code)}</span>` : ""}</div>
+      <div class="jh"><h2 class="qh" style="margin:0">${v.id ? "Change this job" : "Book a job"}</h2>${v.code ? `<span class="pill">${esc(v.code)}</span>` : ""}${v.ghl ? `<span class="pill ghlp">GHL lead</span>` : ""}</div>
+      ${v.ghl && !v.id ? `<p class="muted" style="margin:8px 0 0">Booking this moves the deal in GHL to New Booking. When the job is finished it moves to Visit Attended, and a signed quote moves it to Sale.</p>` : ""}
       <div class="fld" style="margin-top:12px"><label>Customer</label><input data-vf="client" data-findc value="${esc(v.client)}" placeholder="Type a name, street or phone" autocomplete="off">
         ${S.found.length ? `<div class="found">${S.found.map((c, i) => `<button data-dp="pickc" data-i="${i}"><b>${esc(c.name)}</b><small>${esc([c.address, c.phone].filter(Boolean).join(" · "))}</small></button>`).join("")}</div>` : ""}</div>
       <div class="two">${f("phone", "Phone", "tel")}${f("contact", "Who to ask for")}</div>
@@ -141,12 +151,14 @@ export function makeDispatch(ctx) {
     const day = oldDate(j.date);
     return blank({ code: j.code, kind: ({ callout: "Callout", service: "Service", install: "Install", supply: "Pick up or drop off" })[j.group] || "Service", client: j.client, phone: j.phone, address: j.address, desc: j.desc, tech: j.tech || "", date: day || iso(new Date()), start: oldTime(j.time), ...extra });
   }
+  function fromLead(id, extra = {}) { const t = toBook().find((x) => x.src === "g" && x.key === id); return t ? blank({ date: "", ...t.prefill, ...extra }) : null; }
   function fromQuote(qid, extra = {}) { const t = toBook().find((x) => x.src === "q" && x.key === qid); return t ? blank({ ...t.prefill, ...extra }) : null; }
 
   async function saveVisit(v, quiet) {
     S.saving = true; if (!quiet) ctx.render();
     try {
-      const j = await api({ action: "visit-save", visit: v });
+      // booking a GHL lead moves Simon's deal to New Booking
+      const j = await api({ action: "visit-save", visit: v, ghlBook: !!v.ghl && !v.id });
       const at = (S.list || []).findIndex((x) => x.id === j.visit.id);
       at >= 0 ? (S.list[at] = j.visit) : S.list.push(j.visit);
       S.edit = null; say(v.date ? `Booked: ${j.visit.tech || "nobody yet"}, ${dayName(fromIso(v.date))} at ${nice(v.start)}` : "Saved. It is in To book until it has a day");
@@ -165,6 +177,7 @@ export function makeDispatch(ctx) {
     if (a === "open") { const v = (S.list || []).find((x) => x.id === b.dataset.id); if (v) openForm({ ...JSON.parse(JSON.stringify(v)), was: v.date }); return true; }
     if (a === "openold") { const v = fromOld(b.dataset.code); if (v) openForm(v); return true; }
     if (a === "bookq") { const v = fromQuote(b.dataset.id); if (v) openForm(v); return true; }
+    if (a === "bookg") { const v = fromLead(b.dataset.id, { date: iso(new Date()) }); if (v) openForm(v); return true; }
     if (a === "pickc") { const c = S.found[+b.dataset.i]; Object.assign(S.edit, { client: c.name, phone: c.phone || S.edit.phone, address: c.address || S.edit.address, contact: c.contact || S.edit.contact }); S.found = []; ctx.render(); return true; }
     if (a === "save") {
       const v = S.edit;
@@ -214,6 +227,7 @@ export function makeDispatch(ctx) {
       Object.assign(v, { tech, date: day }); ctx.render(); saveVisit(moved, true);
     }
     if (src === "q") { const v = fromQuote(key, { tech, date: day }); if (v) openForm(v); }
+    if (src === "g") { const v = fromLead(key, { tech, date: day }); if (v) openForm(v); }
     if (src === "j") { const v = fromOld(key, { tech, date: day }); if (v) openForm(v); }
   }
   function onDragEnd() { S.drag = null; document.querySelectorAll(".dragging,.wcell.over").forEach((x) => x.classList.remove("dragging", "over")); }

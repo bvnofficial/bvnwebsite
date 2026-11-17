@@ -6,8 +6,8 @@ import { PRICEBOOK, TEMPLATES } from "./data.js";
 import { runItem, priceQuote, defaults, money, byId } from "./engine.js";
 import { drawItem } from "./draw.js";
 import { buildTemplates, mergePricebook, priceExtras, stageOf, GROUPS, groupOf } from "./shared.js";
-import { makeDispatch } from "./dispatch.js";
-import { makeTimesheets } from "./timesheets.js";
+import { makeDispatch } from "./dispatch.js?v=3";
+import { makeTimesheets } from "./timesheets.js?v=2";
 
 const $ = (s, el = document) => el.querySelector(s);
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -526,10 +526,24 @@ function viewGateEditor() {
 }
 
 /* company details and history */
+/* Simon's GHL: is it connected, and where the deals sit in the Marketing Pipeline */
+function ghlCard() {
+  if (!st.ghl) { st.ghl = { loading: true }; api({ action: "ghl-summary" }).then((j) => { st.ghl = j; render(); }).catch((e) => { st.ghl = { on: false, error: e.message }; render(); }); }
+  const g = st.ghl;
+  if (g.loading) return `<section class="card pad ghlcard"><h2 class="qh">GoHighLevel</h2><p class="muted">Checking the link to GHL...</p></section>`;
+  if (!g.on) return `<section class="card pad ghlcard"><h2 class="qh">GoHighLevel</h2><p class="no">Not connected.</p><p class="muted">The GHL key is not set on the server.</p></section>`;
+  const money = (n) => (n || 0).toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
+  return `<section class="card pad ghlcard"><h2 class="qh">GoHighLevel</h2>
+    <p>${g.error ? `<span class="no">Connected, but GHL answered with a problem: ${esc(g.error)}</span>` : `<span class="ok">Connected</span> to ${esc(g.location || "Apex Gates")}.`}</p>
+    <p class="muted" style="margin:4px 0 0">Website leads show up on Jobs, To book. Booking one moves the deal to New Booking, a finished visit to Visit Attended, and a signed quote to Sale, marked Won with the amount.</p>
+    <p style="margin:8px 0 0">${g.sms ? `<span class="ok">Texts go from the Apex number.</span> The "on my way" text is sent from GHL.` : `<span class="no">No texting number in GHL yet.</span> "On my way" texts go from the technician's phone until Apex adds a number in GHL (Settings, Phone System).`}</p>
+    <div class="stg">${(g.stages || []).map((x) => `<div><small class="muted">${esc(x.name)}</small><b>${x.count}</b>${x.value ? `<small>${money(x.value)}</small>` : ""}</div>`).join("")}</div></section>`;
+}
 function viewCompany() {
   const s = pb().settings;
   const f = (k, label, type = "text") => `<div class="fld"><label>${label}</label><input data-set="${k}" data-type="${type}" ${type === "num" ? 'inputmode="decimal"' : ""} value="${esc(s[k])}"></div>`;
   return `<h1 class="big-t">Company and quote details</h1>
+  ${ghlCard()}
   <section class="card pad"><h2 class="qh">On every quote</h2><div class="two">${f("company", "Company name")}${f("abn", "ABN")}${f("phone", "Phone")}${f("email", "Email")}${f("web", "Website")}${f("address", "Address")}</div>
     <div class="fld" style="margin-top:12px"><label>Terms at the bottom of the quote</label><textarea data-set="terms" data-type="text" rows="4">${esc(s.terms)}</textarea></div></section>
   <section class="card pad" style="margin-top:16px"><h2 class="qh">Numbers</h2><div class="two">${f("gst", "GST %", "num")}${f("deposit", "Deposit asked for %", "num")}${f("validity", "Quote is good for (days)", "num")}${f("minMargin", "Warn when Apex makes under %", "num")}${f("maxDisc", "Most discount a technician can give %", "num")}${f("round", "Round totals to the nearest $", "num")}${f("kerf", "Saw cut (mm)", "num")}${f("invoiceDays", "Invoices are due in (days)", "num")}</div>

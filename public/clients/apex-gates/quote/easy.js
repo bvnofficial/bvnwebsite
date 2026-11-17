@@ -5,7 +5,7 @@ import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
 import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js";
 import { drawItem, steelColour } from "./draw.js";
 import { buildTemplates, mergePricebook, offered, teamView, priceExtras, STAGES, stageOf, GROUPS, groupOf } from "./shared.js";
-import { makeMyJobs } from "./myjobs.js";
+import { makeMyJobs } from "./myjobs.js?v=2";
 
 const KEY = "apexq.v1";
 const $ = (s, el = document) => el.querySelector(s);
@@ -60,6 +60,7 @@ async function sendQuotes() {
       if (!q.items.length || (q.sent || 0) >= q.updated) continue;
       const stamp = Date.now();
       const { sent, sel, ...out } = q;
+      try { out.inc = Math.round(price(q).inc); } catch (e) { /* priced again on the next save */ }
       const r = await fetch("data.json", { method: "POST", headers: { "content-type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ action: "quote", quote: out }) });
       if (!r.ok) break;
       q.sent = stamp;

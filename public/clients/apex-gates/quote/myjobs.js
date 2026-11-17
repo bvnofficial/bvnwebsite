@@ -33,26 +33,36 @@ export function makeMyJobs(ctx) {
       S.at = Date.now(); put(CACHE, { me: S.me, list: S.list, at: S.at });
     } catch (e) { S.err = e.message; }
     try { S.day = (await post({ action: "day", tech: S.me, date: from })).day; } catch (e) { /* the clock just stays hidden */ }
+    // can the text go from Apex's own number in GHL? checked once a load, cheap on the server
+    if (!S.ghl) { try { S.ghl = await post({ action: "ghl-status" }); } catch (e) { S.ghl = { on: false, sms: false }; } }
     S.loading = false; ctx.render();
   }
   const mine = () => S.list || [];
   const today = () => mine().filter((v) => v.date === iso(new Date()));
   const countToday = () => today().filter((v) => v.status !== "done").length;
 
-  function smsLink(v, mins) {
+  function smsText(v, mins) {
     // a person's first name; a business with no contact person just gets "Hi,"
     const person = v.contact || (/\b(pty|ltd|inc|storage|council|city|shire|group|services|school|church|centre|center|strata|apartments|club|hotel|park|depot|logistics|transport|holdings|trust)\b/i.test(v.client || "") ? "" : v.client || "");
     const first = person.trim().split(/\s+/)[0] || "";
     const me = S.me.split(" ")[0];
     const text = `Hi${first ? " " + first : ""}, it's ${me} from ${ctx.company()}. I'm on my way to you now and should be there in about ${mins} minutes.`;
-    return `sms:${String(v.phone || "").replace(/[^\d+]/g, "")}?&body=${encodeURIComponent(text)}`;
+    return text;
+  }
+  const smsLink = (v, mins) => `sms:${String(v.phone || "").replace(/[^\d+]/g, "")}?&body=${encodeURIComponent(smsText(v, mins))}`;
+  /* send it from Apex's GHL number; if that fails the phone's own messages app opens instead */
+  async function textFromApex(v, mins) {
+    try { await post({ action: "ghl-text", id: v.id, date: v.date, message: smsText(v, mins) }); say(`Texted ${v.contact || v.client || "the customer"} from the Apex number`); }
+    catch (e) { say("Could not send from the Apex number. Your phone's messages will open instead"); location.href = smsLink(v, mins); }
   }
 
   function jobCard(v) {
     const open = S.open === v.id, done = v.status === "done";
     const steps = done ? "" : v.status === "booked"
       ? (S.eta === v.id
-        ? `<div class="etarow"><b>About how long?</b>${[15, 30, 45, 60].map((m) => `<a class="btn ghost small" href="${v.phone ? smsLink(v, m) : "#"}" data-mj="onway" data-id="${esc(v.id)}">${m === 60 ? "1 hour" : m + " min"}</a>`).join("")}
+        ? `<div class="etarow"><b>About how long?</b>${S.ghl && S.ghl.sms && v.phone ? `<small class="muted" style="width:100%">The text goes from the Apex number.</small>` : ""}${[15, 30, 45, 60].map((m) => S.ghl && S.ghl.sms && v.phone
+            ? `<button class="btn ghost small" data-mj="onway" data-id="${esc(v.id)}" data-m="${m}">${m === 60 ? "1 hour" : m + " min"}</button>`
+            : `<a class="btn ghost small" href="${v.phone ? smsLink(v, m) : "#"}" data-mj="onway" data-id="${esc(v.id)}">${m === 60 ? "1 hour" : m + " min"}</a>`).join("")}
             <button class="btn ghost small" data-mj="onway" data-id="${esc(v.id)}" data-quiet="1">No text, just mark it</button></div>`
         : `<button class="btn red wide" data-mj="eta" data-id="${esc(v.id)}">${ctx.icon.truck}On my way</button>`)
       : v.status === "onway" ? `<button class="btn dark wide" data-mj="onsite" data-id="${esc(v.id)}">${ctx.icon.tick}I'm here</button>`
@@ -149,7 +159,10 @@ export function makeMyJobs(ctx) {
     if (a === "onway") {
       // the phone's messages app opens with the text ready to send; the office sees "On the way"
       if (b.getAttribute("href") === "#") e.preventDefault();
-      S.eta = null; step(id, "onway"); say("The office can see you are on the way"); return true;
+      const v = mine().find((x) => x.id === id);
+      S.eta = null; step(id, "onway"); say("The office can see you are on the way");
+      if (b.dataset.m && v) textFromApex(v, +b.dataset.m);
+      return true;
     }
     if (a === "onsite") { step(id, "onsite"); return true; }
     if (a === "finish") { S.finish = id; S.note = ""; ctx.render(); return true; }
