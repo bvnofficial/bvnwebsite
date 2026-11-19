@@ -398,7 +398,7 @@ footer{padding:56px 0 40px;border-top:1px solid var(--line);margin-top:96px}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* Examples of materials supplied. To add one, copy a line and change the details. No customer names. */
+/* Examples of materials supplied. Jim edits the live list on Revolution HQ (Materials sourced); sourced.js loads it. This list shows if that cannot load. */
 var EXAMPLES = [
   {fam:"Nickel Alloys", grade:"Inconel 625", spec:"ASTM B446 / UNS N06625", form:"Round bar", detail:"152 mm diameter, cut lengths"},
   {fam:"Stainless Steel", grade:"Super Duplex 2507", spec:"ASTM A790 / UNS S32750", form:"Seamless pipe", detail:"6 in Sch 40S"},
@@ -472,5 +472,6 @@ var CREDITS = [
   });
 })();
 </script>
+<script src="sourced.js" defer></script>
 </body>
 </html>

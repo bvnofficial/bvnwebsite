@@ -136,6 +136,7 @@ h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-
 .loading{display:grid;place-items:center;min-height:100vh;color:#6b7280;font:600 15px Inter,system-ui,sans-serif;padding:20px;text-align:center}
 .pipesel{font:inherit;font-size:13px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:#fff}
 .liveempty{padding:22px;color:#6b7280;font-size:14px}
+.srct td{padding:7px 6px}.srct td:first-child{padding-left:14px}.srct .inp{padding:7px 9px;font-size:13px;min-width:120px}.btn[disabled]{opacity:.45;cursor:default}
 </style>
 </head>
 <body>
@@ -208,7 +209,7 @@ function makeInvoice(o){
   const v={no:"INV-"+n,c:o.c,o:o.id,title:o.title,lines:o.lines.map(l=>Object.assign({},l)),issued:now(),due:now()+30*DAY,paidAt:null,draft:true,fresh:true};
   S.invoices.unshift(v);return v;
 }
-const ui={view:"overview",sel:null,bell:false,q:"",period:"12w"};
+const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:""};
 
 /* ============ stats ============ */
 function stats(){
@@ -236,8 +237,8 @@ function brief(st){
 function weekly(){const out=[],t=now();for(let i=11;i>=0;i--){const a=t-(i+1)*7*DAY,b=t-i*7*DAY;out.push(S.contacts.filter(c=>c.at>a&&c.at<=b).length)}return out}
 
 /* ============ layout ============ */
-const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"]];
-const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers"};
+const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Website"],["sourced","Materials sourced","cube"]];
+const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials sourced"};
 function render(){
   const p=(location.hash.replace(/^#\/?/,"")||"overview").split("/");
   ui.view=TITLES[p[0]]?p[0]:"overview";ui.sel=p[1]||null;
@@ -439,6 +440,30 @@ VIEW.reports=()=>{
   <div class="card"><div class="ch"><h3>Top customers</h3><span class="mut sm">Paid invoices, 12 months</span></div><div class="cb">${r.top.length?r.top.map(([k,v])=>`<div class="hb" data-tip="${esc(k)}: ${money(v)} paid"><span class="ell">${esc(k)}</span><span class="tr"><i style="width:${v/r.top[0][1]*100}%"></i></span><b>${kfmt(v)}</b></div>`).join(""):'<div class="liveempty" style="padding:0">No paid invoices yet.</div>'}</div></div>
   </div>`;
 };
+/* ---------- website: materials we've sourced (saved to GoHighLevel) ---------- */
+const SRC_F=[["fam","Family","Nickel Alloys"],["grade","Grade","Inconel 625"],["spec","Specification","ASTM B446 / UNS N06625"],["form","Form","Round bar"],["detail","Details","152 mm diameter, cut lengths"]];
+async function srcLoad(){
+  ui.srcBusy=true;ui.srcErr="";
+  try{const r=await fetch("/api/rm-hq/sourced",{cache:"no-store"});const d=await r.json();
+    if(!Array.isArray(d.examples))throw 0;ui.src=d.examples;ui.srcDirty=false}
+  catch(e){ui.srcErr="Could not load the list from GoHighLevel. Try Refresh in a minute."}
+  ui.srcBusy=false;if(ui.view==="sourced")render();
+}
+VIEW.sourced=()=>{
+  if(!ui.src){if(!ui.srcBusy&&!ui.srcErr)srcLoad();return `<div class="card"><div class="liveempty">${ui.srcErr?esc(ui.srcErr):"Loading the list from GoHighLevel"}</div></div>`}
+  const n=ui.src.length;
+  return `<div class="g">
+  <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:640px">These cards scroll on your website under <b>Some of the materials we've sourced</b>. Change any box, add or remove a row, then press Save. The website updates within a minute. Please leave out customer names.</p>
+   <a class="btn s" href="https://sites.leadconnectorhq.com/preview/9SPNh27UBeBADfQLSfCI#sourced" target="_blank" rel="noopener">${I("ext")} View on website</a></div>
+  <div class="card"><div class="ch"><h3>${n} material${n===1?"":"s"} on the website</h3>${ui.srcDirty?'<span class="mut sm" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span class="mut sm">Saved in GoHighLevel</span>'}</div>
+   <div class="tw"><table class="tbl srct"><thead><tr><th style="width:34px"></th>${SRC_F.map(f=>`<th>${f[1]}</th>`).join("")}<th style="width:110px"></th></tr></thead><tbody>
+   ${n?ui.src.map((e,i)=>`<tr><td class="faint">${i+1}</td>${SRC_F.map(f=>`<td><input class="inp" data-src="${i}" data-k="${f[0]}" value="${esc(e[f[0]])}" placeholder="${esc(f[2])}" maxlength="140" aria-label="${f[1]}, row ${i+1}"></td>`).join("")}
+     <td class="nw"><button class="btn s ghost" data-act="srcup" data-i="${i}" title="Move up" aria-label="Move up"${i?"":" disabled"}>&uarr;</button><button class="btn s ghost" data-act="srcdown" data-i="${i}" title="Move down" aria-label="Move down"${i<n-1?"":" disabled"}>&darr;</button><button class="btn s ghost" data-act="srcdel" data-i="${i}" title="Remove" aria-label="Remove row ${i+1}">${I("x")}</button></td></tr>`).join(""):'<tr><td colspan="7" class="empty">No materials yet. Add the first one below.</td></tr>'}
+   </tbody></table></div>
+   <div class="cb row" style="gap:10px;flex-wrap:wrap"><button class="btn" data-act="srcadd">${I("plus")} Add a material</button><span class="grow"></span>
+    ${ui.srcDirty?'<button class="btn" data-act="srcundo">Undo changes</button>':""}<button class="btn pri" data-act="srcsave"${ui.srcDirty&&!ui.srcBusy?"":" disabled"}>${I("ok")} ${ui.srcBusy?"Saving":"Save to website"}</button></div></div>
+  </div>`;
+};
 const match=s=>!ui.q||s.toLowerCase().includes(ui.q.toLowerCase());
 
 /* ============ actions ============ */
@@ -462,6 +487,22 @@ const ACT={
   useai(){},send:inGhl,sendq:inGhl,follow:inGhl,win:inGhl,source:inGhl,
   inv(e,el){invModal(el.dataset.id)},
   sendinv:inGhl,remind:inGhl,paid:inGhl,
+  srcadd(){ui.src.push({fam:"",grade:"",spec:"",form:"",detail:""});ui.srcDirty=true;render();const ins=document.querySelectorAll('[data-k="fam"]');if(ins.length)ins[ins.length-1].focus()},
+  srcdel(e,el){const i=+el.dataset.i,x=ui.src[i];if((x.grade||x.fam)&&!confirm("Remove "+(x.grade||x.fam)+" from the website list?"))return;ui.src.splice(i,1);ui.srcDirty=true;render()},
+  srcup(e,el){const i=+el.dataset.i;if(i<1)return;[ui.src[i-1],ui.src[i]]=[ui.src[i],ui.src[i-1]];ui.srcDirty=true;render()},
+  srcdown(e,el){const i=+el.dataset.i;if(i>=ui.src.length-1)return;[ui.src[i+1],ui.src[i]]=[ui.src[i],ui.src[i+1]];ui.srcDirty=true;render()},
+  srcundo(){ui.src=null;ui.srcDirty=false;render()},
+  async srcsave(){
+    const blank=ui.src.findIndex(x=>!x.grade.trim()&&(x.fam||x.spec||x.form||x.detail));
+    if(blank>=0){toast("Row "+(blank+1)+" needs a grade before it can be saved.");return}
+    ui.srcBusy=true;render();
+    try{const r=await fetch("/api/rm-hq/sourced",{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({examples:ui.src.filter(x=>x.grade.trim())})});
+      if(r.status===401){location.reload();return}
+      const d=await r.json();if(!d.ok)throw new Error(d.error||"");
+      ui.src=d.examples;ui.srcDirty=false;toast(`${I("ok")} Saved. Your website shows the new list within a minute.`)}
+    catch(e){toast("Not saved. "+(e.message||"Could not reach GoHighLevel.")+" Please try again.")}
+    ui.srcBusy=false;render();
+  },
   csv(){const r=rep12();const q=x=>'"'+String(x).replace(/"/g,'""')+'"';const rows=[["Month","Invoiced (AUD)","Paid (AUD)"],...r.ms.map((m,i)=>[m.l,r.invM[i].toFixed(2),r.paidM[i].toFixed(2)]),[],["Source","Deals","Won","Won value (AUD)"],...r.srcRows.map(([k,x])=>[q(k),x.n,x.w,x.v.toFixed(2)])];
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([rows.map(r=>r.join(",")).join("\n")],{type:"text/csv"}));a.download="revolution-materials-report.csv";a.click();toast(`${I("dl")} Report downloaded`)}
 };
@@ -477,11 +518,13 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target.id==="pipesel"){PIPE=e.target.value;try{localStorage.setItem("rmhq-pipe",PIPE)}catch(x){}setStages();render()}});
 document.addEventListener("input",e=>{
   if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
+  if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srct")&&document.querySelector(".srct").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.line!=null){const box=e.target.closest(".box");const id=box.querySelector("[data-act=sendq]").dataset.id;const o=O(id);const i=+e.target.dataset.line;o.lines[i].p=Math.max(0,parseFloat(e.target.value)||0);
     $("#lt"+i).textContent=money2(o.lines[i].qty*o.lines[i].p);$("#qsub").textContent=money2(val(o));$("#qgst").textContent=money2(val(o)*.1);$("#qtot").textContent=money2(val(o)*1.1);save()}
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 addEventListener("hashchange",render);
+addEventListener("beforeunload",e=>{if(ui.srcDirty){e.preventDefault();e.returnValue=""}});
 /* drag and drop on the pipeline */
 let dragId=null;
 document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".op");if(!c)return;dragId=c.dataset.id;c.classList.add("drag");e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",dragId)});
@@ -505,7 +548,7 @@ async function load(fresh){
     const d=await r.json();
     if(d.configured===false){fail("GoHighLevel is not connected yet. The token still needs adding on the server.");return}
     if(d.failed||!d.contacts){fail("Could not reach GoHighLevel. Trying again in a minute.");return}
-    adopt(d);render();
+    adopt(d);if(!(ui.view==="sourced"&&document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.src!=null))render();
     if(fresh)toast(`${I("ok")} Updated from GoHighLevel`);
   }catch(e){fail("Could not reach GoHighLevel. Trying again in a minute.")}
   finally{loading=false}
