@@ -136,7 +136,7 @@ h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-
 .loading{display:grid;place-items:center;min-height:100vh;color:#6b7280;font:600 15px Inter,system-ui,sans-serif;padding:20px;text-align:center}
 .pipesel{font:inherit;font-size:13px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:#fff}
 .liveempty{padding:22px;color:#6b7280;font-size:14px}
-.srct td{padding:7px 6px}.srct td:first-child{padding-left:14px}.srct .inp{padding:7px 9px;font-size:13px;min-width:120px}.btn[disabled]{opacity:.45;cursor:default}
+.srcl{padding:6px 16px}.srci{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line2)}.srci:last-child{border-bottom:0}.srcn{width:22px;flex:none;padding-top:9px;color:var(--mut);font-size:12px;font-weight:600}.srcf{display:grid;gap:8px;min-width:0}.srcf .srch{font-weight:700}.srcf textarea{resize:vertical;min-height:70px;line-height:1.5;font:inherit;font-size:13.5px}.srcb{display:flex;gap:4px;flex:none;padding-top:4px}.btn[disabled]{opacity:.45;cursor:default}@media(max-width:640px){.srci{flex-wrap:wrap}.srcb{width:100%;justify-content:flex-end}}
 </style>
 </head>
 <body>
@@ -237,8 +237,8 @@ function brief(st){
 function weekly(){const out=[],t=now();for(let i=11;i>=0;i--){const a=t-(i+1)*7*DAY,b=t-i*7*DAY;out.push(S.contacts.filter(c=>c.at>a&&c.at<=b).length)}return out}
 
 /* ============ layout ============ */
-const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Website"],["sourced","Materials sourced","cube"]];
-const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials sourced"};
+const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Website"],["sourced","Materials supplied","cube"]];
+const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials supplied"};
 function render(){
   const p=(location.hash.replace(/^#\/?/,"")||"overview").split("/");
   ui.view=TITLES[p[0]]?p[0]:"overview";ui.sel=p[1]||null;
@@ -440,8 +440,7 @@ VIEW.reports=()=>{
   <div class="card"><div class="ch"><h3>Top customers</h3><span class="mut sm">Paid invoices, 12 months</span></div><div class="cb">${r.top.length?r.top.map(([k,v])=>`<div class="hb" data-tip="${esc(k)}: ${money(v)} paid"><span class="ell">${esc(k)}</span><span class="tr"><i style="width:${v/r.top[0][1]*100}%"></i></span><b>${kfmt(v)}</b></div>`).join(""):'<div class="liveempty" style="padding:0">No paid invoices yet.</div>'}</div></div>
   </div>`;
 };
-/* ---------- website: materials we've sourced (saved to GoHighLevel) ---------- */
-const SRC_F=[["fam","Family","Nickel Alloys"],["grade","Grade","Inconel 625"],["spec","Specification","ASTM B446 / UNS N06625"],["form","Form","Round bar"],["detail","Details","152 mm diameter, cut lengths"]];
+/* ---------- website: materials we've supplied (saved to GoHighLevel) ---------- */
 async function srcLoad(){
   ui.srcBusy=true;ui.srcErr="";
   try{const r=await fetch("/api/rm-hq/sourced",{cache:"no-store"});const d=await r.json();
@@ -453,14 +452,16 @@ VIEW.sourced=()=>{
   if(!ui.src){if(!ui.srcBusy&&!ui.srcErr)srcLoad();return `<div class="card"><div class="liveempty">${ui.srcErr?esc(ui.srcErr):"Loading the list from GoHighLevel"}</div></div>`}
   const n=ui.src.length;
   return `<div class="g">
-  <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:640px">These cards scroll on your website under <b>Some of the materials we've sourced</b>. Change any box, add or remove a row, then press Save. The website updates within a minute. Please leave out customer names.</p>
+  <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:660px">These entries scroll on your website under <b>Some of the materials we've sourced</b>, in this order. Each one has a heading and free text, so describe each order however suits it: materials, applications, industries, quantities or values. Press Save when you're done and the website updates within a minute. Please leave out customer names.</p>
    <a class="btn s" href="https://sites.leadconnectorhq.com/preview/9SPNh27UBeBADfQLSfCI#sourced" target="_blank" rel="noopener">${I("ext")} View on website</a></div>
-  <div class="card"><div class="ch"><h3>${n} material${n===1?"":"s"} on the website</h3>${ui.srcDirty?'<span class="mut sm" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span class="mut sm">Saved in GoHighLevel</span>'}</div>
-   <div class="tw"><table class="tbl srct"><thead><tr><th style="width:34px"></th>${SRC_F.map(f=>`<th>${f[1]}</th>`).join("")}<th style="width:110px"></th></tr></thead><tbody>
-   ${n?ui.src.map((e,i)=>`<tr><td class="faint">${i+1}</td>${SRC_F.map(f=>`<td><input class="inp" data-src="${i}" data-k="${f[0]}" value="${esc(e[f[0]])}" placeholder="${esc(f[2])}" maxlength="140" aria-label="${f[1]}, row ${i+1}"></td>`).join("")}
-     <td class="nw"><button class="btn s ghost" data-act="srcup" data-i="${i}" title="Move up" aria-label="Move up"${i?"":" disabled"}>&uarr;</button><button class="btn s ghost" data-act="srcdown" data-i="${i}" title="Move down" aria-label="Move down"${i<n-1?"":" disabled"}>&darr;</button><button class="btn s ghost" data-act="srcdel" data-i="${i}" title="Remove" aria-label="Remove row ${i+1}">${I("x")}</button></td></tr>`).join(""):'<tr><td colspan="7" class="empty">No materials yet. Add the first one below.</td></tr>'}
-   </tbody></table></div>
-   <div class="cb row" style="gap:10px;flex-wrap:wrap"><button class="btn" data-act="srcadd">${I("plus")} Add a material</button><span class="grow"></span>
+  <div class="card"><div class="ch"><h3>${n} entr${n===1?"y":"ies"} on the website</h3>${ui.srcDirty?'<span class="mut sm" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span class="mut sm">Saved in GoHighLevel</span>'}</div>
+   <div class="srcl">
+   ${n?ui.src.map((e,i)=>`<div class="srci"><span class="srcn">${i+1}</span><div class="grow srcf">
+     <input class="inp srch" data-src="${i}" data-k="head" value="${esc(e.head)}" placeholder="Heading, for example Inconel 625 round bar for a gas plant" maxlength="140" aria-label="Heading, entry ${i+1}">
+     <textarea class="inp" data-src="${i}" data-k="text" rows="3" maxlength="1200" placeholder="Free text: the material, application, industry, quantity or order value" aria-label="Text, entry ${i+1}">${esc(e.text)}</textarea></div>
+     <div class="srcb"><button class="btn s ghost" data-act="srcup" data-i="${i}" title="Move up" aria-label="Move entry ${i+1} up"${i?"":" disabled"}>&uarr;</button><button class="btn s ghost" data-act="srcdown" data-i="${i}" title="Move down" aria-label="Move entry ${i+1} down"${i<n-1?"":" disabled"}>&darr;</button><button class="btn s ghost" data-act="srcdel" data-i="${i}" title="Remove" aria-label="Remove entry ${i+1}">${I("x")}</button></div></div>`).join(""):'<div class="liveempty">No entries yet. Add the first one below.</div>'}
+   </div>
+   <div class="cb row" style="gap:10px;flex-wrap:wrap;border-top:1px solid var(--line2)"><button class="btn" data-act="srcadd">${I("plus")} Add an entry</button><span class="grow"></span>
     ${ui.srcDirty?'<button class="btn" data-act="srcundo">Undo changes</button>':""}<button class="btn pri" data-act="srcsave"${ui.srcDirty&&!ui.srcBusy?"":" disabled"}>${I("ok")} ${ui.srcBusy?"Saving":"Save to website"}</button></div></div>
   </div>`;
 };
@@ -487,16 +488,16 @@ const ACT={
   useai(){},send:inGhl,sendq:inGhl,follow:inGhl,win:inGhl,source:inGhl,
   inv(e,el){invModal(el.dataset.id)},
   sendinv:inGhl,remind:inGhl,paid:inGhl,
-  srcadd(){ui.src.push({fam:"",grade:"",spec:"",form:"",detail:""});ui.srcDirty=true;render();const ins=document.querySelectorAll('[data-k="fam"]');if(ins.length)ins[ins.length-1].focus()},
-  srcdel(e,el){const i=+el.dataset.i,x=ui.src[i];if((x.grade||x.fam)&&!confirm("Remove "+(x.grade||x.fam)+" from the website list?"))return;ui.src.splice(i,1);ui.srcDirty=true;render()},
+  srcadd(){ui.src.push({head:"",text:""});ui.srcDirty=true;render();const ins=document.querySelectorAll('[data-k="head"]');if(ins.length){ins[ins.length-1].focus();ins[ins.length-1].scrollIntoView({block:"center"})}},
+  srcdel(e,el){const i=+el.dataset.i,x=ui.src[i];if((x.head||x.text)&&!confirm("Remove "+(x.head?'"'+x.head+'"':"this entry")+" from the website?"))return;ui.src.splice(i,1);ui.srcDirty=true;render()},
   srcup(e,el){const i=+el.dataset.i;if(i<1)return;[ui.src[i-1],ui.src[i]]=[ui.src[i],ui.src[i-1]];ui.srcDirty=true;render()},
   srcdown(e,el){const i=+el.dataset.i;if(i>=ui.src.length-1)return;[ui.src[i+1],ui.src[i]]=[ui.src[i],ui.src[i+1]];ui.srcDirty=true;render()},
   srcundo(){ui.src=null;ui.srcDirty=false;render()},
   async srcsave(){
-    const blank=ui.src.findIndex(x=>!x.grade.trim()&&(x.fam||x.spec||x.form||x.detail));
-    if(blank>=0){toast("Row "+(blank+1)+" needs a grade before it can be saved.");return}
+    const blank=ui.src.findIndex(x=>!x.head.trim()&&x.text.trim());
+    if(blank>=0){toast("Entry "+(blank+1)+" needs a heading before it can be saved.");return}
     ui.srcBusy=true;render();
-    try{const r=await fetch("/api/rm-hq/sourced",{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({examples:ui.src.filter(x=>x.grade.trim())})});
+    try{const r=await fetch("/api/rm-hq/sourced",{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({examples:ui.src.filter(x=>x.head.trim()||x.text.trim())})});
       if(r.status===401){location.reload();return}
       const d=await r.json();if(!d.ok)throw new Error(d.error||"");
       ui.src=d.examples;ui.srcDirty=false;toast(`${I("ok")} Saved. Your website shows the new list within a minute.`)}
@@ -518,7 +519,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target.id==="pipesel"){PIPE=e.target.value;try{localStorage.setItem("rmhq-pipe",PIPE)}catch(x){}setStages();render()}});
 document.addEventListener("input",e=>{
   if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
-  if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srct")&&document.querySelector(".srct").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
+  if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srcl")&&document.querySelector(".srcl").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.line!=null){const box=e.target.closest(".box");const id=box.querySelector("[data-act=sendq]").dataset.id;const o=O(id);const i=+e.target.dataset.line;o.lines[i].p=Math.max(0,parseFloat(e.target.value)||0);
     $("#lt"+i).textContent=money2(o.lines[i].qty*o.lines[i].p);$("#qsub").textContent=money2(val(o));$("#qgst").textContent=money2(val(o)*.1);$("#qtot").textContent=money2(val(o)*1.1);save()}
 });

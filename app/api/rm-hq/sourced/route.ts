@@ -8,7 +8,10 @@ import { RM_HQ_COOKIE, rmHqAuthorised } from "@/lib/rm-hq-gate";
  * The list is stored in Jim's GoHighLevel account as the custom value
  * "Website - Materials sourced" (JSON). The token stays on the server.
  *
- * GET  (public, CORS open): { examples: [...] } for the GHL website to draw the cards.
+ * Each entry is { head, text }: a heading and free-form text (line breaks kept).
+ * Older entries saved as { fam, grade, spec, form, detail } are converted on read.
+ *
+ * GET  (public, CORS open): { examples: [...] } for the GHL website to draw the list.
  * PUT  (Revolution HQ cookie only): { examples: [...] } saves a new list.
  *
  * Env: GHL_RM_TOKEN, GHL_RM_LOCATION, RM_HQ_PASSWORD (gate).
@@ -21,11 +24,11 @@ export const revalidate = 0;
 const GHL = "https://services.leadconnectorhq.com";
 const V = "2021-07-28";
 const NAME = "Website - Materials sourced";
-const FIELDS = ["fam", "grade", "spec", "form", "detail"] as const;
 const MAX_ITEMS = 60;
-const MAX_LEN = 140;
+const MAX_HEAD = 140;
+const MAX_TEXT = 1200;
 
-type Example = Record<(typeof FIELDS)[number], string>;
+type Example = { head: string; text: string };
 
 let CACHE: { t: number; examples: Example[] } | null = null;
 const TTL_MS = 60_000;
@@ -62,16 +65,28 @@ async function findValue(token: string, L: string): Promise<{ id: string; value:
   return hit ? { id: hit.id, value: String(hit.value || "") } : null;
 }
 
+const line = (v: unknown) => String(v ?? "").replace(/\s+/g, " ").trim();
+const block = (v: unknown) =>
+  String(v ?? "").replace(/\r\n?/g, "\n").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+
+/** the first list format had fixed fields; turn it into a heading and text */
+function fromLegacy(r: Record<string, unknown>): Example {
+  const grade = line(r.grade), form = line(r.form);
+  const head = [grade, form.toLowerCase()].filter(Boolean).join(" ");
+  const text = [line(r.fam), line(r.spec), line(r.detail)].filter(Boolean).join(". ");
+  return { head, text: text ? text + "." : "" };
+}
+
 function clean(list: unknown): Example[] | null {
   if (!Array.isArray(list) || list.length > MAX_ITEMS) return null;
   const out: Example[] = [];
   for (const raw of list) {
     if (!raw || typeof raw !== "object") return null;
-    const e = {} as Example;
-    for (const k of FIELDS) {
-      e[k] = String((raw as Record<string, unknown>)[k] ?? "").replace(/\s+/g, " ").trim().slice(0, MAX_LEN);
-    }
-    if (!e.grade) continue; // a row needs at least a grade
+    const r = raw as Record<string, unknown>;
+    const e = "head" in r || "text" in r ? { head: line(r.head), text: block(r.text) } : fromLegacy(r);
+    e.head = e.head.slice(0, MAX_HEAD);
+    e.text = e.text.slice(0, MAX_TEXT);
+    if (!e.head && !e.text) continue;
     out.push(e);
   }
   return out;

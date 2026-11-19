@@ -1,7 +1,8 @@
 /* Revolution Materials website: "Some of the materials we've sourced".
-   Loads the list Jim edits on Revolution HQ (saved in his GoHighLevel account)
-   and redraws the cards in #track. If the list can't be loaded, the cards
-   already on the page stay as they are. */
+   Loads the entries Jim edits on Revolution HQ (saved in his GoHighLevel
+   account) and shows them as a vertically scrolling list, each entry a
+   heading and free text. If the list can't be loaded, the built-in EXAMPLES
+   on the page are shown in the same layout. */
 (function () {
   var API = "https://www.bvnofficial.com/api/rm-hq/sourced";
   var esc = function (s) {
@@ -9,25 +10,80 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   };
-  function row(label, v) {
-    return v ? "<dt>" + label + "</dt><dd>" + esc(v) + "</dd>" : "";
+  var css =
+    "#sourced .arrows{display:none}" +
+    "#sourced .track:not(.vlist){visibility:hidden}#sourced .track.vlist{position:relative;display:block;overflow-x:hidden;overflow-y:auto;max-height:540px;padding:4px 10px 4px 0;scroll-snap-type:none;scroll-behavior:smooth;scrollbar-width:thin;" +
+    "-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 40px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 40px),transparent 100%)}" +
+    "#sourced .vx{background:#fff;border:1px solid var(--line,#e2e7ee);border-left:4px solid var(--navy,#003a7c);border-radius:14px;padding:20px 24px;margin:0 0 14px}" +
+    "#sourced .vx:last-child{margin-bottom:40px}" +
+    "#sourced .vx h3{font-size:19px;font-weight:800;letter-spacing:-.01em;margin:0 0 8px;color:var(--ink,#141a24)}" +
+    "#sourced .vx p{margin:0;white-space:pre-line;color:var(--mut,#596474);font-size:15.5px;line-height:1.6}" +
+    "@media (max-width:640px){#sourced .track.vlist{max-height:480px}#sourced .vx{padding:18px}}" +
+    "@media (prefers-reduced-motion:reduce){#sourced .track.vlist{scroll-behavior:auto}}";
+
+  /* the first list format had fixed fields; show it as heading and text */
+  function norm(e) {
+    if (!e) return null;
+    if ("head" in e || "text" in e) return { head: e.head || "", text: e.text || "" };
+    var head = [e.grade, (e.form || "").toLowerCase()].filter(Boolean).join(" ");
+    var text = [e.fam, e.spec, e.detail].filter(Boolean).join(". ");
+    return { head: head, text: text ? text + "." : "" };
   }
+
+  var drawn = false;
   function draw(list) {
     var track = document.getElementById("track");
-    if (!track || !list || !list.length) return;
-    track.innerHTML = list.map(function (e) {
-      return '<article class="ex">' + (e.fam ? '<span class="fam">' + esc(e.fam) + "</span>" : "") +
-        "<h3>" + esc(e.grade) + "</h3><dl>" +
-        row("Specification", e.spec) + row("Form", e.form) + row("Details", e.detail) +
-        "</dl></article>";
+    if (!track || !list || !list.length) return false;
+    track.classList.add("vlist");
+    track.setAttribute("aria-label", "Examples of materials supplied");
+    track.innerHTML = list.map(norm).filter(function (e) { return e && (e.head || e.text); }).map(function (e) {
+      return '<article class="vx">' + (e.head ? "<h3>" + esc(e.head) + "</h3>" : "") +
+        (e.text ? "<p>" + esc(e.text) + "</p>" : "") + "</article>";
     }).join("");
-    track.scrollLeft = 0;
+    track.scrollTop = 0;
+    drawn = true;
+    return true;
   }
+
+  /* gentle auto scroll, one entry at a time, paused while the visitor is reading */
+  function autoScroll() {
+    var track = document.getElementById("track");
+    if (!track || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var held = 0;
+    var pause = function () { held = Date.now() + 12000; };
+    ["mouseenter", "touchstart", "focusin", "wheel", "pointerdown"].forEach(function (ev) {
+      track.addEventListener(ev, pause, { passive: true });
+    });
+    setInterval(function () {
+      if (!drawn || document.hidden || Date.now() < held) return;
+      if (track.scrollHeight <= track.clientHeight + 4) return;
+      var max = track.scrollHeight - track.clientHeight - 4;
+      if (track.scrollTop >= max) { track.scrollTo({ top: 0 }); return; }
+      var cards = track.querySelectorAll(".vx"), top = track.scrollTop, next = null;
+      for (var i = 0; i < cards.length; i++) {
+        if (cards[i].offsetTop > top + 8) { next = cards[i]; break; }
+      }
+      track.scrollTo({ top: next ? next.offsetTop : max });
+    }, 5000);
+  }
+
+  function fallback() {
+    if (!drawn && typeof EXAMPLES !== "undefined") draw(EXAMPLES); // eslint-disable-line no-undef
+  }
+
   function go() {
+    var st = document.createElement("style");
+    st.textContent = css;
+    document.head.appendChild(st);
+    var timer = setTimeout(fallback, 3000);
     fetch(API, { cache: "no-cache" })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d && Array.isArray(d.examples)) draw(d.examples); })
-      .catch(function () {});
+      .then(function (d) {
+        clearTimeout(timer);
+        if (!(d && Array.isArray(d.examples) && draw(d.examples))) fallback();
+      })
+      .catch(function () { clearTimeout(timer); fallback(); });
+    autoScroll();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go);
   else go();
