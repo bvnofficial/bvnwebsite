@@ -84,6 +84,56 @@
       })
       .catch(function () { clearTimeout(timer); fallback(); });
     autoScroll();
+    stats();
+  }
+
+  /* animated statistics band, placed just before "Experience".
+     To change a number or label, edit STATS. */
+  var STATS = [
+    { n: 23, plus: true, label: "Years in Business" },
+    { n: 40, plus: true, label: "Years of Industry Experience" },
+    { n: 11, plus: false, label: "Countries Sourced From" },
+    { n: 300, plus: true, label: "Australian Customers Supplied" }
+  ];
+  function stats() {
+    if (document.getElementById("rmstats")) return;
+    var before = document.getElementById("experience");
+    if (!before) return;
+    var st = document.createElement("style");
+    st.textContent =
+      "#rmstats{background:var(--navy,#003a7c);color:#fff;padding:56px 0}" +
+      "#rmstats .sgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;text-align:center}" +
+      "#rmstats .sv{font-size:clamp(38px,5vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}" +
+      "#rmstats .sl{margin-top:10px;font-size:15px;font-weight:600;color:#cfdcf0;line-height:1.4}" +
+      "#rmstats .si+.si{border-left:1px solid rgba(255,255,255,.18)}" +
+      "@media (max-width:760px){#rmstats{padding:44px 0}#rmstats .sgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 12px}#rmstats .si:nth-child(3){border-left:0}}";
+    document.head.appendChild(st);
+    var sec = document.createElement("section");
+    sec.id = "rmstats";
+    sec.setAttribute("aria-label", "Revolution Materials in numbers");
+    sec.innerHTML = '<div class="wrap"><div class="sgrid">' + STATS.map(function (s) {
+      var final = s.n + (s.plus ? "+" : "");
+      return '<div class="si"><div class="sv" data-n="' + s.n + '" data-plus="' + (s.plus ? "+" : "") + '" aria-label="' + final + '">' + final + "</div>" +
+        '<div class="sl">' + esc(s.label) + "</div></div>";
+    }).join("") + "</div></div>";
+    before.parentNode.insertBefore(sec, before);
+
+    var nums = sec.querySelectorAll(".sv");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+    nums.forEach(function (el) { el.textContent = "0" + el.dataset.plus; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        io.disconnect();
+        var t0 = performance.now(), dur = 1800;
+        (function tick(t) {
+          var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+          nums.forEach(function (el) { el.textContent = Math.round(+el.dataset.n * e) + el.dataset.plus; });
+          if (k < 1) requestAnimationFrame(tick);
+        })(t0);
+      });
+    }, { threshold: 0.4 });
+    io.observe(sec);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go);
   else go();
