@@ -85,6 +85,70 @@
       .catch(function () { clearTimeout(timer); fallback(); });
     autoScroll();
     stats();
+    content();
+  }
+
+  /* Text and photos Jim changed on Revolution HQ (Website > Text and photos).
+     The last version seen is kept in this browser so repeat visits show it at once. */
+  var CKEY = "rm-content-v1";
+  function setOwn(el, v) {
+    var nodes = el.childNodes, last = null;
+    for (var i = 0; i < nodes.length; i++) if (nodes[i].nodeType === 3 && nodes[i].textContent.trim()) last = nodes[i];
+    if (last) last.textContent = v; else el.appendChild(document.createTextNode(v));
+  }
+  var ORIG = {};
+  function restoreContent() {
+    Object.keys(ORIG).forEach(function (sel) {
+      var o = ORIG[sel], el = document.querySelector(sel);
+      if (!el) return;
+      if (o.img) { el.src = o.src; el.alt = o.alt; if (o.srcset) el.setAttribute("srcset", o.srcset); }
+      else el.innerHTML = o.html;
+    });
+  }
+  function applyContent(list) {
+    if (!Array.isArray(list)) return;
+    var hideCredits = [];
+    list.forEach(function (a) {
+      var el;
+      try { el = document.querySelector(a.sel); } catch (e) { return; }
+      if (!el) return;
+      if (!ORIG[a.sel]) ORIG[a.sel] = a.type === "img" ? { img: true, src: el.getAttribute("src"), alt: el.alt, srcset: el.getAttribute("srcset") } : { html: el.innerHTML };
+      var v = a.value;
+      if (a.type === "img") {
+        if (!v || !v.src) return;
+        el.removeAttribute("srcset");
+        el.src = v.src;
+        el.alt = v.alt || "";
+        if (a.credit != null) hideCredits.push(a.credit);
+      } else if (a.type === "text") el.textContent = v;
+      else if (a.type === "own") setOwn(el, v);
+      else if (a.type === "lines") el.innerHTML = String(v).split("\n").map(esc).join("<br>");
+      else if (a.type === "list") el.innerHTML = String(v).split("\n").filter(Boolean).map(function (l) {
+        return (/^(and more|other )/i.test(l) ? '<li class="more">' : "<li>") + esc(l) + "</li>";
+      }).join("");
+      else if (a.type === "tags") el.innerHTML = String(v).split("\n").filter(Boolean).map(function (l) { return "<span>" + esc(l) + "</span>"; }).join("");
+    });
+    var ul = document.getElementById("credits");
+    if (ul) {
+      var lis = ul.children;
+      for (var i = 0; i < lis.length; i++) lis[i].style.display = hideCredits.indexOf(i) >= 0 ? "none" : "";
+      var shown = 0;
+      for (var j = 0; j < lis.length; j++) if (lis[j].style.display !== "none") shown++;
+      var det = ul.closest("details");
+      if (det) det.style.display = shown ? "" : "none";
+    }
+  }
+  function content() {
+    try { applyContent(JSON.parse(localStorage.getItem(CKEY) || "null")); } catch (e) {}
+    fetch(API.replace("/sourced", "/content"), { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !Array.isArray(d.apply)) return;
+        restoreContent();
+        applyContent(d.apply);
+        try { localStorage.setItem(CKEY, JSON.stringify(d.apply)); } catch (e) {}
+      })
+      .catch(function () {});
   }
 
   /* animated statistics band, placed just before "Experience".

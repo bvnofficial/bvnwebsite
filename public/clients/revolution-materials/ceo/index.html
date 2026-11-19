@@ -136,6 +136,7 @@ h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-
 .loading{display:grid;place-items:center;min-height:100vh;color:#6b7280;font:600 15px Inter,system-ui,sans-serif;padding:20px;text-align:center}
 .pipesel{font:inherit;font-size:13px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:#fff}
 .liveempty{padding:22px;color:#6b7280;font-size:14px}
+.ctg{display:grid;gap:16px}.ctf .ctl{font-size:12.5px;font-weight:700;margin-bottom:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ctf textarea{resize:vertical;line-height:1.5;font:inherit;font-size:13.5px}.ctc{font-size:11px;font-weight:700;color:var(--or);background:rgba(232,96,16,.1);padding:2px 7px;border-radius:6px}.lnk{border:0;background:none;padding:0;color:var(--or);font-weight:600;font-size:12px;cursor:pointer;text-decoration:underline}.ctimg{display:flex;gap:14px;align-items:flex-start}.ctimg>img{width:150px;height:105px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none;background:#f3f4f6}.ctimg label.btn{cursor:pointer}.ctimg label.dis{opacity:.5;pointer-events:none}.cth{width:100%;border:0;border-bottom:1px solid var(--line2);background:none;text-align:left;cursor:pointer;font:inherit}.cth .cta{font-size:20px;font-weight:600;color:var(--mut);width:20px;text-align:center}.ctbar{position:sticky;top:8px;z-index:5}@media(max-width:640px){.ctimg{flex-direction:column}.ctimg>img{width:100%;height:160px}}
 .srcl{padding:6px 16px}.srci{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line2)}.srci:last-child{border-bottom:0}.srcn{width:22px;flex:none;padding-top:9px;color:var(--mut);font-size:12px;font-weight:600}.srcf{display:grid;gap:8px;min-width:0}.srcf .srch{font-weight:700}.srcf textarea{resize:vertical;min-height:70px;line-height:1.5;font:inherit;font-size:13.5px}.srcb{display:flex;gap:4px;flex:none;padding-top:4px}.btn[disabled]{opacity:.45;cursor:default}@media(max-width:640px){.srci{flex-wrap:wrap}.srcb{width:100%;justify-content:flex-end}}
 </style>
 </head>
@@ -159,7 +160,7 @@ const rel=t=>{const d=now()-t;if(d<MIN)return"just now";if(d<HR)return Math.floo
 const clock=t=>new Date(t).toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"});
 const COLORS=["#E86010","#2563EB","#0E9F6E","#7C3AED","#B45309","#0891B2","#BE185D","#4B5563"];
 const avatar=(name,i)=>`<span class="av" style="background:${COLORS[(i||name.length)%COLORS.length]}">${esc(name.split(" ").map(w=>w[0]).slice(0,2).join(""))}</span>`;
-const ICONS={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',inbox:'<path d="M4 4h16v12h-5l-2 3h-2l-2-3H4z"/>',pipe:'<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v5h-4z"/>',quote:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.6 3.5 5.2"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cube:'<path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',back:'<path d="M15 18l-6-6 6-6"/>',msg:'<path d="M4 5h16v11H8l-4 4z"/>',ok:'<path d="M5 12l5 5 9-10"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>',flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',inv:'<path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/>',rep:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>'};
+const ICONS={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',inbox:'<path d="M4 4h16v12h-5l-2 3h-2l-2-3H4z"/>',pipe:'<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v5h-4z"/>',quote:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.6 3.5 5.2"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cube:'<path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',back:'<path d="M15 18l-6-6 6-6"/>',msg:'<path d="M4 5h16v11H8l-4 4z"/>',ok:'<path d="M5 12l5 5 9-10"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>',flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',inv:'<path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/>',rep:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',pic:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>'};
 const I=n=>`<svg class="ico" viewBox="0 0 24 24">${ICONS[n]||""}</svg>`;
 
 /* ============ catalogue ============ */
@@ -209,7 +210,7 @@ function makeInvoice(o){
   const v={no:"INV-"+n,c:o.c,o:o.id,title:o.title,lines:o.lines.map(l=>Object.assign({},l)),issued:now(),due:now()+30*DAY,paidAt:null,draft:true,fresh:true};
   S.invoices.unshift(v);return v;
 }
-const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:""};
+const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:"",ct:null,ctVals:{},ctDirty:false,ctBusy:false,ctErr:"",ctOpen:{},ctUp:""};
 
 /* ============ stats ============ */
 function stats(){
@@ -237,8 +238,8 @@ function brief(st){
 function weekly(){const out=[],t=now();for(let i=11;i>=0;i--){const a=t-(i+1)*7*DAY,b=t-i*7*DAY;out.push(S.contacts.filter(c=>c.at>a&&c.at<=b).length)}return out}
 
 /* ============ layout ============ */
-const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Website"],["sourced","Materials supplied","cube"]];
-const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials supplied"};
+const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Website"],["content","Text and photos","pic"],["sourced","Materials supplied","cube"]];
+const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials supplied",content:"Text and photos"};
 function render(){
   const p=(location.hash.replace(/^#\/?/,"")||"overview").split("/");
   ui.view=TITLES[p[0]]?p[0]:"overview";ui.sel=p[1]||null;
@@ -440,6 +441,55 @@ VIEW.reports=()=>{
   <div class="card"><div class="ch"><h3>Top customers</h3><span class="mut sm">Paid invoices, 12 months</span></div><div class="cb">${r.top.length?r.top.map(([k,v])=>`<div class="hb" data-tip="${esc(k)}: ${money(v)} paid"><span class="ell">${esc(k)}</span><span class="tr"><i style="width:${v/r.top[0][1]*100}%"></i></span><b>${kfmt(v)}</b></div>`).join(""):'<div class="liveempty" style="padding:0">No paid invoices yet.</div>'}</div></div>
   </div>`;
 };
+/* ---------- website: text and photos (saved to GoHighLevel) ---------- */
+const ctCur=f=>ui.ctVals[f.key]!==undefined?ui.ctVals[f.key]:(f.value!=null?f.value:f.def);
+const ctSame=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+async function ctLoad(){
+  ui.ctBusy=true;ui.ctErr="";
+  try{const r=await fetch("/api/rm-hq/content?edit=1",{credentials:"same-origin",cache:"no-store"});if(r.status===401){location.reload();return}
+    const d=await r.json();if(!Array.isArray(d.fields))throw 0;ui.ct=d.fields;ui.ctVals={};ui.ctDirty=false;
+    if(!Object.keys(ui.ctOpen).length)ui.ctOpen[d.fields[0].group]=true}
+  catch(e){ui.ctErr="Could not load the website text from GoHighLevel. Try Refresh in a minute."}
+  ui.ctBusy=false;if(ui.view==="content")render();
+}
+function ctField(f){
+  const v=ctCur(f),changed=!ctSame(v,f.def),orig=changed?`<button class="lnk" data-act="ctorig" data-k="${f.key}">Use the original</button>`:"";
+  if(f.type==="img"){const up=ui.ctUp===f.key;
+    return `<div class="ctf ctimg"><img src="${esc(v.src)}" alt="" loading="lazy"><div class="grow"><div class="ctl">${esc(f.label)}${changed?' <span class="ctc">Changed</span>':""}</div>
+     <label class="btn s${up?" dis":""}">${I("pic")} ${up?"Uploading":"Replace photo"}<input type="file" accept="image/jpeg,image/png,image/webp" data-ctimg="${f.key}" hidden${up?" disabled":""}></label> ${orig}
+     <input class="inp" data-ct="${f.key}" data-alt="1" value="${esc(v.alt)}" maxlength="200" placeholder="Describe the photo in a few words" aria-label="${esc(f.label)}, description" style="margin-top:8px">
+     <div class="xs faint" style="margin-top:4px">Short description of the photo, for Google and screen readers.</div></div></div>`}
+  const multi=f.type==="list"||f.type==="tags"||f.type==="lines",long=multi||String(f.def).length>90;
+  const rows=multi?Math.min(14,String(v).split("\n").length+1):Math.min(6,Math.ceil(String(v).length/80)+1);
+  return `<div class="ctf"><div class="ctl">${esc(f.label)}${changed?' <span class="ctc">Changed</span>':""} ${orig}</div>${long?`<textarea class="inp" data-ct="${f.key}" rows="${rows}" aria-label="${esc(f.label)}">${esc(v)}</textarea>`:`<input class="inp" data-ct="${f.key}" value="${esc(v)}" aria-label="${esc(f.label)}">`}</div>`;
+}
+VIEW.content=()=>{
+  if(!ui.ct){if(!ui.ctBusy&&!ui.ctErr)ctLoad();return `<div class="card"><div class="liveempty">${ui.ctErr?esc(ui.ctErr):"Loading your website text from GoHighLevel"}</div></div>`}
+  const groups=[];ui.ct.forEach(f=>{let g=groups.find(x=>x.n===f.group);if(!g)groups.push(g={n:f.group,f:[]});g.f.push(f)});
+  const nChanged=ui.ct.filter(f=>!ctSame(ctCur(f),f.def)).length;
+  return `<div class="g">
+  <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:660px">Change any wording or photo on your website here, then press <b>Save to website</b>. Changes show on the site within a minute. Leave a box as it is to keep the current text, or press <b>Use the original</b> to undo a change.</p>
+   <a class="btn s" href="https://sites.leadconnectorhq.com/preview/9SPNh27UBeBADfQLSfCI" target="_blank" rel="noopener">${I("ext")} View website</a></div>
+  <div class="ctbar card"><div class="cb row" style="gap:10px;flex-wrap:wrap"><span class="grow sm"><b>${nChanged}</b> part${nChanged===1?"":"s"} of the website changed from the original. ${ui.ctDirty?'<span id="ctstate" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span id="ctstate" class="mut">All saved in GoHighLevel</span>'}</span>
+   ${ui.ctDirty?'<button class="btn" data-act="ctundo">Undo changes</button>':""}<button class="btn pri" data-act="ctsave"${ui.ctDirty&&!ui.ctBusy&&!ui.ctUp?"":" disabled"}>${I("ok")} ${ui.ctBusy?"Saving":"Save to website"}</button></div></div>
+  ${groups.map(g=>{const open=!!ui.ctOpen[g.n],c=g.f.filter(f=>!ctSame(ctCur(f),f.def)).length;
+    return `<div class="card"><button class="ch cth" data-act="ctgrp" data-g="${esc(g.n)}" aria-expanded="${open}"><h3>${esc(g.n)}</h3><span class="mut sm">${c?c+" changed · ":""}${g.f.length} item${g.f.length===1?"":"s"}</span><span class="cta">${open?"&minus;":"+"}</span></button>
+     ${open?`<div class="cb ctg">${g.f.map(ctField).join("")}</div>`:""}</div>`}).join("")}
+  </div>`;
+};
+function ctMark(){if(!ui.ctDirty){ui.ctDirty=true;const s=$("#ctstate");if(s){s.textContent="Not saved yet";s.className="";s.style.color="var(--or)";s.style.fontWeight="600"}const b=document.querySelector('[data-act="ctsave"]');if(b&&!ui.ctUp)b.disabled=false}}
+function ctShrink(file){return new Promise((ok,bad)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const k=Math.min(1,2000/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):bad(),"image/jpeg",.85)};im.onerror=()=>{URL.revokeObjectURL(u);bad()};im.src=u})}
+async function ctUpload(key,file){
+  const f=ui.ct.find(x=>x.key===key);if(!f||!file)return;
+  if(!/^image\//.test(file.type)){toast("Please choose a photo (JPG, PNG or WebP).");return}
+  ui.ctUp=key;render();
+  try{const blob=await ctShrink(file);const fd=new FormData();fd.append("file",blob,"photo.jpg");fd.append("name",f.label.split(":")[0]);
+    const r=await fetch("/api/rm-hq/content/upload",{method:"POST",credentials:"same-origin",body:fd});if(r.status===401){location.reload();return}
+    const d=await r.json();if(!d.ok)throw new Error(d.error||"");
+    const cur=ctCur(f);ui.ctVals[key]={src:d.url,alt:cur.alt};ui.ctDirty=true;toast(`${I("ok")} Photo uploaded. Press Save to website to put it live.`)}
+  catch(e){toast("Photo not uploaded. "+(e.message||"Please try again."))}
+  ui.ctUp="";render();
+}
 /* ---------- website: materials we've supplied (saved to GoHighLevel) ---------- */
 async function srcLoad(){
   ui.srcBusy=true;ui.srcErr="";
@@ -488,6 +538,19 @@ const ACT={
   useai(){},send:inGhl,sendq:inGhl,follow:inGhl,win:inGhl,source:inGhl,
   inv(e,el){invModal(el.dataset.id)},
   sendinv:inGhl,remind:inGhl,paid:inGhl,
+  ctgrp(e,el){const g=el.dataset.g;ui.ctOpen[g]=!ui.ctOpen[g];render()},
+  ctorig(e,el){const f=ui.ct.find(x=>x.key===el.dataset.k);if(!f)return;ui.ctVals[f.key]=f.type==="img"?Object.assign({},f.def):f.def;ui.ctDirty=true;render()},
+  ctundo(){ui.ct=null;ui.ctVals={};ui.ctDirty=false;render()},
+  async ctsave(){
+    const values={};ui.ct.forEach(f=>{const v=ctCur(f);if(!ctSame(v,f.def))values[f.key]=v});
+    ui.ctBusy=true;render();
+    try{const r=await fetch("/api/rm-hq/content",{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({values})});
+      if(r.status===401){location.reload();return}
+      const d=await r.json();if(!d.ok)throw new Error(d.error||"");
+      ui.ct=d.fields;ui.ctVals={};ui.ctDirty=false;toast(`${I("ok")} Saved. Your website shows the changes within a minute.`)}
+    catch(e){toast("Not saved. "+(e.message||"Could not reach GoHighLevel.")+" Please try again.")}
+    ui.ctBusy=false;render();
+  },
   srcadd(){ui.src.push({head:"",text:""});ui.srcDirty=true;render();const ins=document.querySelectorAll('[data-k="head"]');if(ins.length){ins[ins.length-1].focus();ins[ins.length-1].scrollIntoView({block:"center"})}},
   srcdel(e,el){const i=+el.dataset.i,x=ui.src[i];if((x.head||x.text)&&!confirm("Remove "+(x.head?'"'+x.head+'"':"this entry")+" from the website?"))return;ui.src.splice(i,1);ui.srcDirty=true;render()},
   srcup(e,el){const i=+el.dataset.i;if(i<1)return;[ui.src[i-1],ui.src[i]]=[ui.src[i],ui.src[i-1]];ui.srcDirty=true;render()},
@@ -516,16 +579,17 @@ document.addEventListener("click",e=>{
   if(g){const to=g.dataset.go;if(!to||to.endsWith("/"))return;closeModal();ui.bell=false;$("#side")&&$("#side").classList.remove("open");if(location.hash==="#/"+to)render();else location.hash="#/"+to}
   else if(ui.bell&&!e.target.closest(".bell")){ui.bell=false;render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="pipesel"){PIPE=e.target.value;try{localStorage.setItem("rmhq-pipe",PIPE)}catch(x){}setStages();render()}});
+document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.ctimg){ctUpload(e.target.dataset.ctimg,e.target.files[0]);return}if(e.target.id==="pipesel"){PIPE=e.target.value;try{localStorage.setItem("rmhq-pipe",PIPE)}catch(x){}setStages();render()}});
 document.addEventListener("input",e=>{
   if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
+  if(e.target.dataset.ct){const f=ui.ct&&ui.ct.find(x=>x.key===e.target.dataset.ct);if(f){if(f.type==="img"){const c=Object.assign({},ctCur(f));c.alt=e.target.value;ui.ctVals[f.key]=c}else ui.ctVals[f.key]=e.target.value;ctMark()}return}
   if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srcl")&&document.querySelector(".srcl").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.line!=null){const box=e.target.closest(".box");const id=box.querySelector("[data-act=sendq]").dataset.id;const o=O(id);const i=+e.target.dataset.line;o.lines[i].p=Math.max(0,parseFloat(e.target.value)||0);
     $("#lt"+i).textContent=money2(o.lines[i].qty*o.lines[i].p);$("#qsub").textContent=money2(val(o));$("#qgst").textContent=money2(val(o)*.1);$("#qtot").textContent=money2(val(o)*1.1);save()}
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 addEventListener("hashchange",render);
-addEventListener("beforeunload",e=>{if(ui.srcDirty){e.preventDefault();e.returnValue=""}});
+addEventListener("beforeunload",e=>{if(ui.srcDirty||ui.ctDirty){e.preventDefault();e.returnValue=""}});
 /* drag and drop on the pipeline */
 let dragId=null;
 document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".op");if(!c)return;dragId=c.dataset.id;c.classList.add("drag");e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",dragId)});
@@ -549,7 +613,7 @@ async function load(fresh){
     const d=await r.json();
     if(d.configured===false){fail("GoHighLevel is not connected yet. The token still needs adding on the server.");return}
     if(d.failed||!d.contacts){fail("Could not reach GoHighLevel. Trying again in a minute.");return}
-    adopt(d);if(!(ui.view==="sourced"&&document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.src!=null))render();
+    adopt(d);const ae=document.activeElement;if(!((ui.view==="sourced"||ui.view==="content")&&(ui.srcDirty||ui.ctDirty||ui.ctUp||(ae&&ae.dataset&&(ae.dataset.src!=null||ae.dataset.ct)))))render();
     if(fresh)toast(`${I("ok")} Updated from GoHighLevel`);
   }catch(e){fail("Could not reach GoHighLevel. Trying again in a minute.")}
   finally{loading=false}
