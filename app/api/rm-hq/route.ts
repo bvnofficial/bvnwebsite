@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RM_HQ_COOKIE, rmHqAuthorised } from "@/lib/rm-hq-gate";
+import { rmHqReqOk } from "@/lib/rm-hq-gate";
 
 /**
  * Revolution HQ live feed (read only).
@@ -177,7 +177,7 @@ async function build(): Promise<J> {
 }
 
 export async function GET(req: NextRequest) {
-  if (!(await rmHqAuthorised(req.cookies.get(RM_HQ_COOKIE)?.value))) {
+  if (!(await rmHqReqOk(req))) {
     return NextResponse.json({ ok: false }, { status: 401, headers: { "cache-control": "no-store" } });
   }
   const fresh = req.nextUrl.searchParams.get("fresh") === "1";

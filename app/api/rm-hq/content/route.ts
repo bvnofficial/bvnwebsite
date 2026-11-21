@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RM_HQ_COOKIE, rmHqAuthorised } from "@/lib/rm-hq-gate";
+import { rmHqReqOk } from "@/lib/rm-hq-gate";
 import { BY_KEY, FIELDS, type ImgValue } from "@/lib/rm-site-content";
 
 /**
@@ -105,7 +105,7 @@ export function OPTIONS() {
 
 export async function GET(req: NextRequest) {
   if (req.nextUrl.searchParams.get("edit") === "1") {
-    if (!(await rmHqAuthorised(req.cookies.get(RM_HQ_COOKIE)?.value))) {
+    if (!(await rmHqReqOk(req))) {
       return NextResponse.json({ ok: false }, { status: 401, headers: NOSTORE });
     }
     try {
@@ -130,7 +130,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  if (!(await rmHqAuthorised(req.cookies.get(RM_HQ_COOKIE)?.value))) {
+  if (!(await rmHqReqOk(req))) {
     return NextResponse.json({ ok: false }, { status: 401, headers: NOSTORE });
   }
   const origin = req.headers.get("origin");

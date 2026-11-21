@@ -210,6 +210,8 @@ function makeInvoice(o){
   const v={no:"INV-"+n,c:o.c,o:o.id,title:o.title,lines:o.lines.map(l=>Object.assign({},l)),issued:now(),due:now()+30*DAY,paidAt:null,draft:true,fresh:true};
   S.invoices.unshift(v);return v;
 }
+/* inside the frame on revolutionmaterials.com.au/dashboard the sign-in key is sent as a header */
+(function(){let k=null;try{k=localStorage.getItem("rmhq-key")}catch(e){}if(!k)return;const f0=window.fetch.bind(window);window.fetch=(u,o)=>{if(typeof u==="string"&&u.startsWith("/api/rm-hq")){o=Object.assign({},o);o.headers=Object.assign({},o.headers,{Authorization:"Bearer "+k})}return f0(u,o)}})();
 const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:"",ct:null,ctVals:{},ctDirty:false,ctBusy:false,ctErr:"",ctOpen:{},ctUp:""};
 
 /* ============ stats ============ */

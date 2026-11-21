@@ -39,6 +39,15 @@ export async function rmHqAuthorised(cookieValue: string | undefined): Promise<b
   return diff === 0;
 }
 
+/** Cookie (direct visits) or "Authorization: Bearer <key>" (the dashboard
+ *  framed inside revolutionmaterials.com.au/dashboard, where browsers block
+ *  third-party cookies; the key lives in the frame's own storage). */
+export async function rmHqReqOk(req: { headers: Headers; cookies: { get(name: string): { value: string } | undefined } }): Promise<boolean> {
+  if (await rmHqAuthorised(req.cookies.get(RM_HQ_COOKIE)?.value)) return true;
+  const m = /^Bearer\s+([a-f0-9]{64})$/i.exec(req.headers.get("authorization") || "");
+  return !!m && (await rmHqAuthorised(m[1]));
+}
+
 export function rmHqGateHtml(showError: boolean): string {
   const err = showError ? '<p class="err">That password was not right. Please try again.</p>' : "";
   return `<!doctype html><html lang="en-AU"><head><meta charset="utf-8">
@@ -69,12 +78,25 @@ export function rmHqGateHtml(showError: boolean): string {
     <h1>Revolution HQ</h1>
     <p class="sub">Your live dashboard for Revolution Materials, connected to GoHighLevel.</p>
     ${err}
-    <form method="POST" action="/api/rm-hq/unlock">
+    <form method="POST" action="/api/rm-hq/unlock" id="f">
       <label for="pw">Password</label>
       <input id="pw" name="password" type="password" autocomplete="current-password" autofocus required>
       <button type="submit">Open dashboard</button>
     </form>
     <div class="foot">Stays signed in on this device for 90 days.</div>
   </div>
+  <script>
+  (function(){
+    var K="rmhq-key",HOME="/clients/revolution-materials/ceo/index.html",card=document.querySelector(".card"),f=document.getElementById("f");
+    var mem=null;function get(){try{return localStorage.getItem(K)}catch(e){return mem}}function put(v){mem=v;try{v?localStorage.setItem(K,v):localStorage.removeItem(K)}catch(e){}}
+    function open(t){return fetch(HOME,{headers:{Authorization:"Bearer "+t},cache:"no-store"}).then(function(r){if(r.status!==200)return false;return r.text().then(function(h){document.open();document.write(h);document.close();return true})}).catch(function(){return false})}
+    var t=get();if(t){card.style.visibility="hidden";open(t).then(function(ok){if(!ok){put(null);card.style.visibility=""}})}
+    f.addEventListener("submit",function(e){e.preventDefault();var b=f.querySelector("button");b.disabled=true;b.textContent="Opening";
+      fetch("/api/rm-hq/unlock",{method:"POST",body:new FormData(f),headers:{Accept:"application/json"},credentials:"include"}).then(function(r){return r.json()}).then(function(d){
+        if(d&&d.ok&&d.token){put(d.token);return open(d.token)}return false}).then(function(ok){if(!ok){b.disabled=false;b.textContent="Open dashboard";
+        var p=document.querySelector(".err");if(!p){p=document.createElement("p");p.className="err";f.parentNode.insertBefore(p,f)}p.textContent="That password was not right. Please try again."}})
+      .catch(function(){b.disabled=false;b.textContent="Open dashboard"})});
+  })();
+  </script>
 </body></html>`;
 }

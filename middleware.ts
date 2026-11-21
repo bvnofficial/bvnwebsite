@@ -13,7 +13,7 @@ import {
   isApexQuoteGated,
   apexQuoteGateHtml,
 } from "@/lib/apex-quote-gate";
-import { RM_HQ_COOKIE, RM_HQ_HOME, isRmHqGated, rmHqAuthorised, rmHqGateHtml } from "@/lib/rm-hq-gate";
+import { RM_HQ_HOME, isRmHqGated, rmHqReqOk, rmHqGateHtml } from "@/lib/rm-hq-gate";
 
 export async function middleware(request: NextRequest) {
   // Password gate for the private Raetzer client preview and its hosted site
@@ -47,7 +47,7 @@ export async function middleware(request: NextRequest) {
   // Password gate for Revolution HQ, Jim Picot's live GoHighLevel dashboard.
   // It shows real customer data, so every file under the path is gated.
   if (isRmHqGated(path)) {
-    if (!(await rmHqAuthorised(request.cookies.get(RM_HQ_COOKIE)?.value))) {
+    if (!(await rmHqReqOk(request))) {
       return new NextResponse(rmHqGateHtml(request.nextUrl.searchParams.get("rm") === "bad"), {
         status: 401,
         headers: {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RM_HQ_COOKIE, rmHqAuthorised } from "@/lib/rm-hq-gate";
+import { rmHqReqOk } from "@/lib/rm-hq-gate";
 
 /**
  * Photo upload for Revolution HQ (Website > Text and photos).
@@ -15,7 +15,7 @@ const MAX_BYTES = 4 * 1024 * 1024;
 const TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 export async function POST(req: NextRequest) {
-  if (!(await rmHqAuthorised(req.cookies.get(RM_HQ_COOKIE)?.value))) {
+  if (!(await rmHqReqOk(req))) {
     return NextResponse.json({ ok: false }, { status: 401, headers: NOSTORE });
   }
   const origin = req.headers.get("origin");

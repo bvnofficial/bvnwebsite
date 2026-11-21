@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RM_HQ_COOKIE, rmHqAuthorised } from "@/lib/rm-hq-gate";
+import { rmHqReqOk } from "@/lib/rm-hq-gate";
 
 /**
  * "Some of the materials we've sourced" list for the Revolution Materials
@@ -122,7 +122,7 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   const nostore = { "cache-control": "no-store" };
-  if (!(await rmHqAuthorised(req.cookies.get(RM_HQ_COOKIE)?.value))) {
+  if (!(await rmHqReqOk(req))) {
     return NextResponse.json({ ok: false }, { status: 401, headers: nostore });
   }
   // only the dashboard page itself may save
