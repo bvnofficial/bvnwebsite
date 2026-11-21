@@ -11,8 +11,13 @@
 //   list  <ul> items, one per line ("And more" lines keep the faded style)
 //   tags  pill tags, one per line
 //   img   photo { src, alt }; credit = index in the footer photo credits
+//   show  "show" or "hide" for a whole section, card or item
+//   num   a statistic such as "23+" (counts up on the page)
+//   email the contact email, changed everywhere it appears (links too)
+//   phone the contact phone, changed everywhere it appears (call links too)
+// A selector may match several elements; all of them are changed.
 
-export type FieldType = "text" | "own" | "lines" | "list" | "tags" | "img";
+export type FieldType = "text" | "own" | "lines" | "list" | "tags" | "img" | "show" | "num" | "email" | "phone";
 export type ImgValue = { src: string; alt: string };
 export type Field = {
   key: string;
@@ -128,6 +133,56 @@ add(g, "enq.small", "Small lines under the email", "#enquire .small", "lines", "
 /* Footer */
 g = "Footer";
 add(g, "foot.about", "About line", "footer .foot > div:first-child p", "text", "Specialist sourcing of metals, alloys and fasteners from suppliers around the world, for Australian businesses.");
+
+
+/* ---------- more control: contact, menu, buttons, statistics, show or hide ---------- */
+const MORE: Field[] = [];
+const more = (group: string, key: string, label: string, sel: string, type: FieldType, def: string | ImgValue) =>
+  MORE.push({ key, group, label, sel, type, def });
+
+g = "Contact details";
+more(g, "contact.email", "Email address (changed everywhere on the site)", 'a[href^="mailto:"]', "email", "info@revolutionmaterials.com.au");
+more(g, "contact.phone", "Phone number (changed everywhere on the site)", 'a[href^="tel:"]', "phone", "0428 400 983");
+more(g, "contact.address", "Address in the footer", "footer .foot > div:nth-child(2) li:last-child p", "lines", "39 Little Boundary Road\nLaverton North VIC 3026");
+
+g = "Logo, menu and buttons";
+more(g, "logo", "Logo (top and footer)", "header .brand img, footer .foot img", "img", img("6afab75777a01e46221fd28b/rm-logo.png", "Revolution Materials"));
+["Materials", "Forms", "Fasteners", "Experience", "Past supplies", "Contact"].forEach((t, i) => {
+  more(g, `nav.${i + 1}`, `Menu item ${i + 1}`, `#nav > a:nth-child(${i + 1})`, "text", t);
+  more(g, `nav.${i + 1}.show`, `Show menu item ${i + 1}`, `#nav > a:nth-child(${i + 1})`, "show", "show");
+});
+more(g, "btn.header", "Button at the top right", "header .nav > a.btn", "text", "Request a Quote");
+more(g, "btn.hero1", "First button in the top section", ".hero .cta a:nth-child(1)", "own", "Email Your Enquiry");
+more(g, "btn.hero2", "Second button in the top section", ".hero .cta a:nth-child(2)", "text", "Request a Quote");
+more(g, "btn.ask", "Button on the Not on the list card", "#materials .mat.ask .btn", "text", "Ask us");
+
+g = "Statistics";
+more(g, "stats.show", "Show the statistics band", "#rmstats", "show", "show");
+[["23+", "Years in Business"], ["40+", "Years of Industry Experience"], ["11", "Countries Sourced From"], ["300+", "Australian Customers Supplied"]].forEach(([n, l], i) => {
+  more(g, `stats.${i + 1}.n`, `Statistic ${i + 1}, number`, `#rmstats .si:nth-child(${i + 1}) .sv`, "num", n);
+  more(g, `stats.${i + 1}.l`, `Statistic ${i + 1}, label`, `#rmstats .si:nth-child(${i + 1}) .sl`, "text", l);
+  more(g, `stats.${i + 1}.show`, `Show statistic ${i + 1}`, `#rmstats .si:nth-child(${i + 1})`, "show", "show");
+});
+
+g = "Show or hide parts of the page";
+more(g, "show.lead2", "Second line in the top section", ".hero .lead2", "show", "show");
+more(g, "show.welcome", "Line under the buttons in the top section", ".hero .welcome", "show", "show");
+more(g, "show.trust", "Strip under the top section", ".trust", "show", "show");
+[1, 2, 3, 4].forEach((i) => more(g, `show.trust.${i}`, `Strip item ${i}`, `.trust .wrap > div:nth-child(${i})`, "show", "show"));
+more(g, "show.materials", "Materials section", "#materials", "show", "show");
+MATS.forEach(([name], i) => more(g, `show.mat.${i + 1}`, `Materials card: ${name}`, `#materials .mat:nth-child(${i + 1})`, "show", "show"));
+more(g, "show.mat.ask", "Materials card: Not on the list?", "#materials .mat.ask", "show", "show");
+more(g, "show.mat.note", "Note under the materials cards", "#materials .note", "show", "show");
+more(g, "show.forms", "Forms and fasteners section", "#forms", "show", "show");
+more(g, "show.forms.1", "Available Forms panel", "#forms .panel:nth-child(1)", "show", "show");
+more(g, "show.forms.2", "Fasteners panel", "#forms .panel:nth-child(2)", "show", "show");
+more(g, "show.experience", "Experience section", "#experience", "show", "show");
+[1, 2, 3, 4, 5, 6, 7].forEach((i) => more(g, `show.exp.${i}`, `Experience point ${i}`, `#experience .pt:nth-child(${i})`, "show", "show"));
+more(g, "show.exp.disc", "Experience small print", "#experience .disc", "show", "show");
+more(g, "show.sourced", "Materials we've sourced section", "#sourced", "show", "show");
+
+// the new groups come first in the editor
+F.unshift(...MORE);
 
 export const FIELDS: Field[] = F;
 export const BY_KEY: Record<string, Field> = Object.fromEntries(F.map((f) => [f.key, f]));

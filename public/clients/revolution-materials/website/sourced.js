@@ -90,43 +90,79 @@
 
   /* Text and photos Jim changed on Revolution HQ (Website > Text and photos).
      The last version seen is kept in this browser so repeat visits show it at once. */
-  var CKEY = "rm-content-v1";
+  var CKEY = "rm-content-v2";
   function setOwn(el, v) {
     var nodes = el.childNodes, last = null;
     for (var i = 0; i < nodes.length; i++) if (nodes[i].nodeType === 3 && nodes[i].textContent.trim()) last = nodes[i];
     if (last) last.textContent = v; else el.appendChild(document.createTextNode(v));
   }
-  var ORIG = {};
+  /* originals are remembered per element so a fresh list can undo older changes */
+  var TOUCHED = [];
+  function remember(el, kind) {
+    if (el.__rmo) return;
+    el.__rmo = kind === "img" ? { img: true, src: el.getAttribute("src"), alt: el.alt, srcset: el.getAttribute("srcset"), disp: el.style.display }
+      : { html: el.innerHTML, disp: el.style.display, href: el.getAttribute("href") };
+    TOUCHED.push(el);
+  }
   function restoreContent() {
-    Object.keys(ORIG).forEach(function (sel) {
-      var o = ORIG[sel], el = document.querySelector(sel);
-      if (!el) return;
+    TOUCHED.forEach(function (el) {
+      var o = el.__rmo;
       if (o.img) { el.src = o.src; el.alt = o.alt; if (o.srcset) el.setAttribute("srcset", o.srcset); }
-      else el.innerHTML = o.html;
+      else { el.innerHTML = o.html; if (o.href != null) el.setAttribute("href", o.href); }
+      el.style.display = o.disp;
+      el.__rmo = null;
     });
+    TOUCHED = [];
+  }
+  var intlPhone = function (v) { var d = String(v).replace(/[^0-9+]/g, ""); return d.charAt(0) === "0" ? "+61" + d.slice(1) : d; };
+  /* swap old text for new in every text node (contact email and phone) */
+  function swapText(oldT, newT) {
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n, hits = [];
+    while ((n = w.nextNode())) if (n.nodeValue.indexOf(oldT) >= 0 && !(n.parentNode && /^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName))) hits.push(n);
+    hits.forEach(function (t) { remember(t.parentNode); t.nodeValue = t.nodeValue.split(oldT).join(newT); });
   }
   function applyContent(list) {
     if (!Array.isArray(list)) return;
     var hideCredits = [];
     list.forEach(function (a) {
-      var el;
-      try { el = document.querySelector(a.sel); } catch (e) { return; }
-      if (!el) return;
-      if (!ORIG[a.sel]) ORIG[a.sel] = a.type === "img" ? { img: true, src: el.getAttribute("src"), alt: el.alt, srcset: el.getAttribute("srcset") } : { html: el.innerHTML };
+      var els;
+      try { els = document.querySelectorAll(a.sel); } catch (e) { return; }
       var v = a.value;
-      if (a.type === "img") {
-        if (!v || !v.src) return;
-        el.removeAttribute("srcset");
-        el.src = v.src;
-        el.alt = v.alt || "";
-        if (a.credit != null) hideCredits.push(a.credit);
-      } else if (a.type === "text") el.textContent = v;
-      else if (a.type === "own") setOwn(el, v);
-      else if (a.type === "lines") el.innerHTML = String(v).split("\n").map(esc).join("<br>");
-      else if (a.type === "list") el.innerHTML = String(v).split("\n").filter(Boolean).map(function (l) {
-        return (/^(and more|other )/i.test(l) ? '<li class="more">' : "<li>") + esc(l) + "</li>";
-      }).join("");
-      else if (a.type === "tags") el.innerHTML = String(v).split("\n").filter(Boolean).map(function (l) { return "<span>" + esc(l) + "</span>"; }).join("");
+      if (a.type === "email" || a.type === "phone") {
+        var oldT = a.def || (a.type === "email" ? "info@revolutionmaterials.com.au" : "0428 400 983");
+        els.forEach(function (el) {
+          remember(el);
+          var h = el.getAttribute("href") || "";
+          if (a.type === "email") el.setAttribute("href", h.replace(oldT, v));
+          else el.setAttribute("href", "tel:" + intlPhone(v));
+        });
+        swapText(oldT, v);
+        return;
+      }
+      els.forEach(function (el) {
+        remember(el, a.type);
+        if (a.type === "img") {
+          if (!v || !v.src) return;
+          el.removeAttribute("srcset");
+          el.src = v.src;
+          el.alt = v.alt || "";
+          if (a.credit != null) hideCredits.push(a.credit);
+        } else if (a.type === "show") el.style.display = v === "hide" ? "none" : "";
+        else if (a.type === "num") {
+          var m = /^([0-9][0-9,.]*)\s?(.*)$/.exec(v) || [];
+          el.dataset.n = String(parseFloat(String(m[1] || "0").replace(/,/g, "")) || 0);
+          el.dataset.plus = m[2] || "";
+          el.setAttribute("aria-label", v);
+          el.textContent = v;
+        }
+        else if (a.type === "text") el.textContent = v;
+        else if (a.type === "own") setOwn(el, v);
+        else if (a.type === "lines") el.innerHTML = String(v).split("\n").map(esc).join("<br>");
+        else if (a.type === "list") el.innerHTML = String(v).split("\n").filter(Boolean).map(function (l) {
+          return (/^(and more|other )/i.test(l) ? '<li class="more">' : "<li>") + esc(l) + "</li>";
+        }).join("");
+        else if (a.type === "tags") el.innerHTML = String(v).split("\n").filter(Boolean).map(function (l) { return "<span>" + esc(l) + "</span>"; }).join("");
+      });
     });
     var ul = document.getElementById("credits");
     if (ul) {
@@ -166,11 +202,11 @@
     var st = document.createElement("style");
     st.textContent =
       "#rmstats{background:var(--navy,#003a7c);color:#fff;padding:56px 0}" +
-      "#rmstats .sgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;text-align:center}" +
+      "#rmstats .sgrid{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:24px;text-align:center}" +
       "#rmstats .sv{font-size:clamp(38px,5vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}" +
       "#rmstats .sl{margin-top:10px;font-size:15px;font-weight:600;color:#cfdcf0;line-height:1.4}" +
       "#rmstats .si+.si{border-left:1px solid rgba(255,255,255,.18)}" +
-      "@media (max-width:760px){#rmstats{padding:44px 0}#rmstats .sgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 12px}#rmstats .si:nth-child(3){border-left:0}}";
+      "@media (max-width:760px){#rmstats{padding:44px 0}#rmstats .sgrid{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 12px}#rmstats .si:nth-child(3){border-left:0}}";
     document.head.appendChild(st);
     var sec = document.createElement("section");
     sec.id = "rmstats";

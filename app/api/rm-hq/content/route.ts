@@ -72,8 +72,13 @@ function clean(input: unknown): Values | null {
       out[k] = { src, alt };
     } else {
       let v = String(raw ?? "").replace(/\r\n?/g, "\n");
-      v = f.type === "text" || f.type === "own" ? v.replace(/\s+/g, " ").trim() : v.split("\n").map((l) => l.trim()).filter(Boolean).join("\n");
+      const multi = f.type === "lines" || f.type === "list" || f.type === "tags";
+      v = multi ? v.split("\n").map((l) => l.trim()).filter(Boolean).join("\n") : v.replace(/\s+/g, " ").trim();
       v = v.slice(0, MAX_TEXT);
+      if (f.type === "show" && v !== "show" && v !== "hide") continue;
+      if (f.type === "num" && !/^[0-9][0-9,.]{0,8} ?[+%]?$/.test(v)) continue;
+      if (f.type === "email" && !/^[^\s@<>"']+@[^\s@<>"']+\.[a-z]{2,}$/i.test(v)) continue;
+      if (f.type === "phone" && !/^[0-9+() ]{6,20}$/.test(v)) continue;
       if (!v || v === f.def) continue; // empty means "use the original"
       out[k] = v;
     }
@@ -120,7 +125,7 @@ export async function GET(req: NextRequest) {
     const values = await load();
     const apply = Object.entries(values).map(([k, value]) => {
       const f = BY_KEY[k];
-      return { sel: f.sel, type: f.type, value, ...(f.credit != null ? { credit: f.credit } : {}) };
+      return { sel: f.sel, type: f.type, value, ...(f.credit != null ? { credit: f.credit } : {}), ...(f.type === "email" || f.type === "phone" ? { def: f.def } : {}) };
     });
     return NextResponse.json({ apply }, { headers });
   } catch {
