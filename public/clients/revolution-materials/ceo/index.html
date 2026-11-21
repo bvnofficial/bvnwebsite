@@ -136,7 +136,20 @@ h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-
 .loading{display:grid;place-items:center;min-height:100vh;color:#6b7280;font:600 15px Inter,system-ui,sans-serif;padding:20px;text-align:center}
 .pipesel{font:inherit;font-size:13px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:#fff}
 .liveempty{padding:22px;color:#6b7280;font-size:14px}
-.ctg{display:grid;gap:16px}.ctf .ctl{font-size:12.5px;font-weight:700;margin-bottom:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ctf textarea{resize:vertical;line-height:1.5;font:inherit;font-size:13.5px}.ctc{font-size:11px;font-weight:700;color:var(--or);background:rgba(232,96,16,.1);padding:2px 7px;border-radius:6px}.lnk{border:0;background:none;padding:0;color:var(--or);font-weight:600;font-size:12px;cursor:pointer;text-decoration:underline}.emg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}.empv{background:#FAFAFB;border:1px solid var(--line2);border-radius:12px;padding:16px 18px;font-size:13.5px}.emtx{white-space:pre-line;line-height:1.6}@media(max-width:900px){.emg{grid-template-columns:1fr}}.ctshow{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:600}.ctshow input{width:18px;height:18px;accent-color:var(--or);flex:none}.ctg .ctshow+.ctshow{margin-top:-8px}.ctimg{display:flex;gap:14px;align-items:flex-start}.ctimg>img{width:150px;height:105px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none;background:#f3f4f6}.ctimg label.btn{cursor:pointer}.ctimg label.dis{opacity:.5;pointer-events:none}.cth{width:100%;border:0;border-bottom:1px solid var(--line2);background:none;text-align:left;cursor:pointer;font:inherit}.cth .cta{font-size:20px;font-weight:600;color:var(--mut);width:20px;text-align:center}.ctbar{position:sticky;top:8px;z-index:5}@media(max-width:640px){.ctimg{flex-direction:column}.ctimg>img{width:100%;height:160px}}
+.ctg{display:grid;gap:16px}.ctf .ctl{font-size:12.5px;font-weight:700;margin-bottom:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ctf textarea{resize:vertical;line-height:1.5;font:inherit;font-size:13.5px}.ctc{font-size:11px;font-weight:700;color:var(--or);background:rgba(232,96,16,.1);padding:2px 7px;border-radius:6px}.lnk{border:0;background:none;padding:0;color:var(--or);font-weight:600;font-size:12px;cursor:pointer;text-decoration:underline}.emg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}.empv{background:#FAFAFB;border:1px solid var(--line2);border-radius:12px;padding:16px 18px;font-size:13.5px}.emtx{white-space:pre-line;line-height:1.6}@media(max-width:900px){.emg{grid-template-columns:1fr}}.ctshow{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:600}.ctshow input{width:18px;height:18px;accent-color:var(--or);flex:none}.ctg .ctshow+.ctshow{margin-top:-8px}.ctimg{display:flex;gap:14px;align-items:flex-start}.ctimg>img{width:150px;height:105px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none;background:#f3f4f6}.ctimg label.btn{cursor:pointer}.ctimg label.dis{opacity:.5;pointer-events:none}.cth{width:100%;border:0;border-bottom:1px solid var(--line2);background:none;text-align:left;cursor:pointer;font:inherit}.cth .cta{font-size:20px;font-weight:600;color:var(--mut);width:20px;text-align:center}.ctbar{position:sticky;top:74px;z-index:5}@media(max-width:900px){.ctbar{top:64px}}@media(max-width:640px){.ctimg{flex-direction:column}.ctimg>img{width:100%;height:160px}}
+body.ctmode .page{padding-right:calc((100vw - 236px)*.54 + 34px)}
+#pvwrap{display:none;position:fixed;top:78px;right:20px;bottom:20px;width:calc((100vw - 236px)*.54);z-index:15;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh2);flex-direction:column;overflow:hidden}
+#pvwrap.show{display:flex}
+.pvbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line2);background:#FAFAFB}
+.pvseg{display:flex;background:#eef0f3;border-radius:9px;padding:3px}.pvseg button{border:0;background:none;font:inherit;font-size:12px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;color:var(--mut)}.pvseg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.pvx,.pvbtn{display:none}
+.pvstage{position:relative;flex:1;overflow:hidden;background:#e9ecf0}
+.pvstage iframe{position:absolute;top:0;left:0;border:0;transform-origin:0 0;background:#fff}
+.pvload{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut);font-size:14px;background:#fff}
+.cthelp{background:linear-gradient(135deg,rgba(232,96,16,.08),rgba(232,96,16,.02));border:1px solid rgba(232,96,16,.25);border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.5}
+.ctcard .cth{gap:12px}.ctico{width:30px;height:30px;border-radius:8px;background:#f3f4f6;display:grid;place-items:center;flex:none;color:var(--mut)}.ctcard.on .ctico{background:var(--or);color:#fff}.ctcard.on{border-color:rgba(232,96,16,.45)}
+.ctf.flash{animation:ctflash 1.6s}@keyframes ctflash{0%,40%{background:rgba(232,96,16,.14);box-shadow:0 0 0 6px rgba(232,96,16,.14);border-radius:10px}100%{background:transparent;box-shadow:0 0 0 6px transparent}}
+@media(max-width:1100px){body.ctmode .page{padding-right:26px}#pvwrap.show{display:none}#pvwrap.show.open{display:flex;inset:10px;width:auto;top:10px;z-index:80}.pvx,.pvbtn{display:inline-flex}}
 .srcl{padding:6px 16px}.srci{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line2)}.srci:last-child{border-bottom:0}.srcn{width:22px;flex:none;padding-top:9px;color:var(--mut);font-size:12px;font-weight:600}.srcf{display:grid;gap:8px;min-width:0}.srcf .srch{font-weight:700}.srcf textarea{resize:vertical;min-height:70px;line-height:1.5;font:inherit;font-size:13.5px}.srcb{display:flex;gap:4px;flex:none;padding-top:4px}.btn[disabled]{opacity:.45;cursor:default}@media(max-width:640px){.srci{flex-wrap:wrap}.srcb{width:100%;justify-content:flex-end}}
 </style>
 </head>
@@ -264,6 +277,7 @@ function render(){
    </div></div>`;
   const q=$("#q");if(q&&ui.focusQ){q.focus();q.setSelectionRange(q.value.length,q.value.length);ui.focusQ=false}
   const ms=$(".msgs");if(ms)ms.scrollTop=ms.scrollHeight;
+  pvSync();if(ui.view==="content"&&ui.ct)pvApply();
 }
 function bellPanel(){
   return `<div class="npanel"><div class="ch"><h3>Notifications</h3><button class="btn s ghost" data-act="readall">Mark all read</button></div>${S.notices.slice(0,12).map(n=>`<div class="li" data-go="${n.go}"><span class="dot" style="${n.unread?"":"background:transparent"}"></span><span class="grow sm">${esc(n.text)}</span><span class="faint xs nw">${rel(n.at)}</span></div>`).join("")}</div>`;
@@ -468,6 +482,77 @@ VIEW.emails=()=>{
   <div class="card"><div class="ch"><h3>Signature</h3><span class="mut sm">At the end of every automatic email</span></div><div class="cb" style="max-width:520px">${emField("sig",6)}</div></div>
   </div>`;
 };
+/* ---------- live preview of the website beside the Text and photos editor ---------- */
+const PV={el:null,frame:null,ready:false,mode:"desktop",open:false,hov:null,t:0};
+const PV_GROUP=[[".hero","Top of the page"],[".trust","Strip under the top section"],["#materials","Materials"],["#forms","Forms and fasteners"],["#rmstats","Statistics"],["#experience","Experience and service"],["#sourced","Materials we've sourced (heading)"],["#enquire","Enquiry section"],["footer","Footer"],["header","Logo, menu and buttons"]];
+function pvEnsure(){
+  if(PV.el)return;
+  const w=document.createElement("div");w.id="pvwrap";
+  w.innerHTML=`<div class="pvbar"><b class="sm">Live preview</b><span class="xs mut grow">Click any text or photo to edit it</span>
+    <div class="pvseg"><button data-pv="desktop" class="on">Computer</button><button data-pv="phone">Phone</button></div>
+    <button class="btn s ghost pvx" data-pv="close" aria-label="Close preview">${I("x")}</button></div>
+   <div class="pvstage"><iframe title="Website preview" src="/clients/revolution-materials/website/index.html?rmedit=1"></iframe><div class="pvload">Loading your website</div></div>`;
+  document.body.appendChild(w);PV.el=w;PV.frame=w.querySelector("iframe");
+  w.addEventListener("click",e=>{const b=e.target.closest("[data-pv]");if(!b)return;const m=b.dataset.pv;
+    if(m==="close"){PV.open=false;pvSync();return}PV.mode=m;w.querySelectorAll(".pvseg button").forEach(x=>x.classList.toggle("on",x.dataset.pv===m));pvFit()});
+  PV.frame.addEventListener("load",pvHook);
+  addEventListener("resize",pvFit);
+}
+function pvDoc(){try{return PV.frame&&PV.frame.contentDocument}catch(e){return null}}
+function pvFit(){
+  if(!PV.el)return;const st=PV.el.querySelector(".pvstage"),W=st.clientWidth,H=st.clientHeight,f=PV.frame;if(!W)return;
+  const base=PV.mode==="phone"?390:1280,k=Math.min(1,W/base);
+  f.style.width=base+"px";f.style.height=Math.round(H/k)+"px";f.style.transform=`scale(${k})`;
+  f.style.left=Math.max(0,Math.round((W-base*k)/2))+"px";
+}
+function pvSync(){
+  const on=ui.view==="content"&&!!ui.ct;
+  document.body.classList.toggle("ctmode",on);
+  if(!on){if(PV.el)PV.el.classList.remove("show");return}
+  pvEnsure();PV.el.classList.toggle("show",true);PV.el.classList.toggle("open",PV.open);pvFit();
+}
+/* fields that differ from the original, in the form the site script applies */
+function pvList(){return ui.ct.filter(f=>!ctSame(ctCur(f),f.def)).map(f=>({sel:f.sel,type:f.type,value:ctCur(f),def:f.def,credit:f.credit}))}
+function pvApply(){clearTimeout(PV.t);PV.t=setTimeout(()=>{const w=PV.frame&&PV.frame.contentWindow;if(PV.ready&&w&&w.__rmApply&&ui.ct){try{w.__rmApply(pvList())}catch(e){}}},120)}
+function pvHook(){
+  const d=pvDoc();if(!d)return;
+  const st=d.createElement("style");
+  st.textContent=".preview{display:none!important}.rmhov{outline:2px dashed #e86010!important;outline-offset:3px;cursor:pointer!important}.rmsel{outline:3px solid #e86010!important;outline-offset:3px;transition:outline-color .3s}a,button,label,input,textarea{cursor:pointer!important}";
+  d.head.appendChild(st);
+  const pick=t=>{
+    if(!ui.ct||!t||t.nodeType!==1)return null;let best=null,depth=-1;
+    ui.ct.forEach(f=>{if(f.type==="show")return;let els;try{els=d.querySelectorAll(f.sel)}catch(e){return}
+      els.forEach(el=>{if(el===t||el.contains(t)){let n=0,x=el;while(x){n++;x=x.parentElement}if(n>depth){depth=n;best={f,el}}}})});
+    return best};
+  d.addEventListener("mouseover",e=>{const h=pick(e.target);const el=h?h.el:null;if(PV.hov&&PV.hov!==el)PV.hov.classList.remove("rmhov");if(el){el.classList.add("rmhov");el.title="Click to edit: "+h.f.label}PV.hov=el},true);
+  d.addEventListener("click",e=>{
+    e.preventDefault();e.stopPropagation();
+    if(e.target.closest("#track")){location.hash="#/sourced";return}
+    const h=pick(e.target);
+    if(h){ctGoto(h.f.key,true);return}
+    const g=PV_GROUP.find(([s])=>e.target.closest(s));if(g){ui.ctOpen={[g[1]]:true};render();const c=document.querySelector(`[data-g="${CSS.escape(g[1])}"]`);if(c)c.scrollIntoView({behavior:"smooth",block:"start"})}
+  },true);
+  d.addEventListener("submit",e=>e.preventDefault(),true);
+  setTimeout(()=>{PV.ready=true;const l=PV.el.querySelector(".pvload");if(l)l.style.display="none";pvApply()},400);
+}
+/* open a field in the editor (from a click on the preview) */
+function ctGoto(key,fromPreview){
+  const f=ui.ct.find(x=>x.key===key);if(!f)return;
+  ui.ctOpen={[f.group]:true};PV.open=false;render();
+  const el=document.querySelector(`[data-ct="${CSS.escape(key)}"],[data-ctimg="${CSS.escape(key)}"]`);if(!el)return;
+  const box=el.closest(".ctf")||el;box.scrollIntoView({behavior:"smooth",block:"center"});
+  box.classList.remove("flash");void box.offsetWidth;box.classList.add("flash");
+  if(el.dataset.ct&&el.type!=="checkbox")setTimeout(()=>el.focus({preventScroll:true}),350);
+}
+/* show where a field is on the preview while its box is in focus */
+function pvShow(key){
+  const d=pvDoc(),f=ui.ct&&ui.ct.find(x=>x.key===key);if(!d||!f)return;
+  d.querySelectorAll(".rmsel").forEach(x=>x.classList.remove("rmsel"));
+  let el=null;try{el=d.querySelector(f.sel)}catch(e){}
+  if(!el)return;if(el.offsetParent===null&&el.parentElement)el=el.parentElement;
+  el.classList.add("rmsel");el.scrollIntoView({behavior:"smooth",block:"center"});
+}
+window.addEventListener("message",e=>{if(e.origin===location.origin&&e.data&&e.data.rmPreviewReady){PV.ready=true;pvApply()}});
 /* ---------- website: text and photos (saved to GoHighLevel) ---------- */
 const ctCur=f=>ui.ctVals[f.key]!==undefined?ui.ctVals[f.key]:(f.value!=null?f.value:f.def);
 const ctSame=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -493,17 +578,18 @@ function ctField(f){
   const rows=multi?Math.min(14,String(v).split("\n").length+1):Math.min(6,Math.ceil(String(v).length/80)+1);
   return `<div class="ctf"><div class="ctl">${esc(f.label)}${changed?' <span class="ctc">Changed</span>':""} ${orig}</div>${long?`<textarea class="inp" data-ct="${f.key}" rows="${rows}" aria-label="${esc(f.label)}">${esc(v)}</textarea>`:`<input class="inp" data-ct="${f.key}" value="${esc(v)}" aria-label="${esc(f.label)}">`}</div>`;
 }
+const CT_ICON={"Contact details":"phone","Logo, menu and buttons":"menu","Statistics":"chart","Show or hide parts of the page":"flag","Top of the page":"home","Strip under the top section":"ok","Materials":"cube","Forms and fasteners":"pipe","Experience and service":"clock","Materials we've sourced (heading)":"rep","Enquiry section":"msg","Footer":"inv"};
 VIEW.content=()=>{
   if(!ui.ct){if(!ui.ctBusy&&!ui.ctErr)ctLoad();return `<div class="card"><div class="liveempty">${ui.ctErr?esc(ui.ctErr):"Loading your website text from GoHighLevel"}</div></div>`}
   const groups=[];ui.ct.forEach(f=>{let g=groups.find(x=>x.n===f.group);if(!g)groups.push(g={n:f.group,f:[]});g.f.push(f)});
   const nChanged=ui.ct.filter(f=>!ctSame(ctCur(f),f.def)).length;
-  return `<div class="g">
-  <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:660px">Change any wording or photo on your website here, then press <b>Save to website</b>. Changes show on the site within a minute. Leave a box as it is to keep the current text, or press <b>Use the original</b> to undo a change.</p>
-   <a class="btn s" href="https://revolutionmaterials.com.au/" target="_blank" rel="noopener">${I("ext")} View website</a></div>
+  return `<div class="g ctwrap">
+  <div class="cthelp"><b>Click anything on the preview</b> to edit it, or pick a section below. Your changes show in the preview as you type. Press <b>Save to website</b> to put them live.</div>
+  <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn s pvbtn" data-act="pvopen">${I("pic")} Show preview</button><a class="btn s" href="https://revolutionmaterials.com.au/" target="_blank" rel="noopener">${I("ext")} Open the real website</a></div>
   <div class="ctbar card"><div class="cb row" style="gap:10px;flex-wrap:wrap"><span class="grow sm"><b>${nChanged}</b> part${nChanged===1?"":"s"} of the website changed from the original. ${ui.ctDirty?'<span id="ctstate" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span id="ctstate" class="mut">All saved in GoHighLevel</span>'}</span>
    ${ui.ctDirty?'<button class="btn" data-act="ctundo">Undo changes</button>':""}<button class="btn pri" data-act="ctsave"${ui.ctDirty&&!ui.ctBusy&&!ui.ctUp?"":" disabled"}>${I("ok")} ${ui.ctBusy?"Saving":"Save to website"}</button></div></div>
   ${groups.map(g=>{const open=!!ui.ctOpen[g.n],c=g.f.filter(f=>!ctSame(ctCur(f),f.def)).length;
-    return `<div class="card"><button class="ch cth" data-act="ctgrp" data-g="${esc(g.n)}" aria-expanded="${open}"><h3>${esc(g.n)}</h3><span class="mut sm">${c?c+" changed · ":""}${g.f.length} item${g.f.length===1?"":"s"}</span><span class="cta">${open?"&minus;":"+"}</span></button>
+    return `<div class="card ctcard${open?" on":""}"><button class="ch cth" data-act="ctgrp" data-g="${esc(g.n)}" aria-expanded="${open}"><span class="ctico">${I(CT_ICON[g.n]||"quote")}</span><h3>${esc(g.n)}</h3><span class="mut sm">${c?c+" changed · ":""}${g.f.length} item${g.f.length===1?"":"s"}</span><span class="cta">${open?"&minus;":"+"}</span></button>
      ${open?`<div class="cb ctg">${g.f.map(ctField).join("")}</div>`:""}</div>`}).join("")}
   </div>`;
 };
@@ -581,7 +667,8 @@ const ACT={
     catch(e){toast("Not saved. "+(e.message||"Could not reach GoHighLevel.")+" Please try again.")}
     ui.emBusy=false;render();
   },
-  ctgrp(e,el){const g=el.dataset.g;ui.ctOpen[g]=!ui.ctOpen[g];render()},
+  ctgrp(e,el){const g=el.dataset.g,was=!!ui.ctOpen[g];ui.ctOpen=was?{}:{[g]:true};render();if(!was){const c=document.querySelector(`[data-g="${CSS.escape(g)}"]`);if(c)c.scrollIntoView({block:"start"});const f=ui.ct.find(x=>x.group===g&&x.type!=="show");if(f)pvShow(f.key)}},
+  pvopen(){PV.open=true;pvSync()},
   ctorig(e,el){const f=ui.ct.find(x=>x.key===el.dataset.k);if(!f)return;ui.ctVals[f.key]=f.type==="img"?Object.assign({},f.def):f.def;ui.ctDirty=true;render()},
   ctundo(){ui.ct=null;ui.ctVals={};ui.ctDirty=false;render()},
   async ctsave(){
@@ -629,13 +716,14 @@ document.addEventListener("input",e=>{
   if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
   if(e.target.dataset.em){const it=ui.em&&ui.em.find(x=>x.key===e.target.dataset.em);if(it){ui.emVals[it.key]=e.target.value;const card=e.target.closest(".card"),pv=card&&card.querySelector(".empv");if(pv){const ks=[...card.querySelectorAll("[data-em]")].map(x=>x.dataset.em);if(ks.length===2)pv.outerHTML=emPreview(ks[0],ks[1])}
     if(!ui.emDirty){ui.emDirty=true;const st=$("#emstate");if(st){st.textContent="Not saved yet";st.className="";st.style.color="var(--or)";st.style.fontWeight="600"}const b=document.querySelector('[data-act="emsave"]');if(b)b.disabled=false}}return}
-  if(e.target.dataset.ct){const f=ui.ct&&ui.ct.find(x=>x.key===e.target.dataset.ct);if(f){if(f.type==="img"){const c=Object.assign({},ctCur(f));c.alt=e.target.value;ui.ctVals[f.key]=c}else if(f.type==="show"){ui.ctVals[f.key]=e.target.checked?"show":"hide";ctMark();render();return}else ui.ctVals[f.key]=e.target.value;ctMark()}return}
+  if(e.target.dataset.ct){const f=ui.ct&&ui.ct.find(x=>x.key===e.target.dataset.ct);if(f){if(f.type==="img"){const c=Object.assign({},ctCur(f));c.alt=e.target.value;ui.ctVals[f.key]=c}else if(f.type==="show"){ui.ctVals[f.key]=e.target.checked?"show":"hide";ctMark();render();pvApply();return}else ui.ctVals[f.key]=e.target.value;ctMark();pvApply()}return}
   if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srcl")&&document.querySelector(".srcl").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.line!=null){const box=e.target.closest(".box");const id=box.querySelector("[data-act=sendq]").dataset.id;const o=O(id);const i=+e.target.dataset.line;o.lines[i].p=Math.max(0,parseFloat(e.target.value)||0);
     $("#lt"+i).textContent=money2(o.lines[i].qty*o.lines[i].p);$("#qsub").textContent=money2(val(o));$("#qgst").textContent=money2(val(o)*.1);$("#qtot").textContent=money2(val(o)*1.1);save()}
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 addEventListener("hashchange",render);
+document.addEventListener("focusin",e=>{const k=e.target&&e.target.dataset&&e.target.dataset.ct;if(k&&ui.view==="content")pvShow(k)});
 addEventListener("beforeunload",e=>{if(ui.srcDirty||ui.ctDirty||ui.emDirty){e.preventDefault();e.returnValue=""}});
 /* drag and drop on the pipeline */
 let dragId=null;

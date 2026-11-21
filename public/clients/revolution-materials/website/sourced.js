@@ -85,7 +85,11 @@
       .catch(function () { clearTimeout(timer); fallback(); });
     autoScroll();
     stats();
-    content();
+    /* inside the dashboard's live preview (?rmedit=1) the dashboard supplies the content */
+    if (/[?&]rmedit=1/.test(location.search)) {
+      window.__rmApply = function (list) { restoreContent(); applyContent(list); };
+      try { window.parent.postMessage({ rmPreviewReady: true }, location.origin); } catch (e) {}
+    } else content();
   }
 
   /* Text and photos Jim changed on Revolution HQ (Website > Text and photos).
