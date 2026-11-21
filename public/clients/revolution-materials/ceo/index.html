@@ -471,7 +471,7 @@ VIEW.content=()=>{
   const nChanged=ui.ct.filter(f=>!ctSame(ctCur(f),f.def)).length;
   return `<div class="g">
   <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:660px">Change any wording or photo on your website here, then press <b>Save to website</b>. Changes show on the site within a minute. Leave a box as it is to keep the current text, or press <b>Use the original</b> to undo a change.</p>
-   <a class="btn s" href="https://revolutionmaterials.com.au/" target="_top" rel="noopener">${I("ext")} View website</a></div>
+   <a class="btn s" href="https://revolutionmaterials.com.au/" target="_blank" rel="noopener">${I("ext")} View website</a></div>
   <div class="ctbar card"><div class="cb row" style="gap:10px;flex-wrap:wrap"><span class="grow sm"><b>${nChanged}</b> part${nChanged===1?"":"s"} of the website changed from the original. ${ui.ctDirty?'<span id="ctstate" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span id="ctstate" class="mut">All saved in GoHighLevel</span>'}</span>
    ${ui.ctDirty?'<button class="btn" data-act="ctundo">Undo changes</button>':""}<button class="btn pri" data-act="ctsave"${ui.ctDirty&&!ui.ctBusy&&!ui.ctUp?"":" disabled"}>${I("ok")} ${ui.ctBusy?"Saving":"Save to website"}</button></div></div>
   ${groups.map(g=>{const open=!!ui.ctOpen[g.n],c=g.f.filter(f=>!ctSame(ctCur(f),f.def)).length;
@@ -505,7 +505,7 @@ VIEW.sourced=()=>{
   const n=ui.src.length;
   return `<div class="g">
   <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:660px">These entries scroll on your website under <b>Some of the materials we've sourced</b>, in this order. Each one has a heading and free text, so describe each order however suits it: materials, applications, industries, quantities or values. Press Save when you're done and the website updates within a minute. Please leave out customer names.</p>
-   <a class="btn s" href="https://revolutionmaterials.com.au/#sourced" target="_top" rel="noopener">${I("ext")} View on website</a></div>
+   <a class="btn s" href="https://revolutionmaterials.com.au/#sourced" target="_blank" rel="noopener">${I("ext")} View on website</a></div>
   <div class="card"><div class="ch"><h3>${n} entr${n===1?"y":"ies"} on the website</h3>${ui.srcDirty?'<span class="mut sm" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span class="mut sm">Saved in GoHighLevel</span>'}</div>
    <div class="srcl">
    ${n?ui.src.map((e,i)=>`<div class="srci"><span class="srcn">${i+1}</span><div class="grow srcf">
