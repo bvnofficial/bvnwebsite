@@ -136,7 +136,7 @@ h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}h1{font-size:24px;font-
 .loading{display:grid;place-items:center;min-height:100vh;color:#6b7280;font:600 15px Inter,system-ui,sans-serif;padding:20px;text-align:center}
 .pipesel{font:inherit;font-size:13px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:#fff}
 .liveempty{padding:22px;color:#6b7280;font-size:14px}
-.ctg{display:grid;gap:16px}.ctf .ctl{font-size:12.5px;font-weight:700;margin-bottom:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ctf textarea{resize:vertical;line-height:1.5;font:inherit;font-size:13.5px}.ctc{font-size:11px;font-weight:700;color:var(--or);background:rgba(232,96,16,.1);padding:2px 7px;border-radius:6px}.lnk{border:0;background:none;padding:0;color:var(--or);font-weight:600;font-size:12px;cursor:pointer;text-decoration:underline}.ctshow{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:600}.ctshow input{width:18px;height:18px;accent-color:var(--or);flex:none}.ctg .ctshow+.ctshow{margin-top:-8px}.ctimg{display:flex;gap:14px;align-items:flex-start}.ctimg>img{width:150px;height:105px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none;background:#f3f4f6}.ctimg label.btn{cursor:pointer}.ctimg label.dis{opacity:.5;pointer-events:none}.cth{width:100%;border:0;border-bottom:1px solid var(--line2);background:none;text-align:left;cursor:pointer;font:inherit}.cth .cta{font-size:20px;font-weight:600;color:var(--mut);width:20px;text-align:center}.ctbar{position:sticky;top:8px;z-index:5}@media(max-width:640px){.ctimg{flex-direction:column}.ctimg>img{width:100%;height:160px}}
+.ctg{display:grid;gap:16px}.ctf .ctl{font-size:12.5px;font-weight:700;margin-bottom:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ctf textarea{resize:vertical;line-height:1.5;font:inherit;font-size:13.5px}.ctc{font-size:11px;font-weight:700;color:var(--or);background:rgba(232,96,16,.1);padding:2px 7px;border-radius:6px}.lnk{border:0;background:none;padding:0;color:var(--or);font-weight:600;font-size:12px;cursor:pointer;text-decoration:underline}.emg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}.empv{background:#FAFAFB;border:1px solid var(--line2);border-radius:12px;padding:16px 18px;font-size:13.5px}.emtx{white-space:pre-line;line-height:1.6}@media(max-width:900px){.emg{grid-template-columns:1fr}}.ctshow{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:600}.ctshow input{width:18px;height:18px;accent-color:var(--or);flex:none}.ctg .ctshow+.ctshow{margin-top:-8px}.ctimg{display:flex;gap:14px;align-items:flex-start}.ctimg>img{width:150px;height:105px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none;background:#f3f4f6}.ctimg label.btn{cursor:pointer}.ctimg label.dis{opacity:.5;pointer-events:none}.cth{width:100%;border:0;border-bottom:1px solid var(--line2);background:none;text-align:left;cursor:pointer;font:inherit}.cth .cta{font-size:20px;font-weight:600;color:var(--mut);width:20px;text-align:center}.ctbar{position:sticky;top:8px;z-index:5}@media(max-width:640px){.ctimg{flex-direction:column}.ctimg>img{width:100%;height:160px}}
 .srcl{padding:6px 16px}.srci{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line2)}.srci:last-child{border-bottom:0}.srcn{width:22px;flex:none;padding-top:9px;color:var(--mut);font-size:12px;font-weight:600}.srcf{display:grid;gap:8px;min-width:0}.srcf .srch{font-weight:700}.srcf textarea{resize:vertical;min-height:70px;line-height:1.5;font:inherit;font-size:13.5px}.srcb{display:flex;gap:4px;flex:none;padding-top:4px}.btn[disabled]{opacity:.45;cursor:default}@media(max-width:640px){.srci{flex-wrap:wrap}.srcb{width:100%;justify-content:flex-end}}
 </style>
 </head>
@@ -212,7 +212,7 @@ function makeInvoice(o){
 }
 /* inside the frame on revolutionmaterials.com.au/dashboard the sign-in key is sent as a header */
 (function(){let k=null;try{k=localStorage.getItem("rmhq-key")}catch(e){}if(!k)return;const f0=window.fetch.bind(window);window.fetch=(u,o)=>{if(typeof u==="string"&&u.startsWith("/api/rm-hq")){o=Object.assign({},o);o.headers=Object.assign({},o.headers,{Authorization:"Bearer "+k})}return f0(u,o)}})();
-const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:"",ct:null,ctVals:{},ctDirty:false,ctBusy:false,ctErr:"",ctOpen:{},ctUp:""};
+const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:"",em:null,emVals:{},emDirty:false,emBusy:false,emErr:"",ct:null,ctVals:{},ctDirty:false,ctBusy:false,ctErr:"",ctOpen:{},ctUp:""};
 
 /* ============ stats ============ */
 function stats(){
@@ -240,8 +240,8 @@ function brief(st){
 function weekly(){const out=[],t=now();for(let i=11;i>=0;i--){const a=t-(i+1)*7*DAY,b=t-i*7*DAY;out.push(S.contacts.filter(c=>c.at>a&&c.at<=b).length)}return out}
 
 /* ============ layout ============ */
-const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Website"],["content","Text and photos","pic"],["sourced","Materials supplied","cube"]];
-const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials supplied",content:"Text and photos"};
+const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Marketing"],["emails","Email follow ups","msg"],["grp","Website"],["content","Text and photos","pic"],["sourced","Materials supplied","cube"]];
+const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials supplied",content:"Text and photos",emails:"Email follow ups"};
 function render(){
   const p=(location.hash.replace(/^#\/?/,"")||"overview").split("/");
   ui.view=TITLES[p[0]]?p[0]:"overview";ui.sel=p[1]||null;
@@ -443,6 +443,31 @@ VIEW.reports=()=>{
   <div class="card"><div class="ch"><h3>Top customers</h3><span class="mut sm">Paid invoices, 12 months</span></div><div class="cb">${r.top.length?r.top.map(([k,v])=>`<div class="hb" data-tip="${esc(k)}: ${money(v)} paid"><span class="ell">${esc(k)}</span><span class="tr"><i style="width:${v/r.top[0][1]*100}%"></i></span><b>${kfmt(v)}</b></div>`).join(""):'<div class="liveempty" style="padding:0">No paid invoices yet.</div>'}</div></div>
   </div>`;
 };
+/* ---------- marketing: wording of the automatic emails (GoHighLevel custom values) ---------- */
+const emCur=it=>ui.emVals[it.key]!==undefined?ui.emVals[it.key]:it.value;
+async function emLoad(){
+  ui.emBusy=true;ui.emErr="";
+  try{const r=await fetch("/api/rm-hq/emails",{credentials:"same-origin",cache:"no-store"});if(r.status===401){location.reload();return}
+    const d=await r.json();if(!d.ok)throw 0;ui.em=d.items;ui.emVals={};ui.emDirty=false}
+  catch(e){ui.emErr="Could not load the email wording from GoHighLevel. Try Refresh in a minute."}
+  ui.emBusy=false;if(ui.view==="emails")render();
+}
+function emPreview(sk,bk){const it=k=>ui.em.find(x=>x.key===k);const sig=emCur(it("sig"));
+  return `<div class="empv"><div class="xs faint">Subject</div><div class="b" style="margin-bottom:10px">${esc(emCur(it(sk)))}</div><div class="emtx">Hi Sarah,\n\n${esc(emCur(it(bk)))}\n\n${esc(sig)}</div></div>`}
+function emField(k,rows){const it=ui.em.find(x=>x.key===k),v=emCur(it),ch=v!==it.def;
+  return `<div class="ctf"><div class="ctl">${esc(it.label)}${ch?' <span class="ctc">Your wording</span>':""}${ch?` <button class="lnk" data-act="emorig" data-k="${k}">Use my suggested wording</button>`:""}</div>${it.kind==="subject"?`<input class="inp" data-em="${k}" value="${esc(v)}" maxlength="150">`:`<textarea class="inp" data-em="${k}" rows="${rows}">${esc(v)}</textarea>`}</div>`}
+VIEW.emails=()=>{
+  if(!ui.em){if(!ui.emBusy&&!ui.emErr)emLoad();return `<div class="card"><div class="liveempty">${ui.emErr?esc(ui.emErr):"Loading your email wording from GoHighLevel"}</div></div>`}
+  const box=(t,when,sk,bk)=>`<div class="card"><div class="ch"><h3>${t}</h3><span class="mut sm">${when}</span></div><div class="cb emg"><div class="ctg">${emField(sk)}${emField(bk,7)}</div>${emPreview(sk,bk)}</div></div>`;
+  return `<div class="g">
+  <p class="mut sm" style="margin:0;max-width:700px">These emails go out automatically to customers who sent an enquiry but haven't ordered yet. They stop as soon as you move the deal to <b>Won</b> or <b>Lost</b>. Write them the way you'd write to a customer, press <b>Save</b>, and the next emails use your wording. The preview on the right shows how the customer sees it.</p>
+  <div class="ctbar card"><div class="cb row" style="gap:10px;flex-wrap:wrap"><span class="grow sm">${ui.emDirty?'<span id="emstate" style="color:var(--or);font-weight:600">Not saved yet</span>':'<span id="emstate" class="mut">All saved in GoHighLevel</span>'}</span>
+   ${ui.emDirty?'<button class="btn" data-act="emundo">Undo changes</button>':""}<button class="btn pri" data-act="emsave"${ui.emDirty&&!ui.emBusy?"":" disabled"}>${I("ok")} ${ui.emBusy?"Saving":"Save"}</button></div></div>
+  ${box("Follow up after 5 days","Day 5 after the enquiry","fu5s","fu5b")}
+  ${box("Follow up after 15 days","Day 15 after the enquiry","fu15s","fu15b")}
+  <div class="card"><div class="ch"><h3>Signature</h3><span class="mut sm">At the end of every automatic email</span></div><div class="cb" style="max-width:520px">${emField("sig",6)}</div></div>
+  </div>`;
+};
 /* ---------- website: text and photos (saved to GoHighLevel) ---------- */
 const ctCur=f=>ui.ctVals[f.key]!==undefined?ui.ctVals[f.key]:(f.value!=null?f.value:f.def);
 const ctSame=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -543,6 +568,19 @@ const ACT={
   useai(){},send:inGhl,sendq:inGhl,follow:inGhl,win:inGhl,source:inGhl,
   inv(e,el){invModal(el.dataset.id)},
   sendinv:inGhl,remind:inGhl,paid:inGhl,
+  emorig(e,el){const it=ui.em.find(x=>x.key===el.dataset.k);ui.emVals[it.key]=it.def;ui.emDirty=true;render()},
+  emundo(){ui.em=null;ui.emVals={};ui.emDirty=false;render()},
+  async emsave(){
+    const values={};ui.em.forEach(it=>{if(ui.emVals[it.key]!==undefined)values[it.key]=ui.emVals[it.key]});
+    if(ui.em.some(it=>it.kind==="subject"&&!String(emCur(it)).trim())){toast("Each email needs a subject.");return}
+    ui.emBusy=true;render();
+    try{const r=await fetch("/api/rm-hq/emails",{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({values})});
+      if(r.status===401){location.reload();return}
+      const d=await r.json();if(!d.ok)throw new Error(d.error||"");
+      toast(`${I("ok")} Saved. The next follow up emails use this wording.`);ui.em=null;ui.emVals={};ui.emDirty=false;ui.emBusy=false;await emLoad();return}
+    catch(e){toast("Not saved. "+(e.message||"Could not reach GoHighLevel.")+" Please try again.")}
+    ui.emBusy=false;render();
+  },
   ctgrp(e,el){const g=el.dataset.g;ui.ctOpen[g]=!ui.ctOpen[g];render()},
   ctorig(e,el){const f=ui.ct.find(x=>x.key===el.dataset.k);if(!f)return;ui.ctVals[f.key]=f.type==="img"?Object.assign({},f.def):f.def;ui.ctDirty=true;render()},
   ctundo(){ui.ct=null;ui.ctVals={};ui.ctDirty=false;render()},
@@ -589,6 +627,8 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.ctimg){ctUpload(e.target.dataset.ctimg,e.target.files[0]);return}if(e.target.id==="pipesel"){PIPE=e.target.value;try{localStorage.setItem("rmhq-pipe",PIPE)}catch(x){}setStages();render()}});
 document.addEventListener("input",e=>{
   if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
+  if(e.target.dataset.em){const it=ui.em&&ui.em.find(x=>x.key===e.target.dataset.em);if(it){ui.emVals[it.key]=e.target.value;const card=e.target.closest(".card"),pv=card&&card.querySelector(".empv");if(pv){const ks=[...card.querySelectorAll("[data-em]")].map(x=>x.dataset.em);if(ks.length===2)pv.outerHTML=emPreview(ks[0],ks[1])}
+    if(!ui.emDirty){ui.emDirty=true;const st=$("#emstate");if(st){st.textContent="Not saved yet";st.className="";st.style.color="var(--or)";st.style.fontWeight="600"}const b=document.querySelector('[data-act="emsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.ct){const f=ui.ct&&ui.ct.find(x=>x.key===e.target.dataset.ct);if(f){if(f.type==="img"){const c=Object.assign({},ctCur(f));c.alt=e.target.value;ui.ctVals[f.key]=c}else if(f.type==="show"){ui.ctVals[f.key]=e.target.checked?"show":"hide";ctMark();render();return}else ui.ctVals[f.key]=e.target.value;ctMark()}return}
   if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srcl")&&document.querySelector(".srcl").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.line!=null){const box=e.target.closest(".box");const id=box.querySelector("[data-act=sendq]").dataset.id;const o=O(id);const i=+e.target.dataset.line;o.lines[i].p=Math.max(0,parseFloat(e.target.value)||0);
@@ -596,7 +636,7 @@ document.addEventListener("input",e=>{
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 addEventListener("hashchange",render);
-addEventListener("beforeunload",e=>{if(ui.srcDirty||ui.ctDirty){e.preventDefault();e.returnValue=""}});
+addEventListener("beforeunload",e=>{if(ui.srcDirty||ui.ctDirty||ui.emDirty){e.preventDefault();e.returnValue=""}});
 /* drag and drop on the pipeline */
 let dragId=null;
 document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".op");if(!c)return;dragId=c.dataset.id;c.classList.add("drag");e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",dragId)});
@@ -620,7 +660,7 @@ async function load(fresh){
     const d=await r.json();
     if(d.configured===false){fail("GoHighLevel is not connected yet. The token still needs adding on the server.");return}
     if(d.failed||!d.contacts){fail("Could not reach GoHighLevel. Trying again in a minute.");return}
-    adopt(d);const ae=document.activeElement;if(!((ui.view==="sourced"||ui.view==="content")&&(ui.srcDirty||ui.ctDirty||ui.ctUp||(ae&&ae.dataset&&(ae.dataset.src!=null||ae.dataset.ct)))))render();
+    adopt(d);const ae=document.activeElement;if(!((ui.view==="sourced"||ui.view==="content"||ui.view==="emails")&&(ui.srcDirty||ui.ctDirty||ui.emDirty||ui.ctUp||(ae&&ae.dataset&&(ae.dataset.src!=null||ae.dataset.ct||ae.dataset.em)))))render();
     if(fresh)toast(`${I("ok")} Updated from GoHighLevel`);
   }catch(e){fail("Could not reach GoHighLevel. Trying again in a minute.")}
   finally{loading=false}
