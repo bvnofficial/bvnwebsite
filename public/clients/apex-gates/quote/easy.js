@@ -1,10 +1,10 @@
 /* Apex Quote, the easy version. One screen: the gate picture in the middle,
    picture tiles to change it, and the price drawn so anyone can read it.
    It uses the same engine, price book and saved jobs as the full tool. */
-import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
-import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js";
+import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js?v=2";
+import { runItem, priceQuote, defaults, money, fmtNum, byId } from "./engine.js?v=2";
 import { drawItem, steelColour } from "./draw.js";
-import { buildTemplates, mergePricebook, offered, teamView, priceExtras, STAGES, stageOf, GROUPS, groupOf } from "./shared.js";
+import { buildTemplates, mergePricebook, offered, teamView, priceExtras, STAGES, stageOf, GROUPS, groupOf } from "./shared.js?v=2";
 import { makeMyJobs } from "./myjobs.js?v=2";
 
 const KEY = "apexq.v1";
@@ -451,7 +451,7 @@ function section([title, ic, hint, fields], t, it, r) {
     }
     if (f.t === "fabq") {
       // the office types what the fabricator charges; the quote keeps only the customer price
-      const upH = 1 + ((db.pb.markup || {}).hardware || 0) / 100, cur = +(it.values.fabq || 0);
+      const upH = 1 + ((db.pb.markup || {}).fab ?? (db.pb.markup || {}).hardware ?? 0) / 100, cur = +(it.values.fabq || 0);
       return `<div class="fld" style="margin-top:12px"><label>Fabricator's quote for this one, what they charge Apex before GST (leave empty to use the rate)</label><input data-fabq inputmode="decimal" value="${cur ? Math.round((cur / upH) * 100) / 100 : ""}" placeholder="For example 3900"><small class="muted">The customer pays ${cur ? money(cur, true) : "the rate price"} before GST for this gate. Only the office sees this box.</small></div>`;
     }
     if (f.t === "text") return `<div class="fld" style="margin-bottom:12px"><label>${f.label}</label><input data-txt="${f.k}" value="${esc(it.values[f.k] ?? "")}"></div>`;
@@ -768,7 +768,7 @@ function shareData(q, kind) {
     const lines = P.lines.map((l) => ({ name: l.name, desc: lineDesc(l), amount: l.sell * (1 - P.disc / 100) * k * g }))
       .concat(M.E.lines.filter((x) => x.charged).map((x) => ({ name: x.name, desc: `${fmtNum(x.qty)}${x.kind === "hours" ? " hours" : ""} added ${x.stage === "made" ? "in the workshop" : "on site"}`, amount: x.sell * g })));
     const at = j.invoice ? j.invoice.at : Date.now();
-    return { kind, qid: q.id, no: j.invoice ? j.invoice.no : q.no, date: at, due: at + (+s.invoiceDays || 7) * 864e5, company, client, lines, pay,
+    return { kind, qid: q.id, no: j.invoice ? j.invoice.no : q.no, date: at, due: at + (s.invoiceDays === "" || s.invoiceDays == null ? 7 : +s.invoiceDays) * 864e5, company, client, lines, pay,
       totals: { exGst: M.exGst, gst: M.gst, inc: M.inc, paid: M.deposit, balance: Math.max(0, M.inc - M.deposit) }, terms: `Thank you for choosing ${s.company}.` };
   }
   const P = price(q), base = P.tot.sell * (1 - P.disc / 100), k = base ? P.exGst / base : 1, { inc, exc } = includes(P);
@@ -1044,7 +1044,7 @@ function viewInvoice(q, M, st) {
   const rows = P.lines.map((l) => [l.name, lineDesc(l), l.sell * (1 - P.disc / 100) * k * g]).concat(M.E.lines.filter((x) => x.charged).map((x) => [x.name, `${fmtNum(x.qty)}${x.kind === "hours" ? (x.qty === 1 ? " hour" : " hours") : ""} added ${x.stage === "made" ? "in the workshop" : "on site"}`, x.sell * g]));
   const inv = j.invoice;
   const no = inv ? inv.no : `INV-${String(q.no).replace(/^Q-/, "")}`;
-  const at = inv ? inv.at : Date.now(), due = at + (+s.invoiceDays || 7) * 864e5;
+  const at = inv ? inv.at : Date.now(), due = at + (s.invoiceDays === "" || s.invoiceDays == null ? 7 : +s.invoiceDays) * 864e5;
   const bal = M.inc - M.deposit;
   const ctrl = `<div class="noprint">
     ${!s.abn ? `<div class="warn" style="margin-bottom:14px">${ICON.warn}<div>A tax invoice needs the ABN. ${boss() ? "Add it on the CEO dashboard, Company tab." : "Ask the office to add the ABN."}</div></div>` : ""}
@@ -1071,7 +1071,7 @@ function viewInvoice(q, M, st) {
 }
 function invoiceText(q) {
   const M = jobMoney(q), s = db.pb.settings, j = jobOf(q);
-  return `${s.company} tax invoice ${j.invoice.no}\n${q.client.name ? `For ${q.client.name}\n` : ""}\nTotal ${money(M.inc, true)} with GST${M.deposit ? `\nLess deposit ${money(M.deposit, true)}\nBalance to pay ${money(M.inc - M.deposit, true)}` : ""}\nPlease pay by ${dateStr(j.invoice.at + (+s.invoiceDays || 7) * 864e5)}${s.payHow ? `\n${s.payHow}` : ""}\n\n${s.company} ${s.phone}`;
+  return `${s.company} tax invoice ${j.invoice.no}\n${q.client.name ? `For ${q.client.name}\n` : ""}\nTotal ${money(M.inc, true)} with GST${M.deposit ? `\nLess deposit ${money(M.deposit, true)}\nBalance to pay ${money(M.inc - M.deposit, true)}` : ""}\nPlease pay by ${dateStr(j.invoice.at + (s.invoiceDays === "" || s.invoiceDays == null ? 7 : +s.invoiceDays) * 864e5)}${s.payHow ? `\n${s.payHow}` : ""}\n\n${s.company} ${s.phone}`;
 }
 
 /* a quote line made from a helper suggestion, before the quote is sent */
@@ -1239,7 +1239,7 @@ document.addEventListener("click", (e) => {
 document.addEventListener("change", (e) => {
   const el = e.target;
   if (el.dataset.num) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.num, v); redraw(); } }
-  if (el.matches("[data-fabq]")) { const upH = 1 + ((db.pb.markup || {}).hardware || 0) / 100, v = parseFloat(el.value) || 0; setVal("fabq", Math.round(v * upH * 100) / 100); redraw(); }
+  if (el.matches("[data-fabq]")) { const upH = 1 + ((db.pb.markup || {}).fab ?? (db.pb.markup || {}).hardware ?? 0) / 100, v = parseFloat(el.value) || 0; setVal("fabq", Math.round(v * upH * 100) / 100); redraw(); }
   if (el.dataset.numm) { const v = parseFloat(el.value); if (!isNaN(v)) { setVal(el.dataset.numm, Math.round(v * 1000)); redraw(); } }
   if (el.dataset.txt) { setVal(el.dataset.txt, el.value); redraw(); }
   if (el.dataset.c) redraw();

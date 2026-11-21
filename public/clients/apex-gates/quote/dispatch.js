@@ -2,7 +2,7 @@
    per technician. Drag a job to another day or person, tap a gap to book a new
    one, and book a signed quote straight in. Technicians move their jobs along on
    the tablet (on the way, on site, done) and it shows here. */
-import { stageOf } from "./shared.js";
+import { stageOf } from "./shared.js?v=2";
 
 const pad = (n) => String(n).padStart(2, "0");
 export const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;

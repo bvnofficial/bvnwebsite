@@ -1,6 +1,6 @@
 /* Dimensioned front elevations, drawn in millimetres from the same numbers the
    calculator uses, so the drawing and the cut list can never disagree. */
-import { fmtNum } from "./engine.js";
+import { fmtNum } from "./engine.js?v=2";
 
 const COLOURS = {
   monument: "#323233", black: "#141414", "night sky": "#141414", basalt: "#6d6c6e", "woodland grey": "#4b4c46", ironstone: "#3e434c",

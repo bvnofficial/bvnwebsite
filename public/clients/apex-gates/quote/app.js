@@ -1,8 +1,8 @@
 /* Apex Quote: the internal quoting tool for Apex Gates technicians.
    Everything is saved on this device as it changes; the price book and the
    formulas are shared by every quote on the device and can be exported. */
-import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
-import { runItem, priceQuote, defaults, money, fmtNum, byId, evaluate } from "./engine.js";
+import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js?v=2";
+import { runItem, priceQuote, defaults, money, fmtNum, byId, evaluate } from "./engine.js?v=2";
 import { drawItem } from "./draw.js";
 
 const KEY = "apexq.v1";

@@ -2,10 +2,10 @@
    on it, plus the one place prices, markup, equipment, materials and gate types
    are changed. Saving sends it to the server, and every tablet picks it up the
    next time it opens. Technicians cannot open it. */
-import { PRICEBOOK, TEMPLATES } from "./data.js";
-import { runItem, priceQuote, defaults, money, byId } from "./engine.js";
+import { PRICEBOOK, TEMPLATES } from "./data.js?v=2";
+import { runItem, priceQuote, defaults, money, byId } from "./engine.js?v=2";
 import { drawItem } from "./draw.js";
-import { buildTemplates, mergePricebook, priceExtras, stageOf, GROUPS, groupOf } from "./shared.js";
+import { buildTemplates, mergePricebook, priceExtras, stageOf, GROUPS, groupOf } from "./shared.js?v=2";
 import { makeDispatch } from "./dispatch.js?v=3";
 import { makeTimesheets } from "./timesheets.js?v=2";
 
@@ -189,7 +189,7 @@ function viewPrices() {
   const find = st.find.toLowerCase();
   let rows;
   if (sh[0] === "addon") {
-    const lab = { materials: "Steel and sheet", hardware: "Gate parts", motors: "Motors and remotes", labour: "Our team's time", finish: "Paint and galvanising", other: "Other" };
+    const lab = { materials: "Steel and sheet", hardware: "Gate parts", motors: "Motors and remotes", labour: "Our team's time", finish: "Paint and galvanising", fab: "Gates from our fabricator", other: "Other" };
     rows = Object.keys(pb().markup).map((k) => `<div class="prow"><div><b>${lab[k] || k}</b><small>Added on top of what it costs Apex</small></div><div class="money-in"><input data-mk="${k}" inputmode="decimal" value="${pb().markup[k]}"><em>%</em></div></div>`).join("");
   } else if (sh[0] === "paint") {
     rows = sh[2](pb()).map((f) => `<div class="prow wide"><div><b>${esc(f.name)}</b><small>Smallest charge for a job</small></div>
@@ -434,7 +434,7 @@ const kitSell = (x) => {
   const p = pb(), up = (c) => 1 + ((p.markup || {})[c] || 0) / 100;
   if (x.kind === "hours") { const l = p.labour.find((l) => l.id === x.id); return l ? (l.sell > 0 ? l.sell : l.rate * up("labour")) : 0; }
   const h = p.hardware.find((h) => h.id === x.id); if (!h) return 0;
-  return h.sell > 0 ? h.sell : h.cost * up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware");
+  return h.sell > 0 ? h.sell : h.cost * up(h.cat === "motor" || h.cat === "access" ? "motors" : h.cat === "fab" && (p.markup || {}).fab != null ? "fab" : "hardware");
 };
 function viewKits() {
   const kits = (pb().kits ||= []);

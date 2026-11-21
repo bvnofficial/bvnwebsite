@@ -227,6 +227,8 @@ export function priceQuote(quote, templates, pb) {
       line.cost[cat] += x.cost * h.qty;
       // an item with its own sell price (from AroFlo) charges exactly that, whatever the markup
       if (x.sell > 0) line.fixed = (line.fixed || 0) + (x.sell - x.cost * up(cat)) * h.qty;
+      // gates bought from the fabricator carry their own markup (Simon: 10 to 20%), not the parts markup
+      else if (x.cat === "fab" && pb.markup.fab != null) line.fixed = (line.fixed || 0) + x.cost * (up("fab") - up(cat)) * h.qty;
       h.name = x.name; h.unit = x.cost; h.cat = cat;
     }
     for (const l of r.labour) {

@@ -33,7 +33,7 @@ export function teamView(data: any) {
   const pb = d.pb, mk = pb.markup || {};
   const up = (cat: string, v: any) => (Number(v) || 0) * (1 + (Number(mk[cat]) || 0) / 100);
   for (const m of pb.materials || []) m.cost = up("materials", m.cost);
-  for (const h of pb.hardware || []) { h.cost = Number(h.sell) > 0 ? Number(h.sell) : up(h.cat === "motor" || h.cat === "access" ? "motors" : "hardware", h.cost); delete h.sell; }
+  for (const h of pb.hardware || []) { h.cost = Number(h.sell) > 0 ? Number(h.sell) : up(h.cat === "motor" || h.cat === "access" ? "motors" : h.cat === "fab" && mk.fab != null ? "fab" : "hardware", h.cost); delete h.sell; }
   for (const l of pb.labour || []) { l.rate = Number(l.sell) > 0 ? Number(l.sell) : up("labour", l.rate); delete l.sell; }
   for (const f of pb.finishes || []) { f.perM2 = up("finish", f.perM2); f.perKg = up("finish", f.perKg); f.min = up("finish", f.min); }
   for (const k of Object.keys(mk)) mk[k] = 0;

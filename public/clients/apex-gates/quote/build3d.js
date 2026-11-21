@@ -5,9 +5,9 @@
    The office sees cost, markup and profit; technicians see customer prices only. */
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js";
-import { priceQuote, runItem, defaults, money, fmtNum, byId } from "./engine.js";
-import { buildTemplates, mergePricebook, teamView } from "./shared.js";
+import { PRICEBOOK, TEMPLATES, VERSION } from "./data.js?v=2";
+import { priceQuote, runItem, defaults, money, fmtNum, byId } from "./engine.js?v=2";
+import { buildTemplates, mergePricebook, teamView } from "./shared.js?v=2";
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -109,7 +109,7 @@ function partRows(l) {
   for (const h of r.items) {
     const x = hwOf(h.id); if (!x) continue;
     const cat = x.cat === "motor" || x.cat === "access" ? "motors" : "hardware";
-    const sellEach = x.sell > 0 ? x.sell : x.cost * up(cat);
+    const sellEach = x.sell > 0 ? x.sell : x.cost * up(x.cat === "fab" && (PB.markup || {}).fab != null ? "fab" : cat);
     rows.push({ key: "item:" + h.id, grp: cat === "motors" ? "Motor and access" : x.cat === "fab" ? "Fabricator" : "Hardware", name: x.name, spec: x.part || "", size: "", qty: h.qty, each: x.cost, cost: x.cost * h.qty, sell: sellEach * h.qty });
   }
   for (const lb of r.labour) {

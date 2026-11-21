@@ -101,7 +101,7 @@ export const PRICEBOOK = {
     { id: "k_swing1", name: "Single swing gate automation, Centurion Vantage", note: "Vantage 400 single kit, 2 remotes and safety beams", items: [{ kind: "item", id: "m_linear1", qty: 1 }, { kind: "item", id: "remote", qty: 2 }, { kind: "item", id: "eyes", qty: 1 }, { kind: "hours", id: "install", qty: 4 }] },
     { id: "k_slide", name: "Sliding gate automation, Centurion D5", note: "D5 Smart kit, 4 m rack, 2 remotes, keypad and safety beams", items: [{ kind: "item", id: "m_slide600", qty: 1 }, { kind: "item", id: "rack", qty: 4 }, { kind: "item", id: "remote", qty: 2 }, { kind: "item", id: "keypad", qty: 1 }, { kind: "item", id: "eyes", qty: 1 }, { kind: "hours", id: "install", qty: 5 }] },
   ],
-  markup: { materials: 45, hardware: 40, motors: 30, labour: 45, finish: 30, other: 25 },
+  markup: { materials: 45, hardware: 40, motors: 30, labour: 45, finish: 30, fab: 40, other: 25 },
   settings: {
     gst: 10, kerf: 3, minOffcut: 0, sheetWaste: 10, round: 10, minMargin: 25, maxDisc: 10, validity: 30, deposit: 50, invoiceDays: 7, payHow: "", payCard: "", payPaypal: "", payLater: "", techs: "Hasan Alhilali\nSimon Sperrin",
     company: "Apex Gates", abn: "", phone: "0477 88 44 22", email: "info@apexgates.com.au", web: "apexgates.com.au",
