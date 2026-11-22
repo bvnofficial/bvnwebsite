@@ -89,6 +89,7 @@
     if (/[?&]rmedit=1/.test(location.search)) {
       window.__rmApply = function (list) { restoreContent(); applyContent(list); };
       try { window.parent.postMessage({ rmPreviewReady: true }, location.origin); } catch (e) {}
+      reveal();
     } else content();
   }
 
@@ -178,8 +179,33 @@
       if (det) det.style.display = shown ? "" : "none";
     }
   }
+  /* The page's header code keeps the top of the page (logo, headline, main
+     photo) invisible until html.rm-ready, so the original photo never flashes
+     before Jim's one. Shown once his changes are in and the photo has loaded,
+     after 2.5 s at most. The header CSS also shows it after 3 s on its own. */
+  var shown = false;
+  function reveal() {
+    if (shown) return;
+    var imgs = [].slice.call(document.querySelectorAll(".rm .hero figure img, .rm header .brand img"));
+    var left = imgs.length, done = function () {
+      if (shown) return;
+      shown = true;
+      document.documentElement.classList.add("rm-ready");
+    };
+    setTimeout(done, 1500);
+    if (!left) return done();
+    imgs.forEach(function (im) {
+      var one = function () { if (--left <= 0) done(); };
+      if (im.complete) one();
+      else { im.addEventListener("load", one); im.addEventListener("error", one); }
+    });
+  }
   function content() {
-    try { applyContent(JSON.parse(localStorage.getItem(CKEY) || "null")); } catch (e) {}
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem(CKEY) || "null"); applyContent(cached); } catch (e) {}
+    /* a repeat visit already has Jim's changes from this browser */
+    if (Array.isArray(cached)) reveal();
+    var wait = setTimeout(reveal, 1000);
     fetch(API.replace("/sourced", "/content"), { cache: "no-cache" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
@@ -188,7 +214,8 @@
         applyContent(d.apply);
         try { localStorage.setItem(CKEY, JSON.stringify(d.apply)); } catch (e) {}
       })
-      .catch(function () {});
+      .catch(function () {})
+      .then(function () { clearTimeout(wait); reveal(); });
   }
 
   /* animated statistics band, placed just before "Experience".
