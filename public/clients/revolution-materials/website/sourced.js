@@ -186,7 +186,7 @@
   var shown = false;
   function reveal() {
     if (shown) return;
-    var imgs = [].slice.call(document.querySelectorAll(".rm .hero figure img, .rm header .brand img"));
+    var imgs = [].slice.call(document.querySelectorAll(".hero figure img, header .brand img"));
     var left = imgs.length, done = function () {
       if (shown) return;
       shown = true;

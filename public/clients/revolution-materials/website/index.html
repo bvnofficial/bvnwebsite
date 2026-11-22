@@ -207,6 +207,8 @@ footer{padding:56px 0 40px;border-top:1px solid var(--line);margin-top:96px}
   .arrows{display:none}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.track{scroll-behavior:auto}}
+/* hold the top of the page until sourced.js has applied Jim's saved text and photos (stops the old photo flashing) */
+.brand img,.hero .wrap>*{opacity:0;animation:rmshow .3s 3s forwards}html.rm-ready .brand img,html.rm-ready .hero .wrap>*{opacity:1;animation:none;transition:opacity .25s}@keyframes rmshow{to{opacity:1}}
 </style>
 </head>
 <body>
