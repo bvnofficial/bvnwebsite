@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staff app | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 380px minmax(0, 1fr); gap: 28px; align-items: start; margin-top: 20px; }
+  @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } .side-left { order: 2; } }
+  .side h3 { margin-top: 0; }
+  .part { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--white); margin-bottom: 10px; transition: all 0.2s; cursor: pointer; }
+  .part .num { display: inline-flex; width: 22px; height: 22px; border-radius: 99px; background: var(--sand); color: var(--mocha); font-size: 12px; font-weight: 700; align-items: center; justify-content: center; margin-right: 8px; }
+  .part p { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  .part.on { border-color: var(--gold); background: var(--gold-soft); box-shadow: var(--shadow); }
+  .part.on .num { background: var(--gold); color: var(--ink); }
+
+  /* Inside the phone */
+  .screen { font-size: 14px; }
+  .app-head h2 { font-size: 24px; margin: 0; }
+  .app-head .sub { font-size: 12px; color: var(--muted); }
+  .login { padding: 30px 22px; display: flex; flex-direction: column; height: 100%; }
+  .login .logo { font-family: var(--serif); font-size: 34px; letter-spacing: 3px; text-align: center; margin: 30px 0 4px; }
+  .login .tagline { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 26px; }
+  .who { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .who button { border: 1px solid var(--line); background: var(--white); border-radius: 14px; padding: 12px 8px; cursor: pointer; font: 600 13px var(--sans); color: var(--ink); text-align: center; }
+  .who button .av { width: 38px; height: 38px; border-radius: 99px; margin: 0 auto 6px; background: var(--sand); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 17px; color: var(--mocha); }
+  .who button small { display: block; font-weight: 400; font-size: 11px; }
+  .who button.on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .pin { display: flex; gap: 10px; justify-content: center; margin: 8px 0 4px; }
+  .pin span { width: 12px; height: 12px; border-radius: 99px; background: var(--ink); }
+
+  .ccard { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 12px 13px; margin-bottom: 10px; transition: all 0.3s; }
+  .ccard .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .ccard .time { font-weight: 700; font-size: 13px; }
+  .ccard .name { font-weight: 600; font-size: 15px; }
+  .ccard .tx { font-size: 13px; color: var(--muted); }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0; }
+  .tags .badge { font-weight: 600; font-size: 11px; }
+  .badge.info { background: var(--sand); color: var(--mocha); }
+  .ccard.done { background: var(--ok-soft); border-color: #cfe3d6; }
+  .ccard .doneline { font-size: 13px; color: var(--ok); font-weight: 600; margin-top: 6px; }
+  .ccard .doneline small { display: block; color: var(--muted); font-weight: 400; }
+  .section-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin: 14px 2px 8px; font-weight: 600; }
+
+  .cb.overdue { border-color: #e6b8b2; background: #fdf5f4; }
+  .cb .age { font-size: 12px; color: var(--muted); }
+  .cb.overdue .age { color: var(--bad); font-weight: 600; }
+  .cb .acts { display: flex; gap: 6px; margin-top: 8px; }
+  .cb .acts .btn { flex: 1; padding: 7px 6px; font-size: 12px; }
+  .cb .log { font-size: 12px; color: var(--ok); margin-top: 6px; }
+  .filters { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .filters .chip { font-size: 12px; padding: 5px 10px; }
+
+  .thread-item { cursor: pointer; }
+  .thread-item .preview { font-size: 13px; color: var(--ink); margin-top: 4px; }
+  .thread-item.replied { opacity: 0.75; }
+  .back { border: 0; background: none; font: 600 13px var(--sans); color: var(--mocha); cursor: pointer; padding: 0; margin-bottom: 10px; }
+  .quick { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 8px; }
+  .quick .chip { font-size: 12px; padding: 5px 10px; text-align: left; }
+  .compose { display: flex; gap: 6px; align-items: flex-end; }
+  .compose textarea { min-height: 60px; font-size: 13px; }
+
+  .stat { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .stat .value { font-family: var(--serif); font-size: 30px; font-weight: 600; line-height: 1.1; }
+  .stat small { font-size: 12px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .tabbar .count { display: inline-block; min-width: 16px; padding: 0 4px; border-radius: 99px; background: var(--bad); color: #fff; font-size: 10px; margin-left: 2px; line-height: 16px; }
+
+  /* Bottom sheet */
+  .sheet-wrap { position: absolute; inset: 0; background: rgba(43, 36, 32, 0.45); display: flex; align-items: flex-end; z-index: 20; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .sheet-wrap.open { opacity: 1; pointer-events: auto; }
+  .sheet { background: var(--cream); width: 100%; max-height: 88%; overflow-y: auto; border-radius: 24px 24px 0 0; padding: 10px 18px 20px; transform: translateY(40px); transition: transform 0.25s; }
+  .sheet-wrap.open .sheet { transform: translateY(0); }
+  .sheet .grab { width: 40px; height: 4px; border-radius: 99px; background: var(--taupe); margin: 0 auto 12px; }
+  .sheet h3 { margin-bottom: 2px; }
+  .sheet label { font-size: 12px; }
+  .sheet select, .sheet input, .sheet textarea { font-size: 13px; padding: 8px 10px; }
+  .sheet textarea { min-height: 70px; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .rebook-opts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .rebook-opts .chip { font-size: 12px; padding: 5px 10px; }
+  .phone .toast { position: absolute; bottom: 70px; font-size: 13px; width: max-content; max-width: 88%; text-align: center; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">8 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Staff app</h1>
+    <p>One phone app for the team: today's clients, the shared call back list, client replies that need a human, and your own week at a glance.</p>
+  </div>
+  <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+
+  <div class="layout">
+    <div class="side side-left">
+      <h3>How the team uses it</h3>
+      <div class="part on" data-part="login"><span class="num">1</span><strong>Sign in</strong>
+        <p>Each therapist taps their name and clinic, then a 4 digit PIN. Their day loads straight from Timely.</p></div>
+      <div class="part" data-part="today"><span class="num">2</span><strong>Today</strong>
+        <p>Every client booked with you, with the things you need to know before they sit down: first visit, course progress, and anything flagged on their intake form.</p></div>
+      <div class="part" data-part="done"><span class="num">3</span><strong>Treatment done</strong>
+        <p>Timely cannot tell Zapier when a treatment is finished. This one tap is that signal: it sends the right aftercare, books a check in message, suggests the next visit from the treatment interval and logs any product sold.</p></div>
+    </div>
+
+    <div class="phone">
+      <div class="screen" id="screen">
+        <div class="status"><span>9:41</span><span>Skinlux Staff</span><span>100%</span></div>
+
+        <!-- Login -->
+        <div class="login" id="loginView">
+          <div class="logo">SKINLUX</div>
+          <div class="tagline">Staff app</div>
+          <label>Who is signing in?</label>
+          <div class="who" id="whoList"></div>
+          <label>Clinic today</label>
+          <div class="seg" id="clinicSeg" style="width:100%">
+            <button class="on" data-clinic="booragoon" style="flex:1">Booragoon</button>
+            <button data-clinic="leederville" style="flex:1">Leederville</button>
+          </div>
+          <label style="text-align:center;margin-top:16px">PIN</label>
+          <div class="pin"><span></span><span></span><span></span><span></span></div>
+          <div style="flex:1"></div>
+          <button class="btn block" id="signInBtn">Sign in</button>
+        </div>
+
+        <!-- App -->
+        <div id="appView" class="hidden" style="display:flex;flex-direction:column;flex:1;min-height:0">
+          <div class="app-head">
+            <div class="sub" id="headSub"></div>
+            <h2 id="headTitle"></h2>
+          </div>
+          <div class="app-body" id="appBody"></div>
+          <div class="tabbar" id="tabbar">
+            <button class="on" data-tab="today"><span class="dot"></span>Today</button>
+            <button data-tab="callbacks"><span class="dot"></span>Call backs <span class="count" id="cbCount"></span></button>
+            <button data-tab="inbox"><span class="dot"></span>Inbox <span class="count" id="inCount"></span></button>
+            <button data-tab="me"><span class="dot"></span>Me</button>
+          </div>
+        </div>
+
+        <!-- Sheet -->
+        <div class="sheet-wrap" id="sheetWrap">
+          <div class="sheet" id="sheet"></div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+      </div>
+    </div>
+
+    <div class="side">
+      <h3>&nbsp;</h3>
+      <div class="part" data-part="callbacks"><span class="num">4</span><strong>Call backs</strong>
+        <p>Your therapists already answer the phones, so the follow up list is shared. Abandoned online bookings and clients who did not rebook land here. Anything waiting too long turns red, and every call or SMS is logged so nobody rings the same client twice.</p></div>
+      <div class="part" data-part="inbox"><span class="num">5</span><strong>Inbox</strong>
+        <p>Automatic check in messages go out after treatments. Most replies are "all good" and close themselves. Anything that mentions redness, pain or worry is flagged here for a person to answer, with quick replies written in your words.</p></div>
+      <div class="part" data-part="me"><span class="num">6</span><strong>Me</strong>
+        <p>Each therapist sees their own week: clients seen, how many rebooked, and products sold. It feeds the scorecard and bonus tracking.</p></div>
+      <div class="card soft" style="margin-top:14px">
+        <strong>Compliance built in</strong>
+        <p class="muted" style="font-size:13px;margin:6px 0 0">Messages about injectable treatments never include prices, offers or product brand names. The app removes them before anything is sent to a client.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  var TODAY = new Date(2026, 10, 23); // Monday 23 November 2026, the demo day
+  var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  function tx(id) { for (var i = 0; i < S.treatments.length; i++) if (S.treatments[i].id === id) return S.treatments[i]; return null; }
+  // Client facing name: injectables never show a brand name.
+  function txName(t) { return t.injectable ? t.name.replace(/\s*\(.*?\)\s*/g, "").trim() : t.name; }
+  function lc(n) { if (n.indexOf("&") > -1) return n; return n.replace(/\s*\(.*?\)\s*/g, "").split(" ").map(function (w) { return /^[A-Z]{2,}$/.test(w) ? w : w.toLowerCase(); }).join(" "); }
+  function fmtDate(d) { return DAYS[d.getDay()] + " " + d.getDate() + " " + MONTHS[d.getMonth()]; }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); if (x.getDay() === 0) x.setDate(x.getDate() + 1); return x; }
+  function isoDate(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function $(id) { return document.getElementById(id); }
+
+  var toastTimer;
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+
+  // SAMPLE schedules per team member
+  var SCHEDULES = {
+    "Sharon Kim": [
+      { time: "9:00am", client: "Olivia Tran", t: "needling", tags: [["Course 2 of 3", "info"], ["Intake form flagged: retinol", "bad"]] },
+      { time: "10:15am", client: "Grace Nguyen", t: "ipl-hair", tags: [["Session 5 of 10", "info"], ["Brazilian", "info"]] },
+      { time: "11:30am", client: "Hannah Brooks", t: "hifu", tags: [["First visit", "gold"], ["Came from Instagram offer", "info"]] },
+      { time: "1:30pm", client: "Mia Costa", t: "clinical-peel", tags: [["Peel 3 of 6", "info"]] },
+      { time: "3:00pm", client: "Ruby Allen", t: "diamond", tags: [["Session 3 of 8", "info"], ["Prefers Leederville", "info"]] },
+      { time: "4:30pm", client: "Zoe Mitchell", t: "carbon", tags: [["First visit", "gold"], ["Booked from a call back", "ok"]] }
+    ],
+    "Shakira Hewitt": [
+      { time: "9:30am", client: "Priya Shah", t: "ipl-skin", tags: [["Test patch done 9 Nov", "ok"], ["Session 1 of 3", "info"]] },
+      { time: "10:45am", client: "Lucy Fraser", t: "bright", tags: [["Monthly regular", "info"]] },
+      { time: "12:00pm", client: "Tahlia Reid", t: "body", tags: [["EMS session 4 of 10", "info"], ["Intake form flagged: metal implant", "bad"]] },
+      { time: "1:45pm", client: "Megan Ford", t: "nano-rf", tags: [["First visit", "gold"]] },
+      { time: "3:15pm", client: "Amy Sullivan", t: "led", tags: [["Add on after peel", "info"]] },
+      { time: "4:00pm", client: "Jade Wilson", t: "electro", tags: [["First visit", "gold"], ["2 skin tags", "info"]] }
+    ],
+    "Nurse Maria": [
+      { time: "9:00am", client: "Kate Douglas", t: "relaxers", tags: [["Review visit", "info"]] },
+      { time: "9:45am", client: "Charlotte Webb", t: "rejuran", tags: [["Treatment 2 of 4", "info"], ["Intake form flagged: fish allergy check", "bad"]] },
+      { time: "11:00am", client: "Erin Lawson", t: "fillers", tags: [["First visit", "gold"], ["Consult first", "info"]] },
+      { time: "1:00pm", client: "Rachel Moore", t: "plasma", tags: [["Crow's feet", "info"]] },
+      { time: "2:30pm", client: "Sienna Park", t: "advanced-peel", tags: [["Pre peel prep done", "ok"]] }
+    ],
+    "Nurse Leo": [
+      { time: "10:00am", client: "Laura Bennett", t: "relaxers", tags: [["First visit", "gold"]] },
+      { time: "11:15am", client: "Danielle Cho", t: "rejuran", tags: [["Treatment 3 of 4", "info"]] },
+      { time: "12:30pm", client: "Kirsty Adams", t: "fillers", tags: [["Review at 9 months", "info"]] },
+      { time: "2:00pm", client: "Ben Harris", t: "exogrow", tags: [["Session 2", "info"]] },
+      { time: "3:30pm", client: "Tessa Grant", t: "electro", tags: [["Intake form flagged: blood thinners", "bad"]] }
+    ]
+  };
+
+  var CALLBACKS = [
+    { id: 1, name: "Sophie Clarke", kind: "abandoned", t: "hifu", reason: "Left the online booking at the payment step", age: "2 hours ago", overdue: false, phone: "0413 220 918" },
+    { id: 2, name: "Amelia Ross", kind: "abandoned", t: "relaxers", reason: "Picked a time, did not finish the booking", age: "1 day 4 hours ago", overdue: true, phone: "0422 781 340" },
+    { id: 3, name: "Jasmine Lee", kind: "norebook", t: "ipl-hair", reason: "Session 4 of 10, next session was due 6 days ago", age: "Overdue 6 days", overdue: true, phone: "0409 115 672" },
+    { id: 4, name: "Ella Morgan", kind: "abandoned", t: "carbon", reason: "Started booking the carbon laser offer, stopped at choose a time", age: "5 hours ago", overdue: false, phone: "0431 904 228" },
+    { id: 5, name: "Isabella Hart", kind: "norebook", t: "diamond", reason: "Session 3 of 8, weekly course paused", age: "Overdue 9 days", overdue: true, phone: "0417 362 055" },
+    { id: 6, name: "Natalie King", kind: "norebook", t: "needling", reason: "Course 1 of 3, did not book session 2 at checkout", age: "Due 2 days ago", overdue: false, phone: "0450 671 893" },
+    { id: 7, name: "Georgia Dunn", kind: "norebook", t: "rejuran", reason: "Treatment 2 of 4, next one was due 15 days ago", age: "Overdue 15 days", overdue: true, phone: "0428 503 117" }
+  ];
+
+  var THREADS = [
+    { id: 1, name: "Laura Bennett", t: "needling", when: "Day 2 check in", flag: "Redness", nurse: false,
+      msgs: [["bot", "Hi Laura, it's Skinlux. How is your skin feeling after your needling on Saturday? Reply any time."],
+             ["client", "Hi! A bit more redness than expected after needling, is that normal? It's still pink on my cheeks today."]],
+      quick: ["Totally normal on day 2. Keep using the gentle cleanser and SPF, and skip makeup for one more day.",
+              "Could you send us a photo so we can take a look?",
+              "If it is hot, itchy or getting worse, call the clinic and we will see you today."] },
+    { id: 2, name: "Priya Shah", t: "ipl-skin", when: "Day 4 check in", flag: "Worried", nurse: false,
+      msgs: [["bot", "Hi Priya, checking in after your IPL. How are you going?"],
+             ["client", "The dark spots look darker than before, did something go wrong?"]],
+      quick: ["That is exactly what we want to see. The spots darken first, then flake away over 1 to 2 weeks.",
+              "Please don't pick or scrub them. Let them lift off on their own.",
+              "Happy to see you for a quick look if you are unsure."] },
+    { id: 3, name: "Kate Douglas", t: "relaxers", when: "Day 3 check in", flag: "Nurse to reply", nurse: true,
+      msgs: [["bot", "Hi Kate, how are you feeling after your appointment?"],
+             ["client", "All fine but there is a small bruise near my eyebrow."]],
+      quick: ["Small bruises can happen and usually fade within a week. A cold compress helps.",
+              "Your nurse will give you a call today to check."] },
+    { id: 4, name: "Megan Ford", t: "nano-rf", when: "Day 1 check in", flag: "Question", nurse: false,
+      msgs: [["bot", "Hi Megan, how is your skin after your RF treatment today?"],
+             ["client", "Feels warm but ok. Can I wash my face tonight?"]],
+      quick: ["Not tonight. Keep everything off your skin for 24 hours, not even water. Tomorrow morning is fine.",
+              "From tomorrow, gentle cleanser and SPF 30+ every morning."] }
+  ];
+
+  var state = {
+    who: "Sharon Kim", clinic: "booragoon", tab: "today",
+    done: {}, cbDone: {}, cbLog: {}, cbFilter: "all", replied: {}, openThread: null,
+    week: { seen: 22, rebooked: 16, products: 8, sales: 612 }
+  };
+
+  // Login
+  var whoNames = ["Sharon Kim", "Shakira Hewitt", "Nurse Maria", "Nurse Leo"];
+  function roleOf(n) { for (var i = 0; i < S.team.length; i++) if (S.team[i].name === n) return S.team[i].role; return ""; }
+  function initials(n) { return n.replace("Nurse ", "").split(" ").map(function (p) { return p[0]; }).join(""); }
+  $("whoList").innerHTML = whoNames.map(function (n) {
+    return '<button data-who="' + n + '" class="' + (n === state.who ? "on" : "") + '"><div class="av">' + initials(n) + '</div>' + n + '<small>' + roleOf(n).split(",")[0] + '</small></button>';
+  }).join("");
+  $("whoList").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.who = b.getAttribute("data-who");
+    [].forEach.call(this.children, function (c) { c.classList.toggle("on", c === b); });
+  });
+  $("clinicSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.clinic = b.getAttribute("data-clinic");
+    [].forEach.call(this.children, function (c) { c.classList.toggle("on", c === b); });
+  });
+  $("signInBtn").addEventListener("click", function () {
+    state.done = {}; state.tab = "today"; state.openThread = null;
+    $("loginView").classList.add("hidden");
+    $("appView").classList.remove("hidden");
+    render();
+    toast("Signed in at " + S.locations[state.clinic].name + ". Today synced from Timely.");
+  });
+
+  // Side panel highlight
+  function highlight(part) {
+    document.querySelectorAll(".part").forEach(function (p) { p.classList.toggle("on", p.getAttribute("data-part") === part); });
+  }
+  document.querySelectorAll(".part").forEach(function (p) {
+    p.addEventListener("click", function () {
+      var part = p.getAttribute("data-part");
+      if (part === "login") { logout(); return; }
+      if ($("appView").classList.contains("hidden")) { $("signInBtn").click(); }
+      var tab = part === "done" ? "today" : part;
+      state.tab = tab; state.openThread = null; render();
+      if (part === "done") {
+        var first = SCHEDULES[state.who].findIndex(function (c, i) { return !state.done[i]; });
+        if (first > -1) openDone(first);
+      }
+      highlight(part);
+    });
+  });
+
+  function logout() {
+    closeSheet();
+    $("appView").classList.add("hidden");
+    $("loginView").classList.remove("hidden");
+    highlight("login");
+  }
+
+  $("tabbar").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.tab = b.getAttribute("data-tab"); state.openThread = null; render();
+  });
+
+  function render() {
+    [].forEach.call($("tabbar").children, function (b) { b.classList.toggle("on", b.getAttribute("data-tab") === state.tab); });
+    var first = state.who.replace("Nurse ", "").split(" ")[0];
+    var loc = S.locations[state.clinic].name;
+    var titles = { today: "Good morning, " + (state.who.indexOf("Nurse") === 0 ? state.who : first), callbacks: "Call backs", inbox: "Inbox", me: "My week" };
+    $("headTitle").textContent = titles[state.tab];
+    $("headSub").textContent = "Monday 23 November, " + loc;
+    var cbOpen = CALLBACKS.filter(function (c) { return !state.cbDone[c.id]; }).length;
+    var inOpen = THREADS.filter(function (t) { return !state.replied[t.id]; }).length;
+    $("cbCount").textContent = cbOpen; $("cbCount").classList.toggle("hidden", !cbOpen);
+    $("inCount").textContent = inOpen; $("inCount").classList.toggle("hidden", !inOpen);
+    if (state.tab === "today") renderToday();
+    if (state.tab === "callbacks") renderCallbacks();
+    if (state.tab === "inbox") renderInbox();
+    if (state.tab === "me") renderMe();
+    highlight(state.tab);
+    $("appBody").scrollTop = 0;
+  }
+
+  function renderToday() {
+    var list = SCHEDULES[state.who];
+    var doneCount = Object.keys(state.done).length;
+    var html = '<div class="section-label">' + list.length + ' clients today, ' + doneCount + ' done</div>';
+    list.forEach(function (c, i) {
+      var t = tx(c.t), d = state.done[i];
+      html += '<div class="ccard' + (d ? " done" : "") + '">' +
+        '<div class="top"><span class="time">' + c.time + '</span><span class="tx">' + esc(txName(t)) + '</span></div>' +
+        '<div class="name">' + esc(c.client) + '</div>' +
+        '<div class="tags">' + c.tags.map(function (g) { return '<span class="badge ' + g[1] + '">' + esc(g[0]) + '</span>'; }).join("") + '</div>';
+      if (d) {
+        html += '<div class="doneline">Aftercare sent, check in booked for Thursday<small>' + esc(d.summary) + '</small></div>';
+      } else {
+        html += '<button class="btn sm block" data-done="' + i + '">Treatment done</button>';
+      }
+      html += '</div>';
+    });
+    $("appBody").innerHTML = html;
+    $("appBody").querySelectorAll("[data-done]").forEach(function (b) {
+      b.addEventListener("click", function () { openDone(+b.getAttribute("data-done")); });
+    });
+  }
+
+  // Treatment done sheet
+  var sheetCtx = null;
+  function aftercareText(t) {
+    if (/to confirm/i.test(t.aftercare)) return "Template still to be written by Jellie. Type today's aftercare instructions here.";
+    return t.aftercare;
+  }
+  function openDone(i) {
+    var c = SCHEDULES[state.who][i], t = tx(c.t);
+    sheetCtx = { i: i, rebook: t.interval_days > 0 ? "book" : "none" };
+    var txOpts = S.treatments.map(function (x) { return '<option value="' + x.id + '"' + (x.id === t.id ? " selected" : "") + '>' + esc(txName(x)) + '</option>'; }).join("");
+    var acOpts = S.treatments.map(function (x) { return '<option value="' + x.id + '"' + (x.id === t.id ? " selected" : "") + '>' + esc(txName(x)) + ' aftercare</option>'; }).join("");
+    var prodOpts = '<option value="">No product today</option>' + S.products.map(function (p, k) { return '<option value="' + k + '">' + esc(p.name) + ' (' + p.price + ')</option>'; }).join("");
+    $("sheet").innerHTML =
+      '<div class="grab"></div>' +
+      '<div class="row between"><h3>' + esc(c.client) + '</h3><span class="muted" style="font-size:12px">' + c.time + '</span></div>' +
+      '<div class="hint" style="margin-top:0">Confirm what was done. Aftercare goes out by SMS as soon as you tap done.</div>' +
+      '<label>Treatment done today</label><select id="shTx">' + txOpts + '</select>' +
+      '<label>Aftercare template</label><select id="shAc">' + acOpts + '</select>' +
+      '<textarea id="shAcText"></textarea>' +
+      '<label>Next visit</label><div id="shRebook"></div>' +
+      '<label>Product bought</label><select id="shProd">' + prodOpts + '</select>' +
+      '<button class="btn block" style="margin-top:16px" id="shGo">Done, send aftercare</button>' +
+      '<button class="btn ghost block" style="margin-top:8px" id="shCancel">Cancel</button>';
+    $("shAcText").value = aftercareText(t);
+    $("shTx").addEventListener("change", function () { $("shAc").value = this.value; $("shAcText").value = aftercareText(tx(this.value)); sheetCtx.rebook = tx(this.value).interval_days > 0 ? "book" : "none"; renderRebook(); });
+    $("shAc").addEventListener("change", function () { $("shAcText").value = aftercareText(tx(this.value)); });
+    $("shGo").addEventListener("click", finishDone);
+    $("shCancel").addEventListener("click", closeSheet);
+    renderRebook();
+    $("sheetWrap").classList.add("open");
+    highlight("done");
+  }
+  function renderRebook() {
+    var t = tx($("shTx").value);
+    var el = $("shRebook");
+    if (!t.interval_days) {
+      el.innerHTML = '<div class="hint">' + esc(txName(t)) + ' is usually one visit, so no next visit is suggested. A check in still goes out.</div>' +
+        '<div class="rebook-opts"><span class="chip on">No rebook needed</span></div>';
+      sheetCtx.rebook = "none"; return;
+    }
+    var next = addDays(TODAY, t.interval_days);
+    el.innerHTML =
+      '<input type="date" id="shDate" value="' + isoDate(next) + '">' +
+      '<div class="hint">Suggested ' + fmtDate(next) + ', ' + t.interval_days + ' days from today. Course: ' + esc(t.course) + '.</div>' +
+      '<div class="rebook-opts" id="shOpts">' +
+      '<span class="chip' + (sheetCtx.rebook === "book" ? " on" : "") + '" data-r="book">Booked in Timely</span>' +
+      '<span class="chip' + (sheetCtx.rebook === "link" ? " on" : "") + '" data-r="link">Send booking link</span>' +
+      '<span class="chip' + (sheetCtx.rebook === "none" ? " on" : "") + '" data-r="none">Not today</span></div>';
+    $("shOpts").addEventListener("click", function (e) {
+      var ch = e.target.closest(".chip"); if (!ch) return;
+      sheetCtx.rebook = ch.getAttribute("data-r"); renderRebook();
+    });
+  }
+  function finishDone() {
+    var t = tx($("shTx").value);
+    var prodIdx = $("shProd").value;
+    var parts = [];
+    if (sheetCtx.rebook === "book") {
+      var dv = $("shDate").value.split("-");
+      var d = new Date(+dv[0], +dv[1] - 1, +dv[2]);
+      parts.push("Next visit " + fmtDate(d));
+      state.week.rebooked++;
+    } else if (sheetCtx.rebook === "link") {
+      parts.push("Booking link sent");
+    } else if (t.interval_days) {
+      parts.push("Added to call backs to rebook");
+    } else {
+      parts.push("No rebook needed");
+    }
+    if (prodIdx !== "") {
+      var p = S.products[+prodIdx];
+      parts.push(p.name + " sold");
+      state.week.products++; state.week.sales += parseInt(p.price.replace(/\D/g, ""), 10);
+    }
+    state.week.seen++;
+    state.done[sheetCtx.i] = { summary: parts.join(". ") + "." };
+    var name = SCHEDULES[state.who][sheetCtx.i].client.split(" ")[0];
+    closeSheet();
+    renderToday();
+    toast("Aftercare sent to " + name + ". Check in booked for Thursday.");
+  }
+  function closeSheet() { $("sheetWrap").classList.remove("open"); }
+  $("sheetWrap").addEventListener("click", function (e) { if (e.target === this) closeSheet(); });
+
+  // Call backs
+  function renderCallbacks() {
+    var f = state.cbFilter;
+    var items = CALLBACKS.filter(function (c) { return !state.cbDone[c.id] && (f === "all" || c.kind === f); });
+    var overdue = CALLBACKS.filter(function (c) { return !state.cbDone[c.id] && c.overdue; }).length;
+    var html = '<div class="filters">' +
+      [["all", "All"], ["abandoned", "Abandoned bookings"], ["norebook", "Did not rebook"]].map(function (x) {
+        return '<span class="chip' + (f === x[0] ? " on" : "") + '" data-f="' + x[0] + '">' + x[1] + '</span>';
+      }).join("") + '</div>' +
+      '<div class="section-label">Team list, ' + items.length + ' open' + (overdue ? ', <span style="color:var(--bad)">' + overdue + ' overdue</span>' : '') + '</div>';
+    if (!items.length) html += '<div class="ccard" style="text-align:center"><strong>All caught up</strong><div class="tx">Nothing left on this list. Nice work.</div></div>';
+    items.forEach(function (c) {
+      var t = tx(c.t);
+      html += '<div class="ccard cb' + (c.overdue ? " overdue" : "") + '" id="cb' + c.id + '">' +
+        '<div class="top"><span class="name">' + esc(c.name) + '</span><span class="age">' + esc(c.age) + '</span></div>' +
+        '<div class="tags"><span class="badge ' + (c.kind === "abandoned" ? "warn" : "gold") + '">' + (c.kind === "abandoned" ? "Abandoned booking" : "Did not rebook") + '</span>' +
+        '<span class="badge info">' + esc(txName(t)) + '</span>' + (c.overdue ? '<span class="badge bad">Overdue</span>' : '') + '</div>' +
+        '<div class="tx">' + esc(c.reason) + '</div>' +
+        (state.cbLog[c.id] ? '<div class="log">' + esc(state.cbLog[c.id]) + '</div>' : '') +
+        '<div class="acts"><button class="btn sm" data-call="' + c.id + '">Call</button>' +
+        '<button class="btn sm ghost" data-sms="' + c.id + '">SMS</button>' +
+        '<button class="btn sm ghost" data-ok="' + c.id + '">Mark done</button></div></div>';
+    });
+    $("appBody").innerHTML = html;
+    $("appBody").querySelectorAll("[data-f]").forEach(function (ch) {
+      ch.addEventListener("click", function () { state.cbFilter = ch.getAttribute("data-f"); renderCallbacks(); });
+    });
+    $("appBody").querySelectorAll("[data-call]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var c = cbById(+b.getAttribute("data-call"));
+        state.cbLog[c.id] = "Called by " + state.who + " at 10:42am";
+        toast("Calling " + c.name + " on " + c.phone);
+        renderCallbacks();
+      });
+    });
+    $("appBody").querySelectorAll("[data-sms]").forEach(function (b) {
+      b.addEventListener("click", function () { openSms(cbById(+b.getAttribute("data-sms"))); });
+    });
+    $("appBody").querySelectorAll("[data-ok]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var c = cbById(+b.getAttribute("data-ok"));
+        var card = $("cb" + c.id); card.style.opacity = "0"; card.style.transform = "translateX(30px)";
+        setTimeout(function () { state.cbDone[c.id] = true; render(); }, 280);
+        toast(c.name + " marked done");
+      });
+    });
+  }
+  function cbById(id) { for (var i = 0; i < CALLBACKS.length; i++) if (CALLBACKS[i].id === id) return CALLBACKS[i]; }
+  function openSms(c) {
+    var t = tx(c.t), first = c.name.split(" ")[0], me = state.who.replace("Nurse ", "Nurse ").split(" ")[0] === "Nurse" ? state.who : state.who.split(" ")[0];
+    var body;
+    if (c.kind === "abandoned") {
+      body = "Hi " + first + ", it's " + me + " from Skinlux " + S.locations[state.clinic].name + ". I saw you started booking " + lc(txName(t)) + " online. Can I help you find a time that suits? Just reply here.";
+    } else {
+      body = "Hi " + first + ", it's " + me + " from Skinlux. You are due for your next " + lc(txName(t)) + " session to keep your results on track. Would you like me to pop you in this week?";
+    }
+    $("sheet").innerHTML = '<div class="grab"></div><h3>SMS to ' + esc(c.name) + '</h3><div class="hint" style="margin-top:0">' + c.phone + '</div>' +
+      (t.injectable ? '<div class="note" style="margin-top:10px;font-size:12px">Injectable treatment: no price, offer or brand name allowed in this message.</div>' :
+        '<div class="hint">You can add the current offer if it suits this client.</div>') +
+      '<label>Message</label><textarea id="smsText" style="min-height:110px"></textarea>' +
+      '<button class="btn block" style="margin-top:12px" id="smsSend">Send SMS</button>' +
+      '<button class="btn ghost block" style="margin-top:8px" id="smsCancel">Cancel</button>';
+    $("smsText").value = body;
+    $("smsSend").addEventListener("click", function () {
+      state.cbLog[c.id] = "SMS sent by " + state.who + " at 10:44am";
+      closeSheet(); renderCallbacks(); toast("SMS sent to " + first + ". Replies land in GoHighLevel.");
+    });
+    $("smsCancel").addEventListener("click", closeSheet);
+    $("sheetWrap").classList.add("open");
+  }
+
+  // Inbox
+  function renderInbox() {
+    if (state.openThread) return renderThread(state.openThread);
+    var html = '<div class="section-label">Check in replies that need a person</div>';
+    THREADS.forEach(function (th) {
+      var t = tx(th.t), r = state.replied[th.id];
+      var last = th.msgs.filter(function (m) { return m[0] === "client"; }).pop();
+      html += '<div class="ccard thread-item' + (r ? " replied" : "") + '" data-th="' + th.id + '">' +
+        '<div class="top"><span class="name">' + esc(th.name) + '</span><span class="age">' + esc(th.when) + '</span></div>' +
+        '<div class="tags"><span class="badge info">' + esc(txName(t)) + '</span>' +
+        (r ? '<span class="badge ok">Replied</span>' : '<span class="badge ' + (th.nurse ? "warn" : "bad") + '">' + esc(th.flag) + '</span>') + '</div>' +
+        '<div class="preview">' + esc(last[1]) + '</div></div>';
+    });
+    html += '<div class="hint" style="text-align:center;margin-top:12px">31 other check in replies this week said all good and closed on their own.</div>';
+    $("appBody").innerHTML = html;
+    $("appBody").querySelectorAll("[data-th]").forEach(function (el) {
+      el.addEventListener("click", function () { state.openThread = +el.getAttribute("data-th"); renderInbox(); });
+    });
+  }
+  function renderThread(id) {
+    var th = THREADS.filter(function (x) { return x.id === id; })[0], t = tx(th.t);
+    var html = '<button class="back" id="thBack">&larr; Inbox</button>' +
+      '<div class="row between" style="margin-bottom:8px"><strong>' + esc(th.name) + '</strong><span class="badge info">' + esc(txName(t)) + '</span></div>' +
+      (th.nurse ? '<div class="note" style="font-size:12px;margin-bottom:10px">Injectable client. A nurse should reply or call.</div>' : '') +
+      '<div class="chat" id="thChat">' + th.msgs.map(function (m) {
+        return '<div class="msg ' + (m[0] === "client" ? "bot" : "me") + '">' + esc(m[1]) + '</div>';
+      }).join("") + '</div>' +
+      '<div class="quick">' + th.quick.map(function (q, k) { return '<span class="chip" data-q="' + k + '">' + esc(q) + '</span>'; }).join("") + '</div>' +
+      '<div class="compose"><textarea id="thText" placeholder="Write a reply"></textarea></div>' +
+      '<div class="row" style="margin-top:8px"><button class="btn sm" id="thSend" style="flex:1">Send reply</button>' +
+      '<button class="btn sm ghost" id="thNurse" style="flex:1">' + (state.who.indexOf("Nurse") === 0 ? "Call client" : "Ask a nurse") + '</button></div>';
+    $("appBody").innerHTML = html;
+    $("thBack").addEventListener("click", function () { state.openThread = null; renderInbox(); });
+    $("appBody").querySelectorAll("[data-q]").forEach(function (ch) {
+      ch.addEventListener("click", function () { $("thText").value = th.quick[+ch.getAttribute("data-q")]; $("thText").focus(); });
+    });
+    $("thSend").addEventListener("click", function () {
+      var v = $("thText").value.trim();
+      if (!v) { toast("Pick a quick reply or write a message first"); return; }
+      th.msgs.push(["me", v]);
+      state.replied[th.id] = true;
+      renderThread(id);
+      var cnt = THREADS.filter(function (x) { return !state.replied[x.id]; }).length;
+      $("inCount").textContent = cnt; $("inCount").classList.toggle("hidden", !cnt);
+      toast("Reply sent to " + th.name.split(" ")[0]);
+    });
+    $("thNurse").addEventListener("click", function () {
+      if (state.who.indexOf("Nurse") === 0) toast("Calling " + th.name);
+      else toast("Sent to Nurse Maria to review. You will see her reply here.");
+    });
+    $("appBody").scrollTop = $("appBody").scrollHeight;
+  }
+
+  // Me
+  function renderMe() {
+    var w = state.week, rate = Math.round(w.rebooked / w.seen * 100);
+    var html = '<div class="section-label">This week, Mon 23 to Sat 28 Nov</div>' +
+      '<div class="stats">' +
+      '<div class="stat"><div class="label">Clients seen</div><div class="value">' + w.seen + '</div><small class="up">4 more than last week</small></div>' +
+      '<div class="stat"><div class="label">Rebooked</div><div class="value">' + w.rebooked + '</div><small>' + rate + '% rebook rate</small></div>' +
+      '<div class="stat"><div class="label">Products sold</div><div class="value">' + w.products + '</div><small>$' + w.sales.toLocaleString("en-AU") + ' retail</small></div>' +
+      '<div class="stat"><div class="label">Google reviews</div><div class="value">3</div><small>from your clients</small></div>' +
+      '</div>' +
+      '<div class="ccard" style="margin-top:10px"><div class="row between"><strong>Monthly bonus</strong><span class="badge ' + (rate >= 70 ? "ok" : "warn") + '">' + (rate >= 70 ? "On track" : "Close") + '</span></div>' +
+      '<div class="tx" style="margin:6px 0 4px">Rebook rate ' + rate + '% of 70% target</div><div class="bar"><span style="width:' + Math.min(100, rate / 70 * 100) + '%"></span></div>' +
+      '<div class="tx" style="margin:10px 0 4px">Retail $' + (w.sales + 540).toLocaleString("en-AU") + ' of $1,500 this month</div><div class="bar"><span style="width:' + Math.min(100, (w.sales + 540) / 1500 * 100) + '%"></span></div></div>' +
+      '<div class="ccard"><strong>Best rebook this week</strong><div class="tx">Grace Nguyen booked all 5 remaining IPL sessions at checkout.</div></div>' +
+      '<button class="btn ghost block" id="logoutBtn">Sign out</button>';
+    $("appBody").innerHTML = html;
+    $("logoutBtn").addEventListener("click", logout);
+  }
+})();
+</script>
+</body>
+</html>

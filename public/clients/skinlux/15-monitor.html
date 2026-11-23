@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website and review monitor | Skinlux app suite</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .mt { margin-top: 16px; }
+  .status-card { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 22px; border-color: #e9c2bd; background: linear-gradient(135deg, #fff 0%, #fdf4f2 100%); }
+  @media (max-width: 900px) { .status-card { grid-template-columns: 1fr; } }
+  .site-line { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .site-line h2 { margin: 0; font-size: 28px; }
+  .pulse-dot { width: 14px; height: 14px; border-radius: 99px; background: var(--bad); position: relative; flex: none; }
+  .pulse-dot::after { content: ""; position: absolute; inset: -6px; border-radius: 99px; border: 2px solid var(--bad); opacity: 0; animation: ring 1.6s ease-out infinite; }
+  @keyframes ring { 0% { transform: scale(0.6); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
+  .down-pill { background: var(--bad); color: var(--white); font-weight: 700; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 99px; font-size: 13px; }
+  .up-pill { background: var(--ok); color: var(--white); font-weight: 700; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 99px; font-size: 13px; }
+  .status-msg { font-size: 17px; margin: 12px 0 14px; max-width: 620px; }
+  .status-msg b { color: var(--bad); }
+  .stat-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .stat-strip div { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .stat-strip small { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .stat-strip b { font-family: var(--serif); font-size: 24px; }
+  .sms-mock { background: var(--ink); border-radius: 26px; padding: 12px; max-width: 320px; justify-self: end; width: 100%; }
+  @media (max-width: 900px) { .sms-mock { justify-self: start; } }
+  .sms-mock .scr { background: var(--cream); border-radius: 18px; padding: 12px; }
+  .sms-mock .from { text-align: center; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .sms-mock .from b { display: block; color: var(--ink); font-size: 13px; }
+  .sms-mock .msg { max-width: 92%; font-size: 13px; }
+  .sms-mock .time { font-size: 11px; color: var(--muted); margin: 6px 0 0 4px; }
+
+  .main-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 1000px) { .main-grid { grid-template-columns: 1fr; } }
+  .section-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .section-title h3 { margin: 0; }
+
+  .uptime { display: grid; grid-template-columns: repeat(30, minmax(0, 1fr)); gap: 4px; }
+  .uptime span { height: 34px; border-radius: 4px; background: var(--ok); opacity: 0.85; cursor: default; position: relative; }
+  .uptime span.partial { background: var(--warn); }
+  .uptime span.down { background: var(--bad); }
+  .uptime span:hover { opacity: 1; outline: 2px solid var(--ink); }
+  .uptime-axis { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .uptime-tip { font-size: 13px; margin-top: 8px; min-height: 20px; color: var(--mocha); }
+  .chart-box svg { width: 100%; height: auto; display: block; }
+  svg text { font-family: var(--sans); }
+
+  .page-row td { vertical-align: middle; }
+  .page-row .url { font-size: 12px; color: var(--muted); display: block; }
+  .s-dot { display: inline-block; width: 9px; height: 9px; border-radius: 99px; margin-right: 6px; }
+  .s-dot.down { background: var(--bad); } .s-dot.up { background: var(--ok); }
+
+  .issue { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .issue:last-child { border-bottom: 0; }
+  .issue .t { font-weight: 600; }
+  .issue p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  .issue.fixed .t { text-decoration: line-through; color: var(--muted); }
+  .issue.fixed .sev { opacity: 0.4; }
+  .fix-progress { display: flex; align-items: center; gap: 10px; font-size: 13px; margin-bottom: 6px; }
+  .fix-progress .bar { flex: 1; }
+
+  /* Stars drawn in CSS */
+  .stars { position: relative; display: inline-block; height: 16px; width: 85px; vertical-align: -2px; }
+  .stars .base, .stars .fill { position: absolute; left: 0; top: 0; height: 100%; display: flex; gap: 1px; }
+  .stars .fill { overflow: hidden; }
+  .stars i { flex: none; width: 16px; height: 16px; background: var(--line);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .stars .fill i { background: var(--gold); }
+  .stars.lg { width: 112px; height: 21px; }
+  .stars.lg i { width: 21px; height: 21px; }
+
+  .rating-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .rating-tiles .tile { background: var(--cream); border-radius: 10px; padding: 12px; }
+  .rating-tiles .avg { font-family: var(--serif); font-size: 34px; font-weight: 600; line-height: 1; margin: 4px 0; }
+  .alert { display: flex; gap: 10px; align-items: center; background: var(--gold-soft); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--mocha); margin-bottom: 12px; }
+  .alert .bell { width: 10px; height: 10px; border-radius: 99px; background: var(--gold); flex: none; box-shadow: 0 0 0 4px rgba(184,146,90,0.25); }
+  .review { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: var(--white); }
+  .review.new { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .review .head { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .review .who { font-weight: 600; }
+  .review .meta { font-size: 12px; color: var(--muted); margin: 2px 0 6px; }
+  .review .txt { font-size: 14px; }
+  .review textarea { margin-top: 10px; min-height: 120px; font-size: 13px; }
+  .review .note-line { font-size: 12px; color: var(--mocha); margin-top: 6px; background: var(--gold-soft); border-radius: 8px; padding: 6px 10px; }
+  .review .btns { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .replied { font-size: 12px; color: var(--ok); font-weight: 600; margin-top: 8px; }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">15 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Website and review monitor</h1>
+    <p>Checks the website and every offer page each minute, texts Jellie when something breaks, and watches Google reviews for both clinics.</p>
+  </div>
+  <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+
+  <!-- Status -->
+  <div class="card status-card mt" id="statusCard">
+    <div>
+      <div class="site-line">
+        <span class="pulse-dot" id="statusDot"></span>
+        <h2>skinluxfaceandbody.com.au</h2>
+        <span class="down-pill" id="statusPill">DOWN</span>
+      </div>
+      <p class="status-msg" id="statusMsg"><b>Not responding since 22 Nov, 9:14am.</b> Your Google and Meta ads are still sending people here.</p>
+      <div class="stat-strip">
+        <div><small class="muted">Down for</small><b id="downFor">5h 26m</b></div>
+        <div><small class="muted">Ad clicks since</small><b id="adClicks">143</b></div>
+        <div><small class="muted">Ad spend at risk</small><b id="adSpend">$212</b></div>
+      </div>
+      <div class="row wrap">
+        <button class="btn" id="checkBtn">Check again now</button>
+        <button class="btn ghost" id="pauseBtn">Pause ads until it's back</button>
+        <button class="btn ghost" id="hostBtn">Email the web host</button>
+      </div>
+      <small class="muted" style="display:block;margin-top:10px" id="lastCheck">Last checked 12 seconds ago from Perth and Sydney. Server timed out after 30 seconds.</small>
+    </div>
+    <div class="sms-mock">
+      <div class="scr">
+        <div class="from"><b>Skinlux Monitor</b>Text message to Jellie</div>
+        <div class="msg bot">Skinlux alert: skinluxfaceandbody.com.au is not responding (since 9:14am). Google and Meta ads are still live and sending clicks there. Reply 1 to pause the ads, 2 to email the web host.</div>
+        <div class="time">Sat 9:16am</div>
+        <div class="msg me" style="margin-left:auto;margin-top:8px;max-width:40%" id="smsReply">2</div>
+        <div class="msg bot" style="margin-top:8px" id="smsAck">Done. Email sent to your web host with the error details. We'll text you the moment it's back up.</div>
+        <div class="time" id="smsAckTime">Sat 9:21am</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-grid mt">
+    <div>
+      <!-- Uptime -->
+      <div class="card">
+        <div class="section-title"><h3>Uptime, last 30 days</h3><span class="muted" id="uptimePct"></span></div>
+        <div class="uptime" id="uptime"></div>
+        <div class="uptime-axis"><span>24 Oct</span><span>7 Nov</span><span>Today</span></div>
+        <div class="uptime-tip" id="uptimeTip">Hover a day to see what happened.</div>
+        <div class="legend" style="margin-top:6px"><span><i style="background:var(--ok)"></i>Up</span><span><i style="background:var(--warn)"></i>Short outage</span><span><i style="background:var(--bad)"></i>Down</span></div>
+      </div>
+
+      <!-- Response time -->
+      <div class="card chart-box mt">
+        <div class="section-title"><h3>Response time</h3><span class="muted">Home page, daily average, last 14 days</span></div>
+        <div id="respChart"></div>
+        <small class="muted">Load time was creeping up for a week before it went down. A slow site also costs Google Ads quality score.</small>
+      </div>
+
+      <!-- Pages -->
+      <div class="card mt">
+        <div class="section-title"><h3>Pages checked</h3><span class="muted" id="pagesSub"></span></div>
+        <table>
+          <thead><tr><th>Page</th><th>Status</th><th>Response</th><th>Ads pointing here</th></tr></thead>
+          <tbody id="pagesBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Issues -->
+      <div class="card mt">
+        <div class="section-title"><h3>Site issues found</h3><span class="muted">From the website check on 22 Nov</span></div>
+        <div class="fix-progress"><span id="fixCount">0 of 8 fixed</span><div class="bar"><span id="fixBar" style="width:0"></span></div></div>
+        <div id="issues"></div>
+      </div>
+    </div>
+
+    <!-- Reviews column -->
+    <div>
+      <div class="card">
+        <div class="section-title"><h3>Google reviews</h3><span class="muted">Both clinics</span></div>
+        <div class="rating-tiles" id="ratingTiles"></div>
+        <h3 style="font-size:17px;margin-top:16px">New reviews per month</h3>
+        <div class="chart-box" id="revChart"></div>
+        <div class="legend" style="margin-top:4px"><span><i style="background:var(--gold)"></i>Booragoon</span><span><i style="background:var(--taupe);opacity:.6"></i>Leederville</span></div>
+      </div>
+
+      <div class="card mt">
+        <div class="section-title">
+          <h3>Reviews feed</h3>
+          <button class="btn sm ghost" id="simReview">Simulate a new review</button>
+        </div>
+        <div class="seg" id="segRev" style="margin-bottom:12px">
+          <button data-v="all" class="on">All</button>
+          <button data-v="booragoon">Booragoon</button>
+          <button data-v="leederville">Leederville</button>
+        </div>
+        <div class="alert" id="revAlert"><span class="bell"></span><span id="revAlertText"></span></div>
+        <div id="feed"></div>
+        <small class="muted">Drafts never repeat what a review says about injectables. They thank the client and invite them back.</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 3000);
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function stars(r, lg) {
+    var i5 = "<i></i><i></i><i></i><i></i><i></i>";
+    return '<span class="stars' + (lg ? " lg" : "") + '" role="img" aria-label="' + r + ' out of 5 stars"><span class="base">' + i5 + '</span><span class="fill" style="width:' + (r / 5 * 100) + '%">' + i5 + "</span></span>";
+  }
+
+  // ---------- Status and timers (demo clock starts at 2:40pm, 22 Nov) ----------
+  var downSecs = 5 * 3600 + 26 * 60, clicks = 143, sinceCheck = 12, isUp = false;
+  setInterval(function () {
+    if (isUp) return;
+    downSecs++; sinceCheck++;
+    if (downSecs % 9 === 0) clicks++;
+    var h = Math.floor(downSecs / 3600), m = Math.floor(downSecs % 3600 / 60);
+    $("downFor").textContent = h + "h " + m + "m";
+    $("adClicks").textContent = clicks;
+    $("adSpend").textContent = "$" + Math.round(clicks * 1.48);
+    $("lastCheck").textContent = "Last checked " + (sinceCheck < 60 ? sinceCheck + " seconds" : Math.floor(sinceCheck / 60) + " min") + " ago from Perth and Sydney. Server timed out after 30 seconds.";
+    if (sinceCheck >= 60) sinceCheck = 0;
+  }, 1000);
+
+  $("checkBtn").addEventListener("click", function () {
+    var b = this; b.disabled = true; b.textContent = "Checking...";
+    setTimeout(function () {
+      b.disabled = false; b.textContent = "Check again now"; sinceCheck = 0;
+      toast("Still not responding. The server at 103.27.34.44 timed out on every port.");
+    }, 1600);
+  });
+  $("pauseBtn").addEventListener("click", function () {
+    this.textContent = "Ads paused"; this.disabled = true;
+    toast("Google Ads and Meta campaigns paused. They restart when the site is back up.");
+  });
+  $("hostBtn").addEventListener("click", function () {
+    toast("Email sent to the web host with the outage times and error details");
+  });
+
+  // ---------- Uptime squares ----------
+  var DAYS = [];
+  (function () {
+    var start = new Date(2026, 9, 24);
+    for (var i = 0; i < 30; i++) {
+      var d = new Date(start.getTime() + i * 86400000);
+      var label = d.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+      var rec = { label: label, cls: "", mins: 0, note: "No problems" };
+      if (i === 9) { rec.cls = "partial"; rec.mins = 18; rec.note = "Down for 18 minutes, 2:02am to 2:20am"; }
+      if (i === 21) { rec.cls = "partial"; rec.mins = 6; rec.note = "Slow, then down for 6 minutes at 7:41pm"; }
+      if (i === 29) { rec.cls = "down"; rec.mins = 326; rec.note = "Down since 9:14am and still not responding"; }
+      DAYS.push(rec);
+    }
+    $("uptime").innerHTML = DAYS.map(function (d, i) { return '<span class="' + d.cls + '" data-i="' + i + '" title="' + d.label + ": " + d.note + '"></span>'; }).join("");
+    var downMins = DAYS.reduce(function (a, d) { return a + d.mins; }, 0);
+    $("uptimePct").textContent = (100 - downMins / (30 * 1440) * 100).toFixed(2) + "% up, 3 incidents";
+  })();
+  $("uptime").addEventListener("mouseover", function (e) {
+    var s = e.target.closest("span[data-i]"); if (!s) return;
+    var d = DAYS[parseInt(s.getAttribute("data-i"), 10)];
+    $("uptimeTip").innerHTML = "<b>" + d.label + ":</b> " + d.note;
+  });
+
+  // ---------- Response time chart ----------
+  (function () {
+    var vals = [612, 580, 640, 598, 702, 655, 690, 720, 810, 760, 905, 980, 1240, null];
+    var labels = ["9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"];
+    var W = 620, H = 250, l = 54, r = 20, t = 16, b = 46, pw = W - l - r, ph = H - t - b, yMax = 1600;
+    function X(i) { return l + i * pw / (vals.length - 1); }
+    function Y(v) { return t + ph - v / yMax * ph; }
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Response time chart">';
+    for (var v = 0; v <= yMax; v += 400) {
+      s += '<line x1="' + l + '" y1="' + Y(v) + '" x2="' + (W - r) + '" y2="' + Y(v) + '" stroke="#ede3d8"/>';
+      s += '<text x="' + (l - 8) + '" y="' + (Y(v) + 4) + '" font-size="11" fill="#7d7069" text-anchor="end">' + v + "</text>";
+    }
+    var pts = [];
+    vals.forEach(function (v, i) { if (v !== null) pts.push(X(i).toFixed(1) + "," + Y(v).toFixed(1)); });
+    s += '<polyline points="' + pts.join(" ") + '" fill="none" stroke="#b8925a" stroke-width="2.5" stroke-linejoin="round"/>';
+    vals.forEach(function (v, i) {
+      if (v !== null) s += '<circle cx="' + X(i) + '" cy="' + Y(v) + '" r="3" fill="#fff" stroke="#b8925a" stroke-width="2"><title>' + labels[i] + " Nov: " + v + " ms</title></circle>";
+      s += '<text x="' + X(i) + '" y="' + (t + ph + 18) + '" font-size="11" fill="#7d7069" text-anchor="middle">' + labels[i] + "</text>";
+    });
+    var lx = X(vals.length - 1);
+    s += '<line x1="' + lx + '" y1="' + t + '" x2="' + lx + '" y2="' + (t + ph) + '" stroke="#b5524a" stroke-dasharray="4 4"/>';
+    s += '<text x="' + (lx - 6) + '" y="' + (t + 12) + '" font-size="11.5" font-weight="600" fill="#b5524a" text-anchor="end">No response today</text>';
+    s += '<text x="' + X(12) + '" y="' + (Y(1240) - 10) + '" font-size="11.5" font-weight="600" fill="#2b2420" text-anchor="middle">1,240 ms</text>';
+    s += '<line x1="' + l + '" y1="' + (t + ph) + '" x2="' + (W - r) + '" y2="' + (t + ph) + '" stroke="#b9a593"/>';
+    s += '<text x="14" y="' + (t + ph / 2) + '" font-size="11.5" fill="#7d7069" text-anchor="middle" transform="rotate(-90 14 ' + (t + ph / 2) + ')">Milliseconds</text>';
+    s += '<text x="' + (l + pw / 2) + '" y="' + (H - 6) + '" font-size="11.5" fill="#7d7069" text-anchor="middle">Day in November 2026</text>';
+    $("respChart").innerHTML = s + "</svg>";
+  })();
+
+  // ---------- Pages ----------
+  var PAGES = [
+    { name: "Home", url: "/", up: false, ads: "Google" },
+    { name: "HIFU double chin offer", url: "/hifu-offer/", up: false, ads: "Google, Meta" },
+    { name: "HIFU men's jawline offer", url: "/hifu-mens-offer/", up: false, ads: "Meta" },
+    { name: "Carbon laser offer", url: "/carbon-laser-offer/", up: false, ads: "Google, Meta" },
+    { name: "Diamond Polar offer", url: "/diamond-polar-offer/", up: false, ads: "Meta" },
+    { name: "EMS sculpting offer", url: "/ems-sculpting-offer/", up: false, ads: "Meta" },
+    { name: "Venus Legacy offer", url: "/venus-contouring-offer/", up: false, ads: "Google, Meta" },
+    { name: "Timely booking page", url: "bookings.gettimely.com/booragoonhairfree", up: true, ms: 412, ads: "" },
+    { name: "Timely gift vouchers", url: "bookings.gettimely.com/.../purchase", up: true, ms: 455, ads: "" }
+  ];
+  function renderPages() {
+    var down = PAGES.filter(function (p) { return !p.up; }).length;
+    $("pagesSub").textContent = down + " of " + PAGES.length + " not responding";
+    $("pagesBody").innerHTML = PAGES.map(function (p) {
+      return '<tr class="page-row"><td><b>' + p.name + '</b><span class="url">' + esc(p.url) + "</span></td>" +
+        "<td>" + (p.up ? '<span class="s-dot up"></span><span class="badge ok">UP</span>' : '<span class="s-dot down"></span><span class="badge bad">DOWN</span>') + "</td>" +
+        "<td>" + (p.up ? p.ms + " ms" : '<span class="down">Timed out</span>') + "</td>" +
+        "<td>" + (p.ads ? (p.up ? p.ads : '<span class="badge warn">' + p.ads + " live</span>") : '<span class="muted">None</span>') + "</td></tr>";
+    }).join("");
+  }
+  renderPages();
+
+  // ---------- Issues ----------
+  var ISSUES = [
+    { sev: "High", t: "Old breast implant and liposuction demo pages still public", d: "Theme demo pages from the old site, including \"celebrity surgeries\" posts, still show up on Google. Bad for trust and an AHPRA risk. Remove or redirect." },
+    { sev: "High", t: "Hours on the site don't match Timely", d: "Website shows Booragoon Mon and Tue 10am to 4pm. Timely shows 9am to 9pm. Clients may think you're closed." },
+    { sev: "Medium", t: "Two different signup offers", d: "Home page says 15% off your first appointment, treatment pages say 5% off. Pick one." },
+    { sev: "Medium", t: "Lorem ipsum questions on the FAQ page", d: "The old /faq/ page still has placeholder text under the HIFU questions." },
+    { sev: "Medium", t: "Fake WooCommerce shop", d: "/shop/ lists theme demo products like \"Cream oil\" at $11 to $20. Not Skinlux products." },
+    { sev: "Medium", t: "New York address on the old contact page", d: "/contact-us/ and /working-hours/ still show demo New York addresses and an old booking form." },
+    { sev: "Medium", t: "No Leederville page", d: "Leederville isn't on the website at all. Local Google searches for Leederville have nothing to land on." },
+    { sev: "Low", t: "No chat widget", d: "Offer pages say 30 spots available but there's no way to ask a quick question before booking." }
+  ];
+  function renderIssues() {
+    var fixed = ISSUES.filter(function (i) { return i.fixed; }).length;
+    $("fixCount").textContent = fixed + " of " + ISSUES.length + " fixed";
+    $("fixBar").style.width = (fixed / ISSUES.length * 100) + "%";
+    $("issues").innerHTML = ISSUES.map(function (i, n) {
+      var cls = i.sev === "High" ? "bad" : i.sev === "Medium" ? "warn" : "gold";
+      return '<div class="issue' + (i.fixed ? " fixed" : "") + '"><span class="badge ' + cls + ' sev">' + i.sev + "</span>" +
+        '<div><div class="t">' + esc(i.t) + "</div><p>" + esc(i.d) + "</p></div>" +
+        '<button class="btn sm ' + (i.fixed ? "ghost" : "") + '" data-fix="' + n + '">' + (i.fixed ? "Undo" : "Mark fixed") + "</button></div>";
+    }).join("");
+  }
+  renderIssues();
+  $("issues").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-fix]"); if (!b) return;
+    var i = ISSUES[parseInt(b.getAttribute("data-fix"), 10)];
+    i.fixed = !i.fixed; renderIssues();
+    if (i.fixed) toast("Marked fixed. The monitor checks it again tonight to confirm.");
+  });
+
+  // ---------- Reviews ----------
+  var RATING = { booragoon: { avg: 4.9, count: 126 }, leederville: { avg: 4.8, count: 38 } };
+  var TREND = { months: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"], b: [6, 8, 7, 9, 11, 14], l: [2, 3, 4, 5, 6, 9] };
+
+  function renderRatings() {
+    $("ratingTiles").innerHTML = ["booragoon", "leederville"].map(function (k) {
+      var r = RATING[k];
+      return '<div class="tile"><small class="muted">' + S.locations[k].name + '</small><div class="avg">' + r.avg.toFixed(1) + "</div>" + stars(r.avg) +
+        '<div style="font-size:12px;color:var(--muted);margin-top:4px">' + r.count + " reviews</div></div>";
+    }).join("");
+    var W = 340, H = 170, l = 30, rr = 8, t = 10, b = 38, pw = W - l - rr, ph = H - t - b, yMax = 16;
+    var gw = pw / TREND.months.length, bw = gw * 0.3;
+    function Y(v) { return t + ph - v / yMax * ph; }
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="New reviews per month">';
+    for (var v = 0; v <= yMax; v += 4) {
+      s += '<line x1="' + l + '" y1="' + Y(v) + '" x2="' + (W - rr) + '" y2="' + Y(v) + '" stroke="#ede3d8"/>';
+      s += '<text x="' + (l - 6) + '" y="' + (Y(v) + 4) + '" font-size="10" fill="#7d7069" text-anchor="end">' + v + "</text>";
+    }
+    TREND.months.forEach(function (m, i) {
+      var x = l + i * gw + gw / 2;
+      s += '<rect x="' + (x - bw - 1) + '" y="' + Y(TREND.b[i]) + '" width="' + bw + '" height="' + (ph - (Y(TREND.b[i]) - t)) + '" rx="2" fill="#b8925a"><title>' + m + ", Booragoon: " + TREND.b[i] + "</title></rect>";
+      s += '<rect x="' + (x + 1) + '" y="' + Y(TREND.l[i]) + '" width="' + bw + '" height="' + (ph - (Y(TREND.l[i]) - t)) + '" rx="2" fill="#b9a593" opacity="0.6"><title>' + m + ", Leederville: " + TREND.l[i] + "</title></rect>";
+      s += '<text x="' + x + '" y="' + (t + ph + 15) + '" font-size="10.5" fill="#7d7069" text-anchor="middle">' + m + "</text>";
+    });
+    s += '<line x1="' + l + '" y1="' + (t + ph) + '" x2="' + (W - rr) + '" y2="' + (t + ph) + '" stroke="#b9a593"/>';
+    s += '<text x="' + (l + pw / 2) + '" y="' + (H - 4) + '" font-size="10.5" fill="#7d7069" text-anchor="middle">Month, 2026 (reviews left)</text>';
+    $("revChart").innerHTML = s + "</svg>";
+  }
+  renderRatings();
+
+  // SAMPLE reviews
+  var REVIEWS = [
+    { id: 1, name: "Priya Sharma", clinic: "booragoon", r: 5, when: "12 minutes ago", isNew: true,
+      text: "Sharon was amazing with my carbon laser. My skin is so much clearer and she explained everything before we started. Free parking at Garden City is a bonus." },
+    { id: 2, name: "Ava Mitchell", clinic: "booragoon", r: 3, when: "Today, 8:12am",
+      text: "Lovely staff and a beautiful clinic, but I waited about 20 minutes past my appointment time." },
+    { id: 3, name: "Karen Lewis", clinic: "booragoon", r: 5, when: "2 days ago",
+      text: "Nurse Leo did my anti wrinkle treatment and I'm so happy with how natural it looks. Very professional." },
+    { id: 4, name: "Jess Walker", clinic: "leederville", r: 5, when: "4 days ago",
+      text: "Shakira is so gentle. My IPL hair removal sessions are quick and the clinic on Vincent St is gorgeous." },
+    { id: 5, name: "Michelle Tan", clinic: "booragoon", r: 5, when: "5 days ago",
+      text: "Had HIFU with Jellie. No pressure at all, she was honest about what to expect and messaged me the next day to check in." },
+    { id: 6, name: "Lauren Brooks", clinic: "leederville", r: 4, when: "1 week ago",
+      text: "Skin needling with Nurse Maria. A bit red for two days like she said it would be. Would love more evening appointments." },
+    { id: 7, name: "Hana Kobayashi", clinic: "leederville", r: 5, when: "2 weeks ago",
+      text: "Started a Diamond Polar course and my skin already feels firmer. Friendly team, easy to book." }
+  ];
+  var INCOMING = { id: 8, name: "Tamsin Reid", clinic: "leederville", r: 5, when: "Just now", isNew: true,
+    text: "Bright and Tight facial with Shakira the week before my wedding. I was glowing in every photo. Thank you!" };
+  var revFilter = "all", draftTurn = {};
+
+  var INJ_RE = /anti\s?wrinkle|wrinkle relax|filler|botox|dysport|injectable|injection|rejuran|polynucleotide|\blip\b/i;
+  var TREATS = [
+    [/carbon laser/i, "carbon laser"], [/hifu/i, "HIFU"], [/ipl hair|hair removal/i, "IPL sessions"], [/ipl/i, "IPL"],
+    [/needling/i, "skin needling"], [/diamond polar/i, "Diamond Polar course"], [/bright and tight|bright & tight/i, "Bright and Tight facial"],
+    [/peel/i, "peel"], [/\bLED\b/, "LED"], [/\bEMS\b/, "EMS sessions"], [/venus/i, "Venus Legacy sessions"]
+  ];
+  var STAFF = ["Sharon", "Shakira", "Jellie", "Nurse Maria", "Nurse Leo", "Kirsty"];
+
+  function draftReply(rv) {
+    var first = rv.name.split(" ")[0], loc = S.locations[rv.clinic];
+    var inj = INJ_RE.test(rv.text);
+    var treat = "", staff = "";
+    if (!inj) {
+      for (var i = 0; i < TREATS.length; i++) { if (TREATS[i][0].test(rv.text)) { treat = TREATS[i][1]; break; } }
+      for (var j = 0; j < STAFF.length; j++) { if (rv.text.indexOf(STAFF[j]) > -1) { staff = STAFF[j]; break; } }
+    }
+    var turn = draftTurn[rv.id] = ((draftTurn[rv.id] || 0) + 1) % 2;
+    var sign = "\n\nWarmly,\nJellie and the Skinlux " + loc.name + " team";
+    var body;
+    if (rv.r <= 3) {
+      body = "Hi " + first + ", thank you for the honest feedback, and I'm sorry you were kept waiting. That isn't the experience we want for anyone. " +
+        "I'd love to make it up to you, so please call us on " + loc.phone + " or reply here and we'll look after you properly on your next visit.";
+    } else if (inj) {
+      body = turn === 1 ?
+        "Hi " + first + ", thank you so much for your kind words. We're so glad you felt looked after at " + loc.name + ", and we can't wait to see you again." :
+        "Hi " + first + ", this made our day. Thank you for taking the time to leave a review, and for trusting the Skinlux team. See you next time at " + loc.name + ".";
+    } else {
+      var who = staff ? staff + " will be thrilled" : "The whole team will be thrilled";
+      var what = treat ? " to hear you're loving your " + treat : " to read this";
+      body = turn === 1 ?
+        "Hi " + first + ", thank you so much for taking the time to leave this. " + who + what + ". We love being part of your skin journey and can't wait to see you again at " + loc.name + "." :
+        "Thank you, " + first + "! " + who + what + ". Results like yours are exactly why we do what we do. See you at your next visit.";
+    }
+    return { text: body + sign, inj: inj };
+  }
+
+  function renderFeed() {
+    var list = REVIEWS.filter(function (r) { return revFilter === "all" || r.clinic === revFilter; });
+    $("feed").innerHTML = list.map(function (rv) {
+      return '<div class="review' + (rv.isNew ? " new" : "") + '" data-id="' + rv.id + '"><div class="head"><span class="who">' + esc(rv.name) + "</span>" +
+        (rv.isNew ? '<span class="badge gold">New</span>' : rv.r <= 3 ? '<span class="badge warn">Needs a reply</span>' : "") + "</div>" +
+        '<div class="meta">' + stars(rv.r) + " &nbsp;" + S.locations[rv.clinic].name + ", " + rv.when + "</div>" +
+        '<div class="txt">' + esc(rv.text) + "</div>" +
+        (rv.draft !== undefined ? '<textarea data-ta="' + rv.id + '">' + esc(rv.draft) + "</textarea>" : "") +
+        (rv.injNote ? '<div class="note-line">This review mentions an injectable, so the reply doesn\'t name the treatment or the nurse.</div>' : "") +
+        (rv.replied ? '<div class="replied">Reply posted to Google</div>' :
+          '<div class="btns"><button class="btn sm ' + (rv.draft !== undefined ? "ghost" : "gold") + '" data-draft="' + rv.id + '">' + (rv.draft !== undefined ? "Another draft" : "Draft reply") + "</button>" +
+          (rv.draft !== undefined ? '<button class="btn sm" data-post="' + rv.id + '">Post reply</button>' : "") + "</div>") +
+        "</div>";
+    }).join("") || '<p class="muted">No reviews here yet.</p>';
+    var newest = REVIEWS.filter(function (r) { return r.isNew; })[0];
+    if (newest) {
+      $("revAlert").classList.remove("hidden");
+      $("revAlertText").innerHTML = "<b>New " + newest.r + " star review at " + S.locations[newest.clinic].name + "</b>, " + newest.when.toLowerCase() + ". Jellie got a text. Reply within 24 hours.";
+    } else $("revAlert").classList.add("hidden");
+  }
+  renderFeed();
+
+  function byId(id) { return REVIEWS.filter(function (r) { return r.id === id; })[0]; }
+  $("feed").addEventListener("click", function (e) {
+    var d = e.target.closest("[data-draft]"), p = e.target.closest("[data-post]");
+    if (d) {
+      var rv = byId(parseInt(d.getAttribute("data-draft"), 10));
+      var out = draftReply(rv);
+      rv.draft = out.text; rv.injNote = out.inj;
+      renderFeed();
+    }
+    if (p) {
+      var rv2 = byId(parseInt(p.getAttribute("data-post"), 10));
+      var ta = document.querySelector('[data-ta="' + rv2.id + '"]');
+      if (ta) rv2.draft = ta.value;
+      rv2.replied = true; rv2.isNew = false;
+      renderFeed();
+      toast("Reply posted to " + rv2.name.split(" ")[0] + "'s Google review");
+    }
+  });
+  $("feed").addEventListener("input", function (e) {
+    var ta = e.target.closest("[data-ta]"); if (!ta) return;
+    byId(parseInt(ta.getAttribute("data-ta"), 10)).draft = ta.value;
+  });
+  $("segRev").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    Array.prototype.forEach.call(this.children, function (x) { x.classList.toggle("on", x === b); });
+    revFilter = b.getAttribute("data-v"); renderFeed();
+  });
+  $("simReview").addEventListener("click", function () {
+    if (byId(INCOMING.id)) { toast("No more sample reviews. In the live version new ones arrive as they're posted."); return; }
+    REVIEWS.forEach(function (r) { r.isNew = false; });
+    REVIEWS.unshift(INCOMING);
+    RATING.leederville.count++; TREND.l[5]++;
+    renderRatings(); renderFeed();
+    toast("New 5 star review at Leederville. Text sent to Jellie.");
+  });
+})();
+</script>
+</body>
+</html>

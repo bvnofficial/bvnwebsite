@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skinlux App Suite</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .hero {
+    background: linear-gradient(135deg, var(--ink) 0%, #4a3c34 100%);
+    color: var(--cream); padding: 56px 20px 48px; text-align: center;
+  }
+  .hero h1 { font-size: 46px; letter-spacing: 1px; margin-bottom: 10px; }
+  .hero p { max-width: 640px; margin: 0 auto; opacity: 0.85; font-size: 16px; }
+  .hero .stack-line {
+    display: inline-flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 22px;
+  }
+  .hero .stack-line span {
+    border: 1px solid rgba(247, 242, 236, 0.3); padding: 6px 14px; border-radius: 99px; font-size: 13px;
+  }
+  .section-title { display: flex; align-items: baseline; gap: 12px; margin: 34px 0 14px; }
+  .section-title .count { color: var(--muted); font-size: 14px; }
+  .app-card {
+    display: block; text-decoration: none; color: var(--ink);
+    transition: transform 0.15s, box-shadow 0.15s; position: relative;
+  }
+  .app-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(43, 36, 32, 0.14); }
+  .app-card .num {
+    font-family: var(--serif); font-size: 15px; color: var(--gold); font-weight: 700; letter-spacing: 1px;
+  }
+  .app-card h3 { margin-top: 4px; }
+  .app-card p { color: var(--muted); font-size: 14px; margin: 0; }
+  .app-card .fixes { margin-top: 12px; font-size: 12px; color: var(--mocha); }
+  .app-card.pick::after {
+    content: "Show on the call"; position: absolute; top: 14px; right: 14px;
+    background: var(--gold); color: var(--ink); font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 99px;
+  }
+  .foot { margin-top: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">Prepared for Jellie</span></div>
+
+<div class="hero">
+  <h1>The Skinlux App Suite</h1>
+  <p>Fifteen tools built around how Booragoon and Leederville actually run. Timely stays where it is. Everything else plugs in around it.</p>
+  <div class="stack-line"><span>Timely</span><span>GoHighLevel</span><span>One dashboard</span><span>Two clinics</span></div>
+</div>
+
+<div class="page">
+  <div class="section-title"><h2>Start here</h2><span class="count">what you asked for</span></div>
+  <a class="card app-card pick" href="00-workflows.html" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center">
+    <div><div class="num">YOUR BRIEF</div><h3>Your 4 workflows</h3><p>Abandoned booking, completed appointment loops, product sales and no rebooking, step by step, with every message and a Play button.</p><div class="fixes">Timely stays. GoHighLevel runs the messages. The dashboard shows the results.</div></div>
+  </a>
+
+  <div class="section-title"><h2>New</h2><span class="count">try it with your own selfie</span></div>
+  <a class="card app-card pick" href="16-skin-scan.html" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center">
+    <div><div class="num">16</div><h3>AI Skin Check</h3><p>A selfie and three questions turn into a personal 12 week plan from your menu, with prices, a home routine and a book button. Every scan lands in GoHighLevel as a tagged lead.</p><div class="fixes">Fixes: ad clicks that leave without booking, clients who don't know what to book</div></div>
+  </a>
+
+  <div class="section-title"><h2>For your clients</h2><span class="count">7 apps</span></div>
+  <div class="grid g3" id="clients"></div>
+
+  <div class="section-title"><h2>For your team</h2><span class="count">3 apps</span></div>
+  <div class="grid g3" id="staff"></div>
+
+  <div class="section-title"><h2>For you</h2><span class="count">5 apps</span></div>
+  <div class="grid g3" id="owner"></div>
+
+  <p class="foot">Demo with sample data. Prepared by Benjamin for Skinlux Face and Body, November 2026.</p>
+</div>
+
+<script>
+const APPS = [
+  ["clients", "01-client-app.html", "My Skinlux client app", "Courses, aftercare, a private skin journal, product routine, packages and rewards on every client's phone.", "Fixes: rebooking by memory, aftercare calls", true],
+  ["clients", "02-concierge.html", "Skinlux Concierge", "Answers treatment, price and downtime questions 24/7 on your website, Instagram, Facebook and WhatsApp.", "Fixes: slow replies while therapists are with clients", true],
+  ["clients", "03-phone-receptionist.html", "Phone receptionist", "Missed calls get a text back in seconds. The AI version answers both clinic numbers after hours.", "Fixes: calls that ring out during treatments", false],
+  ["clients", "04-treatment-quiz.html", "Treatment finder quiz", "Clients pick their concerns and get matched treatments with a booking link. Every lead lands tagged.", "Fixes: visitors who don't know what to book", false],
+  ["clients", "05-intake-forms.html", "Intake and consent forms", "Medical history, screening and consent before the visit, with automatic contraindication flags.", "Fixes: paperwork at the desk, missed red flags", false],
+  ["clients", "06-waitlist.html", "Waitlist slot filler", "A cancellation texts the waitlist for that treatment. First yes gets the spot.", "Fixes: empty slots after late cancellations", false],
+  ["clients", "07-membership.html", "Skin membership", "Monthly plans billed automatically, for steady income across both clinics.", "Fixes: up and down months", false],
+  ["staff", "08-staff-app.html", "Staff app", "Today's clients, one tap to finish a treatment and send aftercare, and the call back list.", "Fixes: Timely can't tell us a visit is done", false],
+  ["staff", "09-training-hub.html", "Training and protocols hub", "Every treatment's steps, aftercare scripts and your rebooking method in one place.", "Fixes: slow onboarding of new therapists", false],
+  ["staff", "10-scorecard.html", "Therapist scorecard", "Rebook rate, retail sales and reviews per therapist, with bonus rules you set.", "Fixes: no clear view of who needs help", false],
+  ["owner", "11-dashboard.html", "Owner dashboard", "Both clinics on one screen: bookings, recovered bookings, rebook rate, offers, products and team tasks.", "Fixes: checking five apps to know how the week went", true],
+  ["owner", "12-stock.html", "Stock tracker", "Retail and clinic consumables per clinic, with low stock alerts and draft orders.", "Fixes: running out of cartridges or best sellers", false],
+  ["owner", "13-compliance-checker.html", "Ad compliance checker", "Paste an ad, email or caption and it flags AHPRA, TGA and Spam Act problems before it goes out.", "Fixes: risky injectable promos", false],
+  ["owner", "14-offer-builder.html", "Offer page builder", "Your monthly 30 spots offers built from a template, with a live spots left counter.", "Fixes: rebuilding landing pages every month", false],
+  ["owner", "15-monitor.html", "Website and review monitor", "A text when the site goes down and when a new Google review comes in, with reply drafts.", "Fixes: ads sending people to a site that isn't loading", true]
+];
+APPS.forEach((a, i) => {
+  const [group, href, name, desc, fixes, pick] = a;
+  const el = document.createElement("a");
+  el.className = "card app-card" + (pick ? " pick" : "");
+  el.href = href;
+  el.innerHTML = `<div class="num">${String(i + 1).padStart(2, "0")}</div><h3>${name}</h3><p>${desc}</p><div class="fixes">${fixes}</div>`;
+  document.getElementById(group).appendChild(el);
+});
+</script>
+</body>
+</html>

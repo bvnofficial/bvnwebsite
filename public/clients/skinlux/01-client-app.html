@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Skinlux client app | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<script src="assets/concierge.js"></script>
+<style>
+  .layout { display: grid; grid-template-columns: 1fr 400px 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+  .side h3 { margin-top: 4px; }
+  .side .item { padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .side .item:last-child { border-bottom: 0; }
+  .side .item b { display: block; font-size: 14px; }
+  .side .item span { font-size: 13px; color: var(--muted); }
+  .side .item.on b { color: var(--gold); }
+
+  .screen-view { display: none; flex: 1; flex-direction: column; min-height: 0; }
+  .screen-view.on { display: flex; }
+
+  /* Login */
+  .login { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 28px 40px; text-align: center; }
+  .logo { font-family: var(--serif); font-size: 40px; letter-spacing: 4px; margin-bottom: 2px; }
+  .logo-sub { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 34px; }
+  .code-row { display: flex; gap: 10px; justify-content: center; margin: 8px 0 4px; }
+  .code-row input { width: 52px; height: 58px; text-align: center; font: 600 24px var(--sans); border-radius: 12px; }
+  .login label { text-align: left; }
+
+  .app-head h2 { font-size: 24px; margin: 0; }
+  .app-head .sub { font-size: 13px; color: var(--muted); }
+  .app-head .back { border: 0; background: none; font: 600 13px var(--sans); color: var(--mocha); padding: 0; cursor: pointer; margin-bottom: 4px; }
+
+  .pc { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+  .pc.dark { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .pc.dark .muted, .pc.dark small { color: var(--taupe); }
+  .pc h4 { margin: 0 0 4px; font-size: 15px; }
+  .pc .eyebrow { font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .pc.dark .eyebrow { color: var(--gold); }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .tile { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 12px; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+  .tile b { display: block; font-size: 14px; }
+  .tile span { font-size: 12px; color: var(--muted); }
+  .tile:hover { border-color: var(--gold); }
+  .points { font-family: var(--serif); font-size: 36px; font-weight: 600; line-height: 1; }
+
+  .check { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: 14px; cursor: pointer; }
+  .check .box { width: 20px; height: 20px; flex: 0 0 20px; border: 1.5px solid var(--taupe); border-radius: 6px; margin-top: 1px; }
+  .check.done .box { background: var(--ok); border-color: var(--ok); box-shadow: inset 0 0 0 3px var(--white); }
+  .check.done span { color: var(--muted); text-decoration: line-through; }
+  .mood { display: flex; gap: 6px; margin-top: 8px; }
+  .mood button { flex: 1; padding: 9px 4px; border-radius: 12px; border: 1px solid var(--line); background: var(--cream); font: 600 13px var(--sans); cursor: pointer; color: var(--ink); }
+  .mood button.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .reply-box { margin-top: 10px; padding: 10px 12px; border-radius: 12px; font-size: 13px; }
+  .reply-box.ok { background: var(--ok-soft); color: var(--ok); }
+  .reply-box.warn { background: var(--warn-soft); color: var(--warn); }
+  .reply-box.bad { background: var(--bad-soft); color: var(--bad); font-weight: 600; }
+  .upload { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 1.5px dashed var(--taupe); border-radius: 12px; font-size: 13px; color: var(--mocha); cursor: pointer; margin-top: 8px; text-align: center; }
+  .upload input { display: none; }
+
+  .timeline { position: relative; padding-left: 18px; }
+  .timeline::before { content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .tl { position: relative; margin-bottom: 16px; }
+  .tl::before { content: ""; position: absolute; left: -17px; top: 5px; width: 10px; height: 10px; border-radius: 99px; background: var(--gold); }
+  .tl .when { font-size: 12px; color: var(--muted); }
+  .pics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .pic { aspect-ratio: 3/4; border-radius: 12px; position: relative; overflow: hidden; }
+  .pic::before { content: ""; position: absolute; left: 22%; right: 22%; top: 14%; height: 56%; border-radius: 50% 50% 46% 46%; background: rgba(255,255,255,0.35); }
+  .pic::after { content: ""; position: absolute; left: 10%; right: 10%; bottom: -12%; height: 30%; border-radius: 50% 50% 0 0; background: rgba(255,255,255,0.25); }
+  .pic.b1 { background: linear-gradient(160deg, #d9b9a3, #b98f78); }
+  .pic.a1 { background: linear-gradient(160deg, #ecd3c1, #d2ae96); }
+  .pic.b2 { background: linear-gradient(160deg, #d7b5a0, #b68c74); }
+  .pic.a2 { background: linear-gradient(160deg, #efd9c9, #d8b59e); }
+  .pic .lbl { position: absolute; left: 8px; bottom: 8px; z-index: 2; background: rgba(43,36,32,0.7); color: var(--cream); font-size: 11px; padding: 2px 8px; border-radius: 99px; }
+  .pic .spots { position: absolute; inset: 0; z-index: 1; background-image: radial-gradient(circle at 40% 38%, rgba(120,70,50,0.35) 2px, transparent 3px), radial-gradient(circle at 58% 46%, rgba(120,70,50,0.3) 2px, transparent 3px), radial-gradient(circle at 46% 54%, rgba(120,70,50,0.3) 2px, transparent 3px), radial-gradient(circle at 62% 34%, rgba(120,70,50,0.25) 2px, transparent 3px); }
+  .pic.a1 .spots, .pic.a2 .spots { opacity: 0.35; }
+  .lock { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--mocha); background: var(--gold-soft); padding: 8px 10px; border-radius: 10px; margin-bottom: 14px; }
+  .lock i { width: 10px; height: 8px; border: 2px solid var(--mocha); border-radius: 2px; position: relative; display: inline-block; flex: 0 0 auto; }
+  .lock i::before { content: ""; position: absolute; left: 0; top: -7px; width: 6px; height: 6px; border: 2px solid var(--mocha); border-bottom: 0; border-radius: 6px 6px 0 0; }
+
+  .step { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .step:last-child { border-bottom: 0; }
+  .step .n { width: 24px; height: 24px; border-radius: 99px; background: var(--sand); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: 0 0 24px; }
+  .step .info { flex: 1; }
+  .step .info b { display: block; font-size: 14px; }
+  .step .info span { font-size: 12px; color: var(--muted); }
+  .seg.full { display: flex; width: 100%; }
+  .seg.full button { flex: 1; }
+
+  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; cursor: pointer; width: 100%; font: inherit; color: inherit; text-align: left; }
+  .list-item b { display: block; }
+  .list-item span { font-size: 12px; color: var(--muted); }
+  .list-item .arrow { width: 8px; height: 8px; border-right: 2px solid var(--taupe); border-top: 2px solid var(--taupe); transform: rotate(45deg); }
+
+  .chatwrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .chatwrap .app-body { padding-top: 6px; }
+  .chips-row { display: flex; gap: 6px; overflow-x: auto; padding: 6px 16px; }
+  .chips-row .chip { white-space: nowrap; font-size: 12px; }
+  .composer { display: flex; gap: 8px; padding: 8px 12px 10px; background: var(--white); border-top: 1px solid var(--line); }
+  .composer input { border-radius: 99px; }
+  .composer .btn { padding: 8px 14px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">1 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>My Skinlux</h1>
+    <p>Your clients' own app: their next visit, course progress, aftercare, routine, rewards and a concierge to ask, all in one place so they rebook without a phone call.</p>
+    <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+  </div>
+
+  <div class="layout">
+    <div class="card side">
+      <h3>What each tab does</h3>
+      <div class="item" data-go="home"><b>Home</b><span>Next appointment, points and quick links. Clients see where they are at a glance.</span></div>
+      <div class="item" data-go="course"><b>My course</b><span>Progress through each course and when the next session is due, with a one tap Book next.</span></div>
+      <div class="item" data-go="care"><b>Aftercare</b><span>Today's aftercare steps and a day 2 check in. Worried clients go straight to a nurse.</span></div>
+      <div class="item" data-go="ask"><b>Ask</b><span>The Skinlux Concierge answers questions any time, from the clinic's own information.</span></div>
+      <div class="item" data-go="more"><b>More</b><span>Private skin journal, home routine with reorder, packages, vouchers and rewards.</span></div>
+    </div>
+
+    <div class="phone">
+      <div class="screen">
+        <div class="status"><span id="clock">9:41</span><span>5G &nbsp;100%</span></div>
+
+        <!-- Login -->
+        <div class="screen-view on" id="v-login">
+          <div class="login">
+            <div class="logo">SKINLUX</div>
+            <div class="logo-sub">Face and Body</div>
+            <div id="login-step1">
+              <label for="mobile">Mobile number</label>
+              <input id="mobile" type="tel" value="0412 345 678">
+              <button class="btn block" id="send-code" style="margin-top:14px">Send my code</button>
+              <p class="muted" style="font-size:12px;margin-top:12px">No password to remember. We text you a one time code.</p>
+            </div>
+            <div id="login-step2" class="hidden">
+              <p style="font-size:14px">Enter the 4 digit code we sent to <b id="sent-to">0412 345 678</b></p>
+              <div class="code-row">
+                <input class="code" maxlength="1" inputmode="numeric">
+                <input class="code" maxlength="1" inputmode="numeric">
+                <input class="code" maxlength="1" inputmode="numeric">
+                <input class="code" maxlength="1" inputmode="numeric">
+              </div>
+              <p id="code-hint" class="muted" style="font-size:12px">Demo: any 4 digits will work.</p>
+              <button class="btn block" id="verify" style="margin-top:8px">Sign in</button>
+              <button class="btn ghost block sm" id="resend" style="margin-top:8px">Resend code</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Home -->
+        <div class="screen-view" id="v-home">
+          <div class="app-head">
+            <div class="sub" id="greet-time">Good morning</div>
+            <h2>Hi Emma</h2>
+          </div>
+          <div class="app-body">
+            <div class="pc dark">
+              <div class="eyebrow">Next appointment</div>
+              <h4>Skin needling, face</h4>
+              <div style="font-size:14px">Tue 16 Dec, 10:30am</div>
+              <small>Booragoon with Sharon Kim</small>
+              <div class="row" style="margin-top:12px;gap:8px">
+                <button class="btn gold sm" id="add-cal">Add to calendar</button>
+                <a class="btn ghost sm" style="color:var(--cream);border-color:var(--taupe)" href="#" data-book>Change time</a>
+              </div>
+            </div>
+            <div class="pc">
+              <div class="row between">
+                <div>
+                  <div class="eyebrow">Skinlux points</div>
+                  <div class="points" id="home-points">1,240</div>
+                </div>
+                <span class="badge gold" id="to-next">260 to your next reward</span>
+              </div>
+              <div class="bar" style="margin-top:10px"><span id="pts-bar" style="width:83%"></span></div>
+              <small style="font-size:12px">1,500 points = $30 off a beauty treatment</small>
+            </div>
+            <div class="tiles">
+              <button class="tile" data-go="course"><b>My course</b><span>IPL 3 of 8</span></button>
+              <button class="tile" data-go="care"><b>Aftercare</b><span>Day 2 check in</span></button>
+              <button class="tile" data-go="routine"><b>My routine</b><span>4 products</span></button>
+              <button class="tile" data-go="rewards"><b>Rewards</b><span>$50 voucher</span></button>
+            </div>
+            <a class="btn block" href="#" data-book>Book a treatment</a>
+          </div>
+        </div>
+
+        <!-- Course -->
+        <div class="screen-view" id="v-course">
+          <div class="app-head"><div class="sub">Your treatment plan</div><h2>My course</h2></div>
+          <div class="app-body" id="course-list"></div>
+        </div>
+
+        <!-- Aftercare -->
+        <div class="screen-view" id="v-care">
+          <div class="app-head"><div class="sub">Skin needling, yesterday 10:30am</div><h2>Aftercare</h2></div>
+          <div class="app-body">
+            <div class="pc">
+              <div class="eyebrow">Today's steps</div>
+              <div id="care-steps"></div>
+              <small style="font-size:12px">Tap each one when done.</small>
+            </div>
+            <div class="pc">
+              <div class="eyebrow">Day 2 check in</div>
+              <h4>How's your skin?</h4>
+              <div class="mood">
+                <button data-mood="good">Good</button>
+                <button data-mood="red">A bit red</button>
+                <button data-mood="worried">Worried</button>
+              </div>
+              <div id="mood-reply"></div>
+            </div>
+            <div class="pc">
+              <div class="eyebrow">Send a photo to your nurse</div>
+              <p style="font-size:13px;margin:0">If something doesn't look right, a quick photo helps Nurse Maria see what's going on.</p>
+              <label class="upload" id="upload-label"><input type="file" accept="image/*" id="photo-input"><span id="upload-text">Tap to add a photo</span></label>
+            </div>
+            <div class="pc">
+              <div class="eyebrow">What's normal</div>
+              <p style="font-size:13px;margin:0" id="care-normal"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ask -->
+        <div class="screen-view" id="v-ask">
+          <div class="app-head"><div class="sub">Answers any time, from the Skinlux team</div><h2>Ask Skinlux</h2></div>
+          <div class="chatwrap">
+            <div class="app-body"><div class="chat" id="chat"></div></div>
+            <div class="chips-row" id="ask-chips"></div>
+            <form class="composer" id="ask-form">
+              <input id="ask-input" placeholder="Ask about treatments, prices, aftercare" autocomplete="off">
+              <button class="btn" type="submit">Send</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- More -->
+        <div class="screen-view" id="v-more">
+          <div class="app-head"><div class="sub">Emma Walsh, Booragoon</div><h2>More</h2></div>
+          <div class="app-body">
+            <button class="list-item" data-go="journal"><div><b>Skin journal</b><span>Your private progress photos</span></div><i class="arrow"></i></button>
+            <button class="list-item" data-go="routine"><div><b>My routine</b><span>Morning and night steps, reorder</span></div><i class="arrow"></i></button>
+            <button class="list-item" data-go="rewards"><div><b>Packages and rewards</b><span>Packs, vouchers, points, refer a friend</span></div><i class="arrow"></i></button>
+            <button class="list-item" id="notif-btn"><div><b>Reminders</b><span id="notif-state">Text and app reminders on</span></div><i class="arrow"></i></button>
+            <button class="list-item" id="signout"><div><b>Sign out</b><span>Back to the login screen</span></div><i class="arrow"></i></button>
+          </div>
+        </div>
+
+        <!-- Journal -->
+        <div class="screen-view" id="v-journal">
+          <div class="app-head"><button class="back" data-go="more">Back</button><h2>Skin journal</h2></div>
+          <div class="app-body">
+            <div class="lock"><i></i>Only you and your clinician can see these.</div>
+            <div class="timeline">
+              <div class="tl">
+                <div class="when">Mon 17 Nov, after needling session 1</div>
+                <b>Acne scar plan, week 1</b>
+                <p class="muted" style="font-size:13px;margin:2px 0 0">Sharon's note: good response, mild redness only. Next session in 4 weeks.</p>
+                <div class="pics"><div class="pic b2"><div class="spots"></div><span class="lbl">Before</span></div><div class="pic a2"><div class="spots"></div><span class="lbl">Day 2</span></div></div>
+              </div>
+              <div class="tl">
+                <div class="when">Tue 21 Oct, skin consult</div>
+                <b>Starting point</b>
+                <p class="muted" style="font-size:13px;margin:2px 0 0">Baseline photos in clinic lighting so we compare like with like.</p>
+                <div class="pics"><div class="pic b1"><div class="spots"></div><span class="lbl">Front</span></div><div class="pic a1"><div class="spots"></div><span class="lbl">Side</span></div></div>
+              </div>
+            </div>
+            <label class="btn ghost block" style="cursor:pointer">Add a progress photo<input type="file" accept="image/*" id="journal-input" class="hidden"></label>
+          </div>
+        </div>
+
+        <!-- Routine -->
+        <div class="screen-view" id="v-routine">
+          <div class="app-head"><button class="back" data-go="more">Back</button><h2>My routine</h2></div>
+          <div class="app-body">
+            <div class="seg full" id="routine-seg" style="margin-bottom:12px"><button class="on" data-r="am">Morning</button><button data-r="pm">Night</button></div>
+            <div class="pc" id="routine-list"></div>
+            <div class="pc" style="background:var(--warn-soft);border-color:var(--warn-soft)">
+              <small style="color:var(--warn);font-weight:600">Pause your retinal for 7 days after needling. We'll remind you when to start again.</small>
+            </div>
+            <small style="font-size:11px">Product prices shown are sample prices.</small>
+          </div>
+        </div>
+
+        <!-- Rewards -->
+        <div class="screen-view" id="v-rewards">
+          <div class="app-head"><button class="back" data-go="more">Back</button><h2>Packages and rewards</h2></div>
+          <div class="app-body">
+            <div class="pc">
+              <div class="eyebrow">Package</div>
+              <h4>Bright &amp; Tight 2 pack</h4>
+              <div class="row between"><small>1 of 2 sessions left</small><span class="badge ok">Active</span></div>
+              <div class="bar" style="margin:8px 0 10px"><span style="width:50%"></span></div>
+              <a class="btn sm" href="#" data-book>Book my session</a>
+            </div>
+            <div class="pc">
+              <div class="eyebrow">Gift voucher</div>
+              <div class="row between"><h4 style="font-size:22px;font-family:var(--serif)">$50.00</h4><span class="badge gold">Balance</span></div>
+              <small>Comes off your next bill automatically.</small>
+            </div>
+            <div class="pc dark">
+              <div class="eyebrow">Skinlux points</div>
+              <div class="points" id="pts">1,240</div>
+              <small>Earned on beauty and energy treatments and products.</small>
+              <button class="btn gold sm block" id="redeem" style="margin-top:10px">Redeem 1,000 points for $20 off</button>
+            </div>
+            <div class="pc">
+              <div class="eyebrow">Refer a friend</div>
+              <h4>Give $30, get $30</h4>
+              <p style="font-size:13px;margin:0 0 8px">Your friend gets $30 off their first beauty or energy treatment, and you get $30 credit when they visit. Cosmetic injectables are not part of this offer.</p>
+              <div class="row" style="gap:8px"><input value="skinlux.au/r/EMMA30" readonly style="font-size:13px"><button class="btn sm" id="share">Share</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabbar" id="tabbar" style="display:none">
+          <button data-tab="home" class="on"><span class="dot"></span>Home</button>
+          <button data-tab="course"><span class="dot"></span>My course</button>
+          <button data-tab="care"><span class="dot"></span>Aftercare</button>
+          <button data-tab="ask"><span class="dot"></span>Ask</button>
+          <button data-tab="more"><span class="dot"></span>More</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card soft side">
+      <h3>Why it matters</h3>
+      <p style="font-size:14px">Courses only work if clients come back on time. The app shows Emma exactly where she is and books the next session in one tap.</p>
+      <p style="font-size:14px">Aftercare questions stop clogging the phones. A worried client still reaches a nurse the same day, with a photo.</p>
+      <p style="font-size:14px">Products and rewards bring her back between treatments.</p>
+      <p class="muted" style="font-size:13px;margin:0">Try it: sign in, tap Aftercare and choose Worried, or ask the concierge "How much is HIFU?"</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX, C = S.sample_client;
+  function $(id) { return document.getElementById(id); }
+  function tr(id) { return S.treatments.filter(function (t) { return t.id === id; })[0]; }
+  var toastT;
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("show"); }, 2600); }
+
+  document.querySelectorAll("[data-book]").forEach(function (a) { a.href = S.booking; a.target = "_blank"; a.rel = "noopener"; });
+
+  var h = new Date().getHours();
+  $("greet-time").textContent = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+  function tick() { var d = new Date(); $("clock").textContent = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0"); }
+  tick(); setInterval(tick, 30000);
+
+  // Navigation
+  var signedIn = false;
+  var tabOf = { home: "home", course: "course", care: "care", ask: "ask", more: "more", journal: "more", routine: "more", rewards: "more" };
+  function show(view) {
+    if (!signedIn) { toast("Sign in first. The code can be any 4 digits."); return; }
+    document.querySelectorAll(".screen-view").forEach(function (v) { v.classList.remove("on"); });
+    $("v-" + view).classList.add("on");
+    document.querySelectorAll("#tabbar button").forEach(function (b) { b.classList.toggle("on", b.dataset.tab === tabOf[view]); });
+    document.querySelectorAll(".side .item").forEach(function (b) { b.classList.toggle("on", b.dataset.go === tabOf[view]); });
+    if (view === "ask") startChat();
+  }
+  document.querySelectorAll("#tabbar button").forEach(function (b) { b.onclick = function () { show(b.dataset.tab); }; });
+  document.addEventListener("click", function (e) {
+    var g = e.target.closest("[data-go]");
+    if (g) { e.preventDefault(); show(g.dataset.go); }
+  });
+
+  // Login
+  $("send-code").onclick = function () {
+    $("sent-to").textContent = $("mobile").value || "your mobile";
+    $("login-step1").classList.add("hidden");
+    $("login-step2").classList.remove("hidden");
+    toast("Code sent by SMS");
+    setTimeout(function () { document.querySelector(".code").focus(); }, 50);
+  };
+  $("resend").onclick = function () { toast("New code sent"); };
+  var codes = document.querySelectorAll(".code");
+  codes.forEach(function (c, i) {
+    c.addEventListener("input", function () { c.value = c.value.replace(/\D/g, ""); if (c.value && codes[i + 1]) codes[i + 1].focus(); if (i === 3 && c.value) $("verify").click(); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Backspace" && !c.value && codes[i - 1]) codes[i - 1].focus(); });
+  });
+  $("verify").onclick = function () {
+    var v = Array.prototype.map.call(codes, function (c) { return c.value; }).join("");
+    if (v.length < 4) { $("code-hint").textContent = "Please enter all 4 digits."; $("code-hint").style.color = "var(--bad)"; return; }
+    signedIn = true;
+    $("tabbar").style.display = "flex";
+    show("home");
+    toast("Welcome back, Emma");
+  };
+  $("signout").onclick = function () {
+    signedIn = false;
+    document.querySelectorAll(".screen-view").forEach(function (v) { v.classList.remove("on"); });
+    $("v-login").classList.add("on"); $("tabbar").style.display = "none";
+    $("login-step1").classList.remove("hidden"); $("login-step2").classList.add("hidden");
+    codes.forEach(function (c) { c.value = ""; });
+  };
+
+  $("add-cal").onclick = function () { toast("Added to your calendar: Tue 16 Dec, 10:30am"); };
+
+  // Courses
+  $("course-list").innerHTML = C.courses.map(function (c) {
+    var t = tr(c.treatment);
+    var pct = Math.round(c.done / c.total * 100);
+    return '<div class="pc">' +
+      '<div class="row between"><h4>' + c.label + '</h4><span class="badge gold">' + c.done + ' of ' + c.total + '</span></div>' +
+      '<div class="bar" style="margin:8px 0"><span style="width:' + pct + '%"></span></div>' +
+      '<div style="font-size:13px">Next due <b>' + c.next_due + '</b></div>' +
+      '<small style="font-size:12px;display:block;margin:4px 0 10px">' + t.course + '. ' + t.results + '</small>' +
+      '<div class="row" style="gap:8px"><a class="btn sm" target="_blank" rel="noopener" href="' + S.booking + '">Book next</a>' +
+      '<button class="btn ghost sm" data-remind="' + c.label + '">Remind me</button></div></div>';
+  }).join("") +
+    '<div class="pc soft" style="background:var(--sand);border-color:var(--sand)"><small>Staying on schedule matters. IPL works best every 3 to 4 weeks, so we nudge you a few days before each one is due.</small></div>';
+  document.querySelectorAll("[data-remind]").forEach(function (b) {
+    b.onclick = function () { b.textContent = "Reminder set"; b.disabled = true; toast("We'll text you 3 days before your " + b.dataset.remind + " is due"); };
+  });
+
+  // Aftercare
+  var nd = tr("needling");
+  var steps = nd.aftercare.split(/,\s*|\.\s*/).map(function (s) { return s.trim(); }).filter(Boolean);
+  steps = steps.map(function (s) { return s.charAt(0).toUpperCase() + s.slice(1); });
+  $("care-steps").innerHTML = steps.map(function (s) { return '<div class="check"><span class="box"></span><span>' + s + '</span></div>'; }).join("");
+  document.querySelectorAll(".check").forEach(function (c) { c.onclick = function () { c.classList.toggle("done"); }; });
+  $("care-normal").textContent = "Downtime for needling: " + nd.downtime + " " + nd.results;
+
+  var moodText = {
+    good: ['ok', "Lovely to hear. Keep up the SPF and gentle cleanser, and you can go back to makeup tomorrow."],
+    red: ['warn', "That's normal on day 2 after needling and usually settles in 24 to 48 hours. Keep it cool and skip actives. If it's not settling by tomorrow, tap Worried."],
+    worried: ['bad', "Nurse Maria has been notified and will message you today. If you can, add a photo below so she can see your skin."]
+  };
+  document.querySelectorAll("[data-mood]").forEach(function (b) {
+    b.onclick = function () {
+      document.querySelectorAll("[data-mood]").forEach(function (x) { x.classList.toggle("on", x === b); });
+      var m = moodText[b.dataset.mood];
+      $("mood-reply").innerHTML = '<div class="reply-box ' + m[0] + '">' + m[1] + '</div>';
+      if (b.dataset.mood === "worried") { toast("Nurse Maria notified"); $("upload-label").style.borderColor = "var(--bad)"; }
+    };
+  });
+  $("photo-input").onchange = function () {
+    var f = this.files[0];
+    if (!f) return;
+    $("upload-text").textContent = "Photo sent: " + f.name + ". Only Nurse Maria can see it.";
+    toast("Photo sent securely to Nurse Maria");
+  };
+  $("journal-input").onchange = function () { if (this.files[0]) toast("Photo added to your private journal"); };
+
+  // Routine
+  var P = S.products;
+  var routine = {
+    am: [[P[2], "Cleanse"], [P[0], "Vitamin C serum"], [P[3], "Sun protection, last step"]],
+    pm: [[P[2], "Cleanse"], [P[1], "Retinal, 3 nights a week"]]
+  };
+  function drawRoutine(k) {
+    $("routine-list").innerHTML = routine[k].map(function (r, i) {
+      return '<div class="step"><span class="n">' + (i + 1) + '</span><div class="info"><b>' + r[0].name + '</b><span>' + r[1] + '. ' + r[0].use + '. Sample price ' + r[0].price + '</span></div>' +
+        '<button class="btn ghost sm" data-reorder="' + r[0].name + '">Reorder</button></div>';
+    }).join("");
+    document.querySelectorAll("[data-reorder]").forEach(function (b) {
+      b.onclick = function () { b.textContent = "Ordered"; b.disabled = true; toast(b.dataset.reorder + " reserved at Booragoon. Ready at your next visit."); };
+    });
+  }
+  drawRoutine("am");
+  document.querySelectorAll("#routine-seg button").forEach(function (b) {
+    b.onclick = function () { document.querySelectorAll("#routine-seg button").forEach(function (x) { x.classList.toggle("on", x === b); }); drawRoutine(b.dataset.r); };
+  });
+
+  // Rewards
+  var points = C.points;
+  $("redeem").onclick = function () {
+    if (points < 1000) { toast("You need 1,000 points to redeem"); return; }
+    points -= 1000;
+    $("pts").textContent = points.toLocaleString("en-AU");
+    $("home-points").textContent = points.toLocaleString("en-AU");
+    $("to-next").textContent = (1500 - points).toLocaleString("en-AU") + " to your next reward";
+    $("pts-bar").style.width = Math.round(points / 1500 * 100) + "%";
+    this.textContent = "$20 credit added"; this.disabled = true;
+    toast("$20 off added to your next beauty treatment");
+  };
+  $("share").onclick = function () {
+    try { navigator.clipboard.writeText("skinlux.au/r/EMMA30"); } catch (e) {}
+    toast("Referral link copied. Share it with a friend.");
+  };
+  var notifOn = true;
+  $("notif-btn").onclick = function () { notifOn = !notifOn; $("notif-state").textContent = notifOn ? "Text and app reminders on" : "Reminders off"; toast(notifOn ? "Reminders on" : "Reminders off"); };
+
+  // Ask
+  var chatStarted = false;
+  function startChat() {
+    if (chatStarted) return;
+    chatStarted = true;
+    SkinluxConcierge.addBot($("chat"), { links: [], text: "Hi Emma, I'm the Skinlux concierge. Ask me about your aftercare, prices, opening hours or anything else." });
+  }
+  var asks = ["Can I wear makeup after needling?", "How much is HIFU?", "Are you open Saturday?", "How much are wrinkle relaxers?"];
+  $("ask-chips").innerHTML = asks.map(function (q) { return '<span class="chip" data-q="' + q.replace(/"/g, "&quot;") + '">' + q + '</span>'; }).join("");
+  document.querySelectorAll("#ask-chips .chip").forEach(function (c) { c.onclick = function () { SkinluxConcierge.ask($("chat"), c.dataset.q); }; });
+  $("ask-form").onsubmit = function (e) {
+    e.preventDefault();
+    var v = $("ask-input").value.trim();
+    if (!v) return;
+    $("ask-input").value = "";
+    SkinluxConcierge.ask($("chat"), v);
+  };
+})();
+</script>
+</body>
+</html>

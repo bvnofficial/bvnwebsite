@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI phone receptionist | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .kpis { margin-bottom: 20px; }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 26px; align-items: start; }
+  @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } }
+  .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+
+  .tline { position: relative; padding-left: 26px; }
+  .tline::before { content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: var(--line); }
+  .ev { position: relative; margin-bottom: 14px; opacity: 0.35; transition: opacity .4s; }
+  .ev.on { opacity: 1; }
+  .ev .dot { position: absolute; left: -26px; top: 2px; width: 20px; height: 20px; border-radius: 99px; background: var(--white); border: 2px solid var(--line); transition: all .3s; }
+  .ev.on .dot { background: var(--gold); border-color: var(--gold); }
+  .ev.on.bad .dot { background: var(--bad); border-color: var(--bad); }
+  .ev.on.ok .dot { background: var(--ok); border-color: var(--ok); }
+  .ev.live .dot { animation: pulse 1s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(184,146,90,0.6); } 100% { box-shadow: 0 0 0 10px rgba(184,146,90,0); } }
+  .ev .when { font-size: 12px; color: var(--muted); }
+  .ev b { display: block; }
+  .ev p { font-size: 13px; color: var(--muted); margin: 2px 0 0; }
+  .countdown { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--gold); }
+
+  .transcript { max-height: 430px; overflow-y: auto; padding-right: 4px; }
+  .line { display: flex; gap: 10px; margin-bottom: 10px; animation: fin .3s ease-out; }
+  @keyframes fin { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .line .who { flex: 0 0 86px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding-top: 3px; }
+  .line.ai .who { color: var(--gold); }
+  .line.caller .who { color: var(--mocha); }
+  .line .say { flex: 1; font-size: 14px; background: var(--cream); border-radius: 12px; padding: 8px 12px; }
+  .line.ai .say { background: var(--gold-soft); }
+  .wave { display: inline-flex; gap: 3px; align-items: center; height: 16px; margin-left: 6px; vertical-align: middle; }
+  .wave i { width: 3px; background: var(--gold); border-radius: 2px; animation: wv 0.9s infinite ease-in-out; }
+  .wave i:nth-child(2) { animation-delay: .1s; } .wave i:nth-child(3) { animation-delay: .2s; } .wave i:nth-child(4) { animation-delay: .3s; }
+  @keyframes wv { 0%, 100% { height: 4px; } 50% { height: 16px; } }
+
+  .summary { border: 1px solid var(--gold); background: var(--white); }
+  .summary dl { display: grid; grid-template-columns: 120px 1fr; gap: 6px 12px; margin: 10px 0 12px; font-size: 14px; }
+  .summary dt { color: var(--muted); }
+  .summary dd { margin: 0; }
+
+  /* phone SMS */
+  .phone .app-head { text-align: center; border-bottom: 1px solid var(--line); background: var(--white); }
+  .phone .app-head .av { width: 44px; height: 44px; border-radius: 99px; background: var(--sand); margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--mocha); }
+  .phone .app-head b { font-size: 14px; }
+  .phone .app-head small { display: block; font-size: 11px; }
+  .sms { max-width: 80%; padding: 9px 12px; border-radius: 18px; font-size: 14px; margin-bottom: 8px; animation: fin .3s ease-out; }
+  .sms.in { background: #e9e9eb; color: #111; border-bottom-left-radius: 5px; }
+  .sms.out { background: #0a84ff; color: #fff; margin-left: auto; border-bottom-right-radius: 5px; }
+  .sms a { color: inherit; font-weight: 600; }
+  .sms-time { text-align: center; font-size: 11px; color: var(--muted); margin: 10px 0; }
+  .lock-screen { position: absolute; inset: 0; background: linear-gradient(170deg, #3a2f29, #7a6455); color: #fff; display: flex; flex-direction: column; align-items: center; padding-top: 90px; z-index: 5; transition: opacity .4s; }
+  .lock-screen .big { font-size: 64px; font-weight: 300; line-height: 1; }
+  .lock-screen .ring { margin-top: 60px; text-align: center; }
+  .lock-screen .ring b { display: block; font-size: 22px; font-weight: 500; }
+  .lock-screen .ring span { font-size: 13px; opacity: 0.8; }
+  .lock-screen.ringing .ring b { animation: rr 0.6s infinite alternate; }
+  @keyframes rr { from { opacity: 1; } to { opacity: 0.4; } }
+  .lock-screen .notif { margin: 30px 16px 0; background: rgba(255,255,255,0.88); color: #111; border-radius: 16px; padding: 10px 12px; font-size: 13px; width: calc(100% - 32px); display: none; }
+  .lock-screen .notif b { display: block; font-size: 12px; }
+  .phone-cap { text-align: center; font-size: 13px; color: var(--muted); margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">3 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>AI phone receptionist</h1>
+    <p>When the therapists are with clients or the clinic is closed, no call goes unanswered: a text goes back in seconds, or an AI receptionist answers, helps and books.</p>
+    <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+  </div>
+
+  <div class="grid g4 kpis">
+    <div class="card kpi"><div class="label">Calls after 6pm</div><div class="value">23</div><div class="delta muted">last month, sample</div></div>
+    <div class="card kpi"><div class="label">Missed in treatment</div><div class="value">41</div><div class="delta muted">therapist with a client</div></div>
+    <div class="card kpi"><div class="label">Text back reply rate</div><div class="value">62%</div><div class="delta up">callers who replied</div></div>
+    <div class="card kpi"><div class="label">Bookings recovered</div><div class="value" id="k-rec">11</div><div class="delta up">sample, this month</div></div>
+  </div>
+
+  <div class="controls">
+    <div class="seg" id="mode">
+      <button class="on" data-m="text">Missed call text back</button>
+      <button data-m="ai">AI receptionist</button>
+    </div>
+    <button class="btn gold" id="run">Simulate a missed call to Booragoon</button>
+    <button class="btn ghost sm" id="reset">Reset</button>
+  </div>
+
+  <div class="split">
+    <div class="stack">
+      <!-- Missed call text back -->
+      <div class="card" id="p-text">
+        <h3>What happens</h3>
+        <div class="tline" id="tl-text">
+          <div class="ev bad" data-s="0"><span class="dot"></span><div class="when">2:14pm</div><b>Incoming call from 0433 218 905</b><p>Booragoon front line rings in the treatment rooms.</p></div>
+          <div class="ev bad" data-s="1"><span class="dot"></span><div class="when">2:14pm</div><b>Call rings out</b><p>Sharon Kim is mid HIFU with a client. Nobody can pick up.</p></div>
+          <div class="ev" data-s="2"><span class="dot"></span><div class="when">2:14pm</div><b>Waiting 5 seconds <span class="countdown" id="cd"></span></b><p>Long enough to know it was missed, short enough that they haven't called the next clinic.</p></div>
+          <div class="ev ok" data-s="3"><span class="dot"></span><div class="when">2:14pm</div><b>SMS sent to the caller</b><p>From the Booragoon number, with the booking link.</p></div>
+          <div class="ev ok" data-s="4"><span class="dot"></span><div class="when">2:16pm</div><b>Caller replies</b><p>The reply lands in the GoHighLevel inbox for whoever is free next.</p></div>
+          <div class="ev ok" data-s="5"><span class="dot"></span><div class="when">2:31pm</div><b>Shakira replies between clients</b><p>Booked for Thursday 6pm. The lead is saved, not lost.</p></div>
+        </div>
+      </div>
+
+      <!-- AI receptionist -->
+      <div class="card hidden" id="p-ai">
+        <div class="row between"><h3 style="margin:0">Live call transcript</h3><span class="badge gold" id="ai-state">Ready</span></div>
+        <small>After hours call to Booragoon, 7:42pm. The AI answers in a warm Australian voice and only uses Skinlux's own information.</small>
+        <div class="transcript" id="transcript" style="margin-top:14px"></div>
+      </div>
+
+      <div class="card summary hidden" id="summary">
+        <div class="row between"><h3 style="margin:0">Call summary for staff</h3><span class="badge ok">New</span></div>
+        <dl>
+          <dt>Caller</dt><dd>Chloe, 0433 218 905 (new client)</dd>
+          <dt>When</dt><dd>Tonight 7:42pm, Booragoon line, 2 min 10 sec</dd>
+          <dt>Wanted</dt><dd>IPL hair removal, underarms and Brazilian</dd>
+          <dt>Told</dt><dd>Prices from the price list, 8 to 12 sessions, no spray tan before</dd>
+          <dt>Outcome</dt><dd>Booking link sent by SMS</dd>
+          <dt>Follow up</dt><dd>If not booked by 10am tomorrow, call back</dd>
+          <dt>Tags</dt><dd><span class="badge gold">interest-ipl-hair</span> <span class="badge gold">after-hours-call</span> <span class="badge ok">location-booragoon</span></dd>
+        </dl>
+        <div class="row wrap" style="gap:8px">
+          <button class="btn sm" id="handled">Mark as handled</button>
+          <button class="btn ghost sm" id="play">Play recording</button>
+          <button class="btn ghost sm" id="open-ghl">Open in GoHighLevel</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>2:14</span><span>4G &nbsp;82%</span></div>
+          <div class="lock-screen" id="lock">
+            <div class="big" id="lock-time">2:14</div>
+            <div style="font-size:14px;opacity:.8">Tuesday 25 November</div>
+            <div class="ring" id="ring"><b>Calling Skinlux Booragoon</b><span>0478 817 414</span></div>
+            <div class="notif" id="notif"><b>MESSAGES, now</b><span id="notif-text"></span></div>
+          </div>
+          <div class="app-head"><div class="av">SB</div><b>Skinlux Booragoon</b><small class="muted">0478 817 414</small></div>
+          <div class="app-body" id="sms" style="padding-top:8px"></div>
+        </div>
+      </div>
+      <div class="phone-cap">The caller's phone</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  var ipl = S.treatments.filter(function (t) { return t.id === "ipl-hair"; })[0];
+  var link = '<a href="' + S.booking + '" target="_blank" rel="noopener">bookings.gettimely.com/booragoonhairfree</a>';
+  var mode = "text", timers = [];
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+  function clearAll() { timers.forEach(clearTimeout); timers = []; }
+  var tt;
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove("show"); }, 2400); }
+
+  function sms(dir, html) { var d = document.createElement("div"); d.className = "sms " + dir; d.innerHTML = html; $("sms").appendChild(d); $("sms").scrollTop = 9999; }
+  function smsTime(t) { var d = document.createElement("div"); d.className = "sms-time"; d.textContent = t; $("sms").appendChild(d); }
+  function lock(on, ringing, clock) {
+    $("lock").style.opacity = on ? 1 : 0; $("lock").style.pointerEvents = on ? "auto" : "none";
+    $("lock").classList.toggle("ringing", !!ringing);
+    $("ring").style.display = ringing ? "block" : "none";
+    if (clock) { $("lock-time").textContent = clock; document.querySelector(".phone .status span").textContent = clock; }
+  }
+  function notif(text) { $("notif").style.display = text ? "block" : "none"; $("notif-text").textContent = text || ""; }
+
+  function reset() {
+    clearAll();
+    $("sms").innerHTML = ""; $("transcript").innerHTML = "";
+    document.querySelectorAll(".ev").forEach(function (e) { e.classList.remove("on", "live"); });
+    $("cd").textContent = ""; $("summary").classList.add("hidden");
+    $("ai-state").textContent = "Ready"; $("ai-state").className = "badge gold";
+    notif(""); lock(true, false, mode === "ai" ? "7:42" : "2:14");
+    $("run").disabled = false; $("handled").disabled = false; $("handled").textContent = "Mark as handled";
+  }
+
+  function setMode(m) {
+    mode = m;
+    document.querySelectorAll("#mode button").forEach(function (b) { b.classList.toggle("on", b.dataset.m === m); });
+    $("p-text").classList.toggle("hidden", m !== "text");
+    $("p-ai").classList.toggle("hidden", m !== "ai");
+    $("run").textContent = m === "text" ? "Simulate a missed call to Booragoon" : "Simulate an after hours call";
+    reset();
+  }
+  document.querySelectorAll("#mode button").forEach(function (b) { b.onclick = function () { setMode(b.dataset.m); }; });
+  $("reset").onclick = reset;
+
+  function step(i, live) {
+    var e = document.querySelector('#tl-text .ev[data-s="' + i + '"]');
+    document.querySelectorAll("#tl-text .ev").forEach(function (x) { x.classList.remove("live"); });
+    e.classList.add("on"); if (live) e.classList.add("live");
+  }
+
+  function runText() {
+    lock(true, true, "2:14");
+    step(0, true);
+    later(function () { step(1, true); }, 1600);
+    later(function () { lock(true, false); step(2, true); var n = 5; $("cd").textContent = n;
+      for (var k = 1; k <= 5; k++) (function (k) { later(function () { $("cd").textContent = 5 - k || ""; }, k * 1000); })(k);
+    }, 3200);
+    later(function () {
+      step(3);
+      notif("Skinlux Booragoon: Hi, it's Skinlux Booragoon. Sorry we missed you...");
+      later(function () {
+        lock(false); notif("");
+        smsTime("Today 2:14pm");
+        sms("in", "Hi, it's Skinlux Booragoon. Sorry we missed you, we're with a client. Reply here or book online: " + link);
+      }, 1400);
+    }, 8300);
+    later(function () { step(4); smsTime("2:16pm"); sms("out", "Hi! Do you have anything Thursday evening for underarm IPL?"); }, 11500);
+    later(function () { step(5); smsTime("2:31pm"); sms("in", "Hi, it's Shakira at Skinlux. Yes, Thursday 6pm is free. I've booked you in and sent a confirmation. See you then!"); bump(); toast("Missed call turned into a booking"); $("run").disabled = false; }, 14500);
+  }
+
+  var SCRIPT = [
+    ["ai", "Thanks for calling Skinlux Booragoon, this is the Skinlux assistant. The team has finished for the day, but I can help. What can I do for you?"],
+    ["caller", "Hi, I was wondering how much IPL hair removal is?"],
+    ["ai", "Of course. Underarms are $75, Brazilian is $120 and full legs are $259 a session. Which area were you thinking of?"],
+    ["caller", "Probably underarms and Brazilian. How many sessions does it take?"],
+    ["ai", "Most people need 8 to 12 sessions, 3 to 4 weeks apart, and the hair reduces a little more each time. There's no downtime, so you can go straight back to your day."],
+    ["caller", "Great. Can I book in?"],
+    ["ai", "Absolutely. I'll text you our booking link now so you can pick a time that suits. Is 0433 218 905 the best number?"],
+    ["caller", "Yes, that's me."],
+    ["ai", "Done, it's on its way. One tip before your first session: no spray tan, and shave rather than wax. Anything else I can help with?"],
+    ["caller", "No, that's perfect, thanks!"],
+    ["ai", "Lovely. We'll see you soon at Skinlux. Bye for now."]
+  ];
+  function runAI() {
+    lock(true, true, "7:42");
+    $("ai-state").textContent = "Ringing"; $("ai-state").className = "badge warn";
+    var t = 1500;
+    later(function () { lock(true, false); $("ai-state").innerHTML = 'Live call<span class="wave"><i></i><i></i><i></i><i></i></span>'; $("ai-state").className = "badge ok"; }, t);
+    SCRIPT.forEach(function (l, i) {
+      t += i === 0 ? 400 : Math.min(2600, 700 + SCRIPT[i - 1][1].length * 12);
+      later(function () {
+        var d = document.createElement("div");
+        d.className = "line " + l[0];
+        d.innerHTML = '<span class="who">' + (l[0] === "ai" ? "Skinlux AI" : "Caller") + '</span><span class="say"></span>';
+        d.querySelector(".say").textContent = l[1];
+        $("transcript").appendChild(d); $("transcript").scrollTop = 9999;
+        if (i === 6) later(function () {
+          lock(false); smsTime("Today 7:43pm");
+          sms("in", "Hi Chloe, it's Skinlux Booragoon. Here's the link to book your IPL hair removal: " + link + " Reminder: no spray tan before your session, and shave rather than wax. See you soon!");
+        }, 1500);
+      }, t);
+    });
+    t += 2200;
+    later(function () {
+      $("ai-state").textContent = "Call ended, 2:10"; $("ai-state").className = "badge gold";
+      $("summary").classList.remove("hidden");
+      $("summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      toast("Summary created for the Booragoon team"); bump(); $("run").disabled = false;
+    }, t);
+  }
+
+  var rec = 11;
+  function bump() { rec++; $("k-rec").textContent = rec; }
+
+  $("run").onclick = function () { reset(); $("run").disabled = true; if (mode === "text") runText(); else runAI(); };
+  $("handled").onclick = function () { this.textContent = "Handled by Jellie"; this.disabled = true; toast("Marked as handled"); };
+  $("play").onclick = function () { toast("The call recording plays here in the live version"); };
+  $("open-ghl").onclick = function () { toast("Opens Chloe's contact in GoHighLevel in the live version"); };
+
+  // keep the price line in step with the clinic's own price list
+  SCRIPT[2][1] = "Of course. " + ipl.price.split(".")[0].replace("Underarms", "Underarms are").replace(", Brazilian", ", Brazilian is").replace(", full legs", " and full legs are") + " a session. Which area were you thinking of?";
+  setMode("text");
+})();
+</script>
+</body>
+</html>

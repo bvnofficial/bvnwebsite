@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your 4 workflows | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .pipe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 6px 0 22px; }
+  @media (max-width: 800px) { .pipe { grid-template-columns: 1fr 1fr; } }
+  .pipe div { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; position: relative; }
+  .pipe div b { display: block; font-family: var(--serif); font-size: 19px; }
+  .pipe div span { font-size: 13px; color: var(--muted); }
+  .pipe div:not(:last-child)::after { content: ""; position: absolute; right: -9px; top: 50%; width: 8px; height: 8px; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); transform: translateY(-50%) rotate(45deg); z-index: 2; }
+  @media (max-width: 800px) { .pipe div::after { display: none; } }
+
+  .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+  @media (max-width: 800px) { .tabs { grid-template-columns: 1fr 1fr; } }
+  .tab { text-align: left; border: 1px solid var(--line); background: var(--white); border-radius: 14px; padding: 14px; cursor: pointer; font: inherit; color: inherit; transition: all .15s; }
+  .tab:hover { border-color: var(--taupe); }
+  .tab.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .tab .n { font-family: var(--serif); font-size: 15px; color: var(--gold); font-weight: 700; }
+  .tab b { display: block; font-size: 15px; margin-top: 2px; }
+  .tab small { color: inherit; opacity: .7; font-size: 12px; }
+
+  .flow-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 14px; }
+  .flow-head p { color: var(--muted); max-width: 640px; margin: 4px 0 0; }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px; }
+  .controls .ctl { min-width: 190px; }
+  .controls label { margin-top: 0; }
+
+  .split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 950px) { .split { grid-template-columns: 1fr; } }
+
+  .steps { position: relative; padding-left: 34px; }
+  .steps::before { content: ""; position: absolute; left: 13px; top: 12px; bottom: 12px; width: 2px; background: var(--line); }
+  .step { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; margin-bottom: 10px; cursor: pointer; transition: all .25s; }
+  .step:hover { border-color: var(--taupe); }
+  .step .dot { position: absolute; left: -29px; top: 13px; width: 18px; height: 18px; border-radius: 99px; background: var(--white); border: 2px solid var(--taupe); transition: all .25s; }
+  .step.trigger .dot { border-color: var(--mocha); background: var(--sand); }
+  .step.check { background: var(--cream); border-style: dashed; }
+  .step.check .dot { border-radius: 4px; transform: rotate(45deg); width: 14px; height: 14px; left: -27px; }
+  .step.task .dot { border-color: var(--warn); }
+  .step .when { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .3px; }
+  .step .title { font-weight: 600; }
+  .step .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
+  .step.sel { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .step.lit .dot { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 0 5px var(--gold-soft); }
+  .step.done { opacity: .55; }
+  .step.skip { opacity: .3; }
+  .step.stopped { border-color: var(--ok); background: var(--ok-soft); }
+  .step.stopped .dot { background: var(--ok); border-color: var(--ok); }
+  .badge.info { background: var(--sand); color: var(--mocha); }
+
+  .preview { position: sticky; top: 64px; }
+  .mail { background: var(--white); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+  .mail .hd { padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--cream); font-size: 13px; }
+  .mail .hd div { padding: 2px 0; }
+  .mail .hd span { color: var(--muted); display: inline-block; width: 64px; }
+  .mail .bd { padding: 16px; font-size: 14px; white-space: pre-line; line-height: 1.6; }
+  .mail .bd .cta { display: inline-block; margin-top: 10px; background: var(--ink); color: var(--cream); padding: 8px 16px; border-radius: 99px; font-weight: 600; font-size: 13px; text-decoration: none; }
+  .sms-wrap { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); }
+  .sms-wrap .b { background: #e9e9eb; border-radius: 16px; border-bottom-left-radius: 4px; padding: 10px 13px; font-size: 14px; max-width: 88%; white-space: pre-line; }
+  .sys { background: var(--sand); border-radius: 14px; padding: 16px; font-size: 14px; white-space: pre-line; }
+  .why { margin-top: 12px; font-size: 13px; color: var(--mocha); background: var(--gold-soft); border-radius: 10px; padding: 10px 12px; }
+  .result { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 14px; display: none; }
+  .result.show { display: block; }
+  .result.ok { background: var(--ok-soft); color: var(--ok); }
+  .result.warn { background: var(--warn-soft); color: var(--warn); }
+  .guard { margin-top: 22px; }
+  .guard li { margin-bottom: 6px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">Your 4 workflows</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Your 4 workflows</h1>
+    <p>The four automations from your brief, step by step. Pick a workflow, change the client, then press Play to watch one client go through it. Click any step to read the message they get.</p>
+    <div class="note">Demo with sample data. Message wording is a first draft for Jellie to edit.</div>
+  </div>
+
+  <div class="pipe">
+    <div><b>Timely</b><span>Stays as it is. Clients, bookings, sales, both clinics.</span></div>
+    <div><b>Zapier and Gmail</b><span>Carry each event across: incomplete booking emails, new clients, the staff app tap.</span></div>
+    <div><b>GoHighLevel</b><span>Runs every wait, message, tag and team task below.</span></div>
+    <div><b>Your dashboard</b><span>Shows what each workflow brought back.</span></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="card">
+    <div class="flow-head">
+      <div><h2 id="fTitle" style="margin:0"></h2><p id="fDesc"></p></div>
+      <div class="row wrap" style="gap:8px"><button class="btn gold" id="play">Play</button><button class="btn ghost" id="reset">Reset</button></div>
+    </div>
+    <div class="controls" id="controls"></div>
+    <div class="split">
+      <div>
+        <div class="steps" id="steps"></div>
+        <div class="result" id="result"></div>
+      </div>
+      <div class="preview">
+        <div id="preview"></div>
+        <div class="why" id="why"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card soft guard">
+    <h3>Built in to every workflow</h3>
+    <ul>
+      <li>Every workflow stops the moment the client books, so nobody gets an offer after they've already paid.</li>
+      <li>Wrinkle relaxers, fillers and bio stimulating injections never get a price, a discount or a brand name. They get a complimentary consult with Nurse Leo or Nurse Maria instead.</li>
+      <li>Package holders never get a discount. They get a reminder to book from their package.</li>
+      <li>Marketing emails carry an unsubscribe link and SMS carry Reply STOP. A "do not market" tag stops everything for a client.</li>
+      <li>A worried reply pauses all automations for that client until a nurse clears it.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+{
+  const S = window.SKINLUX;
+  const $ = (id) => document.getElementById(id);
+  const tr = (id) => S.treatments.find((t) => t.id === id);
+  const nice = (t) => t.injectable ? t.name.replace(/\s*\(.*\)\s*/, "") : t.name;
+  const low = (s) => /^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+  let tt;
+  const toast = (m) => { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2600); };
+
+  const beauty = S.treatments.filter((t) => !t.injectable);
+  const injectables = S.treatments.filter((t) => t.injectable);
+  const opts = (list, sel) => list.map((t) => `<option value="${t.id}"${t.id === sel ? " selected" : ""}>${nice(t)}</option>`).join("");
+  const sign = (loc) => `\n\nThe Skinlux ${S.locations[loc].name} team\n${S.locations[loc].phone}`;
+  const unsub = "\n\nUnsubscribe any time.";
+
+  const st = { flow: 0, client: "new", treat: "hifu", inj: "relaxers", kind: "beauty", outcome: "never", reply: "good", product: 0, pack: "no", loc: "booragoon", sel: 1, timers: [] };
+
+  function treatNow() { return tr(st.kind === "inj" ? st.inj : st.treat); }
+
+  const FLOWS = [
+    {
+      name: "Abandoned booking", short: "Someone starts a booking and leaves",
+      desc: "Timely emails clientcare when a booking isn't finished. Zapier reads that email, checks GoHighLevel to see if it's a new or existing client, and starts the right path.",
+      controls: ["client", "kind", "outcome"],
+      steps() {
+        const t = treatNow(), first = "Sophie", loc = st.loc, inj = t.injectable;
+        if (st.client === "new") return [
+          { k: "trigger", when: "Tue 2:10pm", title: "Timely sends an incomplete booking email", tags: ["clientcare inbox", "Zapier"], type: "sys",
+            body: `Zapier reads the email from clientcare and pulls out:\nName: ${first} Hart\nMobile: 0413 220 918\nService: ${nice(t)}\nClinic: ${S.locations[loc].name}\n\nNo match in GoHighLevel, so ${first} is a new client. Tags added: abandoned-booking, new-client, interest-${t.id}.`,
+            why: "This email from Timely is the only signal we get for an unfinished booking, so we read it automatically." },
+          { k: "msg", when: "2 hours later", ch: "Email", title: "You were nearly booked", subject: `${first}, your ${nice(t)} spot is still waiting`,
+            body: `Hi ${first},\n\nLooks like your booking for ${low(nice(t))} didn't quite finish. No problem, your details are saved and it only takes a minute to pick a time.\n\n${inj ? "Your first visit is a complimentary consultation with one of our registered nurses." : "If the deposit put you off, it comes straight off your treatment on the day, so it's not an extra cost."}` + sign(loc) + unsub,
+            cta: inj ? "Book my consultation" : "Finish my booking", why: "Most people leave at the deposit step. This email explains it before they book somewhere else." },
+          { k: "check", when: "Before the next step", title: "Booked yet? If yes, stop here" },
+          { k: "msg", when: "2 days later", ch: "Email", title: "Your questions answered", subject: `Everything you wanted to ask about ${nice(t)}`,
+            body: `Hi ${first},\n\nHere's what most people ask us before their first ${low(nice(t))}:\n\nHow long does it take? ${t.time}.\nIs there downtime? ${t.downtime}\nWhen will I see results? ${t.results}\n\nGot another question? Reply to this email and one of our therapists will get back to you today.` + sign(loc) + unsub,
+            cta: "Book a time", why: "Answers the worries that stop people booking, using the clinic's own treatment information." },
+          { k: "check", when: "Before the next step", title: "Booked yet? If yes, stop here" },
+          inj
+            ? { k: "msg", when: "Next day", ch: "SMS", title: "Complimentary consult invite (no offer)", body: `Hi ${first}, it's Skinlux ${S.locations[loc].name}. If you're still thinking about it, book a free consultation with Nurse Maria or Nurse Leo. No pressure, just answers. Reply STOP to opt out.`,
+                why: "Injectables can't carry a discount or price by law, so this step offers a free consult instead." }
+            : { k: "msg", when: "Next day", ch: "SMS", title: "Last nudge with an offer", body: `Hi ${first}, it's Skinlux ${S.locations[loc].name}. Your ${nice(t)} spot is still open, and we'll take 10% off if you book by Friday. Reply STOP to opt out.`,
+                why: "The offer only goes to people who still haven't booked after two emails. The amount is Jellie's call." },
+          { k: "stop", when: "If still not booked", title: "Moved to the newsletter list", type: "sys", body: `${first} stops getting booking reminders and moves to the monthly newsletter, tagged lost-abandoned so the dashboard counts it.`, why: "Three tries is enough. After that, the newsletter keeps Skinlux in mind." }
+        ];
+        return [
+          { k: "trigger", when: "Wed 7:40pm", title: "Timely sends an incomplete booking email", tags: ["clientcare inbox", "Zapier"], type: "sys",
+            body: `Zapier finds ${first} Hart already in GoHighLevel, tagged timely-client, with a ${nice(t)} history at ${S.locations[loc].name}.\n\nShe's an existing client, so she gets the personal path.`, why: "Existing clients often have a package and just need a hand booking it." },
+          { k: "msg", when: "2 hours later", ch: "Email", title: "Looks like you were trying to book", subject: "Can we help you book?",
+            body: `Hi ${first},\n\nWe noticed you started booking online. If you have a treatment package with us, give us a call on ${S.locations[loc].phone} or just reply to this email and we'll book it in for you.` + sign(loc), cta: "Book online", why: "Package bookings sometimes can't be finished online. A reply is the easiest fix." },
+          { k: "check", when: "Before the next step", title: "Booked yet? If yes, stop here" },
+          { k: "msg", when: "2 days later", ch: "Email", title: "How can we help?", subject: `Anything we can help with, ${first}?`,
+            body: `Hi ${first},\n\nJust checking in. Is there a time that works better, or a question we can answer? Reply here and the team will sort it.` + sign(loc), why: "Personal and low pressure. No offer for existing clients." },
+          { k: "check", when: "Before the next step", title: "Booked yet? If yes, stop here" },
+          { k: "task", when: "Next day", title: "Task for Sharon Kim: call Sophie", tags: ["Team follow up list", "Email to Sharon"], type: "sys",
+            body: `New task in the staff app call back list:\n\nCall ${first} Hart, 0413 220 918\nTried to book ${nice(t)} online on Wednesday, no booking after two emails.\nAssigned to Sharon Kim (her usual therapist).\n\nSharon also gets an email with the same details.`, why: "After two emails a person calls. The staff app shows it in red if nobody calls within a day." }
+        ];
+      },
+      stopAt() { return { never: 99, m1: 1, m2: 2 }[st.outcome]; }
+    },
+    {
+      name: "Completed appointment", short: "Aftercare, check in, review, next visit",
+      desc: "When a therapist taps Treatment done in the staff app, GoHighLevel tags the client by treatment and concern and starts the loop for that treatment.",
+      controls: ["treatAll", "reply"],
+      steps() {
+        const t = tr(st.treat), first = "Emma", loc = st.loc, inj = t.injectable;
+        const care = /confirm/i.test(t.aftercare) ? "[Aftercare text for this treatment, to be written by Jellie or a nurse]" : t.aftercare;
+        const steps = [
+          { k: "trigger", when: "Mon 11:30am", title: "Therapist taps Treatment done", tags: ["Staff app", "Timely"], type: "sys",
+            body: `Sharon Kim marks ${first}'s ${nice(t)} as done in the staff app.\n\nTags added in GoHighLevel: treated-${t.id}, ${t.concerns.slice(0, 2).map((c) => "concern-" + c.replace(/\s+/g, "-")).join(", ")}, last-visit-23-nov, clinic-${loc}.`,
+            why: "Timely can't tell Zapier a treatment is finished. This one tap is the signal." },
+          { k: "msg", when: "Same day", ch: "SMS", title: "Aftercare", body: `Hi ${first}, thanks for coming in today. Your ${low(nice(t))} aftercare: ${care} Any questions, just reply here. Skinlux` ,
+            why: "Clients get the right instructions on their phone instead of calling to ask." },
+          { k: "msg", when: "Day 2", ch: "SMS", title: "How's your skin?", body: `Hi ${first}, it's Skinlux. How's your skin feeling after your ${low(nice(t))}? Reply GOOD, A BIT RED or WORRIED.`,
+            why: "Catches problems early and shows the client someone is looking out for them." },
+          { k: "check", when: "Reply", title: st.reply === "good" ? "Reply: GOOD, carry on" : "Reply: WORRIED, pause and alert a nurse" }
+        ];
+        if (st.reply === "worried") {
+          steps.push({ k: "task", when: "Straight away", title: "Nurse Maria alerted, automations paused", tags: ["Staff app inbox", "Paused"], type: "sys",
+            body: `${first}'s reply goes to the top of the staff app inbox, flagged for Nurse Maria.\n\nEvery automation for ${first} pauses, so she won't get a review request or an offer while she's worried.`, why: "A worried client gets a person, fast. Nothing automated goes out until a nurse clears it." });
+          return steps;
+        }
+        steps.push({ k: "msg", when: "Day 5", ch: "SMS", title: "Google review request", body: `So glad your skin is feeling good, ${first}. If you have a minute, a quick Google review helps other people find us: [review link]. Thank you! Skinlux ${S.locations[loc].name}`,
+          why: "Only sent to happy clients. More reviews help Google Ads and local search." });
+        if (t.interval_days) steps.push({ k: "msg", when: `Day ${Math.max(1, t.interval_days - 3)}`, ch: "SMS", title: "Next session reminder", body: inj ? `Hi ${first}, it's nearly time for your review with your nurse. Book here when it suits: [booking link]. Reply STOP to opt out.` : `Hi ${first}, your next ${low(nice(t))} is due around now. ${t.course}. Book here: [booking link]. Reply STOP to opt out.`,
+          why: `Timed to this treatment's own interval (${t.interval_days} days), not a flat 4 weeks.` });
+        if (!inj) {
+          const cross = S.treatments.find((x) => !x.injectable && x.id !== t.id && x.concerns.some((c) => t.concerns.includes(c)));
+          if (cross) steps.push({ k: "msg", when: "Day 21", ch: "Email", title: "Something that pairs well", subject: `Pairs well with your ${nice(t)}`, body: `Hi ${first},\n\nA lot of our ${low(nice(t))} clients also love ${nice(cross)} for ${cross.concerns.slice(0, 2).join(" and ")}. ${cross.results}\n\nAsk your therapist at your next visit if it suits your skin.` + sign(loc) + unsub,
+            why: "Education, not a hard sell. Picked from the concern tags." });
+        }
+        return steps;
+      },
+      stopAt() { return 99; }
+    },
+    {
+      name: "Product sales", short: "Science email, check in, reorder",
+      desc: "When a product is sold, the therapist picks it on the Treatment done screen (or it comes from Timely's sales report). The client gets help using it, and a reminder before it runs out.",
+      controls: ["product"],
+      steps() {
+        const p = S.products[st.product], first = "Olivia", loc = st.loc;
+        const remind = Math.max(30, p.lasts_days - 10);
+        return [
+          { k: "trigger", when: "Thu 3:15pm", title: `${p.name} sold`, tags: ["Staff app", "Timely sale"], type: "sys",
+            body: `${first} buys ${p.name} (${p.brand}) at ${S.locations[loc].name}.\n\nTag added: bought-${p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}, with the purchase date.`, why: "Needs product sales recorded against the client in Timely. That's on the call list." },
+          { k: "msg", when: "Same day", ch: "Email", title: "How it helps your skin", subject: `Getting the most from your ${p.name}`,
+            body: `Hi ${first},\n\nThank you for choosing ${p.name}. Here's how to use it: ${p.use}.\n\n[Two or three short lines on the key ingredient and what it does for your skin, written once by Jellie from the ${p.brand} ingredient guide.]` + sign(loc) + unsub,
+            why: "Jellie likes educating clients with the science. Written once per product, sent every time." },
+          { k: "msg", when: "Day 7", ch: "Email", title: "How are you going with it?", subject: `A week in with ${p.name}`, body: `Hi ${first},\n\nHow's your skin finding ${p.name} so far? Any tingling, dryness or questions, just reply and a therapist will help.` + sign(loc) + unsub, why: "Catches problems before the client gives up on the product." },
+          { k: "msg", when: "Days 10, 14 and 21", ch: "Email", title: "Bonus pack: using your products together", subject: "Your skin routine, step by step",
+            body: `Three short emails:\n\n1. Your morning and night routine, in order.\n2. Layering: what goes on first and why.\n3. What not to mix (for example retinal and strong acids on the same night).` + unsub, why: "This is the bonus email information pack from the brief. Emails only, nothing to buy." },
+          { k: "msg", when: `Day ${remind}`, ch: "SMS", title: "Time to restock?", body: `Hi ${first}, your ${p.name} should be running low about now. Reply YES and we'll have one ready at your next visit. Skinlux. Reply STOP to opt out.`,
+            why: `Timed to how long this product lasts (about ${p.lasts_days} days).` }
+        ];
+      },
+      stopAt() { return 99; }
+    },
+    {
+      name: "No rebooking", short: "Invite, then offer, then a call",
+      desc: "Each morning GoHighLevel checks who had a treatment, has no next booking, and is past that treatment's interval. Four weeks is the default.",
+      controls: ["kind", "pack", "outcome"],
+      steps() {
+        const t = treatNow(), first = "Jasmine", loc = st.loc, inj = t.injectable, pack = st.pack === "yes";
+        const days = t.interval_days || 28;
+        const w1 = Math.max(days, 7);
+        return [
+          { k: "trigger", when: "Daily, 7am", title: "Daily rebooking check", tags: ["Timely data", "GoHighLevel"], type: "sys",
+            body: `${first} had ${low(nice(t))} ${w1} days ago at ${S.locations[loc].name} and has no future booking.\n\nInterval for this treatment: ${days} days. ${pack ? "She has sessions left on a package." : "No package."}`, why: "Uses each treatment's interval so a weekly course isn't left for a month, and wrinkle relaxers aren't chased too early." },
+          { k: "msg", when: `Day ${w1}`, ch: "Email", title: "Invite back", subject: pack ? "You still have sessions waiting" : `Time for your next ${nice(t)}?`,
+            body: pack ? `Hi ${first},\n\nYou have sessions left on your package. Pick a time that suits and we'll keep your results on track.` + sign(loc)
+              : inj ? `Hi ${first},\n\nIt's about time for your review with your nurse. Book a time that suits you.` + sign(loc) + unsub
+              : `Hi ${first},\n\nIt's been a little while since your last ${low(nice(t))}. ${t.course}. Booking now keeps your results building.` + sign(loc) + unsub,
+            cta: "Book now", why: "Personal to her last treatment, with no discount at this stage." },
+          { k: "check", when: "Before the next step", title: "Booked yet? If yes, stop here" },
+          pack ? { k: "msg", when: `Day ${w1 + 14}`, ch: "SMS", title: "Package reminder (no discount)", body: `Hi ${first}, it's Skinlux. You've still got sessions on your package. Reply here and we'll book you in. Reply STOP to opt out.`, why: "She's already paid, so she gets a reminder, never a discount." }
+          : inj ? { k: "msg", when: `Day ${w1 + 14}`, ch: "SMS", title: "Review consult reminder (no offer)", body: `Hi ${first}, it's Skinlux. Your nurse would love to see you for a review. Book here: [link]. Reply STOP to opt out.`, why: "Injectables can't carry an offer, so the second step is a plain reminder." }
+          : { k: "msg", when: `Day ${w1 + 14}`, ch: "SMS", title: "Come back offer", body: `Hi ${first}, we miss you at Skinlux ${S.locations[loc].name}. Book your next ${nice(t)} this week and take 10% off. Reply STOP to opt out.`, why: "The offer comes two weeks after the invite, as in the brief. Jellie sets the amount." },
+          { k: "check", when: "Before the next step", title: "Booked yet? If yes, stop here" },
+          { k: "task", when: `Day ${w1 + 21}`, title: "On the team call back list", tags: ["Staff app", "Scorecard"], type: "sys",
+            body: `${first} goes on the call back list for her usual therapist, marked "Did not rebook". It counts on the dashboard's overdue list until someone calls.`, why: "The last step is a person. Overdue calls show in red on the dashboard." }
+        ];
+      },
+      stopAt() { return { never: 99, m1: 1, m2: 2 }[st.outcome]; }
+    }
+  ];
+
+  function controlsHtml(f) {
+    const c = [];
+    f.controls.forEach((k) => {
+      if (k === "client") c.push(`<div class="ctl"><label>Client</label><div class="seg" data-k="client"><button data-v="new">New client</button><button data-v="existing">Existing client</button></div></div>`);
+      if (k === "kind") c.push(`<div class="ctl"><label>Treatment type</label><div class="seg" data-k="kind"><button data-v="beauty">Beauty or energy</button><button data-v="inj">Injectable</button></div></div>`,
+        st.kind === "inj" ? `<div class="ctl"><label for="selTreat">Injectable</label><select id="selTreat" data-k="inj">${opts(injectables, st.inj)}</select></div>` : `<div class="ctl"><label for="selTreat">Treatment</label><select id="selTreat" data-k="treat">${opts(beauty, st.treat)}</select></div>`);
+      if (k === "treatAll") c.push(`<div class="ctl"><label for="selTreat">Treatment done</label><select id="selTreat" data-k="treat">${opts(S.treatments, st.treat)}</select></div>`);
+      if (k === "reply") c.push(`<div class="ctl"><label>Day 2 reply</label><div class="seg" data-k="reply"><button data-v="good">Good</button><button data-v="worried">Worried</button></div></div>`);
+      if (k === "product") c.push(`<div class="ctl"><label for="selProd">Product sold (sample)</label><select id="selProd" data-k="product">${S.products.map((p, i) => `<option value="${i}"${i === st.product ? " selected" : ""}>${p.name}</option>`).join("")}</select></div>`);
+      if (k === "pack") c.push(`<div class="ctl"><label>Has a package?</label><div class="seg" data-k="pack"><button data-v="no">No</button><button data-v="yes">Yes</button></div></div>`);
+      if (k === "outcome") c.push(`<div class="ctl"><label for="selOut">When Play runs, the client</label><select id="selOut" data-k="outcome"><option value="m1">Books after the first message</option><option value="m2">Books after the second message</option><option value="never">Never books</option></select></div>`);
+    });
+    c.push(`<div class="ctl"><label>Clinic</label><div class="seg" data-k="loc"><button data-v="booragoon">Booragoon</button><button data-v="leederville">Leederville</button></div></div>`);
+    return c.join("");
+  }
+
+  function badgeFor(s) {
+    if (s.k === "trigger") return '<span class="badge info">Trigger</span>';
+    if (s.k === "check") return '<span class="badge info">Check</span>';
+    if (s.k === "task") return '<span class="badge warn">Team task</span>';
+    if (s.k === "stop") return '<span class="badge info">End</span>';
+    return `<span class="badge gold">${s.ch}</span>`;
+  }
+
+  let steps = [];
+  function render() {
+    clearTimers();
+    const f = FLOWS[st.flow];
+    if (st.flow === 1 && !tr(st.treat)) st.treat = "needling";
+    if ((st.flow === 0 || st.flow === 3) && tr(st.treat).injectable) st.treat = "hifu";
+    $("tabs").innerHTML = FLOWS.map((x, i) => `<button class="tab${i === st.flow ? " on" : ""}" data-i="${i}"><span class="n">${String(i + 1).padStart(2, "0")}</span><b>${x.name}</b><small>${x.short}</small></button>`).join("");
+    $("fTitle").textContent = (st.flow + 1) + ". " + f.name;
+    $("fDesc").textContent = f.desc;
+    $("controls").innerHTML = controlsHtml(f);
+    document.querySelectorAll("#controls .seg").forEach((g) => g.querySelectorAll("button").forEach((b) => b.classList.toggle("on", String(st[g.dataset.k]) === b.dataset.v)));
+    const out = $("selOut"); if (out) out.value = st.outcome;
+    steps = f.steps();
+    if (st.sel >= steps.length) st.sel = 1;
+    $("steps").innerHTML = steps.map((s, i) => `<div class="step ${s.k}${i === st.sel ? " sel" : ""}" data-i="${i}"><span class="dot"></span><div class="when">${s.when}</div><div class="title">${s.title}</div><div class="meta">${badgeFor(s)}${(s.tags || []).map((t) => `<span class="badge info">${t}</span>`).join("")}</div></div>`).join("");
+    $("result").className = "result";
+    showStep(st.sel);
+  }
+
+  function showStep(i) {
+    st.sel = i;
+    document.querySelectorAll(".step").forEach((el) => el.classList.toggle("sel", +el.dataset.i === i));
+    const s = steps[i];
+    let html;
+    if (s.k === "check") html = `<div class="sys"><b>${s.title}</b>\n\nGoHighLevel looks for a new booking from Timely before sending anything else. If the client has booked, the workflow ends here and they get nothing more.</div>`;
+    else if (s.ch === "Email") html = `<div class="mail"><div class="hd"><div><span>From</span>Skinlux ${S.locations[st.loc].name}</div><div><span>Subject</span><b>${s.subject}</b></div></div><div class="bd">${s.body}${s.cta ? `\n<a class="cta" href="${S.booking}" target="_blank" rel="noopener">${s.cta}</a>` : ""}</div></div>`;
+    else if (s.ch === "SMS") html = `<div class="sms-wrap"><div class="muted" style="font-size:12px;margin-bottom:8px">SMS from Skinlux ${S.locations[st.loc].name}</div><div class="b">${s.body}</div></div>`;
+    else html = `<div class="sys"><b>${s.title}</b>\n\n${s.body}</div>`;
+    $("preview").innerHTML = html;
+    $("why").textContent = s.why || "";
+    $("why").style.display = s.why ? "" : "none";
+  }
+
+  function clearTimers() { st.timers.forEach(clearTimeout); st.timers = []; }
+  function play() {
+    render();
+    const f = FLOWS[st.flow], stopAt = f.stopAt();
+    const els = [...document.querySelectorAll(".step")];
+    let msgCount = 0, stopped = false, delay = 0;
+    els.forEach((el, i) => {
+      st.timers.push(setTimeout(() => {
+        if (stopped) { el.classList.add("skip"); return; }
+        els.forEach((x) => x.classList.remove("lit"));
+        if (i > 0) els[i - 1].classList.add("done");
+        el.classList.add("lit");
+        showStep(i);
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        if (steps[i].k === "msg") msgCount++;
+        if (steps[i].k === "check" && msgCount >= stopAt) {
+          stopped = true;
+          el.classList.remove("lit"); el.classList.add("stopped");
+          el.querySelector(".title").textContent = "Booked. Workflow stops here";
+          $("result").className = "result ok show";
+          $("result").textContent = `The client booked after message ${msgCount}. Nothing else is sent, and the dashboard counts it as recovered.`;
+          toast("Booked. Workflow stopped");
+        }
+        if (i === els.length - 1 && !stopped) {
+          $("result").className = "result " + (st.flow === 1 && st.reply === "worried" ? "warn" : "ok") + " show";
+          $("result").textContent = st.flow === 0 || st.flow === 3 ? "No booking after every step, so a person takes over. Nothing falls through the cracks."
+            : st.flow === 1 && st.reply === "worried" ? "The client's worry went straight to a nurse and every automation paused."
+            : "Workflow complete. Every message went out on time without anyone remembering to send it.";
+        }
+      }, delay));
+      delay += 1300;
+    });
+  }
+
+  $("tabs").addEventListener("click", (e) => { const b = e.target.closest(".tab"); if (!b) return; st.flow = +b.dataset.i; st.sel = 1; render(); });
+  $("controls").addEventListener("click", (e) => {
+    const b = e.target.closest(".seg button"); if (!b) return;
+    st[b.closest(".seg").dataset.k] = b.dataset.v; render();
+  });
+  $("controls").addEventListener("change", (e) => {
+    const k = e.target.dataset.k; if (!k) return;
+    st[k] = k === "product" ? +e.target.value : e.target.value; render();
+  });
+  $("steps").addEventListener("click", (e) => { const s = e.target.closest(".step"); if (s) showStep(+s.dataset.i); });
+  $("play").addEventListener("click", play);
+  $("reset").addEventListener("click", render);
+  render();
+}
+</script>
+</body>
+</html>

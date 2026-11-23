@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Therapist scorecard | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 20px 0 16px; }
+  .controls select { width: auto; padding: 8px 12px; border-radius: 99px; font-weight: 600; }
+  .controls .spacer { flex: 1; }
+  .main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start; margin-top: 16px; }
+  @media (max-width: 1000px) { .main-grid { grid-template-columns: 1fr; } }
+  tbody tr { cursor: pointer; transition: background 0.15s; }
+  tbody tr:hover { background: var(--cream); }
+  tbody tr.sel { background: var(--gold-soft); }
+  td .who { font-weight: 600; }
+  td .who small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+  .ratecell { display: flex; align-items: center; gap: 8px; min-width: 130px; }
+  .ratecell .bar { flex: 1; }
+  .ratecell .bar.ok > span { background: var(--ok); }
+  .ratecell .bar.warn > span { background: var(--warn); }
+  .ratecell .bar.bad > span { background: var(--bad); }
+  .ratecell b { width: 38px; text-align: right; font-size: 13px; }
+  .bonuscell { min-width: 120px; }
+  .bonuscell .bar { margin-top: 4px; }
+  .num { text-align: right; }
+  th.num { text-align: right; }
+
+  .rules label { font-size: 12px; }
+  .rules .inrow { display: flex; align-items: center; gap: 6px; }
+  .rules .inrow span { font-size: 14px; color: var(--muted); }
+  .rules input { padding: 8px 10px; }
+  .qual { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .qual div { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
+
+  .detail { margin-top: 16px; }
+  .detail-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: 18px; margin-top: 12px; }
+  @media (max-width: 1000px) { .detail-grid { grid-template-columns: 1fr; } }
+  .detail h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .chart .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .chart .legend i { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
+  .toprow { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .toprow .bar { width: 70px; height: 6px; }
+  .od { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .od small { display: block; color: var(--muted); }
+  .od .late { color: var(--bad); font-weight: 600; font-size: 12px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">10 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Therapist scorecard</h1>
+    <p>Each team member's rebook rate, retail sales and reviews for the month, with bonus tracking you set yourself.</p>
+  </div>
+  <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+
+  <div class="controls">
+    <div class="seg" id="locSeg">
+      <button data-loc="booragoon">Booragoon</button>
+      <button data-loc="leederville">Leederville</button>
+      <button data-loc="both" class="on">Both</button>
+    </div>
+    <select id="month"></select>
+    <span class="spacer"></span>
+    <small class="muted" id="updated">Updated from Timely at 7:00am today</small>
+  </div>
+
+  <div class="grid g4" id="kpis"></div>
+
+  <div class="main-grid">
+    <div class="card">
+      <div class="row between"><h3 style="margin:0">Team this month</h3><small class="muted">Click a name for detail</small></div>
+      <div style="overflow-x:auto">
+      <table style="margin-top:8px">
+        <thead><tr>
+          <th>Team member</th><th class="num">Clients</th><th>Rebook rate</th><th class="num">Retail</th><th class="num">Reviews</th><th class="num">Flagged replies</th><th>Bonus</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card rules">
+      <h3>Bonus rules</h3>
+      <p class="muted" style="font-size:13px">Set by Jellie. A team member earns the bonus when they hit both targets in the month, counted across both clinics.</p>
+      <label for="ruleRate">Rebook rate at least</label>
+      <div class="inrow"><input type="number" id="ruleRate" value="70" min="0" max="100" step="1"><span>%</span></div>
+      <label for="ruleRetail">Retail sales at least</label>
+      <div class="inrow"><span>$</span><input type="number" id="ruleRetail" value="1500" min="0" step="50"></div>
+      <label for="ruleBonus">Bonus amount</label>
+      <div class="inrow"><span>$</span><input type="number" id="ruleBonus" value="250" min="0" step="10"></div>
+      <div class="qual" id="qual"></div>
+    </div>
+  </div>
+
+  <div class="card detail" id="detail"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-AU"); }
+  function txName(t) { return t.injectable ? t.name.replace(/\s*\(.*?\)\s*/g, "").trim() : t.name; }
+  function tx(id) { for (var i = 0; i < S.treatments.length; i++) if (S.treatments[i].id === id) return S.treatments[i]; }
+  var toastTimer;
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2600); }
+
+  // Seeded random so the SAMPLE numbers are stable on every load.
+  function rnd(key) {
+    var h = 2166136261;
+    for (var i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+    h += 0x6D2B79F5; var t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+
+  var MONTHS = ["Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Sep 2026", "Oct 2026", "Nov 2026"];
+  var SHORT = ["Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+
+  // SAMPLE profiles. w = share of work at each clinic.
+  var TEAM = [
+    { name: "Sharon Kim", role: "Advanced Skin Therapist", clients: 92, rate: 72, trend: 0.6, retail: 1900, ticket: 245, w: { booragoon: 0.75, leederville: 0.25 },
+      top: ["ipl-hair", "needling", "hifu", "carbon"] },
+    { name: "Shakira Hewitt", role: "Advanced Skin Therapist", clients: 86, rate: 63, trend: 1.1, retail: 1350, ticket: 225, w: { booragoon: 0.3, leederville: 0.7 },
+      top: ["ipl-hair", "ipl-skin", "body", "bright"] },
+    { name: "Nurse Maria", role: "Cosmetic Nurse", clients: 64, rate: 78, trend: 0.3, retail: 900, ticket: 410, w: { booragoon: 0.5, leederville: 0.5 },
+      top: ["relaxers", "rejuran", "advanced-peel", "plasma"] },
+    { name: "Nurse Leo", role: "Cosmetic Injector", clients: 58, rate: 74, trend: 0.4, retail: 620, ticket: 455, w: { booragoon: 0.8, leederville: 0.2 },
+      top: ["relaxers", "fillers", "rejuran", "electro"] },
+    { name: "Jellie", role: "Founder, Advanced Skin Therapist", clients: 34, rate: 81, trend: 0.2, retail: 2100, ticket: 330, w: { booragoon: 0.55, leederville: 0.45 },
+      top: ["hifu", "nano-rf", "diamond", "clinical-peel"] }
+  ];
+
+  function stat(p, loc, m) {
+    var k = p.name + "|" + loc + "|" + m;
+    var season = [1.15, 0.85, 0.92, 1.0, 0.97, 0.95, 0.9, 0.93, 1.0, 1.04, 1.08, 1.18][m];
+    var share = p.w[loc];
+    var clients = Math.round(p.clients * share * season * (0.9 + rnd(k + "c") * 0.2));
+    var rate = p.rate + p.trend * (m - 6) + (rnd(k + "r") * 8 - 4) + (loc === "leederville" ? -2 : 1);
+    rate = Math.max(40, Math.min(92, rate));
+    var rebooked = Math.round(clients * rate / 100);
+    var retail = Math.round(p.retail * share * season * (0.8 + rnd(k + "s") * 0.4) / 10) * 10;
+    var reviews = Math.round(clients * (0.05 + rnd(k + "v") * 0.06));
+    var flagged = Math.round(clients * (0.01 + rnd(k + "f") * 0.03));
+    var revenue = clients * p.ticket * (0.9 + rnd(k + "t") * 0.2) + retail;
+    return { clients: clients, rebooked: rebooked, retail: retail, reviews: reviews, flagged: flagged, revenue: revenue };
+  }
+  function statView(p, loc, m) {
+    if (loc !== "both") { var s = stat(p, loc, m); s.rate = s.clients ? s.rebooked / s.clients * 100 : 0; return s; }
+    var a = stat(p, "booragoon", m), b = stat(p, "leederville", m), o = {};
+    ["clients", "rebooked", "retail", "reviews", "flagged", "revenue"].forEach(function (f) { o[f] = a[f] + b[f]; });
+    o.rate = o.clients ? o.rebooked / o.clients * 100 : 0;
+    return o;
+  }
+
+  var state = { loc: "both", month: 11, sel: "Sharon Kim", sent: {} };
+
+  // Month picker: last 6 months
+  $("month").innerHTML = MONTHS.map(function (m, i) { return i >= 6 ? '<option value="' + i + '"' + (i === 11 ? " selected" : "") + '>' + m + '</option>' : ""; }).join("");
+  $("month").addEventListener("change", function () { state.month = +this.value; renderAll(); });
+  $("locSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.loc = b.getAttribute("data-loc");
+    [].forEach.call(this.children, function (c) { c.classList.toggle("on", c === b); });
+    renderAll();
+  });
+  ["ruleRate", "ruleRetail", "ruleBonus"].forEach(function (id) { $(id).addEventListener("input", function () { renderTable(); renderRules(); }); });
+
+  function rules() { return { rate: +$("ruleRate").value || 0, retail: +$("ruleRetail").value || 0, bonus: +$("ruleBonus").value || 0 }; }
+  function qualifies(s, r) { return s.rate >= r.rate && s.retail >= r.retail; }
+  function bonusPct(s, r) {
+    var a = r.rate ? Math.min(1, s.rate / r.rate) : 1, b = r.retail ? Math.min(1, s.retail / r.retail) : 1;
+    return Math.round((a + b) / 2 * 100);
+  }
+
+  function totals(m) {
+    var t = { clients: 0, rebooked: 0, retail: 0, reviews: 0, revenue: 0 };
+    TEAM.forEach(function (p) { var s = statView(p, state.loc, m); for (var f in t) t[f] += s[f]; });
+    t.rate = t.rebooked / t.clients * 100; t.avg = t.revenue / t.clients;
+    return t;
+  }
+
+  function renderKpis() {
+    var t = totals(state.month), prev = totals(state.month - 1);
+    function delta(cur, old, isPts) {
+      var d = isPts ? cur - old : (cur - old) / old * 100;
+      var cls = d >= 0 ? "up" : "down";
+      return '<span class="delta ' + cls + '">' + (d >= 0 ? "Up " : "Down ") + Math.abs(d).toFixed(1) + (isPts ? " points" : "%") + ' on ' + SHORT[state.month - 1] + '</span>';
+    }
+    var k = [
+      ["Rebook rate", Math.round(t.rate) + "%", delta(t.rate, prev.rate, true)],
+      ["Retail sales", money(t.retail), delta(t.retail, prev.retail)],
+      ["Google reviews", t.reviews, delta(t.reviews, prev.reviews)],
+      ["Average spend", money(t.avg), delta(t.avg, prev.avg)]
+    ];
+    $("kpis").innerHTML = k.map(function (x) { return '<div class="card kpi"><div class="label">' + x[0] + '</div><div class="value">' + x[1] + '</div>' + x[2] + '</div>'; }).join("");
+  }
+
+  function rateClass(r) { return r >= 70 ? "ok" : r >= 60 ? "warn" : "bad"; }
+
+  function renderTable() {
+    var r = rules();
+    $("rows").innerHTML = TEAM.map(function (p) {
+      var s = statView(p, state.loc, state.month), sb = statView(p, "both", state.month), q = qualifies(sb, r), bp = bonusPct(sb, r);
+      return '<tr data-p="' + esc(p.name) + '" class="' + (state.sel === p.name ? "sel" : "") + '">' +
+        '<td><div class="who">' + esc(p.name) + '<small>' + esc(p.role) + '</small></div></td>' +
+        '<td class="num">' + s.clients + '</td>' +
+        '<td><div class="ratecell"><div class="bar ' + rateClass(s.rate) + '"><span style="width:' + s.rate + '%"></span></div><b>' + Math.round(s.rate) + '%</b></div></td>' +
+        '<td class="num">' + money(s.retail) + '</td>' +
+        '<td class="num">' + s.reviews + '</td>' +
+        '<td class="num">' + (s.flagged ? '<span class="badge warn">' + s.flagged + '</span>' : '0') + '</td>' +
+        '<td class="bonuscell">' + (q ? '<span class="badge ok">Qualifies</span>' : '<small class="muted">' + bp + '% of the way</small>') +
+        '<div class="bar"><span style="width:' + bp + '%;' + (q ? "background:var(--ok)" : "") + '"></span></div></td></tr>';
+    }).join("");
+    $("rows").querySelectorAll("tr").forEach(function (tr) {
+      tr.addEventListener("click", function () { state.sel = tr.getAttribute("data-p"); renderTable(); renderDetail(); $("detail").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
+    });
+  }
+
+  function renderRules() {
+    var r = rules(), list = [], total = 0;
+    TEAM.forEach(function (p) {
+      var s = statView(p, "both", state.month);
+      if (qualifies(s, r)) { list.push(p.name); total += r.bonus; }
+    });
+    $("qual").innerHTML = '<strong style="font-size:14px">' + list.length + ' of ' + TEAM.length + ' qualify in ' + MONTHS[state.month] + '</strong>' +
+      (list.length ? list.map(function (n) { return '<div><span>' + esc(n) + '</span><span class="up">' + money(r.bonus) + '</span></div>'; }).join("")
+        : '<div><span class="muted">Nobody yet at these targets</span></div>') +
+      '<div style="border-top:1px solid var(--line);margin-top:4px;padding-top:8px"><strong>Total bonuses</strong><strong>' + money(total) + '</strong></div>';
+  }
+
+  var FIRST = ["Amelia", "Freya", "Isla", "Grace", "Ruby", "Zara", "Holly", "Ava", "Leah", "Poppy", "Ivy", "Maddie", "Nina", "Elise", "Georgia", "Tara"];
+  var LAST = ["Nguyen", "Smith", "Brown", "Wilson", "Taylor", "Martin", "Chen", "Walker", "Young", "King", "Wright", "Scott", "Green", "Baker"];
+
+  function chartSvg(p) {
+    var pts = [], lo = 100, hi = 0, r = rules();
+    for (var m = state.month - 5; m <= state.month; m++) {
+      var v = statView(p, state.loc, m).rate; pts.push({ m: m, v: v }); lo = Math.min(lo, v); hi = Math.max(hi, v);
+    }
+    lo = Math.min(lo, r.rate); hi = Math.max(hi, r.rate);
+    lo = Math.floor((lo - 5) / 5) * 5; hi = Math.ceil((hi + 5) / 5) * 5;
+    var W = 420, H = 200, L = 36, R = 12, T = 14, B = 28;
+    function x(i) { return L + i * (W - L - R) / 5; }
+    function y(v) { return T + (hi - v) / (hi - lo) * (H - T - B); }
+    var g = "";
+    for (var gv = lo; gv <= hi; gv += 5) {
+      if ((gv - lo) % 10 !== 0) continue;
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(gv) + '" y2="' + y(gv) + '" stroke="#ede3d8"/>' +
+        '<text x="' + (L - 6) + '" y="' + (y(gv) + 4) + '" font-size="11" fill="#7d7069" text-anchor="end">' + gv + '%</text>';
+    }
+    var line = pts.map(function (pt, i) { return (i ? "L" : "M") + x(i).toFixed(1) + " " + y(pt.v).toFixed(1); }).join(" ");
+    var area = line + " L" + x(5) + " " + (H - B) + " L" + x(0) + " " + (H - B) + " Z";
+    var dots = pts.map(function (pt, i) {
+      return '<circle cx="' + x(i) + '" cy="' + y(pt.v) + '" r="' + (i === 5 ? 5 : 3.5) + '" fill="' + (i === 5 ? "#2b2420" : "#b8925a") + '" stroke="#fff" stroke-width="2"><title>' + MONTHS[pt.m] + ': ' + Math.round(pt.v) + '%</title></circle>' +
+        '<text x="' + x(i) + '" y="' + (H - 8) + '" font-size="11" fill="#7d7069" text-anchor="middle">' + SHORT[pt.m] + '</text>';
+    }).join("");
+    var last = pts[5];
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Rebook rate over 6 months">' + g +
+      '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(r.rate) + '" y2="' + y(r.rate) + '" stroke="#4f8a6b" stroke-dasharray="5 4" stroke-width="1.5"/>' +
+      '<path d="' + area + '" fill="#b8925a" opacity="0.10"/>' +
+      '<path d="' + line + '" fill="none" stroke="#b8925a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' + dots +
+      '<text x="' + (x(5) - 8) + '" y="' + (y(last.v) - 10) + '" font-size="12" font-weight="700" fill="#2b2420" text-anchor="end">' + Math.round(last.v) + '%</text></svg>';
+  }
+
+  function renderDetail() {
+    var p = TEAM.filter(function (x) { return x.name === state.sel; })[0];
+    var s = statView(p, state.loc, state.month), key = p.name + state.loc + state.month;
+    // Top treatments
+    var counts = p.top.map(function (id, i) { return { id: id, n: Math.max(2, Math.round(s.clients * [0.36, 0.24, 0.16, 0.1][i] * (0.85 + rnd(key + id) * 0.3))) }; });
+    counts.sort(function (a, b) { return b.n - a.n; });
+    var maxN = counts[0].n;
+    // Overdue clients
+    var nOver = 3 + Math.floor(rnd(key + "o") * 3), over = [];
+    for (var i = 0; i < nOver; i++) {
+      var tid = p.top[Math.floor(rnd(key + "ot" + i) * p.top.length)], t = tx(tid);
+      var name = FIRST[Math.floor(rnd(key + "fn" + i) * FIRST.length)] + " " + LAST[Math.floor(rnd(key + "ln" + i) * LAST.length)];
+      var late = 3 + Math.floor(rnd(key + "d" + i) * 20);
+      if (!t.interval_days) { tid = p.top[0]; t = tx(tid); }
+      over.push({ id: key + "|" + i, name: name, t: t, late: late });
+    }
+    over.sort(function (a, b) { return b.late - a.late; });
+    var locLabel = state.loc === "both" ? "both clinics" : S.locations[state.loc].name;
+
+    $("detail").innerHTML =
+      '<div class="row between wrap"><div><h3 style="margin:0">' + esc(p.name) + '</h3><small class="muted">' + esc(p.role) + ', ' + locLabel + ', ' + MONTHS[state.month] + '</small></div>' +
+      '<div class="row wrap"><span class="badge gold">' + s.rebooked + ' of ' + s.clients + ' rebooked</span><span class="badge ' + rateClass(s.rate) + '">' + Math.round(s.rate) + '% rebook rate</span></div></div>' +
+      '<div class="detail-grid">' +
+        '<div class="chart"><h4>Rebook rate, last 6 months</h4>' + chartSvg(p) +
+          '<div class="legend"><span><i style="background:#b8925a"></i>Rebook rate</span><span><i style="background:#4f8a6b"></i>Bonus target ' + rules().rate + '%</span></div></div>' +
+        '<div><h4>Top treatments</h4>' + counts.map(function (c) {
+          return '<div class="toprow"><span>' + esc(txName(tx(c.id))) + '</span><span class="row" style="gap:8px"><span class="bar"><span style="width:' + (c.n / maxN * 100) + '%"></span></span><b style="width:22px;text-align:right">' + c.n + '</b></span></div>';
+        }).join("") + '</div>' +
+        '<div><div class="row between"><h4 style="margin:0">Overdue for rebooking</h4><button class="btn sm ghost" id="sendAll">Send all</button></div>' +
+          over.map(function (o) {
+            var sent = state.sent[o.id];
+            return '<div class="od"><div>' + esc(o.name) + '<small>' + esc(txName(o.t)) + '</small></div><span class="late">' + o.late + ' days over</span>' +
+              '<button class="btn sm ' + (sent ? "ghost" : "") + '" data-send="' + esc(o.id) + '"' + (sent ? " disabled" : "") + '>' + (sent ? "On the list" : "Send to call back list") + '</button></div>';
+          }).join("") + '</div>' +
+      '</div>';
+
+    $("detail").querySelectorAll("[data-send]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var id = b.getAttribute("data-send"), o = over.filter(function (x) { return x.id === id; })[0];
+        state.sent[id] = true; renderDetail();
+        toast(o.name + " added to the team call back list in the staff app");
+      });
+    });
+    $("sendAll").addEventListener("click", function () {
+      var n = 0; over.forEach(function (o) { if (!state.sent[o.id]) { state.sent[o.id] = true; n++; } });
+      renderDetail();
+      toast(n ? n + " clients added to the team call back list" : "Everyone is already on the call back list");
+    });
+  }
+
+  function renderAll() {
+    $("updated").textContent = state.month === 11 ? "Updated from Timely at 7:00am today" : "Final figures for " + MONTHS[state.month];
+    renderKpis(); renderTable(); renderRules(); renderDetail();
+  }
+  renderAll();
+})();
+</script>
+</body>
+</html>

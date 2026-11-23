@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Training hub | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .hub { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 20px; }
+  @media (max-width: 900px) { .hub { grid-template-columns: 1fr; } }
+  .sidebar { position: sticky; top: 60px; max-height: calc(100vh - 80px); overflow-y: auto; padding: 14px; }
+  .sidebar input { margin-bottom: 10px; }
+  .navgroup { margin-bottom: 12px; }
+  .navgroup h4 { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin: 10px 6px 4px; font-weight: 600; }
+  .navitem { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 7px 10px; border-radius: 8px; font: 14px var(--sans); color: var(--ink); cursor: pointer; }
+  .navitem:hover { background: var(--sand); }
+  .navitem.on { background: var(--ink); color: var(--cream); }
+  .navitem .badge { float: right; font-size: 10px; }
+  .navitem.on .badge { background: var(--gold); color: var(--ink); }
+  .empty { font-size: 13px; color: var(--muted); padding: 6px 10px; }
+
+  .top-cards { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; margin-bottom: 16px; align-items: start; }
+  @media (max-width: 1000px) { .top-cards { grid-template-columns: 1fr; } }
+  .starter .who { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .starter .av { width: 44px; height: 44px; border-radius: 99px; background: var(--gold-soft); color: var(--mocha); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 22px; font-weight: 600; }
+  .modules { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; margin-top: 12px; max-height: 0; overflow: hidden; transition: max-height 0.3s; }
+  .modules.open { max-height: 400px; }
+  .modules label { display: flex; gap: 8px; align-items: center; font-weight: 400; font-size: 13px; margin: 4px 0; cursor: pointer; }
+  .modules input { width: auto; margin: 0; accent-color: var(--ink); }
+  .modules label.ticked span { color: var(--muted); text-decoration: line-through; }
+  .bar.big { height: 10px; }
+
+  .quiz .q { margin-top: 12px; }
+  .quiz .q p { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--white); border-radius: 10px; padding: 8px 12px; font: 13px var(--sans); color: var(--ink); cursor: pointer; margin-bottom: 6px; }
+  .opt:hover { background: var(--cream); }
+  .opt.right { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); font-weight: 600; }
+  .opt.wrong { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+  .opt:disabled { cursor: default; }
+  .fb { font-size: 13px; margin: 2px 0 0; }
+
+  .doc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 16px 0 18px; flex-wrap: wrap; }
+  .tabs button { border: 0; background: transparent; padding: 10px 14px; font: 600 14px var(--sans); color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs button.on { color: var(--ink); border-bottom-color: var(--gold); }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+  @media (max-width: 800px) { .facts { grid-template-columns: 1fr; } }
+  .fact { background: var(--cream); border-radius: 12px; padding: 12px 14px; }
+  .fact .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .fact .v { font-size: 14px; margin-top: 2px; }
+  .concerns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .concerns .badge { background: var(--sand); color: var(--mocha); font-weight: 500; }
+  ol.steps { padding-left: 0; list-style: none; counter-reset: s; margin: 0; }
+  ol.steps li { counter-increment: s; position: relative; padding: 10px 0 10px 44px; border-bottom: 1px solid var(--line); }
+  ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 9px; width: 28px; height: 28px; border-radius: 99px; background: var(--gold-soft); color: var(--mocha); font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .script { background: var(--cream); border-left: 3px solid var(--gold); border-radius: 8px; padding: 14px 16px; font-size: 15px; white-space: pre-line; }
+  .checklist label { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); margin: 0; cursor: pointer; }
+  .checklist input { width: auto; margin-top: 4px; accent-color: var(--ink); }
+  .method-step { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .method-step .n { font-family: var(--serif); font-size: 28px; color: var(--gold); line-height: 1; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">9 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Training and protocols hub</h1>
+    <p>Every treatment protocol, aftercare script and front desk script in one place, so new part time therapists learn the Skinlux way in weeks, not months.</p>
+  </div>
+  <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+
+  <div class="hub">
+    <aside class="card sidebar">
+      <input type="search" id="search" placeholder="Search treatments and guides">
+      <div id="nav"></div>
+    </aside>
+
+    <main>
+      <div class="top-cards">
+        <div class="card starter">
+          <div class="who">
+            <div class="av">C</div>
+            <div style="flex:1">
+              <div class="row between"><strong>Chloe, new starter</strong><span class="badge gold" id="modCount"></span></div>
+              <small>Part time Advanced Skin Therapist, Booragoon. Started 10 November.</small>
+            </div>
+          </div>
+          <div class="bar big"><span id="modBar" style="width:0;transition:width 0.3s"></span></div>
+          <div class="row between" style="margin-top:8px">
+            <small id="modNext"></small>
+            <button class="btn sm ghost" id="modToggle">Show modules</button>
+          </div>
+          <div class="modules" id="modules"></div>
+        </div>
+
+        <div class="card quiz">
+          <div class="row between"><h3 style="margin:0">Quick quiz: Skin needling</h3><span class="badge" id="quizScore" style="background:var(--sand);color:var(--mocha)">0 of 3</span></div>
+          <div id="quiz"></div>
+          <button class="btn sm ghost" id="quizReset" style="margin-top:8px">Try again</button>
+        </div>
+      </div>
+
+      <div class="card" id="doc"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function txName(t) { return t.injectable ? t.name.replace(/\s*\(.*?\)\s*/g, "").trim() : t.name; }
+  function lc(n) { if (n.indexOf("&") > -1) return n; return n.replace(/\s*\(.*?\)\s*/g, "").split(" ").map(function (w) { return /^[A-Z]{2,}$/.test(w) ? w : w.toLowerCase(); }).join(" "); }
+  var toastTimer;
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2600); }
+
+  // DRAFT protocol steps. Jellie to confirm every step and machine setting.
+  var STEPS = {
+    "hifu": ["Consult, photos front and side, sign consent.", "Cleanse, remove all makeup, mark the treatment zones.", "Apply ultrasound gel and choose cartridge depth per zone.", "Treat in lines across each zone, checking comfort every pass.", "Wipe off gel, apply calming serum and SPF.", "Book the 3 month progress consult before they leave."],
+    "carbon": ["Consult and sign consent. Check for recent sun or tan.", "Cleanse and dry the skin fully.", "Apply a thin, even layer of carbon lotion and let it dry.", "Eye protection on for client and therapist.", "Laser pass to remove the carbon, then a second pass on target areas.", "Cleanse, LED if booked, then SPF.", "Book the next session in 3 weeks."],
+    "relaxers": ["Nurse only. Medical history and consult with the nurse.", "Photos and consent signed.", "Nurse treatment as per prescriber plan.", "Aftercare given by the nurse on the day.", "Book the 2 week review if it is a first visit."],
+    "rejuran": ["Nurse only. Check fish allergy and recent laser or peels.", "Photos and consent signed.", "Numbing as per nurse.", "Nurse treatment as per prescriber plan.", "Aftercare given by the nurse.", "Book the next treatment in 4 to 6 weeks."],
+    "fillers": ["Nurse only. Full consult and medical history.", "Photos and consent signed.", "Nurse treatment as per prescriber plan.", "Aftercare given by the nurse.", "Book the review."],
+    "ipl-skin": ["Consult, skin type check, test patch at least 7 days before.", "Cleanse and shave any fine hair in the area.", "Eye protection on. Apply cooling gel.", "Treat in a single even pass, extra pass on pigment if tolerated.", "Remove gel, apply soothing balm and SPF 50.", "Explain that spots darken first. Book the next session in 4 weeks."],
+    "needling": ["Check the intake form for retinol, acne flare or recent sun.", "Photos, consent, cleanse.", "Numbing cream for 20 minutes, then remove.", "Apply serum and needle in sections at the planned depth.", "Apply growth factor or exosome serum and mask if booked.", "No makeup advice, aftercare SMS, book 4 weeks out."],
+    "bright": ["Consult and skin check.", "Double cleanse.", "Exfoliation step.", "Brightening and tightening steps as per the Bright and Tight menu.", "Mask and LED.", "Finish with serum and SPF. Book monthly."],
+    "clinical-peel": ["Consult and check for retinol use in the last 5 days.", "Cleanse and prep with degreaser.", "Apply peel, time each layer and watch the skin.", "Neutralise or remove as per peel type.", "LED, then calming serum and SPF.", "Book the next peel in 2 weeks."],
+    "advanced-peel": ["Consult and pre peel prep plan agreed.", "Photos and consent signed.", "Cleanse and degrease.", "Apply peel to the agreed level, timing each layer.", "Remove, apply post peel balm and SPF.", "Explain the peeling days. Book a check at 7 days."],
+    "nano-rf": ["Consult, photos and consent.", "Numbing cream for 30 to 40 minutes.", "Remove numbing and cleanse well.", "Treat in sections at the planned energy level.", "No products after, explain nothing on the skin for 24 hours.", "Book the next session in 4 weeks."],
+    "diamond": ["Consult and skin check.", "Cleanse.", "Apply conductive gel.", "Treat each zone until the target temperature is held.", "Remove gel, apply serum. Makeup is fine after.", "Book next week to keep the course on track."],
+    "electro": ["Consult and check for blood thinners.", "Photos of each lesion and consent.", "Cleanse and numb the area.", "Treat each lesion.", "Apply healing balm. Explain scabbing for about a week.", "No rebook needed unless more spots."],
+    "exogrow": ["Consult, scalp photos and history.", "Cleanse the scalp.", "Apply the treatment to the thinning areas.", "Scalp massage and LED if booked.", "Book the next session in 4 weeks and take progress photos each visit."],
+    "led": ["Cleanse.", "Choose the light setting for the concern.", "Eye protection on.", "30 minutes under the panel.", "Serum and SPF. Suggest a weekly course for calm skin."],
+    "body": ["Consult and check for pacemaker, metal implants or pregnancy.", "Measurements and photos.", "Set up the applicators on the area.", "Run the programme for 30 minutes per area.", "Water and light movement advice.", "Book the full weekly course."],
+    "plasma": ["Consult, photos and consent.", "Numbing cream for 30 minutes.", "Treat in a dot pattern across the area.", "Apply healing balm.", "Explain the carbon dots and swelling for about 7 days.", "Book a check at 2 weeks."],
+    "ipl-hair": ["Check there was no spray tan, waxing or sun in the last 2 weeks.", "Shave the area if needed, then cleanse.", "Eye protection on. Apply cooling gel.", "Treat in the SHR sweep motion until the area is covered.", "Remove gel, apply soothing gel.", "Book the next session in 3 to 4 weeks before they leave."]
+  };
+
+  var GUIDES = {
+    "method": { title: "The Skinlux rebooking method", group: "Guides" },
+    "phone": { title: "Phone and front desk scripts", group: "Guides" },
+    "starter": { title: "New starter checklist", group: "Guides" }
+  };
+
+  var MODULES = ["Welcome to Skinlux", "Clinic tour and safety", "Timely bookings and phones", "Consults and consent", "Skin types and analysis", "Rebooking method", "IPL hair removal", "IPL Skin Correction", "Skin needling", "Clinical Peels", "Carbon Laser", "HIFU", "Diamond Polar RF", "Retail and home care"];
+  var modDone = {}; for (var i = 0; i < 6; i++) modDone[i] = true;
+
+  var current = { kind: "tx", id: "needling", tab: "overview" };
+
+  // Sidebar
+  function navHtml(filter) {
+    filter = (filter || "").toLowerCase().trim();
+    var groups = {}, order = [];
+    S.treatments.forEach(function (t) {
+      var hay = (txName(t) + " " + t.group + " " + t.concerns.join(" ")).toLowerCase();
+      if (filter && hay.indexOf(filter) === -1) return;
+      if (!groups[t.group]) { groups[t.group] = []; order.push(t.group); }
+      groups[t.group].push(t);
+    });
+    var html = "";
+    order.forEach(function (g) {
+      html += '<div class="navgroup"><h4>' + esc(g) + '</h4>' + groups[g].map(function (t) {
+        var on = current.kind === "tx" && current.id === t.id;
+        return '<button class="navitem' + (on ? " on" : "") + '" data-tx="' + t.id + '">' + esc(txName(t)) + (t.injectable ? '<span class="badge warn">Nurse</span>' : '') + '</button>';
+      }).join("") + '</div>';
+    });
+    var guides = Object.keys(GUIDES).filter(function (k) { return !filter || GUIDES[k].title.toLowerCase().indexOf(filter) > -1; });
+    if (guides.length) {
+      html += '<div class="navgroup"><h4>Guides</h4>' + guides.map(function (k) {
+        var on = current.kind === "guide" && current.id === k;
+        return '<button class="navitem' + (on ? " on" : "") + '" data-guide="' + k + '">' + esc(GUIDES[k].title) + '</button>';
+      }).join("") + '</div>';
+    }
+    if (!html) html = '<div class="empty">Nothing matches "' + esc(filter) + '".</div>';
+    return html;
+  }
+  function renderNav() { $("nav").innerHTML = navHtml($("search").value); }
+  $("search").addEventListener("input", renderNav);
+  $("nav").addEventListener("click", function (e) {
+    var b = e.target.closest(".navitem"); if (!b) return;
+    if (b.hasAttribute("data-tx")) current = { kind: "tx", id: b.getAttribute("data-tx"), tab: "overview" };
+    else current = { kind: "guide", id: b.getAttribute("data-guide") };
+    renderNav(); renderDoc();
+    $("doc").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  function tx(id) { for (var i = 0; i < S.treatments.length; i++) if (S.treatments[i].id === id) return S.treatments[i]; }
+
+  function weeksText(days) {
+    if (days <= 0) return "";
+    if (days < 14) return days === 7 ? "a week" : days + " days";
+    var w = Math.round(days / 7);
+    if (w >= 12) return Math.floor(days / 30) + " months";
+    return w + " weeks";
+  }
+  function rebookLine(t) {
+    var name = lc(txName(t));
+    if (!t.interval_days) {
+      return "Most clients only need the one visit for this. If you notice any new spots, just message us and we will fit you in.\n\nThen offer a skin consult or LED add on if it suits them.";
+    }
+    var gap = weeksText(t.interval_days);
+    var line = "Your skin is right on track. To keep the results building, your next " + name + " appointment is due in about " + gap + ". " +
+      "Let's lock that in now so you get the time you want. How does the same day and time in " + gap + " look?";
+    line += "\n\nCourse: " + t.course + ".";
+    if (t.injectable) {
+      line += "\n\nInjectable treatment: never mention a price, offer or product brand at checkout. The nurse confirms the review date.";
+    } else {
+      line += "\n\nIf they hesitate: \"No problem, I'll pencil it in and you will get a reminder two days before. You can move it any time.\"";
+    }
+    return line;
+  }
+
+  function copyText(text) {
+    function fallback() {
+      var ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(fallback); else fallback();
+    toast("Copied. Paste it into the client's SMS or aftercare email.");
+  }
+
+  function renderDoc() {
+    if (current.kind === "guide") return renderGuide(current.id);
+    var t = tx(current.id), tab = current.tab;
+    var tabs = [["overview", "Overview"], ["steps", "Protocol steps"], ["contra", "Contraindications"], ["aftercare", "Aftercare script"], ["rebook", "Rebooking line"]];
+    var html = '<div class="doc-head"><div><small class="muted">' + esc(t.group) + '</small><h2 style="margin:2px 0 0">' + esc(txName(t)) + '</h2></div>' +
+      (t.injectable ? '<span class="badge warn">Nurse led treatment</span>' : '<span class="badge ok">Therapist treatment</span>') + '</div>' +
+      '<div class="tabs">' + tabs.map(function (x) { return '<button data-tab="' + x[0] + '" class="' + (tab === x[0] ? "on" : "") + '">' + x[1] + '</button>'; }).join("") + '</div>';
+
+    if (tab === "overview") {
+      html += '<p><strong>What it does.</strong> ' + esc(t.results) + '</p>' +
+        '<div class="label" style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:12px">Concerns it treats</div>' +
+        '<div class="concerns">' + t.concerns.map(function (c) { return '<span class="badge">' + esc(c) + '</span>'; }).join("") + '</div>' +
+        '<div class="facts">' +
+        '<div class="fact"><div class="label">Time</div><div class="v">' + esc(t.time) + '</div></div>' +
+        '<div class="fact"><div class="label">Downtime</div><div class="v">' + esc(t.downtime) + '</div></div>' +
+        '<div class="fact"><div class="label">Price</div><div class="v">' + esc(t.injectable ? "Given at consultation only. Never quote a price for injectables." : t.price) + '</div></div>' +
+        '<div class="fact"><div class="label">Course</div><div class="v">' + esc(t.course) + '</div></div>' +
+        '<div class="fact"><div class="label">Rebook interval</div><div class="v">' + (t.interval_days ? "Every " + weeksText(t.interval_days) : "Usually one visit") + '</div></div>' +
+        '<div class="fact"><div class="label">Who can do it</div><div class="v">' + (t.injectable ? "Nurse Leo or Nurse Maria" : "Any trained therapist") + '</div></div>' +
+        '</div>';
+    }
+    if (tab === "steps") {
+      html += '<div class="row between" style="margin-bottom:8px"><strong>Treatment protocol</strong><span class="badge warn">Draft, Jellie to confirm</span></div>' +
+        '<ol class="steps">' + (STEPS[t.id] || []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol>' +
+        '<p class="muted" style="font-size:13px;margin-top:12px">Machine settings and product names go here once Jellie signs off each protocol.</p>';
+    }
+    if (tab === "contra") {
+      var base = ["Active skin infection, open wounds or cold sores in the area", "Pregnant or breastfeeding unless the treatment is cleared for it"];
+      var list = t.not_for ? t.not_for.split(/,\s*/) : [];
+      html += '<strong>Do not treat if the client has</strong>' +
+        (list.length ? '<ul>' + list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>'
+          : '<p class="muted" style="margin-top:6px">No specific contraindications published yet for this treatment. Jellie to confirm.</p>') +
+        '<strong>Always check on the intake form</strong><ul>' + base.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") +
+        '<li>Retinol, acids or exfoliants used in the last 5 to 7 days</li><li>Recent sun, tan or spray tan</li></ul>' +
+        '<div class="note" style="margin-top:10px">If anything on the intake form is flagged, the staff app shows it on the client card before the appointment.</div>';
+    }
+    if (tab === "aftercare") {
+      var ac = t.aftercare;
+      var pending = /to confirm/i.test(ac);
+      var script = "Hi [first name], thank you for coming in today for your " + lc(txName(t)) + ".\n\n" + ac + "\n\nIf anything feels unusual, reply to this message and we will get back to you. We will check in with you in a few days.\n\nSkinlux Face and Body";
+      html += '<div class="row between" style="margin-bottom:10px"><strong>Aftercare message sent from the staff app</strong>' +
+        (pending ? '<span class="badge warn">Template not written yet</span>' : '<span class="badge ok">Live template</span>') + '</div>' +
+        '<div class="script" id="acScript">' + esc(script) + '</div>' +
+        '<div class="row" style="margin-top:12px"><button class="btn sm" id="copyAc">Copy script</button><small>Sent automatically when the therapist taps Treatment done.</small></div>';
+    }
+    if (tab === "rebook") {
+      html += '<strong>What to say at checkout</strong><p class="muted" style="font-size:13px">Book the next visit before the client leaves the room. Suggest a day and time, do not ask an open question.</p>' +
+        '<div class="script" id="rbScript">' + esc(rebookLine(t)) + '</div>' +
+        '<div class="row" style="margin-top:12px"><button class="btn sm ghost" id="copyRb">Copy line</button></div>';
+    }
+    $("doc").innerHTML = html;
+    $("doc").querySelectorAll(".tabs button").forEach(function (b) {
+      b.addEventListener("click", function () { current.tab = b.getAttribute("data-tab"); renderDoc(); });
+    });
+    if ($("copyAc")) $("copyAc").addEventListener("click", function () { copyText($("acScript").textContent); });
+    if ($("copyRb")) $("copyRb").addEventListener("click", function () { copyText($("rbScript").textContent); });
+  }
+
+  function renderGuide(id) {
+    var html = '<small class="muted">Guides</small><h2 style="margin:2px 0 14px">' + esc(GUIDES[id].title) + '</h2>';
+    if (id === "method") {
+      html += '<div class="row between"><p class="muted" style="margin:0">Jellie\'s high conversion rebooking method, written down so every therapist does it the same way.</p><span class="badge warn">Outline, Jellie to confirm</span></div>';
+      var steps = [
+        ["Plan the course in the consult", "Tell the client how many sessions they need and why, before the first treatment starts."],
+        ["Show progress at the end", "Use the before photo or the mirror. Point out one change they can see today."],
+        ["Suggest the date, do not ask", "\"Your next one is due in 4 weeks. I have Thursday the 17th at 10am, shall I lock that in?\""],
+        ["Book it in Timely while they are in the chair", "Tap Treatment done in the staff app and choose Booked in Timely."],
+        ["Home care to protect the result", "Recommend one product that suits today's treatment, never more than two."],
+        ["If they will not book", "Send the booking link from the app. They go on the call back list if they have not booked within a week of the due date."]
+      ];
+      html += steps.map(function (s, i) { return '<div class="method-step"><div class="n">' + (i + 1) + '</div><div><strong>' + esc(s[0]) + '</strong><div class="muted" style="font-size:14px">' + esc(s[1]) + '</div></div></div>'; }).join("");
+    }
+    if (id === "phone") {
+      var scripts = [
+        ["Answering the phone", "Good morning, Skinlux Face and Body Booragoon, this is [name]. How can I help you today?"],
+        ["Calling back an abandoned online booking", "Hi [first name], it's [name] from Skinlux. I saw you started booking online and wanted to check if I can help you find a time. Is now a good moment?"],
+        ["Client asks for an injectable price", "Our nurses give pricing at your consultation, because every plan is a little different. I can book you a consult with Nurse Maria or Nurse Leo. Would a weekday or Saturday suit you better?"],
+        ["Client is running late", "No problem at all. We can still fit in most of your treatment, or I can move you to the next free time today. Which would you prefer?"],
+        ["Client wants to cancel a course session", "Thanks for letting us know. To keep your results on track, the next best time is [day and time]. Shall I move you there?"]
+      ];
+      html += scripts.map(function (s, i) {
+        return '<div style="margin-bottom:14px"><div class="row between"><strong>' + esc(s[0]) + '</strong><button class="btn sm ghost" data-copy="' + i + '">Copy</button></div><div class="script" style="margin-top:6px">' + esc(s[1]) + '</div></div>';
+      }).join("");
+      $("doc").innerHTML = html;
+      $("doc").querySelectorAll("[data-copy]").forEach(function (b) { b.addEventListener("click", function () { copyText(scripts[+b.getAttribute("data-copy")][1]); }); });
+      return;
+    }
+    if (id === "starter") {
+      var items = ["Uniform and name badge", "Timely login and staff app PIN", "Clinic tour, fire exits and first aid kit", "Read the consent and intake form process", "Shadow Sharon Kim for 2 full days", "Shadow Shakira Hewitt on IPL hair removal", "Complete the IPL safety module", "Practise the phone scripts with Jellie", "Learn the rebooking method", "First supervised treatment", "Retail product training", "Sign off by Jellie"];
+      html += '<p class="muted">Tick items as Chloe completes them. Jellie sees progress for every new starter.</p><div class="checklist">' +
+        items.map(function (x, i) { return '<label><input type="checkbox"' + (i < 5 ? " checked" : "") + '><span>' + esc(x) + '</span></label>'; }).join("") + '</div>';
+      $("doc").innerHTML = html;
+      $("doc").querySelectorAll(".checklist input").forEach(function (c) {
+        c.addEventListener("change", function () { if (c.checked) toast("Ticked: " + c.nextElementSibling.textContent); });
+      });
+      return;
+    }
+    $("doc").innerHTML = html;
+  }
+
+  // New starter modules
+  function renderModules() {
+    var n = Object.keys(modDone).filter(function (k) { return modDone[k]; }).length;
+    $("modCount").textContent = n + " of " + MODULES.length + " modules";
+    $("modBar").style.width = (n / MODULES.length * 100) + "%";
+    var next = MODULES.filter(function (m, i) { return !modDone[i]; })[0];
+    $("modNext").textContent = next ? "Next up: " + next : "All modules done. Ready for sign off.";
+    $("modules").innerHTML = MODULES.map(function (m, i) {
+      return '<label class="' + (modDone[i] ? "ticked" : "") + '"><input type="checkbox" data-m="' + i + '"' + (modDone[i] ? " checked" : "") + '><span>' + esc(m) + '</span></label>';
+    }).join("");
+  }
+  $("modules").addEventListener("change", function (e) {
+    var i = e.target.getAttribute("data-m"); if (i === null) return;
+    modDone[i] = e.target.checked; renderModules();
+    if (e.target.checked) toast("Module done: " + MODULES[i]);
+  });
+  $("modToggle").addEventListener("click", function () {
+    var open = $("modules").classList.toggle("open");
+    this.textContent = open ? "Hide modules" : "Show modules";
+  });
+
+  // Quiz on skin needling
+  var QUIZ = [
+    { q: "How long should a client wait between skin needling sessions?", a: ["1 week", "2 weeks", "At least 4 weeks"], right: 2, why: "Collagen builds over 4 to 6 weeks, so the minimum gap is 4 weeks." },
+    { q: "Which product should the client avoid for a week after needling?", a: ["Retinol", "SPF 30+", "Gentle cleanser"], right: 0, why: "No retinol for a week. SPF and a gentle cleanser are part of the aftercare." },
+    { q: "Who should not have skin needling today?", a: ["A client with dry skin", "A client with active, inflamed acne", "A client with fine lines"], right: 1, why: "Inflamed skin or active acne is a contraindication. Rebook once it settles." }
+  ];
+  var answers = {};
+  function renderQuiz() {
+    var score = 0;
+    $("quiz").innerHTML = QUIZ.map(function (q, qi) {
+      var picked = answers[qi];
+      if (picked === q.right) score++;
+      return '<div class="q"><p>' + (qi + 1) + '. ' + esc(q.q) + '</p>' + q.a.map(function (a, ai) {
+        var cls = "";
+        if (picked !== undefined) { if (ai === q.right) cls = "right"; else if (ai === picked) cls = "wrong"; }
+        return '<button class="opt ' + cls + '" data-q="' + qi + '" data-a="' + ai + '"' + (picked !== undefined ? " disabled" : "") + '>' + esc(a) + '</button>';
+      }).join("") + (picked !== undefined ? '<div class="fb ' + (picked === q.right ? "up" : "down") + '">' + (picked === q.right ? "Correct. " : "Not quite. ") + esc(q.why) + '</div>' : '') + '</div>';
+    }).join("");
+    var answered = Object.keys(answers).length;
+    $("quizScore").textContent = score + " of 3";
+    if (answered === 3) toast(score === 3 ? "Full marks. Skin needling quiz passed." : score + " of 3. Review the protocol and try again.");
+  }
+  $("quiz").addEventListener("click", function (e) {
+    var b = e.target.closest(".opt"); if (!b || b.disabled) return;
+    answers[+b.getAttribute("data-q")] = +b.getAttribute("data-a"); renderQuiz();
+  });
+  $("quizReset").addEventListener("click", function () { answers = {}; renderQuiz(); });
+
+  renderNav(); renderDoc(); renderModules(); renderQuiz();
+})();
+</script>
+</body>
+</html>

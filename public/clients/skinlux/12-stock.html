@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock and consumables | Skinlux app suite</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 18px 0 14px; }
+  .controls .search { flex: 1; min-width: 200px; max-width: 320px; }
+  .controls .spacer { flex: 1; }
+  .layout { display: grid; grid-template-columns: minmax(0, 2.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+  .mt { margin-top: 16px; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td .sub { display: block; font-size: 12px; color: var(--muted); }
+  tr.low td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+  tr.out td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
+  .days { font-weight: 600; }
+  .days.lowc { color: var(--warn); }
+  .days.outc { color: var(--bad); }
+  .shots { min-width: 110px; }
+  .shots .bar { margin-top: 4px; height: 6px; }
+  .shots .bar.lowbar > span { background: var(--warn); }
+  td .badge { white-space: nowrap; }
+  table { font-size: 13.5px; }
+  th, td { padding: 9px 6px; }
+  .brand-dot { display: inline-block; width: 8px; height: 8px; border-radius: 99px; margin-right: 6px; background: var(--taupe); }
+  .table-wrap { overflow-x: auto; }
+  .kpi .value { margin-top: 4px; }
+
+  .bs-row { display: grid; grid-template-columns: 1fr 34px; gap: 8px; align-items: center; padding: 6px 0; font-size: 13px; }
+  .bs-row .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bs-row .bar { grid-column: 1 / 3; height: 8px; margin-top: -2px; }
+  .bs-row b { text-align: right; font-family: var(--serif); font-size: 18px; }
+
+  .order-empty { color: var(--muted); font-size: 14px; padding: 6px 0 2px; }
+  .sup { margin-top: 12px; }
+  .sup h4 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--mocha); display: flex; justify-content: space-between; }
+  .oline { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .oline small { display: block; color: var(--muted); }
+  .qty { display: inline-flex; align-items: center; gap: 4px; }
+  .qty button { width: 24px; height: 24px; border-radius: 99px; border: 1px solid var(--line); background: var(--white); cursor: pointer; font-weight: 700; color: var(--ink); }
+  .qty button:hover { background: var(--sand); }
+  .qty span { min-width: 22px; text-align: center; font-weight: 600; }
+  .qty .rm { border: 0; background: transparent; color: var(--muted); font-weight: 400; width: auto; padding: 0 4px; }
+  .order-status { margin-top: 12px; padding: 10px 12px; border-radius: 10px; font-size: 13px; }
+  .order-status.wait { background: var(--warn-soft); color: var(--warn); }
+  .order-status.sent { background: var(--ok-soft); color: var(--ok); }
+  .order-status.draft { background: var(--sand); color: var(--mocha); }
+  .total-line { display: flex; justify-content: space-between; margin-top: 10px; font-weight: 600; }
+  .sticky { position: sticky; top: 64px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">12 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Stock and consumables</h1>
+    <p>Retail products and clinic consumables for both clinics, with low stock alerts and a draft order ready for Jellie to approve.</p>
+  </div>
+  <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+
+  <div class="grid g4 mt">
+    <div class="card kpi"><div class="label">Retail stock value</div><div class="value" id="kValue">$0</div><small id="kValueSub">At sample label prices</small></div>
+    <div class="card kpi"><div class="label">Low or out of stock</div><div class="value" id="kLow">0</div><small id="kLowSub"></small></div>
+    <div class="card kpi"><div class="label">Products sold this month</div><div class="value" id="kSold">0</div><small id="kSoldSub"></small></div>
+    <div class="card kpi"><div class="label">Draft order</div><div class="value" id="kOrder">0 lines</div><small id="kOrderSub">Nothing waiting</small></div>
+  </div>
+
+  <div class="controls">
+    <div class="seg" id="segTab">
+      <button data-v="retail" class="on">Retail</button>
+      <button data-v="cons">Clinic consumables</button>
+    </div>
+    <div class="seg" id="segClinic">
+      <button data-v="booragoon">Booragoon</button>
+      <button data-v="leederville">Leederville</button>
+      <button data-v="both" class="on">Both</button>
+    </div>
+    <input class="search" id="search" type="search" placeholder="Search products or suppliers">
+    <span class="spacer"></span>
+    <button class="btn gold" id="reorderBtn">Reorder low stock</button>
+  </div>
+
+  <div class="layout">
+    <div class="card">
+      <div class="row between" style="margin-bottom:8px">
+        <h3 id="tableTitle" style="margin:0">Retail products</h3>
+        <small id="tableCount"></small>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <small class="muted" id="tableFoot" style="display:block;margin-top:10px"></small>
+    </div>
+
+    <div class="sticky">
+      <div class="card">
+        <div class="row between"><h3 style="margin:0">Best sellers</h3><small id="bsSub">This month</small></div>
+        <div id="bestSellers" style="margin-top:8px"></div>
+        <small class="muted" style="display:block;margin-top:6px">Units sold, from Timely sales</small>
+      </div>
+      <div class="card mt">
+        <div class="row between"><h3 style="margin:0">Draft order</h3><small id="orderCount"></small></div>
+        <div id="orderBody"><div class="order-empty">No items yet. Press Reorder low stock, or Add on any row.</div></div>
+        <div id="orderActions"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-AU"); }
+  function priceNum(p) { return parseFloat(String(p).replace(/[^0-9.]/g, "")) || 0; }
+
+  var SUP = { "Medik8": "Medik8 distributor", "O Cosmedics": "O Cosmedics", "Mesoestetic": "Mesoestetic distributor" };
+
+  // SAMPLE stock. First four come from the shared data file, the rest are sample items.
+  var STOCK_SAMPLE = {
+    "Medik8 C-Tetra": { b: 14, l: 6, sb: 11, sl: 5 },
+    "Medik8 Crystal Retinal 3": { b: 3, l: 4, sb: 9, sl: 4 },
+    "O Cosmedics Mild Cleanser": { b: 18, l: 9, sb: 12, sl: 6 },
+    "Mesoestetic Mesoprotech SPF 50": { b: 5, l: 2, sb: 16, sl: 8 }
+  };
+  var RETAIL = S.products.map(function (p) {
+    var s = STOCK_SAMPLE[p.name] || { b: 6, l: 3, sb: 3, sl: 1 };
+    return { name: p.name, brand: p.brand, price: priceNum(p.price), b: s.b, l: s.l, sb: s.sb, sl: s.sl, reorder: 4 };
+  }).concat([
+    { name: "Medik8 Hydr8 B5", brand: "Medik8", price: 85, b: 9, l: 5, sb: 6, sl: 3, reorder: 3 },
+    { name: "Medik8 Advanced Night Restore", brand: "Medik8", price: 105, b: 7, l: 3, sb: 3, sl: 2, reorder: 2 },
+    { name: "Medik8 Crystal Retinal 6", brand: "Medik8", price: 109, b: 4, l: 1, sb: 2, sl: 1, reorder: 2 },
+    { name: "O Cosmedics Clarifying Cleanser", brand: "O Cosmedics", price: 59, b: 2, l: 5, sb: 5, sl: 3, reorder: 3 },
+    { name: "O Cosmedics Hydra Infusion Serum", brand: "O Cosmedics", price: 89, b: 6, l: 4, sb: 4, sl: 2, reorder: 2 },
+    { name: "Mesoestetic Cosmelan 2 home cream", brand: "Mesoestetic", price: 159, b: 6, l: 2, sb: 2, sl: 1, reorder: 2 },
+    { name: "Mesoestetic Melan Tran3x gel cream", brand: "Mesoestetic", price: 119, b: 3, l: 3, sb: 3, sl: 1, reorder: 2 },
+    { name: "Mesoestetic Collagen 360 Elixir", brand: "Mesoestetic", price: 99, b: 5, l: 0, sb: 2, sl: 1, reorder: 2 }
+  ]);
+  RETAIL.forEach(function (r) { r.supplier = SUP[r.brand]; r.kind = "retail"; });
+
+  // SAMPLE clinic consumables. usage = units used per week at each clinic.
+  var CONS = [
+    { name: "HIFU cartridge 4.5mm (face)", unit: "shots", b: 2400, l: 7800, cap: 20000, ub: 1900, ul: 800, reorder: 4000, supplier: "HIFU machine supplier", pack: "1 cartridge (20,000 shots)" },
+    { name: "HIFU cartridge 3.0mm", unit: "shots", b: 9800, l: 6200, cap: 20000, ub: 1500, ul: 700, reorder: 4000, supplier: "HIFU machine supplier", pack: "1 cartridge (20,000 shots)" },
+    { name: "HIFU cartridge 1.5mm (eyes, fine areas)", unit: "shots", b: 3100, l: 11500, cap: 20000, ub: 900, ul: 400, reorder: 3000, supplier: "HIFU machine supplier", pack: "1 cartridge (20,000 shots)" },
+    { name: "Mesoestetic needling ampoules", unit: "boxes", b: 8, l: 2, ub: 1.5, ul: 1, reorder: 3, supplier: "Mesoestetic distributor", pack: "box of 5" },
+    { name: "Mesoestetic Mesoeclat peel kits", unit: "kits", b: 6, l: 4, ub: 1, ul: 0.5, reorder: 2, supplier: "Mesoestetic distributor", pack: "kit" },
+    { name: "O Cosmedics peel solution, Level 2", unit: "bottles", b: 2, l: 3, ub: 0.5, ul: 0.4, reorder: 2, supplier: "O Cosmedics", pack: "bottle" },
+    { name: "O Cosmedics resurfacing peel", unit: "bottles", b: 3, l: 2, ub: 0.5, ul: 0.3, reorder: 1, supplier: "O Cosmedics", pack: "bottle" },
+    { name: "Carbon lotion", unit: "ml", b: 380, l: 60, ub: 45, ul: 25, reorder: 100, supplier: "Medical supplies", pack: "250ml bottle" },
+    { name: "Numbing cream", unit: "tubes", b: 10, l: 6, ub: 1.5, ul: 1, reorder: 3, supplier: "Medical supplies", pack: "30g tube" },
+    { name: "Sterile needling cartridges", unit: "boxes", b: 8, l: 6, ub: 1, ul: 0.8, reorder: 3, supplier: "Medical supplies", pack: "box of 10" },
+    { name: "Ultrasound gel", unit: "bottles", b: 2, l: 2, ub: 0.3, ul: 0.2, reorder: 1, supplier: "Medical supplies", pack: "5L bottle" }
+  ];
+  CONS.forEach(function (c) { c.kind = "cons"; });
+
+  var state = { tab: "retail", clinic: "both", q: "", order: {}, orderStatus: "none" };
+  function clinicsSel() { return state.clinic === "both" ? ["b", "l"] : [state.clinic === "booragoon" ? "b" : "l"]; }
+  var CNAME = { b: "Booragoon", l: "Leederville" };
+
+  // Retail maths: days left from this month's sales (30 day month)
+  function retailDays(r, c) {
+    var sold = r["s" + c], stock = r[c];
+    if (stock === 0) return 0;
+    if (!sold) return 999;
+    return Math.round(stock / (sold / 30));
+  }
+  function consDays(x, c) {
+    var use = x["u" + c], stock = x[c];
+    if (stock === 0) return 0;
+    return Math.round(stock / use * 7);
+  }
+  function status(item, c) {
+    var stock = item[c], days = item.kind === "retail" ? retailDays(item, c) : consDays(item, c);
+    if (stock === 0) return "out";
+    if (stock <= item.reorder || days <= 21) return "low";
+    return "ok";
+  }
+  function suggestQty(item, c) {
+    if (item.kind === "retail") {
+      var need = Math.ceil(item["s" + c] / 30 * 45 - item[c]);
+      return Math.max(2, need);
+    }
+    if (item.unit === "shots") return 1;
+    if (item.unit === "ml") return 1;
+    return Math.max(1, Math.ceil(item["u" + c] * 6 - item[c]));
+  }
+  function qtyLabel(item, q) {
+    if (item.kind === "retail") return q + " units";
+    return q + " x " + item.pack;
+  }
+
+  function matches(item) {
+    var q = state.q.toLowerCase();
+    if (!q) return true;
+    return (item.name + " " + (item.brand || "") + " " + item.supplier).toLowerCase().indexOf(q) > -1;
+  }
+  function statusBadge(s) {
+    return s === "out" ? '<span class="badge bad">Out of stock</span>' : s === "low" ? '<span class="badge warn">Low stock</span>' : '<span class="badge ok">OK</span>';
+  }
+  function worst(item) {
+    var ss = clinicsSel().map(function (c) { return status(item, c); });
+    return ss.indexOf("out") > -1 ? "out" : ss.indexOf("low") > -1 ? "low" : "ok";
+  }
+  function fmtUnits(x, v) { return x.unit === "shots" || x.unit === "ml" ? v.toLocaleString("en-AU") + " " + x.unit : v + " " + x.unit; }
+
+  function renderTable() {
+    var cs = clinicsSel(), both = cs.length === 2;
+    var html = "", rows;
+    if (state.tab === "retail") {
+      $("tableTitle").textContent = "Retail products";
+      $("thead").innerHTML = "<tr><th>Product</th><th class=\"num\">Price</th>" +
+        cs.map(function (c) { return '<th class="num">' + CNAME[c] + "</th>"; }).join("") +
+        '<th class="num">Sold</th><th class="num">Days left</th><th>Status</th><th></th></tr>';
+      rows = RETAIL.filter(matches);
+      rows.forEach(function (r) {
+        var st = worst(r), sold = 0, dayTxt = [];
+        cs.forEach(function (c) { sold += r["s" + c]; });
+        cs.forEach(function (c) {
+          var d = retailDays(r, c), s = status(r, c);
+          dayTxt.push('<span class="days ' + (s === "out" ? "outc" : s === "low" ? "lowc" : "") + '">' + (d >= 999 ? "90+" : d) + (both ? " <small class=\"muted\">" + CNAME[c].charAt(0) + "</small>" : "") + "</span>");
+        });
+        html += '<tr class="' + (st === "ok" ? "" : st) + '"><td><b>' + r.name + "</b></td>" +
+          '<td class="num">' + money(r.price) + "</td>" +
+          cs.map(function (c) { return '<td class="num">' + r[c] + "</td>"; }).join("") +
+          '<td class="num">' + sold + '</td><td class="num">' + dayTxt.join("<br>") + "</td><td>" + statusBadge(st) + "</td>" +
+          '<td><button class="btn sm ghost" data-add="' + r.name + '">Add</button></td></tr>';
+      });
+      $("tableFoot").textContent = "Prices are sample label prices. Days left uses this month's sales rate. Low stock means 21 days or less, or at the reorder level." + (state.clinic === "both" ? " B is Booragoon, L is Leederville." : "");
+    } else {
+      $("tableTitle").textContent = "Clinic consumables";
+      $("thead").innerHTML = "<tr><th>Item</th>" +
+        cs.map(function (c) { return "<th>" + CNAME[c] + "</th>"; }).join("") +
+        '<th class="num">Reorder at</th><th class="num">Weeks left</th><th>Status</th><th></th></tr>';
+      rows = CONS.filter(matches);
+      rows.forEach(function (x) {
+        var st = worst(x), wk = [];
+        cs.forEach(function (c) {
+          var s = status(x, c), d = consDays(x, c);
+          wk.push('<span class="days ' + (s === "out" ? "outc" : s === "low" ? "lowc" : "") + '">' + (d / 7).toFixed(1) + (both ? " <small class=\"muted\">" + CNAME[c].charAt(0) + "</small>" : "") + "</span>");
+        });
+        html += '<tr class="' + (st === "ok" ? "" : st) + '"><td><b>' + x.name + '</b><span class="sub">' + x.supplier + "</span></td>" +
+          cs.map(function (c) {
+            if (x.unit === "shots") {
+              var pct = x[c] / x.cap * 100, low = status(x, c) !== "ok";
+              return '<td class="shots">' + x[c].toLocaleString("en-AU") + ' <small class="muted">shots left</small><div class="bar' + (low ? " lowbar" : "") + '"><span style="width:' + pct + '%"></span></div></td>';
+            }
+            return "<td>" + fmtUnits(x, x[c]) + "</td>";
+          }).join("") +
+          '<td class="num">' + fmtUnits(x, x.reorder) + '</td><td class="num">' + wk.join("<br>") + "</td><td>" + statusBadge(st) + "</td>" +
+          '<td><button class="btn sm ghost" data-add="' + x.name + '">Add</button></td></tr>';
+      });
+      $("tableFoot").textContent = "Use per week comes from completed treatments in Timely (HIFU shots logged by the machine). B is Booragoon, L is Leederville.";
+    }
+    if (!rows.length) html = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">Nothing matches "' + state.q.replace(/</g, "&lt;") + '".</td></tr>';
+    $("tbody").innerHTML = html;
+    $("tableCount").textContent = rows.length + " items" + (state.clinic === "both" ? ", both clinics" : ", " + S.locations[state.clinic].name);
+  }
+
+  function renderKpis() {
+    var cs = clinicsSel(), value = 0, sold = 0, rev = 0, low = 0, lowR = 0, lowC = 0;
+    RETAIL.forEach(function (r) {
+      cs.forEach(function (c) { value += r[c] * r.price; sold += r["s" + c]; rev += r["s" + c] * r.price; if (status(r, c) !== "ok") lowR++; });
+    });
+    CONS.forEach(function (x) { cs.forEach(function (c) { if (status(x, c) !== "ok") lowC++; }); });
+    low = lowR + lowC;
+    $("kValue").textContent = money(value);
+    $("kLow").textContent = low;
+    $("kLowSub").textContent = lowR + " retail, " + lowC + " consumables";
+    $("kSold").textContent = sold;
+    $("kSoldSub").textContent = money(rev) + " in retail sales";
+    var n = Object.keys(state.order).length;
+    $("kOrder").textContent = n + (n === 1 ? " line" : " lines");
+    $("kOrderSub").textContent = state.orderStatus === "wait" ? "Waiting for Jellie's approval" : state.orderStatus === "sent" ? "Sent to suppliers" : n ? "Not sent yet" : "Nothing waiting";
+  }
+
+  function renderBest() {
+    var cs = clinicsSel();
+    var rows = RETAIL.map(function (r) {
+      var v = 0; cs.forEach(function (c) { v += r["s" + c]; });
+      return { n: r.name, v: v };
+    }).sort(function (a, b) { return b.v - a.v; }).slice(0, 5);
+    var max = rows[0].v;
+    $("bestSellers").innerHTML = rows.map(function (r) {
+      return '<div class="bs-row"><span class="name" title="' + r.n + '">' + r.n + "</span><b>" + r.v + '</b><div class="bar"><span style="width:' + (r.v / max * 100) + '%"></span></div></div>';
+    }).join("");
+    $("bsSub").textContent = state.clinic === "both" ? "Both clinics" : S.locations[state.clinic].name;
+  }
+
+  function findItem(name) {
+    return RETAIL.concat(CONS).filter(function (i) { return i.name === name; })[0];
+  }
+  function addLine(item, c, q) {
+    var key = item.name + "|" + c;
+    if (state.order[key]) return false;
+    state.order[key] = { item: item, c: c, q: q || suggestQty(item, c) };
+    return true;
+  }
+
+  function renderOrder() {
+    var keys = Object.keys(state.order);
+    $("orderCount").textContent = keys.length ? keys.length + (keys.length === 1 ? " line" : " lines") : "";
+    if (!keys.length) {
+      $("orderBody").innerHTML = '<div class="order-empty">No items yet. Press Reorder low stock, or Add on any row.</div>';
+      $("orderActions").innerHTML = "";
+      renderKpis();
+      return;
+    }
+    var groups = {};
+    keys.forEach(function (k) { var o = state.order[k]; (groups[o.item.supplier] = groups[o.item.supplier] || []).push(k); });
+    var total = 0;
+    var html = Object.keys(groups).sort().map(function (sup) {
+      return '<div class="sup"><h4><span>' + sup + "</span><span>" + groups[sup].length + "</span></h4>" + groups[sup].map(function (k) {
+        var o = state.order[k];
+        if (o.item.kind === "retail") total += o.q * o.item.price;
+        return '<div class="oline"><div>' + o.item.name + "<small>" + CNAME[o.c] + ", " + qtyLabel(o.item, o.q) + "</small></div>" +
+          '<div class="qty"><button data-dec="' + k + '" aria-label="Less">&minus;</button><span>' + o.q + '</span><button data-inc="' + k + '" aria-label="More">+</button><button class="rm" data-rm="' + k + '">Remove</button></div></div>';
+      }).join("") + "</div>";
+    }).join("");
+    if (total) html += '<div class="total-line"><span>Retail at label price</span><span>' + money(total) + "</span></div>";
+    var st = state.orderStatus;
+    html += st === "wait" ? '<div class="order-status wait">Emailed to Jellie. Waiting for her approval.</div>' :
+      st === "sent" ? '<div class="order-status sent">Approved and sent to ' + Object.keys(groups).length + " suppliers.</div>" :
+      '<div class="order-status draft">Draft. Not sent yet.</div>';
+    $("orderBody").innerHTML = html;
+    var acts = '<div class="row wrap" style="margin-top:12px">';
+    if (st === "wait") acts += '<button class="btn gold sm" id="approveBtn">Approve and send to suppliers</button>';
+    else if (st !== "sent") acts += '<button class="btn sm" id="emailBtn">Email draft to Jellie</button>';
+    acts += '<button class="btn ghost sm" id="clearBtn">' + (st === "sent" ? "Start a new order" : "Clear") + "</button></div>";
+    $("orderActions").innerHTML = acts;
+    renderKpis();
+  }
+
+  function renderAll() { renderTable(); renderKpis(); renderBest(); renderOrder(); }
+
+  // Events
+  function bindSeg(id, key) {
+    $(id).addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      Array.prototype.forEach.call(this.children, function (x) { x.classList.toggle("on", x === b); });
+      state[key] = b.getAttribute("data-v");
+      renderAll();
+    });
+  }
+  bindSeg("segTab", "tab");
+  bindSeg("segClinic", "clinic");
+  $("search").addEventListener("input", function () { state.q = this.value.trim(); renderTable(); });
+
+  $("tbody").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-add]"); if (!b) return;
+    var item = findItem(b.getAttribute("data-add"));
+    var cs = clinicsSel(), added = 0;
+    var lows = cs.filter(function (c) { return status(item, c) !== "ok"; });
+    (lows.length ? lows : [cs[0]]).forEach(function (c) { if (addLine(item, c)) added++; });
+    if (state.orderStatus === "sent") state.orderStatus = "none";
+    renderOrder();
+    toast(added ? item.name + " added to the draft order" : item.name + " is already on the draft order");
+  });
+
+  $("reorderBtn").addEventListener("click", function () {
+    var cs = clinicsSel(), added = 0;
+    if (state.orderStatus === "sent") { state.order = {}; }
+    RETAIL.concat(CONS).forEach(function (item) {
+      cs.forEach(function (c) { if (status(item, c) !== "ok" && addLine(item, c)) added++; });
+    });
+    if (!Object.keys(state.order).length) { toast("Nothing is low right now"); return; }
+    state.orderStatus = "wait";
+    renderOrder();
+    toast("Draft order emailed to Jellie for approval");
+  });
+
+  $("orderBody").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var k = b.getAttribute("data-inc") || b.getAttribute("data-dec") || b.getAttribute("data-rm");
+    if (!k || !state.order[k]) return;
+    if (b.hasAttribute("data-inc")) state.order[k].q++;
+    if (b.hasAttribute("data-dec")) state.order[k].q = Math.max(1, state.order[k].q - 1);
+    if (b.hasAttribute("data-rm")) delete state.order[k];
+    if (state.orderStatus === "sent") state.orderStatus = "none";
+    renderOrder();
+  });
+  $("orderActions").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.id === "emailBtn") { state.orderStatus = "wait"; renderOrder(); toast("Draft order emailed to Jellie for approval"); }
+    if (b.id === "approveBtn") {
+      var sups = {}; Object.keys(state.order).forEach(function (k) { sups[state.order[k].item.supplier] = 1; });
+      state.orderStatus = "sent"; renderOrder();
+      toast("Approved. " + Object.keys(sups).length + " purchase orders emailed to suppliers");
+    }
+    if (b.id === "clearBtn") { state.order = {}; state.orderStatus = "none"; renderOrder(); }
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

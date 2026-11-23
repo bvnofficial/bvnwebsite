@@ -5,6 +5,8 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      // Skinlux app suite demo: serve the static hub at the folder URL.
+      { source: "/clients/skinlux", destination: "/clients/skinlux/index.html" },
     ];
   },
   async redirects() {

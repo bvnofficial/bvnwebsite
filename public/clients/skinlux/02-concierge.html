@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skinlux Concierge | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<script src="assets/concierge.js"></script>
+<style>
+  .split { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } }
+
+  .browser { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); background: var(--white); }
+  .browser .chrome { display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: var(--sand); }
+  .browser .chrome i { width: 10px; height: 10px; border-radius: 99px; background: var(--taupe); opacity: 0.6; }
+  .browser .url { flex: 1; margin-left: 10px; background: var(--white); border-radius: 99px; padding: 4px 12px; font-size: 12px; color: var(--muted); }
+  .site { position: relative; height: 640px; overflow: hidden; background: var(--cream); }
+  .site nav { display: flex; align-items: center; gap: 18px; padding: 16px 26px; background: var(--white); border-bottom: 1px solid var(--line); font-size: 13px; }
+  .site nav .lg { font-family: var(--serif); font-size: 22px; letter-spacing: 3px; margin-right: auto; }
+  .site nav span { color: var(--muted); }
+  .site nav .btn { padding: 7px 14px; font-size: 12px; }
+  .hero { padding: 54px 26px 30px; background: linear-gradient(120deg, #efe3d6 0%, #f7f2ec 55%, #e7d6c5 100%); position: relative; }
+  .hero::after { content: ""; position: absolute; right: 40px; top: 30px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f4e7da, #cdb39c); opacity: 0.55; }
+  .hero h1 { font-size: 40px; max-width: 360px; line-height: 1.08; position: relative; z-index: 1; }
+  .hero p { max-width: 330px; color: var(--mocha); position: relative; z-index: 1; }
+  .hero .eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 10px; }
+  .site-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 22px 26px; }
+  .site-cards div { background: var(--white); border-radius: 12px; padding: 12px; border: 1px solid var(--line); font-size: 13px; }
+  .site-cards b { display: block; font-family: var(--serif); font-size: 17px; }
+
+  .widget { position: absolute; right: 18px; bottom: 18px; width: 340px; height: 520px; background: var(--cream); border-radius: 20px; box-shadow: 0 18px 50px rgba(43,36,32,0.28); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); transition: transform .25s, opacity .25s; }
+  .widget.closed { transform: translateY(20px) scale(0.96); opacity: 0; pointer-events: none; }
+  .w-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; color: #fff; background: var(--ink); transition: background .3s; }
+  .w-head .av { width: 34px; height: 34px; border-radius: 99px; background: var(--gold); color: var(--ink); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 700; font-size: 17px; flex: 0 0 auto; }
+  .w-head .t b { display: block; font-size: 14px; }
+  .w-head .t span { font-size: 11px; opacity: 0.85; }
+  .w-head .x { margin-left: auto; background: none; border: 0; color: inherit; font-size: 20px; cursor: pointer; opacity: 0.8; }
+  .w-body { flex: 1; overflow-y: auto; padding: 12px; }
+  .w-body .msg { font-size: 13px; }
+  .w-form { display: flex; gap: 6px; padding: 10px; background: var(--white); border-top: 1px solid var(--line); }
+  .w-form input { border-radius: 99px; font-size: 13px; }
+  .w-form .btn { padding: 8px 14px; }
+  .launcher { position: absolute; right: 18px; bottom: 18px; width: 58px; height: 58px; border-radius: 99px; border: 0; background: var(--ink); color: var(--cream); font: 600 12px var(--sans); cursor: pointer; box-shadow: var(--shadow); }
+
+  /* channel looks */
+  .ch-website .w-head { background: var(--ink); }
+  .ch-instagram .w-head { background: linear-gradient(90deg, #833ab4, #c13584 45%, #f77737); }
+  .ch-instagram .msg.me { background: #7b3fe4; }
+  .ch-whatsapp .w-head { background: #075e54; }
+  .ch-whatsapp .w-body { background: #ece5dd; }
+  .ch-whatsapp .msg.me { background: #dcf8c6; color: #1d2b1f; }
+  .ch-whatsapp .msg.me a { color: #075e54; }
+  .ch-facebook .w-head { background: #0866ff; }
+  .ch-facebook .msg.me { background: #0866ff; }
+
+  .panel .chip { margin: 0 6px 8px 0; }
+  .chan-desc { font-size: 13px; color: var(--muted); margin: 10px 0 0; min-height: 40px; }
+  .log table td { font-size: 13px; vertical-align: top; }
+  .log .tags .badge { margin: 0 4px 4px 0; }
+  .empty { color: var(--muted); font-size: 13px; padding: 14px 8px; }
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+  .stat-row .kpi .value { font-size: 26px; }
+  tr.new { animation: flash 1.2s ease-out; }
+  @keyframes flash { from { background: var(--gold-soft); } to { background: transparent; } }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">2 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Skinlux Concierge</h1>
+    <p>An assistant that answers questions on your website and social inboxes day and night, using your own treatments, prices and policies, and hands warm leads to the team.</p>
+    <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+  </div>
+
+  <div class="split">
+    <div class="browser">
+      <div class="chrome"><i></i><i></i><i></i><div class="url" id="url">skinluxfaceandbody.com.au</div></div>
+      <div class="site" id="site">
+        <nav><span class="lg">SKINLUX</span><span>Treatments</span><span>Offers</span><span>About</span><a class="btn" id="site-book" target="_blank" rel="noopener">Book now</a></nav>
+        <div class="hero">
+          <div class="eyebrow">Booragoon and Leederville</div>
+          <h1>Skin that feels like you again</h1>
+          <p>Advanced skin treatments, with time to listen. At Skinlux, you are not a number.</p>
+          <a class="btn" id="hero-book" target="_blank" rel="noopener">Book a skin consult</a>
+        </div>
+        <div class="site-cards">
+          <div><b>HIFU</b>Lift and tighten, no downtime</div>
+          <div><b>Skin needling</b>Acne scars and texture</div>
+          <div><b>IPL hair removal</b>Smooth for good</div>
+        </div>
+
+        <button class="launcher hidden" id="launcher">Chat</button>
+        <div class="widget ch-website" id="widget">
+          <div class="w-head">
+            <div class="av" id="w-av">S</div>
+            <div class="t"><b id="w-title">Skinlux Concierge</b><span id="w-sub">Usually replies instantly</span></div>
+            <button class="x" id="w-close" title="Close">&times;</button>
+          </div>
+          <div class="w-body"><div class="chat" id="chat"></div></div>
+          <form class="w-form" id="w-form">
+            <input id="w-input" placeholder="Type a question" autocomplete="off">
+            <button class="btn" type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="card panel">
+        <h3>Channel</h3>
+        <div class="seg" id="chan">
+          <button class="on" data-ch="website">Website</button>
+          <button data-ch="instagram">Instagram DM</button>
+          <button data-ch="whatsapp">WhatsApp</button>
+          <button data-ch="facebook">Facebook</button>
+        </div>
+        <p class="chan-desc" id="chan-desc"></p>
+      </div>
+      <div class="card panel">
+        <h3>Try asking</h3>
+        <div id="chips"></div>
+        <button class="btn ghost sm" id="clear" style="margin-top:4px">Clear chat</button>
+      </div>
+      <div class="card soft">
+        <h3>How it stays safe</h3>
+        <p style="font-size:14px;margin:0">It only answers from Skinlux's own information. Injectable questions always go to a complimentary consult with a nurse, with no prices or product names. Anything it isn't sure about goes to a person.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card log" style="margin-top:22px">
+    <div class="row between wrap">
+      <div><h3 style="margin:0">Handed to team</h3><small>Every conversation lands in GoHighLevel, tagged by concern and channel, so the right person follows up.</small></div>
+      <div class="stat-row" style="margin:0;min-width:340px">
+        <div class="kpi"><div class="label">Today</div><div class="value" id="k-conv">0</div></div>
+        <div class="kpi"><div class="label">Leads</div><div class="value" id="k-leads">0</div></div>
+        <div class="kpi"><div class="label">To a person</div><div class="value" id="k-hand">0</div></div>
+      </div>
+    </div>
+    <table style="margin-top:12px">
+      <thead><tr><th>Time</th><th>Channel</th><th>Question</th><th>GoHighLevel tags</th><th>Next step</th></tr></thead>
+      <tbody id="log-body"><tr><td colspan="5" class="empty">Ask a question in the chat and it appears here.</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  $("site-book").href = S.booking; $("hero-book").href = S.booking;
+
+  var CH = {
+    website: { title: "Skinlux Concierge", sub: "Usually replies instantly", av: "S", url: "skinluxfaceandbody.com.au", label: "Website",
+      desc: "The chat bubble on every page of the website. Visitors get answers at 11pm instead of waiting for opening hours." },
+    instagram: { title: "skinluxfaceandbody", sub: "Instagram direct message", av: "S", url: "instagram.com/direct/inbox", label: "Instagram",
+      desc: "Replies to DMs and story replies, the same voice as the website. Great for people who find you from a Reel." },
+    whatsapp: { title: "Skinlux Face and Body", sub: "WhatsApp Business", av: "S", url: "web.whatsapp.com", label: "WhatsApp",
+      desc: "For clients who prefer to message. Works with your existing business number." },
+    facebook: { title: "Skinlux Face and Body", sub: "Messenger, typically replies instantly", av: "S", url: "facebook.com/messages", label: "Facebook",
+      desc: "Answers Messenger questions and comments from your Facebook ads, so ad leads aren't left waiting." }
+  };
+  var channel = "website";
+  function setChannel(k) {
+    channel = k;
+    var c = CH[k];
+    $("widget").className = "widget ch-" + k;
+    $("w-title").textContent = c.title; $("w-sub").textContent = c.sub; $("w-av").textContent = c.av;
+    $("url").textContent = c.url; $("chan-desc").textContent = c.desc;
+    document.querySelectorAll("#chan button").forEach(function (b) { b.classList.toggle("on", b.dataset.ch === k); });
+    $("widget").classList.remove("closed"); $("launcher").classList.add("hidden");
+  }
+  document.querySelectorAll("#chan button").forEach(function (b) { b.onclick = function () { setChannel(b.dataset.ch); }; });
+  setChannel("website");
+
+  $("w-close").onclick = function () { $("widget").classList.add("closed"); $("launcher").classList.remove("hidden"); };
+  $("launcher").onclick = function () { $("widget").classList.remove("closed"); $("launcher").classList.add("hidden"); };
+
+  var Q = ["I have acne scars, what do you recommend?", "How much is HIFU?", "How much is Botox?", "What's the downtime for needling?", "Are you open Saturday in Leederville?", "Do I need a deposit?"];
+  $("chips").innerHTML = Q.map(function (q, i) { return '<span class="chip" data-i="' + i + '">' + q + '</span>'; }).join("");
+  document.querySelectorAll("#chips .chip").forEach(function (c) { c.onclick = function () { send(Q[+c.dataset.i]); }; });
+
+  var busy = false, conv = 0, leads = 0, hand = 0, first = true;
+  function send(text) {
+    if (busy) return;
+    busy = true;
+    $("widget").classList.remove("closed"); $("launcher").classList.add("hidden");
+    SkinluxConcierge.ask($("chat"), text).then(function (r) { busy = false; log(text, r); });
+  }
+  $("w-form").onsubmit = function (e) {
+    e.preventDefault();
+    var v = $("w-input").value.trim(); if (!v) return;
+    $("w-input").value = ""; send(v);
+  };
+  $("clear").onclick = function () { $("chat").innerHTML = ""; SkinluxConcierge.reset(); greet(); };
+
+  function greet() { SkinluxConcierge.greet($("chat"), "Hi, welcome to Skinlux. I can help with treatments, prices, downtime, our Booragoon and Leederville clinics, or booking. What can I help with?", 500); }
+  greet();
+
+  function nextStep(r) {
+    if (r.handoff) return "Team to reply today";
+    if (r.tags.indexOf("interest-injectables") > -1) return "Nurse consult follow up";
+    if (r.concern) return "Send treatment guide, follow up in 2 days";
+    if (r.treatment) return "Booking link sent, nudge if not booked";
+    return "Answered, no follow up";
+  }
+  function log(q, r) {
+    conv++;
+    var tags = r.tags.slice();
+    tags.unshift("channel-" + channel);
+    tags.unshift("concierge-chat");
+    var isLead = !!(r.treatment || r.concern || r.handoff || r.tags.indexOf("intent-book") > -1);
+    if (isLead) leads++;
+    if (r.handoff) hand++;
+    $("k-conv").textContent = conv; $("k-leads").textContent = leads; $("k-hand").textContent = hand;
+    if (first) { $("log-body").innerHTML = ""; first = false; }
+    var d = new Date();
+    var tm = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0") + (d.getHours() < 12 ? "am" : "pm");
+    var tr = document.createElement("tr");
+    tr.className = "new";
+    tr.innerHTML = "<td>" + tm + "</td><td>" + CH[channel].label + "</td><td></td><td class='tags'>" +
+      tags.map(function (t) {
+        var cls = /^concern-|^interest-/.test(t) ? "gold" : t === "handoff" ? "warn" : /injectables|consult/.test(t) ? "bad" : "ok";
+        return '<span class="badge ' + cls + '">' + t + "</span>";
+      }).join("") + "</td><td>" + nextStep(r) + "</td>";
+    tr.children[2].textContent = q;
+    $("log-body").insertBefore(tr, $("log-body").firstChild);
+    if (isLead) toast("Lead added to GoHighLevel");
+  }
+  var tt;
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove("show"); }, 2200); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skin membership | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .tiers { margin-bottom: 14px; }
+  .tier { display: flex; flex-direction: column; position: relative; }
+  .tier.feat { border: 2px solid var(--gold); }
+  .tier .pop { position: absolute; top: -12px; left: 18px; }
+  .tier .price { font-family: var(--serif); font-size: 44px; font-weight: 600; line-height: 1; margin: 6px 0 2px; }
+  .tier .price small { font-family: var(--sans); font-size: 14px; color: var(--muted); font-weight: 400; }
+  .tier ul { list-style: none; padding: 0; margin: 14px 0 18px; font-size: 14px; }
+  .tier li { padding: 7px 0 7px 22px; border-bottom: 1px solid var(--line); position: relative; }
+  .tier li::before { content: ""; position: absolute; left: 2px; top: 12px; width: 10px; height: 5px; border-left: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(-45deg); }
+  .tier .value-note { font-size: 12px; color: var(--ok); font-weight: 600; }
+  .tier .btn { margin-top: auto; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 22px; align-items: start; margin-top: 26px; }
+  @media (max-width: 950px) { .two { grid-template-columns: 1fr; } }
+  .member-top { display: flex; gap: 14px; align-items: center; }
+  .member-top .av { width: 52px; height: 52px; border-radius: 99px; background: var(--gold-soft); color: var(--mocha); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 22px; font-weight: 700; }
+  .credits { display: flex; gap: 8px; margin: 8px 0 4px; }
+  .credits span { flex: 1; height: 10px; border-radius: 99px; background: var(--gold); }
+  .credits span.used { background: var(--sand); }
+  .mrow { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .mrow span:first-child { color: var(--muted); }
+  .pause-opts { display: flex; gap: 8px; margin-top: 10px; }
+  .slider-row { display: grid; grid-template-columns: 110px 1fr 60px; gap: 12px; align-items: center; margin: 10px 0; font-size: 14px; }
+  .slider-row input[type=range] { padding: 0; border: 0; accent-color: var(--gold); background: transparent; }
+  .slider-row output { font-weight: 700; text-align: right; }
+  .proj-out { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+  .proj-out .kpi { background: var(--cream); border-radius: 12px; padding: 12px; }
+  .proj-out .kpi .value { font-size: 28px; }
+  .proj-out .kpi.total { background: var(--ink); color: var(--cream); }
+  .proj-out .kpi.total .label { color: var(--taupe); }
+  .stackbar { display: flex; height: 14px; border-radius: 99px; overflow: hidden; margin-top: 14px; background: var(--sand); }
+  .stackbar span { transition: width .3s; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">7 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Skin membership</h1>
+    <p>A monthly plan that keeps clients on their skin routine and gives the clinic steady income, billed automatically, with credits, pauses and member pricing handled for you.</p>
+    <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+  </div>
+
+  <div class="grid g3 tiers" id="tiers"></div>
+  <p class="muted" style="font-size:13px">Memberships cover beauty and energy treatments only. Cosmetic injectables are not part of any membership. Suggested tiers and pricing, to be set by Skinlux. Unused credits roll over for one month.</p>
+
+  <div class="two">
+    <div class="card">
+      <div class="row between"><h3 style="margin:0">Members view</h3><span class="badge ok" id="m-status">Active</span></div>
+      <small>What a member sees in My Skinlux</small>
+      <div class="member-top" style="margin-top:14px">
+        <div class="av">EW</div>
+        <div><b>Emma Walsh</b><br><small>Radiance member since August 2026, Booragoon</small></div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="row between"><b style="font-size:14px">Treatment credits this month</b><span id="cred-txt">1 of 1 left</span></div>
+        <div class="credits" id="credits"><span></span></div>
+        <small>Use it on Bright &amp; Tight or Diamond Polar RF.</small>
+      </div>
+      <div style="margin-top:12px">
+        <div class="mrow"><span>Next billing</span><span id="bill">Mon 1 Dec, $189</span></div>
+        <div class="mrow"><span>Product discount</span><span>15% off, applied automatically</span></div>
+        <div class="mrow"><span>Saved so far</span><span>$412 (sample)</span></div>
+        <div class="mrow"><span>Payment</span><span>Card ending 4242</span></div>
+      </div>
+      <div class="row wrap" style="gap:8px;margin-top:14px">
+        <button class="btn" id="use">Use my credit</button>
+        <button class="btn ghost" id="pause">Pause membership</button>
+        <button class="btn ghost sm" id="change">Change tier</button>
+      </div>
+      <div id="pause-box" class="hidden" style="margin-top:12px">
+        <small>Going away or need a break? Pause billing and pick up where you left off.</small>
+        <div class="pause-opts">
+          <button class="btn sm ghost" data-m="1">1 month</button>
+          <button class="btn sm ghost" data-m="2">2 months</button>
+          <button class="btn sm ghost" data-m="3">3 months</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0">Revenue projector</h3>
+      <small>Move the sliders to see monthly recurring revenue across both clinics.</small>
+      <div id="sliders" style="margin-top:12px"></div>
+      <div class="slider-row"><span>Booragoon share</span><input type="range" id="split" min="0" max="100" value="60"><output id="split-out">60%</output></div>
+      <div class="stackbar" id="stack"></div>
+      <div class="proj-out">
+        <div class="kpi"><div class="label">Booragoon</div><div class="value" id="o-b">$0</div><div class="delta muted">per month</div></div>
+        <div class="kpi"><div class="label">Leederville</div><div class="value" id="o-l">$0</div><div class="delta muted">per month</div></div>
+        <div class="kpi total"><div class="label">Both clinics, monthly</div><div class="value" id="o-t">$0</div><div class="delta" id="o-m" style="color:var(--taupe)">0 members</div></div>
+        <div class="kpi"><div class="label">Per year</div><div class="value" id="o-y">$0</div><div class="delta muted">before product sales</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  var tt;
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove("show"); }, 2600); }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-AU"); }
+
+  var TIERS = [
+    { id: "glow", name: "Glow", price: 119, color: "#d9c3a5", members: 40, tag: "",
+      perks: ["One LED therapy or Clinical Peel each month", "10% off skincare products", "Member only offers", "Pause any time"],
+      worth: "A Clinical Peel and LED is $220 on its own" },
+    { id: "radiance", name: "Radiance", price: 189, color: "#b8925a", members: 30, tag: "Most popular",
+      perks: ["One Bright & Tight or Diamond Polar RF each month", "15% off skincare products", "Member only offers", "Pause any time"],
+      worth: "Bright & Tight is $295 on its own" },
+    { id: "lux", name: "Lux", price: 289, color: "#7a6455", members: 12, tag: "",
+      perks: ["One premium treatment each month, such as skin needling", "Priority booking and waitlist first", "15% off skincare products", "Pause any time"],
+      worth: "Skin needling is $330 on its own" }
+  ];
+
+  $("tiers").innerHTML = TIERS.map(function (t) {
+    return '<div class="card tier' + (t.tag ? " feat" : "") + '">' + (t.tag ? '<span class="badge gold pop">' + t.tag + '</span>' : "") +
+      '<h2 style="margin:0">' + t.name + '</h2><div class="price">$' + t.price + '<small> a month</small></div>' +
+      '<div class="value-note">' + t.worth + '</div><ul>' + t.perks.map(function (p) { return "<li>" + p.replace("&", "&amp;") + "</li>"; }).join("") + '</ul>' +
+      '<button class="btn' + (t.tag ? " gold" : "") + ' block" data-join="' + t.name + '">Join ' + t.name + '</button></div>';
+  }).join("");
+  document.querySelectorAll("[data-join]").forEach(function (b) {
+    b.onclick = function () { toast(b.dataset.join + " sign up opens here, with card details taken securely in the live version"); };
+  });
+
+  // Member view
+  var credit = 1, paused = false;
+  $("use").onclick = function () {
+    if (paused) { toast("Membership is paused. Resume to use credits."); return; }
+    if (!credit) { toast("Credit used. Your next one arrives on 1 Dec."); return; }
+    credit = 0;
+    $("cred-txt").textContent = "0 of 1 left";
+    $("credits").innerHTML = '<span class="used"></span>';
+    toast("Credit applied. It covers your next Bright & Tight or Diamond Polar booking.");
+  };
+  $("pause").onclick = function () {
+    if (paused) {
+      paused = false;
+      $("m-status").textContent = "Active"; $("m-status").className = "badge ok";
+      $("bill").textContent = "Mon 1 Dec, $189";
+      this.textContent = "Pause membership";
+      toast("Welcome back. Membership resumed.");
+      return;
+    }
+    $("pause-box").classList.toggle("hidden");
+  };
+  document.querySelectorAll(".pause-opts button").forEach(function (b) {
+    b.onclick = function () {
+      var m = +b.dataset.m;
+      var months = ["January", "February", "March"];
+      paused = true;
+      $("pause-box").classList.add("hidden");
+      $("m-status").textContent = "Paused until 1 " + months[m - 1]; $("m-status").className = "badge warn";
+      $("bill").textContent = "Paused. Billing restarts 1 " + months[m - 1] + " 2027";
+      $("pause").textContent = "Resume membership";
+      toast("Paused for " + m + (m === 1 ? " month" : " months") + ". No charge until then.");
+    };
+  });
+  $("change").onclick = function () { toast("Upgrade or downgrade takes effect from the next billing date"); };
+
+  // Projector
+  $("sliders").innerHTML = TIERS.map(function (t) {
+    return '<div class="slider-row"><span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:' + t.color + ';margin-right:6px"></i>' + t.name + ' members</span>' +
+      '<input type="range" min="0" max="200" value="' + t.members + '" data-t="' + t.id + '"><output id="out-' + t.id + '">' + t.members + '</output></div>';
+  }).join("");
+  function calc() {
+    var total = 0, count = 0, parts = [];
+    TIERS.forEach(function (t) {
+      var n = +document.querySelector('[data-t="' + t.id + '"]').value;
+      $("out-" + t.id).textContent = n;
+      total += n * t.price; count += n;
+      parts.push([t, n * t.price]);
+    });
+    var sp = +$("split").value / 100;
+    $("split-out").textContent = Math.round(sp * 100) + "%";
+    $("o-b").textContent = money(total * sp);
+    $("o-l").textContent = money(total * (1 - sp));
+    $("o-t").textContent = money(total);
+    $("o-y").textContent = money(total * 12);
+    $("o-m").textContent = count + " members";
+    $("stack").innerHTML = parts.map(function (p) { return '<span style="width:' + (total ? p[1] / total * 100 : 0) + '%;background:' + p[0].color + '"></span>'; }).join("");
+  }
+  document.querySelectorAll("#sliders input, #split").forEach(function (i) { i.addEventListener("input", calc); });
+  calc();
+})();
+</script>
+</body>
+</html>

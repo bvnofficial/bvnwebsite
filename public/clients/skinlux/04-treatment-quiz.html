@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Treatment finder quiz | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .quiz { max-width: 1000px; margin: 0 auto; }
+  .site-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius) var(--radius) 0 0; }
+  .site-top .lg { font-family: var(--serif); font-size: 22px; letter-spacing: 3px; }
+  .qbox { background: var(--white); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 var(--radius) var(--radius); box-shadow: var(--shadow); padding: 34px 40px 30px; min-height: 440px; }
+  @media (max-width: 700px) { .qbox { padding: 24px 18px; } }
+  .steps { display: flex; gap: 6px; margin-bottom: 24px; }
+  .steps span { flex: 1; height: 4px; border-radius: 99px; background: var(--sand); transition: background .3s; }
+  .steps span.on { background: var(--gold); }
+  .q-eyebrow { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+  .q-title { font-size: 32px; margin: 4px 0 6px; }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
+  .opts .chip { padding: 9px 15px; font-size: 14px; text-transform: capitalize; }
+  .big-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0 8px; }
+  @media (max-width: 700px) { .big-opts { grid-template-columns: 1fr; } }
+  .opt { border: 1.5px solid var(--line); border-radius: 14px; padding: 18px; cursor: pointer; background: var(--white); text-align: left; font: inherit; color: inherit; transition: all .15s; }
+  .opt:hover { border-color: var(--taupe); }
+  .opt.on { border-color: var(--ink); background: var(--cream); box-shadow: inset 0 0 0 1px var(--ink); }
+  .opt b { display: block; font-family: var(--serif); font-size: 21px; }
+  .opt span { font-size: 13px; color: var(--muted); }
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; }
+  .err { color: var(--bad); font-size: 13px; min-height: 18px; }
+
+  .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+  @media (max-width: 800px) { .results { grid-template-columns: 1fr; } }
+  .res { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; background: var(--cream); animation: up .4s ease-out both; }
+  .res:nth-child(2) { animation-delay: .1s; } .res:nth-child(3) { animation-delay: .2s; }
+  @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .res .rank { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); }
+  .res h3 { margin: 2px 0 6px; }
+  .res .why { font-size: 13px; margin-bottom: 10px; }
+  .res dl { display: grid; grid-template-columns: 70px 1fr; gap: 4px 8px; font-size: 13px; margin: 0 0 14px; }
+  .res dt { color: var(--muted); }
+  .res dd { margin: 0; }
+  .res .btn { margin-top: auto; }
+
+  .plan { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 10px; align-items: start; }
+  @media (max-width: 800px) { .plan { grid-template-columns: 1fr; } }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; font-size: 13px; margin-top: 14px; cursor: pointer; }
+  .consent input { width: 18px; height: 18px; margin-top: 2px; flex: 0 0 auto; }
+  .ghl { border: 1px solid #d5dbe5; border-radius: 14px; background: #fbfcfe; overflow: hidden; font-size: 14px; animation: up .4s ease-out both; }
+  .ghl-head { background: #155eef; color: #fff; padding: 10px 14px; font-size: 12px; font-weight: 600; letter-spacing: .5px; display: flex; justify-content: space-between; }
+  .ghl-body { padding: 14px; }
+  .ghl .who { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+  .ghl .av { width: 44px; height: 44px; border-radius: 99px; background: #e0e9ff; color: #155eef; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .ghl table td { padding: 6px 4px; font-size: 13px; }
+  .ghl table td:first-child { color: var(--muted); width: 110px; }
+  .ghl .tg { display: inline-block; background: #eef2ff; color: #3538cd; border-radius: 6px; padding: 2px 8px; font-size: 12px; margin: 0 4px 4px 0; font-weight: 600; }
+  .ghl .wf { margin-top: 10px; font-size: 13px; }
+  .ghl .wf div { padding: 6px 0; border-top: 1px dashed #d5dbe5; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">4 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>What does my skin need?</h1>
+    <p>A short quiz on the website that matches visitors to the right treatments, then captures them as a tagged lead with their plan, so they don't leave the site unsure.</p>
+    <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+  </div>
+
+  <div class="quiz">
+    <div class="site-top"><span class="lg">SKINLUX</span><small>Treatment finder, about 1 minute</small></div>
+    <div class="qbox">
+      <div class="steps" id="steps"><span></span><span></span><span></span><span></span><span></span></div>
+
+      <div class="qstep" data-step="0">
+        <div class="q-eyebrow">Step 1 of 4</div>
+        <h2 class="q-title">What would you like to work on?</h2>
+        <p class="muted">Choose as many as you like.</p>
+        <div class="opts" id="concerns"></div>
+      </div>
+
+      <div class="qstep hidden" data-step="1">
+        <div class="q-eyebrow">Step 2 of 4</div>
+        <h2 class="q-title">Which area?</h2>
+        <p class="muted">Choose one or more.</p>
+        <div class="big-opts" data-name="area" data-multi="1">
+          <button class="opt" data-v="face"><b>Face</b><span>Face, neck and chest</span></button>
+          <button class="opt" data-v="body"><b>Body</b><span>Tummy, thighs, arms, skin spots</span></button>
+          <button class="opt" data-v="hair"><b>Hair</b><span>Hair removal or hair growth</span></button>
+        </div>
+      </div>
+
+      <div class="qstep hidden" data-step="2">
+        <div class="q-eyebrow">Step 3 of 4</div>
+        <h2 class="q-title">How much downtime is OK?</h2>
+        <p class="muted">Downtime means redness, flaking or swelling while your skin heals.</p>
+        <div class="big-opts" data-name="downtime">
+          <button class="opt" data-v="0"><b>None</b><span>I need to look normal straight after</span></button>
+          <button class="opt" data-v="1"><b>A day or two</b><span>Some redness is fine</span></button>
+          <button class="opt" data-v="2"><b>Happy to have some</b><span>Results matter most</span></button>
+        </div>
+      </div>
+
+      <div class="qstep hidden" data-step="3">
+        <div class="q-eyebrow">Step 4 of 4</div>
+        <h2 class="q-title">Which clinic suits you?</h2>
+        <p class="muted">Both clinics offer the same care and the same team standards.</p>
+        <div class="big-opts" data-name="clinic">
+          <button class="opt" data-v="booragoon"><b>Booragoon</b><span>Next to Garden City, free parking</span></button>
+          <button class="opt" data-v="leederville"><b>Leederville</b><span>316 Vincent St</span></button>
+          <button class="opt" data-v="either"><b>Either</b><span>Whichever has the time I want</span></button>
+        </div>
+      </div>
+
+      <div class="qstep hidden" data-step="4">
+        <div class="q-eyebrow">Your results</div>
+        <h2 class="q-title">Your top matches</h2>
+        <p class="muted" id="res-sub"></p>
+        <div class="results" id="results"></div>
+        <div class="plan">
+          <form class="card soft" id="plan-form" novalidate>
+            <h3>Send me my plan</h3>
+            <p style="font-size:14px">We'll email your matches with prices, what to expect and how to prepare.</p>
+            <label for="f-name">First name</label><input id="f-name" placeholder="First name" value="">
+            <label for="f-email">Email</label><input id="f-email" type="email" placeholder="you@example.com">
+            <label for="f-mobile">Mobile</label><input id="f-mobile" type="tel" placeholder="04xx xxx xxx">
+            <label class="consent"><input type="checkbox" id="f-consent"><span>Yes, Skinlux can send me skin tips and offers by email and SMS. I can unsubscribe any time.</span></label>
+            <div class="err" id="f-err"></div>
+            <button class="btn block" type="submit" style="margin-top:6px">Send my plan</button>
+            <button class="btn ghost sm" type="button" id="fill" style="margin-top:8px">Fill sample details</button>
+          </form>
+          <div id="ghl-wrap">
+            <div class="card" style="box-shadow:none;border-style:dashed;text-align:center;color:var(--muted);padding:40px 20px">
+              <b style="color:var(--ink)">What the clinic sees</b><br>Submit the form to see the new contact appear in GoHighLevel.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav" id="nav">
+        <button class="btn ghost" id="back">Back</button>
+        <span class="err" id="step-err"></span>
+        <button class="btn" id="next">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  var tt;
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove("show"); }, 2400); }
+  function name(t) { return t.injectable ? t.name.replace(/\s*\(.*\)\s*/, "") : t.name; }
+  function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
+  var AREA = { hifu: ["face"], carbon: ["face"], relaxers: ["face"], rejuran: ["face"], fillers: ["face"], "ipl-skin": ["face"], needling: ["face"], bright: ["face"], "clinical-peel": ["face"], "advanced-peel": ["face"], "nano-rf": ["face"], diamond: ["face"], electro: ["face", "body"], exogrow: ["hair"], led: ["face"], body: ["body"], plasma: ["face"], "ipl-hair": ["hair", "body"] };
+  var DOWN = { hifu: 0, carbon: 0, relaxers: 0, rejuran: 1, fillers: 0, "ipl-skin": 1, needling: 1, bright: 0, "clinical-peel": 0, "advanced-peel": 2, "nano-rf": 1, diamond: 0, electro: 2, exogrow: 0, led: 0, body: 0, plasma: 2, "ipl-hair": 0 };
+
+  // Concern list from the data, deduplicated
+  var all = [];
+  S.treatments.forEach(function (t) { t.concerns.forEach(function (c) { if (c !== "no downtime" && all.indexOf(c) < 0) all.push(c); }); });
+  var order = ["acne scars", "acne", "pigmentation", "melasma", "rosacea", "redness", "fine lines", "wrinkles", "ageing", "sagging", "jawline", "double chin", "pores", "congestion", "texture", "dull skin", "tightening", "hair removal", "hair loss", "stubborn fat", "cellulite"];
+  all.sort(function (a, b) { var x = order.indexOf(a), y = order.indexOf(b); return (x < 0 ? 99 : x) - (y < 0 ? 99 : y) || a.localeCompare(b); });
+  $("concerns").innerHTML = all.map(function (c) { return '<span class="chip" data-v="' + c + '">' + c + '</span>'; }).join("");
+
+  var A = { concerns: [], area: [], downtime: null, clinic: null };
+  document.querySelectorAll("#concerns .chip").forEach(function (c) {
+    c.onclick = function () {
+      c.classList.toggle("on");
+      var v = c.dataset.v, i = A.concerns.indexOf(v);
+      if (i > -1) A.concerns.splice(i, 1); else A.concerns.push(v);
+      $("step-err").textContent = "";
+    };
+  });
+  document.querySelectorAll(".big-opts").forEach(function (g) {
+    var key = g.dataset.name, multi = !!g.dataset.multi;
+    g.querySelectorAll(".opt").forEach(function (o) {
+      o.onclick = function () {
+        $("step-err").textContent = "";
+        if (multi) {
+          o.classList.toggle("on");
+          A[key] = Array.prototype.filter.call(g.querySelectorAll(".opt.on"), function () { return true; }).map(function (x) { return x.dataset.v; });
+        } else {
+          g.querySelectorAll(".opt").forEach(function (x) { x.classList.toggle("on", x === o); });
+          A[key] = o.dataset.v;
+          setTimeout(function () { go(cur + 1); }, 250);
+        }
+      };
+    });
+  });
+
+  var cur = 0;
+  function go(n) {
+    if (n > cur) {
+      if (cur === 0 && !A.concerns.length) { $("step-err").textContent = "Choose at least one."; return; }
+      if (cur === 1 && !A.area.length) { $("step-err").textContent = "Choose at least one area."; return; }
+      if (cur === 2 && A.downtime === null) { $("step-err").textContent = "Choose one."; return; }
+      if (cur === 3 && !A.clinic) { $("step-err").textContent = "Choose a clinic."; return; }
+    }
+    cur = Math.max(0, Math.min(4, n));
+    document.querySelectorAll(".qstep").forEach(function (s) { s.classList.toggle("hidden", +s.dataset.step !== cur); });
+    document.querySelectorAll("#steps span").forEach(function (s, i) { s.classList.toggle("on", i <= cur); });
+    $("back").style.visibility = cur === 0 ? "hidden" : "visible";
+    $("next").textContent = cur === 3 ? "See my results" : "Next";
+    $("next").style.display = cur === 4 ? "none" : "";
+    $("back").textContent = cur === 4 ? "Change my answers" : "Back";
+    if (cur === 4) results();
+  }
+  $("next").onclick = function () { go(cur + 1); };
+  $("back").onclick = function () { go(cur === 4 ? 0 : cur - 1); };
+  go(0);
+
+  var picks = [];
+  function results() {
+    var tol = +A.downtime;
+    var scored = S.treatments.map(function (t) {
+      var hits = t.concerns.filter(function (c) { return A.concerns.indexOf(c) > -1; });
+      var areaOk = AREA[t.id].some(function (a) { return A.area.indexOf(a) > -1; });
+      var score = hits.length * 3 + (areaOk ? 2 : -10) + (DOWN[t.id] <= tol ? 0 : -20) + (t.injectable ? -0.5 : 0);
+      return { t: t, hits: hits, score: score };
+    }).filter(function (x) { return x.hits.length && x.score > 0; })
+      .sort(function (a, b) { return b.score - a.score; });
+    var fallback = A.area.indexOf("face") > -1 || !A.area.length ? ["bright", "led", "diamond"] : A.area.indexOf("body") > -1 ? ["body", "ipl-hair"] : ["ipl-hair", "exogrow"];
+    fallback.forEach(function (id) {
+      if (scored.length < 3 && !scored.some(function (x) { return x.t.id === id; })) {
+        var t = S.treatments.filter(function (x) { return x.id === id; })[0];
+        scored.push({ t: t, hits: [], score: 0 });
+      }
+    });
+    picks = scored.slice(0, 3);
+    var clinicTxt = A.clinic === "either" ? "either clinic" : S.locations[A.clinic].name;
+    $("res-sub").textContent = "Based on " + A.concerns.slice(0, 4).join(", ") + (A.concerns.length > 4 ? " and more" : "") + ", with " + ["no", "a day or two of", "some"][tol] + " downtime, at " + clinicTxt + ".";
+    $("results").innerHTML = picks.map(function (p, i) {
+      var t = p.t;
+      var why = p.hits.length ? "Targets " + p.hits.join(", ") + ". " + t.results : "A gentle place to start. " + t.results;
+      var price = t.injectable ? "Complimentary consultation first. Pricing is given in person." : t.price;
+      var btn = t.injectable ? "Book a free consult" : "Book " + name(t);
+      return '<div class="res"><div class="rank">' + (i === 0 ? "Best match" : "Match " + (i + 1)) + '</div><h3>' + name(t) + '</h3>' +
+        '<div class="why">' + why + '</div><dl><dt>Time</dt><dd>' + t.time + '</dd><dt>Downtime</dt><dd>' + t.downtime + '</dd><dt>' + (t.injectable ? "Next step" : "Price") + '</dt><dd>' + price + '</dd></dl>' +
+        '<a class="btn sm" href="' + S.booking + '" target="_blank" rel="noopener">' + btn + '</a></div>';
+    }).join("");
+  }
+
+  $("fill").onclick = function () { $("f-name").value = "Olivia"; $("f-email").value = "olivia.sample@example.com"; $("f-mobile").value = "0421 555 019"; };
+
+  $("plan-form").onsubmit = function (e) {
+    e.preventDefault();
+    var n = $("f-name").value.trim(), em = $("f-email").value.trim(), mob = $("f-mobile").value.trim(), ok = $("f-consent").checked;
+    if (!n) { $("f-err").textContent = "Please add your first name."; return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { $("f-err").textContent = "Please check your email address."; return; }
+    $("f-err").textContent = "";
+    var tags = ["quiz-lead"];
+    A.concerns.forEach(function (c) { tags.push("concern-" + slug(c)); });
+    A.area.forEach(function (a) { tags.push("area-" + a); });
+    tags.push("downtime-" + ["none", "low", "ok"][+A.downtime]);
+    tags.push("location-" + A.clinic);
+    picks.forEach(function (p) { tags.push("match-" + p.t.id); });
+    if (picks.some(function (p) { return p.t.injectable; })) tags.push("consult-request");
+    tags.push(ok ? "marketing-consent-yes" : "marketing-consent-no");
+    var initials = n.charAt(0).toUpperCase();
+    var flow = [
+      "Now: plan email sent with " + picks.map(function (p) { return name(p.t); }).join(", "),
+      ok ? "Day 2: SMS check in from " + (A.clinic === "leederville" ? "Leederville" : "Booragoon") + " with booking link" : "No marketing SMS or emails, as consent was not given",
+      ok ? "Day 7: email with first visit tips, if not booked" : "Plan email only, which they asked for"
+    ];
+    $("ghl-wrap").innerHTML = '<div class="ghl"><div class="ghl-head"><span>GoHighLevel, new contact</span><span>just now</span></div><div class="ghl-body">' +
+      '<div class="who"><div class="av">' + initials + '</div><div><b></b><br><small>Source: Website treatment quiz</small></div></div>' +
+      '<table><tr><td>Email</td><td class="em"></td></tr><tr><td>Mobile</td><td class="mob"></td></tr><tr><td>Clinic</td><td>' + (A.clinic === "either" ? "Either" : S.locations[A.clinic].name) + '</td></tr>' +
+      '<tr><td>Pipeline</td><td>New leads, Quiz</td></tr><tr><td>Consent</td><td>' + (ok ? '<span class="badge ok">Email and SMS, ticked by client</span>' : '<span class="badge warn">Not given</span>') + '</td></tr></table>' +
+      '<div style="margin-top:10px">' + tags.map(function (t) { return '<span class="tg">' + t + '</span>'; }).join("") + '</div>' +
+      '<div class="wf"><b>Workflow</b>' + flow.map(function (f) { return "<div>" + f + "</div>"; }).join("") + '</div></div></div>';
+    document.querySelector(".ghl .who b").textContent = n;
+    document.querySelector(".ghl .em").textContent = em;
+    document.querySelector(".ghl .mob").textContent = mob || "Not given";
+    toast("Plan sent to " + em);
+  };
+})();
+</script>
+</body>
+</html>

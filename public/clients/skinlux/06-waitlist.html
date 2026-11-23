@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waitlist and slot filler | Skinlux demo</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .split { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } }
+  .day { display: grid; grid-template-columns: 54px repeat(3, 1fr); position: relative; margin-top: 14px; }
+  .day .hd { font-size: 12px; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  .day .hd small { display: block; font-weight: 400; }
+  .times { position: relative; }
+  .times div { height: 52px; font-size: 11px; color: var(--muted); padding-top: 0; transform: translateY(-7px); }
+  .col { position: relative; border-left: 1px solid var(--line); background: repeating-linear-gradient(to bottom, transparent 0, transparent 51px, var(--line) 51px, var(--line) 52px); }
+  .appt { position: absolute; left: 4px; right: 4px; border-radius: 8px; padding: 4px 8px; font-size: 12px; overflow: hidden; background: var(--sand); border-left: 3px solid var(--taupe); line-height: 1.3; transition: all .4s; }
+  .appt b { display: block; font-size: 12px; }
+  .appt.hifu { background: var(--gold-soft); border-left-color: var(--gold); }
+  .appt.inj { background: #efe7f3; border-left-color: #8d6aa3; }
+  .appt.cancel { background: repeating-linear-gradient(45deg, var(--bad-soft), var(--bad-soft) 6px, #fff 6px, #fff 12px); border-left-color: var(--bad); color: var(--bad); }
+  .appt.filled { background: var(--ok-soft); border-left-color: var(--ok); color: var(--ok); box-shadow: 0 0 0 2px var(--ok); }
+  .wl-row { display: flex; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .wl-row:last-child { border-bottom: 0; }
+  .wl-row .av { width: 34px; height: 34px; border-radius: 99px; background: var(--sand); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--mocha); flex: 0 0 auto; }
+  .wl-row .info { flex: 1; min-width: 0; }
+  .wl-row .info b { display: block; font-size: 14px; }
+  .wl-row .info span { font-size: 12px; color: var(--muted); }
+  .wl-row .st { font-size: 12px; text-align: right; min-width: 120px; }
+  .wl-row.win { background: var(--ok-soft); border-radius: 10px; padding-left: 8px; padding-right: 8px; }
+  .smsbox { background: var(--cream); border-radius: 12px; padding: 12px; font-size: 13px; margin-top: 10px; }
+  .smsbox .b { background: #e9e9eb; border-radius: 14px; padding: 8px 11px; margin-bottom: 6px; max-width: 90%; }
+  .smsbox .b.r { background: #0a84ff; color: #fff; margin-left: auto; }
+  .smsbox .lbl { font-size: 11px; color: var(--muted); margin: 6px 0 4px; }
+  .counter .value { color: var(--ok); }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">6 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Waitlist and last minute slot filler</h1>
+    <p>When someone cancels, the clients waiting for that treatment get a text straight away. The first to reply YES gets the spot, and the rest hear it's gone. No phone calls, no empty rooms.</p>
+    <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:20px">
+    <div class="card kpi counter"><div class="label">Revenue saved this month</div><div class="value" id="saved">$6,840</div><div class="delta muted">sample, from refilled cancellations</div></div>
+    <div class="card kpi"><div class="label">Slots refilled</div><div class="value" id="refilled">17</div><div class="delta muted">sample, this month</div></div>
+    <div class="card kpi"><div class="label">Average time to refill</div><div class="value">11 min</div><div class="delta muted">sample</div></div>
+  </div>
+
+  <div class="split">
+    <div class="card">
+      <div class="row between wrap">
+        <div><h3 style="margin:0">Today, Tuesday 25 November</h3><small id="clinic-sub"></small></div>
+        <div class="seg" id="clinic"><button class="on" data-c="booragoon">Booragoon</button><button data-c="leederville">Leederville</button></div>
+      </div>
+      <div class="row wrap" style="margin-top:12px;gap:8px">
+        <button class="btn" id="cancel">Cancel 3pm HIFU</button>
+        <button class="btn ghost sm" id="reset">Reset</button>
+      </div>
+      <div class="day" id="day"></div>
+      <div class="legend"><span><i style="background:var(--gold-soft);border:1px solid var(--gold)"></i>HIFU</span><span><i style="background:#efe7f3;border:1px solid #8d6aa3"></i>Nurse consult or injectables</span><span><i style="background:var(--sand)"></i>Other treatments</span></div>
+    </div>
+
+    <div class="stack">
+      <div class="card">
+        <div class="row between"><h3 style="margin:0">HIFU waitlist</h3><span class="badge gold" id="wl-state">5 waiting</span></div>
+        <small>Clients who asked to hear about earlier HIFU spots at this clinic.</small>
+        <div id="wl" style="margin-top:8px"></div>
+      </div>
+      <div class="card" id="sms-card">
+        <h3 style="margin:0">The messages</h3>
+        <div class="smsbox" id="smsbox"><span class="muted">Cancel the 3pm HIFU to see the texts go out.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  var tt;
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove("show"); }, 2600); }
+
+  var START = 9, END = 18, H = 52;
+  var STAFF = ["Sharon Kim", "Shakira Hewitt", "Nurse Maria"];
+  var DAYS = {
+    booragoon: [
+      [0, 9, 1, "IPL underarms", "Jess T.", ""], [0, 10, 1.5, "Skin needling", "Mia R.", ""], [0, 12, 1, "Carbon Laser", "Hannah L.", ""], [0, 15, 1, "HIFU Glow", "Rachel P.", "hifu", "slot"], [0, 16.5, 1, "Bright & Tight", "Amy C.", ""],
+      [1, 9.5, 1, "Diamond Polar RF", "Kate S.", ""], [1, 11, 1, "IPL Skin Correction", "Lucy N.", ""], [1, 13, 1, "Clinical Peel", "Grace W.", ""], [1, 14.5, 0.5, "LED therapy", "Sophie B.", ""], [1, 16, 1.5, "Nano fractional RF", "Ella M.", ""],
+      [2, 10, 0.5, "Injectables consult", "Zoe H.", "inj"], [2, 11, 0.5, "Nurse review", "Chloe D.", "inj"], [2, 13.5, 1, "Body sculpting", "Tara F.", ""], [2, 15.5, 0.5, "Injectables consult", "Nina K.", "inj"]
+    ],
+    leederville: [
+      [0, 10, 1, "Bright & Tight", "Ava J.", ""], [0, 11.5, 1, "IPL Brazilian", "Isla G.", ""], [0, 13.5, 1, "Clinical Peel", "Ruby O.", ""], [0, 16, 1, "Diamond Polar RF", "Leah V.", ""],
+      [1, 10, 1.5, "Skin needling", "Maya E.", ""], [1, 12.5, 1, "Carbon Laser", "Ivy Q.", ""], [1, 15, 1, "HIFU Glow", "Sienna A.", "hifu", "slot"],
+      [2, 10.5, 0.5, "Injectables consult", "Freya U.", "inj"], [2, 12, 1, "Plasma Fibroblast", "Holly Y.", ""], [2, 14, 0.5, "Nurse review", "Emily Z.", "inj"]
+    ]
+  };
+  var WAIT = {
+    booragoon: [["Priya N.", "Any afternoon, short notice OK"], ["Megan L.", "After 2pm on weekdays"], ["Jasmine K.", "Tuesdays or Thursdays"], ["Olivia R.", "Any time, 30 min away"], ["Bec T.", "From 3pm"]],
+    leederville: [["Charlotte M.", "Afternoons"], ["Sarah W.", "Any weekday"], ["Lily P.", "After 2pm"], ["Hayley D.", "Short notice OK"], ["Anna S.", "Tuesdays"]]
+  };
+  var WIN = 0; // index of the client who replies first
+  var clinic = "booragoon", timers = [], running = false, saved = 6840, refilled = 17;
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+  function fmt(h) { var hr = Math.floor(h), m = Math.round((h - hr) * 60); return (hr % 12 || 12) + (m ? ":" + String(m).padStart(2, "0") : "") + (hr < 12 ? "am" : "pm"); }
+  function money(n) { return "$" + n.toLocaleString("en-AU"); }
+
+  function drawDay() {
+    var times = '<div class="times">' + Array.from({ length: END - START }, function (_, i) { return "<div>" + fmt(START + i) + "</div>"; }).join("") + "</div>";
+    var head = '<div></div>' + STAFF.map(function (s) { var role = S.team.filter(function (t) { return t.name === s; })[0]; return '<div class="hd">' + s + '<small class="muted">' + role.role.split(",")[0] + '</small></div>'; }).join("");
+    var cols = STAFF.map(function (_, ci) {
+      return '<div class="col" style="height:' + (END - START) * H + 'px">' + DAYS[clinic].filter(function (a) { return a[0] === ci; }).map(function (a) {
+        return '<div class="appt ' + a[5] + '"' + (a[6] ? ' id="slot"' : "") + ' style="top:' + ((a[1] - START) * H + 2) + 'px;height:' + (a[2] * H - 4) + 'px"><b>' + fmt(a[1]) + " " + a[3] + '</b><span>' + a[4] + '</span></div>';
+      }).join("") + "</div>";
+    }).join("");
+    $("day").innerHTML = head + times + cols;
+    $("clinic-sub").textContent = S.locations[clinic].name + " clinic, " + DAYS[clinic].length + " appointments";
+  }
+  function drawWait() {
+    $("wl").innerHTML = WAIT[clinic].map(function (w, i) {
+      return '<div class="wl-row" id="w' + i + '"><div class="av">' + w[0].charAt(0) + '</div><div class="info"><b>' + w[0] + '</b><span>' + w[1] + '</span></div><div class="st muted">Waiting</div></div>';
+    }).join("");
+    $("wl-state").textContent = "5 waiting"; $("wl-state").className = "badge gold";
+  }
+  function setSt(i, html) { document.querySelector("#w" + i + " .st").innerHTML = html; }
+  function bubble(cls, text, label) {
+    var box = $("smsbox");
+    if (label) { var l = document.createElement("div"); l.className = "lbl"; l.textContent = label; box.appendChild(l); }
+    var b = document.createElement("div"); b.className = "b " + cls; b.textContent = text; box.appendChild(b);
+  }
+  function reset() {
+    timers.forEach(clearTimeout); timers = []; running = false;
+    drawDay(); drawWait();
+    $("smsbox").innerHTML = '<span class="muted">Cancel the 3pm HIFU to see the texts go out.</span>';
+    $("cancel").disabled = false;
+  }
+
+  function run() {
+    if (running) return;
+    running = true; $("cancel").disabled = true;
+    var slot = $("slot"), W = WAIT[clinic], who = W[WIN][0];
+    var staff = clinic === "booragoon" ? "Sharon" : "Shakira";
+    slot.className = "appt cancel";
+    slot.innerHTML = "<b>3pm HIFU Glow</b><span>Cancelled by client by SMS, 2:02pm</span>";
+    toast("3pm HIFU cancelled. Texting the waitlist.");
+    $("wl-state").textContent = "Texting"; $("wl-state").className = "badge warn";
+    $("smsbox").innerHTML = "";
+    later(function () {
+      bubble("", "Hi {first name}, a 3pm HIFU spot just opened today at Skinlux " + S.locations[clinic].name + " with " + staff + ". Reply YES to grab it. First reply gets it.", "Sent to all 5 at 2:03pm");
+    }, 700);
+    W.forEach(function (w, i) { later(function () { setSt(i, '<span class="badge gold">SMS sent 2:03pm</span>'); }, 900 + i * 350); });
+    later(function () {
+      setSt(WIN, '<span class="badge ok">Replied YES 2:05pm</span>');
+      bubble("r", "YES please!", who + " replied at 2:05pm");
+    }, 3600);
+    later(function () {
+      document.getElementById("w" + WIN).classList.add("win");
+      bubble("", "You're booked, " + who.split(" ")[0] + ". HIFU today at 3pm with " + staff + ". See you soon!", "Confirmation to " + who);
+      slot.className = "appt hifu filled";
+      slot.innerHTML = "<b>3pm HIFU Glow</b><span>" + who + ", from the waitlist</span>";
+      saved += 450; refilled += 1;
+      $("saved").textContent = money(saved); $("refilled").textContent = refilled;
+      $("wl-state").textContent = "Slot filled"; $("wl-state").className = "badge ok";
+      toast("Slot refilled by " + who + ". $450 saved.");
+    }, 5000);
+    later(function () {
+      setSt(3, '<span class="badge warn">Replied YES 2:06pm</span>');
+    }, 5800);
+    later(function () {
+      bubble("", "Thanks for replying. That spot's gone, we'll keep you posted.", "Sent to the other 4");
+      W.forEach(function (w, i) { if (i !== WIN) setSt(i, '<span class="muted">Told it\'s gone, still on list</span>'); });
+    }, 6800);
+  }
+
+  document.querySelectorAll("#clinic button").forEach(function (b) {
+    b.onclick = function () { clinic = b.dataset.c; document.querySelectorAll("#clinic button").forEach(function (x) { x.classList.toggle("on", x === b); }); reset(); };
+  });
+  $("cancel").onclick = run;
+  $("reset").onclick = reset;
+  reset();
+})();
+</script>
+</body>
+</html>

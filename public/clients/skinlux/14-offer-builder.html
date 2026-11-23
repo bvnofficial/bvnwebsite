@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offer page builder | Skinlux app suite</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/data.js"></script>
+<style>
+  .templates { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 16px 0; }
+  .templates .lbl { font-size: 13px; font-weight: 600; margin-right: 4px; }
+  .layout { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr); gap: 18px; align-items: start; }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+  .form-card label:first-child { margin-top: 0; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .checks label { display: flex; gap: 8px; align-items: center; font-weight: 400; margin: 6px 0; cursor: pointer; }
+  .checks input { width: auto; accent-color: var(--gold); }
+  .warn-box { margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13px; background: var(--bad-soft); color: var(--bad); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .hint.bad { color: var(--bad); }
+  .headline-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .live-tag { margin-top: 12px; font-size: 13px; padding: 10px 12px; background: var(--ok-soft); color: var(--ok); border-radius: 10px; }
+  .live-tag a { color: var(--ok); font-weight: 600; }
+
+  /* Preview frame */
+  .preview-wrap { position: sticky; top: 60px; }
+  .preview-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .browser { background: var(--white); border-radius: 14px; box-shadow: 0 16px 50px rgba(43,36,32,0.16); overflow: hidden; border: 1px solid var(--line); margin: 0 auto; transition: max-width 0.35s ease; max-width: 100%; }
+  .browser.mobile { max-width: 380px; }
+  .chrome { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--sand); }
+  .chrome i { width: 10px; height: 10px; border-radius: 99px; background: var(--taupe); opacity: 0.6; display: inline-block; }
+  .chrome .url { flex: 1; background: var(--white); border-radius: 99px; padding: 5px 12px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lp { max-height: 760px; overflow-y: auto; background: var(--cream); }
+  .lp-nav { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; background: var(--white); border-bottom: 1px solid var(--line); }
+  .lp-nav .logo { font-family: var(--serif); font-size: 22px; letter-spacing: 3px; }
+  .lp-nav .logo small { display: block; font-family: var(--sans); font-size: 9px; letter-spacing: 2.5px; color: var(--muted); }
+  .lp-hero { padding: 34px 26px 28px; background: linear-gradient(160deg, var(--ink) 0%, #4a3c33 100%); color: var(--cream); }
+  .lp-hero .eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+  .lp-hero h2 { font-size: 36px; line-height: 1.1; margin: 10px 0 8px; color: var(--cream); }
+  .lp-hero .sub { opacity: 0.8; font-size: 15px; max-width: 520px; }
+  .price-row { display: flex; align-items: baseline; gap: 14px; margin: 18px 0 6px; flex-wrap: wrap; }
+  .price-row .now { font-family: var(--serif); font-size: 54px; font-weight: 600; color: var(--gold); line-height: 1; }
+  .price-row .was { font-size: 16px; text-decoration: line-through; opacity: 0.6; }
+  .price-row .save { background: var(--gold); color: var(--ink); border-radius: 99px; padding: 3px 10px; font-size: 12px; font-weight: 700; }
+  .spots-box { margin-top: 16px; background: rgba(247,242,236,0.08); border: 1px solid rgba(247,242,236,0.15); border-radius: 12px; padding: 12px 14px; max-width: 420px; }
+  .spots-box .t { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 7px; }
+  .spots-box .t b { color: var(--gold); font-size: 18px; font-family: var(--serif); }
+  .spots-box .bar { background: rgba(247,242,236,0.15); height: 9px; }
+  .spots-box .bar span { transition: width 0.5s ease; }
+  .lp-book { display: inline-flex; margin-top: 18px; padding: 13px 26px; background: var(--gold); color: var(--ink); border-radius: 99px; font-weight: 700; text-decoration: none; font-size: 15px; }
+  .lp-book:hover { background: #c9a36b; }
+  .lp-book.off { background: var(--taupe); pointer-events: none; }
+  .lp-section { padding: 22px 26px; border-bottom: 1px solid var(--line); background: var(--white); }
+  .lp-section:nth-child(even) { background: var(--cream); }
+  .lp-section h3 { font-size: 22px; margin-bottom: 10px; }
+  .incl { list-style: none; padding: 0; margin: 0; }
+  .incl li { position: relative; padding: 5px 0 5px 28px; font-size: 14px; }
+  .incl li::before { content: ""; position: absolute; left: 0; top: 7px; width: 18px; height: 18px; border-radius: 99px; background: var(--gold-soft); }
+  .incl li::after { content: ""; position: absolute; left: 6px; top: 10px; width: 5px; height: 9px; border: solid var(--gold); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .browser.mobile .facts { grid-template-columns: 1fr; }
+  .browser.mobile .lp-hero h2 { font-size: 28px; }
+  .browser.mobile .price-row .now { font-size: 44px; }
+  .fact { background: var(--cream); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+  .fact b { display: block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .concern { display: inline-block; padding: 5px 11px; border-radius: 99px; background: var(--gold-soft); color: var(--mocha); font-size: 13px; margin: 0 6px 6px 0; }
+  .smallprint { padding: 18px 26px 26px; font-size: 11.5px; color: var(--muted); background: var(--cream); }
+  .blocked { padding: 60px 30px; text-align: center; background: var(--cream); }
+  .blocked .ic { width: 54px; height: 54px; border-radius: 99px; background: var(--bad-soft); color: var(--bad); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX</a><span>App suite demo</span><span class="spacer"></span><span class="tag">14 of 15</span><a href="index.html">All apps</a></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1>Offer page builder</h1>
+    <p>Make the monthly 30 spots offer pages from a template in minutes, with a spots left counter that updates from Timely bookings.</p>
+  </div>
+  <div class="note">Demo with sample data. In the live version this connects to Timely and GoHighLevel.</div>
+
+  <div class="templates" id="templates">
+    <span class="lbl">Load a current offer:</span>
+    <button class="chip" data-t="hifu">HIFU $174</button>
+    <button class="chip" data-t="carbon">Carbon laser $247</button>
+    <button class="chip" data-t="diamond">Diamond Polar $97</button>
+    <button class="chip" data-t="ems">EMS $147</button>
+    <button class="chip" data-t="venus">Venus $197</button>
+  </div>
+
+  <div class="layout">
+    <div class="card form-card">
+      <label for="fTreat">Treatment</label>
+      <select id="fTreat"></select>
+      <div class="warn-box hidden" id="injWarn"><b>Offers are not allowed for injectables.</b> AHPRA's cosmetic guidelines ban discounts, prices and limited time deals for wrinkle relaxers, fillers and other injectables. Promote a complimentary consultation with the nurse instead.</div>
+
+      <label for="fName">Offer name</label>
+      <input id="fName" placeholder="For example: Double chin HIFU">
+
+      <div class="three">
+        <div><label for="fPrice">Offer price</label><input id="fPrice" type="number" min="0" step="1"></div>
+        <div><label for="fUsual">Usual price</label><input id="fUsual" type="number" min="0" step="1"></div>
+        <div><label for="fSpots">Spots this month</label><input id="fSpots" type="number" min="1" max="200" step="1"></div>
+      </div>
+      <div class="hint" id="priceHint"></div>
+
+      <div class="two">
+        <div><label for="fEnd">End date</label><input id="fEnd" type="date"></div>
+        <div><label for="fClinic">Clinic</label>
+          <select id="fClinic"><option value="both">Both clinics</option><option value="booragoon">Booragoon</option><option value="leederville">Leederville</option></select>
+        </div>
+      </div>
+
+      <label>What's included</label>
+      <div class="checks" id="fIncl"></div>
+
+      <label for="fHead">Headline</label>
+      <div class="headline-row">
+        <input id="fHead">
+        <button class="btn sm ghost" id="suggestBtn" type="button">Suggest</button>
+      </div>
+      <div class="hint">Suggested from the treatment. No "best" or "leading" claims, so it passes the compliance checker.</div>
+
+      <label for="fSub">Short description</label>
+      <textarea id="fSub" style="min-height:70px"></textarea>
+
+      <div class="actions">
+        <button class="btn" id="simBtn">Simulate a booking</button>
+        <button class="btn gold" id="pubBtn">Publish</button>
+        <button class="btn ghost" id="resetBtn">Reset spots</button>
+      </div>
+      <div class="live-tag hidden" id="liveTag"></div>
+    </div>
+
+    <div class="preview-wrap">
+      <div class="preview-top">
+        <b>Live preview</b>
+        <div class="seg" id="segDevice"><button data-v="desktop" class="on">Desktop</button><button data-v="mobile">Mobile</button></div>
+      </div>
+      <div class="browser" id="browser">
+        <div class="chrome"><i></i><i></i><i></i><div class="url" id="pvUrl">skinluxfaceandbody.com.au/offers/</div></div>
+        <div class="lp" id="lp"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function tById(id) { return S.treatments.filter(function (t) { return t.id === id; })[0]; }
+  var TODAY = new Date(2026, 10, 22);
+
+  var INCLUDES = [
+    { id: "consult", label: "Advanced skin consult with the Meicet skin analyser" },
+    { id: "led", label: "LED therapy add on" },
+    { id: "progress", label: "Progress consult at 3 months" },
+    { id: "spf", label: "Take home Mesoestetic SPF 50 sample" },
+    { id: "checkin", label: "Aftercare check ins by text" }
+  ];
+
+  var HEADLINES = {
+    hifu: ["Say goodbye to the double chin. No needles, no downtime.", "A lifted jawline in under an hour", "Lift and tighten with zero downtime"],
+    carbon: ["The Hollywood glow in about an hour", "Clearer, smoother skin from your first session", "Clear congestion and refine pores, no downtime"],
+    diamond: ["Firmer, brighter skin starts with your consult", "Tighten and lift with Diamond Polar RF", "Smooth early fine lines, no downtime"],
+    body: ["Tone and sculpt while you lie back", "A smoother contour with no downtime", "Sculpt stubborn areas, then get on with your day"]
+  };
+
+  var TEMPLATES = {
+    hifu: { treat: "hifu", name: "Double chin HIFU", price: 174, usual: 450, spots: 30, booked: 18, clinic: "both", incl: ["consult", "progress", "checkin"],
+      head: 0, sub: "Lift and define the area under the chin with HIFU ultrasound. Results build over 8 to 12 weeks and last 9 to 12 months." },
+    carbon: { treat: "carbon", name: "Hollywood carbon laser peel", price: 247, usual: 460, spots: 30, booked: 23, clinic: "both", incl: ["consult", "led", "progress"],
+      head: 0, sub: "A carbon laser facial with LED and a skin consult. Great for congestion, pores and uneven tone." },
+    diamond: { treat: "diamond", name: "Diamond Polar RF with skin consult", price: 97, usual: 195, spots: 30, booked: 26, clinic: "both", incl: ["consult", "progress"],
+      head: 0, sub: "Your advanced skin consult plus a full face Diamond Polar RF session to firm and tighten." },
+    ems: { treat: "body", name: "EMS LUX body sculpting", price: 147, usual: 249, spots: 30, booked: 12, clinic: "booragoon", incl: ["consult", "progress"],
+      head: 0, sub: "One area of EMS LUX muscle toning. 30 minutes, no downtime, some muscle soreness after." },
+    venus: { treat: "body", name: "Venus Legacy stomach contouring", price: 197, usual: 280, spots: 30, booked: 9, clinic: "both", incl: ["consult", "progress"],
+      head: 1, sub: "Venus Legacy on the stomach to smooth and contour. A course of weekly sessions gives the best result." }
+  };
+
+  var NAMES = ["Sarah K.", "Priya M.", "Jess T.", "Amelia R.", "Hannah W.", "Kate L.", "Mei C.", "Rachel D.", "Tash B.", "Laura P."];
+  var state = { booked: 18, headIdx: 0, published: false, device: "desktop", simCount: 0 };
+
+  // Build the treatment select: non injectables first, injectables listed but blocked
+  (function buildSelect() {
+    var groups = {}, inj = [];
+    S.treatments.forEach(function (t) {
+      if (t.injectable) { inj.push(t); return; }
+      (groups[t.group] = groups[t.group] || []).push(t);
+    });
+    var html = Object.keys(groups).map(function (g) {
+      return '<optgroup label="' + g + '">' + groups[g].map(function (t) { return '<option value="' + t.id + '">' + t.name + "</option>"; }).join("") + "</optgroup>";
+    }).join("");
+    html += '<optgroup label="Cosmetic injectables (offers not allowed)">' + inj.map(function (t) { return '<option value="' + t.id + '">' + t.name + "</option>"; }).join("") + "</optgroup>";
+    $("fTreat").innerHTML = html;
+    $("fIncl").innerHTML = INCLUDES.map(function (i) { return '<label><input type="checkbox" value="' + i.id + '"> ' + i.label + "</label>"; }).join("");
+  })();
+
+  function inclSelected() {
+    return Array.prototype.filter.call($("fIncl").querySelectorAll("input"), function (c) { return c.checked; }).map(function (c) { return c.value; });
+  }
+  function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+  function fmtDate(v) {
+    if (!v) return "the end of the month";
+    var d = new Date(v + "T00:00:00");
+    return d.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+  }
+  function daysLeft(v) {
+    if (!v) return null;
+    var d = new Date(v + "T00:00:00");
+    return Math.round((d - TODAY) / 86400000);
+  }
+  function suggestions(id) { return HEADLINES[id] || [tById(id).name + " this month, from Skinlux", "Book your " + tById(id).name + " with Skinlux"]; }
+
+  function loadTemplate(key) {
+    var t = TEMPLATES[key];
+    $("fTreat").value = t.treat; $("fName").value = t.name; $("fPrice").value = t.price; $("fUsual").value = t.usual;
+    $("fSpots").value = t.spots; $("fClinic").value = t.clinic; $("fEnd").value = "2026-11-30"; $("fSub").value = t.sub;
+    Array.prototype.forEach.call($("fIncl").querySelectorAll("input"), function (c) { c.checked = t.incl.indexOf(c.value) > -1; });
+    state.headIdx = t.head; $("fHead").value = suggestions(t.treat)[t.head];
+    state.booked = t.booked; state.published = false; $("liveTag").classList.add("hidden");
+    Array.prototype.forEach.call(document.querySelectorAll("#templates .chip"), function (c) { c.classList.toggle("on", c.getAttribute("data-t") === key); });
+    render();
+  }
+
+  function render() {
+    var t = tById($("fTreat").value);
+    var isInj = !!t.injectable;
+    $("injWarn").classList.toggle("hidden", !isInj);
+    ["fPrice", "fUsual", "fSpots", "simBtn", "pubBtn"].forEach(function (id) { $(id).disabled = isInj; });
+    var name = $("fName").value.trim() || t.name;
+    var path = "skinluxfaceandbody.com.au/offers/" + slug(name);
+    $("pvUrl").textContent = path;
+
+    if (isInj) {
+      $("lp").innerHTML = '<div class="blocked"><div class="ic">!</div><h3>No offer page for injectables</h3>' +
+        '<p class="muted">Offer pages can\'t be made for ' + esc(t.name.toLowerCase()) + '. In the live version this treatment links to a consultation page instead, with no price, no brand name and no spots counter.</p></div>';
+      $("priceHint").textContent = "";
+      return;
+    }
+
+    var price = parseFloat($("fPrice").value) || 0, usual = parseFloat($("fUsual").value) || 0;
+    var spots = Math.max(1, parseInt($("fSpots").value, 10) || 30);
+    if (state.booked > spots) state.booked = spots;
+    var left = spots - state.booked;
+    var save = usual - price;
+    var hint = $("priceHint");
+    if (usual && price >= usual) { hint.textContent = "The offer price should be lower than the usual price."; hint.className = "hint bad"; }
+    else if (usual) { hint.textContent = "Clients save $" + save + " (" + Math.round(save / usual * 100) + "% off). Usual price must be a real price you charge."; hint.className = "hint"; }
+    else { hint.textContent = ""; }
+
+    var clinic = $("fClinic").value;
+    var where = clinic === "both" ? "Booragoon and Leederville" : S.locations[clinic].name;
+    var end = $("fEnd").value, dl = daysLeft(end);
+    var incl = inclSelected().map(function (id) { return INCLUDES.filter(function (i) { return i.id === id; })[0].label; });
+    if (!incl.length) incl = [name];
+    else incl.unshift(name);
+    var head = $("fHead").value.trim() || name;
+    var full = left <= 0;
+    var bookUrl = S.booking + "?category=634206";
+
+    var html = '<div class="lp-nav"><div class="logo">SKINLUX<small>FACE AND BODY</small></div><small class="muted">' + esc(where) + "</small></div>";
+    html += '<div class="lp-hero"><div class="eyebrow">' + spots + " spots this month" + (dl !== null && dl >= 0 ? ", " + (dl === 0 ? "ends today" : dl + (dl === 1 ? " day" : " days") + " left") : "") + "</div>" +
+      "<h2>" + esc(head) + '</h2><div class="sub">' + esc($("fSub").value.trim() || name + " at Skinlux " + where + ".") + "</div>" +
+      '<div class="price-row"><span class="now">$' + price + "</span>" + (usual > price ? '<span class="was">Usually $' + usual + '</span><span class="save">Save $' + save + "</span>" : "") + "</div>" +
+      '<div class="spots-box"><div class="t"><span>' + (full ? "All spots booked" : "Spots left this month") + "</span><b>" + (full ? "0" : left) + " of " + spots + '</b></div><div class="bar"><span style="width:' + (state.booked / spots * 100) + '%"></span></div></div>' +
+      (full ? '<a class="lp-book" href="#" id="waitBtn">Join the waitlist</a>' : '<a class="lp-book" href="' + bookUrl + '" target="_blank" rel="noopener">Book on Timely</a>') +
+      '<div style="font-size:12px;opacity:.65;margin-top:10px">A $50 deposit secures your spot and comes off the treatment.</div></div>';
+    html += '<div class="lp-section"><h3>What\'s included</h3><ul class="incl">' + incl.map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul></div>";
+    html += '<div class="lp-section"><h3>Who it suits</h3>' + t.concerns.map(function (c) { return '<span class="concern">' + esc(c.charAt(0).toUpperCase() + c.slice(1)) + "</span>"; }).join("") + "</div>";
+    html += '<div class="lp-section"><h3>What to expect</h3><div class="facts">' +
+      '<div class="fact"><b>Time</b>' + esc(t.time) + '</div><div class="fact"><b>Downtime</b>' + esc(t.downtime) + '</div><div class="fact"><b>Results</b>' + esc(t.results) + "</div></div></div>";
+    html += '<div class="smallprint">Offer valid until ' + fmtDate(end) + " or until all " + spots + " spots are booked, whichever comes first. Available at Skinlux " + esc(where) + ". " +
+      "One offer per client. Not valid with other offers or packages. A $50 deposit is taken at booking and comes off the treatment. " +
+      (t.not_for ? "Not suitable if: " + esc(t.not_for.toLowerCase()) + ". " : "") +
+      "A consultation confirms the treatment suits you. Results vary from person to person.</div>";
+    $("lp").innerHTML = html;
+  }
+
+  // Events
+  $("templates").addEventListener("click", function (e) { var c = e.target.closest("[data-t]"); if (c) loadTemplate(c.getAttribute("data-t")); });
+  $("fTreat").addEventListener("change", function () {
+    var t = tById(this.value);
+    Array.prototype.forEach.call(document.querySelectorAll("#templates .chip"), function (c) { c.classList.remove("on"); });
+    if (!t.injectable) {
+      state.headIdx = 0; $("fHead").value = suggestions(t.id)[0];
+      $("fName").value = t.name; $("fSub").value = t.results;
+    }
+    render();
+  });
+  ["fName", "fPrice", "fUsual", "fSpots", "fEnd", "fClinic", "fHead", "fSub"].forEach(function (id) {
+    $(id).addEventListener("input", render);
+    $(id).addEventListener("change", render);
+  });
+  $("fIncl").addEventListener("change", render);
+  $("suggestBtn").addEventListener("click", function () {
+    var list = suggestions($("fTreat").value);
+    state.headIdx = (state.headIdx + 1) % list.length;
+    $("fHead").value = list[state.headIdx];
+    render();
+  });
+  $("simBtn").addEventListener("click", function () {
+    var spots = Math.max(1, parseInt($("fSpots").value, 10) || 30);
+    if (state.booked >= spots) { toast("All spots are booked. New visitors see the waitlist."); return; }
+    state.booked++;
+    var who = NAMES[state.simCount++ % NAMES.length], left = spots - state.booked;
+    render();
+    toast(left ? "New Timely booking: " + who + " took a spot. " + left + " spots left." : "Last spot booked by " + who + ". The page now shows a waitlist.");
+  });
+  $("resetBtn").addEventListener("click", function () { state.booked = 0; render(); toast("Spots reset for a new month"); });
+  $("pubBtn").addEventListener("click", function () {
+    var name = $("fName").value.trim() || tById($("fTreat").value).name;
+    var url = "skinluxfaceandbody.com.au/offers/" + slug(name);
+    state.published = true;
+    $("liveTag").innerHTML = "<b>Live.</b> " + url + "<br>Point your Google and Meta ads here. Spots update from Timely bookings every few minutes.";
+    $("liveTag").classList.remove("hidden");
+    toast("Published at " + url);
+  });
+  $("segDevice").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    Array.prototype.forEach.call(this.children, function (x) { x.classList.toggle("on", x === b); });
+    $("browser").classList.toggle("mobile", b.getAttribute("data-v") === "mobile");
+  });
+  $("lp").addEventListener("click", function (e) {
+    if (e.target.id === "waitBtn") { e.preventDefault(); toast("Waitlist form opens. They get a text if a spot opens up."); }
+  });
+
+  loadTemplate("hifu");
+})();
+</script>
+</body>
+</html>
