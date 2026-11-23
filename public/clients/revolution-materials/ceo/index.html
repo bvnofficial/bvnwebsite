@@ -150,7 +150,7 @@ body.ctmode .page{padding-right:calc((100vw - 236px)*.54 + 34px)}
 .ctcard .cth{gap:12px}.ctico{width:30px;height:30px;border-radius:8px;background:#f3f4f6;display:grid;place-items:center;flex:none;color:var(--mut)}.ctcard.on .ctico{background:var(--or);color:#fff}.ctcard.on{border-color:rgba(232,96,16,.45)}
 .ctf.flash{animation:ctflash 1.6s}@keyframes ctflash{0%,40%{background:rgba(232,96,16,.14);box-shadow:0 0 0 6px rgba(232,96,16,.14);border-radius:10px}100%{background:transparent;box-shadow:0 0 0 6px transparent}}
 @media(max-width:1100px){body.ctmode .page{padding-right:26px}#pvwrap.show{display:none}#pvwrap.show.open{display:flex;inset:10px;width:auto;top:10px;z-index:80}.pvx,.pvbtn{display:inline-flex}}
-.srcl{padding:6px 16px}.srci{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line2)}.srci:last-child{border-bottom:0}.srcn{width:22px;flex:none;padding-top:9px;color:var(--mut);font-size:12px;font-weight:600}.srcf{display:grid;gap:8px;min-width:0}.srcf .srch{font-weight:700}.srcf textarea{resize:vertical;min-height:70px;line-height:1.5;font:inherit;font-size:13.5px}.srcb{display:flex;gap:4px;flex:none;padding-top:4px}.btn[disabled]{opacity:.45;cursor:default}@media(max-width:640px){.srci{flex-wrap:wrap}.srcb{width:100%;justify-content:flex-end}}
+.srcl{padding:6px 16px}.srci{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line2)}.srci:last-child{border-bottom:0}.srcn{width:22px;flex:none;padding-top:9px;color:var(--mut);font-size:12px;font-weight:600}.srcf{display:grid;gap:8px;min-width:0}.srcf .srch{font-weight:700}.srcf textarea{resize:vertical;min-height:70px;line-height:1.5;font:inherit;font-size:13.5px}.srcb{display:flex;gap:4px;flex:none;padding-top:4px}.btn[disabled]{opacity:.45;cursor:default}.nwsw{display:flex;align-items:center;gap:14px;padding:16px 18px;flex-wrap:wrap}.tgl{position:relative;width:48px;height:28px;border-radius:99px;border:0;background:#cbd3de;cursor:pointer;flex:none;transition:background .2s}.tgl::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}.tgl[aria-checked=true]{background:#16a34a}.tgl[aria-checked=true]::after{transform:translateX(20px)}.tgl[disabled]{opacity:.5;cursor:default}.nwp{display:flex;gap:12px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--line2)}.nwp:last-child{border-bottom:0}.nwf{display:grid;gap:8px;min-width:0}.nwf .nwt{font-weight:700}.nwf textarea{resize:vertical;min-height:80px;line-height:1.5;font:inherit;font-size:13.5px}.nwd{max-width:170px}.nwph{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.nwph figure{position:relative;margin:0;width:92px;height:70px;border-radius:8px;overflow:hidden;border:1px solid var(--line2);background:#f3f5f8}.nwph img{width:100%;height:100%;object-fit:cover;display:block}.nwph figure button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;font-size:14px;line-height:22px;padding:0}.nwph figure b{position:absolute;left:4px;bottom:3px;font-size:10px;color:#fff;background:rgba(0,0,0,.55);padding:1px 5px;border-radius:4px;font-weight:600}@media(max-width:640px){.nwp{flex-wrap:wrap}.nwp .srcb{width:100%;justify-content:flex-end}}@media(max-width:640px){.srci{flex-wrap:wrap}.srcb{width:100%;justify-content:flex-end}}
 </style>
 </head>
 <body>
@@ -225,7 +225,7 @@ function makeInvoice(o){
 }
 /* inside the frame on revolutionmaterials.com.au/dashboard the sign-in key is sent as a header */
 (function(){let k=null;try{k=localStorage.getItem("rmhq-key")}catch(e){}if(!k)return;const f0=window.fetch.bind(window);window.fetch=(u,o)=>{if(typeof u==="string"&&u.startsWith("/api/rm-hq")){o=Object.assign({},o);o.headers=Object.assign({},o.headers,{Authorization:"Bearer "+k})}return f0(u,o)}})();
-const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:"",em:null,emVals:{},emDirty:false,emBusy:false,emErr:"",ct:null,ctVals:{},ctDirty:false,ctBusy:false,ctErr:"",ctOpen:{},ctUp:""};
+const ui={view:"overview",sel:null,bell:false,q:"",period:"12w",src:null,srcDirty:false,srcBusy:false,srcErr:"",em:null,emVals:{},emDirty:false,emBusy:false,emErr:"",ct:null,ctVals:{},ctDirty:false,ctBusy:false,ctErr:"",ctOpen:{},ctUp:"",nw:null,nwOn:false,nwDirty:false,nwBusy:false,nwErr:"",nwUp:0,nwSw:false};
 
 /* ============ stats ============ */
 function stats(){
@@ -253,8 +253,8 @@ function brief(st){
 function weekly(){const out=[],t=now();for(let i=11;i>=0;i--){const a=t-(i+1)*7*DAY,b=t-i*7*DAY;out.push(S.contacts.filter(c=>c.at>a&&c.at<=b).length)}return out}
 
 /* ============ layout ============ */
-const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Marketing"],["emails","Email follow ups","msg"],["grp","Website"],["content","Text and photos","pic"],["sourced","Materials supplied","cube"]];
-const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials supplied",content:"Text and photos",emails:"Email follow ups"};
+const NAV=[["grp","Sales (GoHighLevel)"],["overview","Overview","home"],["inbox","Inbox","inbox"],["pipeline","Pipeline","pipe"],["quotes","Deals","quote"],["invoices","Invoices","inv"],["grp","Insight"],["reports","Reports","rep"],["customers","Customers","users"],["grp","Marketing"],["emails","Email follow ups","msg"],["grp","Website"],["content","Text and photos","pic"],["news","News","spark"],["sourced","Materials supplied","cube"]];
+const TITLES={overview:"Overview",inbox:"Inbox",pipeline:"Pipeline",quotes:"Deals",invoices:"Invoices",reports:"Reports",customers:"Customers",sourced:"Materials supplied",content:"Text and photos",news:"News",emails:"Email follow ups"};
 function render(){
   const p=(location.hash.replace(/^#\/?/,"")||"overview").split("/");
   ui.view=TITLES[p[0]]?p[0]:"overview";ui.sel=p[1]||null;
@@ -631,6 +631,56 @@ VIEW.sourced=()=>{
     ${ui.srcDirty?'<button class="btn" data-act="srcundo">Undo changes</button>':""}<button class="btn pri" data-act="srcsave"${ui.srcDirty&&!ui.srcBusy?"":" disabled"}>${I("ok")} ${ui.srcBusy?"Saving":"Save to website"}</button></div></div>
   </div>`;
 };
+/* ---------- website: News page (saved to GoHighLevel) ---------- */
+const nwToday=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+async function nwLoad(){
+  ui.nwBusy=true;ui.nwErr="";
+  try{const r=await fetch("/api/rm-hq/news?edit=1",{cache:"no-store",credentials:"same-origin"});if(r.status===401){location.reload();return}const d=await r.json();
+    if(!Array.isArray(d.posts))throw 0;ui.nw=d.posts;ui.nwOn=!!d.on;ui.nwDirty=false}
+  catch(e){ui.nwErr="Could not load your news from GoHighLevel. Try Refresh in a minute."}
+  ui.nwBusy=false;if(ui.view==="news")render();
+}
+function nwMark(){if(ui.nwDirty)return;ui.nwDirty=true;const h=$("#nwstate");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="nwsave"]');if(b&&!ui.nwUp)b.disabled=false}
+async function nwUpload(i,files){
+  const p=ui.nw&&ui.nw[i];if(!p||!files||!files.length)return;
+  const list=[...files].filter(f=>/^image\//.test(f.type));
+  if(!list.length){toast("Please choose photos (JPG, PNG or WebP).");return}
+  const room=6-p.photos.length;if(room<=0){toast("A post can have up to 6 photos.");return}
+  if(list.length>room)toast(`Only the first ${room} photo${room===1?"":"s"} will be added. A post can have up to 6.`);
+  ui.nwUp++;render();let ok=0;
+  for(const file of list.slice(0,room)){
+    try{const blob=await ctShrink(file);const fd=new FormData();fd.append("file",blob,"photo.jpg");fd.append("name","news");
+      const r=await fetch("/api/rm-hq/content/upload",{method:"POST",credentials:"same-origin",body:fd});if(r.status===401){location.reload();return}
+      const d=await r.json();if(!d.ok)throw new Error(d.error||"");
+      p.photos.push({src:d.url,alt:p.title||""});ui.nwDirty=true;ok++;render()}
+    catch(e){toast("A photo was not uploaded. "+(e.message||"Please try again."))}
+  }
+  ui.nwUp--;render();
+  if(ok)toast(`${I("ok")} ${ok} photo${ok===1?"":"s"} added. Press Save to website to put ${ok===1?"it":"them"} live.`);
+}
+VIEW.news=()=>{
+  if(!ui.nw){if(!ui.nwBusy&&!ui.nwErr)nwLoad();return `<div class="card"><div class="liveempty">${ui.nwErr?esc(ui.nwErr):"Loading your news from GoHighLevel"}</div></div>`}
+  const n=ui.nw.length,on=ui.nwOn;
+  return `<div class="g">
+  <div class="row" style="flex-wrap:wrap;gap:10px"><p class="mut sm grow" style="margin:0;max-width:660px">Your News page shows each post with its photos, a short description and the date, in this order (newest at the top). Add a post when an order arrives. Press Save to website when you're done and the page updates within a minute. Please leave out customer names.</p>
+   <a class="btn s" href="https://revolutionmaterials.com.au/news" target="_blank" rel="noopener">${I("ext")} View on website</a></div>
+  <div class="card"><div class="nwsw"><button class="tgl" role="switch" aria-checked="${on}" aria-label="Show the News page on the website" data-act="nwswitch"${ui.nwSw?" disabled":""}></button>
+   <div class="grow"><b>${on?"News is on":"News is off"}</b><div class="mut sm">${on?"The News page is live and News shows in the website menu.":"The News page and its menu link are hidden. Add a few posts, save, then switch it on."}</div></div></div></div>
+  <div class="card"><div class="ch"><h3>${n} post${n===1?"":"s"}</h3><span class="mut sm" id="nwstate"${ui.nwDirty?' style="color:var(--or);font-weight:600"':""}>${ui.nwDirty?"Not saved yet":"Saved in GoHighLevel"}</span></div>
+   <div class="cb row" style="gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line2)"><button class="btn" data-act="nwadd">${I("plus")} Add a post</button></div>
+   <div class="srcl">
+   ${n?ui.nw.map((p,i)=>`<div class="nwp"><span class="srcn">${i+1}</span><div class="grow nwf">
+     <input class="inp nwd" type="date" data-nw="${i}" data-k="date" value="${esc(p.date)}" aria-label="Date, post ${i+1}">
+     <input class="inp nwt" data-nw="${i}" data-k="title" value="${esc(p.title)}" placeholder="Heading, for example 316L stainless plate arrived for a food plant" maxlength="140" aria-label="Heading, post ${i+1}">
+     <textarea class="inp" data-nw="${i}" data-k="text" rows="3" maxlength="1500" placeholder="A short description of the order: the material, quantity, where it came from, what it's for" aria-label="Description, post ${i+1}">${esc(p.text)}</textarea>
+     <div class="nwph">${p.photos.map((ph,j)=>`<figure><img src="${esc(ph.src)}" alt="">${j===0?"<b>Main</b>":""}<button data-act="nwphdel" data-i="${i}" data-j="${j}" title="Remove photo" aria-label="Remove photo ${j+1} from post ${i+1}">&times;</button></figure>`).join("")}
+      ${p.photos.length<6?`<label class="btn s${ui.nwUp?" dis":""}">${I("pic")} ${ui.nwUp?"Uploading":p.photos.length?"Add more photos":"Add photos"}<input type="file" accept="image/jpeg,image/png,image/webp" multiple data-nwimg="${i}" hidden${ui.nwUp?" disabled":""}></label>`:'<span class="xs faint">6 photos is the most per post</span>'}</div></div>
+     <div class="srcb"><button class="btn s ghost" data-act="nwup" data-i="${i}" title="Move up" aria-label="Move post ${i+1} up"${i?"":" disabled"}>&uarr;</button><button class="btn s ghost" data-act="nwdown" data-i="${i}" title="Move down" aria-label="Move post ${i+1} down"${i<n-1?"":" disabled"}>&darr;</button><button class="btn s ghost" data-act="nwdel" data-i="${i}" title="Remove" aria-label="Remove post ${i+1}">${I("x")}</button></div></div>`).join(""):'<div class="liveempty">No posts yet. Press Add a post to write the first one.</div>'}
+   </div>
+   <div class="cb row" style="gap:10px;flex-wrap:wrap;border-top:1px solid var(--line2)"><span class="grow"></span>
+    ${ui.nwDirty?'<button class="btn" data-act="nwundo">Undo changes</button>':""}<button class="btn pri" data-act="nwsave"${ui.nwDirty&&!ui.nwBusy&&!ui.nwUp?"":" disabled"}>${I("ok")} ${ui.nwBusy?"Saving":"Save to website"}</button></div></div>
+  </div>`;
+};
 const match=s=>!ui.q||s.toLowerCase().includes(ui.q.toLowerCase());
 
 /* ============ actions ============ */
@@ -688,6 +738,35 @@ const ACT={
   srcup(e,el){const i=+el.dataset.i;if(i<1)return;[ui.src[i-1],ui.src[i]]=[ui.src[i],ui.src[i-1]];ui.srcDirty=true;render()},
   srcdown(e,el){const i=+el.dataset.i;if(i>=ui.src.length-1)return;[ui.src[i+1],ui.src[i]]=[ui.src[i],ui.src[i+1]];ui.srcDirty=true;render()},
   srcundo(){ui.src=null;ui.srcDirty=false;render()},
+  nwadd(){ui.nw.unshift({id:Math.random().toString(36).slice(2,10),date:nwToday(),title:"",text:"",photos:[]});ui.nwDirty=true;render();const t=document.querySelector('[data-nw="0"][data-k="title"]');if(t){t.focus();t.scrollIntoView({block:"center"})}},
+  nwdel(e,el){const i=+el.dataset.i,x=ui.nw[i];if((x.title||x.text||x.photos.length)&&!confirm("Remove "+(x.title?'"'+x.title+'"':"this post")+" from the News page?"))return;ui.nw.splice(i,1);ui.nwDirty=true;render()},
+  nwup(e,el){const i=+el.dataset.i;if(i<1)return;[ui.nw[i-1],ui.nw[i]]=[ui.nw[i],ui.nw[i-1]];ui.nwDirty=true;render()},
+  nwdown(e,el){const i=+el.dataset.i;if(i>=ui.nw.length-1)return;[ui.nw[i+1],ui.nw[i]]=[ui.nw[i],ui.nw[i+1]];ui.nwDirty=true;render()},
+  nwphdel(e,el){const p=ui.nw[+el.dataset.i];if(!p)return;p.photos.splice(+el.dataset.j,1);ui.nwDirty=true;render()},
+  nwundo(){ui.nw=null;ui.nwDirty=false;render()},
+  async nwswitch(){
+    const want=!ui.nwOn;
+    if(want&&ui.nwDirty&&!confirm("You have changes that aren't saved yet. Switch News on with the last saved posts? Press Save to website afterwards to add your changes."))return;
+    if(want&&!ui.nw.length&&!confirm("There are no posts yet, so the News page will say there's nothing to show. Switch it on anyway?"))return;
+    ui.nwSw=true;render();
+    try{const r=await fetch("/api/rm-hq/news",{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({on:want})});
+      if(r.status===401){location.reload();return}
+      const d=await r.json();if(!d.ok)throw new Error(d.error||"");
+      ui.nwOn=!!d.on;toast(`${I("ok")} News switched ${ui.nwOn?"on. The page and menu link show":"off. The page and menu link hide"} within a minute.`)}
+    catch(e){toast("Not changed. "+(e.message||"Could not reach GoHighLevel.")+" Please try again.")}
+    ui.nwSw=false;render();
+  },
+  async nwsave(){
+    const bad=ui.nw.findIndex(x=>!x.title.trim()&&(x.text.trim()||x.photos.length));
+    if(bad>=0){toast("Post "+(bad+1)+" needs a heading before it can be saved.");return}
+    ui.nwBusy=true;render();
+    try{const r=await fetch("/api/rm-hq/news",{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({posts:ui.nw.filter(x=>x.title.trim()||x.text.trim()||x.photos.length).map(x=>Object.assign({},x,{photos:x.photos.map(p=>({src:p.src,alt:x.title}))}))})});
+      if(r.status===401){location.reload();return}
+      const d=await r.json();if(!d.ok)throw new Error(d.error||"");
+      ui.nw=d.posts;ui.nwOn=!!d.on;ui.nwDirty=false;toast(`${I("ok")} Saved. ${ui.nwOn?"Your News page shows the change within a minute.":"News is still switched off, so the page stays hidden until you switch it on."}`)}
+    catch(e){toast("Not saved. "+(e.message||"Could not reach GoHighLevel.")+" Please try again.")}
+    ui.nwBusy=false;render();
+  },
   async srcsave(){
     const blank=ui.src.findIndex(x=>!x.head.trim()&&x.text.trim());
     if(blank>=0){toast("Entry "+(blank+1)+" needs a heading before it can be saved.");return}
@@ -711,12 +790,13 @@ document.addEventListener("click",e=>{
   if(g){const to=g.dataset.go;if(!to||to.endsWith("/"))return;closeModal();ui.bell=false;$("#side")&&$("#side").classList.remove("open");if(location.hash==="#/"+to)render();else location.hash="#/"+to}
   else if(ui.bell&&!e.target.closest(".bell")){ui.bell=false;render()}
 });
-document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.ctimg){ctUpload(e.target.dataset.ctimg,e.target.files[0]);return}if(e.target.id==="pipesel"){PIPE=e.target.value;try{localStorage.setItem("rmhq-pipe",PIPE)}catch(x){}setStages();render()}});
+document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.ctimg){ctUpload(e.target.dataset.ctimg,e.target.files[0]);return}if(e.target.dataset&&e.target.dataset.nwimg!=null){const fs=[...e.target.files];e.target.value="";nwUpload(+e.target.dataset.nwimg,fs);return}if(e.target.id==="pipesel"){PIPE=e.target.value;try{localStorage.setItem("rmhq-pipe",PIPE)}catch(x){}setStages();render()}});
 document.addEventListener("input",e=>{
   if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
   if(e.target.dataset.em){const it=ui.em&&ui.em.find(x=>x.key===e.target.dataset.em);if(it){ui.emVals[it.key]=e.target.value;const card=e.target.closest(".card"),pv=card&&card.querySelector(".empv");if(pv){const ks=[...card.querySelectorAll("[data-em]")].map(x=>x.dataset.em);if(ks.length===2)pv.outerHTML=emPreview(ks[0],ks[1])}
     if(!ui.emDirty){ui.emDirty=true;const st=$("#emstate");if(st){st.textContent="Not saved yet";st.className="";st.style.color="var(--or)";st.style.fontWeight="600"}const b=document.querySelector('[data-act="emsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.ct){const f=ui.ct&&ui.ct.find(x=>x.key===e.target.dataset.ct);if(f){if(f.type==="img"){const c=Object.assign({},ctCur(f));c.alt=e.target.value;ui.ctVals[f.key]=c}else if(f.type==="show"){ui.ctVals[f.key]=e.target.checked?"show":"hide";ctMark();render();pvApply();return}else ui.ctVals[f.key]=e.target.value;ctMark();pvApply()}return}
+  if(e.target.dataset.nw!=null){const x=ui.nw&&ui.nw[+e.target.dataset.nw];if(x){x[e.target.dataset.k]=e.target.value;nwMark()}return}
   if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srcl")&&document.querySelector(".srcl").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
   if(e.target.dataset.line!=null){const box=e.target.closest(".box");const id=box.querySelector("[data-act=sendq]").dataset.id;const o=O(id);const i=+e.target.dataset.line;o.lines[i].p=Math.max(0,parseFloat(e.target.value)||0);
     $("#lt"+i).textContent=money2(o.lines[i].qty*o.lines[i].p);$("#qsub").textContent=money2(val(o));$("#qgst").textContent=money2(val(o)*.1);$("#qtot").textContent=money2(val(o)*1.1);save()}
@@ -724,7 +804,7 @@ document.addEventListener("input",e=>{
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 addEventListener("hashchange",render);
 document.addEventListener("focusin",e=>{const k=e.target&&e.target.dataset&&e.target.dataset.ct;if(k&&ui.view==="content")pvShow(k)});
-addEventListener("beforeunload",e=>{if(ui.srcDirty||ui.ctDirty||ui.emDirty){e.preventDefault();e.returnValue=""}});
+addEventListener("beforeunload",e=>{if(ui.srcDirty||ui.ctDirty||ui.emDirty||ui.nwDirty||ui.nwUp){e.preventDefault();e.returnValue=""}});
 /* drag and drop on the pipeline */
 let dragId=null;
 document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".op");if(!c)return;dragId=c.dataset.id;c.classList.add("drag");e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",dragId)});
@@ -748,7 +828,7 @@ async function load(fresh){
     const d=await r.json();
     if(d.configured===false){fail("GoHighLevel is not connected yet. The token still needs adding on the server.");return}
     if(d.failed||!d.contacts){fail("Could not reach GoHighLevel. Trying again in a minute.");return}
-    adopt(d);const ae=document.activeElement;if(!((ui.view==="sourced"||ui.view==="content"||ui.view==="emails")&&(ui.srcDirty||ui.ctDirty||ui.emDirty||ui.ctUp||(ae&&ae.dataset&&(ae.dataset.src!=null||ae.dataset.ct||ae.dataset.em)))))render();
+    adopt(d);const ae=document.activeElement;if(!((ui.view==="sourced"||ui.view==="content"||ui.view==="emails"||ui.view==="news")&&(ui.srcDirty||ui.ctDirty||ui.emDirty||ui.nwDirty||ui.ctUp||ui.nwUp||(ae&&ae.dataset&&(ae.dataset.src!=null||ae.dataset.ct||ae.dataset.em||ae.dataset.nw!=null)))))render();
     if(fresh)toast(`${I("ok")} Updated from GoHighLevel`);
   }catch(e){fail("Could not reach GoHighLevel. Trying again in a minute.")}
   finally{loading=false}

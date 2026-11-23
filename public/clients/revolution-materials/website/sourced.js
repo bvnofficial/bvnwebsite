@@ -75,16 +75,19 @@
     var st = document.createElement("style");
     st.textContent = css;
     document.head.appendChild(st);
-    var timer = setTimeout(fallback, 3000);
-    fetch(API, { cache: "no-cache" })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) {
-        clearTimeout(timer);
-        if (!(d && Array.isArray(d.examples) && draw(d.examples))) fallback();
-      })
-      .catch(function () { clearTimeout(timer); fallback(); });
-    autoScroll();
+    if (document.getElementById("track")) {
+      var timer = setTimeout(fallback, 3000);
+      fetch(API, { cache: "no-cache" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          clearTimeout(timer);
+          if (!(d && Array.isArray(d.examples) && draw(d.examples))) fallback();
+        })
+        .catch(function () { clearTimeout(timer); fallback(); });
+      autoScroll();
+    }
     stats();
+    news();
     /* inside the dashboard's live preview (?rmedit=1) the dashboard supplies the content */
     if (/[?&]rmedit=1/.test(location.search)) {
       window.__rmApply = function (list) { restoreContent(); applyContent(list); };
@@ -216,6 +219,114 @@
       })
       .catch(function () {})
       .then(function () { clearTimeout(wait); reveal(); });
+  }
+
+  /* News page (revolutionmaterials.com.au/news), edited by Jim on Revolution HQ
+     (Website > News). While News is switched off the API returns no posts, the
+     menu link stays out and the page says there is nothing to show yet. */
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  function niceDate(d) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || "");
+    return m ? +m[3] + " " + MONTHS[+m[2] - 1] + " " + m[1] : "";
+  }
+  var newsCss =
+    "#rmnews{padding:64px 0 24px}#rmnews .sh h1{font:800 clamp(32px,4.2vw,50px)/1.08 var(--f,Manrope,sans-serif);letter-spacing:-.03em;margin:10px 0 14px}" +
+    "#rmnewslist{display:grid;gap:28px}" +
+    ".rmpost{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:36px;align-items:start;background:#fff;border:1px solid var(--line,#e2e7ee);border-radius:18px;padding:22px}" +
+    ".rmpost.nophoto{grid-template-columns:1fr}" +
+    ".rmpost .ph{display:grid;gap:10px}" +
+    ".rmpost .main{display:block;width:100%;padding:0;border:0;background:var(--soft,#f4f6f9);border-radius:12px;overflow:hidden;cursor:zoom-in;aspect-ratio:4/3}" +
+    ".rmpost .main img{width:100%;height:100%;object-fit:cover;display:block}" +
+    ".rmpost .th{display:flex;gap:8px;flex-wrap:wrap}" +
+    ".rmpost .th button{width:72px;height:54px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;cursor:pointer;background:var(--soft,#f4f6f9)}" +
+    ".rmpost .th button[aria-pressed=true]{border-color:var(--navy,#003a7c)}" +
+    ".rmpost .th img{width:100%;height:100%;object-fit:cover;display:block}" +
+    ".rmpost time{display:block;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--navy,#003a7c);margin:4px 0 10px}" +
+    ".rmpost h2{font:800 clamp(22px,2.4vw,28px)/1.2 var(--f,Manrope,sans-serif);letter-spacing:-.02em;margin:0 0 12px;color:var(--ink,#141a24)}" +
+    ".rmpost p{margin:0;white-space:pre-line;color:var(--mut,#596474);font-size:16px;line-height:1.65}" +
+    ".rmnone{padding:40px;border:1px dashed var(--line,#e2e7ee);border-radius:16px;text-align:center;color:var(--mut,#596474)}.rmnone a{color:var(--navy,#003a7c);font-weight:700}" +
+    "#rmbox{position:fixed;inset:0;z-index:100;background:rgba(10,14,22,.9);display:flex;align-items:center;justify-content:center;padding:24px}" +
+    "#rmbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}" +
+    "#rmbox button{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#141a24;font-size:26px;line-height:44px;cursor:pointer}" +
+    "@media (max-width:820px){.rmpost{grid-template-columns:1fr;gap:18px;padding:16px}#rmnews{padding:44px 0 12px}}";
+  function lightbox(src, alt) {
+    var b = document.createElement("div");
+    b.id = "rmbox";
+    b.setAttribute("role", "dialog");
+    b.setAttribute("aria-modal", "true");
+    b.setAttribute("aria-label", "Photo");
+    b.innerHTML = '<img src="' + esc(src) + '" alt="' + esc(alt) + '"><button type="button" aria-label="Close photo">&times;</button>';
+    var key = function (e) { if (e.key === "Escape") close(); };
+    var close = function () { b.remove(); document.removeEventListener("keydown", key); };
+    b.addEventListener("click", function (e) { if (e.target === b || e.target.tagName === "BUTTON") close(); });
+    document.addEventListener("keydown", key);
+    document.body.appendChild(b);
+    b.querySelector("button").focus();
+  }
+  function drawNews(box, posts) {
+    if (!posts || !posts.length) {
+      box.innerHTML = '<div class="rmnone">There is no news to show yet. Please check back soon, or <a href="/">go to the home page</a>.</div>';
+      return;
+    }
+    box.innerHTML = posts.map(function (p) {
+      var ph = p.photos || [];
+      var alt = p.title || "Revolution Materials order";
+      var photos = ph.length ? '<div class="ph"><button type="button" class="main" aria-label="Enlarge photo"><img src="' + esc(ph[0].src) + '" alt="' + esc(alt) + '" loading="lazy"></button>' +
+        (ph.length > 1 ? '<div class="th">' + ph.map(function (x, j) {
+          return '<button type="button" aria-label="Show photo ' + (j + 1) + '" aria-pressed="' + (j === 0) + '" data-src="' + esc(x.src) + '"><img src="' + esc(x.src) + '" alt="" loading="lazy"></button>';
+        }).join("") + "</div>" : "") + "</div>" : "";
+      return '<article class="rmpost' + (ph.length ? "" : " nophoto") + '">' + photos + "<div>" +
+        (p.date ? '<time datetime="' + esc(p.date) + '">' + niceDate(p.date) + "</time>" : "") +
+        (p.title ? "<h2>" + esc(p.title) + "</h2>" : "") + (p.text ? "<p>" + esc(p.text) + "</p>" : "") + "</div></article>";
+    }).join("");
+    if (box.__rmclick) return;
+    box.__rmclick = true;
+    box.addEventListener("click", function (e) {
+      var t = e.target.closest("button");
+      if (!t || !box.contains(t)) return;
+      var post = t.closest(".rmpost"), main = post && post.querySelector(".main img");
+      if (!main) return;
+      if (t.classList.contains("main")) return lightbox(main.src, main.alt);
+      if (t.dataset.src) {
+        main.src = t.dataset.src;
+        post.querySelectorAll(".th button").forEach(function (b) { b.setAttribute("aria-pressed", String(b === t)); });
+      }
+    });
+  }
+  function news() {
+    var box = document.getElementById("rmnewslist");
+    if (box) {
+      var st = document.createElement("style");
+      st.textContent = newsCss;
+      document.head.appendChild(st);
+    }
+    fetch(API.replace("/sourced", "/news"), { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var on = !!(d && d.on);
+        if (on) {
+          /* menu link, placed before the mobile-only email and phone so the
+             numbered menu items Jim can rename keep their positions */
+          var nav = document.getElementById("nav");
+          if (nav && !nav.querySelector(".rmnewsl")) {
+            var a = document.createElement("a");
+            a.href = "/news";
+            a.className = "rmnewsl";
+            a.textContent = "News";
+            if (box) a.setAttribute("aria-current", "page");
+            nav.insertBefore(a, nav.querySelector(".mmail"));
+          }
+          var ful = document.querySelector("footer .foot > div:nth-child(3) ul");
+          if (ful && !ful.querySelector(".rmnewsl")) {
+            var li = document.createElement("li");
+            li.className = "rmnewsl";
+            li.innerHTML = '<a href="/news">News</a>';
+            ful.appendChild(li);
+          }
+        }
+        if (box) drawNews(box, on && d.posts);
+      })
+      .catch(function () { if (box) drawNews(box, null); });
   }
 
   /* animated statistics band, placed just before "Experience".

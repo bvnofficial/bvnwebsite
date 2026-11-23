@@ -146,7 +146,7 @@ more(g, "contact.phone", "Phone number (changed everywhere on the site)", 'a[hre
 more(g, "contact.address", "Address in the footer", "footer .foot > div:nth-child(2) li:last-child p", "lines", "39 Little Boundary Road\nLaverton North VIC 3026");
 
 g = "Logo, menu and buttons";
-more(g, "logo", "Logo (top and footer)", "header .brand img, footer .foot img", "img", img("6afab75777a01e46221fd28b/rm-logo.png", "Revolution Materials"));
+more(g, "logo", "Logo (top and footer)", "header .brand img, footer .foot img", "img", img("6b03e1942c68ebcf46a523e9/rm-logo-2026.webp", "Revolution Materials"));
 ["Materials", "Forms", "Fasteners", "Experience", "Past supplies", "Contact"].forEach((t, i) => {
   more(g, `nav.${i + 1}`, `Menu item ${i + 1}`, `#nav > a:nth-child(${i + 1})`, "text", t);
   more(g, `nav.${i + 1}.show`, `Show menu item ${i + 1}`, `#nav > a:nth-child(${i + 1})`, "show", "show");
