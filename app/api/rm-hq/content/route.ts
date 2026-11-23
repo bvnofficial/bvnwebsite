@@ -55,6 +55,17 @@ async function findValue(token: string, L: string): Promise<{ id: string; value:
 
 const okSrc = (s: string) => /^https:\/\/[^\s"'<>]+$/i.test(s) && s.length < 600;
 
+/** formatted text: one paragraph per line, and only <b>, </b>, <i>, </i> tags (no attributes) */
+function cleanRich(v: string): string {
+  return v
+    .replace(/<(?!\/?[bi]>)\/?[a-z!][^>]*>/gi, "")
+    .replace(/<(\/?)([BI])>/g, (_m, s, t) => `<${s}${t.toLowerCase()}>`)
+    .split("\n")
+    .map((l) => l.replace(/[ \t\u00a0]+/g, " ").replace(/<b>\s*<\/b>|<i>\s*<\/i>/g, "").trim())
+    .filter((l) => l.replace(/<\/?[bi]>/g, "").trim())
+    .join("\n");
+}
+
 /** keep only known keys with sensible values that differ from the original */
 function clean(input: unknown): Values | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
@@ -73,7 +84,8 @@ function clean(input: unknown): Values | null {
     } else {
       let v = String(raw ?? "").replace(/\r\n?/g, "\n");
       const multi = f.type === "lines" || f.type === "list" || f.type === "tags";
-      v = multi ? v.split("\n").map((l) => l.trim()).filter(Boolean).join("\n") : v.replace(/\s+/g, " ").trim();
+      if (f.type === "rich") v = cleanRich(v);
+      else v = multi ? v.split("\n").map((l) => l.trim()).filter(Boolean).join("\n") : v.replace(/\s+/g, " ").trim();
       v = v.slice(0, MAX_TEXT);
       if (f.type === "show" && v !== "show" && v !== "hide") continue;
       if (f.type === "num" && !/^[0-9][0-9,.]{0,8} ?[+%]?$/.test(v)) continue;

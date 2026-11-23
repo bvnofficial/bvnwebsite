@@ -17,7 +17,7 @@
 //   phone the contact phone, changed everywhere it appears (call links too)
 // A selector may match several elements; all of them are changed.
 
-export type FieldType = "text" | "own" | "lines" | "list" | "tags" | "img" | "show" | "num" | "email" | "phone";
+export type FieldType = "text" | "rich" | "own" | "lines" | "list" | "tags" | "img" | "show" | "num" | "email" | "phone";
 export type ImgValue = { src: string; alt: string };
 export type Field = {
   key: string;
@@ -40,7 +40,7 @@ const add = (group: string, key: string, label: string, sel: string, type: Field
 let g = "Top of the page";
 add(g, "hero.kick", "Small heading", ".hero .kick", "text", "Specialist metals sourcing for Australia");
 add(g, "hero.h1", "Main headline", ".hero h1", "text", "Having trouble finding the metals you need?");
-add(g, "hero.lead", "Intro paragraph", ".hero .lead", "text", "Revolution Materials supplies metals in a wide range of grades, specifications and product forms to Australian businesses, drawing on an extensive international network of trusted manufacturers and suppliers to meet their requirements, including hard-to-find materials.");
+add(g, "hero.lead", "Intro paragraph", ".hero .lead", "rich", "Revolution Materials supplies metals in a wide range of grades, specifications and product forms to Australian businesses, drawing on an extensive international network of trusted manufacturers and suppliers to meet their requirements, including hard-to-find materials.");
 add(g, "hero.lead2", "Second line", ".hero .lead2", "text", "Whether it's a particular grade, size, form or specification, we can help.");
 add(g, "hero.welcome", "Line under the buttons", ".hero .welcome", "own", "No enquiry too large or too small.");
 add(g, "hero.img", "Main photo", ".hero figure img", "img", img("6afab7637c3b573a627603b2/rm-steel-pipe.jpg", "Bundles of steel pipe ready for dispatch"), 0);
@@ -51,7 +51,7 @@ add(g, "hero.capS", "Photo caption, second line", ".hero figcaption", "own", "De
 g = "Materials";
 add(g, "mat.k", "Small heading", "#materials .sh .k", "text", "Materials");
 add(g, "mat.h2", "Heading", "#materials .sh h2", "text", "Seven families of metals, and many more grades on request");
-add(g, "mat.p", "Intro", "#materials .sh p", "text", "These lists show some of what we supply. They are illustrative, not complete. If your material isn't here, we can still source it.");
+add(g, "mat.p", "Intro", "#materials .sh p", "rich", "These lists show some of what we supply. They are illustrative, not complete. If your material isn't here, we can still source it.");
 const MATS: [string, string, string, string, number][] = [
   ["Stainless Steel", "6afab760a30b968e3fbcf906/rm-flange.jpg", "Machined stainless steel flanges", "Austenitic 300/400 series\nFerritic/Martensitic\nDuplex and Super Duplex\n6Mo\nNitronic\nPrecipitation Hardening\nAnd more", 8],
   ["Nickel Alloys", "6afab760893246071fb7b92a/rm-inconel.jpg", "Pipe section clad with Inconel nickel alloy", "Nickel and Nickel Alloys\nIncoloy, Inconel, Monel, Hastelloy\nNimonic, Ferralium, Nitronic\nInvar, Kovar\nAnd more", 2],
@@ -68,28 +68,28 @@ MATS.forEach(([name, file, alt, list, credit], i) => {
   add(g, `mat.${i + 1}.list`, `${name}: list (one per line)`, `${s} ul`, "list", list);
 });
 add(g, "mat.ask.h3", "Last card: heading", "#materials .mat.ask h3", "text", "Not on the list?");
-add(g, "mat.ask.p", "Last card: text", "#materials .mat.ask p", "text", "Send us the grade, size and specification. We source materials whether or not they're listed on this website.");
-add(g, "mat.note", "Note under the cards", "#materials .note", "text", "Can't see your grade? Ask anyway. Most of what we supply is never listed on a website, and we're happy to investigate unusual requirements.");
+add(g, "mat.ask.p", "Last card: text", "#materials .mat.ask p", "rich", "Send us the grade, size and specification. We source materials whether or not they're listed on this website.");
+add(g, "mat.note", "Note under the cards", "#materials .note", "rich", "Can't see your grade? Ask anyway. Most of what we supply is never listed on a website, and we're happy to investigate unusual requirements.");
 
 /* Forms and fasteners */
 g = "Forms and fasteners";
 add(g, "forms.k", "Small heading", "#forms .sh .k", "text", "Forms and fasteners");
 add(g, "forms.h2", "Heading", "#forms .sh h2", "text", "In the form, size and condition you need");
-add(g, "forms.p", "Intro", "#forms .sh p", "text", "Sometimes the grade is quite ordinary, but the size, condition, form or specification makes it hard to find locally. That's where we help.");
+add(g, "forms.p", "Intro", "#forms .sh p", "rich", "Sometimes the grade is quite ordinary, but the size, condition, form or specification makes it hard to find locally. That's where we help.");
 add(g, "forms.1.img", "Available Forms: photo", "#forms .panel:nth-child(1) img", "img", img("6afab761893246071fb7b952/rm-seamless-pipe.jpg", "Bundles of seamless steel pipe with blue end caps"), 1);
 add(g, "forms.1.h3", "Available Forms: heading", "#forms .panel:nth-child(1) h3", "text", "Available Forms");
-add(g, "forms.1.p", "Available Forms: text", "#forms .panel:nth-child(1) .b > p", "text", "Supplied cut to size or in full lengths, to the specification you need.");
+add(g, "forms.1.p", "Available Forms: text", "#forms .panel:nth-child(1) .b > p", "rich", "Supplied cut to size or in full lengths, to the specification you need.");
 add(g, "forms.1.tags", "Available Forms: tags (one per line)", "#forms .panel:nth-child(1) .tags", "tags", "Plate\nSheet\nPipe\nFittings\nBar\nWire\nCastings\nForgings\nOther product forms");
 add(g, "forms.2.img", "Fasteners: photo", "#forms .panel:nth-child(2) img", "img", img("6afab75e893246071fb7b8f6/rm-bolts.jpg", "Bolt, nut and washer"), 9);
 add(g, "forms.2.h3", "Fasteners: heading", "#forms .panel:nth-child(2) h3", "text", "Fasteners");
-add(g, "forms.2.p", "Fasteners: text", "#forms .panel:nth-child(2) .b > p", "text", "Fasteners in the same specialist grades, from standard sizes to one off components made to drawing.");
+add(g, "forms.2.p", "Fasteners: text", "#forms .panel:nth-child(2) .b > p", "rich", "Fasteners in the same specialist grades, from standard sizes to one off components made to drawing.");
 add(g, "forms.2.tags", "Fasteners: tags (one per line)", "#forms .panel:nth-child(2) .tags", "tags", "Bolts\nNuts\nWashers\nScrews\nStudbolts\nCustom fasteners\nComponents");
 
 /* Experience */
 g = "Experience and service";
 add(g, "exp.k", "Small heading", "#experience .sh .k", "text", "Experience and service");
 add(g, "exp.h2", "Heading", "#experience .sh h2", "text", "Decades of experience, and an international network");
-add(g, "exp.p", "Intro", "#experience .sh p", "text", "Revolution Materials is a specialist metals sourcing business, not a distributor selling a fixed range of stock. We draw on many years in the metals industry and a worldwide network of manufacturers, mills and suppliers to find what local stockists can't readily provide.");
+add(g, "exp.p", "Intro", "#experience .sh p", "rich", "Revolution Materials is a specialist metals sourcing business, not a distributor selling a fixed range of stock. We draw on many years in the metals industry and a worldwide network of manufacturers, mills and suppliers to find what local stockists can't readily provide.");
 add(g, "exp.specsLabel", "Specifications label", "#experience .sh + p", "text", "Supplied to international specifications");
 add(g, "exp.specs", "Specifications (one per line)", "#experience .specs", "tags", "ASTM\nASME\nAMS\nEN\nand others");
 [
@@ -104,23 +104,23 @@ add(g, "exp.specs", "Specifications (one per line)", "#experience .specs", "tags
   add(g, `exp.${i + 1}.b`, `Point ${i + 1}, heading`, `#experience .pt:nth-child(${i + 1}) b`, "text", b);
   add(g, `exp.${i + 1}.s`, `Point ${i + 1}, text`, `#experience .pt:nth-child(${i + 1}) span`, "text", s);
 });
-add(g, "exp.disc", "Small print", "#experience .disc", "text", "* Material selection advice is general guidance only. Final suitability for any application remains the responsibility of the purchaser and their engineer.");
+add(g, "exp.disc", "Small print", "#experience .disc", "rich", "* Material selection advice is general guidance only. Final suitability for any application remains the responsibility of the purchaser and their engineer.");
 
 /* Past supplies heading (entries are on their own page) */
 g = "Materials we've sourced (heading)";
 add(g, "src.k", "Small heading", "#sourced .sh .k", "text", "Track record");
 add(g, "src.h2", "Heading", "#sourced .sh h2", "text", "Some of the materials we've sourced");
-add(g, "src.p", "Intro", "#sourced .sh p", "text", "Just a small selection of the many materials we've supplied. If you don't see what you need, please ask.");
+add(g, "src.p", "Intro", "#sourced .sh p", "rich", "Just a small selection of the many materials we've supplied. If you don't see what you need, please ask.");
 
 /* Enquiry */
 g = "Enquiry section";
 add(g, "enq.h2", "Heading", "#enquire .enq h2", "text", "Tell us what you need");
-add(g, "enq.p", "Text", "#enquire .enq h2 + p", "text", "Most customers simply email their requirements or RFQ. Send your list, drawing or specification and we'll come back to you personally.");
+add(g, "enq.p", "Text", "#enquire .enq h2 + p", "rich", "Most customers simply email their requirements or RFQ. Send your list, drawing or specification and we'll come back to you personally.");
 add(g, "enq.small", "Small lines under the email", "#enquire .small", "lines", "No enquiry too large or too small.\n39 Little Boundary Road, Laverton North VIC 3026");
 
 /* Footer */
 g = "Footer";
-add(g, "foot.about", "About line", "footer .foot > div:first-child p", "text", "Specialist sourcing of metals, alloys and fasteners from suppliers around the world, for Australian businesses.");
+add(g, "foot.about", "About line", "footer .foot > div:first-child p", "rich", "Specialist sourcing of metals, alloys and fasteners from suppliers around the world, for Australian businesses.");
 
 
 /* ---------- more control: contact, menu, buttons, statistics, show or hide ---------- */

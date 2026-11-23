@@ -148,6 +148,8 @@ body.ctmode .page{padding-right:calc((100vw - 236px)*.54 + 34px)}
 .pvload{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut);font-size:14px;background:#fff}
 .cthelp{background:linear-gradient(135deg,rgba(232,96,16,.08),rgba(232,96,16,.02));border:1px solid rgba(232,96,16,.25);border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.5}
 .ctcard .cth{gap:12px}.ctico{width:30px;height:30px;border-radius:8px;background:#f3f4f6;display:grid;place-items:center;flex:none;color:var(--mut)}.ctcard.on .ctico{background:var(--or);color:#fff}.ctcard.on{border-color:rgba(232,96,16,.45)}
+.rte{min-height:96px;max-height:420px;overflow:auto;line-height:1.55;white-space:pre-wrap;cursor:text}.rte div,.rte p{margin:0}.rte div+div,.rte p+p{margin-top:.7em}.rte b,.rte strong{font-weight:800}
+.rtb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}.rtb button{min-width:34px;height:32px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:14px}.rtb button:hover{border-color:var(--or)}.rtb button[aria-pressed=true]{background:rgba(232,96,16,.12);border-color:var(--or)}
 .ctf.flash{animation:ctflash 1.6s}@keyframes ctflash{0%,40%{background:rgba(232,96,16,.14);box-shadow:0 0 0 6px rgba(232,96,16,.14);border-radius:10px}100%{background:transparent;box-shadow:0 0 0 6px transparent}}
 @media(max-width:1100px){body.ctmode .page{padding-right:26px}#pvwrap.show{display:none}#pvwrap.show.open{display:flex;inset:10px;width:auto;top:10px;z-index:80}.pvx,.pvbtn{display:inline-flex}}
 .srcl{padding:6px 16px}.srci{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line2)}.srci:last-child{border-bottom:0}.srcn{width:22px;flex:none;padding-top:9px;color:var(--mut);font-size:12px;font-weight:600}.srcf{display:grid;gap:8px;min-width:0}.srcf .srch{font-weight:700}.srcf textarea{resize:vertical;min-height:70px;line-height:1.5;font:inherit;font-size:13.5px}.srcb{display:flex;gap:4px;flex:none;padding-top:4px}.btn[disabled]{opacity:.45;cursor:default}.nwsw{display:flex;align-items:center;gap:14px;padding:16px 18px;flex-wrap:wrap}.tgl{position:relative;width:48px;height:28px;border-radius:99px;border:0;background:#cbd3de;cursor:pointer;flex:none;transition:background .2s}.tgl::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}.tgl[aria-checked=true]{background:#16a34a}.tgl[aria-checked=true]::after{transform:translateX(20px)}.tgl[disabled]{opacity:.5;cursor:default}.nwp{display:flex;gap:12px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--line2)}.nwp:last-child{border-bottom:0}.nwf{display:grid;gap:8px;min-width:0}.nwf .nwt{font-weight:700}.nwf textarea{resize:vertical;min-height:80px;line-height:1.5;font:inherit;font-size:13.5px}.nwd{max-width:170px}.nwph{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.nwph figure{position:relative;margin:0;width:92px;height:70px;border-radius:8px;overflow:hidden;border:1px solid var(--line2);background:#f3f5f8}.nwph img{width:100%;height:100%;object-fit:cover;display:block}.nwph figure button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;font-size:14px;line-height:22px;padding:0}.nwph figure b{position:absolute;left:4px;bottom:3px;font-size:10px;color:#fff;background:rgba(0,0,0,.55);padding:1px 5px;border-radius:4px;font-weight:600}@media(max-width:640px){.nwp{flex-wrap:wrap}.nwp .srcb{width:100%;justify-content:flex-end}}@media(max-width:640px){.srci{flex-wrap:wrap}.srcb{width:100%;justify-content:flex-end}}
@@ -539,10 +541,10 @@ function pvHook(){
 function ctGoto(key,fromPreview){
   const f=ui.ct.find(x=>x.key===key);if(!f)return;
   ui.ctOpen={[f.group]:true};PV.open=false;render();
-  const el=document.querySelector(`[data-ct="${CSS.escape(key)}"],[data-ctimg="${CSS.escape(key)}"]`);if(!el)return;
+  const el=document.querySelector(`[data-ct="${CSS.escape(key)}"],[data-ctr="${CSS.escape(key)}"],[data-ctimg="${CSS.escape(key)}"]`);if(!el)return;
   const box=el.closest(".ctf")||el;box.scrollIntoView({behavior:"smooth",block:"center"});
   box.classList.remove("flash");void box.offsetWidth;box.classList.add("flash");
-  if(el.dataset.ct&&el.type!=="checkbox")setTimeout(()=>el.focus({preventScroll:true}),350);
+  if((el.dataset.ct||el.dataset.ctr)&&el.type!=="checkbox")setTimeout(()=>el.focus({preventScroll:true}),350);
 }
 /* show where a field is on the preview while its box is in focus */
 function pvShow(key){
@@ -574,10 +576,38 @@ function ctField(f){
   if(f.type==="show")return `<label class="ctf ctshow"><input type="checkbox" data-ct="${f.key}"${v!=="hide"?" checked":""}><span>${esc(f.label.replace(/^Show (.)/,(m,c)=>c.toUpperCase()))}</span>${changed?'<span class="ctc">Changed</span>':""}<span class="grow"></span><span class="xs ${v==="hide"?"":"faint"}">${v==="hide"?"Hidden":"Showing"}</span></label>`;
   if(f.type==="num"||f.type==="email"||f.type==="phone"){const hint={num:"A number, with + or % after it if you like, for example 25+",email:"Changes the email on every button, link and line of the site",phone:"Changes the phone number everywhere, including tap to call links"}[f.type];
     return `<div class="ctf"><div class="ctl">${esc(f.label)}${changed?' <span class="ctc">Changed</span>':""} ${orig}</div><input class="inp" data-ct="${f.key}" value="${esc(v)}" type="${f.type==="email"?"email":f.type==="phone"?"tel":"text"}" inputmode="${f.type==="num"?"decimal":f.type==="phone"?"tel":"email"}" aria-label="${esc(f.label)}" style="max-width:${f.type==="num"?"160px":"420px"}"><div class="xs faint" style="margin-top:4px">${hint}</div></div>`}
+  if(f.type==="rich")return `<div class="ctf"><div class="ctl">${esc(f.label)}${changed?' <span class="ctc">Changed</span>':""} ${orig}</div>
+    <div class="rtb" role="toolbar" aria-label="${esc(f.label)}, formatting"><button type="button" data-rt="bold" data-k="${f.key}" title="Bold (Ctrl+B)" aria-pressed="false"><b>B</b></button><button type="button" data-rt="italic" data-k="${f.key}" title="Italic (Ctrl+I)" aria-pressed="false"><i>I</i></button><button type="button" data-rt="plain" data-k="${f.key}" title="Remove bold and italic from the selected text">Clear formatting</button><span class="xs faint">Press Enter for a new paragraph.</span></div>
+    <div class="inp rte" contenteditable="true" role="textbox" aria-multiline="true" data-ctr="${f.key}" aria-label="${esc(f.label)}">${rtToHtml(v)}</div></div>`;
   const multi=f.type==="list"||f.type==="tags"||f.type==="lines",long=multi||String(f.def).length>90;
   const rows=multi?Math.min(14,String(v).split("\n").length+1):Math.min(6,Math.ceil(String(v).length/80)+1);
   return `<div class="ctf"><div class="ctl">${esc(f.label)}${changed?' <span class="ctc">Changed</span>':""} ${orig}</div>${long?`<textarea class="inp" data-ct="${f.key}" rows="${rows}" aria-label="${esc(f.label)}">${esc(v)}</textarea>`:`<input class="inp" data-ct="${f.key}" value="${esc(v)}" aria-label="${esc(f.label)}">`}</div>`;
 }
+/* formatted text: stored as one paragraph per line with <b> and <i> only */
+const rtInline=l=>esc(l).replace(/&lt;(\/?)([bi])&gt;/g,"<$1$2>");
+function rtToHtml(v){const ls=String(v||"").split("\n");return ls.map(l=>`<div>${rtInline(l)||"<br>"}</div>`).join("")}
+function rtFromHtml(root){
+  const lines=[""];const nl=()=>{if(lines[lines.length-1]!=="")lines.push("")};
+  const walk=(n,b,i)=>{
+    if(n.nodeType===3){let t=n.nodeValue.replace(/[\u00a0\s]+/g," ");if(!t)return;lines[lines.length-1]+=(b?"<b>":"")+(i?"<i>":"")+t+(i?"</i>":"")+(b?"</b>":"");return}
+    if(n.nodeType!==1)return;const tg=n.tagName;
+    if(tg==="BR"){nl();return}
+    const st=n.style||{},fw=st.fontWeight;
+    const nb=b||tg==="B"||tg==="STRONG"||fw==="bold"||+fw>=600,ni=i||tg==="I"||tg==="EM"||st.fontStyle==="italic";
+    const block=/^(DIV|P|LI|H[1-6]|UL|OL|BLOCKQUOTE)$/.test(tg);
+    if(block)nl();n.childNodes.forEach(c=>walk(c,nb,ni));if(block)nl()};
+  root.childNodes.forEach(c=>walk(c,false,false));
+  return lines.map(l=>l.replace(/<\/b><b>/g,"").replace(/<\/i><i>/g,"").replace(/ +/g," ").trim()).filter(l=>l.replace(/<\/?[bi]>/g,"").trim()).join("\n")}
+function rtSync(el){const f=ui.ct&&ui.ct.find(x=>x.key===el.dataset.ctr);if(!f)return;ui.ctVals[f.key]=rtFromHtml(el);ctMark();pvApply()}
+function rtState(){const a=document.activeElement;document.querySelectorAll(".rtb").forEach(tb=>{const on=a&&a.dataset&&a.dataset.ctr&&tb.nextElementSibling===a;tb.querySelectorAll("[data-rt=bold],[data-rt=italic]").forEach(btn=>{let v=false;try{v=on&&document.queryCommandState(btn.dataset.rt)}catch(e){}btn.setAttribute("aria-pressed",v?"true":"false")})})}
+document.addEventListener("mousedown",e=>{const b=e.target.closest&&e.target.closest("[data-rt]");if(!b)return;e.preventDefault();
+  const ed=document.querySelector(`[data-ctr="${CSS.escape(b.dataset.k)}"]`);if(!ed)return;if(document.activeElement!==ed)ed.focus();
+  try{document.execCommand("styleWithCSS",false,false)}catch(x){}
+  if(b.dataset.rt==="plain")document.execCommand("removeFormat");else document.execCommand(b.dataset.rt);
+  rtSync(ed);rtState()});
+document.addEventListener("keydown",e=>{const b=e.target.closest&&e.target.closest("[data-rt]");if(b&&(e.key==="Enter"||e.key===" ")){e.preventDefault();b.dispatchEvent(new MouseEvent("mousedown",{bubbles:true}))}});
+document.addEventListener("paste",e=>{if(!(e.target.closest&&e.target.closest("[data-ctr]")))return;e.preventDefault();const t=(e.clipboardData||window.clipboardData).getData("text/plain");document.execCommand("insertText",false,t)});
+document.addEventListener("selectionchange",rtState);
 const CT_ICON={"Contact details":"phone","Logo, menu and buttons":"menu","Statistics":"chart","Show or hide parts of the page":"flag","Top of the page":"home","Strip under the top section":"ok","Materials":"cube","Forms and fasteners":"pipe","Experience and service":"clock","Materials we've sourced (heading)":"rep","Enquiry section":"msg","Footer":"inv"};
 VIEW.content=()=>{
   if(!ui.ct){if(!ui.ctBusy&&!ui.ctErr)ctLoad();return `<div class="card"><div class="liveempty">${ui.ctErr?esc(ui.ctErr):"Loading your website text from GoHighLevel"}</div></div>`}
@@ -795,6 +825,7 @@ document.addEventListener("input",e=>{
   if(e.target.id==="q"){ui.q=e.target.value;ui.focusQ=true;render();return}
   if(e.target.dataset.em){const it=ui.em&&ui.em.find(x=>x.key===e.target.dataset.em);if(it){ui.emVals[it.key]=e.target.value;const card=e.target.closest(".card"),pv=card&&card.querySelector(".empv");if(pv){const ks=[...card.querySelectorAll("[data-em]")].map(x=>x.dataset.em);if(ks.length===2)pv.outerHTML=emPreview(ks[0],ks[1])}
     if(!ui.emDirty){ui.emDirty=true;const st=$("#emstate");if(st){st.textContent="Not saved yet";st.className="";st.style.color="var(--or)";st.style.fontWeight="600"}const b=document.querySelector('[data-act="emsave"]');if(b)b.disabled=false}}return}
+  if(e.target.dataset&&e.target.dataset.ctr){rtSync(e.target);return}
   if(e.target.dataset.ct){const f=ui.ct&&ui.ct.find(x=>x.key===e.target.dataset.ct);if(f){if(f.type==="img"){const c=Object.assign({},ctCur(f));c.alt=e.target.value;ui.ctVals[f.key]=c}else if(f.type==="show"){ui.ctVals[f.key]=e.target.checked?"show":"hide";ctMark();render();pvApply();return}else ui.ctVals[f.key]=e.target.value;ctMark();pvApply()}return}
   if(e.target.dataset.nw!=null){const x=ui.nw&&ui.nw[+e.target.dataset.nw];if(x){x[e.target.dataset.k]=e.target.value;nwMark()}return}
   if(e.target.dataset.src!=null){const x=ui.src[+e.target.dataset.src];if(x){x[e.target.dataset.k]=e.target.value;if(!ui.srcDirty){ui.srcDirty=true;const h=document.querySelector(".srcl")&&document.querySelector(".srcl").closest(".card").querySelector(".ch .mut");if(h){h.textContent="Not saved yet";h.style.color="var(--or)";h.style.fontWeight="600"}const b=document.querySelector('[data-act="srcsave"]');if(b)b.disabled=false}}return}
@@ -828,7 +859,7 @@ async function load(fresh){
     const d=await r.json();
     if(d.configured===false){fail("GoHighLevel is not connected yet. The token still needs adding on the server.");return}
     if(d.failed||!d.contacts){fail("Could not reach GoHighLevel. Trying again in a minute.");return}
-    adopt(d);const ae=document.activeElement;if(!((ui.view==="sourced"||ui.view==="content"||ui.view==="emails"||ui.view==="news")&&(ui.srcDirty||ui.ctDirty||ui.emDirty||ui.nwDirty||ui.ctUp||ui.nwUp||(ae&&ae.dataset&&(ae.dataset.src!=null||ae.dataset.ct||ae.dataset.em||ae.dataset.nw!=null)))))render();
+    adopt(d);const ae=document.activeElement;if(!((ui.view==="sourced"||ui.view==="content"||ui.view==="emails"||ui.view==="news")&&(ui.srcDirty||ui.ctDirty||ui.emDirty||ui.nwDirty||ui.ctUp||ui.nwUp||(ae&&ae.dataset&&(ae.dataset.src!=null||ae.dataset.ct||ae.dataset.ctr||ae.dataset.em||ae.dataset.nw!=null)))))render();
     if(fresh)toast(`${I("ok")} Updated from GoHighLevel`);
   }catch(e){fail("Could not reach GoHighLevel. Trying again in a minute.")}
   finally{loading=false}

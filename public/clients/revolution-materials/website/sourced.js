@@ -124,6 +124,15 @@
       : { html: el.innerHTML, disp: el.style.display, href: el.getAttribute("href") };
     TOUCHED.push(el);
   }
+  /* formatted text from the dashboard: one paragraph per line, <b> and <i> only */
+  function richInline(l) {
+    return esc(l).replace(/&lt;(\/?)([bi])&gt;/g, "<$1$2>");
+  }
+  function richHtml(v) {
+    var ls = String(v || "").split("\n").filter(function (l) { return l.trim(); });
+    if (ls.length < 2) return richInline(ls[0] || "");
+    return ls.map(function (l) { return '<span class="rmpara">' + richInline(l) + "</span>"; }).join("");
+  }
   function restoreContent() {
     TOUCHED.forEach(function (el) {
       var o = el.__rmo;
@@ -176,6 +185,7 @@
           el.textContent = v;
         }
         else if (a.type === "text") el.textContent = v;
+        else if (a.type === "rich") el.innerHTML = richHtml(v);
         else if (a.type === "own") setOwn(el, v);
         else if (a.type === "lines") el.innerHTML = String(v).split("\n").map(esc).join("<br>");
         else if (a.type === "list") el.innerHTML = String(v).split("\n").filter(Boolean).map(function (l) {
@@ -360,7 +370,7 @@
     if (!before) return;
     var st = document.createElement("style");
     st.textContent =
-      ".rm .trust{display:none!important}#rmstats{background:var(--navy,#003a7c);color:#fff;padding:56px 0}" +
+      ".rm .rmpara{display:block}.rm .rmpara+.rmpara{margin-top:.85em}.rm .trust{display:none!important}#rmstats{background:var(--navy,#003a7c);color:#fff;padding:56px 0}" +
       "#rmstats .sgrid{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:24px;text-align:center}" +
       "#rmstats .sv{font-size:clamp(38px,5vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}" +
       "#rmstats .sl{margin-top:10px;font-size:15px;font-weight:600;color:#cfdcf0;line-height:1.4}" +
