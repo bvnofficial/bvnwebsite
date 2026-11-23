@@ -71,7 +71,19 @@
     if (!drawn && typeof EXAMPLES !== "undefined") draw(EXAMPLES); // eslint-disable-line no-undef
   }
 
+  /* Jim's high-resolution logo (Nov 2026). The page code may still carry the
+     first logo; it is swapped before the top of the page is shown. A logo Jim
+     uploads on Revolution HQ is applied afterwards and still wins. */
+  var LOGO_OLD = /6afab75777a01e46221fd28b\/rm-logo\.png$|\/rm-logo\.png$/;
+  var LOGO_NEW = "https://files.leadconnectorhq.com/file/6b03e1942c68ebcf46a523e9/rm-logo-2026.webp";
+  function logo() {
+    document.querySelectorAll("header .brand img, footer .foot img").forEach(function (im) {
+      if (LOGO_OLD.test(im.getAttribute("src") || "")) { im.removeAttribute("srcset"); im.src = LOGO_NEW; }
+    });
+  }
+
   function go() {
+    logo();
     var st = document.createElement("style");
     st.textContent = css;
     document.head.appendChild(st);
