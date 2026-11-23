@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/data.js"></script>
+<style>
+  .dash-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
+  .dash-head .sub { font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-top: 2px; }
+  .switches { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .stamp { font-size: 12px; color: var(--muted); margin-top: 8px; text-align: right; }
+  .section-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .section-title h3 { margin: 0; }
+  .section-title .muted { font-size: 12px; }
+  .mt { margin-top: 16px; }
+
+  /* KPI row */
+  .kpi { position: relative; overflow: hidden; }
+  .kpi::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold); opacity: 0.8; }
+  .kpi .value { margin: 6px 0 4px; }
+  .kpi .delta { display: flex; gap: 6px; align-items: center; }
+  .kpi .delta .vs { color: var(--muted); }
+  .split { display: flex; height: 8px; border-radius: 99px; overflow: hidden; background: var(--sand); margin: 8px 0 6px; }
+  .split span { display: block; height: 100%; transition: width 0.5s; }
+  .split .a { background: var(--gold); }
+  .split .b { background: var(--taupe); opacity: 0.55; }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .ring-wrap { display: flex; align-items: center; gap: 14px; }
+  .ring-wrap svg { flex: none; }
+
+  /* Funnel */
+  .funnel-grid { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 22px; align-items: stretch; }
+  @media (max-width: 900px) { .funnel-grid { grid-template-columns: 1fr; } }
+  .fstep { display: grid; grid-template-columns: 170px 1fr 54px; gap: 12px; align-items: center; padding: 6px 0; }
+  .fstep .lbl { font-size: 13px; }
+  .fstep .lbl small { display: block; font-size: 11px; }
+  .fstep .track { height: 26px; background: var(--cream); border-radius: 7px; overflow: hidden; position: relative; }
+  .fstep .fill { height: 100%; border-radius: 7px; background: var(--gold); transition: width 0.6s ease; }
+  .fstep.came .fill { background: var(--mocha); }
+  .fstep.lost .fill { background: var(--taupe); opacity: 0.45; }
+  .fstep .num { font-family: var(--serif); font-size: 22px; font-weight: 600; text-align: right; }
+  .recovered-box { background: var(--ink); color: var(--cream); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+  .recovered-box .label { font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.7; }
+  .recovered-box .big { font-family: var(--serif); font-size: 42px; font-weight: 600; color: var(--gold); line-height: 1.1; margin: 4px 0; }
+  .recovered-box .rows div { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-top: 1px solid rgba(247,242,236,0.12); }
+  .recovered-box .rows b { color: var(--cream); }
+
+  /* SVG charts */
+  svg text { font-family: var(--sans); }
+  .chart-box svg { width: 100%; height: auto; display: block; }
+
+  /* Offers */
+  .offer-row { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .offer-row:last-child { border-bottom: 0; }
+  .offer-row .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .offer-row .name { font-weight: 600; font-size: 14px; }
+  .offer-row .name span { color: var(--muted); font-weight: 400; }
+  .offer-row .spots { font-family: var(--serif); font-size: 20px; font-weight: 600; }
+  .offer-row .spots small { font-family: var(--sans); font-size: 12px; font-weight: 400; }
+  .stack-bar { height: 10px; background: var(--sand); border-radius: 99px; overflow: hidden; display: flex; }
+  .stack-bar span { height: 100%; transition: width 0.5s; }
+  .stack-bar .mine { background: var(--gold); }
+  .stack-bar .other { background: var(--taupe); opacity: 0.5; }
+  .offer-row .foot { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+  /* Rebooking */
+  .ther-row { display: grid; grid-template-columns: 130px 1fr 34px 92px; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .ther-row:last-child { border-bottom: 0; }
+  .ther-row .mini { height: 8px; background: var(--sand); border-radius: 99px; overflow: hidden; }
+  .ther-row .mini span { display: block; height: 100%; background: var(--gold); border-radius: 99px; transition: width 0.5s; }
+  .ther-row b { font-family: var(--serif); font-size: 19px; text-align: right; }
+  .ther-row.sent .btn { opacity: 0.55; }
+
+  /* Small stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tile { background: var(--cream); border-radius: 10px; padding: 12px; }
+  .tile .t-label { font-size: 12px; color: var(--muted); }
+  .tile .t-val { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.15; }
+  .tile .t-val.red { color: var(--bad); }
+  .pair { margin-top: 14px; }
+  .pair .row.between { font-size: 13px; margin-bottom: 4px; }
+  .pair .bar { height: 10px; }
+
+  /* Team follow up */
+  .staff-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .staff-chips .chip b { margin-left: 4px; }
+  .staff-chips .chip .od { color: var(--bad); margin-left: 4px; font-weight: 600; }
+  .staff-chips .chip.on .od { color: #f3b3ad; }
+  #taskTable tbody tr { cursor: pointer; transition: background 0.15s; }
+  #taskTable tbody tr:hover { background: var(--cream); }
+  #taskTable tr.overdue td.due { color: var(--bad); font-weight: 600; }
+  #taskTable tr.overdue td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
+  .type-dot { display: inline-block; width: 8px; height: 8px; border-radius: 99px; background: var(--gold); margin-right: 6px; }
+  .empty { text-align: center; color: var(--muted); padding: 24px; }
+
+  /* Side panel */
+  .scrim { position: fixed; inset: 0; background: rgba(43,36,32,0.32); opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 80; }
+  .scrim.show { opacity: 1; pointer-events: auto; }
+  .panel { position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 100%; background: var(--white); z-index: 90; box-shadow: -10px 0 40px rgba(43,36,32,0.18); transform: translateX(105%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+  .panel.show { transform: translateX(0); }
+  .panel .p-head { padding: 22px 22px 14px; border-bottom: 1px solid var(--line); }
+  .panel .p-body { padding: 18px 22px; overflow-y: auto; flex: 1; }
+  .panel .p-foot { padding: 14px 22px; border-top: 1px solid var(--line); display: flex; gap: 8px; flex-wrap: wrap; }
+  .panel .close { position: absolute; top: 16px; right: 16px; border: 0; background: var(--sand); width: 32px; height: 32px; border-radius: 99px; cursor: pointer; font-size: 18px; color: var(--ink); line-height: 1; }
+  .kv { display: grid; grid-template-columns: 110px 1fr; gap: 6px 12px; font-size: 14px; margin-bottom: 16px; }
+  .kv span { color: var(--muted); }
+  .timeline { list-style: none; padding: 0; margin: 0; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 12px 16px; font-size: 13px; }
+  .timeline li::before { content: ""; position: absolute; left: -6px; top: 5px; width: 10px; height: 10px; border-radius: 99px; background: var(--gold); }
+  .timeline li small { display: block; }
+
+  /* ===== Skinlux HQ shell ===== */
+  :root { --db: 50px; }
+  .hq-wrap { display: grid; grid-template-columns: 236px minmax(0, 1fr); min-height: calc(100vh - var(--db)); }
+  .side { background: var(--white); border-right: 1px solid var(--line); padding: 18px 12px 24px; position: sticky; top: var(--db); height: calc(100vh - var(--db)); overflow-y: auto; }
+  .side .logo { font-family: var(--serif); font-size: 26px; font-weight: 600; padding: 0 10px; letter-spacing: 0.5px; line-height: 1.1; }
+  .side .logo span { color: var(--gold); }
+  .side .logo-sub { font-size: 12px; color: var(--muted); padding: 2px 10px 10px; }
+  .side .grp { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 10px 6px; font-weight: 600; }
+  .side .nav { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: transparent; padding: 9px 10px; border-radius: 10px; font: 500 14px var(--sans); color: var(--ink); cursor: pointer; text-align: left; }
+  .side .nav:hover { background: var(--cream); }
+  .side .nav.on { background: var(--ink); color: var(--cream); }
+  .side .nav .ct { margin-left: auto; background: var(--gold); color: var(--ink); font-size: 11px; font-weight: 700; border-radius: 99px; padding: 1px 7px; }
+  .side .nav .ct.red { background: var(--bad); color: #fff; }
+  .side .sync { margin: 18px 4px 0; padding: 10px 12px; background: var(--cream); border-radius: 10px; font-size: 12px; color: var(--mocha); line-height: 1.6; }
+  .dot-live { display: inline-block; width: 8px; height: 8px; border-radius: 99px; background: var(--ok); margin-right: 6px; box-shadow: 0 0 0 3px var(--ok-soft); }
+  .main { min-width: 0; }
+  .topbar { position: sticky; top: var(--db); z-index: 40; background: rgba(247, 242, 236, 0.95); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); padding: 12px max(24px, calc((100% - 1600px) / 2 + 24px)); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .topbar h1 { font-size: 30px; margin: 0; line-height: 1.1; }
+  .topbar .tb-sub { font-size: 13px; color: var(--muted); }
+  .topbar .sp { flex: 1; }
+  .topbar .search { width: 210px; border-radius: 99px; padding: 8px 14px; }
+  .bell { position: relative; border: 1px solid var(--line); background: var(--white); width: 40px; height: 40px; border-radius: 99px; cursor: pointer; color: var(--ink); display: grid; place-items: center; }
+  .bell .ct { position: absolute; top: -4px; right: -4px; background: var(--bad); color: #fff; font-size: 11px; font-weight: 700; border-radius: 99px; min-width: 19px; height: 19px; display: grid; place-items: center; padding: 0 5px; }
+  .bell .ct:empty { display: none; }
+  .bell-pop { position: fixed; right: 20px; top: calc(var(--db) + 64px); width: 360px; max-width: calc(100% - 40px); max-height: 70vh; overflow-y: auto; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 18px 50px rgba(43, 36, 32, 0.2); z-index: 70; }
+  .bell-pop .bp-head { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .bell-pop .bp-item { padding: 12px 16px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13px; display: grid; grid-template-columns: 10px 1fr; gap: 10px; }
+  .bell-pop .bp-item:hover { background: var(--cream); }
+  .bell-pop .bp-item i { width: 9px; height: 9px; border-radius: 99px; margin-top: 5px; background: var(--gold); }
+  .bell-pop .bp-item i.bad { background: var(--bad); }
+  .bell-pop .bp-item i.warn { background: var(--warn); }
+  .view { padding: 22px 24px 60px; max-width: 1600px; margin: 0 auto; }
+  .view[hidden] { display: none; }
+  .lnk { border: 0; background: none; padding: 0; font: 700 13px var(--sans); color: inherit; text-decoration: underline; cursor: pointer; }
+  .chn { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: var(--sand); color: var(--mocha); white-space: nowrap; }
+  .tagrow { display: flex; gap: 5px; flex-wrap: wrap; }
+  .av { width: 36px; height: 36px; flex: none; border-radius: 99px; background: var(--sand); display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--mocha); position: relative; }
+  .av .ch { position: absolute; right: -2px; bottom: -2px; width: 14px; height: 14px; border-radius: 99px; border: 2px solid #fff; }
+  .tile-kpi { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .tile-kpi .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .tile-kpi .value { font-family: var(--serif); font-size: 30px; font-weight: 600; line-height: 1.15; }
+  .tile-kpi small { font-size: 12px; }
+
+  /* Overview: needs you today */
+  .needs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 1100px) { .needs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .need { text-align: left; border: 1px solid var(--line); background: var(--white); border-radius: 12px; padding: 12px 14px; cursor: pointer; font: 13px var(--sans); color: var(--ink); box-shadow: var(--shadow); }
+  .need:hover { border-color: var(--gold); }
+  .need b { display: block; font-family: var(--serif); font-size: 30px; line-height: 1.1; }
+  .need.bad b { color: var(--bad); }
+  .need.warn b { color: var(--warn); }
+
+  /* Inbox */
+  .inbox { display: grid; grid-template-columns: 330px minmax(0, 1fr) 260px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; height: calc(100vh - var(--db) - 130px); min-height: 580px; box-shadow: var(--shadow); }
+  .ib-list { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  .ib-filters { padding: 12px; display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+  .ib-filters .chip { padding: 4px 10px; font-size: 12px; }
+  .ib-filters select { padding: 6px 10px; font-size: 13px; border-radius: 99px; }
+  .ib-items { overflow-y: auto; flex: 1; }
+  .ib-item { padding: 12px 14px; border-bottom: 1px solid var(--line); cursor: pointer; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; }
+  .ib-item:hover { background: var(--cream); }
+  .ib-item.on { background: var(--gold-soft); }
+  .ib-item .top { display: flex; justify-content: space-between; gap: 6px; font-size: 14px; }
+  .ib-item .top small { white-space: nowrap; font-size: 12px; }
+  .ib-item.unread .nm { font-weight: 700; }
+  .ib-item.unread .top small { color: var(--gold); font-weight: 700; }
+  .ib-item .prev { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ib-item .tagrow { margin-top: 5px; }
+  .ib-thread { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .th-head { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .th-head .who { flex: 1 1 100%; min-width: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .th-head .who div { font-size: 12px; }
+  .th-head .th-ctl { display: flex; gap: 8px; flex-wrap: wrap; margin-left: 46px; }
+  .th-head { display: grid !important; grid-template-columns: 36px minmax(0, 1fr); }
+  .th-head .th-ctl { grid-column: 2; margin-left: 0; }
+  .th-head select { width: auto; padding: 6px 10px; font-size: 13px; border-radius: 99px; }
+  .th-body { flex: 1; overflow-y: auto; padding: 16px; background: var(--cream); display: flex; flex-direction: column; gap: 8px; }
+  .bub { max-width: 78%; padding: 9px 12px; border-radius: 14px; font-size: 14px; white-space: pre-line; }
+  .bub.them { background: #fff; border: 1px solid var(--line); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .bub.us { background: var(--ink); color: var(--cream); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .bub.bot { background: var(--gold-soft); color: var(--ink); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .bub small { display: block; font-size: 11px; opacity: 0.7; margin-top: 3px; }
+  .sysline { align-self: center; font-size: 12px; color: var(--muted); background: var(--white); border: 1px dashed var(--line); padding: 4px 12px; border-radius: 99px; text-align: center; max-width: 92%; }
+  .composer { border-top: 1px solid var(--line); padding: 10px 12px; background: #fff; }
+  .composer textarea { min-height: 70px; }
+  .composer .row { margin-top: 8px; flex-wrap: wrap; }
+  .warnbox { background: var(--bad-soft); color: var(--bad); border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-bottom: 8px; }
+  .ib-side { border-left: 1px solid var(--line); padding: 16px; overflow-y: auto; font-size: 13px; }
+  .ib-side h4, .cp h4 { font-family: var(--serif); font-size: 18px; margin: 16px 0 6px; font-weight: 600; }
+  .ib-side .kv { grid-template-columns: 82px 1fr; font-size: 13px; margin-bottom: 6px; }
+  @media (max-width: 1250px) { .inbox { grid-template-columns: 300px minmax(0, 1fr); } .ib-side { display: none; } }
+
+  /* Today diary */
+  .diary { display: grid; gap: 12px; }
+  .dcol h4 { font-family: var(--serif); font-size: 18px; margin: 0 0 8px; font-weight: 600; }
+  .appt { background: var(--cream); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; border-left: 3px solid var(--taupe); font-size: 13px; }
+  .appt .t { font-weight: 700; }
+  .appt.done { border-left-color: var(--ok); opacity: 0.8; }
+  .appt.notap { border-left-color: var(--warn); background: var(--warn-soft); }
+  .appt.inroom { border-left-color: var(--gold); background: var(--gold-soft); }
+  .appt.deposit { border-left-color: var(--bad); background: var(--bad-soft); }
+  .appt.free { border: 1px dashed var(--taupe); border-left: 3px dashed var(--taupe); background: transparent; }
+  .appt .btn { margin-top: 6px; }
+
+  /* Leads kanban */
+  .kan { display: grid; grid-template-columns: repeat(5, minmax(200px, 1fr)); gap: 12px; overflow-x: auto; }
+  .kcol { background: var(--sand); border-radius: 12px; padding: 10px; min-height: 200px; }
+  .kcol h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin: 2px 4px 10px; display: flex; justify-content: space-between; color: var(--mocha); }
+  .lead { background: var(--white); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; box-shadow: 0 1px 4px rgba(43, 36, 32, 0.06); }
+  .lead.fresh { box-shadow: 0 0 0 2px var(--gold); }
+  .lead b { font-size: 14px; }
+  .lead .row { margin-top: 8px; gap: 6px; flex-wrap: wrap; }
+  .srcbar { display: grid; grid-template-columns: 120px 1fr 70px; gap: 10px; align-items: center; font-size: 13px; padding: 4px 0; }
+
+  /* Workflows */
+  .flow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: start; }
+  .flow .stats { display: flex; gap: 18px; flex-wrap: wrap; margin: 8px 0; font-size: 13px; }
+  .flow .stats b { font-family: var(--serif); font-size: 22px; display: block; line-height: 1.1; }
+  .flow ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+  .switch { position: relative; width: 46px; height: 26px; border-radius: 99px; background: var(--taupe); border: 0; cursor: pointer; transition: background 0.2s; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 99px; background: #fff; transition: left 0.2s; }
+  .switch.on { background: var(--ok); }
+  .switch.on::after { left: 23px; }
+  .flow.off { opacity: 0.6; }
+
+  /* Reviews */
+  .stars { color: var(--gold); letter-spacing: 1px; }
+  .rev { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .rev:last-child { border-bottom: 0; }
+  .rev .reply { margin-top: 8px; background: var(--cream); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+
+  /* Clients */
+  #clientTable tbody tr { cursor: pointer; }
+  #clientTable tbody tr:hover { background: var(--cream); }
+  .cp .cp-body { padding: 18px 22px; overflow-y: auto; flex: 1; }
+
+  /* Connections */
+  .conn { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .conn:last-child { border-bottom: 0; }
+  .conn i { width: 10px; height: 10px; border-radius: 99px; background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+  .log { font-size: 13px; }
+  .log div { padding: 6px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 64px 1fr; gap: 8px; }
+  .log div span { color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .hq-wrap { grid-template-columns: 1fr; }
+    .side { position: static; height: auto; display: flex; gap: 4px; overflow-x: auto; padding: 8px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .side .logo, .side .logo-sub, .side .grp, .side .sync { display: none; }
+    .side .nav { width: auto; white-space: nowrap; }
+    .topbar { position: static; }
+    .inbox { grid-template-columns: 1fr; height: auto; }
+    .ib-items { max-height: 320px; }
+    .th-body { min-height: 300px; }
+    .needs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kan { grid-template-columns: repeat(5, 240px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="hq-wrap">
+<aside class="side" id="side"></aside>
+<div class="main">
+  <div class="topbar">
+    <div><h1 id="tbTitle">Overview</h1><div class="tb-sub" id="tbSub"></div></div>
+    <span class="sp"></span>
+    <input class="search" id="search" type="search" placeholder="Search clients" aria-label="Search clients">
+    <div class="seg" id="segClinic">
+      <button data-v="booragoon">Booragoon</button>
+      <button data-v="leederville">Leederville</button>
+      <button data-v="both" class="on">Both</button>
+    </div>
+    <button class="bell" id="bell" aria-label="Notifications"><span id="bellIcon"></span><span class="ct" id="bellCt"></span></button>
+  </div>
+  <div class="bell-pop" id="bellPop" hidden></div>
+
+<section class="view" id="v-overview">
+  <div class="section-title"><h3>Needs you today</h3><span class="muted">Click any box to go straight to it</span></div>
+  <div class="needs" id="needs"></div>
+
+  <div class="dash-head" style="margin-top:26px">
+    <h2 style="margin:0">The numbers</h2>
+    <div class="switches">
+      <div class="seg" id="segPeriod">
+        <button data-v="week">This week</button>
+        <button data-v="month" class="on">This month</button>
+      </div>
+      <span class="stamp" id="stamp" style="margin:0">Updated 2:40pm, Mon 23 Nov</span>
+    </div>
+  </div>
+
+  <div class="note" style="margin-bottom:18px">Demo with sample data. In the live version Skinlux HQ connects straight to Timely and GoHighLevel, with no Zapier.</div>
+
+  <!-- KPI row -->
+  <div class="grid g4">
+    <div class="card kpi">
+      <div class="label">Revenue</div>
+      <div class="value" id="kRev">$0</div>
+      <div class="delta" id="kRevD"></div>
+    </div>
+    <div class="card kpi">
+      <div class="label">Bookings</div>
+      <div class="value" id="kBook">0</div>
+      <div class="delta" id="kBookD"></div>
+    </div>
+    <div class="card kpi">
+      <div class="label">New vs returning clients</div>
+      <div class="value" id="kNew">0</div>
+      <div class="split"><span class="a" id="kNewA"></span><span class="b" id="kNewB"></span></div>
+      <div class="legend"><span><i style="background:var(--gold)"></i><span id="kNewL">New</span></span><span><i style="background:var(--taupe);opacity:.55"></i><span id="kRetL">Returning</span></span></div>
+    </div>
+    <div class="card kpi">
+      <div class="label">Rebook rate</div>
+      <div class="ring-wrap">
+        <div>
+          <div class="value" id="kRebook">0%</div>
+          <div class="delta" id="kRebookD"></div>
+        </div>
+        <svg id="kRing" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      </div>
+      <small>Next visit booked within the treatment interval</small>
+    </div>
+  </div>
+
+  <!-- Abandoned bookings -->
+  <div class="card mt">
+    <div class="section-title">
+      <h3>Abandoned bookings</h3>
+      <span class="muted" id="funnelSub">People who started a Timely booking and left, and where we won them back</span>
+    </div>
+    <div class="funnel-grid">
+      <div id="funnel"></div>
+      <div class="recovered-box">
+        <div>
+          <div class="label">Revenue recovered</div>
+          <div class="big" id="recRev">$0</div>
+          <div style="font-size:13px;opacity:.8" id="recLine"></div>
+        </div>
+        <div class="rows" style="margin-top:14px">
+          <div><span>Recovery rate</span><b id="recRate">0%</b></div>
+          <div><span>Came from Google or Meta ads</span><b id="recAds">0</b></div>
+          <div><span>Left at deposit step</span><b id="recDep">0%</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Treatments and trend -->
+  <div class="grid g2 mt">
+    <div class="card chart-box">
+      <div class="section-title"><h3>Bookings by treatment</h3><span class="muted" id="treatSub"></span></div>
+      <div id="treatChart"></div>
+    </div>
+    <div class="card chart-box">
+      <div class="section-title"><h3>Revenue trend</h3><span class="muted" id="trendSub"></span></div>
+      <div id="trendChart"></div>
+    </div>
+  </div>
+
+  <!-- Offers and rebooking -->
+  <div class="grid g2 mt">
+    <div class="card">
+      <div class="section-title"><h3>Monthly offers</h3><span class="muted">November, 8 days left</span></div>
+      <div id="offers"></div>
+      <div class="legend" style="margin-top:8px" id="offerLegend"></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>Rebooking</h3><span class="muted">Clients overdue right now, by therapist</span></div>
+      <div id="rebook"></div>
+      <div class="row between" style="margin-top:12px">
+        <small id="rebookTotal"></small>
+        <button class="btn sm gold" id="nudgeAll" style="white-space:nowrap">Send all reminders</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post treatment and products -->
+  <div class="grid g2 mt">
+    <div class="card">
+      <div class="section-title"><h3>Post treatment</h3><span class="muted">Aftercare check ins and reviews</span></div>
+      <div class="tiles">
+        <div class="tile"><div class="t-label">Check ins sent</div><div class="t-val" id="pSent">0</div></div>
+        <div class="tile"><div class="t-label">Replies</div><div class="t-val" id="pReplies">0</div></div>
+        <div class="tile"><div class="t-label">Replies flagged for a nurse</div><div class="t-val red" id="pFlag">0</div></div>
+        <div class="tile"><div class="t-label">Reply rate</div><div class="t-val" id="pRate">0%</div></div>
+      </div>
+      <div class="pair">
+        <div class="row between"><span>Google reviews requested vs left</span><b id="pRev"></b></div>
+        <div class="bar"><span id="pRevBar" style="width:0"></span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>Products</h3><span class="muted">Medik8, O Cosmedics, Mesoestetic</span></div>
+      <div class="tiles">
+        <div class="tile"><div class="t-label">Product sales</div><div class="t-val" id="prSales">$0</div></div>
+        <div class="tile"><div class="t-label">Units sold</div><div class="t-val" id="prUnits">0</div></div>
+        <div class="tile"><div class="t-label">Repurchase rate at 3 months</div><div class="t-val" id="prRep">0%</div></div>
+        <div class="tile"><div class="t-label">Reorder reminders sent</div><div class="t-val" id="prRem">0</div></div>
+      </div>
+      <div class="pair">
+        <div class="row between"><span>Repurchase rate against a 45% goal</span><b id="prRepB"></b></div>
+        <div class="bar"><span id="prRepBar" style="width:0"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team follow up -->
+  <div class="card mt" id="team-tasks">
+    <div class="section-title">
+      <h3>Team follow up</h3>
+      <span class="muted" id="taskSub"></span>
+    </div>
+    <div class="staff-chips" id="staffChips"></div>
+    <table id="taskTable">
+      <thead><tr><th>Client</th><th>Task</th><th>Staff</th><th>Clinic</th><th>Due</th></tr></thead>
+      <tbody id="taskBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="view" id="v-inbox" hidden></section>
+<section class="view" id="v-today" hidden></section>
+<section class="view" id="v-clients" hidden></section>
+<section class="view" id="v-leads" hidden></section>
+<section class="view" id="v-flows" hidden></section>
+<section class="view" id="v-reviews" hidden></section>
+<section class="view" id="v-apps" hidden></section>
+<section class="view" id="v-team" hidden></section>
+<section class="view" id="v-connections" hidden></section>
+</div>
+</div>
+
+<div class="scrim" id="scrim2"></div>
+<aside class="panel cp" id="cpanel" aria-hidden="true">
+  <button class="close" id="cpClose" aria-label="Close">&times;</button>
+  <div id="cpInner" style="display:flex;flex-direction:column;height:100%"></div>
+</aside>
+
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" aria-hidden="true">
+  <button class="close" id="panelClose" aria-label="Close">&times;</button>
+  <div class="p-head">
+    <div class="badge gold" id="pnType">Task</div>
+    <h2 id="pnClient" style="margin:8px 0 2px">Client</h2>
+    <small id="pnMeta"></small>
+  </div>
+  <div class="p-body">
+    <div class="kv">
+      <span>Staff</span><div id="pnStaff"></div>
+      <span>Clinic</span><div id="pnClinic"></div>
+      <span>Mobile</span><div id="pnPhone"></div>
+      <span>Due</span><div id="pnDue"></div>
+      <span>Source</span><div id="pnSource"></div>
+    </div>
+    <h3>What to do</h3>
+    <p id="pnDetail"></p>
+    <h3 style="margin-top:16px">History</h3>
+    <ul class="timeline" id="pnTimeline"></ul>
+    <label for="pnAssign">Reassign to</label>
+    <select id="pnAssign"></select>
+    <label for="pnNote">Add a note</label>
+    <textarea id="pnNote" placeholder="For example: called, left a voicemail, will try again Monday"></textarea>
+  </div>
+  <div class="p-foot">
+    <button class="btn" id="pnCall">Call</button>
+    <button class="btn ghost" id="pnWa">WhatsApp</button>
+    <button class="btn ghost" id="pnSave">Save note</button>
+    <button class="btn gold" id="pnDone" style="margin-left:auto">Mark done</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  var S = window.SKINLUX;
+
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._h);
+    t._h = setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-AU"); }
+  function num(n) { return Math.round(n).toLocaleString("en-AU"); }
+  function $(id) { return document.getElementById(id); }
+
+  // SAMPLE numbers per clinic. Month figures; week figures for KPIs, the rest scaled.
+  var TREAT_LABELS = {
+    iplhair: "IPL hair removal", peels: "Clinical and advanced peels", injectables: "Injectables (nurse led)",
+    carbon: "Carbon Laser", diamond: "Diamond Polar RF", hifu: "HIFU", body: "Body sculpting",
+    needling: "Skin needling", iplskin: "IPL Skin Correction"
+  };
+  var DATA = {
+    booragoon: {
+      month: { rev: 68420, revP: 61950, book: 412, bookP: 389, nw: 96, ret: 316, rebook: 64, rebookP: 61,
+        funnel: [46, 11, 7, 4, 3], recRev: 8940, ads: 31, dep: 68,
+        treat: { iplhair: 96, injectables: 54, peels: 48, carbon: 44, diamond: 42, hifu: 38, body: 37, needling: 31, iplskin: 22 },
+        trend: [52100, 55800, 58300, 60400, 61950, 68420],
+        post: { sent: 318, replies: 74, flag: 5, req: 142, left: 51 },
+        prod: { sales: 9860, units: 142, rep: 38, rem: 61 } },
+      week: { rev: 16420, revP: 15310, book: 98, bookP: 94, nw: 23, ret: 75, rebook: 66, rebookP: 63,
+        funnel: [12, 3, 2, 1, 1], recRev: 2310, ads: 8, dep: 67,
+        trend: [13200, 14100, 13800, 15050, 14900, 15600, 15310, 16420] }
+    },
+    leederville: {
+      month: { rev: 31270, revP: 27480, book: 197, bookP: 176, nw: 58, ret: 139, rebook: 57, rebookP: 55,
+        funnel: [21, 5, 3, 2, 2], recRev: 3870, ads: 15, dep: 71,
+        treat: { iplhair: 41, injectables: 35, peels: 27, carbon: 25, diamond: 19, hifu: 16, body: 8, needling: 14, iplskin: 12 },
+        trend: [18200, 20100, 22800, 24900, 27480, 31270],
+        post: { sent: 151, replies: 33, flag: 2, req: 70, left: 22 },
+        prod: { sales: 4210, units: 63, rep: 31, rem: 29 } },
+      week: { rev: 7480, revP: 6920, book: 47, bookP: 41, nw: 14, ret: 33, rebook: 58, rebookP: 57,
+        funnel: [5, 1, 1, 1, 0], recRev: 940, ads: 4, dep: 72,
+        trend: [5600, 6100, 6400, 6250, 6800, 7050, 6920, 7480] }
+    }
+  };
+  var MONTHS = ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+  var WEEKS = ["6 Oct", "13 Oct", "20 Oct", "27 Oct", "3 Nov", "10 Nov", "17 Nov", "This wk"];
+
+  var OVERDUE = {
+    booragoon: { "Sharon Kim": 14, "Nurse Leo": 9, "Jellie": 6, "Shakira Hewitt": 3, "Nurse Maria": 2 },
+    leederville: { "Shakira Hewitt": 11, "Nurse Maria": 7, "Jellie": 4, "Nurse Leo": 3, "Sharon Kim": 2 }
+  };
+
+  // Monthly offers: spots used this month, per clinic. 30 spots each.
+  var OFFERS = [
+    { name: "HIFU double chin", price: 174, b: 11, l: 7 },
+    { name: "Carbon laser", price: 247, b: 14, l: 9 },
+    { name: "Diamond Polar with consult", price: 97, b: 17, l: 9 },
+    { name: "EMS body sculpting", price: 147, b: 12, l: 0, note: "Booragoon only" },
+    { name: "Venus Legacy stomach", price: 197, b: 6, l: 3 }
+  ];
+
+  var TASKS = [
+    { id: 1, staff: "Sharon Kim", clinic: "booragoon", client: "Chloe Bennett", phone: "0412 554 210", type: "Abandoned booking call",
+      detail: "New client. Left the HIFU double chin offer at the $50 deposit step. Emails 1 to 3 sent, no booking yet. Call, explain the deposit comes off the treatment, and book her in.",
+      due: "Yesterday", overdue: true, source: "GoHighLevel workflow: abandoned booking",
+      history: ["Tue 2:10pm: started HIFU offer booking in Timely, stopped at payment", "Tue 4:10pm: email 1 sent, opened", "Thu 9:00am: email 2 sent", "Fri 9:00am: email 3 sent", "Fri 9:05am: task created for Sharon"] },
+    { id: 2, staff: "Nurse Leo", clinic: "booragoon", client: "Hannah Lee", phone: "0433 019 884", type: "Flagged check in reply",
+      detail: "Day 2 check in reply after an injectable treatment: \"a bit more swelling on one side than I expected\". Nurse to call back today. Automations paused for this client until cleared.",
+      due: "Today 11am", overdue: true, source: "WhatsApp reply, flagged by keyword",
+      history: ["Thu 10:30am: appointment completed", "Sat 9:00am: day 2 check in sent", "Sat 9:42am: reply flagged (swelling)"] },
+    { id: 3, staff: "Shakira Hewitt", clinic: "leederville", client: "Mia Robinson", phone: "0420 776 315", type: "Rebooking call",
+      detail: "IPL hair removal, Brazilian, session 5 of 10. Now 9 days past her 4 week window. Reminder SMS sent, no booking.",
+      due: "Today", overdue: false, source: "Rebooking timer (IPL hair, 25 days)",
+      history: ["25 Oct: session 5 completed", "19 Nov: reminder SMS sent", "21 Nov: task created for Shakira"] },
+    { id: 4, staff: "Jellie", clinic: "booragoon", client: "Olivia Tran", phone: "0401 228 760", type: "Product follow up",
+      detail: "Bought Medik8 Crystal Retinal 3 in August. 3 month repurchase point. Ask how her skin is going and whether she wants to step up to the next strength.",
+      due: "Fri 27 Nov", overdue: false, source: "Product timer (90 days)",
+      history: ["24 Aug: bought Medik8 Crystal Retinal 3", "19 Nov: how to use reminder email sent"] },
+    { id: 5, staff: "Nurse Maria", clinic: "leederville", client: "Grace Nguyen", phone: "0416 302 947", type: "Flagged check in reply",
+      detail: "Skin needling, day 3 reply: \"still quite red, is that normal?\" Reassure and check photos. Redness for 2 to 3 days can be normal.",
+      due: "2 days ago", overdue: true, source: "SMS reply, flagged by keyword",
+      history: ["Wed: skin needling completed", "Fri: day 2 check in sent", "Fri 6:15pm: reply flagged (red)"] },
+    { id: 6, staff: "Sharon Kim", clinic: "booragoon", client: "Ava Mitchell", phone: "0438 661 205", type: "Review reply",
+      detail: "Left a 3 star Google review mentioning a 20 minute wait. Reply kindly and invite her back for a complimentary LED add on.",
+      due: "Today", overdue: false, source: "Google review alert",
+      history: ["Sat 8:12am: 3 star review posted", "Sat 8:13am: task created for Sharon"] },
+    { id: 7, staff: "Shakira Hewitt", clinic: "leederville", client: "Isla Carter", phone: "0422 940 113", type: "Abandoned booking call",
+      detail: "Existing client with a carbon laser package. Tried to book online and stopped. Call her and book it from the package.",
+      due: "Yesterday", overdue: true, source: "GoHighLevel workflow: abandoned booking (existing client)",
+      history: ["Wed: started a carbon laser booking", "Wed: \"call us to book your package\" email sent", "Fri: \"how can we help?\" email sent", "Fri: task created for Shakira"] },
+    { id: 8, staff: "Jellie", clinic: "leederville", client: "Sophie Clarke", phone: "0409 117 562", type: "Rebooking call",
+      detail: "Diamond Polar RF course, 3 of 8 done, 2 weeks since the last weekly session. Check in and get the course back on track.",
+      due: "Tue 24 Nov", overdue: false, source: "Rebooking timer (Diamond Polar, 7 days)",
+      history: ["7 Nov: session 3 completed", "15 Nov: reminder SMS sent"] },
+    { id: 9, staff: "Nurse Leo", clinic: "booragoon", client: "Ruby Anderson", phone: "0451 883 470", type: "Rebooking call",
+      detail: "Injectable review due at 3 months. Clinical message only: no price, no offer. Offer a review appointment with the nurse.",
+      due: "Thu 26 Nov", overdue: false, source: "Rebooking timer (injectables, 105 days)",
+      history: ["5 Aug: treatment completed", "18 Nov: review reminder sent"] },
+    { id: 10, staff: "Sharon Kim", clinic: "booragoon", client: "Zoe Harris", phone: "0417 265 038", type: "Product follow up",
+      detail: "Mesoestetic Mesoprotech SPF 50 bought in September, should be running out. Offer to put one aside at reception.",
+      due: "Today", overdue: false, source: "Product timer (60 days)",
+      history: ["22 Sep: bought Mesoestetic SPF 50", "20 Nov: reorder reminder email sent, opened"] },
+    { id: 11, staff: "Nurse Maria", clinic: "leederville", client: "Ella Martin", phone: "0414 590 821", type: "Abandoned booking call",
+      detail: "New client. Left an advanced consult booking at the $100 deposit step. Explain the consult and that the deposit comes off her treatment.",
+      due: "Tomorrow", overdue: false, source: "GoHighLevel workflow: abandoned booking",
+      history: ["Thu: started advanced consult booking", "Thu: email 1 sent", "Sat: email 2 sent"] },
+    { id: 12, staff: "Nurse Leo", clinic: "leederville", client: "Lily Chen", phone: "0427 408 659", type: "Flagged check in reply",
+      detail: "Replied \"can I wear makeup tomorrow?\" after nano fractional RF. Not urgent, answer from the aftercare notes: nothing on the skin for 24 hours.",
+      due: "3 days ago", overdue: true, source: "Email reply, flagged as a question",
+      history: ["Tue: nano fractional RF completed", "Wed: aftercare email sent", "Wed 7:40pm: reply received"] }
+  ];
+
+  var state = { clinic: "both", period: "month", staffFilter: null, sent: {} };
+
+  function clinics() { return state.clinic === "both" ? ["booragoon", "leederville"] : [state.clinic]; }
+
+  // Build the active data set. Both = sum; percentages weighted by volume.
+  function getData() {
+    var list = clinics();
+    var out = { rev: 0, revP: 0, book: 0, bookP: 0, nw: 0, ret: 0, rebook: 0, rebookP: 0,
+      funnel: [0, 0, 0, 0, 0], recRev: 0, ads: 0, dep: 0, treat: {}, trend: null,
+      post: { sent: 0, replies: 0, flag: 0, req: 0, left: 0 }, prod: { sales: 0, units: 0, rep: 0, rem: 0 } };
+    var wBook = 0, wBookP = 0, wCame = 0, wUnits = 0;
+    list.forEach(function (c) {
+      var m = DATA[c].month;
+      var p = DATA[c][state.period];
+      var scale = state.period === "week" ? 0.24 : 1;
+      out.rev += p.rev; out.revP += p.revP; out.book += p.book; out.bookP += p.bookP;
+      out.nw += p.nw; out.ret += p.ret;
+      out.rebook += p.rebook * p.book; out.rebookP += p.rebookP * p.bookP; wBook += p.book; wBookP += p.bookP;
+      for (var i = 0; i < 5; i++) out.funnel[i] += p.funnel[i];
+      out.recRev += p.recRev; out.ads += p.ads; out.dep += p.dep * p.funnel[0]; wCame += p.funnel[0];
+      var tsum = 0; Object.keys(m.treat).forEach(function (k) { tsum += m.treat[k]; });
+      Object.keys(m.treat).forEach(function (k) {
+        var v = state.period === "week" ? Math.max(1, Math.round(m.treat[k] / tsum * p.book)) : m.treat[k];
+        out.treat[k] = (out.treat[k] || 0) + v;
+      });
+      var tr = p.trend || m.trend;
+      if (!out.trend) out.trend = tr.slice(); else out.trend = out.trend.map(function (v, i) { return v + tr[i]; });
+      Object.keys(out.post).forEach(function (k) { out.post[k] += Math.round(m.post[k] * scale); });
+      out.prod.sales += Math.round(m.prod.sales * scale);
+      out.prod.units += Math.round(m.prod.units * scale);
+      out.prod.rem += Math.round(m.prod.rem * scale);
+      out.prod.rep += m.prod.rep * m.prod.units; wUnits += m.prod.units;
+    });
+    out.rebook = Math.round(out.rebook / wBook);
+    out.rebookP = Math.round(out.rebookP / wBookP);
+    out.dep = wCame ? Math.round(out.dep / wCame) : 0;
+    out.prod.rep = Math.round(out.prod.rep / wUnits);
+    if (out.post.flag < 1) out.post.flag = 1;
+    return out;
+  }
+
+  // Count up animation for big numbers
+  function animate(el, to, fmt) {
+    var from = el._v || 0, start = null, dur = 550;
+    el._v = to;
+    function step(ts) {
+      if (!start) start = ts;
+      var k = Math.min(1, (ts - start) / dur);
+      var e = 1 - Math.pow(1 - k, 3);
+      el.textContent = fmt(from + (to - from) * e);
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function deltaHtml(cur, prev, unit, label) {
+    var d = unit === "pt" ? cur - prev : ((cur - prev) / prev) * 100;
+    var cls = d >= 0 ? "up" : "down";
+    var arrow = d >= 0 ? "&#9650;" : "&#9660;";
+    var txt = unit === "pt" ? Math.abs(d) + " pts" : Math.abs(d).toFixed(1) + "%";
+    return '<span class="' + cls + '">' + arrow + " " + txt + '</span><span class="vs">vs ' + label + "</span>";
+  }
+
+  function renderKpis(d) {
+    var label = state.period === "week" ? "last week" : "October";
+    animate($("kRev"), d.rev, money);
+    $("kRevD").innerHTML = deltaHtml(d.rev, d.revP, "%", label);
+    animate($("kBook"), d.book, num);
+    $("kBookD").innerHTML = deltaHtml(d.book, d.bookP, "%", label);
+    var tot = d.nw + d.ret;
+    animate($("kNew"), d.nw, function (v) { return num(v) + " new"; });
+    $("kNewA").style.width = (d.nw / tot * 100) + "%";
+    $("kNewB").style.width = (d.ret / tot * 100) + "%";
+    $("kNewL").textContent = "New " + Math.round(d.nw / tot * 100) + "%";
+    $("kRetL").textContent = "Returning " + d.ret + " (" + Math.round(d.ret / tot * 100) + "%)";
+    animate($("kRebook"), d.rebook, function (v) { return Math.round(v) + "%"; });
+    $("kRebookD").innerHTML = deltaHtml(d.rebook, d.rebookP, "pt", label);
+    var r = 26, c = 2 * Math.PI * r, f = d.rebook / 100;
+    $("kRing").innerHTML = '<circle cx="32" cy="32" r="' + r + '" fill="none" stroke="#ede3d8" stroke-width="7"/>' +
+      '<circle cx="32" cy="32" r="' + r + '" fill="none" stroke="#b8925a" stroke-width="7" stroke-linecap="round" ' +
+      'stroke-dasharray="' + (c * f).toFixed(1) + " " + c.toFixed(1) + '" transform="rotate(-90 32 32)" style="transition:stroke-dasharray .5s"/>';
+  }
+
+  function renderFunnel(d) {
+    var f = d.funnel, came = f[0];
+    var rec = f[1] + f[2] + f[3] + f[4], lost = came - rec;
+    var steps = [
+      { cls: "came", lbl: "Came in", sub: "Incomplete booking emails from Timely", v: came },
+      { cls: "", lbl: "Recovered at email 1", sub: "2 hours later, deposit explained", v: f[1] },
+      { cls: "", lbl: "Recovered at email 2", sub: "Day 2, common questions answered", v: f[2] },
+      { cls: "", lbl: "Recovered at email 3", sub: "Day 3, offer (never on injectables)", v: f[3] },
+      { cls: "", lbl: "Recovered by team call", sub: "Task on the follow up list", v: f[4] },
+      { cls: "lost", lbl: "Lost", sub: "No booking after all steps", v: lost }
+    ];
+    $("funnel").innerHTML = steps.map(function (s) {
+      var w = came ? (s.v / came * 100) : 0;
+      return '<div class="fstep ' + s.cls + '"><div class="lbl">' + s.lbl + "<small class=\"muted\">" + s.sub + "</small></div>" +
+        '<div class="track"><div class="fill" style="width:' + Math.max(w, s.v ? 3 : 0) + '%"></div></div>' +
+        '<div class="num">' + s.v + "</div></div>";
+    }).join("");
+    animate($("recRev"), d.recRev, money);
+    $("recLine").textContent = rec + " of " + came + " people booked after all";
+    $("recRate").textContent = Math.round(rec / came * 100) + "%";
+    $("recAds").textContent = d.ads + " of " + came;
+    $("recDep").textContent = d.dep + "%";
+  }
+
+  // Horizontal bar chart in SVG with a labelled x axis
+  function hbar(rows, axisTitle) {
+    var W = 520, rowH = 30, left = 168, right = 40, top = 6;
+    var H = top + rows.length * rowH + 44;
+    var max = Math.max.apply(null, rows.map(function (r) { return r.v; }));
+    var stepV = max > 120 ? 40 : max > 60 ? 20 : max > 24 ? 10 : 5;
+    var axisMax = Math.ceil(max / stepV) * stepV;
+    var plotW = W - left - right;
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + axisTitle + '">';
+    for (var t = 0; t <= axisMax; t += stepV) {
+      var x = left + t / axisMax * plotW;
+      s += '<line x1="' + x + '" y1="' + top + '" x2="' + x + '" y2="' + (top + rows.length * rowH) + '" stroke="#ede3d8"/>';
+      s += '<text x="' + x + '" y="' + (top + rows.length * rowH + 16) + '" font-size="11" fill="#7d7069" text-anchor="middle">' + t + "</text>";
+    }
+    rows.forEach(function (r, i) {
+      var y = top + i * rowH;
+      var w = r.v / axisMax * plotW;
+      s += '<text x="' + (left - 10) + '" y="' + (y + 19) + '" font-size="12.5" fill="#2b2420" text-anchor="end">' + r.label + "</text>";
+      s += '<rect x="' + left + '" y="' + (y + 7) + '" width="' + w.toFixed(1) + '" height="16" rx="4" fill="' + (r.muted ? "#b9a593" : "#b8925a") + '"' + (r.muted ? ' opacity="0.6"' : "") + "/>";
+      s += '<text x="' + (left + w + 6) + '" y="' + (y + 19) + '" font-size="12" font-weight="600" fill="#2b2420">' + r.v + "</text>";
+    });
+    s += '<line x1="' + left + '" y1="' + (top + rows.length * rowH) + '" x2="' + (W - right) + '" y2="' + (top + rows.length * rowH) + '" stroke="#b9a593"/>';
+    s += '<text x="' + (left + plotW / 2) + '" y="' + (H - 4) + '" font-size="11.5" fill="#7d7069" text-anchor="middle">' + axisTitle + "</text>";
+    return s + "</svg>";
+  }
+
+  function renderTreat(d) {
+    var rows = Object.keys(d.treat).map(function (k) {
+      return { label: TREAT_LABELS[k], v: d.treat[k], muted: k === "injectables" };
+    }).sort(function (a, b) { return b.v - a.v; });
+    $("treatChart").innerHTML = hbar(rows, "Bookings " + (state.period === "week" ? "this week" : "this month"));
+    $("treatSub").textContent = "Injectables shown in grey: internal only";
+  }
+
+  // Line chart with area, labelled axes
+  function lineChart(vals, labels, yTitle) {
+    var W = 520, H = 270, l = 56, r = 18, t = 16, b = 46;
+    var pw = W - l - r, ph = H - t - b;
+    var max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
+    var stepV = max > 60000 ? 20000 : max > 30000 ? 10000 : max > 12000 ? 4000 : 2000;
+    var yMin = Math.max(0, Math.floor(min * 0.8 / stepV) * stepV);
+    var yMax = Math.ceil(max * 1.05 / stepV) * stepV;
+    function X(i) { return l + i * pw / (vals.length - 1); }
+    function Y(v) { return t + ph - (v - yMin) / (yMax - yMin) * ph; }
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Revenue trend">';
+    s += '<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8925a" stop-opacity="0.28"/><stop offset="1" stop-color="#b8925a" stop-opacity="0"/></linearGradient></defs>';
+    for (var v = yMin; v <= yMax; v += stepV) {
+      s += '<line x1="' + l + '" y1="' + Y(v) + '" x2="' + (W - r) + '" y2="' + Y(v) + '" stroke="#ede3d8"/>';
+      s += '<text x="' + (l - 8) + '" y="' + (Y(v) + 4) + '" font-size="11" fill="#7d7069" text-anchor="end">$' + (v / 1000) + "k</text>";
+    }
+    var pts = vals.map(function (v, i) { return X(i).toFixed(1) + "," + Y(v).toFixed(1); });
+    s += '<path d="M' + X(0) + "," + Y(yMin) + " L" + pts.join(" L") + " L" + X(vals.length - 1) + "," + Y(yMin) + ' Z" fill="url(#ga)"/>';
+    s += '<polyline points="' + pts.join(" ") + '" fill="none" stroke="#b8925a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    vals.forEach(function (v, i) {
+      var last = i === vals.length - 1;
+      s += '<circle cx="' + X(i) + '" cy="' + Y(v) + '" r="' + (last ? 5 : 3) + '" fill="' + (last ? "#b8925a" : "#fff") + '" stroke="#b8925a" stroke-width="2"><title>' + labels[i] + ": " + money(v) + "</title></circle>";
+      s += '<text x="' + X(i) + '" y="' + (t + ph + 18) + '" font-size="11" fill="' + (last ? "#2b2420" : "#7d7069") + '" text-anchor="middle"' + (last ? ' font-weight="600"' : "") + ">" + labels[i] + "</text>";
+    });
+    var lx = X(vals.length - 1), ly = Y(vals[vals.length - 1]);
+    s += '<text x="' + (lx - 8) + '" y="' + (ly - 12) + '" font-size="12.5" font-weight="700" fill="#2b2420" text-anchor="end">' + money(vals[vals.length - 1]) + "</text>";
+    s += '<line x1="' + l + '" y1="' + (t + ph) + '" x2="' + (W - r) + '" y2="' + (t + ph) + '" stroke="#b9a593"/>';
+    s += '<text x="14" y="' + (t + ph / 2) + '" font-size="11.5" fill="#7d7069" text-anchor="middle" transform="rotate(-90 14 ' + (t + ph / 2) + ')">' + yTitle + "</text>";
+    s += '<text x="' + (l + pw / 2) + '" y="' + (H - 6) + '" font-size="11.5" fill="#7d7069" text-anchor="middle">' + (state.period === "week" ? "Week starting" : "Month, 2026") + "</text>";
+    return s + "</svg>";
+  }
+
+  function renderTrend(d) {
+    var labels = state.period === "week" ? WEEKS : MONTHS;
+    $("trendChart").innerHTML = lineChart(d.trend, labels, "Revenue (AUD)");
+    $("trendSub").textContent = state.period === "week" ? "Last 8 weeks" : "Last 6 months";
+  }
+
+  function renderOffers() {
+    var both = state.clinic === "both";
+    $("offers").innerHTML = OFFERS.map(function (o) {
+      var total = o.b + o.l;
+      var mine = state.clinic === "booragoon" ? o.b : state.clinic === "leederville" ? o.l : total;
+      var other = both ? 0 : total - mine;
+      var left = 30 - total;
+      var status = left <= 5 ? '<span class="badge warn">' + left + " left</span>" :
+        total / 30 >= 0.55 ? '<span class="badge ok">On pace to fill</span>' : '<span class="badge bad">Behind pace</span>';
+      var spotsTxt = both ? (total + '<small class="muted"> of 30 spots</small>') :
+        (mine + '<small class="muted"> here, ' + total + " of 30 overall</small>");
+      return '<div class="offer-row"><div class="top"><div class="name">' + o.name + " <span>$" + o.price + (o.note ? ", " + o.note : "") + "</span></div>" +
+        '<div class="spots">' + spotsTxt + "</div></div>" +
+        '<div class="stack-bar"><span class="mine" style="width:' + (mine / 30 * 100) + '%"></span><span class="other" style="width:' + (other / 30 * 100) + '%"></span></div>' +
+        '<div class="foot"><span>' + money(mine * o.price) + " booked" + (both ? "" : " at " + S.locations[state.clinic].name) + "</span>" + status + "</div></div>";
+    }).join("");
+    $("offerLegend").innerHTML = both ? '<span><i style="background:var(--gold)"></i>Spots booked, both clinics</span>' :
+      '<span><i style="background:var(--gold)"></i>' + S.locations[state.clinic].name + '</span><span><i style="background:var(--taupe);opacity:.5"></i>Other clinic</span>';
+  }
+
+  function renderRebook() {
+    var tally = {};
+    clinics().forEach(function (c) { Object.keys(OVERDUE[c]).forEach(function (n) { tally[n] = (tally[n] || 0) + OVERDUE[c][n]; }); });
+    var rows = Object.keys(tally).map(function (n) { return { n: n, v: tally[n] }; }).sort(function (a, b) { return b.v - a.v; });
+    var max = rows[0].v, total = 0;
+    $("rebook").innerHTML = rows.map(function (r) {
+      total += r.v;
+      var key = state.clinic + r.n, sent = state.sent[key];
+      return '<div class="ther-row' + (sent ? " sent" : "") + '"><span>' + r.n + "</span>" +
+        '<div class="mini"><span style="width:' + (r.v / max * 100) + '%"></span></div><b>' + r.v + "</b>" +
+        '<button class="btn sm ghost" data-nudge="' + r.n + '" data-count="' + r.v + '">' + (sent ? "Sent" : "Nudge") + "</button></div>";
+    }).join("");
+    $("rebookTotal").textContent = total + " clients past their treatment interval with no next booking";
+  }
+
+  function renderPost(d) {
+    var p = d.post;
+    animate($("pSent"), p.sent, num);
+    animate($("pReplies"), p.replies, num);
+    animate($("pFlag"), p.flag, num);
+    $("pRate").textContent = Math.round(p.replies / p.sent * 100) + "%";
+    $("pRev").textContent = p.left + " left of " + p.req + " requested (" + Math.round(p.left / p.req * 100) + "%)";
+    $("pRevBar").style.width = (p.left / p.req * 100) + "%";
+    var r = d.prod;
+    animate($("prSales"), r.sales, money);
+    animate($("prUnits"), r.units, num);
+    $("prRep").textContent = r.rep + "%";
+    animate($("prRem"), r.rem, num);
+    $("prRepB").textContent = r.rep + "% of 45%";
+    $("prRepBar").style.width = (r.rep / 45 * 100) + "%";
+  }
+
+  function visibleTasks() {
+    return TASKS.filter(function (t) {
+      return (state.clinic === "both" || t.clinic === state.clinic) && (!state.staffFilter || t.staff === state.staffFilter);
+    });
+  }
+
+  function renderTasks() {
+    var inClinic = TASKS.filter(function (t) { return state.clinic === "both" || t.clinic === state.clinic; });
+    var by = {};
+    inClinic.forEach(function (t) {
+      by[t.staff] = by[t.staff] || { n: 0, od: 0 };
+      by[t.staff].n++; if (t.overdue) by[t.staff].od++;
+    });
+    if (state.staffFilter && !by[state.staffFilter]) state.staffFilter = null;
+    var chips = '<span class="chip' + (state.staffFilter ? "" : " on") + '" data-staff="">Everyone <b>' + inClinic.length + "</b></span>";
+    S.team.forEach(function (m) {
+      if (!by[m.name]) return;
+      chips += '<span class="chip' + (state.staffFilter === m.name ? " on" : "") + '" data-staff="' + m.name + '">' + m.name + " <b>" + by[m.name].n + "</b>" +
+        (by[m.name].od ? '<span class="od">' + by[m.name].od + " overdue</span>" : "") + "</span>";
+    });
+    $("staffChips").innerHTML = chips;
+    var list = visibleTasks().slice().sort(function (a, b) { return (b.overdue ? 1 : 0) - (a.overdue ? 1 : 0); });
+    var od = inClinic.filter(function (t) { return t.overdue; }).length;
+    $("taskSub").textContent = inClinic.length + " open tasks, " + od + " overdue. Click a row to open it.";
+    if (!list.length) { $("taskBody").innerHTML = '<tr><td colspan="5" class="empty">All done. Nothing open here.</td></tr>'; return; }
+    $("taskBody").innerHTML = list.map(function (t) {
+      return '<tr data-id="' + t.id + '" class="' + (t.overdue ? "overdue" : "") + '"><td><b>' + t.client + "</b></td>" +
+        '<td><span class="type-dot"></span>' + t.type + "</td><td>" + t.staff + "</td><td>" + S.locations[t.clinic].name + "</td>" +
+        '<td class="due">' + (t.overdue ? "Overdue: " : "") + t.due + "</td></tr>";
+    }).join("");
+  }
+
+  function renderAll() {
+    var d = getData();
+    renderKpis(d); renderFunnel(d); renderTreat(d); renderTrend(d);
+    renderOffers(); renderRebook(); renderPost(d); renderTasks();
+  }
+
+  // Side panel
+  var current = null;
+  function openPanel(id) {
+    var t = TASKS.filter(function (x) { return x.id === id; })[0];
+    if (!t) return;
+    current = t;
+    $("pnType").textContent = t.type;
+    $("pnType").className = "badge " + (t.overdue ? "bad" : "gold");
+    $("pnClient").textContent = t.client;
+    $("pnMeta").textContent = (t.overdue ? "Overdue. " : "") + "Task #" + (1040 + t.id);
+    $("pnStaff").textContent = t.staff;
+    $("pnClinic").textContent = S.locations[t.clinic].name + " (" + S.locations[t.clinic].phone + ")";
+    $("pnPhone").textContent = t.phone;
+    $("pnDue").innerHTML = t.overdue ? '<span class="down"><b>' + t.due + "</b></span>" : t.due;
+    $("pnSource").textContent = t.source;
+    $("pnDetail").textContent = t.detail;
+    $("pnTimeline").innerHTML = t.history.map(function (h) {
+      var i = h.indexOf(": ");
+      return "<li><b>" + h.slice(i + 2) + "</b><small class=\"muted\">" + h.slice(0, i) + "</small></li>";
+    }).join("") + (t.notes || []).map(function (n) { return "<li><b>Note: " + n + '</b><small class="muted">Just now</small></li>'; }).join("");
+    $("pnAssign").innerHTML = S.team.map(function (m) { return "<option" + (m.name === t.staff ? " selected" : "") + ">" + m.name + "</option>"; }).join("");
+    $("pnNote").value = "";
+    $("panel").classList.add("show"); $("scrim").classList.add("show");
+    $("panel").setAttribute("aria-hidden", "false");
+  }
+  function closePanel() {
+    $("panel").classList.remove("show"); $("scrim").classList.remove("show");
+    $("panel").setAttribute("aria-hidden", "true");
+    current = null;
+  }
+
+  // Events
+  function bindSeg(id, key) {
+    $(id).addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      Array.prototype.forEach.call(this.children, function (x) { x.classList.toggle("on", x === b); });
+      state[key] = b.getAttribute("data-v");
+      renderAll();
+    });
+  }
+  bindSeg("segClinic", "clinic");
+  bindSeg("segPeriod", "period");
+
+  $("staffChips").addEventListener("click", function (e) {
+    var c = e.target.closest(".chip"); if (!c) return;
+    state.staffFilter = c.getAttribute("data-staff") || null;
+    renderTasks();
+  });
+  $("taskBody").addEventListener("click", function (e) {
+    var tr = e.target.closest("tr[data-id]"); if (!tr) return;
+    openPanel(parseInt(tr.getAttribute("data-id"), 10));
+  });
+  $("rebook").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-nudge]"); if (!b) return;
+    var n = b.getAttribute("data-nudge");
+    state.sent[state.clinic + n] = true;
+    renderRebook();
+    toast(b.getAttribute("data-count") + " rebooking reminders queued in GoHighLevel for " + n + "'s clients");
+  });
+  $("nudgeAll").addEventListener("click", function () {
+    var c = 0;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-nudge]"), function (b) {
+      state.sent[state.clinic + b.getAttribute("data-nudge")] = true; c += parseInt(b.getAttribute("data-count"), 10);
+    });
+    renderRebook();
+    toast(c + " reminders queued. Package holders get a book your next session nudge, not a discount.");
+  });
+
+  $("scrim").addEventListener("click", closePanel);
+  $("panelClose").addEventListener("click", closePanel);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closePanel(); });
+  $("pnCall").addEventListener("click", function () {
+    if (current) toast("Calling " + current.client.split(" ")[0] + " on " + current.phone + " from the " + S.locations[current.clinic].name + " line");
+  });
+  $("pnWa").addEventListener("click", function () {
+    if (current) toast("WhatsApp chat with " + current.client.split(" ")[0] + " opened in GoHighLevel");
+  });
+  $("pnSave").addEventListener("click", function () {
+    if (!current) return;
+    var v = $("pnNote").value.trim();
+    if (!v) { toast("Type a note first"); return; }
+    current.notes = (current.notes || []).concat(v);
+    openPanel(current.id);
+    toast("Note saved to " + current.client + "'s contact in GoHighLevel");
+  });
+  $("pnAssign").addEventListener("change", function () {
+    if (!current) return;
+    current.staff = this.value;
+    renderTasks();
+    toast("Reassigned to " + this.value + ". They get an email and a WhatsApp ping.");
+  });
+  $("pnDone").addEventListener("click", function () {
+    if (!current) return;
+    var name = current.client;
+    TASKS = TASKS.filter(function (t) { return t !== current; });
+    closePanel();
+    renderTasks();
+    toast("Done. " + name + " is off the list and the workflow moves on.");
+  });
+
+  renderAll();
+})();
+</script>
+<script src="hq-live.js?v=1"></script>
+</body>
+</html>

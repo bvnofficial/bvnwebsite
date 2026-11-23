@@ -14,6 +14,7 @@ import {
   apexQuoteGateHtml,
 } from "@/lib/apex-quote-gate";
 import { RM_HQ_HOME, isRmHqGated, rmHqReqOk, rmHqGateHtml } from "@/lib/rm-hq-gate";
+import { SKINLUX_HQ_HOME, isSkinluxHqGated, skinluxHqReqOk, skinluxHqGateHtml } from "@/lib/skinlux-hq-gate";
 
 export async function middleware(request: NextRequest) {
   // Password gate for the private Raetzer client preview and its hosted site
@@ -59,6 +60,26 @@ export async function middleware(request: NextRequest) {
     }
     if (!/\.\w+$/.test(path)) {
       return NextResponse.redirect(new URL(RM_HQ_HOME, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Password gate for Skinlux HQ, Jellie's live owner app. Real client data
+  // from GoHighLevel, so every file under /clients/skinlux/hq is gated.
+  // The public sales demo at /clients/skinlux/*.html is not affected.
+  if (isSkinluxHqGated(path)) {
+    if (!(await skinluxHqReqOk(request))) {
+      return new NextResponse(skinluxHqGateHtml(request.nextUrl.searchParams.get("sl") === "bad"), {
+        status: 401,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+          "x-robots-tag": "noindex, nofollow",
+        },
+      });
+    }
+    if (!/\.\w+$/.test(path)) {
+      return NextResponse.redirect(new URL(SKINLUX_HQ_HOME, request.url));
     }
     return NextResponse.next();
   }

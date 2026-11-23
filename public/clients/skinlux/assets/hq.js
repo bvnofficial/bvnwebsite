@@ -260,7 +260,18 @@
     { n: "Mesoestetic SPF 50", c: "booragoon", left: 4, min: 10 }
   ];
 
-  var ui = { view: "overview", convo: "c1", ibf: "all", ibch: "", q: "", cf: "all", warn: null, read: {} };
+  // Live mode: the live page (/clients/skinlux/hq) sets window.SKINLUX_HQ_LIVE from
+  // /api/skinlux-hq before this script runs. Then real GoHighLevel data replaces
+  // the samples, and anything without a live source yet shows empty.
+  var LIVE = window.SKINLUX_HQ_LIVE || null;
+  if (LIVE) {
+    CONVOS = LIVE.convos || []; CLIENTS = LIVE.clients || []; LEADS = LIVE.leads || [];
+    FLOWS = LIVE.flows || []; SOURCES = LIVE.sources || []; REVIEWS = []; STOCK = []; TEAM = [];
+    var noDiary = { hours: "The diary fills in once the Timely link is on", staff: [], appts: [] };
+    DIARY = { booragoon: noDiary, leederville: { hours: noDiary.hours, staff: [], appts: [] } };
+  }
+
+  var ui = { view: "overview", convo: LIVE ? (CONVOS[0] ? CONVOS[0].id : "") : "c1", ibf: "all", ibch: "", q: "", cf: "all", warn: null, read: {} };
 
   var NAV = [["grp", "Run the day"], ["overview", "Overview", "home"], ["inbox", "Inbox", "inbox"], ["today", "Today", "cal"], ["clients", "Clients", "users"],
     ["grp", "Grow"], ["leads", "Leads", "leads"], ["flows", "Workflows", "flow"], ["reviews", "Reviews", "star"], ["apps", "Apps", "grid"],
@@ -416,6 +427,20 @@
   }
   var RISKY_INJ = /(\$\s?\d|discount|% ?off|\bdeal\b|special|cheap|half price|botox|dysport|xeomin|juvederm|restylane)/i;
   var RISKY_ALL = /(guarantee|100% results|permanent results|no risk)/i;
+  function liveSend(v, text) {
+    if (!LIVE.canSend) { toast("Sending from Skinlux HQ switches on after testing. For now, reply in GoHighLevel."); return; }
+    var key = null; try { key = localStorage.getItem("skinluxhq-key"); } catch (e) {}
+    var h = { "Content-Type": "application/json" }; if (key) h.Authorization = "Bearer " + key;
+    fetch("/api/skinlux-hq/send", { method: "POST", credentials: "include", headers: h,
+      body: JSON.stringify({ clinic: v.clinic, contactId: v.contactId, ch: v.ch, text: text, inj: !!v.inj }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.ok) { toast(d.error || "Not sent"); return; }
+        v.msgs.push({ f: "us", t: text, at: "Just now", by: "You" }); v.typed = ""; v.at = "Just now";
+        renderInbox(); toast("Sent through GoHighLevel from the " + LOC(v.clinic) + " account.");
+      })
+      .catch(function () { toast("Couldn't reach GoHighLevel. Nothing was sent."); });
+  }
   function sendReply() {
     var v = convo(ui.convo); if (!v) return;
     var text = ($("reply").value || "").trim();
@@ -430,6 +455,7 @@
       renderInbox(); return;
     }
     ui.warn = null;
+    if (LIVE) { liveSend(v, text); return; }
     v.msgs.push({ f: "us", t: text, at: "Just now", by: "Jellie" });
     v.typed = ""; v.at = "Just now";
     if (v.ch === "review") {
@@ -513,8 +539,15 @@
   function renderClients() {
     var fl = [["all", "All"], ["new", "New"], ["course", "Course in progress"], ["overdue", "Overdue to rebook"], ["inj", "Injectables"], ["vip", "VIP"]];
     var list = clientList();
-    var h = '<div class="grid g4">' + kpi("Active clients", sc(3912).toLocaleString("en-AU"), "Seen in the last 12 months") + kpi("New this month", sc(154), "From Timely") +
-      kpi("Courses in progress", sc(286), "Tracked session by session") + kpi("Overdue to rebook", sc(61), "Workflow 4 is on them") + "</div>" +
+    var mine = CLIENTS.filter(function (c) { return inClinic(c.clinic); });
+    var head = LIVE
+      ? kpi("Clients", mine.length.toLocaleString("en-AU"), "In GoHighLevel") +
+        kpi("New in 30 days", mine.filter(function (c) { return c.at && Date.now() - c.at < 30 * 864e5; }).length, "Added to GoHighLevel") +
+        kpi("With a package", mine.filter(function (c) { return c.course; }).length, "Package sessions tracked") +
+        kpi("Due to rebook", mine.filter(function (c) { return c.tags.indexOf("rebook-due") > -1; }).length, "Workflow 4 is on them")
+      : kpi("Active clients", sc(3912).toLocaleString("en-AU"), "Seen in the last 12 months") + kpi("New this month", sc(154), "From Timely") +
+        kpi("Courses in progress", sc(286), "Tracked session by session") + kpi("Overdue to rebook", sc(61), "Workflow 4 is on them");
+    var h = '<div class="grid g4">' + head + "</div>" +
       '<div class="card mt"><div class="row between wrap" style="margin-bottom:12px"><div class="row wrap" style="gap:6px">' +
       fl.map(function (f) { return '<span class="chip' + (ui.cf === f[0] ? " on" : "") + '" data-cf="' + f[0] + '">' + f[1] + "</span>"; }).join("") +
       '</div><small class="muted">' + (ui.q ? 'Search: "' + esc(ui.q) + '". ' : "") + "Showing " + list.length + " sample clients</small></div>" +
@@ -548,12 +581,22 @@
   /* ---------- Leads ---------- */
   function renderLeads() {
     var list = LEADS.filter(function (l) { return inClinic(l.c); });
-    var max = SOURCES[0][1];
-    var h = '<div class="grid g2"><div class="card"><div class="section-title"><h3>Leads this month by source</h3><span class="muted">Booked in brackets</span></div>' +
-      SOURCES.map(function (s) {
-        return '<div class="srcbar"><span>' + s[0] + '</span><div class="bar"><span style="width:' + (s[1] / max * 100) + '%"></span></div><b>' + sc(s[1]) + ' <small class="muted">(' + sc(s[2]) + ")</small></b></div>";
+    var max = SOURCES.length ? SOURCES[0][1] : 1;
+    var srcs = SOURCES, scl = sc;
+    if (LIVE) {
+      var tally = {};
+      list.forEach(function (l) { var k = l.src || "Other"; tally[k] = tally[k] || [k, 0, 0]; tally[k][1]++; if (l.s === 3) tally[k][2]++; });
+      srcs = Object.keys(tally).map(function (k) { return tally[k]; }).sort(function (a, b) { return b[1] - a[1]; });
+      scl = function (n) { return n; };
+      max = Math.max.apply(null, srcs.map(function (x) { return x[1]; }).concat([1]));
+    }
+    var h = '<div class="grid g2"><div class="card"><div class="section-title"><h3>Leads by source</h3><span class="muted">Booked in brackets</span></div>' +
+      (srcs.length ? "" : '<p class="muted">No leads yet.</p>') +
+      srcs.map(function (s) {
+        return '<div class="srcbar"><span>' + s[0] + '</span><div class="bar"><span style="width:' + (s[1] / max * 100) + '%"></span></div><b>' + scl(s[1]) + ' <small class="muted">(' + scl(s[2]) + ")</small></b></div>";
       }).join("") + '</div><div class="grid g2" style="align-content:start">' +
-      kpi("Leads this month", sc(230), "All channels") + kpi("Booked", sc(87), "38% of leads") + kpi("Average reply time", "4 min", "Whole team") + kpi("Waiting for a call", list.filter(function (l) { return l.s === 0; }).length, "Oldest first") + "</div></div>";
+      (LIVE ? kpi("Open leads", list.filter(function (l) { return l.s < 3; }).length, "All channels") + kpi("Booked", list.filter(function (l) { return l.s === 3; }).length, "In the Leads pipeline") + kpi("Lost", list.filter(function (l) { return l.s === 4; }).length, "Marked lost")
+        : kpi("Leads this month", sc(230), "All channels") + kpi("Booked", sc(87), "38% of leads") + kpi("Average reply time", "4 min", "Whole team")) + kpi("Waiting for a call", list.filter(function (l) { return l.s === 0; }).length, "Oldest first") + "</div></div>";
     h += '<div class="kan mt">' + STAGES.map(function (st, si) {
       var col = list.filter(function (l) { return l.s === si; });
       return '<div class="kcol"><h4><span>' + st + "</span><span>" + col.length + "</span></h4>" + col.map(function (l) {
@@ -585,8 +628,12 @@
   function stars(n) { return '<span class="stars">' + "&#9733;".repeat(n) + '<span style="color:var(--line)">' + "&#9733;".repeat(5 - n) + "</span></span>"; }
   function renderReviews() {
     var list = REVIEWS.filter(function (r) { return inClinic(r.c); });
-    var h = '<div class="grid g4">' + kpi("Booragoon rating", "4.9", "214 Google reviews") + kpi("Leederville rating", "4.8", "97 Google reviews") +
-      kpi("Asked this month", sc(212), "Only clients who replied happy") + kpi("Left this month", sc(73), "34% of those asked") + "</div>" +
+    var rv = function (t) { return CLIENTS.filter(function (c) { return inClinic(c.clinic) && c.tags.indexOf(t) > -1; }).length; };
+    var h = '<div class="grid g4">' + (LIVE
+      ? kpi("Review requests sent", rv("review-asked"), "Only to clients who replied happy") + kpi("Reviews left", rv("review-left"), "Tagged in GoHighLevel") +
+        kpi("Google ratings", "Soon", "Once both Google profiles are connected") + kpi("Replies waiting", 0, "From Google")
+      : kpi("Booragoon rating", "4.9", "214 Google reviews") + kpi("Leederville rating", "4.8", "97 Google reviews") +
+        kpi("Asked this month", sc(212), "Only clients who replied happy") + kpi("Left this month", sc(73), "34% of those asked")) + "</div>" +
       '<div class="card mt"><div class="section-title"><h3>Latest reviews</h3><span class="muted">' + list.filter(function (r) { return !r.replied; }).length + " waiting for a reply</span></div>";
     h += list.map(function (r) {
       var i = REVIEWS.indexOf(r);
@@ -636,9 +683,10 @@
   function renderApps() {
     var h = '<div class="card soft" style="margin-bottom:16px"><b>Every app reports into Skinlux HQ.</b> <span class="muted">Each card shows the numbers for that app, for the clinic picked at the top. Open the app, or jump to where its work shows up in HQ.</span></div>' +
       '<div class="grid g3">' + appsData().map(function (a) {
+        if (LIVE) { a = a.slice(); a[3] = [["Soon", "its numbers show here once this app is live"]]; a[1] = "../" + a[1]; }
         return '<div class="card"><div class="muted" style="font-size:12px;letter-spacing:1px;text-transform:uppercase">' + a[2] + '</div><h3 style="margin:4px 0 12px">' + a[0] + "</h3>" +
           '<div class="grid g2" style="gap:10px">' + a[3].map(function (k) { return '<div><div style="font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1">' + k[0] + '</div><div class="muted" style="font-size:12.5px">' + k[1] + "</div></div>"; }).join("") + "</div>" +
-          '<div class="row" style="gap:8px;margin-top:14px"><a class="btn sm" href="' + a[1] + '" target="_blank" rel="noopener">Open app</a>' +
+          '<div class="row" style="gap:8px;margin-top:14px"><a class="btn sm" href="' + a[1] + '" target="_blank" rel="noopener">' + (LIVE ? "See the demo" : "Open app") + "</a>" +
           (a[4] ? '<button class="btn sm ghost" data-go="' + a[4] + '">See it in HQ</button>' : "") + "</div></div>";
       }).join("") + "</div>";
     $("v-apps").innerHTML = h;
@@ -646,6 +694,23 @@
 
   /* ---------- Connections ---------- */
   function renderConn() {
+    if (LIVE) {
+      var on = LIVE.clinics || [];
+      var LC = [
+        ["GoHighLevel", on.length ? "Connected: " + on.map(LOC).join(" and ") : "Not connected", on.length === 2 ? "Live" : "Waiting"],
+        ["Timely", "Clients, bookings, visits and sales through the Timely link", "Waiting"],
+        ["clientcare inbox", "Incomplete booking emails, forwarded to GoHighLevel", "Waiting"],
+        ["Instagram, Facebook and WhatsApp", "Connected by Jellie inside GoHighLevel", "Waiting"],
+        ["Google Business Profiles", "Reviews for both clinics", "Waiting"],
+        ["Staff app", "Treatment done taps and product sales", "Waiting"],
+        ["Website monitor", "skinluxfaceandbody.com.au", "Waiting"]
+      ];
+      $("v-connections").innerHTML = '<div class="card"><div class="section-title"><h3>Connections</h3><span class="muted">Last sync ' +
+        new Date(LIVE.syncedAt).toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" }) + "</span></div>" +
+        LC.map(function (c) { var ok = c[2] === "Live"; return '<div class="conn"><i' + (ok ? "" : ' style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"') + '></i><div><b>' + c[0] + '</b><div class="muted" style="font-size:13px">' + c[1] + '</div></div><small class="muted">' + c[2] + "</small></div>"; }).join("") +
+        ((LIVE.errors || []).length ? '<p class="muted" style="margin-top:10px">Not read this time: ' + esc(LIVE.errors.join(", ")) + "</p>" : "") + "</div>";
+      return;
+    }
     var CONN = [
       ["Timely", "Clients, bookings, visits and sales. Direct connection, no Zapier.", "Synced 2 min ago"],
       ["GoHighLevel", "Emails, texts, tags, waits and team tasks", "Live"],
@@ -816,14 +881,14 @@
   $("cpClose").addEventListener("click", closeClient);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeClient(); closeBell(); } });
   // The old task panel's Mark done changes overdue counts.
-  $("taskBody").addEventListener("click", function () { setTimeout(renderNeeds, 0); });
+  var tbd = $("taskBody"); if (tbd) tbd.addEventListener("click", function () { setTimeout(renderNeeds, 0); });
   var pd = $("pnDone"); if (pd) pd.addEventListener("click", function () { setTimeout(renderNeeds, 0); });
 
-  function fitBar() { document.documentElement.style.setProperty("--db", document.querySelector(".demo-bar").offsetHeight + "px"); }
+  function fitBar() { document.documentElement.style.setProperty("--db", (document.querySelector(".demo-bar") ? document.querySelector(".demo-bar").offsetHeight : 0) + "px"); }
   window.addEventListener("resize", fitBar);
   fitBar();
   $("bellIcon").innerHTML = I("bell", 19);
   var start = (location.hash || "").slice(1);
   go(TITLES[start] ? start : "overview");
-  liveEvents();
+  if (!LIVE) liveEvents();
 })();
