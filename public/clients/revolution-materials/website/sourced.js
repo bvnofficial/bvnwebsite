@@ -311,6 +311,11 @@
       var st = document.createElement("style");
       st.textContent = newsCss;
       document.head.appendChild(st);
+      /* the GoHighLevel page has an empty builder section above the site; hide it */
+      document.querySelectorAll(".empty-slot").forEach(function (e) {
+        var s = e.closest(".c-section");
+        if (s && !s.querySelector(".rm")) s.style.display = "none";
+      });
     }
     fetch(API.replace("/sourced", "/news"), { cache: "no-cache" })
       .then(function (r) { return r.ok ? r.json() : null; })
