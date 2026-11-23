@@ -85,7 +85,7 @@
 
   <div class="pipe">
     <div><b>Timely</b><span>Stays as it is. Clients, bookings, sales, both clinics.</span></div>
-    <div><b>Zapier and Gmail</b><span>Carry each event across: incomplete booking emails, new clients, the staff app tap.</span></div>
+    <div><b>Skinlux HQ link</b><span>Carries each event across with no Zapier: Timely sync, incomplete booking emails, the staff app tap.</span></div>
     <div><b>GoHighLevel</b><span>Runs every wait, message, tag and team task below.</span></div>
     <div><b>Your dashboard</b><span>Shows what each workflow brought back.</span></div>
   </div>
@@ -147,13 +147,13 @@
   const FLOWS = [
     {
       name: "Abandoned booking", short: "Someone starts a booking and leaves",
-      desc: "Timely emails clientcare when a booking isn't finished. Zapier reads that email, checks GoHighLevel to see if it's a new or existing client, and starts the right path.",
+      desc: "Timely emails clientcare when a booking isn't finished. Skinlux HQ reads that email, checks GoHighLevel to see if it's a new or existing client, and starts the right path.",
       controls: ["client", "kind", "outcome"],
       steps() {
         const t = treatNow(), first = "Sophie", loc = st.loc, inj = t.injectable;
         if (st.client === "new") return [
-          { k: "trigger", when: "Tue 2:10pm", title: "Timely sends an incomplete booking email", tags: ["clientcare inbox", "Zapier"], type: "sys",
-            body: `Zapier reads the email from clientcare and pulls out:\nName: ${first} Hart\nMobile: 0413 220 918\nService: ${nice(t)}\nClinic: ${S.locations[loc].name}\n\nNo match in GoHighLevel, so ${first} is a new client. Tags added: abandoned-booking, new-client, interest-${t.id}.`,
+          { k: "trigger", when: "Tue 2:10pm", title: "Timely sends an incomplete booking email", tags: ["clientcare inbox", "Skinlux HQ"], type: "sys",
+            body: `Skinlux HQ reads the email from clientcare and pulls out:\nName: ${first} Hart\nMobile: 0413 220 918\nService: ${nice(t)}\nClinic: ${S.locations[loc].name}\n\nNo match in GoHighLevel, so ${first} is a new client. Tags added: abandoned-booking, new-client, interest-${t.id}.`,
             why: "This email from Timely is the only signal we get for an unfinished booking, so we read it automatically." },
           { k: "msg", when: "2 hours later", ch: "Email", title: "You were nearly booked", subject: `${first}, your ${nice(t)} spot is still waiting`,
             body: `Hi ${first},\n\nLooks like your booking for ${low(nice(t))} didn't quite finish. No problem, your details are saved and it only takes a minute to pick a time.\n\n${inj ? "Your first visit is a complimentary consultation with one of our registered nurses." : "If the deposit put you off, it comes straight off your treatment on the day, so it's not an extra cost."}` + sign(loc) + unsub,
@@ -171,8 +171,8 @@
           { k: "stop", when: "If still not booked", title: "Moved to the newsletter list", type: "sys", body: `${first} stops getting booking reminders and moves to the monthly newsletter, tagged lost-abandoned so the dashboard counts it.`, why: "Three tries is enough. After that, the newsletter keeps Skinlux in mind." }
         ];
         return [
-          { k: "trigger", when: "Wed 7:40pm", title: "Timely sends an incomplete booking email", tags: ["clientcare inbox", "Zapier"], type: "sys",
-            body: `Zapier finds ${first} Hart already in GoHighLevel, tagged timely-client, with a ${nice(t)} history at ${S.locations[loc].name}.\n\nShe's an existing client, so she gets the personal path.`, why: "Existing clients often have a package and just need a hand booking it." },
+          { k: "trigger", when: "Wed 7:40pm", title: "Timely sends an incomplete booking email", tags: ["clientcare inbox", "Skinlux HQ"], type: "sys",
+            body: `Skinlux HQ finds ${first} Hart already in GoHighLevel, tagged timely-client, with a ${nice(t)} history at ${S.locations[loc].name}.\n\nShe's an existing client, so she gets the personal path.`, why: "Existing clients often have a package and just need a hand booking it." },
           { k: "msg", when: "2 hours later", ch: "Email", title: "Looks like you were trying to book", subject: "Can we help you book?",
             body: `Hi ${first},\n\nWe noticed you started booking online. If you have a treatment package with us, give us a call on ${S.locations[loc].phone} or just reply to this email and we'll book it in for you.` + sign(loc), cta: "Book online", why: "Package bookings sometimes can't be finished online. A reply is the easiest fix." },
           { k: "check", when: "Before the next step", title: "Booked yet? If yes, stop here" },
@@ -195,7 +195,7 @@
         const steps = [
           { k: "trigger", when: "Mon 11:30am", title: "Therapist taps Treatment done", tags: ["Staff app", "Timely"], type: "sys",
             body: `Sharon Kim marks ${first}'s ${nice(t)} as done in the staff app.\n\nTags added in GoHighLevel: treated-${t.id}, ${t.concerns.slice(0, 2).map((c) => "concern-" + c.replace(/\s+/g, "-")).join(", ")}, last-visit-23-nov, clinic-${loc}.`,
-            why: "Timely can't tell Zapier a treatment is finished. This one tap is the signal." },
+            why: "Timely doesn't share when a treatment is finished. This one tap is the signal." },
           { k: "msg", when: "Same day", ch: "SMS", title: "Aftercare", body: `Hi ${first}, thanks for coming in today. Your ${low(nice(t))} aftercare: ${care} Any questions, just reply here. Skinlux` ,
             why: "Clients get the right instructions on their phone instead of calling to ask." },
           { k: "msg", when: "Day 2", ch: "SMS", title: "How's your skin?", body: `Hi ${first}, it's Skinlux. How's your skin feeling after your ${low(nice(t))}? Reply GOOD, A BIT RED or WORRIED.`,
