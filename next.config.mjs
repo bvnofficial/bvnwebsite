@@ -5,12 +5,12 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-      // Skinlux app suite demo: serve the static hub at the folder URL.
-      { source: "/clients/skinlux", destination: "/clients/skinlux/index.html" },
     ];
   },
   async redirects() {
     return [
+      // Skinlux app suite demo: the hub's links are relative, so send the short URL to the file.
+      { source: "/clients/skinlux", destination: "/clients/skinlux/index.html", permanent: false },
       // Moved the Regal Homes client deliverable under /client/.
       { source: "/regal-homes", destination: "/client/regal-homes", permanent: true },
       { source: "/regal-homes/:path*", destination: "/client/regal-homes/:path*", permanent: true },
