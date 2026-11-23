@@ -46,14 +46,14 @@
 
 <div class="hero">
   <h1>The Skinlux App Suite</h1>
-  <p>Fifteen tools built around how Booragoon and Leederville actually run. Timely stays where it is. Everything else plugs in around it.</p>
-  <div class="stack-line"><span>Timely</span><span>GoHighLevel</span><span>One dashboard</span><span>Two clinics</span></div>
+  <p>Your four workflows, Skinlux HQ and twelve apps, built around how Booragoon and Leederville actually run. Timely stays where it is. Everything else plugs in around it.</p>
+  <div class="stack-line"><span>Timely</span><span>GoHighLevel</span><span>Skinlux HQ</span><span>Two clinics</span></div>
 </div>
 
 <div class="page">
   <div class="section-title"><h2>Start here</h2><span class="count">what you asked for</span></div>
   <a class="card app-card pick" href="00-workflows.html" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center">
-    <div><div class="num">YOUR BRIEF</div><h3>Your 4 workflows</h3><p>Abandoned booking, completed appointment loops, product sales and no rebooking, step by step, with every message and a Play button.</p><div class="fixes">Timely stays. GoHighLevel runs the messages. The dashboard shows the results.</div></div>
+    <div><div class="num">YOUR BRIEF</div><h3>Your 4 workflows</h3><p>Abandoned booking, completed appointment loops, product sales and no rebooking, step by step, with every message and a Play button.</p><div class="fixes">Timely stays. GoHighLevel runs the messages. Skinlux HQ shows the results.</div></div>
   </a>
 
   <div class="section-title"><h2>New</h2><span class="count">try it with your own selfie</span></div>
@@ -61,7 +61,7 @@
     <div><div class="num">16</div><h3>AI Skin Check</h3><p>A selfie and three questions turn into a personal 12 week plan from your menu, with prices, a home routine and a book button. Every scan lands in GoHighLevel as a tagged lead.</p><div class="fixes">Fixes: ad clicks that leave without booking, clients who don't know what to book</div></div>
   </a>
 
-  <div class="section-title"><h2>For your clients</h2><span class="count">7 apps</span></div>
+  <div class="section-title"><h2>For your clients</h2><span class="count">4 apps, plus the Skin Check</span></div>
   <div class="grid g3" id="clients"></div>
 
   <div class="section-title"><h2>For your team</h2><span class="count">3 apps</span></div>
@@ -75,13 +75,10 @@
 
 <script>
 const APPS = [
-  ["clients", "01-client-app.html", "My Skinlux client app", "Courses, aftercare, a private skin journal, product routine, packages and rewards on every client's phone.", "Fixes: rebooking by memory, aftercare calls", true],
-  ["clients", "02-concierge.html", "Skinlux Concierge", "Answers treatment, price and downtime questions 24/7 on your website, Instagram, Facebook and WhatsApp.", "Fixes: slow replies while therapists are with clients", true],
-  ["clients", "03-phone-receptionist.html", "Phone receptionist", "Missed calls get a text back in seconds. The AI version answers both clinic numbers after hours.", "Fixes: calls that ring out during treatments", false],
+  ["clients", "01-client-app.html", "My Skinlux client app", "Courses, aftercare, a private skin journal, product routine, packages, rewards and messages to the clinic on every client's phone.", "Fixes: rebooking by memory, aftercare calls", true],
   ["clients", "04-treatment-quiz.html", "Treatment finder quiz", "Clients pick their concerns and get matched treatments with a booking link. Every lead lands tagged.", "Fixes: visitors who don't know what to book", false],
   ["clients", "05-intake-forms.html", "Intake and consent forms", "Medical history, screening and consent before the visit, with automatic contraindication flags.", "Fixes: paperwork at the desk, missed red flags", false],
   ["clients", "06-waitlist.html", "Waitlist slot filler", "A cancellation texts the waitlist for that treatment. First yes gets the spot.", "Fixes: empty slots after late cancellations", false],
-  ["clients", "07-membership.html", "Skin membership", "Monthly plans billed automatically, for steady income across both clinics.", "Fixes: up and down months", false],
   ["staff", "08-staff-app.html", "Staff app", "Today's clients, one tap to finish a treatment and send aftercare, and the call back list.", "Fixes: Timely can't tell us a visit is done", false],
   ["staff", "09-training-hub.html", "Training and protocols hub", "Every treatment's steps, aftercare scripts and your rebooking method in one place.", "Fixes: slow onboarding of new therapists", false],
   ["staff", "10-scorecard.html", "Therapist scorecard", "Rebook rate, retail sales and reviews per therapist, with bonus rules you set.", "Fixes: no clear view of who needs help", false],
@@ -93,10 +90,11 @@ const APPS = [
 ];
 APPS.forEach((a, i) => {
   const [group, href, name, desc, fixes, pick] = a;
+  const num = href.slice(0, 2);
   const el = document.createElement("a");
   el.className = "card app-card" + (pick ? " pick" : "");
   el.href = href;
-  el.innerHTML = `<div class="num">${String(i + 1).padStart(2, "0")}</div><h3>${name}</h3><p>${desc}</p><div class="fixes">${fixes}</div>`;
+  el.innerHTML = `<div class="num">${num}</div><h3>${name}</h3><p>${desc}</p><div class="fixes">${fixes}</div>`;
   document.getElementById(group).appendChild(el);
 });
 </script>
