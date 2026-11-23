@@ -31,6 +31,7 @@
     team: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
     star: '<path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/>',
     plug: '<path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/>',
+    grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>'
   };
   function I(n, s) {
@@ -47,8 +48,7 @@
     email: ["Email", "#7a6455", "Send email"],
     web: ["Website chat", "#b8925a", "Reply in chat"],
     scan: ["Skin Check", "#8a6a3a", "Send SMS"],
-    review: ["Google review", "#c08a2e", "Post reply on Google"],
-    call: ["Missed call", "#5b6b8a", "Send SMS"]
+    review: ["Google review", "#c08a2e", "Post reply on Google"]
   };
 
   var SAFE_INJ = "Thanks for asking. Pricing for cosmetic injectables is given at a free consultation with one of our registered nurses, so it's matched to you. Would you like a consult time?";
@@ -76,22 +76,15 @@
         { f: "bot", t: "Hi Chloe, still keen on your HIFU double chin session? Your $50 deposit comes off the treatment price. Finish booking here: skinlux.au/b/hifu", at: "Fri 9:00am" },
         { f: "them", t: "Is the deposit refundable if I need to move it?", at: "1:58pm" }],
       draft: "Hi Chloe, you can move your booking up to 48 hours before at no cost, and the deposit moves with it. Want me to hold Thursday 6pm at Booragoon for you?" },
-    { id: "c3", name: "@jess.glow", ch: "ig", clinic: "leederville", at: "1:31pm", unread: true, inj: true, assigned: "Concierge", phone: "Instagram DM",
-      wf: "Concierge answered, consult wanted",
+    { id: "c3", name: "@jess.glow", ch: "ig", clinic: "leederville", at: "1:31pm", unread: true, inj: true, assigned: "Nurse Maria", phone: "Instagram DM",
+      wf: "Injectable question: compliance check on",
       msgs: [
         { f: "them", t: "How much is Botox?", at: "1:30pm" },
-        { f: "bot", t: "Hi Jess, thanks for asking. Pricing for cosmetic injectables is given at a free consultation with one of our registered nurses, so it's matched to you. Would you like a consult time at Leederville?", at: "1:30pm, Concierge" },
-        { f: "them", t: "Yes please, Saturday morning?", at: "1:31pm" }],
-      draft: "Lovely. Nurse Maria has Saturday 9:30am or 11am at Leederville. Which suits you?" },
+        { f: "them", t: "Do you have anything Saturday morning?", at: "1:31pm" }],
+      draft: "Hi Jess, thanks for asking. Pricing for cosmetic injectables is given at a free consultation with one of our registered nurses, so it's matched to you. Nurse Maria has Saturday 9:30am or 11am at Leederville. Which suits you?" },
     { id: "c4", name: "Priya Sharma", ch: "fb", clinic: "leederville", at: "12:47pm", unread: true, assigned: "", phone: "0447 302 118", wf: "New lead",
       msgs: [{ f: "them", t: "Hi, do you have Saturday spots for the $247 carbon laser offer in Leederville?", at: "12:47pm" }],
       draft: "Hi Priya, yes. We have Saturday 10am and 2:30pm at Leederville for the carbon laser offer (face, LED and consult, $247). There are 7 spots left this month. Which time would you like?" },
-    { id: "c7", name: "0408 551 902", ch: "call", clinic: "leederville", at: "11:05am", unread: true, assigned: "", phone: "0408 551 902", wf: "Missed call text back",
-      msgs: [
-        { f: "sys", t: "11:04am: missed call on the Leederville line while the team was with clients." },
-        { f: "bot", t: "Hi, sorry we missed your call at Skinlux Leederville. We're with a client right now. How can we help? You can also book here: skinlux.au/book", at: "11:04am" },
-        { f: "them", t: "Hi, wanting to book IPL full legs. How many sessions do I need?", at: "11:05am" }],
-      draft: "Thanks for texting back. Most people need 8 to 12 sessions, 3 to 4 weeks apart, and full legs are $259 a session. Can I grab your name and book your first one?" },
     { id: "c9", name: "Mia Robinson", ch: "sms", clinic: "leederville", at: "10:22am", unread: false, assigned: "Shakira Hewitt", phone: "0420 776 315", wf: "Workflow 4: no rebooking",
       msgs: [
         { f: "bot", t: "Hi Mia, you're due for IPL session 6 of 10. Keeping to every 4 weeks gets the best result. Book here: skinlux.au/b/ipl", at: "Wed 9:00am" },
@@ -100,13 +93,12 @@
     { id: "c6", name: "Ava Mitchell", ch: "review", clinic: "booragoon", at: "8:12am", unread: false, assigned: "Sharon Kim", phone: "0438 661 205", wf: "Review reply due today",
       msgs: [{ f: "them", t: "3 stars. The treatment was lovely but I waited 20 minutes past my time.", at: "8:12am" }],
       draft: "Hi Ava, thank you for the honest review, and sorry about the wait. That's not the visit we want for you. We'd love to have you back, and your next visit comes with a complimentary LED add on. Jellie, Skinlux" },
-    { id: "c12", name: "Ruby Patel", ch: "web", clinic: "booragoon", at: "Sun", unread: false, assigned: "Concierge", phone: "0431 220 784", wf: "Concierge answered after hours",
+    { id: "c12", name: "Ruby Patel", ch: "web", clinic: "booragoon", at: "Sun", unread: false, assigned: "Sharon Kim", phone: "0431 220 784", wf: "Website chat: call back requested",
       msgs: [
-        { f: "them", t: "Is HIFU painful?", at: "Sun 10:41pm" },
-        { f: "bot", t: "Most clients feel warm prickles in some spots, and it's over in 45 to 60 minutes. There's no downtime, just slight redness for up to an hour. Would you like to book the double chin offer at $174?", at: "Sun 10:41pm, Concierge" },
-        { f: "them", t: "Yes, can someone call me tomorrow?", at: "Sun 10:42pm" },
-        { f: "sys", t: "Concierge handed this to the team: call back requested." }],
-      draft: "Hi Ruby, it's Skinlux Booragoon following up on your HIFU question last night. Is now a good time for a quick call?" },
+        { f: "them", t: "Is HIFU painful? I saw the double chin offer.", at: "Sun 10:41pm" },
+        { f: "them", t: "Can someone call me tomorrow? 0431 220 784", at: "Sun 10:42pm" },
+        { f: "sys", t: "Arrived after hours. Task created for Sharon to call Ruby on Monday morning." }],
+      draft: "Hi Ruby, it's Sharon from Skinlux Booragoon. Most clients feel warm prickles in a few spots, and it's over in 45 to 60 minutes with no downtime. Is now a good time for a quick call about the double chin offer?" },
     { id: "c8", name: "Grace Nguyen", ch: "sms", clinic: "leederville", at: "Fri", unread: false, nurse: true, paused: true, assigned: "Nurse Maria", phone: "0416 302 947", wf: "Workflow 2: paused for a nurse",
       msgs: [
         { f: "sys", t: "Wed: skin needling with Nurse Maria." },
@@ -213,7 +205,7 @@
   var LEADS = [
     { n: "Sarah Ng", src: "Skin Check", i: "12 week plan", c: "booragoon", s: 0, age: "20 min", v: 3320, cv: "c5" },
     { n: "Priya Sharma", src: "Facebook", i: "Carbon laser offer", c: "leederville", s: 0, age: "2 hrs", v: 247, cv: "c4" },
-    { n: "0408 551 902", src: "Missed call", i: "IPL full legs", c: "leederville", s: 0, age: "3 hrs", v: 2072, cv: "c7" },
+    { n: "Zoe Clarke", src: "Offer page", i: "IPL full legs", c: "leederville", s: 0, age: "3 hrs", v: 2072 },
     { n: "Ruby Patel", src: "Website chat", i: "HIFU double chin", c: "booragoon", s: 0, age: "16 hrs", v: 174, cv: "c12" },
     { n: "Kate Lowe", src: "Meta ad", i: "HIFU double chin", c: "booragoon", s: 1, age: "Today", v: 174 },
     { n: "Chloe Bennett", src: "Abandoned booking", i: "HIFU double chin", c: "booragoon", s: 1, age: "6 days", v: 174, cv: "c2" },
@@ -224,7 +216,7 @@
     { n: "Nina Patel", src: "Skin Check", i: "HIFU full face and neck", c: "booragoon", s: 3, age: "Fri", v: 1800 },
     { n: "Hayley Cox", src: "Meta ad", i: "EMS body sculpting", c: "booragoon", s: 4, age: "2 weeks", v: 147 }
   ];
-  var SOURCES = [["Meta ads", 58, 21], ["Skin Check", 41, 17], ["Instagram", 33, 9], ["Website chat", 29, 11], ["Google", 24, 12], ["Missed calls", 18, 8], ["Treatment quiz", 15, 6], ["Facebook", 12, 3]];
+  var SOURCES = [["Meta ads", 58, 21], ["Skin Check", 41, 17], ["Instagram", 33, 9], ["Website chat", 29, 11], ["Google", 24, 12], ["Offer pages", 18, 8], ["Treatment quiz", 15, 6], ["Facebook", 12, 3]];
 
   var FLOWS = [
     { n: "1. Abandoned booking", on: true, now: 23, a: [67, "came in"], b: [16, "booked after all"], c: ["$12,810", "recovered"],
@@ -237,10 +229,10 @@
       log: ["10:22am: Mia Robinson replied, wants Thursday after 5", "9:00am: 14 reminders sent"] },
     { n: "AI Skin Check follow up", on: true, now: 14, a: [41, "scans"], b: [17, "booked"], c: ["$21,400", "in plans booked"],
       log: ["2:20pm: Sarah Ng scanned, alert sent to Booragoon", "Fri: Nina Patel booked HIFU from her plan"] },
-    { n: "Missed call text back", on: true, now: 3, a: [57, "missed calls"], b: [49, "texted back"], c: [18, "booked"],
-      log: ["11:04am: Leederville missed call, text sent in 6 seconds"] },
-    { n: "Concierge chat", on: true, now: 0, a: [312, "chats answered"], b: [41, "bookings"], c: ["94%", "answered without the team"],
-      log: ["1:30pm: Instagram injectable question answered with a consult offer, no price", "Sun 10:41pm: HIFU question answered after hours"] }
+    { n: "New lead: call within 15 minutes", on: true, now: 4, a: [230, "leads this month"], b: ["11 min", "average time to first call"], c: [87, "booked"],
+      log: ["2:21pm: Sarah Ng from the Skin Check, Sharon alerted", "12:47pm: Priya Sharma from Facebook, unassigned"] },
+    { n: "Waitlist slot filler", on: true, now: 2, a: [9, "cancellations this week"], b: [7, "slots filled"], c: ["$2,140", "kept in the diary"],
+      log: ["1:10pm: Leederville 3pm cancelled, 6 waitlist clients texted", "1:14pm: Grace Bell took the slot"] }
   ];
 
   var REVIEWS = [
@@ -271,17 +263,18 @@
   var ui = { view: "overview", convo: "c1", ibf: "all", ibch: "", q: "", cf: "all", warn: null, read: {} };
 
   var NAV = [["grp", "Run the day"], ["overview", "Overview", "home"], ["inbox", "Inbox", "inbox"], ["today", "Today", "cal"], ["clients", "Clients", "users"],
-    ["grp", "Grow"], ["leads", "Leads", "leads"], ["flows", "Workflows", "flow"], ["reviews", "Reviews", "star"],
+    ["grp", "Grow"], ["leads", "Leads", "leads"], ["flows", "Workflows", "flow"], ["reviews", "Reviews", "star"], ["apps", "Apps", "grid"],
     ["grp", "Team and setup"], ["team", "Team", "team"], ["connections", "Connections", "plug"]];
-  var TITLES = { overview: "Overview", inbox: "Inbox", today: "Today", clients: "Clients", leads: "Leads", flows: "Workflows", reviews: "Reviews", team: "Team", connections: "Connections" };
+  var TITLES = { overview: "Overview", inbox: "Inbox", today: "Today", clients: "Clients", leads: "Leads", flows: "Workflows", reviews: "Reviews", apps: "Apps", team: "Team", connections: "Connections" };
   var SUBS = {
     overview: "Both clinics, every number, one screen",
     inbox: "Every SMS, WhatsApp, Instagram, Facebook, email, chat and review in one place",
     today: "Today's Timely diary, live. Monday 23 November, 2:40pm",
     clients: "Every client from Timely, with history, courses, products and tags",
-    leads: "Every new enquiry from ads, the Skin Check, chat and missed calls",
+    leads: "Every new enquiry from ads, the Skin Check, offer pages, the quiz and chat",
     flows: "Your automations, running live",
     reviews: "Google reviews for both clinics",
+    apps: "Every Skinlux app, live, in one place",
     team: "Who is doing what today",
     connections: "Everything Skinlux HQ is connected to"
   };
@@ -324,7 +317,7 @@
   function renderAll() {
     renderNav();
     var f = { overview: renderNeeds, inbox: renderInbox, today: renderToday, clients: renderClients, leads: renderLeads,
-      flows: renderFlows, reviews: renderReviews, team: renderTeam, connections: renderConn }[ui.view];
+      flows: renderFlows, reviews: renderReviews, apps: renderApps, team: renderTeam, connections: renderConn }[ui.view];
     if (f) f();
     renderBell();
   }
@@ -350,7 +343,6 @@
       if (v.status === "done") return false;
       if (ui.ibf === "unread") return v.unread;
       if (ui.ibf === "nurse") return v.nurse;
-      if (ui.ibf === "ai") return v.assigned === "Concierge";
       if (ui.ibf === "mine") return v.assigned === "Jellie";
       if (ui.ibf === "none") return !v.assigned;
       return true;
@@ -364,15 +356,13 @@
     var pre = last.f === "us" ? "You: " : last.f === "bot" ? "Auto: " : "";
     var tags = chBadge(v.ch) + '<span class="chn">' + LOC(v.clinic) + "</span>" +
       (v.nurse ? '<span class="chn" style="background:var(--bad-soft);color:var(--bad)">Nurse</span>' : "") +
-      (v.assigned === "Concierge" ? '<span class="chn" style="background:var(--gold-soft);color:var(--mocha)">AI answered</span>' : "") +
       (!v.assigned ? '<span class="chn" style="background:var(--warn-soft);color:var(--warn)">Unassigned</span>' : "");
     return '<div class="ib-item' + (v.id === ui.convo ? " on" : "") + (v.unread ? " unread" : "") + '" data-cv="' + v.id + '">' + avatar(v.name, v.ch) +
       '<div style="min-width:0"><div class="top"><span class="nm">' + esc(v.name) + '</span><small class="muted">' + esc(v.at) + "</small></div>" +
       '<div class="prev">' + pre + esc(last.t.split("\n")[0]) + '</div><div class="tagrow">' + tags + "</div></div></div>";
   }
   function threadHtml(v) {
-    var opts = '<option value="">Unassigned</option>' + S.team.map(function (m) { return "<option" + (v.assigned === m.name ? " selected" : "") + ">" + m.name + "</option>"; }).join("") +
-      "<option" + (v.assigned === "Concierge" ? " selected" : "") + ">Concierge</option>";
+    var opts = '<option value="">Unassigned</option>' + S.team.map(function (m) { return "<option" + (v.assigned === m.name ? " selected" : "") + ">" + m.name + "</option>"; }).join("");
     var h = '<div class="ib-thread"><div class="th-head">' + avatar(v.name, v.ch) +
       '<div class="who"><b>' + esc(v.name) + '</b><div class="muted" style="font-size:12px">' + CH[v.ch][0] + " &middot; " + LOC(v.clinic) + " &middot; " + esc(v.wf) + "</div></div>" +
       '<div class="th-ctl"><select id="thAssign" aria-label="Assign to">' + opts + "</select>" +
@@ -381,7 +371,7 @@
       '<div class="th-body" id="thBody">';
     h += v.msgs.map(function (m) {
       if (m.f === "sys") return '<div class="sysline">' + esc(m.t) + "</div>";
-      var who = m.f === "them" ? "" : m.f === "bot" ? (/Concierge/.test(m.at || "") ? "" : "Sent automatically") : (m.by || "You");
+      var who = m.f === "them" ? "" : m.f === "bot" ? "Sent automatically" : (m.by || "You");
       return '<div class="bub ' + m.f + '">' + esc(m.t) + "<small>" + [m.at, who].filter(Boolean).map(esc).join(", ") + "</small></div>";
     }).join("");
     h += '</div><div class="composer">' +
@@ -411,7 +401,7 @@
   function renderInbox() {
     var list = convoList();
     if (!list.some(function (v) { return v.id === ui.convo; })) ui.convo = list.length ? list[0].id : null;
-    var fl = [["all", "All"], ["unread", "Unread"], ["nurse", "Needs a nurse"], ["none", "Unassigned"], ["ai", "Answered by AI"], ["mine", "Mine"], ["done", "Done"]];
+    var fl = [["all", "All"], ["unread", "Unread"], ["nurse", "Needs a nurse"], ["none", "Unassigned"], ["mine", "Mine"], ["done", "Done"]];
     var chOpts = '<option value="">All channels</option>' + Object.keys(CH).map(function (k) { return '<option value="' + k + '"' + (ui.ibch === k ? " selected" : "") + ">" + CH[k][0] + "</option>"; }).join("");
     var h = '<div class="inbox"><div class="ib-list"><div class="ib-filters">' +
       fl.map(function (f) { return '<span class="chip' + (ui.ibf === f[0] ? " on" : "") + '" data-ibf="' + f[0] + '">' + f[1] + "</span>"; }).join("") +
@@ -447,7 +437,7 @@
       v.status = "done";
       toast("Reply posted on Google for " + LOC(v.clinic) + ".");
     } else {
-      toast("Sent by " + CH[v.ch][0].replace("Missed call", "SMS").replace("Skin Check", "SMS") + " from the " + LOC(v.clinic) + " account. Saved on " + v.name.split(" ")[0] + "'s contact.");
+      toast("Sent by " + CH[v.ch][0].replace("Skin Check", "SMS") + " from the " + LOC(v.clinic) + " account. Saved on " + v.name.split(" ")[0] + "'s contact.");
     }
     renderInbox();
   }
@@ -563,7 +553,7 @@
       SOURCES.map(function (s) {
         return '<div class="srcbar"><span>' + s[0] + '</span><div class="bar"><span style="width:' + (s[1] / max * 100) + '%"></span></div><b>' + sc(s[1]) + ' <small class="muted">(' + sc(s[2]) + ")</small></b></div>";
       }).join("") + '</div><div class="grid g2" style="align-content:start">' +
-      kpi("Leads this month", sc(230), "All channels") + kpi("Booked", sc(87), "38% of leads") + kpi("Average reply time", "4 min", "Team and Concierge") + kpi("Waiting for a call", list.filter(function (l) { return l.s === 0; }).length, "Oldest first") + "</div></div>";
+      kpi("Leads this month", sc(230), "All channels") + kpi("Booked", sc(87), "38% of leads") + kpi("Average reply time", "4 min", "Whole team") + kpi("Waiting for a call", list.filter(function (l) { return l.s === 0; }).length, "Oldest first") + "</div></div>";
     h += '<div class="kan mt">' + STAGES.map(function (st, si) {
       var col = list.filter(function (l) { return l.s === si; });
       return '<div class="kcol"><h4><span>' + st + "</span><span>" + col.length + "</span></h4>" + col.map(function (l) {
@@ -626,6 +616,34 @@
     $("v-team").innerHTML = h;
   }
 
+  /* ---------- Apps: every app in the Skinlux suite ---------- */
+  function appsData() {
+    return [
+    ["Staff app", "08-staff-app.html", "For the team", [[sc(23), "treatments tapped done today"], [sc(6), "call backs done"]], "today"],
+    ["My Skinlux client app", "01-client-app.html", "For clients", [[sc(412), "clients using it"], [sc(38), "aftercare guides opened this week"]], "clients"],
+    ["AI Skin Check", "16-skin-scan.html", "For clients", [[sc(41), "scans this month"], [sc(17), "booked from a scan"]], "leads"],
+    ["Treatment finder quiz", "04-treatment-quiz.html", "For clients", [[sc(15), "quiz leads this month"], ["Acne", "top concern"]], "leads"],
+    ["Intake and consent forms", "05-intake-forms.html", "For clients", [[sc(9), "forms done for today"], [sc(1), "flag for a nurse"]], "today"],
+    ["Waitlist slot filler", "06-waitlist.html", "For clients", [[sc(7), "slots filled this week"], [money(sc(2140)), "kept in the diary"]], "flows"],
+    ["Training and protocols hub", "09-training-hub.html", "For the team", [[18, "treatment protocols"], ["4 of 5", "team up to date"]], "team"],
+    ["Therapist scorecard", "10-scorecard.html", "For the team", [["74%", "best rebook rate (Nurse Leo)"], [money(sc(11170)), "retail this month"]], "team"],
+    ["Stock tracker", "12-stock.html", "For you", [[STOCK.filter(function (x) { return inClinic(x.c) && !x.ordered; }).length, "items running low"], [sc(2), "orders drafted"]], "connections"],
+    ["Ad compliance checker", "13-compliance-checker.html", "For you", [[sc(12), "ads and emails checked"], [sc(2), "fixed before going out"]], ""],
+    ["Offer page builder", "14-offer-builder.html", "For you", [[5, "offers live"], [sc(19), "spots left this month"]], "leads"],
+    ["Website and review monitor", "15-monitor.html", "For you", [["Up", "loads in 1.2s"], [REVIEWS.filter(function (r) { return inClinic(r.c) && !r.replied; }).length, "reviews to reply to"]], "reviews"]
+  ];
+  }
+  function renderApps() {
+    var h = '<div class="card soft" style="margin-bottom:16px"><b>Every app reports into Skinlux HQ.</b> <span class="muted">Each card shows the numbers for that app, for the clinic picked at the top. Open the app, or jump to where its work shows up in HQ.</span></div>' +
+      '<div class="grid g3">' + appsData().map(function (a) {
+        return '<div class="card"><div class="muted" style="font-size:12px;letter-spacing:1px;text-transform:uppercase">' + a[2] + '</div><h3 style="margin:4px 0 12px">' + a[0] + "</h3>" +
+          '<div class="grid g2" style="gap:10px">' + a[3].map(function (k) { return '<div><div style="font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1">' + k[0] + '</div><div class="muted" style="font-size:12.5px">' + k[1] + "</div></div>"; }).join("") + "</div>" +
+          '<div class="row" style="gap:8px;margin-top:14px"><a class="btn sm" href="' + a[1] + '" target="_blank" rel="noopener">Open app</a>' +
+          (a[4] ? '<button class="btn sm ghost" data-go="' + a[4] + '">See it in HQ</button>' : "") + "</div></div>";
+      }).join("") + "</div>";
+    $("v-apps").innerHTML = h;
+  }
+
   /* ---------- Connections ---------- */
   function renderConn() {
     var CONN = [
@@ -633,9 +651,8 @@
       ["GoHighLevel", "Emails, texts, tags, waits and team tasks", "Live"],
       ["clientcare inbox", "Reads Timely's incomplete booking and confirmation emails", "Checked 1 min ago"],
       ["WhatsApp Business", "Booragoon and Leederville numbers", "Live"],
-      ["Instagram and Facebook", "DMs and comments, answered by the Concierge", "Live"],
+      ["Instagram and Facebook", "DMs and comments, straight into the inbox", "Live"],
       ["Google Business Profile", "Reviews for both clinics", "Checked 5 min ago"],
-      ["Phone lines", S.locations.booragoon.phone + " and " + S.locations.leederville.phone + ", missed call text back", "Live"],
       ["Staff app", "5 team members signed in", "Live"],
       ["Website", "skinluxfaceandbody.com.au, checked every minute", "Up, loads in 1.2s"]
     ];
@@ -684,13 +701,12 @@
   /* ---------- Live events, so the demo feels alive ---------- */
   function liveEvents() {
     setTimeout(function () {
-      CONVOS.unshift({ id: "c20", name: "@mel.skinjourney", ch: "ig", clinic: "leederville", at: "Just now", unread: true, inj: true, assigned: "Concierge", phone: "Instagram DM",
-        wf: "Concierge answered, consult offered",
-        msgs: [{ f: "them", t: "Hey, do you do lip filler? What's the price?", at: "Just now" },
-          { f: "bot", t: "Hi Mel, yes, our registered nurses do lip treatments at Leederville. Pricing is given at a free consultation so it's matched to you. Would you like a consult time?", at: "Just now, Concierge" }],
-        draft: "Hi Mel, Nurse Maria has Thursday 3pm or Saturday 10am free for a consult at Leederville. Which suits?" });
+      CONVOS.unshift({ id: "c20", name: "@mel.skinjourney", ch: "ig", clinic: "leederville", at: "Just now", unread: true, inj: true, assigned: "Nurse Maria", phone: "Instagram DM",
+        wf: "Injectable question: compliance check on",
+        msgs: [{ f: "them", t: "Hey, do you do lip filler? What's the price?", at: "Just now" }],
+        draft: "Hi Mel, yes, our registered nurses do lip treatments at Leederville. Pricing is given at a free consultation so it's matched to you. Nurse Maria has Thursday 3pm or Saturday 10am free. Which suits?" });
       renderAll();
-      toast("New Instagram message at Leederville. The Concierge answered it with a consult offer and no price.");
+      toast("New Instagram message at Leederville. It's an injectable question, so the compliance check is on for the reply.");
     }, 25000);
     setTimeout(function () {
       CONVOS.unshift({ id: "c21", name: "Tegan Brooks", ch: "scan", clinic: "booragoon", at: "Just now", unread: true, assigned: "Sharon Kim", phone: "0419 664 205",
