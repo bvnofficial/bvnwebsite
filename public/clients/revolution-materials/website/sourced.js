@@ -309,13 +309,10 @@
     var box = document.getElementById("rmnewslist");
     if (box) {
       var st = document.createElement("style");
-      st.textContent = newsCss;
+      /* the GoHighLevel page has an empty builder section above the site; hide it
+         with a rule, since the page's own scripts redraw that section */
+      st.textContent = newsCss + ".c-section:has(> .inner > .empty-slot){display:none!important}";
       document.head.appendChild(st);
-      /* the GoHighLevel page has an empty builder section above the site; hide it */
-      document.querySelectorAll(".empty-slot").forEach(function (e) {
-        var s = e.closest(".c-section");
-        if (s && !s.querySelector(".rm")) s.style.display = "none";
-      });
     }
     fetch(API.replace("/sourced", "/news"), { cache: "no-cache" })
       .then(function (r) { return r.ok ? r.json() : null; })
