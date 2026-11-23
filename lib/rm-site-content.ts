@@ -47,18 +47,6 @@ add(g, "hero.img", "Main photo", ".hero figure img", "img", img("6afab7637c3b573
 add(g, "hero.capT", "Photo caption, bold line", ".hero figcaption b", "text", "Sourced from mills worldwide");
 add(g, "hero.capS", "Photo caption, second line", ".hero figcaption", "own", "Delivered anywhere in Australia, with full material certification.");
 
-/* Strip under the top */
-g = "Strip under the top section";
-[
-  ["Decades in metals", "Experience you can call on"],
-  ["Global network", "Manufacturers, mills and suppliers"],
-  ["Fully certified", "ASTM, ASME, AMS, EN and more"],
-  ["Australia wide", "Delivery to any state"],
-].forEach(([b, s], i) => {
-  add(g, `trust.${i + 1}.b`, `Item ${i + 1}, bold`, `.trust .wrap > div:nth-child(${i + 1}) b`, "text", b);
-  add(g, `trust.${i + 1}.s`, `Item ${i + 1}, small`, `.trust .wrap > div:nth-child(${i + 1}) span`, "text", s);
-});
-
 /* Materials */
 g = "Materials";
 add(g, "mat.k", "Small heading", "#materials .sh .k", "text", "Materials");
@@ -167,8 +155,6 @@ more(g, "stats.show", "Show the statistics band", "#rmstats", "show", "show");
 g = "Show or hide parts of the page";
 more(g, "show.lead2", "Second line in the top section", ".hero .lead2", "show", "show");
 more(g, "show.welcome", "Line under the buttons in the top section", ".hero .welcome", "show", "show");
-more(g, "show.trust", "Strip under the top section", ".trust", "show", "show");
-[1, 2, 3, 4].forEach((i) => more(g, `show.trust.${i}`, `Strip item ${i}`, `.trust .wrap > div:nth-child(${i})`, "show", "show"));
 more(g, "show.materials", "Materials section", "#materials", "show", "show");
 MATS.forEach(([name], i) => more(g, `show.mat.${i + 1}`, `Materials card: ${name}`, `#materials .mat:nth-child(${i + 1})`, "show", "show"));
 more(g, "show.mat.ask", "Materials card: Not on the list?", "#materials .mat.ask", "show", "show");

@@ -484,7 +484,7 @@ VIEW.emails=()=>{
 };
 /* ---------- live preview of the website beside the Text and photos editor ---------- */
 const PV={el:null,frame:null,ready:false,mode:"desktop",open:false,hov:null,t:0};
-const PV_GROUP=[[".hero","Top of the page"],[".trust","Strip under the top section"],["#materials","Materials"],["#forms","Forms and fasteners"],["#rmstats","Statistics"],["#experience","Experience and service"],["#sourced","Materials we've sourced (heading)"],["#enquire","Enquiry section"],["footer","Footer"],["header","Logo, menu and buttons"]];
+const PV_GROUP=[[".hero","Top of the page"],["#rmstats","Statistics"],["#materials","Materials"],["#forms","Forms and fasteners"],["#experience","Experience and service"],["#sourced","Materials we've sourced (heading)"],["#enquire","Enquiry section"],["footer","Footer"],["header","Logo, menu and buttons"]];
 function pvEnsure(){
   if(PV.el)return;
   const w=document.createElement("div");w.id="pvwrap";

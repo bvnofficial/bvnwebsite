@@ -353,11 +353,14 @@
   ];
   function stats() {
     if (document.getElementById("rmstats")) return;
-    var before = document.getElementById("experience");
+    /* the stats band replaces the old strip under the top section (Jim, 24 Nov 2026) */
+    var trust = document.querySelector(".rm .trust");
+    var hero = document.querySelector(".rm .hero");
+    var before = trust || (hero && hero.nextElementSibling) || document.getElementById("experience");
     if (!before) return;
     var st = document.createElement("style");
     st.textContent =
-      "#rmstats{background:var(--navy,#003a7c);color:#fff;padding:56px 0}" +
+      ".rm .trust{display:none!important}#rmstats{background:var(--navy,#003a7c);color:#fff;padding:56px 0}" +
       "#rmstats .sgrid{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:24px;text-align:center}" +
       "#rmstats .sv{font-size:clamp(38px,5vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}" +
       "#rmstats .sl{margin-top:10px;font-size:15px;font-weight:600;color:#cfdcf0;line-height:1.4}" +
@@ -373,6 +376,7 @@
         '<div class="sl">' + esc(s.label) + "</div></div>";
     }).join("") + "</div></div>";
     before.parentNode.insertBefore(sec, before);
+    if (trust) trust.parentNode.removeChild(trust);
 
     var nums = sec.querySelectorAll(".sv");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
