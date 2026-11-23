@@ -1,3 +1,5 @@
+import { rmRedirects } from "./rm-redirects.mjs";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -9,6 +11,8 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Revolution Materials bare domain and .au domain (host-gated, see rm-redirects.mjs).
+      ...rmRedirects(),
       // Skinlux app suite demo: the hub's links are relative, so send the short URL to the file.
       { source: "/clients/skinlux", destination: "/clients/skinlux/index.html", permanent: false },
       // Moved the Regal Homes client deliverable under /client/.
