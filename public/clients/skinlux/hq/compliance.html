@@ -1,0 +1,428 @@
+﻿<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compliance checker | Skinlux app suite</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/data.js"></script>
+<style>
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; align-items: start; margin-top: 16px; }
+  @media (max-width: 960px) { .layout { grid-template-columns: 1fr; } }
+  #msg { min-height: 190px; font-size: 15px; line-height: 1.55; }
+  .controls { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-top: 10px; }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .counter { font-size: 12px; color: var(--muted); text-align: right; margin-top: 4px; }
+
+  .verdict { border-radius: 12px; padding: 16px 18px; display: flex; gap: 14px; align-items: center; }
+  .verdict .icon { width: 42px; height: 42px; border-radius: 99px; flex: none; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; color: var(--white); }
+  .verdict.bad { background: var(--bad-soft); } .verdict.bad .icon { background: var(--bad); }
+  .verdict.warn { background: var(--warn-soft); } .verdict.warn .icon { background: var(--warn); }
+  .verdict.ok { background: var(--ok-soft); } .verdict.ok .icon { background: var(--ok); }
+  .verdict.idle { background: var(--sand); } .verdict.idle .icon { background: var(--taupe); }
+  .verdict h3 { margin: 0; }
+  .verdict p { margin: 2px 0 0; font-size: 13px; color: var(--mocha); }
+  .counts { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+
+  .highlighted { white-space: pre-wrap; background: var(--cream); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 15px; line-height: 1.8; margin-top: 12px; }
+  mark { padding: 1px 2px; border-radius: 4px; cursor: pointer; color: inherit; }
+  mark.m-must { background: #f1cdc8; box-shadow: inset 0 -2px 0 var(--bad); }
+  mark.m-check { background: #f4e0bb; box-shadow: inset 0 -2px 0 var(--warn); }
+  mark.m-tip { background: #e8e1d7; box-shadow: inset 0 -2px 0 var(--taupe); }
+  mark.pulse, .flag.pulse { animation: pulse 1s ease; }
+  @keyframes pulse { 0% { outline: 3px solid var(--gold); } 100% { outline: 3px solid transparent; } }
+
+  .flags { margin-top: 14px; }
+  .flag { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: var(--white); border-left-width: 4px; }
+  .flag.must { border-left-color: var(--bad); }
+  .flag.check { border-left-color: var(--warn); }
+  .flag.tip { border-left-color: var(--taupe); }
+  .flag .top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .flag .title { font-weight: 600; }
+  .flag .match { font-size: 13px; background: var(--cream); border-radius: 6px; padding: 2px 8px; color: var(--mocha); }
+  .flag .why { font-size: 13px; color: var(--muted); margin: 6px 0 4px; }
+  .flag .fix { font-size: 13px; }
+  .flag .fix b { color: var(--ok); }
+  .badge.tipb { background: var(--sand); color: var(--mocha); }
+
+  .rewrite { margin-top: 16px; display: none; }
+  .rewrite.show { display: block; }
+  .rewrite .out { white-space: pre-wrap; background: var(--ok-soft); border-radius: 10px; padding: 14px; font-size: 15px; line-height: 1.6; }
+  .rules-list { columns: 2; column-gap: 28px; font-size: 13px; color: var(--mocha); padding-left: 18px; margin: 8px 0 0; }
+  .rules-list li { margin-bottom: 6px; break-inside: avoid; }
+  @media (max-width: 700px) { .rules-list { columns: 1; } }
+  .disclaimer { text-align: center; font-size: 13px; color: var(--muted); margin-top: 22px; }
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Ad compliance checker</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="page">
+  <div class="page-head">
+    <h1>Compliance checker</h1>
+    <p>Paste any ad, email, SMS or caption before it goes out. It flags AHPRA, TGA and Spam Act problems and suggests a safer version.</p>
+  </div>
+  <div class="note">Paste any ad, email, SMS or caption before it goes out. Checks run on this device; nothing is sent anywhere.</div>
+
+  <div class="layout">
+    <div>
+      <div class="card">
+        <label for="msg" style="margin-top:0">Paste an ad, email, SMS or Instagram caption</label>
+        <textarea id="msg" placeholder="For example: Carbon laser facial this month, $247 with LED and a skin consult..."></textarea>
+        <div class="counter" id="counter">0 characters</div>
+        <div class="controls">
+          <div>
+            <label for="channel">Channel</label>
+            <select id="channel">
+              <option value="ad">Facebook or Instagram ad</option>
+              <option value="google">Google ad</option>
+              <option value="insta">Instagram caption</option>
+              <option value="email">Email</option>
+              <option value="sms">SMS</option>
+              <option value="web">Website page</option>
+            </select>
+          </div>
+          <div class="row">
+            <button class="btn ghost" id="clearBtn">Clear</button>
+            <button class="btn" id="checkBtn">Check</button>
+          </div>
+        </div>
+        <label style="margin-top:16px">Try an example</label>
+        <div class="examples">
+          <button class="chip" data-ex="0">Risky injectable promo</button>
+          <button class="chip" data-ex="1">Compliant HIFU ad</button>
+          <button class="chip" data-ex="2">SMS with no opt out</button>
+          <button class="chip" data-ex="3">Instagram filler quote</button>
+        </div>
+      </div>
+
+      <div class="card rewrite" id="rewriteCard">
+        <div class="row between"><h3 style="margin:0">Safe rewrite</h3><span id="rewriteBadge"></span></div>
+        <p class="muted" style="font-size:13px">Prices, offers and quotes are taken off injectables, brand names become plain words, and the opt out is added for the channel.</p>
+        <div class="out" id="rewriteOut"></div>
+        <div class="row wrap" style="margin-top:12px">
+          <button class="btn sm" id="useBtn">Use this version</button>
+          <button class="btn sm ghost" id="copyBtn">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="verdict idle" id="verdict">
+        <div class="icon" id="vIcon">?</div>
+        <div><h3 id="vTitle">Nothing checked yet</h3><p id="vText">Paste a message or pick an example, then press Check.</p></div>
+        <div class="counts" id="vCounts"></div>
+      </div>
+      <div class="highlighted hidden" id="highlighted"></div>
+      <div class="flags" id="flags"></div>
+      <div class="row wrap hidden" id="afterActions" style="margin-top:6px">
+        <button class="btn gold" id="safeBtn">Safe rewrite</button>
+        <button class="btn ghost" id="sendBtn">Send to Jellie for sign off</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card soft" style="margin-top:16px">
+    <h3>What it checks</h3>
+    <ul class="rules-list">
+      <li>Injectable brand names such as Botox, Dysport, Xeomin, Juvederm and Restylane (TGA)</li>
+      <li>Prices or dollar amounts near injectable words</li>
+      <li>Discounts, limited time wording, spots or freebies near injectables (AHPRA cosmetic guidelines 2023)</li>
+      <li>Client quotes, reviews or testimonials near injectables</li>
+      <li>Before and after claims</li>
+      <li>Guaranteed, permanent or risk free results</li>
+      <li>Pain free or painless claims</li>
+      <li>Superlatives such as best, leading or number one in health claims</li>
+      <li>Missing unsubscribe on emails and missing Reply STOP on SMS (Spam Act 2003)</li>
+      <li>Messages that don't say they're from Skinlux</li>
+    </ul>
+  </div>
+
+  <p class="disclaimer">A helper, not legal advice. Final check by Jellie or a nurse.</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  function $(id) { return document.getElementById(id); }
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+
+  var EXAMPLES = [
+    { channel: "ad", text: "Botox $9 a unit, 20% off this week only, 30 spots! Perth's best injector, results guaranteed and pain free. Book now at Skinlux Booragoon." },
+    { channel: "google", text: "Double chin HIFU at Skinlux Booragoon, $174 this month. Includes your skin consult and a progress consult at 3 months. No needles and no downtime. Only 30 spots this month. Book online." },
+    { channel: "sms", text: "Hi Emma, it's Skinlux Leederville. Your IPL underarms session 4 is due this week. Book here: skinlux.au/book and add LED for 10% off." },
+    { channel: "insta", text: "\"I look 10 years younger, best filler ever!\" says our lovely client Sarah. Lip filler before and after, swipe to see the difference. Book with Nurse Leo, Perth's leading injector. #juvederm #lipfiller #perthskin" }
+  ];
+
+  // Word lists
+  var BRAND_RE = /\b(botox|dysport|xeomin|letybo|relatox|juv[eÃ©]derm|restylane|belotero|teosyal|radiesse|sculptra|profhilo|stylage|revanesse|rejuran)\b/gi;
+  var INJ_RE = /\b(wrinkle relaxers?|anti[\s-]?wrinkle(?: injections?| treatments?)?|dermal fillers?|lip fillers?|fillers?|injectables?|injections?|injectors?|polynucleotides?|skin boosters?|botox|dysport|xeomin|letybo|relatox|juv[eÃ©]derm|restylane|belotero|teosyal|radiesse|sculptra|profhilo|stylage|revanesse|rejuran)\b/gi;
+  var PRICE_RE = /\$\s?\d[\d,]*(?:\.\d{1,2})?(?:\s*(?:a|per|\/)\s*(?:unit|ml|syringe|area|session))?|\b\d+\s?dollars\b/gi;
+  var DISC_RE = /\b\d{1,2}\s?%\s?off\b|\b(?:half price|on sale|sale|specials?|offers?|limited time|limited|this week only|today only|this month only|ends (?:soon|sunday|today|tonight)|\d+\s+spots?|spots?|(?<!pain[\s-])free(?!\s+consult)|discount(?:ed|s)?|deals?|save|bonus|book now and get|only \d+ left)\b/gi;
+  var QUOTE_RE = /[â€œ"]([^â€"]{10,})[â€"]/g;
+  var TESTI_RE = /\b(?:says|said) (?:our )?(?:lovely |happy |gorgeous )?client\b|\b(?:client|customer) (?:review|testimonial|says|said)\b|\b(?:5|five) stars?\b|\breviews?\b|\btestimonials?\b/gi;
+  var BA_RE = /\bbefore\s*(?:and|&|\/|\+|n)\s*after\b|\bbefore\s+(?:pics?|photos?)\b/gi;
+  var GUAR_RE = /\b(?:results guaranteed|guarantee[ds]?|permanent(?:ly)?|forever|100% (?:results|effective|safe)|risk[\s-]?free|no side effects|cures?)\b/gi;
+  var PAIN_RE = /\b(?:pain[\s-]?free|painless|no pain|doesn'?t hurt|zero pain)\b/gi;
+  var SUPER_RE = /\b(?:perth'?s (?:best|leading|top|number one|no\.? ?1)|the best|best|leading|no\.? ?1|number one|top rated|world class|safest|most effective|unbeatable|cheapest|miracle)\b/gi;
+
+  function all(re, text) {
+    var out = [], m;
+    re.lastIndex = 0;
+    while ((m = re.exec(text))) { out.push({ s: m.index, e: m.index + m[0].length, t: m[0] }); if (m[0].length === 0) re.lastIndex++; }
+    return out;
+  }
+  function near(a, injs, dist) {
+    dist = dist || 90;
+    return injs.some(function (b) {
+      var gap = a.s > b.e ? a.s - b.e : b.s > a.e ? b.s - a.e : 0;
+      return gap <= dist;
+    });
+  }
+  function genericFor(word) {
+    var w = word.toLowerCase();
+    if (/botox|dysport|xeomin|letybo|relatox|wrinkle/.test(w)) return "wrinkle relaxers";
+    if (/juv|restylane|belotero|teosyal|stylage|revanesse|radiesse|filler/.test(w)) return "dermal fillers";
+    if (/rejuran|polynucleotide/.test(w)) return "bio stimulating injections";
+    if (/profhilo|sculptra|booster/.test(w)) return "skin booster treatments";
+    return "cosmetic injectables";
+  }
+
+  function analyse(text, channel) {
+    var flags = [];
+    var injs = all(INJ_RE, text);
+    function add(sev, title, m, why, fix) { flags.push({ sev: sev, title: title, s: m ? m.s : -1, e: m ? m.e : -1, t: m ? m.t : "", why: why, fix: fix }); }
+
+    all(BRAND_RE, text).forEach(function (m) {
+      add("must", "Injectable brand name", m,
+        "Brand names of prescription injectables can't be used in advertising to the public. This includes hashtags.",
+        "Say \"" + genericFor(m.t) + "\" instead, or take it out.");
+    });
+    all(PRICE_RE, text).forEach(function (m) {
+      if (near(m, injs)) add("must", "Price near an injectable", m,
+        "No prices for prescription injectables in promotions. Prices are given at the consultation.",
+        "Pricing is given at your consultation with our registered nurse.");
+    });
+    all(DISC_RE, text).forEach(function (m) {
+      if (near(m, injs)) add("must", "Offer or time pressure near an injectable", m,
+        "AHPRA's cosmetic guidelines ban discounts, limited time deals, spot counts and freebies for cosmetic injectables.",
+        "Remove the offer. Invite people to a complimentary consultation instead.");
+    });
+    all(QUOTE_RE, text).concat(all(TESTI_RE, text)).forEach(function (m) {
+      if (near(m, injs, 60)) add("must", "Testimonial about an injectable", m,
+        "Client testimonials can't be used to advertise regulated health services, which includes nurse led injectables.",
+        "Keep the quote off injectable posts. Talk about the consult and the nurse's experience instead.");
+    });
+    all(BA_RE, text).forEach(function (m) {
+      var inj = near(m, injs);
+      add(inj ? "must" : "check", "Before and after claim", m,
+        inj ? "Before and after images that could mislead aren't allowed, and Skinlux keeps them off injectable promotion." :
+          "Before and after images must be real, unedited, same lighting and angle, and show typical results.",
+        inj ? "Remove it. Offer to show results privately at the consultation." : "Use real, unedited photos with a note that results vary.");
+    });
+    all(GUAR_RE, text).forEach(function (m) {
+      var inj = near(m, injs);
+      var isPerm = /perman|forever/i.test(m.t);
+      add(inj ? "must" : "check", isPerm ? "Permanent result claim" : "Guaranteed result claim", m,
+        "Health and cosmetic results can't be promised. Every client responds differently.",
+        isPerm ? "Say \"long lasting\" or \"hair reduction\" instead." : "Results vary from person to person.");
+    });
+    all(PAIN_RE, text).forEach(function (m) {
+      add("check", "Pain free claim", m,
+        "Some clients do feel discomfort, so \"pain free\" can mislead.",
+        "Most clients find it comfortable.");
+    });
+    all(SUPER_RE, text).forEach(function (m) {
+      var inj = near(m, injs);
+      add(inj ? "must" : "check", "Superlative claim", m,
+        "Words like best, leading or number one can't be backed up and are risky in health advertising" + (inj ? ", and not allowed for injectables." : "."),
+        "Describe it plainly, for example \"experienced\" or \"qualified registered nurse\".");
+    });
+
+    if (channel === "email" && !/unsubscribe|opt[\s-]?out|manage (?:your )?preferences/i.test(text))
+      add("must", "No unsubscribe link", null, "The Spam Act needs a working unsubscribe in every marketing email.", "Add: \"Unsubscribe at any time.\" with a link.");
+    if (channel === "sms" && !/reply\s+stop|txt\s+stop|text\s+stop|stop to (?:opt out|unsubscribe)|opt[\s-]?out/i.test(text))
+      add("must", "No Reply STOP opt out", null, "The Spam Act needs an easy way to opt out of every marketing SMS.", "End with: \"Reply STOP to opt out.\"");
+    if ((channel === "email" || channel === "sms") && !/skinlux/i.test(text))
+      add("check", "Doesn't say who it's from", null, "Marketing messages must clearly identify the sender.", "Start with \"Skinlux Booragoon\" or \"Skinlux Leederville\".");
+    if (injs.length && !/consult/i.test(text))
+      add("tip", "Point to a consultation", null, "Injectable posts work best and stay safest when they lead to a consult with a registered nurse.", "Book a complimentary consultation with our registered nurse.");
+    if (injs.length)
+      add("tip", "Nurse sign off", null, "Anything about injectables should be read by Nurse Leo or Nurse Maria before it goes out.", "Press Send to Jellie for sign off.");
+
+    // De-duplicate same rule on the same text
+    var seen = {};
+    flags = flags.filter(function (f) { var k = f.title + f.s + f.e; if (seen[k]) return false; seen[k] = 1; return true; });
+    var rank = { must: 0, check: 1, tip: 2 };
+    flags.sort(function (a, b) { return rank[a.sev] - rank[b.sev] || (a.s < 0) - (b.s < 0) || a.s - b.s; });
+    return flags;
+  }
+
+  // Build highlighted HTML: split at every flag boundary, colour by the strongest flag covering each piece
+  function highlight(text, flags) {
+    var cuts = [0, text.length];
+    flags.forEach(function (f) { if (f.s >= 0) { cuts.push(f.s, f.e); } });
+    cuts = cuts.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+    var rank = { must: 3, check: 2, tip: 1 }, html = "";
+    for (var i = 0; i < cuts.length - 1; i++) {
+      var a = cuts[i], b = cuts[i + 1], piece = esc(text.slice(a, b));
+      var cover = [], best = null;
+      flags.forEach(function (f, idx) {
+        if (f.s >= 0 && f.s <= a && f.e >= b) { cover.push(idx); if (!best || rank[f.sev] > rank[best]) best = f.sev; }
+      });
+      html += cover.length ? '<mark class="m-' + best + '" data-f="' + cover.join(" ") + '">' + piece + "</mark>" : piece;
+    }
+    return html;
+  }
+
+  var SEV = { must: ['<span class="badge bad">Must fix</span>', "must"], check: ['<span class="badge warn">Check</span>', "check"], tip: ['<span class="badge tipb">Tip</span>', "tip"] };
+  var lastFlags = [];
+
+  function run() {
+    var text = $("msg").value, channel = $("channel").value;
+    if (!text.trim()) { toast("Paste a message first, or pick an example"); return; }
+    var flags = analyse(text, channel);
+    lastFlags = flags;
+    var n = { must: 0, check: 0, tip: 0 };
+    flags.forEach(function (f) { n[f.sev]++; });
+    var v = $("verdict");
+    if (n.must) { v.className = "verdict bad"; $("vIcon").textContent = "!"; $("vTitle").textContent = "Not ready to send"; $("vText").textContent = "Fix the red items before this goes anywhere."; }
+    else if (n.check) { v.className = "verdict warn"; $("vIcon").textContent = "?"; $("vTitle").textContent = "Check before sending"; $("vText").textContent = "Nothing banned, but a few claims need a second look."; }
+    else { v.className = "verdict ok"; $("vIcon").innerHTML = "&#10003;"; $("vTitle").textContent = "Looks good"; $("vText").textContent = n.tip ? "No problems found. A couple of tips below." : "No problems found for this channel."; }
+    $("vCounts").innerHTML = (n.must ? '<span class="badge bad">' + n.must + " must fix</span>" : "") +
+      (n.check ? '<span class="badge warn">' + n.check + " to check</span>" : "") + (n.tip ? '<span class="badge tipb">' + n.tip + (n.tip === 1 ? " tip" : " tips") + "</span>" : "");
+    $("highlighted").innerHTML = highlight(text, flags);
+    $("highlighted").classList.remove("hidden");
+    $("flags").innerHTML = flags.map(function (f, i) {
+      return '<div class="flag ' + SEV[f.sev][1] + '" id="flag' + i + '"><div class="top">' + SEV[f.sev][0] + '<span class="title">' + f.title + "</span>" +
+        (f.s >= 0 ? '<span class="match">"' + esc(f.t) + '"</span>' : '<span class="match">Missing from the message</span>') + "</div>" +
+        '<div class="why">' + esc(f.why) + '</div><div class="fix"><b>Try instead:</b> ' + esc(f.fix) + "</div></div>";
+    }).join("");
+    $("afterActions").classList.toggle("hidden", false);
+    $("safeBtn").classList.toggle("hidden", !(n.must || n.check));
+  }
+
+  // Safe rewrite
+  function rewrite(text, channel) {
+    // Drop quoted testimonials about injectables, with their "says our client" tail
+    text = text.replace(/[â€œ"][^â€"]{10,}[â€"]\s*(?:(?:says|said)[^.!?\n]*[.!?]?\s*)?/gi, function (m) {
+      return all(INJ_RE, m).length ? "" : m;
+    });
+    // Keep trailing hashtags aside so added lines go before them
+    var tags = "";
+    text = text.replace(/(\s*#\w+)+\s*$/, function (m) { tags = m.trim(); return ""; });
+    tags = tags.replace(/#(botox|dysport|xeomin|letybo|relatox|juv[eÃ©]derm|restylane|belotero|teosyal|radiesse|sculptra|profhilo|stylage|revanesse|rejuran)\b\s*/gi, "").trim();
+    var parts = text.match(/[^.!?\n]+[.!?]*["â€]?\s*|\n/g) || [text];
+    var out = [], usedStd = false, injAny = false;
+    parts.forEach(function (p) {
+      if (p === "\n") { out.push("\n"); return; }
+      var injs = all(INJ_RE, p);
+      if (injs.length) {
+        injAny = true;
+        var risky = all(PRICE_RE, p).length || all(DISC_RE, p).length || all(QUOTE_RE, p).length || all(TESTI_RE, p).length || all(BA_RE, p).length || all(GUAR_RE, p).length || all(SUPER_RE, p).length;
+        if (risky) {
+          var g = genericFor(injs[0].t);
+          if (/injector/i.test(injs[0].t)) g = "cosmetic injectables";
+          if (!usedStd) { out.push("Ask us about " + g + " at a complimentary consultation with our registered nurse. "); usedStd = true; }
+          var nurse = p.match(/\bNurse [A-Z][a-z]+/);
+          if (nurse) out.push("Your consultation is with " + nurse[0] + ". ");
+          return;
+        }
+      }
+      var q = p;
+      q = q.replace(/#(botox|dysport|xeomin|letybo|relatox|juv[eÃ©]derm|restylane|belotero|teosyal|radiesse|sculptra|profhilo|stylage|revanesse|rejuran)\b\s*/gi, "");
+      q = q.replace(BRAND_RE, function (m) { return genericFor(m); });
+      q = q.replace(/\bperth'?s (?:best|leading|top|number one|no\.? ?1)\b/gi, "experienced");
+      q = q.replace(/\b(?:the best|best|leading|no\.? ?1|number one|top rated|world class|unbeatable|miracle)\b/gi, "great");
+      q = q.replace(/\b(?:safest|most effective|cheapest)\b/gi, "");
+      q = q.replace(/\bpermanent hair removal\b/gi, "long lasting hair reduction");
+      q = q.replace(/\b(?:permanent(?:ly)?|forever)\b/gi, "long lasting");
+      q = q.replace(/,?\s*\b(?:results guaranteed|guarantee[ds]?|100% (?:results|effective|safe)|risk[\s-]?free|no side effects)\b/gi, "");
+      q = q.replace(/\b(?:pain[\s-]?free|painless|no pain|doesn'?t hurt|zero pain)\b/gi, "comfortable for most clients");
+      q = q.replace(BA_RE, "progress");
+      out.push(q);
+    });
+    var res = out.join("").replace(/[ \t]{2,}/g, " ").replace(/\s+([,.!?])/g, "$1").replace(/,\s*([.!?])/g, "$1").replace(/\band\s*([.!?])/g, "$1").trim();
+    if (injAny && !/consult/i.test(res)) res += " Book a complimentary consultation with our registered nurse.";
+    if (injAny && !/results vary/i.test(res)) res += " Results vary from person to person.";
+    if (tags) res += "\n" + tags;
+    if ((channel === "sms" || channel === "email") && !/skinlux/i.test(res)) res = "Skinlux: " + res;
+    if (channel === "sms" && !/reply\s+stop|opt[\s-]?out/i.test(res)) res += " Reply STOP to opt out.";
+    if (channel === "email" && !/unsubscribe/i.test(res)) res += "\n\nSkinlux Face and Body, Booragoon and Leederville. Unsubscribe at any time.";
+    return res;
+  }
+
+  // Events
+  $("checkBtn").addEventListener("click", run);
+  $("msg").addEventListener("input", function () { $("counter").textContent = this.value.length + " characters" + ($("channel").value === "sms" ? ", " + Math.max(1, Math.ceil(this.value.length / 160)) + " SMS" : ""); });
+  $("channel").addEventListener("change", function () { $("msg").dispatchEvent(new Event("input")); if (lastFlags.length || $("msg").value.trim()) run(); });
+  $("msg").addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") run(); });
+  $("clearBtn").addEventListener("click", function () {
+    $("msg").value = ""; $("msg").dispatchEvent(new Event("input"));
+    $("verdict").className = "verdict idle"; $("vIcon").textContent = "?"; $("vTitle").textContent = "Nothing checked yet";
+    $("vText").textContent = "Paste a message or pick an example, then press Check."; $("vCounts").innerHTML = "";
+    $("highlighted").classList.add("hidden"); $("flags").innerHTML = ""; $("afterActions").classList.add("hidden");
+    $("rewriteCard").classList.remove("show"); lastFlags = [];
+  });
+  document.querySelector(".examples").addEventListener("click", function (e) {
+    var c = e.target.closest("[data-ex]"); if (!c) return;
+    var ex = EXAMPLES[parseInt(c.getAttribute("data-ex"), 10)];
+    $("msg").value = ex.text; $("channel").value = ex.channel;
+    $("msg").dispatchEvent(new Event("input"));
+    $("rewriteCard").classList.remove("show");
+    run();
+  });
+  $("highlighted").addEventListener("click", function (e) {
+    var m = e.target.closest("mark"); if (!m) return;
+    var id = m.getAttribute("data-f").split(" ")[0], card = $("flag" + id);
+    if (!card) return;
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.remove("pulse"); void card.offsetWidth; card.classList.add("pulse");
+  });
+  $("flags").addEventListener("mouseover", function (e) {
+    var f = e.target.closest(".flag"); if (!f) return;
+    var idx = f.id.replace("flag", "");
+    Array.prototype.forEach.call(document.querySelectorAll("#highlighted mark"), function (m) {
+      m.style.outline = (" " + m.getAttribute("data-f") + " ").indexOf(" " + idx + " ") > -1 ? "2px solid var(--gold)" : "";
+    });
+  });
+  $("flags").addEventListener("mouseleave", function () {
+    Array.prototype.forEach.call(document.querySelectorAll("#highlighted mark"), function (m) { m.style.outline = ""; });
+  });
+  $("safeBtn").addEventListener("click", function () {
+    var ch = $("channel").value, r = rewrite($("msg").value, ch);
+    $("rewriteOut").textContent = r;
+    var f = analyse(r, ch), must = f.filter(function (x) { return x.sev === "must"; }).length, chk = f.filter(function (x) { return x.sev === "check"; }).length;
+    $("rewriteBadge").innerHTML = must ? '<span class="badge bad">' + must + " still to fix</span>" : chk ? '<span class="badge warn">' + chk + " to check</span>" : '<span class="badge ok">Passes the checker</span>';
+    $("rewriteCard").classList.add("show");
+    $("rewriteCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+  $("useBtn").addEventListener("click", function () {
+    $("msg").value = $("rewriteOut").textContent; $("msg").dispatchEvent(new Event("input"));
+    $("rewriteCard").classList.remove("show");
+    run(); toast("Rewrite loaded and checked again");
+  });
+  $("copyBtn").addEventListener("click", function () {
+    var txt = $("rewriteOut").textContent;
+    function fallback() {
+      var ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (err) { /* ignore */ }
+      document.body.removeChild(ta); toast("Copied");
+    }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(function () { toast("Copied"); }, fallback);
+    else fallback();
+  });
+  $("sendBtn").addEventListener("click", function () {
+    var must = lastFlags.filter(function (x) { return x.sev === "must"; }).length;
+    toast(must ? "Sent to Jellie with " + must + " items marked must fix" : "Sent to Jellie for sign off. She gets it by email and WhatsApp.");
+  });
+})();
+</script>
+</body>
+</html>

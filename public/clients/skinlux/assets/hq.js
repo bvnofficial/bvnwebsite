@@ -1,4 +1,4 @@
-// Skinlux HQ: the owner app shell around the dashboard (11-dashboard.html).
+﻿// Skinlux HQ: the owner app shell around the dashboard (11-dashboard.html).
 // Inbox, Today, Clients, Leads, Workflows, Reviews, Team and Connections.
 // Every name and number here is SAMPLE data for the demo.
 (function () {
@@ -683,10 +683,15 @@
   function renderApps() {
     var h = '<div class="card soft" style="margin-bottom:16px"><b>Every app reports into Skinlux HQ.</b> <span class="muted">Each card shows the numbers for that app, for the clinic picked at the top. Open the app, or jump to where its work shows up in HQ.</span></div>' +
       '<div class="grid g3">' + appsData().map(function (a) {
-        if (LIVE) { a = a.slice(); a[3] = [["Soon", "its numbers show here once this app is live"]]; a[1] = "../" + a[1]; }
+        // Live apps (built and working) link to the real thing; the rest show the demo
+        var LIVE_APPS = { "Staff app": ["../staff/index.html", "Live: treatment done, product sold and call backs"],
+          "Ad compliance checker": ["compliance.html", "Live: paste any ad or message to check it"],
+          "Treatment finder quiz": ["../quiz/index.html", "Live: quiz leads go to Leads and the new lead workflow"] };
+        var live = LIVE && LIVE_APPS[a[0]];
+        if (LIVE) { a = a.slice(); a[3] = live ? [["Live", live[1]]] : [["Soon", "its numbers show here once this app is live"]]; a[1] = live ? live[0] : "../" + a[1]; }
         return '<div class="card"><div class="muted" style="font-size:12px;letter-spacing:1px;text-transform:uppercase">' + a[2] + '</div><h3 style="margin:4px 0 12px">' + a[0] + "</h3>" +
           '<div class="grid g2" style="gap:10px">' + a[3].map(function (k) { return '<div><div style="font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1">' + k[0] + '</div><div class="muted" style="font-size:12.5px">' + k[1] + "</div></div>"; }).join("") + "</div>" +
-          '<div class="row" style="gap:8px;margin-top:14px"><a class="btn sm" href="' + a[1] + '" target="_blank" rel="noopener">' + (LIVE ? "See the demo" : "Open app") + "</a>" +
+          '<div class="row" style="gap:8px;margin-top:14px"><a class="btn sm" href="' + a[1] + '" target="_blank" rel="noopener">' + (live ? "Open app" : LIVE ? "See the demo" : "Open app") + "</a>" +
           (a[4] ? '<button class="btn sm ghost" data-go="' + a[4] + '">See it in HQ</button>' : "") + "</div></div>";
       }).join("") + "</div>";
     $("v-apps").innerHTML = h;

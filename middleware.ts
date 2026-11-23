@@ -15,6 +15,7 @@ import {
 } from "@/lib/apex-quote-gate";
 import { RM_HQ_HOME, isRmHqGated, rmHqReqOk, rmHqGateHtml } from "@/lib/rm-hq-gate";
 import { SKINLUX_HQ_HOME, isSkinluxHqGated, skinluxHqReqOk, skinluxHqGateHtml } from "@/lib/skinlux-hq-gate";
+import { SKINLUX_STAFF_HOME, isSkinluxStaffGated, skinluxStaffReqOk, skinluxStaffGateHtml } from "@/lib/skinlux-staff-gate";
 
 export async function middleware(request: NextRequest) {
   // Password gate for the private Raetzer client preview and its hosted site
@@ -80,6 +81,25 @@ export async function middleware(request: NextRequest) {
     }
     if (!/\.\w+$/.test(path)) {
       return NextResponse.redirect(new URL(SKINLUX_HQ_HOME, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Password gate for the Skinlux staff app (therapists). Own password,
+  // separate from Skinlux HQ; an HQ sign-in also opens it.
+  if (isSkinluxStaffGated(path)) {
+    if (!(await skinluxStaffReqOk(request))) {
+      return new NextResponse(skinluxStaffGateHtml(request.nextUrl.searchParams.get("st") === "bad"), {
+        status: 401,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+          "x-robots-tag": "noindex, nofollow",
+        },
+      });
+    }
+    if (!/\.\w+$/.test(path)) {
+      return NextResponse.redirect(new URL(SKINLUX_STAFF_HOME, request.url));
     }
     return NextResponse.next();
   }

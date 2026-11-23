@@ -1,9 +1,9 @@
-// Skinlux HQ live loader. Reads /api/skinlux-hq (GoHighLevel, both clinics),
+﻿// Skinlux HQ live loader. Reads /api/skinlux-hq (GoHighLevel, both clinics),
 // hands the data to the shared HQ script, then loads it.
 // Not connected yet: shows a banner and the sample data, clearly marked.
 (function () {
   "use strict";
-  var HQ = "../assets/hq.js?v=5";
+  var HQ = "../assets/hq.js?v=6";
   function banner(text, tone) {
     var b = document.createElement("div");
     b.style.cssText = "padding:10px 18px;font-size:13.5px;text-align:center;" +
