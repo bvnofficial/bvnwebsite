@@ -1,0 +1,809 @@
+// Skinlux HQ: the owner app shell around the dashboard (11-dashboard.html).
+// Inbox, Today, Clients, Leads, Workflows, Reviews, Team and Connections.
+// Every name and number here is SAMPLE data for the demo.
+(function () {
+  "use strict";
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-AU"); }
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 3400);
+  }
+  function clinic() { var b = document.querySelector("#segClinic button.on"); return b ? b.getAttribute("data-v") : "both"; }
+  function inClinic(c) { var k = clinic(); return k === "both" || c === "both" || c === k; }
+  function clinicsList() { var k = clinic(); return k === "both" ? ["booragoon", "leederville"] : [k]; }
+  function LOC(c) { return c === "both" ? "Both clinics" : S.locations[c].name; }
+  function sc(n) { var k = clinic(); return k === "both" ? n : Math.round(n * (k === "booragoon" ? 0.67 : 0.33)); }
+  function initials(n) {
+    if (/^\d/.test(n)) return "#";
+    return n.replace(/^@/, "").split(/[ .]/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join("");
+  }
+
+  var ICONS = {
+    home: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    inbox: '<path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 3h6l1-3h5"/>',
+    cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    users: '<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-4-5.6"/>',
+    leads: '<path d="M3 4h18l-7 9v6l-4 2v-8z"/>',
+    flow: '<circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6"/>',
+    team: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+    star: '<path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/>',
+    plug: '<path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/>',
+    bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>'
+  };
+  function I(n, s) {
+    s = s || 18;
+    return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[n] + "</svg>";
+  }
+
+  // Channels: label, colour, send button text
+  var CH = {
+    sms: ["SMS", "#4f8a6b", "Send SMS"],
+    wa: ["WhatsApp", "#2f9e5b", "Send WhatsApp"],
+    ig: ["Instagram", "#b8457c", "Send on Instagram"],
+    fb: ["Facebook", "#3d6cc9", "Send on Messenger"],
+    email: ["Email", "#7a6455", "Send email"],
+    web: ["Website chat", "#b8925a", "Reply in chat"],
+    scan: ["Skin Check", "#8a6a3a", "Send SMS"],
+    review: ["Google review", "#c08a2e", "Post reply on Google"],
+    call: ["Missed call", "#5b6b8a", "Send SMS"]
+  };
+
+  var SAFE_INJ = "Thanks for asking. Pricing for cosmetic injectables is given at a free consultation with one of our registered nurses, so it's matched to you. Would you like a consult time?";
+
+  var CONVOS = [
+    { id: "c1", name: "Hannah Lee", ch: "wa", clinic: "booragoon", at: "9:42am", unread: true, nurse: true, inj: true, paused: true,
+      assigned: "Nurse Leo", phone: "0433 019 884", wf: "Workflow 2: paused for a nurse",
+      msgs: [
+        { f: "sys", t: "Thu: wrinkle relaxers with Nurse Leo. Staff app tap sent the aftercare." },
+        { f: "bot", t: "Hi Hannah, it's Skinlux. Just checking in two days after your treatment. How are you feeling? Any questions, reply here.", at: "Sat 9:00am" },
+        { f: "them", t: "Hi! A bit more swelling on one side than I expected. Is that ok?", at: "9:42am" },
+        { f: "sys", t: "Flagged for a nurse (swelling). Every other message to Hannah is paused." }],
+      draft: "Hi Hannah, thanks for letting us know. Some swelling can happen in the first few days. Nurse Leo would like to take a quick look. Could you send a photo here, or can we call you this afternoon?" },
+    { id: "c5", name: "Sarah Ng", ch: "scan", clinic: "booragoon", at: "2:21pm", unread: true, assigned: "Sharon Kim", phone: "0402 118 337",
+      wf: "Skin Check lead: call within 15 minutes",
+      msgs: [
+        { f: "sys", t: "Did the AI Skin Check from the Meta HIFU ad. Score 64. Focus: redness, even tone, clear pores. Downtime: none." },
+        { f: "bot", t: "Hi Sarah, here's your Skinlux 12 week plan: LED, Carbon Laser and Clinical Peels, from $3,320, with a home routine. Book your first session: skinlux.au/plan/sn64", at: "2:20pm" },
+        { f: "sys", t: "Alert sent to Booragoon: call Sarah within 15 minutes." }],
+      draft: "Hi Sarah, it's Sharon from Skinlux Booragoon. I've had a look at your skin plan. Can I give you a quick call to talk through your first session?" },
+    { id: "c2", name: "Chloe Bennett", ch: "sms", clinic: "booragoon", at: "1:58pm", unread: true, assigned: "Sharon Kim", phone: "0412 554 210",
+      wf: "Workflow 1: abandoned booking, step 3",
+      msgs: [
+        { f: "sys", t: "Tue: started the HIFU double chin offer in Timely and left at the $50 deposit." },
+        { f: "bot", t: "Hi Chloe, still keen on your HIFU double chin session? Your $50 deposit comes off the treatment price. Finish booking here: skinlux.au/b/hifu", at: "Fri 9:00am" },
+        { f: "them", t: "Is the deposit refundable if I need to move it?", at: "1:58pm" }],
+      draft: "Hi Chloe, you can move your booking up to 48 hours before at no cost, and the deposit moves with it. Want me to hold Thursday 6pm at Booragoon for you?" },
+    { id: "c3", name: "@jess.glow", ch: "ig", clinic: "leederville", at: "1:31pm", unread: true, inj: true, assigned: "Concierge", phone: "Instagram DM",
+      wf: "Concierge answered, consult wanted",
+      msgs: [
+        { f: "them", t: "How much is Botox?", at: "1:30pm" },
+        { f: "bot", t: "Hi Jess, thanks for asking. Pricing for cosmetic injectables is given at a free consultation with one of our registered nurses, so it's matched to you. Would you like a consult time at Leederville?", at: "1:30pm, Concierge" },
+        { f: "them", t: "Yes please, Saturday morning?", at: "1:31pm" }],
+      draft: "Lovely. Nurse Maria has Saturday 9:30am or 11am at Leederville. Which suits you?" },
+    { id: "c4", name: "Priya Sharma", ch: "fb", clinic: "leederville", at: "12:47pm", unread: true, assigned: "", phone: "0447 302 118", wf: "New lead",
+      msgs: [{ f: "them", t: "Hi, do you have Saturday spots for the $247 carbon laser offer in Leederville?", at: "12:47pm" }],
+      draft: "Hi Priya, yes. We have Saturday 10am and 2:30pm at Leederville for the carbon laser offer (face, LED and consult, $247). There are 7 spots left this month. Which time would you like?" },
+    { id: "c7", name: "0408 551 902", ch: "call", clinic: "leederville", at: "11:05am", unread: true, assigned: "", phone: "0408 551 902", wf: "Missed call text back",
+      msgs: [
+        { f: "sys", t: "11:04am: missed call on the Leederville line while the team was with clients." },
+        { f: "bot", t: "Hi, sorry we missed your call at Skinlux Leederville. We're with a client right now. How can we help? You can also book here: skinlux.au/book", at: "11:04am" },
+        { f: "them", t: "Hi, wanting to book IPL full legs. How many sessions do I need?", at: "11:05am" }],
+      draft: "Thanks for texting back. Most people need 8 to 12 sessions, 3 to 4 weeks apart, and full legs are $259 a session. Can I grab your name and book your first one?" },
+    { id: "c9", name: "Mia Robinson", ch: "sms", clinic: "leederville", at: "10:22am", unread: false, assigned: "Shakira Hewitt", phone: "0420 776 315", wf: "Workflow 4: no rebooking",
+      msgs: [
+        { f: "bot", t: "Hi Mia, you're due for IPL session 6 of 10. Keeping to every 4 weeks gets the best result. Book here: skinlux.au/b/ipl", at: "Wed 9:00am" },
+        { f: "them", t: "Can I do Thursday after 5?", at: "10:22am" }],
+      draft: "Hi Mia, Thursday 5:30pm at Leederville is free. Shall I book it for you?" },
+    { id: "c6", name: "Ava Mitchell", ch: "review", clinic: "booragoon", at: "8:12am", unread: false, assigned: "Sharon Kim", phone: "0438 661 205", wf: "Review reply due today",
+      msgs: [{ f: "them", t: "3 stars. The treatment was lovely but I waited 20 minutes past my time.", at: "8:12am" }],
+      draft: "Hi Ava, thank you for the honest review, and sorry about the wait. That's not the visit we want for you. We'd love to have you back, and your next visit comes with a complimentary LED add on. Jellie, Skinlux" },
+    { id: "c12", name: "Ruby Patel", ch: "web", clinic: "booragoon", at: "Sun", unread: false, assigned: "Concierge", phone: "0431 220 784", wf: "Concierge answered after hours",
+      msgs: [
+        { f: "them", t: "Is HIFU painful?", at: "Sun 10:41pm" },
+        { f: "bot", t: "Most clients feel warm prickles in some spots, and it's over in 45 to 60 minutes. There's no downtime, just slight redness for up to an hour. Would you like to book the double chin offer at $174?", at: "Sun 10:41pm, Concierge" },
+        { f: "them", t: "Yes, can someone call me tomorrow?", at: "Sun 10:42pm" },
+        { f: "sys", t: "Concierge handed this to the team: call back requested." }],
+      draft: "Hi Ruby, it's Skinlux Booragoon following up on your HIFU question last night. Is now a good time for a quick call?" },
+    { id: "c8", name: "Grace Nguyen", ch: "sms", clinic: "leederville", at: "Fri", unread: false, nurse: true, paused: true, assigned: "Nurse Maria", phone: "0416 302 947", wf: "Workflow 2: paused for a nurse",
+      msgs: [
+        { f: "sys", t: "Wed: skin needling with Nurse Maria." },
+        { f: "bot", t: "Hi Grace, how is your skin feeling after needling?", at: "Fri 9:00am" },
+        { f: "them", t: "Still quite red, is that normal?", at: "Fri 6:15pm" }],
+      draft: "Hi Grace, redness for 2 to 3 days after needling is normal. Keep using the gentle cleanser and SPF, and skip makeup and retinol for now. If it isn't settling by tomorrow, send us a photo and I'll take a look. Maria" },
+    { id: "c10", name: "Olivia Tran", ch: "email", clinic: "booragoon", at: "Sun", unread: false, assigned: "Jellie", phone: "0401 228 760", wf: "Workflow 3: product, day 90",
+      msgs: [
+        { f: "bot", t: "Subject: How's your Crystal Retinal going?\n\nHi Olivia, it's been about 3 months with Medik8 Crystal Retinal 3. How is your skin feeling?", at: "Sat" },
+        { f: "them", t: "Loving it! Should I move up to the 6 now?", at: "Sun 4:10pm" }],
+      draft: "Hi Olivia, so glad it's working. If your skin has had no irritation for a month, stepping up to Crystal Retinal 6 makes sense. I'll put one aside at Booragoon for you. Jellie" },
+    { id: "c11", name: "Isla Carter", ch: "wa", clinic: "leederville", at: "Sat", unread: false, assigned: "Shakira Hewitt", phone: "0422 940 113", wf: "Workflow 1: existing client",
+      msgs: [
+        { f: "sys", t: "Wed: started a carbon laser booking online and stopped. Has 2 package sessions left." },
+        { f: "bot", t: "Hi Isla, you still have 2 carbon laser sessions in your package. Reply here and we'll book one for you.", at: "Fri" },
+        { f: "them", t: "Oh yes please! Any time Saturday", at: "Sat 9:20am" }],
+      draft: "Hi Isla, Saturday 11:30am at Leederville is yours, booked from your package. See you then!" }
+  ];
+
+  var CLIENTS = [
+    { name: "Hannah Lee", clinic: "booragoon", phone: "0433 019 884", since: "Mar 2025", visits: 7, spend: 2140, points: 860,
+      last: "Thu 19 Nov, wrinkle relaxers", next: "Not booked", tags: ["injectables", "nurse-check", "vip"], forms: "Consent signed 19 Nov",
+      products: ["Mesoestetic SPF 50"], history: ["19 Nov: wrinkle relaxers, Nurse Leo", "2 Sep: Bright & Tight, Sharon", "14 Aug: wrinkle relaxers, Nurse Leo"] },
+    { name: "Sarah Ng", clinic: "booragoon", phone: "0402 118 337", since: "New today", visits: 0, spend: 0, points: 0,
+      last: "No visits yet", next: "Not booked", tags: ["skin-check", "score-64", "focus-redness", "meta-ad"], forms: "Not sent yet",
+      products: [], history: ["Today 2:20pm: AI Skin Check from the Meta HIFU ad"] },
+    { name: "Chloe Bennett", clinic: "booragoon", phone: "0412 554 210", since: "New", visits: 0, spend: 0, points: 0,
+      last: "No visits yet", next: "Not booked", tags: ["new-client", "abandoned-booking", "interest-hifu"], forms: "Not sent yet",
+      products: [], history: ["Tue: left the HIFU offer at the deposit step", "Tue to Fri: abandoned booking emails 1 to 3"] },
+    { name: "Ava Mitchell", clinic: "booragoon", phone: "0438 661 205", since: "Jan 2026", visits: 5, spend: 1260, points: 520,
+      last: "Sat 21 Nov, Bright & Tight", next: "Tue 15 Dec, Bright & Tight", tags: ["bright-tight", "review-3-star"], forms: "Up to date",
+      products: ["O Cosmedics Mild Cleanser"], history: ["21 Nov: Bright & Tight, Sharon", "24 Oct: Bright & Tight, Sharon"] },
+    { name: "Olivia Tran", clinic: "booragoon", phone: "0401 228 760", since: "Jun 2024", visits: 9, spend: 1890, points: 1120,
+      last: "Mon 24 Aug, advanced consult", next: "Today 10:00am, advanced consult", tags: ["retail", "medik8", "vip"], forms: "Up to date",
+      products: ["Medik8 Crystal Retinal 3", "Medik8 C-Tetra"], history: ["24 Aug: bought Crystal Retinal 3", "24 Aug: advanced consult, Jellie"] },
+    { name: "Emma Walsh", clinic: "booragoon", phone: "0412 345 678", since: "Feb 2026", visits: 6, spend: 1340, points: 1240,
+      last: "Today 9:00am, IPL underarms 4 of 8", next: "Fri 11 Dec, IPL underarms", tags: ["ipl-hair", "course"], forms: "Up to date",
+      course: { label: "IPL underarms", done: 4, total: 8 }, products: [], history: ["Today: IPL underarms 4 of 8, Sharon", "28 Oct: IPL underarms 3 of 8"] },
+    { name: "Ruby Anderson", clinic: "booragoon", phone: "0451 883 470", since: "Nov 2024", visits: 4, spend: 0, points: 300,
+      last: "Wed 5 Aug, injectable", next: "Review due Thu 26 Nov", tags: ["injectables", "overdue-rebook"], forms: "Up to date",
+      products: [], history: ["5 Aug: injectable treatment, Nurse Leo"] },
+    { name: "Zoe Harris", clinic: "booragoon", phone: "0417 265 038", since: "Apr 2025", visits: 8, spend: 1610, points: 940,
+      last: "Today 10:00am, Bright & Tight", next: "Mon 21 Dec, Bright & Tight", tags: ["retail", "bright-tight"], forms: "Up to date",
+      products: ["Mesoestetic SPF 50"], history: ["Today: Bright & Tight, Sharon", "22 Sep: bought SPF 50"] },
+    { name: "Priya Sharma", clinic: "leederville", phone: "0447 302 118", since: "New", visits: 0, spend: 0, points: 0,
+      last: "No visits yet", next: "Not booked", tags: ["facebook", "interest-carbon"], forms: "Not sent yet", products: [], history: ["Today 12:47pm: Facebook message about the carbon laser offer"] },
+    { name: "Grace Nguyen", clinic: "leederville", phone: "0416 302 947", since: "Sep 2026", visits: 3, spend: 1185, points: 410,
+      last: "Wed 18 Nov, skin needling 1 of 3", next: "Wed 16 Dec, skin needling 2 of 3", tags: ["needling", "course", "nurse-check"], forms: "Up to date",
+      course: { label: "Skin needling pack of 3", done: 1, total: 3 }, products: ["O Cosmedics Mild Cleanser"], history: ["18 Nov: skin needling 1 of 3, Nurse Maria", "30 Sep: Clinical Peel and LED"] },
+    { name: "Mia Robinson", clinic: "leederville", phone: "0420 776 315", since: "Mar 2026", visits: 5, spend: 600, points: 380,
+      last: "Mon 26 Oct, IPL Brazilian 5 of 10", next: "Not booked", tags: ["ipl-hair", "course", "overdue-rebook"], forms: "Up to date",
+      course: { label: "IPL Brazilian", done: 5, total: 10 }, products: [], history: ["26 Oct: IPL Brazilian 5 of 10, Shakira", "28 Sep: IPL Brazilian 4 of 10"] },
+    { name: "Isla Carter", clinic: "leederville", phone: "0422 940 113", since: "Jul 2026", visits: 4, spend: 1380, points: 600,
+      last: "Thu 22 Oct, carbon laser 4 of 6", next: "Not booked", tags: ["package", "carbon", "overdue-rebook"], forms: "Up to date",
+      course: { label: "Carbon laser package", done: 4, total: 6 }, products: [], history: ["22 Oct: carbon laser 4 of 6, Shakira"] },
+    { name: "Sophie Clarke", clinic: "leederville", phone: "0409 117 562", since: "Oct 2026", visits: 3, spend: 585, points: 200,
+      last: "Sat 7 Nov, Diamond Polar 3 of 8", next: "Not booked", tags: ["diamond-polar", "course", "overdue-rebook"], forms: "Up to date",
+      course: { label: "Diamond Polar RF", done: 3, total: 8 }, products: [], history: ["7 Nov: Diamond Polar 3 of 8, Shakira"] }
+  ];
+  function findClient(n) { return CLIENTS.filter(function (c) { return c.name === n; })[0]; }
+
+  // Today's Timely diary. Now is 2:40pm.
+  var DIARY = {
+    booragoon: { hours: "Open 9am to 9pm today", staff: ["Sharon Kim", "Jellie", "Nurse Leo"], appts: [
+      { s: "Sharon Kim", t: "9:00am", n: "Emma Walsh", tr: "IPL underarms 4 of 8", st: "done", v: 75 },
+      { s: "Sharon Kim", t: "10:00am", n: "Zoe Harris", tr: "Bright & Tight", st: "done", v: 295 },
+      { s: "Sharon Kim", t: "11:30am", n: "Kate Morris", tr: "HIFU double chin (offer)", st: "notap", v: 174 },
+      { s: "Sharon Kim", t: "2:00pm", n: "Amy Lewis", tr: "Carbon Laser", st: "inroom", v: 460 },
+      { s: "Sharon Kim", t: "3:30pm", n: "Rachel Kim", tr: "Skin needling", st: "upcoming", v: 330 },
+      { s: "Sharon Kim", t: "5:00pm", n: "Tara Singh", tr: "Diamond Polar RF 2 of 8", st: "upcoming", v: 195 },
+      { s: "Jellie", t: "10:00am", n: "Olivia Tran", tr: "Advanced consult", st: "done", v: 100 },
+      { s: "Jellie", t: "12:00pm", n: "Bella Rossi", tr: "Clinical Peel and LED", st: "done", v: 220 },
+      { s: "Jellie", t: "3:00pm", n: "Nina Patel", tr: "HIFU full face and neck", st: "deposit", v: 1800 },
+      { s: "Jellie", t: "6:00pm", n: "Laura Chen", tr: "Plasma Fibroblast", st: "upcoming", v: 400 },
+      { s: "Nurse Leo", t: "9:30am", n: "Megan Ford", tr: "Injectable review", st: "done", v: 0 },
+      { s: "Nurse Leo", t: "11:00am", n: "Jade Wilson", tr: "Wrinkle relaxers", st: "done", v: 0 },
+      { s: "Nurse Leo", t: "2:15pm", n: "Holly Grant", tr: "Bio stimulating injection 2 of 4", st: "inroom", v: 0 },
+      { s: "Nurse Leo", t: "4:00pm", n: "", tr: "HIFU, 60 min", st: "free", v: 0 },
+      { s: "Nurse Leo", t: "7:00pm", n: "Kim Tran", tr: "Nurse consultation", st: "upcoming", v: 0 }] },
+    leederville: { hours: "Open 10am to 5pm today", staff: ["Shakira Hewitt", "Nurse Maria"], appts: [
+      { s: "Shakira Hewitt", t: "10:00am", n: "Laura Price", tr: "IPL full legs 7 of 10", st: "done", v: 259 },
+      { s: "Shakira Hewitt", t: "11:00am", n: "Tom Reid", tr: "Men's beard IPL", st: "done", v: 199 },
+      { s: "Shakira Hewitt", t: "12:30pm", n: "Isabel Moore", tr: "Carbon Laser (offer)", st: "notap", v: 247 },
+      { s: "Shakira Hewitt", t: "2:30pm", n: "Chen Li", tr: "Clinical Peel and LED", st: "inroom", v: 220 },
+      { s: "Shakira Hewitt", t: "4:00pm", n: "", tr: "Carbon Laser, 60 min", st: "free", v: 0 },
+      { s: "Nurse Maria", t: "10:30am", n: "Sienna Hall", tr: "Fillers", st: "done", v: 0 },
+      { s: "Nurse Maria", t: "1:00pm", n: "Grace Bell", tr: "Skin needling with exosomes", st: "done", v: 720 },
+      { s: "Nurse Maria", t: "3:00pm", n: "Erin Walsh", tr: "Nurse consultation", st: "upcoming", v: 0 },
+      { s: "Nurse Maria", t: "4:15pm", n: "Pia Novak", tr: "Wrinkle relaxers review", st: "upcoming", v: 0 }] }
+  };
+  var ST = {
+    done: ["Done, aftercare sent", "ok"], notap: ["Finished, no tap yet", "warn"], inroom: ["In the room", "gold"],
+    upcoming: ["Booked", ""], deposit: ["Deposit not paid", "bad"], free: ["Free slot", ""]
+  };
+  function todayIssues() {
+    var out = [];
+    clinicsList().forEach(function (c) {
+      DIARY[c].appts.forEach(function (a) { if ((a.st === "notap" && !a.sent) || (a.st === "deposit" && !a.sent)) out.push({ c: c, a: a }); });
+    });
+    return out;
+  }
+
+  var STAGES = ["New", "Contacted", "Consult booked", "Booked", "Lost"];
+  var LEADS = [
+    { n: "Sarah Ng", src: "Skin Check", i: "12 week plan", c: "booragoon", s: 0, age: "20 min", v: 3320, cv: "c5" },
+    { n: "Priya Sharma", src: "Facebook", i: "Carbon laser offer", c: "leederville", s: 0, age: "2 hrs", v: 247, cv: "c4" },
+    { n: "0408 551 902", src: "Missed call", i: "IPL full legs", c: "leederville", s: 0, age: "3 hrs", v: 2072, cv: "c7" },
+    { n: "Ruby Patel", src: "Website chat", i: "HIFU double chin", c: "booragoon", s: 0, age: "16 hrs", v: 174, cv: "c12" },
+    { n: "Kate Lowe", src: "Meta ad", i: "HIFU double chin", c: "booragoon", s: 1, age: "Today", v: 174 },
+    { n: "Chloe Bennett", src: "Abandoned booking", i: "HIFU double chin", c: "booragoon", s: 1, age: "6 days", v: 174, cv: "c2" },
+    { n: "@jess.glow", src: "Instagram", i: "Injectables consult", c: "leederville", s: 1, age: "Today", v: 0, inj: true, cv: "c3" },
+    { n: "Ella Martin", src: "Abandoned booking", i: "Advanced consult", c: "leederville", s: 2, age: "4 days", v: 100 },
+    { n: "Tara Singh", src: "Treatment quiz", i: "Diamond Polar course", c: "booragoon", s: 3, age: "Last week", v: 1560 },
+    { n: "Amy Lewis", src: "Google", i: "Carbon Laser", c: "booragoon", s: 3, age: "Last week", v: 460 },
+    { n: "Nina Patel", src: "Skin Check", i: "HIFU full face and neck", c: "booragoon", s: 3, age: "Fri", v: 1800 },
+    { n: "Hayley Cox", src: "Meta ad", i: "EMS body sculpting", c: "booragoon", s: 4, age: "2 weeks", v: 147 }
+  ];
+  var SOURCES = [["Meta ads", 58, 21], ["Skin Check", 41, 17], ["Instagram", 33, 9], ["Website chat", 29, 11], ["Google", 24, 12], ["Missed calls", 18, 8], ["Treatment quiz", 15, 6], ["Facebook", 12, 3]];
+
+  var FLOWS = [
+    { n: "1. Abandoned booking", on: true, now: 23, a: [67, "came in"], b: [16, "booked after all"], c: ["$12,810", "recovered"],
+      log: ["2:31pm: email 1 sent to Kate Lowe", "1:58pm: Chloe Bennett replied, task for Sharon", "12:05pm: Jess Moore booked, workflow stopped"] },
+    { n: "2. Completed appointment", on: true, now: 148, a: [469, "check ins sent"], b: [107, "replies"], c: [73, "Google reviews"],
+      log: ["2:20pm: Nurse Leo tapped done for Jade Wilson, aftercare sent", "9:42am: Hannah Lee flagged for a nurse, paused", "9:00am: 31 day 2 check ins sent"] },
+    { n: "3. Product sales", on: true, now: 205, a: ["$14,070", "product sales"], b: [90, "reorder reminders"], c: ["37%", "buy again at 3 months"],
+      log: ["Sun: Olivia Tran asked about stepping up her retinal", "Sat: 12 how to use emails sent"] },
+    { n: "4. No rebooking", on: true, now: 61, a: [61, "overdue now"], b: [22, "rebooked after a reminder"], c: ["62%", "rebook rate"],
+      log: ["10:22am: Mia Robinson replied, wants Thursday after 5", "9:00am: 14 reminders sent"] },
+    { n: "AI Skin Check follow up", on: true, now: 14, a: [41, "scans"], b: [17, "booked"], c: ["$21,400", "in plans booked"],
+      log: ["2:20pm: Sarah Ng scanned, alert sent to Booragoon", "Fri: Nina Patel booked HIFU from her plan"] },
+    { n: "Missed call text back", on: true, now: 3, a: [57, "missed calls"], b: [49, "texted back"], c: [18, "booked"],
+      log: ["11:04am: Leederville missed call, text sent in 6 seconds"] },
+    { n: "Concierge chat", on: true, now: 0, a: [312, "chats answered"], b: [41, "bookings"], c: ["94%", "answered without the team"],
+      log: ["1:30pm: Instagram injectable question answered with a consult offer, no price", "Sun 10:41pm: HIFU question answered after hours"] }
+  ];
+
+  var REVIEWS = [
+    { n: "Ava Mitchell", c: "booragoon", s: 3, t: "The treatment was lovely but I waited 20 minutes past my time.", at: "Today 8:12am", replied: false, cv: "c6",
+      draft: "Hi Ava, thank you for the honest review, and sorry about the wait. That's not the visit we want for you. We'd love to have you back, and your next visit comes with a complimentary LED add on. Jellie, Skinlux" },
+    { n: "Megan F.", c: "booragoon", s: 5, t: "Nurse Leo is so gentle and explains everything. Wouldn't go anywhere else.", at: "Yesterday", replied: false,
+      draft: "Thank you Megan! We'll pass this on to Leo. See you at your next review. Jellie, Skinlux" },
+    { n: "Tom R.", c: "leederville", s: 4, t: "Great beard IPL and friendly team. Parking on Vincent St is tricky.", at: "Sat", replied: false,
+      draft: "Thanks Tom! Good tip on parking. There's usually space in the Oxford St car park, a two minute walk away. See you next session. Jellie, Skinlux" },
+    { n: "Laura P.", c: "leederville", s: 5, t: "Shakira did my IPL and it's the most comfortable it has ever been.", at: "Fri", replied: true, reply: "Thank you Laura! Shakira will be so happy to hear that." },
+    { n: "Bella R.", c: "booragoon", s: 5, t: "Love my carbon laser glow. Sharon is the best.", at: "Thu", replied: true, reply: "Thanks Bella! See you at your next one." }
+  ];
+
+  var TEAM = [
+    { n: "Jellie", c: "both", appts: 4, rebook: 71, retail: 3120, rev: 9 },
+    { n: "Sharon Kim", c: "booragoon", appts: 6, rebook: 68, retail: 4380, rev: 14 },
+    { n: "Nurse Leo", c: "booragoon", appts: 5, rebook: 74, retail: 820, rev: 11 },
+    { n: "Shakira Hewitt", c: "leederville", appts: 5, rebook: 59, retail: 2210, rev: 8 },
+    { n: "Nurse Maria", c: "leederville", appts: 4, rebook: 66, retail: 640, rev: 6 }
+  ];
+
+  var STOCK = [
+    { n: "Carbon laser cream", c: "booragoon", left: 2, min: 6 },
+    { n: "Medik8 C-Tetra", c: "leederville", left: 3, min: 8 },
+    { n: "Mesoestetic SPF 50", c: "booragoon", left: 4, min: 10 }
+  ];
+
+  var ui = { view: "overview", convo: "c1", ibf: "all", ibch: "", q: "", cf: "all", warn: null, read: {} };
+
+  var NAV = [["grp", "Run the day"], ["overview", "Overview", "home"], ["inbox", "Inbox", "inbox"], ["today", "Today", "cal"], ["clients", "Clients", "users"],
+    ["grp", "Grow"], ["leads", "Leads", "leads"], ["flows", "Workflows", "flow"], ["reviews", "Reviews", "star"],
+    ["grp", "Team and setup"], ["team", "Team", "team"], ["connections", "Connections", "plug"]];
+  var TITLES = { overview: "Overview", inbox: "Inbox", today: "Today", clients: "Clients", leads: "Leads", flows: "Workflows", reviews: "Reviews", team: "Team", connections: "Connections" };
+  var SUBS = {
+    overview: "Both clinics, every number, one screen",
+    inbox: "Every SMS, WhatsApp, Instagram, Facebook, email, chat and review in one place",
+    today: "Today's Timely diary, live. Monday 23 November, 2:40pm",
+    clients: "Every client from Timely, with history, courses, products and tags",
+    leads: "Every new enquiry from ads, the Skin Check, chat and missed calls",
+    flows: "Your automations, running live",
+    reviews: "Google reviews for both clinics",
+    team: "Who is doing what today",
+    connections: "Everything Skinlux HQ is connected to"
+  };
+
+  function openConvos() { return CONVOS.filter(function (v) { return inClinic(v.clinic) && v.status !== "done"; }); }
+  function counts() {
+    return {
+      inbox: openConvos().filter(function (v) { return v.unread; }).length,
+      nurse: openConvos().filter(function (v) { return v.nurse; }).length,
+      today: todayIssues().length,
+      leads: LEADS.filter(function (l) { return inClinic(l.c) && l.s === 0; }).length,
+      reviews: REVIEWS.filter(function (r) { return inClinic(r.c) && !r.replied; }).length
+    };
+  }
+
+  function renderNav() {
+    var c = counts();
+    $("side").innerHTML = '<div class="logo">Skinlux <span>HQ</span></div><div class="logo-sub">Booragoon and Leederville</div>' +
+      NAV.map(function (n) {
+        if (n[0] === "grp") return '<div class="grp">' + n[1] + "</div>";
+        var ct = c[n[0]], red = n[0] === "inbox" && c.nurse;
+        return '<button class="nav' + (ui.view === n[0] ? " on" : "") + '" data-go="' + n[0] + '">' + I(n[2]) + "<span>" + n[1] + "</span>" +
+          (ct ? '<span class="ct' + (red ? " red" : "") + '">' + ct + "</span>" : "") + "</button>";
+      }).join("") +
+      '<div class="sync"><span class="dot-live"></span>Timely synced 2 min ago<br><span class="dot-live"></span>GoHighLevel live<br><small class="muted">Direct links, no Zapier</small></div>';
+  }
+
+  function go(v, sub) {
+    ui.view = v;
+    if (v === "inbox" && sub) { ui.convo = sub; var cv = convo(sub); if (cv) { cv.unread = false; if (cv.status === "done") ui.ibf = "done"; else if (ui.ibf === "done") ui.ibf = "all"; } }
+    Array.prototype.forEach.call(document.querySelectorAll("section.view"), function (s) { s.hidden = s.id !== "v-" + v; });
+    $("tbTitle").textContent = TITLES[v];
+    $("tbSub").textContent = SUBS[v];
+    $("search").hidden = v === "inbox";
+    closeBell();
+    renderAll();
+    if (location.hash !== "#" + v) history.replaceState(null, "", "#" + v);
+    window.scrollTo(0, 0);
+  }
+  function renderAll() {
+    renderNav();
+    var f = { overview: renderNeeds, inbox: renderInbox, today: renderToday, clients: renderClients, leads: renderLeads,
+      flows: renderFlows, reviews: renderReviews, team: renderTeam, connections: renderConn }[ui.view];
+    if (f) f();
+    renderBell();
+  }
+
+  /* ---------- Overview: needs you today ---------- */
+  function renderNeeds() {
+    var c = counts();
+    var od = document.querySelectorAll("#taskTable tr.overdue").length;
+    var items = [[c.nurse, "Replies need a nurse", "inbox", "bad"], [c.inbox, "Unread messages", "inbox", ""], [c.leads, "New leads to call", "leads", ""],
+      [c.today, "Diary issues today", "today", "warn"], [c.reviews, "Reviews to reply to", "reviews", ""], [od, "Overdue team tasks", "#team-tasks", "bad"]];
+    $("needs").innerHTML = items.map(function (i) {
+      return '<button class="need ' + (i[0] ? i[3] : "") + '" data-go="' + i[2] + '"><b>' + i[0] + "</b><span>" + i[1] + "</span></button>";
+    }).join("");
+  }
+
+  /* ---------- Inbox ---------- */
+  function convo(id) { return CONVOS.filter(function (v) { return v.id === id; })[0]; }
+  function convoList() {
+    return CONVOS.filter(function (v) {
+      if (!inClinic(v.clinic)) return false;
+      if (ui.ibch && v.ch !== ui.ibch) return false;
+      if (ui.ibf === "done") return v.status === "done";
+      if (v.status === "done") return false;
+      if (ui.ibf === "unread") return v.unread;
+      if (ui.ibf === "nurse") return v.nurse;
+      if (ui.ibf === "ai") return v.assigned === "Concierge";
+      if (ui.ibf === "mine") return v.assigned === "Jellie";
+      if (ui.ibf === "none") return !v.assigned;
+      return true;
+    });
+  }
+  function chBadge(k) { return '<span class="chn" style="background:' + CH[k][1] + '1f;color:' + CH[k][1] + '">' + CH[k][0] + "</span>"; }
+  function avatar(name, ch) { return '<div class="av">' + esc(initials(name)) + (ch ? '<i class="ch" style="background:' + CH[ch][1] + '"></i>' : "") + "</div>"; }
+  function itemHtml(v) {
+    var shown = v.msgs.filter(function (m) { return m.f !== "sys"; });
+    var last = shown[shown.length - 1] || v.msgs[v.msgs.length - 1];
+    var pre = last.f === "us" ? "You: " : last.f === "bot" ? "Auto: " : "";
+    var tags = chBadge(v.ch) + '<span class="chn">' + LOC(v.clinic) + "</span>" +
+      (v.nurse ? '<span class="chn" style="background:var(--bad-soft);color:var(--bad)">Nurse</span>' : "") +
+      (v.assigned === "Concierge" ? '<span class="chn" style="background:var(--gold-soft);color:var(--mocha)">AI answered</span>' : "") +
+      (!v.assigned ? '<span class="chn" style="background:var(--warn-soft);color:var(--warn)">Unassigned</span>' : "");
+    return '<div class="ib-item' + (v.id === ui.convo ? " on" : "") + (v.unread ? " unread" : "") + '" data-cv="' + v.id + '">' + avatar(v.name, v.ch) +
+      '<div style="min-width:0"><div class="top"><span class="nm">' + esc(v.name) + '</span><small class="muted">' + esc(v.at) + "</small></div>" +
+      '<div class="prev">' + pre + esc(last.t.split("\n")[0]) + '</div><div class="tagrow">' + tags + "</div></div></div>";
+  }
+  function threadHtml(v) {
+    var opts = '<option value="">Unassigned</option>' + S.team.map(function (m) { return "<option" + (v.assigned === m.name ? " selected" : "") + ">" + m.name + "</option>"; }).join("") +
+      "<option" + (v.assigned === "Concierge" ? " selected" : "") + ">Concierge</option>";
+    var h = '<div class="ib-thread"><div class="th-head">' + avatar(v.name, v.ch) +
+      '<div class="who"><b>' + esc(v.name) + '</b><div class="muted" style="font-size:12px">' + CH[v.ch][0] + " &middot; " + LOC(v.clinic) + " &middot; " + esc(v.wf) + "</div></div>" +
+      '<div class="th-ctl"><select id="thAssign" aria-label="Assign to">' + opts + "</select>" +
+      (v.ch !== "review" ? '<button class="btn sm ghost" data-act="book">Book in Timely</button>' : "") +
+      '<button class="btn sm ' + (v.status === "done" ? "ghost" : "gold") + '" data-act="done">' + (v.status === "done" ? "Reopen" : "Mark done") + "</button></div></div>" +
+      '<div class="th-body" id="thBody">';
+    h += v.msgs.map(function (m) {
+      if (m.f === "sys") return '<div class="sysline">' + esc(m.t) + "</div>";
+      var who = m.f === "them" ? "" : m.f === "bot" ? (/Concierge/.test(m.at || "") ? "" : "Sent automatically") : (m.by || "You");
+      return '<div class="bub ' + m.f + '">' + esc(m.t) + "<small>" + [m.at, who].filter(Boolean).map(esc).join(", ") + "</small></div>";
+    }).join("");
+    h += '</div><div class="composer">' +
+      (ui.warn ? '<div class="warnbox"><b>Hold on.</b> ' + ui.warn + ' <button class="lnk" data-act="fix">Use the safe wording</button></div>' : "") +
+      (v.inj ? '<div class="badge warn" style="margin-bottom:6px">Injectable chat: no prices, offers or brand names</div>' : "") +
+      '<textarea id="reply" placeholder="Type a reply, or let the AI draft one">' + esc(v.typed || "") + "</textarea>" +
+      '<div class="row"><button class="btn sm ghost" data-act="ai">Draft a reply with AI</button>' +
+      '<span style="flex:1"></span><button class="btn sm" data-act="send">' + CH[v.ch][2] + "</button></div></div></div>";
+    return h;
+  }
+  function sideHtml(v) {
+    var c = findClient(v.name);
+    var h = '<div class="ib-side"><h4 style="margin-top:0">Contact</h4><div class="kv"><span>Mobile</span><div>' + esc(v.phone) + "</div><span>Clinic</span><div>" + LOC(v.clinic) +
+      "</div><span>Owner</span><div>" + esc(v.assigned || "Unassigned") + "</div></div>";
+    if (c) {
+      h += '<h4>From Timely</h4><div class="kv"><span>Client since</span><div>' + c.since + "</div><span>Visits</span><div>" + c.visits + "</div><span>Spent</span><div>" + money(c.spend) +
+        "</div><span>Last visit</span><div>" + c.last + "</div><span>Next</span><div>" + c.next + "</div></div>";
+      if (c.course) h += courseBar(c.course);
+      h += '<h4>Tags</h4><div class="tagrow">' + c.tags.map(function (t) { return '<span class="chn">' + t + "</span>"; }).join("") + "</div>" +
+        '<button class="btn sm ghost block" style="margin-top:14px" data-client="' + esc(c.name) + '">Open full profile</button>';
+    } else {
+      h += '<p class="muted" style="margin-top:10px">Not in Timely yet. Skinlux HQ adds them to Timely when they book.</p>';
+    }
+    h += "<h4>Workflow</h4><p>" + esc(v.wf) + "</p>" + (v.paused ? '<span class="badge bad">Automations paused for this client</span>' : "");
+    return h + "</div>";
+  }
+  function renderInbox() {
+    var list = convoList();
+    if (!list.some(function (v) { return v.id === ui.convo; })) ui.convo = list.length ? list[0].id : null;
+    var fl = [["all", "All"], ["unread", "Unread"], ["nurse", "Needs a nurse"], ["none", "Unassigned"], ["ai", "Answered by AI"], ["mine", "Mine"], ["done", "Done"]];
+    var chOpts = '<option value="">All channels</option>' + Object.keys(CH).map(function (k) { return '<option value="' + k + '"' + (ui.ibch === k ? " selected" : "") + ">" + CH[k][0] + "</option>"; }).join("");
+    var h = '<div class="inbox"><div class="ib-list"><div class="ib-filters">' +
+      fl.map(function (f) { return '<span class="chip' + (ui.ibf === f[0] ? " on" : "") + '" data-ibf="' + f[0] + '">' + f[1] + "</span>"; }).join("") +
+      '<select id="ibCh" aria-label="Channel">' + chOpts + '</select></div><div class="ib-items">' +
+      (list.length ? list.map(itemHtml).join("") : '<div class="empty">Nothing here.</div>') + "</div></div>";
+    var v = convo(ui.convo);
+    if (v && list.indexOf(v) >= 0) { v.unread = false; h += threadHtml(v) + sideHtml(v); }
+    else h += '<div class="ib-thread"><div class="empty" style="margin:auto">Pick a conversation</div></div><div class="ib-side"></div>';
+    $("v-inbox").innerHTML = h + "</div>";
+    var tb = $("thBody"); if (tb) tb.scrollTop = tb.scrollHeight;
+    renderNav();
+  }
+  var RISKY_INJ = /(\$\s?\d|discount|% ?off|\bdeal\b|special|cheap|half price|botox|dysport|xeomin|juvederm|restylane)/i;
+  var RISKY_ALL = /(guarantee|100% results|permanent results|no risk)/i;
+  function sendReply() {
+    var v = convo(ui.convo); if (!v) return;
+    var text = ($("reply").value || "").trim();
+    if (!text) { toast("Type a reply first, or tap Draft a reply with AI"); return; }
+    v.typed = text;
+    if (v.inj && RISKY_INJ.test(text)) {
+      ui.warn = "This is an injectable chat. AHPRA and TGA rules mean no prices, discounts or brand names here.";
+      renderInbox(); return;
+    }
+    if (RISKY_ALL.test(text)) {
+      ui.warn = "Promising results isn't allowed in health advertising.";
+      renderInbox(); return;
+    }
+    ui.warn = null;
+    v.msgs.push({ f: "us", t: text, at: "Just now", by: "Jellie" });
+    v.typed = ""; v.at = "Just now";
+    if (v.ch === "review") {
+      REVIEWS.forEach(function (r) { if (r.cv === v.id) { r.replied = true; r.reply = text; } });
+      v.status = "done";
+      toast("Reply posted on Google for " + LOC(v.clinic) + ".");
+    } else {
+      toast("Sent by " + CH[v.ch][0].replace("Missed call", "SMS").replace("Skin Check", "SMS") + " from the " + LOC(v.clinic) + " account. Saved on " + v.name.split(" ")[0] + "'s contact.");
+    }
+    renderInbox();
+  }
+
+  /* ---------- Today ---------- */
+  function renderToday() {
+    var all = [];
+    clinicsList().forEach(function (c) { DIARY[c].appts.forEach(function (a) { all.push(a); }); });
+    var booked = all.filter(function (a) { return a.st !== "free"; });
+    var done = all.filter(function (a) { return a.st === "done"; }).length;
+    var rev = booked.reduce(function (s, a) { return s + a.v; }, 0);
+    var free = all.filter(function (a) { return a.st === "free"; }).length;
+    var h = '<div class="grid g4">' +
+      kpi("Appointments today", booked.length, done + " done so far") + kpi("Booked value today", money(rev), "Injectables not shown") +
+      kpi("Need a tap or a deposit", todayIssues().length, "Fix these first") + kpi("Free slots left", free, "Offer them to the waitlist") + "</div>";
+    clinicsList().forEach(function (c) {
+      var d = DIARY[c];
+      h += '<div class="card mt"><div class="section-title"><h3>' + LOC(c) + '</h3><span class="muted">' + d.hours + ', from Timely</span></div>' +
+        '<div class="diary" style="grid-template-columns:repeat(' + d.staff.length + ',minmax(0,1fr))">';
+      d.staff.forEach(function (s) {
+        h += '<div class="dcol"><h4>' + s + "</h4>";
+        d.appts.filter(function (a) { return a.s === s; }).forEach(function (a) {
+          var i = d.appts.indexOf(a), st = ST[a.st];
+          var btn = "";
+          if (a.st === "notap") btn = a.sent ? '<div class="muted">Reminder sent to ' + s.split(" ")[0] + "'s phone</div>" : '<button class="btn sm ghost" data-appt="' + c + ":" + i + '">Remind ' + s.split(" ")[0] + " to tap</button>";
+          if (a.st === "deposit") btn = a.sent ? '<div class="muted">Payment link sent by SMS</div>' : '<button class="btn sm ghost" data-appt="' + c + ":" + i + '">Send payment link</button>';
+          if (a.st === "free") btn = a.sent ? '<div class="muted">Waitlist texted, waiting for a yes</div>' : '<button class="btn sm ghost" data-appt="' + c + ":" + i + '">Offer to waitlist</button>';
+          h += '<div class="appt ' + a.st + '"><div class="row between"><span class="t">' + a.t + "</span>" + (st[1] ? '<span class="badge ' + st[1] + '">' + st[0] + "</span>" : '<small class="muted">' + st[0] + "</small>") + "</div>" +
+            "<div><b>" + esc(a.n || "Open") + "</b></div><div class=\"muted\">" + esc(a.tr) + "</div>" + btn + "</div>";
+        });
+        h += "</div>";
+      });
+      h += "</div></div>";
+    });
+    $("v-today").innerHTML = h;
+  }
+  function apptAction(key) {
+    var p = key.split(":"), c = p[0], a = DIARY[c].appts[+p[1]];
+    a.sent = true;
+    if (a.st === "notap") toast(a.s.split(" ")[0] + " got a nudge on the staff app to tap Treatment done for " + a.n + ". Aftercare goes out the moment she taps.");
+    if (a.st === "deposit") toast("Payment link sent to " + a.n + " by SMS. If it isn't paid by 2pm tomorrow, the clinic gets a call task.");
+    if (a.st === "free") {
+      toast("Waitlist texted: 4 clients want " + a.tr.split(",")[0] + " at " + LOC(c) + ". First yes gets " + a.t + ".");
+      setTimeout(function () {
+        a.st = "upcoming"; a.n = "Grace Bell"; a.v = a.tr.indexOf("HIFU") === 0 ? 450 : 460; a.sent = false;
+        if (ui.view === "today") renderToday();
+        toast("Grace Bell said yes. " + a.t + " is booked in Timely and the others got a sorry, it's gone text.");
+      }, 4500);
+    }
+    renderAll();
+  }
+  function kpi(label, value, sub) {
+    return '<div class="tile-kpi"><div class="label">' + label + '</div><div class="value">' + value + "</div>" + (sub ? '<small class="muted">' + sub + "</small>" : "") + "</div>";
+  }
+
+  /* ---------- Clients ---------- */
+  function courseBar(c) {
+    return '<div style="margin-top:10px"><div class="row between" style="font-size:12px"><span>' + c.label + "</span><b>" + c.done + " of " + c.total + '</b></div><div class="bar"><span style="width:' + (c.done / c.total * 100) + '%"></span></div></div>';
+  }
+  function clientList() {
+    var q = ui.q.toLowerCase();
+    return CLIENTS.filter(function (c) {
+      if (!inClinic(c.clinic)) return false;
+      if (q && (c.name + " " + c.phone + " " + c.tags.join(" ") + " " + c.last).toLowerCase().indexOf(q) < 0) return false;
+      if (ui.cf === "new") return c.visits <= 1;
+      if (ui.cf === "course") return !!c.course;
+      if (ui.cf === "overdue") return c.tags.indexOf("overdue-rebook") >= 0;
+      if (ui.cf === "inj") return c.tags.indexOf("injectables") >= 0;
+      if (ui.cf === "vip") return c.tags.indexOf("vip") >= 0;
+      return true;
+    });
+  }
+  function renderClients() {
+    var fl = [["all", "All"], ["new", "New"], ["course", "Course in progress"], ["overdue", "Overdue to rebook"], ["inj", "Injectables"], ["vip", "VIP"]];
+    var list = clientList();
+    var h = '<div class="grid g4">' + kpi("Active clients", sc(3912).toLocaleString("en-AU"), "Seen in the last 12 months") + kpi("New this month", sc(154), "From Timely") +
+      kpi("Courses in progress", sc(286), "Tracked session by session") + kpi("Overdue to rebook", sc(61), "Workflow 4 is on them") + "</div>" +
+      '<div class="card mt"><div class="row between wrap" style="margin-bottom:12px"><div class="row wrap" style="gap:6px">' +
+      fl.map(function (f) { return '<span class="chip' + (ui.cf === f[0] ? " on" : "") + '" data-cf="' + f[0] + '">' + f[1] + "</span>"; }).join("") +
+      '</div><small class="muted">' + (ui.q ? 'Search: "' + esc(ui.q) + '". ' : "") + "Showing " + list.length + " sample clients</small></div>" +
+      '<table id="clientTable"><thead><tr><th>Client</th><th>Clinic</th><th>Last visit</th><th>Next</th><th>Spent</th><th>Tags</th></tr></thead><tbody>' +
+      (list.length ? list.map(function (c) {
+        return '<tr data-client="' + esc(c.name) + '"><td><div class="row" style="gap:10px">' + avatar(c.name) + "<div><b>" + esc(c.name) + '</b><div class="muted" style="font-size:12px">' + c.phone + "</div></div></div></td><td>" + LOC(c.clinic) +
+          "</td><td>" + c.last + "</td><td>" + (c.next === "Not booked" ? '<span class="badge warn">Not booked</span>' : c.next) + "</td><td>" + money(c.spend) +
+          '</td><td><div class="tagrow">' + c.tags.slice(0, 3).map(function (t) { return '<span class="chn">' + t + "</span>"; }).join("") + "</div></td></tr>";
+      }).join("") : '<tr><td colspan="6" class="empty">No clients match.</td></tr>') + "</tbody></table></div>";
+    $("v-clients").innerHTML = h;
+  }
+  function openClient(name) {
+    var c = findClient(name); if (!c) return;
+    var cv = CONVOS.filter(function (v) { return v.name === c.name; })[0];
+    var h = '<div class="p-head"><div class="badge gold">' + LOC(c.clinic) + '</div><h2 style="margin:8px 0 2px">' + esc(c.name) + '</h2><small class="muted">' + c.phone + " &middot; client since " + c.since + "</small></div>" +
+      '<div class="cp-body"><div class="grid g3" style="gap:8px;margin-bottom:14px">' +
+      kpi("Visits", c.visits) + kpi("Spent", money(c.spend)) + kpi("Points", c.points) + "</div>" +
+      '<div class="kv"><span>Last visit</span><div>' + c.last + "</div><span>Next</span><div>" + c.next + "</div><span>Forms</span><div>" + c.forms + "</div></div>" +
+      (c.course ? "<h4>Course</h4>" + courseBar(c.course) : "") +
+      "<h4>Products</h4><p>" + (c.products.length ? c.products.join(", ") : '<span class="muted">None yet</span>') + "</p>" +
+      '<h4>Tags</h4><div class="tagrow">' + c.tags.map(function (t) { return '<span class="chn">' + t + "</span>"; }).join("") + "</div>" +
+      '<h4>History</h4><ul class="timeline">' + c.history.map(function (x) { var i = x.indexOf(": "); return "<li><b>" + esc(x.slice(i + 2)) + '</b><small class="muted">' + esc(x.slice(0, i)) + "</small></li>"; }).join("") + "</ul></div>" +
+      '<div class="p-foot">' + (cv ? '<button class="btn" data-goconvo="' + cv.id + '">Open conversation</button>' : '<button class="btn" data-cact="msg">Send a message</button>') +
+      '<button class="btn ghost" data-cact="book">Book in Timely</button><button class="btn ghost" data-cact="wait">Add to waitlist</button></div>';
+    $("cpInner").innerHTML = h;
+    $("cpanel").dataset.client = c.name;
+    $("cpanel").classList.add("show"); $("scrim2").classList.add("show"); $("cpanel").setAttribute("aria-hidden", "false");
+  }
+  function closeClient() { $("cpanel").classList.remove("show"); $("scrim2").classList.remove("show"); $("cpanel").setAttribute("aria-hidden", "true"); }
+
+  /* ---------- Leads ---------- */
+  function renderLeads() {
+    var list = LEADS.filter(function (l) { return inClinic(l.c); });
+    var max = SOURCES[0][1];
+    var h = '<div class="grid g2"><div class="card"><div class="section-title"><h3>Leads this month by source</h3><span class="muted">Booked in brackets</span></div>' +
+      SOURCES.map(function (s) {
+        return '<div class="srcbar"><span>' + s[0] + '</span><div class="bar"><span style="width:' + (s[1] / max * 100) + '%"></span></div><b>' + sc(s[1]) + ' <small class="muted">(' + sc(s[2]) + ")</small></b></div>";
+      }).join("") + '</div><div class="grid g2" style="align-content:start">' +
+      kpi("Leads this month", sc(230), "All channels") + kpi("Booked", sc(87), "38% of leads") + kpi("Average reply time", "4 min", "Team and Concierge") + kpi("Waiting for a call", list.filter(function (l) { return l.s === 0; }).length, "Oldest first") + "</div></div>";
+    h += '<div class="kan mt">' + STAGES.map(function (st, si) {
+      var col = list.filter(function (l) { return l.s === si; });
+      return '<div class="kcol"><h4><span>' + st + "</span><span>" + col.length + "</span></h4>" + col.map(function (l) {
+        var i = LEADS.indexOf(l);
+        return '<div class="lead' + (l.fresh ? " fresh" : "") + '"><b>' + esc(l.n) + '</b><div class="muted">' + esc(l.i) + "</div>" +
+          '<div class="tagrow" style="margin-top:6px"><span class="chn">' + l.src + '</span><span class="chn">' + LOC(l.c) + "</span></div>" +
+          '<div class="row between" style="margin-top:6px"><small class="muted">' + l.age + "</small><b>" + (l.inj ? "Consult" : money(l.v)) + "</b></div>" +
+          '<div class="row">' + (si < 3 ? '<button class="btn sm" data-lead="' + i + '">Move to ' + STAGES[si + 1] + "</button>" : "") +
+          (l.cv ? '<button class="btn sm ghost" data-goconvo="' + l.cv + '">Chat</button>' : "") + "</div></div>";
+      }).join("") + "</div>";
+    }).join("") + "</div>";
+    $("v-leads").innerHTML = h;
+  }
+
+  /* ---------- Workflows ---------- */
+  function renderFlows() {
+    var h = '<div class="note" style="margin-bottom:16px">Every workflow runs in GoHighLevel and reads from Timely directly. Switch one off and nobody new enters it. People already in it finish their current step.</div><div class="stack">';
+    FLOWS.forEach(function (f, i) {
+      function stat(x) { return "<div><b>" + (typeof x[0] === "number" ? sc(x[0]) : x[0]) + "</b>" + x[1] + "</div>"; }
+      h += '<div class="card flow' + (f.on ? "" : " off") + '"><div><h3 style="margin:0">' + f.n + "</h3>" +
+        '<div class="stats">' + (f.now ? "<div><b>" + sc(f.now) + "</b>in it right now</div>" : "") + stat(f.a) + stat(f.b) + stat(f.c) + "</div>" +
+        '<small class="muted">Latest</small><ul>' + f.log.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" +
+        '<div class="row"><small class="muted">' + (f.on ? "On" : "Paused") + '</small><button class="switch' + (f.on ? " on" : "") + '" data-flow="' + i + '" aria-label="Turn ' + esc(f.n) + (f.on ? " off" : " on") + '"></button></div></div>';
+    });
+    $("v-flows").innerHTML = h + "</div>";
+  }
+
+  /* ---------- Reviews ---------- */
+  function stars(n) { return '<span class="stars">' + "&#9733;".repeat(n) + '<span style="color:var(--line)">' + "&#9733;".repeat(5 - n) + "</span></span>"; }
+  function renderReviews() {
+    var list = REVIEWS.filter(function (r) { return inClinic(r.c); });
+    var h = '<div class="grid g4">' + kpi("Booragoon rating", "4.9", "214 Google reviews") + kpi("Leederville rating", "4.8", "97 Google reviews") +
+      kpi("Asked this month", sc(212), "Only clients who replied happy") + kpi("Left this month", sc(73), "34% of those asked") + "</div>" +
+      '<div class="card mt"><div class="section-title"><h3>Latest reviews</h3><span class="muted">' + list.filter(function (r) { return !r.replied; }).length + " waiting for a reply</span></div>";
+    h += list.map(function (r) {
+      var i = REVIEWS.indexOf(r);
+      return '<div class="rev"><div class="row between"><div><b>' + esc(r.n) + "</b> " + stars(r.s) + '</div><small class="muted">' + LOC(r.c) + ", " + r.at + "</small></div>" +
+        "<p style=\"margin:6px 0 0\">" + esc(r.t) + "</p>" +
+        (r.replied ? '<div class="reply"><b>Your reply:</b> ' + esc(r.reply) + "</div>" :
+          '<label for="rv' + i + '">Reply draft</label><textarea id="rv' + i + '">' + esc(r.draft) + '</textarea><div class="row" style="margin-top:8px"><button class="btn sm" data-review="' + i + '">Post reply on Google</button>' +
+          (r.s <= 3 ? '<span class="badge warn">Under 4 stars: Jellie was alerted</span>' : "") + "</div>") + "</div>";
+    }).join("");
+    $("v-reviews").innerHTML = h + "</div>";
+  }
+
+  /* ---------- Team ---------- */
+  function renderTeam() {
+    var tasks = document.querySelectorAll("#taskTable tbody tr[data-id]");
+    var list = TEAM.filter(function (t) { return inClinic(t.c); });
+    var h = '<div class="card"><div class="section-title"><h3>Team this month</h3><span class="muted">From Timely, the staff app and GoHighLevel</span></div>' +
+      "<table><thead><tr><th>Team member</th><th>Clinic</th><th>Today</th><th>Rebook rate</th><th>Retail</th><th>Reviews naming them</th><th></th></tr></thead><tbody>" +
+      list.map(function (t) {
+        return "<tr><td><div class=\"row\" style=\"gap:10px\">" + avatar(t.n) + "<b>" + t.n + "</b></div></td><td>" + LOC(t.c) + "</td><td>" + t.appts + " clients</td>" +
+          '<td><div class="row" style="gap:8px"><div class="bar" style="width:80px"><span style="width:' + t.rebook + '%"></span></div>' + t.rebook + "%</div></td><td>" + money(t.retail) + "</td><td>" + t.rev + "</td>" +
+          '<td><button class="btn sm ghost" data-msgstaff="' + t.n + '">Message</button></td></tr>';
+      }).join("") + "</tbody></table></div>" +
+      '<div class="grid g2 mt"><div class="card"><h3>Message the team</h3><p class="muted">Goes to everyone at the clinic you picked at the top, on the staff app.</p>' +
+      '<textarea id="teamMsg" placeholder="For example: HIFU offer has 6 spots left, mention it at checkout today"></textarea><button class="btn sm" style="margin-top:8px" data-act="teammsg">Send to the team</button></div>' +
+      '<div class="card"><h3>Open follow up tasks</h3><p>' + tasks.length + " open, " + document.querySelectorAll("#taskTable tr.overdue").length + ' overdue.</p><button class="btn sm ghost" data-go="#team-tasks">Open the task list</button></div></div>';
+    $("v-team").innerHTML = h;
+  }
+
+  /* ---------- Connections ---------- */
+  function renderConn() {
+    var CONN = [
+      ["Timely", "Clients, bookings, visits and sales. Direct connection, no Zapier.", "Synced 2 min ago"],
+      ["GoHighLevel", "Emails, texts, tags, waits and team tasks", "Live"],
+      ["clientcare inbox", "Reads Timely's incomplete booking and confirmation emails", "Checked 1 min ago"],
+      ["WhatsApp Business", "Booragoon and Leederville numbers", "Live"],
+      ["Instagram and Facebook", "DMs and comments, answered by the Concierge", "Live"],
+      ["Google Business Profile", "Reviews for both clinics", "Checked 5 min ago"],
+      ["Phone lines", S.locations.booragoon.phone + " and " + S.locations.leederville.phone + ", missed call text back", "Live"],
+      ["Staff app", "5 team members signed in", "Live"],
+      ["Website", "skinluxfaceandbody.com.au, checked every minute", "Up, loads in 1.2s"]
+    ];
+    var low = STOCK.filter(function (s) { return inClinic(s.c); });
+    var h = '<div class="grid g2"><div class="card"><div class="section-title"><h3>Connected</h3><span class="muted">' + CONN.length + " of " + CONN.length + " working</span></div>" +
+      CONN.map(function (c) { return '<div class="conn"><i></i><div><b>' + c[0] + '</b><div class="muted" style="font-size:13px">' + c[1] + '</div></div><small class="muted">' + c[2] + "</small></div>"; }).join("") + "</div>" +
+      '<div class="stack"><div class="card"><div class="section-title"><h3>Stock running low</h3><span class="muted">From the stock tracker</span></div>' +
+      (low.length ? low.map(function (s) {
+        var i = STOCK.indexOf(s);
+        return '<div class="conn"><i style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"></i><div><b>' + s.n + '</b><div class="muted" style="font-size:13px">' + LOC(s.c) + ": " + s.left + " left, reorder at " + s.min + "</div></div>" +
+          (s.ordered ? '<small class="muted">Order drafted</small>' : '<button class="btn sm ghost" data-stock="' + i + '">Draft order</button>') + "</div>";
+      }).join("") : '<p class="muted">Nothing low.</p>') + "</div>" +
+      '<div class="card"><div class="section-title"><h3>Website history</h3><span class="muted">Last 7 days</span></div><div class="log">' +
+      "<div><span>Sat</span>Down for 41 minutes. Jellie got a text within 1 minute.</div><div><span>Sat</span>Back up. Ads were sending people to the offer pages the whole time.</div><div><span>Today</span>Up all day, average load 1.2 seconds.</div></div></div>" +
+      '<div class="card"><div class="section-title"><h3>Sync log</h3><span class="muted">Today</span></div><div class="log">' +
+      "<div><span>2:38pm</span>Timely: 3 new bookings and 1 new client synced</div><div><span>2:31pm</span>GoHighLevel: abandoned booking email 1 sent to Kate Lowe</div>" +
+      "<div><span>2:21pm</span>Skin Check: Sarah Ng added as a lead, Booragoon alerted</div><div><span>2:20pm</span>Staff app: Nurse Leo tapped done for Jade Wilson</div>" +
+      "<div><span>1:58pm</span>SMS: Chloe Bennett replied, task created for Sharon</div></div></div></div></div>";
+    $("v-connections").innerHTML = h;
+  }
+
+  /* ---------- Notifications ---------- */
+  function notifs() {
+    var out = [];
+    openConvos().forEach(function (v) {
+      if (v.nurse) out.push({ k: "n" + v.id, cls: "bad", t: "<b>" + esc(v.name) + "</b> needs a nurse: " + esc(v.msgs.filter(function (m) { return m.f === "them"; }).slice(-1)[0].t), go: ["inbox", v.id] });
+      else if (v.ch === "scan" && v.unread) out.push({ k: "s" + v.id, cls: "warn", t: "<b>" + esc(v.name) + "</b> did the Skin Check. Call within 15 minutes.", go: ["inbox", v.id] });
+    });
+    todayIssues().forEach(function (x) {
+      out.push({ k: "d" + x.a.n, cls: "warn", t: x.a.st === "notap" ? "<b>" + x.a.n + "</b> finished at " + x.a.t + " but " + x.a.s.split(" ")[0] + " hasn't tapped done" : "<b>" + x.a.n + "</b> hasn't paid the deposit for " + x.a.t + " " + x.a.tr, go: ["today"] });
+    });
+    REVIEWS.forEach(function (r) { if (inClinic(r.c) && !r.replied && r.s <= 3) out.push({ k: "r" + r.n, cls: "bad", t: "New " + r.s + " star review from <b>" + r.n + "</b>", go: ["reviews"] }); });
+    STOCK.forEach(function (s) { if (inClinic(s.c) && !s.ordered) out.push({ k: "k" + s.n, cls: "", t: "<b>" + s.n + "</b> is low at " + LOC(s.c) + " (" + s.left + " left)", go: ["connections"] }); });
+    return out;
+  }
+  function renderBell() {
+    var list = notifs(), unread = list.filter(function (n) { return !ui.read[n.k]; }).length;
+    $("bellCt").textContent = unread ? unread : "";
+    if ($("bellPop").hidden) return;
+    $("bellPop").innerHTML = '<div class="bp-head"><b>Notifications</b><button class="lnk" data-act="readall">Mark all read</button></div>' +
+      (list.length ? list.map(function (n, i) { return '<div class="bp-item" data-ni="' + i + '"><i class="' + n.cls + '"></i><div' + (ui.read[n.k] ? ' style="opacity:.6"' : "") + ">" + n.t + "</div></div>"; }).join("") : '<div class="empty">All clear.</div>');
+    $("bellPop")._list = list;
+  }
+  function closeBell() { $("bellPop").hidden = true; }
+
+  /* ---------- Live events, so the demo feels alive ---------- */
+  function liveEvents() {
+    setTimeout(function () {
+      CONVOS.unshift({ id: "c20", name: "@mel.skinjourney", ch: "ig", clinic: "leederville", at: "Just now", unread: true, inj: true, assigned: "Concierge", phone: "Instagram DM",
+        wf: "Concierge answered, consult offered",
+        msgs: [{ f: "them", t: "Hey, do you do lip filler? What's the price?", at: "Just now" },
+          { f: "bot", t: "Hi Mel, yes, our registered nurses do lip treatments at Leederville. Pricing is given at a free consultation so it's matched to you. Would you like a consult time?", at: "Just now, Concierge" }],
+        draft: "Hi Mel, Nurse Maria has Thursday 3pm or Saturday 10am free for a consult at Leederville. Which suits?" });
+      renderAll();
+      toast("New Instagram message at Leederville. The Concierge answered it with a consult offer and no price.");
+    }, 25000);
+    setTimeout(function () {
+      CONVOS.unshift({ id: "c21", name: "Tegan Brooks", ch: "scan", clinic: "booragoon", at: "Just now", unread: true, assigned: "Sharon Kim", phone: "0419 664 205",
+        wf: "Skin Check lead: call within 15 minutes",
+        msgs: [{ f: "sys", t: "Did the AI Skin Check from the QR code at reception. Score 71. Focus: firmness, fine lines, texture." },
+          { f: "bot", t: "Hi Tegan, here's your Skinlux 12 week plan: Diamond Polar RF and Clinical Peels, from $1,780, plus a free nurse consult for fine lines. Book here: skinlux.au/plan/tb71", at: "Just now" },
+          { f: "sys", t: "Alert sent to Booragoon: call Tegan within 15 minutes." }],
+        draft: "Hi Tegan, it's Sharon at Skinlux Booragoon. Thanks for doing the skin check. Can I call you to book your first session?" });
+      LEADS.unshift({ n: "Tegan Brooks", src: "Skin Check", i: "12 week plan", c: "booragoon", s: 0, age: "Just now", v: 1780, cv: "c21", fresh: true });
+      renderAll();
+      toast("New Skin Check lead at Booragoon: Tegan Brooks. Sharon has 15 minutes to call.");
+    }, 60000);
+  }
+
+  /* ---------- Events ---------- */
+  document.addEventListener("click", function (e) {
+    var t = e.target;
+    var g = t.closest("[data-go]");
+    if (g) {
+      var dest = g.getAttribute("data-go");
+      if (dest.charAt(0) === "#") { go("overview"); var el = document.querySelector(dest); if (el) setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50); }
+      else go(dest);
+      return;
+    }
+    var gc = t.closest("[data-goconvo]");
+    if (gc) { closeClient(); go("inbox", gc.getAttribute("data-goconvo")); return; }
+    var cl = t.closest("[data-client]");
+    if (cl && !t.closest("#cpanel")) { openClient(cl.getAttribute("data-client")); return; }
+    var it = t.closest("[data-cv]");
+    if (it) { ui.convo = it.getAttribute("data-cv"); ui.warn = null; renderInbox(); return; }
+    var f = t.closest("[data-ibf]");
+    if (f) { ui.ibf = f.getAttribute("data-ibf"); renderInbox(); return; }
+    var cf = t.closest("[data-cf]");
+    if (cf) { ui.cf = cf.getAttribute("data-cf"); renderClients(); return; }
+    var ap = t.closest("[data-appt]");
+    if (ap) { apptAction(ap.getAttribute("data-appt")); return; }
+    var ld = t.closest("[data-lead]");
+    if (ld) {
+      var l = LEADS[+ld.getAttribute("data-lead")]; l.s++; l.fresh = false;
+      toast(l.n + " moved to " + STAGES[l.s] + (l.s === 3 ? ". Booked in Timely, and the follow ups stop." : "."));
+      renderAll(); return;
+    }
+    var fw = t.closest("[data-flow]");
+    if (fw) {
+      var fl = FLOWS[+fw.getAttribute("data-flow")]; fl.on = !fl.on;
+      toast(fl.n + (fl.on ? " is back on." : " is paused. Nobody new enters it."));
+      renderFlows(); return;
+    }
+    var rv = t.closest("[data-review]");
+    if (rv) {
+      var i = +rv.getAttribute("data-review"), r = REVIEWS[i];
+      r.reply = $("rv" + i).value.trim() || r.draft; r.replied = true;
+      if (r.cv) { var c6 = convo(r.cv); if (c6) { c6.status = "done"; c6.msgs.push({ f: "us", t: r.reply, at: "Just now", by: "Jellie" }); } }
+      toast("Reply posted on Google for " + LOC(r.c) + ".");
+      renderAll(); return;
+    }
+    var stk = t.closest("[data-stock]");
+    if (stk) { var s = STOCK[+stk.getAttribute("data-stock")]; s.ordered = true; toast("Order drafted for " + s.n + " at " + LOC(s.c) + ". It's in your email to check and send."); renderAll(); return; }
+    var ms = t.closest("[data-msgstaff]");
+    if (ms) { toast("Chat with " + ms.getAttribute("data-msgstaff") + " opened on the staff app."); return; }
+    var ca = t.closest("[data-cact]");
+    if (ca) {
+      var who = $("cpanel").dataset.client, a = ca.getAttribute("data-cact");
+      toast(a === "book" ? "Timely opened at " + who + "'s profile to book." : a === "wait" ? who + " is on the waitlist. They get a text when a matching slot opens." : "New message to " + who + " started in the Inbox.");
+      return;
+    }
+    var ni = t.closest("[data-ni]");
+    if (ni) { var n = $("bellPop")._list[+ni.getAttribute("data-ni")]; ui.read[n.k] = true; go(n.go[0], n.go[1]); return; }
+    var act = t.closest("[data-act]");
+    if (act) {
+      var k = act.getAttribute("data-act"), v = convo(ui.convo);
+      if (k === "readall") { notifs().forEach(function (x) { ui.read[x.k] = true; }); renderBell(); return; }
+      if (k === "teammsg") { var m = $("teamMsg").value.trim(); if (!m) { toast("Type a message first"); return; } $("teamMsg").value = ""; toast("Sent to the team at " + LOC(clinic()) + " on the staff app."); return; }
+      if (!v) return;
+      if (k === "ai") { v.typed = v.draft; ui.warn = null; renderInbox(); toast("Draft written from your price list and aftercare notes. Check it, then send."); return; }
+      if (k === "send") { sendReply(); return; }
+      if (k === "fix") { v.typed = v.inj ? (v.draft && !RISKY_INJ.test(v.draft) ? v.draft : SAFE_INJ) : v.draft; ui.warn = null; renderInbox(); return; }
+      if (k === "book") {
+        v.msgs.push({ f: "sys", t: "Booked in Timely by Jellie. Every follow up for " + v.name.split(" ")[0] + " has stopped and a confirmation went out." });
+        v.wf = "Booked"; v.status = "done";
+        LEADS.forEach(function (l) { if (l.cv === v.id && l.s < 3) l.s = 3; });
+        ui.ibf = "all"; toast("Booked in Timely. Moved to Done, and the lead is marked Booked."); renderAll(); return;
+      }
+      if (k === "done") { v.status = v.status === "done" ? "open" : "done"; if (v.status === "done") { v.nurse = false; } toast(v.status === "done" ? v.name + " marked done." : v.name + " reopened."); renderAll(); return; }
+    }
+    if (t.closest("#bell")) { var p = $("bellPop"); p.hidden = !p.hidden; renderBell(); return; }
+    if (!t.closest("#bellPop")) closeBell();
+  });
+  document.addEventListener("input", function (e) {
+    if (e.target.id === "reply") { var v = convo(ui.convo); if (v) v.typed = e.target.value; }
+    if (e.target.id === "search") { ui.q = e.target.value; if (ui.view !== "clients") go("clients"); else renderClients(); }
+  });
+  document.addEventListener("change", function (e) {
+    if (e.target.id === "ibCh") { ui.ibch = e.target.value; renderInbox(); }
+    if (e.target.id === "thAssign") {
+      var v = convo(ui.convo); v.assigned = e.target.value;
+      v.msgs.push({ f: "sys", t: v.assigned ? "Assigned to " + v.assigned + ". They got a ping on the staff app." : "Unassigned." });
+      renderInbox(); toast(v.assigned ? "Assigned to " + v.assigned + "." : "Unassigned.");
+    }
+  });
+  $("segClinic").addEventListener("click", function () { setTimeout(renderAll, 0); });
+  $("scrim2").addEventListener("click", closeClient);
+  $("cpClose").addEventListener("click", closeClient);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeClient(); closeBell(); } });
+  // The old task panel's Mark done changes overdue counts.
+  $("taskBody").addEventListener("click", function () { setTimeout(renderNeeds, 0); });
+  var pd = $("pnDone"); if (pd) pd.addEventListener("click", function () { setTimeout(renderNeeds, 0); });
+
+  function fitBar() { document.documentElement.style.setProperty("--db", document.querySelector(".demo-bar").offsetHeight + "px"); }
+  window.addEventListener("resize", fitBar);
+  fitBar();
+  $("bellIcon").innerHTML = I("bell", 19);
+  var start = (location.hash || "").slice(1);
+  go(TITLES[start] ? start : "overview");
+  liveEvents();
+})();
