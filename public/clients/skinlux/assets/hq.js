@@ -776,7 +776,11 @@
       }
       if (k === "done") { v.status = v.status === "done" ? "open" : "done"; if (v.status === "done") { v.nurse = false; } toast(v.status === "done" ? v.name + " marked done." : v.name + " reopened."); renderAll(); return; }
     }
-    if (t.closest("#bell")) { var p = $("bellPop"); p.hidden = !p.hidden; renderBell(); return; }
+    if (t.closest("#bell")) {
+      var p = $("bellPop"), br = $("bell").getBoundingClientRect();
+      p.style.right = Math.max(12, document.documentElement.clientWidth - br.right) + "px";
+      p.hidden = !p.hidden; renderBell(); return;
+    }
     if (!t.closest("#bellPop")) closeBell();
   });
   document.addEventListener("input", function (e) {
