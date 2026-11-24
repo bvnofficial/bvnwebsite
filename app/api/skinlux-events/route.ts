@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { skinluxStaffReqOk } from "@/lib/skinlux-staff-gate";
-import { buildEvent, sendEvent } from "@/lib/skinlux-events";
+import { buildEventWithEdits, sendEvent } from "@/lib/skinlux-events";
 
 /**
  * Skinlux event sender: staff app taps, the Timely link and HQ post here.
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   if (!keyOk(req) && !(await skinluxStaffReqOk(req))) return out(401, { ok: false, error: "Not signed in" });
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== "object") return out(400, { ok: false, error: "Bad request" });
-  const built = buildEvent(body as Record<string, unknown>);
+  const built = await buildEventWithEdits(body as Record<string, unknown>);
   if (!built.ok) return out(400, built);
   const sent = await sendEvent(built);
   return out(sent.status, { ...sent, kind: built.kind, clinic: built.clinic });

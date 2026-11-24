@@ -3,7 +3,7 @@
 // Not connected yet: shows a banner and the sample data, clearly marked.
 (function () {
   "use strict";
-  var HQ = "../assets/hq.js?v=6";
+  var HQ = "../assets/hq.js?v=7";
   function banner(text, tone) {
     var b = document.createElement("div");
     b.style.cssText = "padding:10px 18px;font-size:13.5px;text-align:center;" +

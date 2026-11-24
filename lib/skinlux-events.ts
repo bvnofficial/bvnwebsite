@@ -26,6 +26,39 @@ export function normPhone(p: string): string {
 
 export type Built = { ok: true; clinic: Clinic; kind: string; payload: Obj } | { ok: false; error: string };
 
+/** Same slug as ghl_messages.py, so "IPL hair removal (SHR)" -> "ipl_hair_removal_shr" */
+function slug(x: string): string {
+  return x.toLowerCase().replace(/[^a-z0-9]/g, "_").replace(/^_+|_+$/g, "").split("__").join("_");
+}
+
+/** Jellie's edited aftercare from the HQ message editor (GoHighLevel custom
+ *  value msg_aftercare_*), or the built in wording if it isn't set or reachable. */
+async function editedAftercare(clinic: Clinic, treatment: string, injectable: boolean): Promise<string | null> {
+  const C = clinic.toUpperCase();
+  const token = process.env[`GHL_SKINLUX_${C}_TOKEN`], loc = process.env[`GHL_SKINLUX_${C}_LOCATION`];
+  if (!token || !loc) return null;
+  const r = await fetch(`https://services.leadconnectorhq.com/locations/${loc}/customValues`, {
+    headers: { Authorization: `Bearer ${token}`, Version: "2021-07-28", Accept: "application/json" }, cache: "no-store",
+  }).catch(() => null);
+  if (!r || !r.ok) return null;
+  const d = (await r.json().catch(() => ({}))) as { customValues?: { name: string; value: string }[] };
+  const name = "msg_aftercare_" + (injectable ? "injectables_all" : slug(treatment));
+  const v = (d.customValues || []).find((x) => x.name === name)?.value?.trim();
+  return v && v !== "(Jellie to write)" ? v : null;
+}
+
+export async function buildEventWithEdits(body: Obj): Promise<Built> {
+  const b = buildEvent(body);
+  if (!b.ok || b.payload.event !== "treatment_done") return b;
+  const t = findTreatment(String(b.payload.treatment));
+  const edited = t ? await editedAftercare(b.clinic, t.name, t.injectable) : null;
+  if (edited) {
+    const first = String(b.payload.first_name), sign = `Skinlux ${String(b.payload.clinic)}`;
+    b.payload.aftercare_sms = `Hi ${first}, thanks for coming in today. ${edited} ${sign}`;
+  }
+  return b;
+}
+
 export function buildEvent(body: Obj): Built {
   const event = s(body.event);
   const kind = EVENT_KIND[event];

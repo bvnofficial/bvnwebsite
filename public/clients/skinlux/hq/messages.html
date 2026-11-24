@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your messages | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .wrap{max-width:860px;margin:0 auto;padding:20px 18px 80px}
+  .top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 18px}
+  .top h1{margin:0;font-size:30px;flex:1}
+  .grp{margin:28px 0 10px;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .msg{margin-bottom:12px}
+  .msg .head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .msg .head b{flex:1;min-width:200px}
+  .pill{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--sand)}
+  .pill.inj{background:#f4e0bb}
+  .pill.diff{background:#f1cdc8}
+  textarea{width:100%;min-height:92px;font:inherit;font-size:15px;line-height:1.5;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);resize:vertical}
+  .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  .tools select{font:inherit;font-size:13px;padding:7px 9px;border-radius:8px;border:1.5px solid var(--line)}
+  .ins{font-size:12px;padding:4px 9px;border-radius:99px;border:1px solid var(--line);background:#fff;cursor:pointer}
+  .count{font-size:12px;color:var(--muted);margin-left:auto}
+  .preview{margin-top:8px;font-size:13.5px;background:var(--cream);border-radius:10px;padding:10px 12px;white-space:pre-wrap}
+  .preview small{display:block;color:var(--muted);margin-bottom:4px}
+  .err{color:#b83a2e;font-size:13px;margin-top:6px}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;display:none;z-index:9}
+  .search{font:inherit;font-size:15px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);min-width:240px}
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Your messages</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Your messages</h1><input class="search" id="search" placeholder="Search messages"></div>
+  <div class="card soft"><b>Every text and email your clients get from the automations is here.</b> <span class="muted">Change the wording, press Save, and the next client gets your new version. Words in curly brackets fill in by themselves, like the client's first name. Messages marked injectable need your nurse's OK before saving. Edits apply to both clinics unless you pick one.</span></div>
+  <div id="list"><p class="muted" style="margin-top:20px">Loading your messages</p></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var K=null;try{K=localStorage.getItem("skinluxhq-key")}catch(e){}
+  var H={Accept:"application/json","Content-Type":"application/json"};if(K)H.Authorization="Bearer "+K;
+  var FIELDS=[["First name","{{contact.first_name}}"],["Treatment","{{contact.last_treatment}}"],["Product","{{contact.last_product_bought}}"],["Clinic","{{custom_values.clinic_name}}"],["Clinic phone","{{custom_values.clinic_phone}}"],["Booking link","{{custom_values.booking_link}}"],["Shop link","{{custom_values.shop_link}}"],["Review link","{{custom_values.review_link}}"]];
+  var SAMPLE={"contact.first_name":"Sarah","contact.last_name":"Smith","contact.last_treatment":"HIFU","contact.last_product_bought":"Skincare Doctor Hydra Light Cream","contact.abandoned_service":"HIFU Full Face","contact.package_name":"Needling pack of 3","contact.package_sessions_left":"2","custom_values.clinic_name":"Booragoon","custom_values.clinic_phone":"0478 817 414","custom_values.clinic_address":"Suite 15/135 Riseley St, Booragoon","custom_values.booking_link":"bookings.gettimely.com/...","custom_values.consult_link":"bookings.gettimely.com/...","custom_values.shop_link":"skinluxfaceandbody.myshopify.com","custom_values.review_link":"g.page/skinlux/review","custom_values.abandoned_offer":"(your offer)"};
+  function $(id){return document.getElementById(id)}
+  function toast(t){var e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(function(){e.style.display="none"},3000)}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function fill(t){return t.replace(/\{\{\s*([\w.]+)\s*\}\}/g,function(m,k){return SAMPLE[k]||m})}
+  function isSms(n){return /_sms$/.test(n)}
+  var DATA=null;
+  fetch("/api/skinlux-hq/messages",{headers:H,credentials:"include",cache:"no-store"}).then(function(r){return r.json()}).then(function(d){
+    if(!d.ok){$("list").innerHTML='<div class="card" style="margin-top:16px">'+esc(d.error||"Couldn't load your messages")+"</div>";return}
+    DATA=d;draw("")}).catch(function(){$("list").innerHTML='<div class="card" style="margin-top:16px">Couldn\'t reach Skinlux HQ. Try again in a minute.</div>'});
+  $("search").oninput=function(){if(DATA)draw($("search").value.toLowerCase())};
+  function draw(q){
+    var h="",last="";
+    DATA.messages.forEach(function(m,i){
+      var v=m.booragoon!=null?m.booragoon:m.leederville||"";
+      if(q&&(m.label+" "+m.group+" "+v).toLowerCase().indexOf(q)<0)return;
+      if(m.group!==last){h+='<div class="grp">'+esc(m.group)+"</div>";last=m.group}
+      var diff=m.booragoon!=null&&m.leederville!=null&&m.booragoon!==m.leederville;
+      h+='<div class="card msg" data-i="'+i+'"><div class="head"><b>'+esc(m.label)+"</b>"+(m.injectable?'<span class="pill inj">Injectable: nurse sign off</span>':"")+(isSms(m.name)?'<span class="pill">SMS</span>':/subject$/.test(m.name)?'<span class="pill">Email subject</span>':/aftercare/.test(m.name)?'<span class="pill">SMS</span>':'<span class="pill">Email</span>')+(diff?'<span class="pill diff">Different per clinic</span>':"")+"</div>"+
+        '<textarea>'+esc(v)+"</textarea>"+
+        '<div class="tools">'+FIELDS.map(function(f){return'<button class="ins" data-v="'+f[1]+'">+ '+f[0]+"</button>"}).join("")+"</div>"+
+        '<div class="tools"><select class="scope"><option value="both">Both clinics</option><option value="booragoon">Booragoon only</option><option value="leederville">Leederville only</option></select><button class="btn sm save">Save</button><span class="count"></span></div>'+
+        '<div class="preview"><small>Preview with a sample client</small><span></span></div><div class="err"></div></div>';
+    });
+    $("list").innerHTML=h||'<p class="muted" style="margin-top:20px">No messages match.</p>';
+    document.querySelectorAll(".msg").forEach(function(card){
+      var m=DATA.messages[+card.dataset.i],ta=card.querySelector("textarea");
+      function upd(){var t=ta.value;card.querySelector(".preview span").textContent=fill(t);
+        var n=fill(t).length;card.querySelector(".count").textContent=n+" characters"+(isSms(m.name)||/aftercare/.test(m.name)?" ("+Math.max(1,Math.ceil(n/153))+" SMS)":"")}
+      ta.oninput=upd;upd();
+      card.querySelector(".scope").onchange=function(){var s=this.value;if(s!=="both"&&m[s]!=null){ta.value=m[s];upd()}};
+      card.querySelectorAll(".ins").forEach(function(b){b.onclick=function(){var p=ta.selectionStart||ta.value.length;ta.value=ta.value.slice(0,p)+b.dataset.v+ta.value.slice(ta.selectionEnd||p);ta.focus();upd()}});
+      card.querySelector(".save").onclick=function(){
+        var btn=this,err=card.querySelector(".err"),s=card.querySelector(".scope").value;err.textContent="";
+        if(isSms(m.name)&&/STOP/.test(m.booragoon||"")&&!/STOP/.test(ta.value)){err.textContent="Keep \"Reply STOP to opt out\" in marketing texts (Spam Act).";return}
+        if(m.injectable&&!confirm("This message goes to injectable clients. Has your nurse checked the wording?"))return;
+        btn.disabled=true;btn.textContent="Saving";
+        fetch("/api/skinlux-hq/messages",{method:"PUT",headers:H,credentials:"include",body:JSON.stringify({name:m.name,value:ta.value,clinics:s==="both"?["booragoon","leederville"]:[s]})})
+          .then(function(r){return r.json()}).then(function(d){btn.disabled=false;btn.textContent="Save";
+            if(d.ok){d.saved.forEach(function(c){m[c]=ta.value.trim()});toast("Saved for "+d.saved.map(function(c){return c[0].toUpperCase()+c.slice(1)}).join(" and "))}else err.textContent=d.error||"Didn't save"})
+          .catch(function(){btn.disabled=false;btn.textContent="Save";err.textContent="No connection, try again"})};
+    });
+  }
+})();
+</script>
+</body>
+</html>

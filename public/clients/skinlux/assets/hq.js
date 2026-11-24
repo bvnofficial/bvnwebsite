@@ -612,8 +612,9 @@
   }
 
   /* ---------- Workflows ---------- */
+  var MSGCARD = !LIVE ? "" : '<div class="card" style="margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:220px"><b>Your messages</b><br><span class="muted">Edit the wording of every text and email your clients get, for one clinic or both.</span></div><a class="btn sm" href="' + (LIVE ? "messages.html" : "hq/messages.html") + '">Edit messages</a></div>';
   function renderFlows() {
-    var h = '<div class="note" style="margin-bottom:16px">Every workflow runs in GoHighLevel and reads from Timely directly. Switch one off and nobody new enters it. People already in it finish their current step.</div><div class="stack">';
+    var h = MSGCARD + '<div class="note" style="margin-bottom:16px">Every workflow runs in GoHighLevel and reads from Timely directly. Switch one off and nobody new enters it. People already in it finish their current step.</div><div class="stack">';
     FLOWS.forEach(function (f, i) {
       function stat(x) { return "<div><b>" + (typeof x[0] === "number" ? sc(x[0]) : x[0]) + "</b>" + x[1] + "</div>"; }
       h += '<div class="card flow' + (f.on ? "" : " off") + '"><div><h3 style="margin:0">' + f.n + "</h3>" +
@@ -681,7 +682,7 @@
   ];
   }
   function renderApps() {
-    var h = '<div class="card soft" style="margin-bottom:16px"><b>Every app reports into Skinlux HQ.</b> <span class="muted">Each card shows the numbers for that app, for the clinic picked at the top. Open the app, or jump to where its work shows up in HQ.</span></div>' +
+    var h = MSGCARD + '<div class="card soft" style="margin-bottom:16px"><b>Every app reports into Skinlux HQ.</b> <span class="muted">Each card shows the numbers for that app, for the clinic picked at the top. Open the app, or jump to where its work shows up in HQ.</span></div>' +
       '<div class="grid g3">' + appsData().map(function (a) {
         // Live apps (built and working) link to the real thing; the rest show the demo
         var LIVE_APPS = { "Staff app": ["../staff/index.html", "Live: treatment done, product sold and call backs"],

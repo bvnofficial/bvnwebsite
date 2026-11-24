@@ -1,4 +1,4 @@
-// Skinlux treatment and product data, shared by the event sender, the staff
+﻿// Skinlux treatment and product data, shared by the event sender, the staff
 // app and the quiz. Source: clients/skinlux-jellie/build/03-treatment-data.csv
 // and 02-messages.md. Aftercare marked "missing" there uses the general line
 // until Jellie supplies the real wording. Timely stays the source of bookings;
@@ -59,9 +59,11 @@ export const PRODUCTS: { name: string; lifeDays: number | null }[] = [
   "Skincare Doctor Hydra Soothe Cream", "Skincare Doctor Retinal + Peptide Cream", "Skincare Doctor Vitamin C + Peptides Serum",
   "Skincare Doctor Exfoliating Blemish Serum", "Skincare Doctor Hydrate", "Skincare Doctor HA + Peptide Mist",
   "Skincare Doctor Oil Cleanser", "SkinCare Doctor Gel Cleanser",
-].map((name) => ({ name, lifeDays: null })); // life to come from Jellie; default 60 days
+].map((name) => ({ name, lifeDays: null })); // per product life to come from Jellie
 
-export const DEFAULT_PRODUCT_LIFE = 60;
+// Jellie (24 Nov): send the shop link to repurchase about 2 to 3 months after an in clinic sale.
+// The reminder goes at life minus 10 days, so 85 gives 75 days (about 2.5 months).
+export const DEFAULT_PRODUCT_LIFE = 85;
 
 const MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 /** DD-MMM-YYYY in Perth time, the format GoHighLevel date fields take */
