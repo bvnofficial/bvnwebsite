@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-AU">
 <head>
 <meta charset="utf-8">
@@ -110,7 +110,7 @@
           <h2 class="center" style="font-size:28px">Your free AI skin check</h2>
           <p class="center muted">Take a selfie, answer three quick questions and get a 12 week plan made from the Skinlux menu.</p>
           <button class="btn gold block" id="start" style="margin-top:18px">Start my skin check</button>
-          <p class="fine center">A cosmetic skin guide, not a medical diagnosis. Your therapist checks everything at your consult.</p>
+          <p class="fine center">A cosmetic skin guide, not a medical diagnosis. Your therapist checks everything at your consult. If you are worried about a mole, spot or skin condition, please see your GP.</p>
         </div>
 
         <div class="scr" id="s1">
@@ -151,7 +151,7 @@
           <h3 class="center">Your skin results</h3>
           <div class="ring">
             <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#ede3d8" stroke-width="10"/><circle id="ringArc" cx="60" cy="60" r="52" fill="none" stroke="#b8925a" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" style="transition:stroke-dashoffset 1.2s ease"/></svg>
-            <div class="num"><b id="score">0</b><small>Skin score</small></div>
+            <div class="num"><b id="score">0</b><small>Skin guide</small></div>
           </div>
           <p class="center muted" style="font-size:13px" id="scoreLine"></p>
           <div class="mini"><canvas id="cvMini" width="360" height="440"></canvas></div>
@@ -468,13 +468,13 @@
   // ---------- Results ----------
   var NAMES = { redness: "Redness", evenness: "Even tone", texture: "Smooth texture", dull: "Brightness", congestion: "Clear pores", firmness: "Firmness", lines: "Fine lines" };
   var EXPLAIN = {
-    redness: "Some redness across the cheeks. Light based treatments calm it and even it out over a few sessions.",
-    evenness: "Uneven tone or small spots, often from sun. These respond well to a short course plus daily SPF.",
-    texture: "Some roughness on the forehead. Resurfacing builds smoother skin over a few weeks.",
-    dull: "Skin looks a bit tired. A brightening treatment gives a glow you see the same day.",
-    congestion: "Some congestion around the nose and chin. A deep clean course keeps pores clearer.",
-    firmness: "Some loss of firmness for your age range. Collagen building treatments tighten over a course.",
-    lines: "Some fine lines for your age range. These are best talked through with one of our nurses."
+    redness: "Some redness across the cheeks. Light based treatments can help calm it over a few sessions. Results vary from person to person.",
+    evenness: "Some uneven tone or small spots, often linked to sun. A short course plus daily SPF can help.",
+    texture: "Some roughness on the forehead. Resurfacing treatments can help smooth the skin over a few weeks.",
+    dull: "Skin looks a little tired. A brightening treatment can help it look fresher.",
+    congestion: "Some congestion around the nose and chin. A deep cleansing course can help keep pores clearer.",
+    firmness: "Some softening in firmness. Collagen stimulating treatments may help over a course, and your therapist will talk you through what is realistic.",
+    lines: "Some fine lines. These are best talked through with one of our registered nurses at a consultation."
   };
   var R = null, focus = [];
   function results() {
@@ -493,7 +493,7 @@
     $("ringArc").style.strokeDashoffset = 327;
     setTimeout(function () { $("ringArc").style.strokeDashoffset = 327 * (1 - overall / 100); }, 80);
     var n = 0, iv = setInterval(function () { n += 2; if (n >= overall) { n = overall; clearInterval(iv); } $("score").textContent = n; }, 22);
-    $("scoreLine").textContent = overall >= 80 ? "Healthy skin. A few small things to keep on top of." : overall >= 65 ? "Good base with a few clear focus areas." : "A few focus areas that respond well to a plan.";
+    $("scoreLine").textContent = overall >= 80 ? "Your skin looks well cared for. A few small things to keep on top of." : overall >= 65 ? "A good base with a few areas you may want to focus on." : "A few areas a tailored plan can help with.";
 
     $("metrics").innerHTML = keys.map(function (k) {
       var v = R[k], tag = v >= 78 ? ["Good", "tag-good"] : v >= 62 ? ["Worth a look", "tag-mid"] : ["Focus area", "tag-focus"];
