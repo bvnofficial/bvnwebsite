@@ -19,7 +19,7 @@ type Svc = { id: string; name: string; mins: number; price: string; injectable: 
 
 class Jar {
   m = new Map<string, string>();
-  header() { return [...this.m].map(([k, v]) => `${k}=${v}`).join("; "); }
+  header() { return Array.from(this.m).map(([k, v]) => `${k}=${v}`).join("; "); }
   keep(res: Response) {
     const h = res.headers as Headers & { getSetCookie?: () => string[] };
     for (const c of h.getSetCookie ? h.getSetCookie() : []) {
@@ -52,7 +52,7 @@ async function go(jar: Jar, url: string, init: { method?: string; body?: URLSear
 const ent = (s: string) => s.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n))).replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
 
 function inputs(html: string): { name: string; value: string; type: string }[] {
-  return [...html.matchAll(/<input\b[^>]*>/gi)].map((m) => {
+  return Array.from(html.matchAll(/<input\b[^>]*>/gi)).map((m) => {
     const t = m[0];
     return { name: ent((t.match(/\bname="([^"]*)"/) || [])[1] || ""), value: ent((t.match(/\bvalue="([^"]*)"/) || [])[1] || ""), type: ((t.match(/\btype="([^"]*)"/) || [])[1] || "").toLowerCase() };
   }).filter((x) => x.name);
@@ -82,7 +82,7 @@ export async function timelyServices(clinic: string): Promise<Svc[]> {
   const c = svcCache[clinic];
   if (c && Date.now() - c.at < 30 * 60_000) return c.list;
   const page = await openServicePage(new Jar(), clinic);
-  const list: Svc[] = [...page.text.matchAll(/<input id="service\d+"[^>]*data-name="([^"]*)"[^>]*value="([^"]+)"[\s\S]*?select-list__item-attr">([\s\S]*?)<\/div>/g)].map((m) => {
+  const list: Svc[] = Array.from(page.text.matchAll(/<input id="service\d+"[^>]*data-name="([^"]*)"[^>]*value="([^"]+)"[\s\S]*?select-list__item-attr">([\s\S]*?)<\/div>/g)).map((m) => {
     const name = ent(m[1]).replace(/\s+/g, " ").trim(), attr = ent(m[3]).replace(/\s+/g, " ").trim();
     const price = (attr.split("·")[1] || "").trim();
     return { id: m[2], name, mins: mins(attr), price, injectable: INJECTABLE_RE.test(name) };
@@ -107,6 +107,15 @@ export function matchService(list: Svc[], text: string): { best: Svc | null; oth
     const consult = list.find((s) => /cosmetic treatment consultation/i.test(s.name)) || null;
     return { best: consult, others: [] };
   }
+  // hair removal is listed by body area on the Timely menu (Brazilian, Underarms...)
+  if (/hair remov|laser hair|ipl hair|\bshr\b/i.test(q)) {
+    const area = q.replace(/ipl|shr|laser|hair|removal|remove|for|my|the|and|\s+/gi, " ").trim();
+    if (area.length > 2) {
+      const r = matchService(list.filter((x) => !/consult|pack|upfront/i.test(x.name)), area);
+      if (r.best) return r;
+    }
+    return { best: list.find((x) => /hair removal consult/i.test(x.name)) || null, others: [] };
+  }
   const extra = SYN.filter(([re]) => re.test(q)).map(([, w]) => w).join(" ");
   const words = (q + " " + extra).replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 2 && !/^(the|and|for|with|book|booking|appointment|available|availability|time|times|session|treatment)$/.test(w));
   const scored = list.filter((s) => !s.injectable).map((s) => {
@@ -119,6 +128,9 @@ export function matchService(list: Svc[], text: string): { best: Svc | null; oth
     if (/pack of|x \d|course of|\d sessions/i.test(n) && !/pack|course|sessions/.test(q)) sc -= 1.5;
     if (/add on|add /i.test(n) && !/add/.test(q)) sc -= 1;
     if (/offer/i.test(n) && /offer|special|deal|promo/.test(q)) sc += 2;
+    if (/consult/i.test(n) && !/consult/.test(q)) sc -= 2;
+    // no body area named: the face version is the usual one
+    if (!/neck|dec|chest|chin|jaw|eye|hand|arm|leg|back|abdomen|body|patch|spot|underarm|bikini|brazilian|lip|cheek|mouth|brow/.test(q) && /full face\b(?!\s*(&|and|,))/i.test(n)) sc += 1;
     return { s, sc };
   }).filter((x) => x.sc > 0).sort((a, b) => b.sc - a.sc);
   return { best: scored[0] ? scored[0].s : null, others: scored.slice(1, 5).map((x) => x.s) };
@@ -213,7 +225,7 @@ async function availabilityFresh(clinic: string, treatmentText: string, from: st
     const raw = ent(r.text);
     const seen = new Set<string>();
     const times: string[] = [];
-    for (const m of raw.matchAll(/"aliasOrFirstName":"([^"]*)"[\s\S]*?"clientTimeOfService":"([^"]+)"/g)) {
+    for (const m of Array.from(raw.matchAll(/"aliasOrFirstName":"([^"]*)"[\s\S]*?"clientTimeOfService":"([^"]+)"/g))) {
       const key = m[2] + m[1];
       if (seen.has(key)) continue;
       seen.add(key);
