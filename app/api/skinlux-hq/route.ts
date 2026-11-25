@@ -132,7 +132,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
   });
 
   const byId: Record<string, J> = {};
-  const clients = contactsRaw.map((c) => {
+  const clientRows = contactsRaw.map((c) => {
     const name = clean(c.contactName || [c.firstName, c.lastName].filter(Boolean).join(" ")) || clean(c.email) || clean(c.phone) || "Unnamed";
     const tags: string[] = (c.tags || []).map((t: string) => String(t).toLowerCase());
     const lastT = field(c, "Last treatment"), lastD = field(c, "Last treatment date");
@@ -218,11 +218,15 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
       };
     });
 
-  return { clients, convos, leads };
+  return { clients: clientRows, convos, leads };
 }
 
-function flowsFrom(clients: J[]): J[] {
-  const n = (t: string) => clients.filter((c) => (c.tags as string[]).includes(t)).length;
+function flowsFrom(list: J[]): J[] {
+  // Count tags once up front. A closure over `list` here was dropped by the
+  // production minifier ("list is not defined"), which broke the whole feed.
+  const tagCount: Record<string, number> = {};
+  for (const c of list) for (const t of (c.tags as string[]) || []) tagCount[t] = (tagCount[t] || 0) + 1;
+  const n = (t: string): number => tagCount[t] || 0;
   return [
     { n: "1. Abandoned booking", on: true, now: n("abandoned-booking"), a: [n("abandoned-booking") + n("abandoned-booked") + n("abandoned-lost"), "came in"], b: [n("abandoned-booked"), "booked after all"], c: [n("abandoned-lost"), "lost"], log: [] },
     { n: "2. Completed appointment", on: true, now: n("aftercare-active"), a: [n("checkin-good") + n("checkin-red") + n("checkin-worried"), "check in replies"], b: [n("review-asked"), "reviews asked"], c: [n("review-left"), "reviews left"], log: [] },
@@ -242,7 +246,7 @@ async function build(): Promise<J> {
   const live = parts.filter(Boolean) as { clients: J[]; convos: J[]; leads: J[] }[];
   if (!live.length) return { configured: false };
 
-  const clients = live.flatMap((p) => p.clients);
+  const allClients = live.flatMap((p) => p.clients);
   const convos = live.flatMap((p) => p.convos);
   const leads = live.flatMap((p) => p.leads);
   const srcCount: Record<string, [number, number]> = {};
@@ -253,9 +257,9 @@ async function build(): Promise<J> {
     syncedAt: Date.now(),
     clinics: CLINICS.filter((c, i) => !!parts[i]),
     canSend: process.env.SKINLUX_HQ_SEND === "1",
-    clients, convos, leads,
+    clients: allClients, convos, leads,
     sources: Object.entries(srcCount).map(([k, v]) => [k, v[0], v[1]]).sort((a, b) => (b[1] as number) - (a[1] as number)),
-    flows: flowsFrom(clients),
+    flows: flowsFrom(allClients),
     errors,
   };
 }
@@ -272,7 +276,8 @@ export async function GET(req: NextRequest) {
     const data = await build();
     if (data.configured && (data.errors as string[]).length < 3) CACHE = { t: Date.now(), data };
     return NextResponse.json(data, { headers: { "cache-control": "no-store" } });
-  } catch {
+  } catch (e) {
+    console.error("skinlux-hq feed failed:", e instanceof Error ? e.stack || e.message : e);
     if (CACHE) return NextResponse.json({ ...CACHE.data, stale: true }, { headers: { "cache-control": "no-store" } });
     return NextResponse.json({ configured: true, failed: true }, { status: 502, headers: { "cache-control": "no-store" } });
   }
