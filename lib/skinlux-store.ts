@@ -175,7 +175,12 @@ export async function purgeTestEvents(): Promise<number> {
     for (const f of data || []) {
       const mm = /^(\d+)_[a-z0-9]+_([A-Za-z0-9_-]+)\.json$/.exec(f.name);
       if (!mm) continue;
-      try { if (isTestName((JSON.parse(unb64u(mm[2])) as LogEvent).n)) kill.push(`ev/${m}/${f.name}`); } catch { /* skip */ }
+      try {
+        const e = JSON.parse(unb64u(mm[2])) as LogEvent;
+        // also false "down" checks from the old 5 second limit (the site was only slow)
+        const falseDown = e.k === "site" && e.s === "down" && (e.v || 0) >= 4900 && (e.v || 0) <= 5200;
+        if (isTestName(e.n) || falseDown) kill.push(`ev/${m}/${f.name}`);
+      } catch { /* skip */ }
     }
     if (kill.length) { await b.remove(kill); n += kill.length; }
   }
