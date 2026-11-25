@@ -4,6 +4,7 @@
 // contact (tags and fields), adds a note, or opens a lead card. The workflows
 // still do all the texting and emailing once they are published.
 import type { Clinic } from "@/lib/skinlux-data";
+import { meLink } from "@/lib/skinlux-me";
 
 const GHL = "https://services.leadconnectorhq.com";
 const V = "2021-07-28";
@@ -51,11 +52,19 @@ async function fieldIds(clinic: string): Promise<Record<string, string>> {
 }
 
 const perthDate = (addDays = 0) => new Date(Date.now() + 8 * 3600_000 + addDays * 86400_000).toISOString().slice(0, 10);
+const MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+/** GoHighLevel's API takes YYYY-MM-DD. The workflow payloads use DD-MMM-YYYY. */
+function isoDate(v: unknown): string {
+  const t = String(v || "");
+  const m = /^(\d{2})-([A-Z]{3})-(\d{4})$/.exec(t);
+  if (m && MON.includes(m[2])) return `${m[3]}-${String(MON.indexOf(m[2]) + 1).padStart(2, "0")}-${m[1]}`;
+  return /^\d{4}-\d{2}-\d{2}$/.test(t) ? t : "";
+}
 
 /** Create or update a contact by email or mobile. Returns the contact id. */
 export async function upsertContact(clinic: Clinic, p: {
   first_name: string; last_name?: string; email?: string; phone?: string; source?: string;
-  tags?: string[]; fields?: Record<string, string | number>;
+  tags?: string[]; fields?: Record<string, string | number | string[]>;
 }): Promise<string | null> {
   const k = ghlKeys(clinic);
   if (!k) return null;
@@ -68,18 +77,22 @@ export async function upsertContact(clinic: Clinic, p: {
   if (p.email) body.email = p.email;
   if (p.phone) body.phone = p.phone;
   if (p.source) body.source = p.source;
-  if (p.tags && p.tags.length) body.tags = Array.from(new Set(p.tags));
+  // tags are added separately below: tags in an upsert REPLACE the contact's tags
   if (customFields.length) body.customFields = customFields;
   let d = await ghl(clinic, `/contacts/upsert`, { method: "POST", body });
+  let oneByOne = false;
   if (!d && customFields.length) {
-    // a dropdown value GoHighLevel doesn't know can reject the whole call: retry without fields
+    // a dropdown value GoHighLevel doesn't know rejects the whole call: save the contact, then each field on its own
     delete body.customFields;
     d = await ghl(clinic, `/contacts/upsert`, { method: "POST", body });
+    oneByOne = true;
   }
   const id = d && ((d.contact && (d.contact.id || d.contact._id)) || d.id);
+  if (id && oneByOne) {
+    for (const f of customFields) await ghl(clinic, `/contacts/${id}`, { method: "PUT", body: { customFields: [f] } });
+  }
   if (id && p.tags && p.tags.length) {
-    // upsert can replace tags on an existing contact in some accounts; add them explicitly too
-    await ghl(clinic, `/contacts/${id}/tags`, { method: "POST", body: { tags: p.tags } });
+    await ghl(clinic, `/contacts/${id}/tags`, { method: "POST", body: { tags: Array.from(new Set(p.tags)) } });
   }
   return id ? String(id) : null;
 }
@@ -116,7 +129,7 @@ export async function recordInGhl(clinic: Clinic, payload: J): Promise<string | 
   const ev = String(payload.event || "");
   const base = { first_name: String(payload.first_name || ""), last_name: String(payload.last_name || ""), email: String(payload.email || ""), phone: String(payload.phone || "") };
   const tags = [`clinic-${clinic}`];
-  const fields: Record<string, string | number> = { Clinic: clinic === "booragoon" ? "Booragoon" : "Leederville" };
+  const fields: Record<string, string | number | string[]> = { Clinic: clinic === "booragoon" ? "Booragoon" : "Leederville" };
   let source = "";
   if (ev === "treatment_done") {
     const t = String(payload.treatment || "");
@@ -126,15 +139,15 @@ export async function recordInGhl(clinic: Clinic, payload: J): Promise<string | 
     tags.push("existing-client");
     fields["Last treatment"] = t;
     fields["Last treatment date"] = perthDate();
-    if (payload.next_due_date) fields["Next due date"] = String(payload.next_due_date);
+    if (isoDate(payload.next_due_date)) fields["Next due date"] = isoDate(payload.next_due_date);
     if (payload.package_name) fields["Package name"] = String(payload.package_name);
     if (payload.package_sessions_left) fields["Package sessions left"] = Number(payload.package_sessions_left);
-    if (payload.injectable === "yes") fields["Injectable client"] = "true";
+    if (payload.injectable === "yes") fields["Injectable client"] = ["Yes"];
   } else if (ev === "product_sold") {
     tags.push("product-buyer");
     fields["Last product bought"] = String(payload.product || "");
     fields["Product bought date"] = perthDate();
-    if (payload.product_reorder_date) fields["Product reorder date"] = String(payload.product_reorder_date);
+    if (isoDate(payload.product_reorder_date)) fields["Product reorder date"] = isoDate(payload.product_reorder_date);
   } else if (ev === "new_lead") {
     const s = String(payload.source || "website");
     source = s;
@@ -148,10 +161,20 @@ export async function recordInGhl(clinic: Clinic, payload: J): Promise<string | 
     tags.push("timely-client");
   }
   const id = await upsertContact(clinic, { ...base, source: source || undefined, tags, fields });
+  if (id && (ev === "treatment_done" || ev === "product_sold")) await setAppLink(clinic, id);
   if (id && ev === "new_lead") {
     const what = [payload.interest, payload.message].filter(Boolean).join(". ");
     await openLead(clinic, id, `${base.first_name} ${base.last_name}`.trim() + (payload.interest ? `: ${String(payload.interest).slice(0, 60)}` : ""), source || "website");
     if (what) await addNote(clinic, id, `New enquiry from the ${source || "website"}: ${what}`);
   }
   return id;
+}
+
+/** Puts the client's private My Skinlux link on their record (field "Client app link"). */
+export async function setAppLink(clinic: Clinic, contactId: string): Promise<string | null> {
+  const link = meLink(contactId, clinic);
+  if (!link) return null;
+  const ids = await fieldIds(clinic);
+  if (ids["Client app link"]) await ghl(clinic, `/contacts/${contactId}`, { method: "PUT", body: { customFields: [{ id: ids["Client app link"], field_value: link }] } });
+  return link;
 }

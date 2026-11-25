@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waitlist | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="hq-app.css?v=1">
+<script src="hq-app.js?v=1"></script>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Waitlist slot filler</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Waitlist</h1><div id="seg"></div></div>
+  <div class="card soft">When someone cancels, post the free spot here. HQ lists everyone waiting for that treatment, with a ready text to send from your phone. First to say yes gets it. Clients join from the waitlist page: <a id="joinLink" target="_blank" rel="noopener"></a> <button class="btn sm ghost" id="copyJoin">Copy link</button></div>
+  <div class="kpis sec" id="kpis"></div>
+  <div class="row2 sec">
+    <div class="card">
+      <h2>Post a free spot</h2>
+      <p class="sub">For example a late cancellation tomorrow at 2pm.</p>
+      <label>Treatment</label><select id="sTx"></select>
+      <label>When</label><input id="sWhen" placeholder="Tomorrow 2pm">
+      <button class="btn sm" id="post" style="margin-top:12px">Find people for this spot</button>
+      <div id="open" style="margin-top:16px"></div>
+    </div>
+    <div class="card">
+      <h2 id="mTitle">Who to offer it to</h2>
+      <p class="sub" id="mSub">Post a spot to see who's waiting for it, longest waiting first.</p>
+      <div class="list" id="match"></div>
+    </div>
+  </div>
+  <div class="card sec">
+    <h2>Everyone waiting</h2>
+    <div class="scroll"><table id="tbl"></table></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  var Q = window.HQ, $ = Q.$, esc = Q.esc;
+  var D = null, TX = [], clinic = "booragoon", active = null;
+  var join = location.origin + "/clients/skinlux/waitlist/index.html";
+  $("joinLink").href = join; $("joinLink").textContent = join.replace(/^https?:\/\//, "");
+  $("copyJoin").onclick = function () { navigator.clipboard.writeText(join).then(function () { Q.toast("Link copied"); }); };
+  clinic = Q.clinicSeg($("seg"), function (c) { clinic = c; active = null; draw(); }, false);
+  function load() {
+    Q.api("GET", "/api/skinlux-hq/apps?doc=waitlist").then(function (d) {
+      if (!d.ok) { $("tbl").innerHTML = '<tr><td class="empty">' + esc(d.error || "Couldn't load the waitlist") + "</td></tr>"; return; }
+      D = d.value; TX = d.treatments || [];
+      $("sTx").innerHTML = '<option value="Any treatment">Any treatment</option>' + TX.map(function (t) { return "<option>" + esc(t) + "</option>"; }).join("");
+      draw();
+    });
+  }
+  load();
+  function save(msg) {
+    return Q.api("PUT", "/api/skinlux-hq/apps", { doc: "waitlist", value: D }).then(function (d) {
+      if (!d.ok) { Q.toast(d.error || "Couldn't save"); return; }
+      D = d.value;
+      if (active) { var id = active.id; active = D.slots.filter(function (s) { return s.id === id; })[0] || null; }
+      draw(); if (msg) Q.toast(msg);
+    });
+  }
+  function waiting() { return D.people.filter(function (p) { return p.clinic === clinic && (p.status === "waiting" || p.status === "offered"); }); }
+  function draw() {
+    if (!D) return;
+    var w = waiting(), slots = D.slots.filter(function (s) { return s.clinic === clinic; });
+    var filled = slots.filter(function (s) { return s.status === "filled" && s.at > Date.now() - 30 * 86400000; }).length;
+    var byTx = {}; w.forEach(function (p) { byTx[p.treatment] = (byTx[p.treatment] || 0) + 1; });
+    var top = Object.keys(byTx).sort(function (a, b) { return byTx[b] - byTx[a]; })[0];
+    $("kpis").innerHTML = [[w.length, "People waiting", top ? "Most wanted: " + top : "Nobody yet"], [slots.filter(function (s) { return s.status === "open"; }).length, "Open spots", "Posted and not filled"], [filled, "Spots filled, 30 days", "From the waitlist"], [D.people.filter(function (p) { return p.clinic === clinic && p.status === "booked"; }).length, "Booked from the list", "All time"]]
+      .map(function (k) { return '<div class="card kpi"><div class="l">' + k[1] + '</div><div class="v">' + k[0] + "</div><small>" + esc(k[2]) + "</small></div>"; }).join("");
+    var open = slots.filter(function (s) { return s.status === "open"; });
+    $("open").innerHTML = open.length ? "<b style=\"font-size:13px\">Open spots</b>" + open.map(function (s) {
+      return '<div class="list"><div class="it"><div class="grow"><b>' + esc(s.treatment) + "</b><small>" + esc(s.when) + '</small></div><button class="btn sm ghost" data-show="' + s.id + '">Show people</button><button class="btn sm ghost" data-close="' + s.id + '">Close</button></div></div>';
+    }).join("") : "";
+    [].forEach.call($("open").querySelectorAll("[data-show]"), function (b) { b.onclick = function () { active = D.slots.filter(function (s) { return s.id === b.dataset.show; })[0]; drawMatch(); }; });
+    [].forEach.call($("open").querySelectorAll("[data-close]"), function (b) { b.onclick = function () { var s = D.slots.filter(function (x) { return x.id === b.dataset.close; })[0]; s.status = "closed"; if (active === s) active = null; save("Spot closed"); }; });
+    $("tbl").innerHTML = "<tr><th>Name</th><th>Treatment</th><th>Best times</th><th>Joined</th><th>Mobile</th><th>Status</th><th>Note</th></tr>" +
+      (w.length ? w.map(function (p) {
+        return '<tr data-id="' + p.id + '"><td><b>' + esc(p.first + " " + p.last) + "</b></td><td>" + esc(p.treatment) + "</td><td>" + esc(p.times) + "</td><td>" + Q.ago(p.at) + '</td><td><a href="tel:' + esc(p.phone) + '">' + esc(p.phone) + "</a></td>" +
+          '<td><select class="st"><option value="waiting"' + (p.status === "waiting" ? " selected" : "") + '>Waiting</option><option value="offered"' + (p.status === "offered" ? " selected" : "") + '>Offered a spot</option><option value="booked">Booked</option><option value="removed">Remove from list</option></select></td>' +
+          '<td><input class="nt" value="' + esc(p.note) + '"></td></tr>';
+      }).join("") : '<tr><td colspan="7" class="empty">Nobody is waiting at ' + Q.CL[clinic] + " yet. Share the waitlist link on Instagram, in your booking confirmation or at reception.</td></tr>");
+    [].forEach.call($("tbl").querySelectorAll("tr[data-id]"), function (tr) {
+      var p = D.people.filter(function (x) { return x.id === tr.dataset.id; })[0];
+      tr.querySelector(".st").onchange = function (e) { p.status = e.target.value; save("Saved"); };
+      tr.querySelector(".nt").onchange = function (e) { p.note = e.target.value; save("Note saved"); };
+    });
+    drawMatch();
+  }
+  function drawMatch() {
+    if (!active || active.status !== "open") { $("match").innerHTML = ""; $("mTitle").textContent = "Who to offer it to"; $("mSub").textContent = "Post a spot to see who's waiting for it, longest waiting first."; return; }
+    var m = waiting().filter(function (p) { return active.treatment === "Any treatment" || p.treatment === active.treatment || p.treatment === "Any treatment"; })
+      .sort(function (a, b) { return a.at - b.at; });
+    $("mTitle").textContent = active.treatment + ", " + active.when;
+    $("mSub").textContent = m.length ? m.length + " waiting. Tap Text to open a ready message on your phone." : "Nobody is waiting for this treatment yet.";
+    $("match").innerHTML = m.map(function (p) {
+      var msg = "Hi " + p.first + ", it's Skinlux " + Q.CL[clinic] + ". A spot just opened for " + active.treatment + " " + active.when + ". Would you like it? Reply YES and it's yours. Reply STOP to come off the waitlist.";
+      return '<div class="it"><div class="grow"><b>' + esc(p.first + " " + p.last) + "</b><small>" + esc(p.treatment + ", " + p.times + ", joined " + Q.ago(p.at)) + (p.status === "offered" ? ", already offered" : "") + "</small></div>" +
+        '<a class="btn sm ghost" href="sms:' + esc(p.phone) + "?&body=" + encodeURIComponent(msg) + '" data-off="' + p.id + '">Text</a><button class="btn sm" data-got="' + p.id + '">Gave them the spot</button></div>';
+    }).join("");
+    [].forEach.call($("match").querySelectorAll("[data-off]"), function (a) { a.addEventListener("click", function () { var p = D.people.filter(function (x) { return x.id === a.dataset.off; })[0]; if (p.status === "waiting") { p.status = "offered"; save(); } }); });
+    [].forEach.call($("match").querySelectorAll("[data-got]"), function (b) {
+      b.onclick = function () {
+        var p = D.people.filter(function (x) { return x.id === b.dataset.got; })[0];
+        p.status = "booked"; active.status = "filled"; active.filledBy = p.first + " " + p.last; active = null;
+        save("Spot filled. Book " + p.first + " in Timely.");
+      };
+    });
+  }
+  $("post").onclick = function () {
+    var w = $("sWhen").value.trim();
+    if (!w) { Q.toast("Add when the spot is"); return; }
+    var s = { id: "s" + Date.now().toString(36), at: Date.now(), clinic: clinic, treatment: $("sTx").value, when: w, status: "open" };
+    D.slots.unshift(s); active = s; $("sWhen").value = "";
+    save("Spot posted");
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Therapist scorecard | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="hq-app.css?v=1">
+<script src="hq-app.js?v=1"></script>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Therapist scorecard</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Therapist scorecard</h1><div class="seg" id="per"><button data-d="7">7 days</button><button data-d="30" class="on">30 days</button><button data-d="60">60 days</button></div><div id="seg"></div></div>
+  <div class="card soft">Built from the staff app: every Treatment done and Product sold tap, by the person who tapped it. Treatment value uses the "from" prices in Settings, retail uses the product prices. Rebook rate and reviews per therapist come in once the Timely link and Google reviews are connected.</div>
+  <div class="kpis sec" id="kpis"></div>
+  <div class="card sec"><div class="scroll"><table id="tbl"></table></div></div>
+  <div class="row2 sec">
+    <div class="card"><h2>Top treatments</h2><div class="list" id="tx"></div></div>
+    <div class="card"><h2>Top products</h2><div class="list" id="px"></div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  var Q = window.HQ, $ = Q.$, esc = Q.esc;
+  var F = null, days = 30, clinic = "both";
+  clinic = Q.clinicSeg($("seg"), function (c) { clinic = c; draw(); }, true);
+  [].forEach.call(document.querySelectorAll("#per button"), function (b) {
+    b.onclick = function () { days = +b.dataset.d; [].forEach.call(document.querySelectorAll("#per button"), function (x) { x.classList.toggle("on", x === b); }); draw(); };
+  });
+  Q.feed().then(function (f) { F = f; draw(); });
+  function draw() {
+    if (!F) return;
+    if (F.configured === false || F.ok === false) { $("tbl").innerHTML = '<tr><td class="empty">Couldn\'t load the numbers. Open HQ first, then come back.</td></tr>'; return; }
+    var since = Date.now() - days * 86400000;
+    var ev = (F.events || []).filter(function (e) { return e.at > since && (clinic === "both" || e.c === clinic) && (e.k === "treatment_done" || e.k === "product_sold"); });
+    var by = {}, tx = {}, px = {};
+    (F.team || []).forEach(function (m) { if (clinic === "both" || !m.clinics.length || m.clinics.indexOf(clinic) > -1) by[m.name] = { t: 0, tv: 0, p: 0, pv: 0, inj: 0, clients: {} }; });
+    ev.forEach(function (e) {
+      var who = e.t || (e.s === "shopify" ? "Online shop" : "Not picked");
+      var r = by[who] = by[who] || { t: 0, tv: 0, p: 0, pv: 0, inj: 0, clients: {} };
+      if (e.k === "treatment_done") { r.t++; r.tv += e.v || 0; if (e.inj) r.inj++; r.clients[e.n] = 1; tx[e.i] = (tx[e.i] || 0) + 1; }
+      else { r.p++; r.pv += e.v || 0; px[e.i] = (px[e.i] || 0) + 1; }
+    });
+    var tT = 0, tV = 0, pT = 0, pV = 0;
+    Object.keys(by).forEach(function (k) { tT += by[k].t; tV += by[k].tv; pT += by[k].p; pV += by[k].pv; });
+    $("kpis").innerHTML = [[tT, "Treatments done", Q.money(tV) + " at from prices"], [pT, "Products sold", Q.money(pV) + " retail"], [tT ? Math.round(pT / tT * 100) + "%" : "0%", "Retail per treatment", "Products sold for every 100 treatments"], [Object.keys(by).filter(function (k) { return by[k].t || by[k].p; }).length, "People tapping", "In the staff app"]]
+      .map(function (k) { return '<div class="card kpi"><div class="l">' + k[1] + '</div><div class="v">' + k[0] + "</div><small>" + esc(k[2]) + "</small></div>"; }).join("");
+    var names = Object.keys(by).sort(function (a, b) { return (by[b].tv + by[b].pv) - (by[a].tv + by[a].pv); });
+    $("tbl").innerHTML = "<tr><th>#</th><th>Team member</th><th>Treatments</th><th>Clients</th><th>Treatment value</th><th>Products</th><th>Retail</th><th>Retail per treatment</th><th>Injectables</th></tr>" +
+      (names.length ? names.map(function (n, i) {
+        var r = by[n];
+        return "<tr><td>" + (i + 1) + "</td><td><b>" + esc(n) + "</b></td><td>" + r.t + "</td><td>" + Object.keys(r.clients).length + "</td><td>" + Q.money(r.tv) + "</td><td>" + r.p + "</td><td>" + Q.money(r.pv) + "</td><td>" + (r.t ? Math.round(r.p / r.t * 100) + "%" : "") + "</td><td>" + (r.inj || "") + "</td></tr>";
+      }).join("") : '<tr><td colspan="9" class="empty">No taps yet. The scorecard fills in as the team taps Treatment done and Product sold in the staff app.</td></tr>');
+    function top(o, el) {
+      var k = Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }).slice(0, 8), max = k.length ? o[k[0]] : 1;
+      $(el).innerHTML = k.length ? k.map(function (x) { return '<div class="it"><div class="grow"><b>' + esc(x) + '</b><div class="meter"><span style="width:' + Math.round(o[x] / max * 100) + '%"></span></div></div><b>' + o[x] + "</b></div>"; }).join("") : '<div class="empty">Nothing yet.</div>';
+    }
+    top(tx, "tx"); top(px, "px");
+  }
+})();
+</script>
+</body>
+</html>

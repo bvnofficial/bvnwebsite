@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2b2420">
+<title>My Skinlux</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  body { background: var(--cream); }
+  .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+  .hd { padding: 22px 20px 10px; }
+  .hd .lg { font-family: var(--serif); font-size: 26px; letter-spacing: 4px; }
+  .hd small { display: block; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-size: 10.5px; }
+  .hi { font-family: var(--serif); font-size: 30px; margin: 14px 0 2px; }
+  main { flex: 1; padding: 0 16px 100px; }
+  .c { background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 18px; margin-top: 12px; box-shadow: var(--shadow); }
+  .c h3 { margin: 0 0 6px; font-size: 19px; }
+  .eyebrow { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+  .big { font-family: var(--serif); font-size: 24px; line-height: 1.2; }
+  .muted { color: var(--muted); }
+  .tabs { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-top: 1px solid var(--line); display: flex; justify-content: center; padding-bottom: env(safe-area-inset-bottom); }
+  .tabs div { display: flex; max-width: 480px; width: 100%; }
+  .tabs button { flex: 1; border: 0; background: none; font: 600 12.5px var(--sans); color: var(--muted); padding: 12px 4px 14px; cursor: pointer; }
+  .tabs button.on { color: var(--ink); box-shadow: inset 0 3px 0 var(--gold); }
+  .v { display: none; } .v.on { display: block; }
+  textarea { width: 100%; font: inherit; font-size: 16px; padding: 12px; border-radius: 12px; border: 1.5px solid var(--line); min-height: 120px; }
+  .err { color: var(--bad); font-size: 13px; min-height: 18px; margin-top: 6px; }
+  .prod { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .prod:last-child { border-bottom: 0; }
+  .center { text-align: center; padding: 60px 20px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hd"><span class="lg">SKINLUX</span><small id="cl">Face and Body</small><div class="hi" id="hi"></div></div>
+  <main id="main"><p class="muted center">Loading your details</p></main>
+</div>
+<nav class="tabs" id="tabs" hidden><div>
+  <button data-v="home" class="on">Home</button><button data-v="care">Aftercare</button><button data-v="skin">Products</button><button data-v="msg">Message</button>
+</div></nav>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 3000); }
+  var k = new URLSearchParams(location.search).get("k") || "";
+  try { if (k) localStorage.setItem("myskinlux-k", k); else k = localStorage.getItem("myskinlux-k") || ""; } catch (e) {}
+  if (!k) { $("main").innerHTML = '<div class="center"><h2>Open your personal link</h2><p class="muted">Use the link the clinic texted or emailed you. Lost it? Ask the clinic for a new one.</p></div>'; return; }
+  var D = null;
+  fetch("/api/skinlux-me?k=" + encodeURIComponent(k), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d.ok) { $("main").innerHTML = '<div class="center"><h2>We couldn\'t open your page</h2><p class="muted">' + esc(d.error) + "</p></div>"; return; }
+    D = d; draw();
+  }).catch(function () { $("main").innerHTML = '<div class="center"><h2>No connection</h2><p class="muted">Check your internet and try again.</p></div>'; });
+
+  function draw() {
+    $("cl").textContent = "Skinlux " + D.clinicName;
+    $("hi").textContent = "Hi " + (D.first || "there");
+    $("tabs").hidden = false;
+    var tel = "tel:" + D.phone.replace(/\s/g, "");
+    var home = "";
+    if (D.next) home += '<div class="c"><div class="eyebrow">Your next visit</div><div class="big">' + esc(D.next.treatment) + " is due " + esc(D.next.date) + '</div><p class="muted" style="margin:6px 0 12px">Book now to keep your results going.</p><a class="btn gold block" href="' + esc(D.booking) + '" target="_blank" rel="noopener">Book my next visit</a></div>';
+    else home += '<div class="c"><div class="eyebrow">Book a visit</div><p style="margin:4px 0 12px">Pick a time that suits you online.</p><a class="btn gold block" href="' + esc(D.booking) + '" target="_blank" rel="noopener">Book online</a></div>';
+    if (D.pack) home += '<div class="c"><div class="eyebrow">Your package</div><div class="big">' + esc(D.pack.name) + "</div><p class=\"muted\" style=\"margin:4px 0 0\">" + D.pack.left + " session" + (D.pack.left === 1 ? "" : "s") + " left</p></div>";
+    if (D.last) home += '<div class="c"><div class="eyebrow">Last treatment</div><h3>' + esc(D.last.treatment) + "</h3><p class=\"muted\" style=\"margin:0 0 10px\">" + esc(D.last.date) + '</p><button class="btn sm ghost" data-go="care">See my aftercare</button></div>';
+    home += '<div class="c"><div class="eyebrow">Skinlux ' + esc(D.clinicName) + '</div><p style="margin:4px 0 12px">Questions about your skin or a booking? We\'re here.</p><div class="row" style="gap:8px"><a class="btn sm" href="' + tel + '">Call ' + esc(D.phone) + '</a><button class="btn sm ghost" data-go="msg">Send a message</button></div></div>';
+    var care = D.last ? '<div class="c"><div class="eyebrow">Aftercare</div><h3>' + esc(D.last.treatment) + '</h3><p style="font-size:15.5px;line-height:1.6">' + esc(D.last.aftercare) + "</p>" +
+      '<p class="muted" style="font-size:13px">Something doesn\'t feel right? Message us and ' + (D.last.injectable ? "a nurse" : "your therapist") + ' will get back to you. If it\'s urgent, call the clinic.</p><div class="row" style="gap:8px"><button class="btn sm" data-go="msg">Message the clinic</button><a class="btn sm ghost" href="' + tel + '">Call</a></div></div>'
+      : '<div class="c"><p class="muted" style="margin:0">Your aftercare shows here after your next treatment.</p></div>';
+    var skin = "";
+    if (D.product) skin += '<div class="c"><div class="eyebrow">Your product</div><h3>' + esc(D.product.name.replace(/^Skin[Cc]are Doctor /, "")) + "</h3>" + (D.product.use ? '<p style="margin:4px 0">How to use: ' + esc(D.product.use) + "</p>" : "") +
+      (D.product.reorder ? '<p class="muted" style="margin:4px 0 12px">Likely to run low around ' + esc(D.product.reorder) + ".</p>" : "") + '<button class="btn sm gold" id="reorder">Set one aside for me</button><div class="err" id="rerr"></div></div>';
+    if (D.routine && D.routine.length) skin += '<div class="c"><div class="eyebrow">Everyday basics</div>' + D.routine.map(function (p) { return '<div class="prod"><div><b>' + esc(p.name.replace(/^Skin[Cc]are Doctor /, "")) + "</b><div class=\"muted\" style=\"font-size:13px\">" + esc(p.use) + "</div></div><b>" + esc(p.price) + "</b></div>"; }).join("") + '<p class="muted" style="font-size:12.5px;margin:10px 0 0">Ask your therapist which suits your skin.</p></div>';
+    if (!skin) skin = '<div class="c"><p class="muted" style="margin:0">Products you buy at Skinlux show here with how to use them.</p></div>';
+    var msg = '<div class="c"><h3>Message the clinic</h3><p class="muted" style="margin:0 0 10px">Goes straight to the Skinlux ' + esc(D.clinicName) + ' team. We reply in clinic hours.</p><textarea id="mt" maxlength="1000" placeholder="Type your message"></textarea><button class="btn gold block" id="send" style="margin-top:10px">Send</button><div class="err" id="merr"></div>' +
+      '<p style="margin:14px 0 0"><button class="btn sm ghost" id="cb">Ask for a call back instead</button></p><p class="muted" style="font-size:12px;margin-top:12px">For anything urgent, call ' + esc(D.phone) + ".</p></div>";
+    $("main").innerHTML = '<section class="v on" id="v-home">' + home + '</section><section class="v" id="v-care">' + care + '</section><section class="v" id="v-skin">' + skin + '</section><section class="v" id="v-msg">' + msg + "</section>";
+    [].forEach.call(document.querySelectorAll("[data-go]"), function (b) { b.onclick = function () { show(b.dataset.go); }; });
+    if ($("reorder")) $("reorder").onclick = function () { post("reorder", "", $("reorder"), $("rerr"), "Done. We'll have it ready at the clinic."); };
+    $("send").onclick = function () { var t = $("mt").value.trim(); if (t.length < 2) { $("merr").textContent = "Type your message first."; return; } post("message", t, $("send"), $("merr"), "Sent. The team will get back to you soon.", function () { $("mt").value = ""; }); };
+    $("cb").onclick = function () { post("callback", $("mt").value.trim(), $("cb"), $("merr"), "Done. The team will call you back."); };
+  }
+  function post(action, text, btn, err, okMsg, after) {
+    btn.disabled = true; err.textContent = "";
+    fetch("/api/skinlux-me", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ k: k, action: action, text: text, product: D.product ? D.product.name : "" }) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .then(function (d) { btn.disabled = false; if (!d.ok) { err.textContent = d.error || "Sorry, that didn't go through. Please call the clinic."; return; } toast(okMsg); if (after) after(); })
+      .catch(function () { btn.disabled = false; err.textContent = "No connection. Please try again."; });
+  }
+  function show(v) {
+    [].forEach.call(document.querySelectorAll(".v"), function (s) { s.classList.toggle("on", s.id === "v-" + v); });
+    [].forEach.call(document.querySelectorAll("#tabs button"), function (b) { b.classList.toggle("on", b.dataset.v === v); });
+    window.scrollTo(0, 0);
+  }
+  [].forEach.call(document.querySelectorAll("#tabs button"), function (b) { b.onclick = function () { show(b.dataset.v); }; });
+})();
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { skinluxStaffReqOk } from "@/lib/skinlux-staff-gate";
 import { TREATMENTS } from "@/lib/skinlux-data";
 import { loadSettings } from "@/lib/skinlux-settings";
+import { loadTraining, markRead } from "@/lib/skinlux-apps";
 
 /**
  * Skinlux staff app data, per clinic, from GoHighLevel:
@@ -18,6 +19,11 @@ export async function GET(req: NextRequest) {
   const out = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
   if (!(await skinluxStaffReqOk(req))) return out(401, { ok: false, error: "Not signed in" });
   const u = req.nextUrl.searchParams;
+  if (u.get("view") === "training") {
+    const t = await loadTraining().catch(() => null);
+    if (!t) return out(502, { ok: false, error: "Couldn't load training" });
+    return out(200, { ok: true, protocols: t.protocols, guides: t.guides, reads: t.reads });
+  }
   if (u.get("view") === "meta") {
     // team and products come from HQ Settings
     const st = await loadSettings();
@@ -52,7 +58,18 @@ export async function GET(req: NextRequest) {
   const d = (await r.json().catch(() => ({}))) as Obj;
   const contacts = ((d.contacts as Obj[]) || []).map((c) => ({
     id: c.id, first_name: c.firstName || "", last_name: c.lastName || "", phone: c.phone || "", email: c.email || "",
-    tags: ((c.tags as string[]) || []).filter((t) => /^(injectable|package-holder|vip|automation-paused)$/.test(t)),
+    tags: ((c.tags as string[]) || []).filter((t) => /^(injectable|package-holder|vip|automation-paused|intake-flag|waitlist)$/.test(t)),
   }));
   return out(200, { ok: true, contacts });
+}
+
+export async function POST(req: NextRequest) {
+  const out = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
+  if (!(await skinluxStaffReqOk(req))) return out(401, { ok: false, error: "Not signed in" });
+  const b = (await req.json().catch(() => null)) as { action?: string; member?: string; protocol?: string } | null;
+  if (b && b.action === "read") {
+    const ok = await markRead(String(b.member || ""), String(b.protocol || "")).catch(() => false);
+    return ok ? out(200, { ok: true }) : out(400, { ok: false, error: "Couldn't save that" });
+  }
+  return out(400, { ok: false, error: "Unknown" });
 }

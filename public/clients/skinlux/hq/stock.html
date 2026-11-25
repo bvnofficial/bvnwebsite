@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="hq-app.css?v=1">
+<script src="hq-app.js?v=1"></script>
+<style>
+  td input[type=number]{width:80px}
+  tr.low td{background:#fdf3e4}
+  tr.out td{background:#fbe9e7}
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Stock tracker</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Stock</h1><div id="seg"></div></div>
+  <div class="card soft">Retail products and clinic consumables for each clinic. Type how many you have and the level you never want to drop below. Every product sold in the staff app or the online shop takes one off by itself, and low items show in HQ.</div>
+  <div class="kpis sec" id="kpis"></div>
+  <div class="card sec">
+    <div class="row between" style="flex-wrap:wrap;gap:10px">
+      <div class="seg" id="tab"><button data-v="retail" class="on">Retail products</button><button data-v="consumable">Clinic consumables</button></div>
+      <div class="row" style="gap:8px"><button class="btn sm ghost" id="addRow">Add an item</button><button class="btn sm" id="fillOrder">Add low items to the order</button></div>
+    </div>
+    <div class="scroll" style="margin-top:12px"><table id="tbl"></table></div>
+  </div>
+  <div class="card sec">
+    <h2>Order list</h2>
+    <p class="sub">Items with an order amount. Copy it into an email or message to your supplier, then set the amounts back to 0 when it arrives and add the new stock.</p>
+    <div id="order"></div>
+  </div>
+</div>
+<div class="bar" id="bar"><span>You have unsaved changes</span><button class="btn sm gold" id="save">Save stock</button></div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  var Q = window.HQ, $ = Q.$, esc = Q.esc;
+  var D = null, clinic = "booragoon", tab = "retail", sold = {};
+  clinic = Q.clinicSeg($("seg"), function (c) { clinic = c; draw(); }, false);
+  [].forEach.call(document.querySelectorAll("#tab button"), function (b) {
+    b.onclick = function () { tab = b.dataset.v; [].forEach.call(document.querySelectorAll("#tab button"), function (x) { x.classList.toggle("on", x === b); }); draw(); };
+  });
+  function dirty() { $("bar").style.display = "flex"; }
+  Q.api("GET", "/api/skinlux-hq/apps?doc=stock").then(function (d) {
+    if (!d.ok) { $("tbl").innerHTML = '<tr><td class="empty">' + esc(d.error || "Couldn't load stock") + "</td></tr>"; return; }
+    D = d.value; draw();
+    Q.feed().then(function (f) {
+      var since = Date.now() - 30 * 86400000;
+      (f.events || []).forEach(function (e) { if (e.k === "product_sold" && e.at > since) { var k = e.c + "|" + e.i; sold[k] = (sold[k] || 0) + 1; } });
+      draw();
+    });
+  });
+  function mine() { return D.items.filter(function (i) { return i.clinic === clinic; }); }
+  function draw() {
+    if (!D) return;
+    var items = mine();
+    var low = items.filter(function (i) { return i.left !== null && i.left <= i.min; });
+    var uncounted = items.filter(function (i) { return i.left === null; }).length;
+    var value = 0; items.forEach(function (i) { if (i.kind === "retail" && i.left) value += i.left * (i._price || 0); });
+    var soldN = 0; Object.keys(sold).forEach(function (k) { if (k.indexOf(clinic + "|") === 0) soldN += sold[k]; });
+    var orderN = items.filter(function (i) { return i.order > 0; }).length;
+    $("kpis").innerHTML = [
+      [low.length, "Low or out", low.length ? low.slice(0, 2).map(function (i) { return i.name.replace("Skincare Doctor ", ""); }).join(", ") : "Nothing low"],
+      [uncounted, "Not counted yet", uncounted ? "Type the count to start tracking" : "Every item counted"],
+      [soldN, "Products sold, 30 days", "Staff app and online shop"],
+      [orderN, "On the order list", orderN ? "Ready to send" : "Nothing waiting"]
+    ].map(function (k) { return '<div class="card kpi"><div class="l">' + k[1] + '</div><div class="v">' + k[0] + "</div><small>" + esc(k[2]) + "</small></div>"; }).join("");
+    var rows = items.filter(function (i) { return i.kind === tab; });
+    $("tbl").innerHTML = "<tr><th>Item</th><th>In stock</th><th>Low at</th><th>Sold 30 days</th><th>Order</th><th>Supplier</th><th></th></tr>" +
+      (rows.length ? rows.map(function (i) {
+        var idx = D.items.indexOf(i), cls = i.left === null ? "" : i.left === 0 ? "out" : i.left <= i.min ? "low" : "";
+        return '<tr class="' + cls + '" data-i="' + idx + '"><td><input class="f-name" value="' + esc(i.name) + '"></td>' +
+          '<td><input class="f-left" type="number" min="0" placeholder="Count" value="' + (i.left === null ? "" : i.left) + '"></td>' +
+          '<td><input class="f-min" type="number" min="0" value="' + i.min + '"></td>' +
+          "<td>" + (sold[i.clinic + "|" + i.name] || 0) + "</td>" +
+          '<td><input class="f-order" type="number" min="0" value="' + i.order + '"></td>' +
+          '<td><input class="f-sup" value="' + esc(i.supplier) + '"></td>' +
+          '<td><button class="x" title="Remove">&times;</button></td></tr>';
+      }).join("") : '<tr><td colspan="7" class="empty">Nothing here yet. Press Add an item.</td></tr>');
+    [].forEach.call($("tbl").querySelectorAll("tr[data-i]"), function (tr) {
+      var it = D.items[+tr.dataset.i];
+      tr.querySelector(".f-name").oninput = function (e) { it.name = e.target.value; dirty(); };
+      tr.querySelector(".f-left").oninput = function (e) { it.left = e.target.value === "" ? null : Math.max(0, +e.target.value || 0); dirty(); };
+      tr.querySelector(".f-min").oninput = function (e) { it.min = Math.max(0, +e.target.value || 0); dirty(); };
+      tr.querySelector(".f-order").oninput = function (e) { it.order = Math.max(0, +e.target.value || 0); dirty(); drawOrder(); };
+      tr.querySelector(".f-sup").oninput = function (e) { it.supplier = e.target.value; dirty(); };
+      tr.querySelector(".x").onclick = function () { if (!confirm("Remove " + it.name + " from " + Q.CL[clinic] + "?")) return; D.items.splice(D.items.indexOf(it), 1); dirty(); draw(); };
+    });
+    drawOrder();
+  }
+  function drawOrder() {
+    var o = mine().filter(function (i) { return i.order > 0; });
+    if (!o.length) { $("order").innerHTML = '<div class="empty">Nothing on the order list for ' + Q.CL[clinic] + ".</div>"; return; }
+    var bySup = {};
+    o.forEach(function (i) { var s = i.supplier || "Other"; (bySup[s] = bySup[s] || []).push(i); });
+    var text = Object.keys(bySup).map(function (s) { return s + "\n" + bySup[s].map(function (i) { return i.order + " x " + i.name; }).join("\n"); }).join("\n\n");
+    $("order").innerHTML = '<pre style="white-space:pre-wrap;font:inherit;font-size:14px;background:var(--cream);padding:14px;border-radius:10px;margin:0">' + esc("Order for Skinlux " + Q.CL[clinic] + "\n\n" + text) + '</pre><button class="btn sm" id="copy" style="margin-top:10px">Copy order</button>';
+    $("copy").onclick = function () { navigator.clipboard.writeText("Order for Skinlux " + Q.CL[clinic] + "\n\n" + text).then(function () { Q.toast("Order copied"); }); };
+  }
+  $("addRow").onclick = function () { D.items.push({ id: "n" + Date.now(), name: "New item", clinic: clinic, kind: tab, left: null, min: 2, order: 0, supplier: "" }); dirty(); draw(); };
+  $("fillOrder").onclick = function () {
+    var n = 0; mine().forEach(function (i) { if (i.left !== null && i.left <= i.min && !i.order) { i.order = Math.max(1, i.min * 2 - i.left); n++; } });
+    if (n) { dirty(); draw(); Q.toast(n + " low items added to the order list"); } else Q.toast("Nothing low to add");
+  };
+  $("save").onclick = function () {
+    var b = $("save"); b.disabled = true; b.textContent = "Saving...";
+    Q.api("PUT", "/api/skinlux-hq/apps", { doc: "stock", value: D }).then(function (d) {
+      b.disabled = false; b.textContent = "Save stock";
+      if (!d.ok) { Q.toast(d.error || "Couldn't save"); return; }
+      D = d.value; $("bar").style.display = "none"; draw(); Q.toast("Stock saved");
+    });
+  };
+})();
+</script>
+</body>
+</html>

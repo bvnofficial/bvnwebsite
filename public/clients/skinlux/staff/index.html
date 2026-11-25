@@ -55,6 +55,7 @@
   <button data-tab="done" class="on">Treatment done</button>
   <button data-tab="sold">Product sold</button>
   <button data-tab="calls">Call backs</button>
+  <button data-tab="learn">Training</button>
 </div>
 
 <main>
@@ -83,6 +84,13 @@
     <label>Product</label><select id="product"></select>
     <button class="go" id="soldBtn">Product sold</button>
     <p class="note">Sends how to use it, a check in at day 7, a routine email and a restock reminder before it runs out.</p>
+  </div>
+
+  <div class="card" data-pane="learn" hidden>
+    <h2>Training</h2>
+    <p class="note">Your treatment steps, what rules a client out, and the rebooking line. Tap "I've read this" after reading each one.</p>
+    <select id="proto"></select>
+    <div id="protoBody" style="margin-top:12px"></div>
   </div>
 
   <div class="card" data-pane="calls" hidden>
@@ -120,7 +128,7 @@
   document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){
     tab=b.dataset.tab;document.querySelectorAll(".tabs button").forEach(function(x){x.classList.toggle("on",x===b)});
     document.querySelectorAll("[data-pane]").forEach(function(p){p.hidden=p.dataset.pane!==tab});
-    $("clientCard").hidden=tab==="calls";if(tab==="calls")loadCalls()}});
+    $("clientCard").hidden=tab==="calls"||tab==="learn";if(tab==="calls")loadCalls();if(tab==="learn")loadLearn()}});
 
   var timer;
   $("q").oninput=function(){clearTimeout(timer);var q=$("q").value.trim();if(q.length<2){$("results").innerHTML="";return}
@@ -151,6 +159,31 @@
   }
   $("doneBtn").onclick=function(){send($("doneBtn"),{event:"treatment_done",treatment:$("treatment").value})};
   $("soldBtn").onclick=function(){send($("soldBtn"),{event:"product_sold",product:$("product").value})};
+
+  var TR=null;
+  function escH(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function loadLearn(){
+    api("/api/skinlux-staff?view=training").then(function(d){
+      if(!d.ok){$("protoBody").innerHTML='<p class="note">'+escH(d.error||"Couldn't load")+'</p>';return}
+      TR=d;var me=$("therapist").value,reads=(d.reads||{})[me]||{};
+      $("proto").innerHTML=d.protocols.map(function(p,i){var ok=reads[p.id]&&(!p.updated||reads[p.id]>=p.updated);return'<option value="'+i+'">'+escH(p.treatment)+(p.status==="signed"?(ok?" (read)":" (new)"):" (draft)")+'</option>'}).join("")+
+        d.guides.map(function(g,i){return'<option value="g'+i+'">Guide: '+escH(g.title)+'</option>'}).join("");
+      showProto()})}
+  function showProto(){
+    if(!TR)return;var v=$("proto").value,box=$("protoBody");
+    if(v.charAt(0)==="g"){var g=TR.guides[+v.slice(1)];box.innerHTML='<div style="white-space:pre-wrap;font-size:15px;line-height:1.6">'+escH(g.body)+'</div>';return}
+    var p=TR.protocols[+v];
+    box.innerHTML=(p.status!=="signed"?'<p class="note" style="color:#9a6b12">Draft: Jellie and the nurses are still checking this one.</p>':"")+
+      '<b>Steps</b><ol style="padding-left:20px;line-height:1.55">'+p.steps.map(function(x){return"<li>"+escH(x)+"</li>"}).join("")+'</ol>'+
+      (p.contra.length?'<b>Do not treat if</b><ul style="padding-left:20px;line-height:1.55">'+p.contra.map(function(x){return"<li>"+escH(x)+"</li>"}).join("")+'</ul>':"")+
+      (p.rebook?'<b>Rebooking line</b><p style="background:#f3ece4;padding:10px;border-radius:10px">'+escH(p.rebook)+'</p>':"")+
+      (p.status==="signed"?'<button class="go" id="readBtn">I've read this</button>':"");
+    if($("readBtn"))$("readBtn").onclick=function(){
+      if(!$("therapist").value){toast("Pick who you are at the top",true);return}
+      $("readBtn").disabled=true;
+      api("/api/skinlux-staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"read",member:$("therapist").value,protocol:p.id})})
+        .then(function(d){if(d.ok){toast("Thanks, marked as read");var keep=$("proto").value;loadLearn();setTimeout(function(){$("proto").value=keep},600)}else{$("readBtn").disabled=false;toast(d.error||"Didn't save",true)}})}}
+  $("proto").onchange=showProto;
 
   function loadCalls(){var box=$("tasks");box.innerHTML='<p class="note">Loading</p>';
     api("/api/skinlux-staff?clinic="+$("clinic").value+"&view=calls").then(function(d){

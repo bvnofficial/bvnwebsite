@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intake forms | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="hq-app.css?v=1">
+<script src="hq-app.js?v=1"></script>
+<style>.sig{max-width:260px;border:1px solid var(--line);border-radius:8px;background:#fff;display:block;margin-top:6px}</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Intake and consent forms</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Intake and consent forms</h1><div id="seg"></div></div>
+  <div class="card soft">Clients fill this in on their phone before the visit. The full answers go onto their GoHighLevel record as a note. Anything that needs a clinician's eye is flagged here and gets a nurse task. Form link: <a id="link" target="_blank" rel="noopener"></a> <button class="btn sm ghost" id="copy">Copy link</button></div>
+  <div class="kpis sec" id="kpis"></div>
+  <div class="card sec">
+    <div class="seg" id="filt"><button data-f="flag" class="on">Needs a nurse</button><button data-f="soon">Upcoming visits</button><button data-f="all">All forms</button></div>
+    <div class="scroll" style="margin-top:12px"><table id="tbl"></table></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  var Q = window.HQ, $ = Q.$, esc = Q.esc;
+  var D = null, clinic = "both", filt = "flag";
+  var link = location.origin + "/clients/skinlux/intake/index.html";
+  $("link").href = link; $("link").textContent = link.replace(/^https?:\/\//, "");
+  $("copy").onclick = function () { navigator.clipboard.writeText(link + (clinic === "leederville" ? "?clinic=leederville" : "")).then(function () { Q.toast("Link copied"); }); };
+  clinic = Q.clinicSeg($("seg"), function (c) { clinic = c; draw(); }, true);
+  [].forEach.call(document.querySelectorAll("#filt button"), function (b) {
+    b.onclick = function () { filt = b.dataset.f; [].forEach.call(document.querySelectorAll("#filt button"), function (x) { x.classList.toggle("on", x === b); }); draw(); };
+  });
+  function load() {
+    Q.api("GET", "/api/skinlux-hq/apps?doc=intake").then(function (d) {
+      if (!d.ok) { $("tbl").innerHTML = '<tr><td class="empty">' + esc(d.error || "Couldn't load the forms") + "</td></tr>"; return; }
+      D = d.value; draw();
+    });
+  }
+  load();
+  function draw() {
+    if (!D) return;
+    var today = Q.perthDay(Date.now());
+    var mine = D.forms.filter(function (f) { return clinic === "both" || f.clinic === clinic; });
+    var open = mine.filter(function (f) { return !f.cleared; });
+    var week = mine.filter(function (f) { return f.at > Date.now() - 7 * 86400000; }).length;
+    var todays = mine.filter(function (f) { return f.visit === today; }).length;
+    $("kpis").innerHTML = [[open.length, "Need a nurse", open.length ? "Clear each one before treating" : "Nothing waiting"], [todays, "Forms for today's visits", "By appointment date"], [week, "Forms this week", "All treatments"], [mine.length, "Forms in total", "Since the form went live"]]
+      .map(function (k) { return '<div class="card kpi"><div class="l">' + k[1] + '</div><div class="v">' + k[0] + "</div><small>" + esc(k[2]) + "</small></div>"; }).join("");
+    var rows = filt === "flag" ? open : filt === "soon" ? mine.filter(function (f) { return f.visit && f.visit >= today; }).sort(function (a, b) { return a.visit < b.visit ? -1 : 1; }) : mine;
+    $("tbl").innerHTML = "<tr><th>Client</th><th>Clinic</th><th>Treatment</th><th>Visit</th><th>Sent</th><th>Flags</th><th></th></tr>" +
+      (rows.length ? rows.map(function (f) {
+        return '<tr data-id="' + f.id + '"><td><b>' + esc(f.name) + "</b></td><td>" + Q.CL[f.clinic] + "</td><td>" + esc(f.treatment) + "</td><td>" + esc(f.visit || "Not given") + "</td><td>" + Q.ago(f.at) + "</td>" +
+          "<td>" + (f.flags.length ? f.flags.map(function (x) { return '<span class="pill ' + (/^STOP/.test(x) ? "bad" : "warn") + '">' + esc(x) + "</span> "; }).join("") : '<span class="pill ok">Clear</span>') + "</td>" +
+          "<td style=\"white-space:nowrap\">" + '<button class="btn sm ghost" data-sig="' + f.id + '">Signature</button> ' +
+          (f.cleared ? '<span class="pill ok">' + esc(f.clearedBy ? "Cleared by " + f.clearedBy : "Clear") + "</span>" : '<button class="btn sm" data-clear="' + f.id + '">Mark cleared</button>') + '<div class="sigbox"></div></td></tr>';
+      }).join("") : '<tr><td colspan="7" class="empty">' + (filt === "flag" ? "No forms need a nurse right now." : "No forms yet. Send the form link with booking confirmations, or put it in the reminder text.") + "</td></tr>");
+    [].forEach.call($("tbl").querySelectorAll("[data-clear]"), function (b) {
+      b.onclick = function () {
+        var by = prompt("Who cleared this client? (for example Nurse Leo)");
+        if (!by) return;
+        Q.api("POST", "/api/skinlux-hq/apps", { action: "clear-intake", id: b.dataset.clear, by: by }).then(function (d) { if (!d.ok) { Q.toast(d.error || "Couldn't save"); return; } Q.toast("Cleared"); load(); });
+      };
+    });
+    [].forEach.call($("tbl").querySelectorAll("[data-sig]"), function (b) {
+      b.onclick = function () {
+        var box = b.parentNode.querySelector(".sigbox");
+        if (box.innerHTML) { box.innerHTML = ""; return; }
+        var K = null; try { K = localStorage.getItem("skinluxhq-key"); } catch (e) {}
+        fetch("/api/skinlux-hq/apps?sig=" + b.dataset.sig, { credentials: "include", headers: K ? { Authorization: "Bearer " + K } : {} })
+          .then(function (r) { if (!r.ok) throw 0; return r.blob(); })
+          .then(function (bl) { box.innerHTML = '<img class="sig" alt="Signature">'; box.querySelector("img").src = URL.createObjectURL(bl); })
+          .catch(function () { Q.toast("No signature saved for this form"); });
+      };
+    });
+  }
+})();
+</script>
+</body>
+</html>

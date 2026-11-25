@@ -37,7 +37,7 @@ function slug(x: string): string {
 
 /** Jellie's edited aftercare from the HQ message editor (GoHighLevel custom
  *  value msg_aftercare_*), or the built in wording if it isn't set or reachable. */
-async function editedAftercare(clinic: Clinic, treatment: string, injectable: boolean): Promise<string | null> {
+export async function editedAftercare(clinic: Clinic, treatment: string, injectable: boolean): Promise<string | null> {
   const C = clinic.toUpperCase();
   const token = process.env[`GHL_SKINLUX_${C}_TOKEN`], loc = process.env[`GHL_SKINLUX_${C}_LOCATION`];
   if (!token || !loc) return null;
@@ -90,7 +90,7 @@ export function buildEvent(body: Obj): Built {
     const product = s(body.product);
     if (!product) return { ok: false, error: "Pick a product" };
     const life = productLife(product) || PRODUCTS.find((p) => p.name === product)?.lifeDays || DEFAULT_PRODUCT_LIFE;
-    return { ok: true, clinic, kind, payload: { ...base, product, product_reorder_date: ghlDate(Math.max(1, life - 10)) } };
+    return { ok: true, clinic, kind, payload: { ...base, product, therapist: s(body.therapist), product_reorder_date: ghlDate(Math.max(1, life - 10)) } };
   }
   if (event === "new_lead") {
     return { ok: true, clinic, kind, payload: { ...base, source: s(body.source) || "website", interest: s(body.interest), message: s(body.message) } };

@@ -137,8 +137,10 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
     (p.stages || []).forEach((s: J) => (stageName[s.id] = String(s.name || "")));
   });
 
+  // GoHighLevel ships every new account with "(example)" contacts and tasks; HQ hides them
+  const isExample = (n: unknown) => /^\(example\)/i.test(String(n || "").trim());
   const byId: Record<string, J> = {};
-  const clientRows = contactsRaw.map((c) => {
+  const clientRows = contactsRaw.filter((c) => !isExample(c.contactName || c.firstName)).map((c) => {
     const name = clean(c.contactName || [c.firstName, c.lastName].filter(Boolean).join(" ")) || clean(c.email) || clean(c.phone) || "Unnamed";
     const tags: string[] = (c.tags || []).map((t: string) => String(t).toLowerCase());
     const lastT = field(c, "Last treatment"), lastD = field(c, "Last treatment date");
@@ -164,7 +166,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
   });
 
   // conversations, with the last 20 messages each
-  const convList: J[] = (convs && convs.conversations) || [];
+  const convList: J[] = ((convs && convs.conversations) || []).filter((v: J) => !isExample(v.fullName || v.contactName));
   const withMsgs = await Promise.all(
     convList.slice(0, 30).map(async (v) => {
       const d = await get(token, `/conversations/${v.id}/messages?limit=20`, V_CONV);
@@ -224,7 +226,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
       };
     });
 
-  const tasks = (((taskRes && taskRes.tasks) || []) as J[]).map((t) => {
+  const tasks = (((taskRes && taskRes.tasks) || []) as J[]).filter((t) => !/^\(Example\)/.test(String(t.title || ""))).map((t) => {
     const c = (t.contactDetails || {}) as J;
     const due = ms(t.dueDate);
     return { id: String(t._id || t.id), title: clean(t.title), body: clean(t.body), clinic, due, dueTxt: due ? when(due) : "",

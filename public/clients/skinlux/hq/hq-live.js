@@ -3,7 +3,7 @@
 // Not connected yet: shows a banner and the sample data, clearly marked.
 (function () {
   "use strict";
-  var HQ = "../assets/hq.js?v=11";
+  var HQ = "../assets/hq.js?v=12";
   function banner(text, tone) {
     var b = document.createElement("div");
     b.style.cssText = "padding:10px 18px;font-size:13.5px;text-align:center;" +
@@ -20,8 +20,7 @@
     var n = needs.nextSibling;
     while (n) { var next = n.nextSibling; sec.removeChild(n); n = next; }
     var c = document.createElement("div");
-    c.className = "card soft"; c.style.marginTop = "22px";
-    c.innerHTML = "<h3>The numbers</h3><p class=\"muted\" style=\"margin:0\">Bookings, revenue, rebook rate and money recovered show here once the Timely link is on. Workflow numbers are under Workflows.</p>";
+    c.id = "liveNums";
     sec.appendChild(c);
   }
   var key = null; try { key = localStorage.getItem("skinluxhq-key"); } catch (e) {}

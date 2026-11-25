@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Training | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="hq-app.css?v=1">
+<script src="hq-app.js?v=1"></script>
+<style>
+  .split{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}
+  @media(max-width:800px){.split{grid-template-columns:1fr}}
+  .plist button{display:flex;width:100%;justify-content:space-between;gap:8px;text-align:left;font:inherit;font-size:14px;border:0;background:none;padding:9px 10px;border-radius:9px;cursor:pointer}
+  .plist button.on{background:var(--cream)}
+  textarea.big{min-height:200px}
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Training and protocols hub</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Training and protocols</h1></div>
+  <div class="card soft">Every treatment's steps, what rules it out and the rebooking line, in one place. The team reads them in the staff app under Training and taps "I've read this". Steps start as drafts written from your menu: you and the nurses check each one, add machine settings, then mark it signed off.</div>
+  <div class="kpis sec" id="kpis"></div>
+  <div class="split sec">
+    <div class="card"><div class="seg" id="mode" style="margin-bottom:10px"><button data-m="p" class="on">Treatments</button><button data-m="g">Guides</button></div><div class="plist" id="plist"></div></div>
+    <div class="card" id="ed"></div>
+  </div>
+  <div class="card sec">
+    <h2>Team progress</h2>
+    <p class="sub">Signed off protocols each person has read in the staff app. When you change a protocol, it shows as unread again.</p>
+    <div class="scroll"><table id="team"></table></div>
+  </div>
+</div>
+<div class="bar" id="bar"><span>You have unsaved changes</span><button class="btn sm gold" id="save">Save training</button></div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  var Q = window.HQ, $ = Q.$, esc = Q.esc;
+  var D = null, TEAM = [], mode = "p", sel = 0;
+  function dirty() { $("bar").style.display = "flex"; }
+  Q.api("GET", "/api/skinlux-hq/apps?doc=training").then(function (d) {
+    if (!d.ok) { $("ed").innerHTML = '<div class="empty">' + esc(d.error || "Couldn't load training") + "</div>"; return; }
+    D = d.value; TEAM = d.team || []; draw();
+  });
+  [].forEach.call(document.querySelectorAll("#mode button"), function (b) {
+    b.onclick = function () { mode = b.dataset.m; sel = 0; [].forEach.call(document.querySelectorAll("#mode button"), function (x) { x.classList.toggle("on", x === b); }); draw(); };
+  });
+  function readOk(member, p) { var r = (D.reads[member] || {})[p.id]; return r && (!p.updated || r >= p.updated); }
+  function draw() {
+    if (!D) return;
+    var signed = D.protocols.filter(function (p) { return p.status === "signed"; });
+    var full = TEAM.filter(function (m) { return signed.length && signed.every(function (p) { return readOk(m, p); }); }).length;
+    $("kpis").innerHTML = [[D.protocols.length, "Treatment protocols", "One for every treatment"], [signed.length, "Signed off", (D.protocols.length - signed.length) + " still drafts"], [D.guides.length, "Guides", "Rebooking method, new starters and more"], [full + " of " + TEAM.length, "Team up to date", "Read every signed protocol"]]
+      .map(function (k) { return '<div class="card kpi"><div class="l">' + k[1] + '</div><div class="v">' + k[0] + "</div><small>" + esc(k[2]) + "</small></div>"; }).join("");
+    var list = mode === "p" ? D.protocols : D.guides;
+    $("plist").innerHTML = list.map(function (x, i) {
+      return '<button data-i="' + i + '"' + (i === sel ? ' class="on"' : "") + "><span>" + esc(mode === "p" ? x.treatment : x.title) + "</span>" + (mode === "p" ? '<span class="pill ' + (x.status === "signed" ? "ok" : "warn") + '">' + (x.status === "signed" ? "Signed" : "Draft") + "</span>" : "") + "</button>";
+    }).join("") + (mode === "g" ? '<button id="addG" style="color:var(--gold)">Add a guide</button>' : "");
+    [].forEach.call($("plist").querySelectorAll("[data-i]"), function (b) { b.onclick = function () { sel = +b.dataset.i; draw(); }; });
+    if ($("addG")) $("addG").onclick = function () { D.guides.push({ id: "g" + Date.now().toString(36), title: "New guide", body: "" }); sel = D.guides.length - 1; dirty(); draw(); };
+    var x = list[sel];
+    if (!x) { $("ed").innerHTML = '<div class="empty">Nothing here yet.</div>'; }
+    else if (mode === "p") {
+      $("ed").innerHTML = "<h2>" + esc(x.treatment) + "</h2>" + (x.updated ? '<p class="sub">Last changed ' + Q.when(Date.parse(x.updated)) + "</p>" : '<p class="sub">Draft from the menu. Not checked yet.</p>') +
+        '<label>Steps, one per line</label><textarea class="big" id="fSteps">' + esc(x.steps.join("\n")) + "</textarea>" +
+        '<label>Do not treat if, one per line</label><textarea id="fContra">' + esc(x.contra.join("\n")) + "</textarea>" +
+        '<label>Rebooking line at checkout</label><textarea id="fRebook" style="min-height:60px">' + esc(x.rebook) + "</textarea>" +
+        '<div class="row2"><div><label>Status</label><select id="fStatus"><option value="draft">Draft, still being checked</option><option value="signed"' + (x.status === "signed" ? " selected" : "") + '>Signed off</option></select></div><div><label>Signed off by</label><input id="fBy" value="' + esc(x.signedBy) + '" placeholder="Jellie and Nurse Leo"></div></div>';
+      $("fSteps").oninput = function (e) { x.steps = e.target.value.split("\n"); dirty(); };
+      $("fContra").oninput = function (e) { x.contra = e.target.value.split("\n"); dirty(); };
+      $("fRebook").oninput = function (e) { x.rebook = e.target.value; dirty(); };
+      $("fStatus").onchange = function (e) { x.status = e.target.value; dirty(); draw(); };
+      $("fBy").oninput = function (e) { x.signedBy = e.target.value; dirty(); };
+    } else {
+      $("ed").innerHTML = '<label>Title</label><input id="gT" value="' + esc(x.title) + '"><label>Text</label><textarea class="big" id="gB">' + esc(x.body) + '</textarea><button class="btn sm ghost" id="gDel" style="margin-top:10px">Delete this guide</button>';
+      $("gT").oninput = function (e) { x.title = e.target.value; dirty(); };
+      $("gB").oninput = function (e) { x.body = e.target.value; dirty(); };
+      $("gDel").onclick = function () { if (!confirm("Delete " + x.title + "?")) return; D.guides.splice(sel, 1); sel = 0; dirty(); draw(); };
+    }
+    $("team").innerHTML = "<tr><th>Team member</th><th>Read</th><th>Not read yet</th></tr>" + (TEAM.length ? TEAM.map(function (m) {
+      var done = signed.filter(function (p) { return readOk(m, p); });
+      var todo = signed.filter(function (p) { return !readOk(m, p); });
+      return "<tr><td><b>" + esc(m) + "</b></td><td>" + done.length + " of " + signed.length + "</td><td>" + (todo.length ? esc(todo.map(function (p) { return p.treatment; }).join(", ")) : '<span class="pill ok">Up to date</span>') + "</td></tr>";
+    }).join("") : '<tr><td colspan="3" class="empty">Add your team in Settings.</td></tr>');
+  }
+  $("save").onclick = function () {
+    var b = $("save"); b.disabled = true; b.textContent = "Saving...";
+    Q.api("PUT", "/api/skinlux-hq/apps", { doc: "training", value: D }).then(function (d) {
+      b.disabled = false; b.textContent = "Save training";
+      if (!d.ok) { Q.toast(d.error || "Couldn't save"); return; }
+      D = d.value; $("bar").style.display = "none"; draw(); Q.toast("Training saved");
+    });
+  };
+})();
+</script>
+</body>
+</html>
