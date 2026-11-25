@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free skin check | Skinlux Face &amp; Body</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/data.js"></script>
+<style>
+  .layout { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 28px; align-items: start; }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+  .phone { height: 780px; }
+  .steps { display: flex; gap: 4px; padding: 0 20px 10px; }
+  .steps span { flex: 1; height: 4px; border-radius: 99px; background: var(--sand); transition: background .3s; }
+  .steps span.on { background: var(--gold); }
+  .scr { display: none; padding: 0 18px 18px; flex: 1; overflow-y: auto; }
+  .scr.on { display: block; }
+  .logo { font-family: var(--serif); font-size: 26px; letter-spacing: 3px; text-align: center; margin: 6px 0 2px; }
+  .hero-orb {
+    width: 210px; height: 210px; margin: 26px auto 18px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, var(--gold-soft) 45%, var(--taupe) 100%);
+    display: flex; align-items: center; justify-content: center; position: relative;
+    box-shadow: 0 20px 50px rgba(184, 146, 90, .35);
+  }
+  .hero-orb::before, .hero-orb::after {
+    content: ""; position: absolute; inset: -14px; border-radius: 50%;
+    border: 1px solid rgba(184, 146, 90, .45); animation: pulse 2.6s ease-out infinite;
+  }
+  .hero-orb::after { animation-delay: 1.3s; }
+  @keyframes pulse { from { transform: scale(.92); opacity: 1; } to { transform: scale(1.22); opacity: 0; } }
+  .hero-orb b { font-family: var(--serif); font-size: 44px; color: var(--ink); }
+  .center { text-align: center; }
+  .stage { position: relative; width: 100%; aspect-ratio: 360 / 440; border-radius: 22px; overflow: hidden; background: var(--sand); }
+  .stage canvas, .stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .stage video { transform: scaleX(-1); }
+  .oval {
+    position: absolute; left: 17%; right: 17%; top: 12%; bottom: 14%;
+    border: 2px dashed rgba(255,255,255,.9); border-radius: 50%; pointer-events: none;
+    box-shadow: 0 0 0 999px rgba(43, 36, 32, .28);
+  }
+  .stage .hint { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; color: #fff; font-size: 12px; text-shadow: 0 1px 3px rgba(0,0,0,.5); }
+  .opt { display: grid; gap: 8px; margin-top: 14px; }
+  .tips { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .scan-status { text-align: center; margin-top: 14px; font-weight: 600; min-height: 22px; }
+  .q { margin-top: 14px; }
+  .q > b { display: block; font-size: 14px; margin-bottom: 6px; }
+  .q .chip { margin: 0 4px 6px 0; }
+  .ring { width: 150px; height: 150px; margin: 8px auto 4px; position: relative; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring .num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring .num b { font-family: var(--serif); font-size: 46px; line-height: 1; }
+  .ring .num small { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .metric { margin: 9px 0; }
+  .metric .top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .metric .bar > span { transition: width 1s ease; width: 0; }
+  .tag-good { color: var(--ok); font-weight: 600; }
+  .tag-mid { color: var(--warn); font-weight: 600; }
+  .tag-focus { color: var(--bad); font-weight: 600; }
+  .mini { border-radius: 14px; overflow: hidden; margin: 10px 0; position: relative; }
+  .mini canvas { width: 100%; display: block; }
+  .focus-box { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 8px 0; font-size: 13px; }
+  .focus-box b { font-size: 14px; }
+  .tx { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; }
+  .tx .row.between b { font-size: 15px; }
+  .tx p { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+  .weeks { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; margin-top: 8px; }
+  .weeks i { height: 16px; border-radius: 4px; background: var(--sand); font-style: normal; font-size: 9px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .weeks i.s { background: var(--gold); color: var(--ink); font-weight: 700; }
+  .total { background: var(--ink); color: var(--cream); border-radius: 14px; padding: 14px; margin: 12px 0; }
+  .total .v { font-family: var(--serif); font-size: 30px; }
+  .prod { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .fine { font-size: 11px; color: var(--muted); margin-top: 10px; }
+  .sticky-cta { position: sticky; bottom: -18px; background: linear-gradient(transparent, var(--cream) 30%); padding: 16px 0 4px; }
+  /* Right side */
+  .feed { max-height: 360px; overflow-y: auto; }
+  .ev { display: grid; grid-template-columns: 54px 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13px; animation: slideIn .35s ease; }
+  .ev time { color: var(--muted); font-size: 12px; }
+  .ev .sys { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .6px; padding: 1px 7px; border-radius: 99px; margin-right: 6px; }
+  .sys.ghl { background: #e6eefc; color: #2f5bb7; }
+  .sys.sms { background: var(--ok-soft); color: var(--ok); }
+  .sys.app { background: var(--gold-soft); color: var(--mocha); }
+  .sys.tim { background: #efe6f7; color: #6b3d93; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .why li { margin: 6px 0; }
+  .empty { color: var(--muted); font-size: 13px; padding: 14px 0; }
+  /* Live page */
+  .live { max-width: 460px; margin: 0 auto; padding: 18px 12px 40px; }
+  .live .phone { width: 100%; height: auto; min-height: 640px; border-radius: 28px; padding: 0; background: transparent; box-shadow: 0 20px 60px rgba(43, 36, 32, .18); }
+  .live .phone .screen { border-radius: 28px; min-height: 640px; padding-top: 14px; }
+  @media (max-width: 520px) { .live { padding: 0; } .live .phone, .live .phone .screen { border-radius: 0; box-shadow: none; min-height: 100vh; } }
+  .err { color: var(--bad); font-size: 13px; min-height: 18px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="live">
+    <div>
+      <div class="phone"><div class="screen">
+        <div class="steps" id="steps"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+        <div class="scr on" id="s0">
+          <div class="logo">SKINLUX</div>
+          <div class="center muted" style="font-size:12px;letter-spacing:2px">FACE AND BODY</div>
+          <div class="hero-orb"><b>60s</b></div>
+          <h2 class="center" style="font-size:28px">Your free skin check</h2>
+          <p class="center muted">Take a selfie, answer three quick questions and get a 12 week plan made from the Skinlux menu. Your photo stays on your phone. It is never uploaded or saved.</p>
+          <button class="btn gold block" id="start" style="margin-top:18px">Start my skin check</button>
+          <p class="fine center">A cosmetic skin guide, not a medical diagnosis. Your therapist checks everything at your consult. If you are worried about a mole, spot or skin condition, please see your GP.</p>
+        </div>
+
+        <div class="scr" id="s1">
+          <h3>Take a selfie</h3>
+          <div class="stage" id="stage1">
+            <canvas id="cv" width="360" height="440"></canvas>
+            <video id="vid" class="hidden" playsinline muted></video>
+            <div class="oval"></div>
+            <div class="hint" id="hint1">Line your face up inside the oval</div>
+          </div>
+          <div class="opt">
+            <button class="btn gold block hidden" id="snap">Take photo</button>
+            <label class="btn block" style="margin:0" for="file">Upload a selfie</label>
+            <input type="file" id="file" accept="image/*" class="hidden">
+            <button class="btn ghost block" id="cam">Use my camera</button>
+          </div>
+          <div class="tips">Best results: daylight, no makeup, hair off your face.</div>
+        </div>
+
+        <div class="scr" id="s2">
+          <h3>Checking your skin</h3>
+          <div class="stage"><canvas id="cvScan" width="360" height="440"></canvas></div>
+          <div class="scan-status" id="scanStatus">Finding your face</div>
+          <div class="bar" style="margin-top:8px"><span id="scanBar" style="width:0"></span></div>
+        </div>
+
+        <div class="scr" id="s3">
+          <h3>Three quick questions</h3>
+          <div class="q"><b>Your age</b><div id="qAge"></div></div>
+          <div class="q"><b>What bothers you most? Pick up to 3</b><div id="qCon"></div></div>
+          <div class="q"><b>How much downtime can you take?</b><div id="qDown"></div></div>
+          <div class="q"><b>Closest clinic</b><div id="qClinic"></div></div>
+          <button class="btn gold block" id="toResults" style="margin-top:18px">See my results</button>
+        </div>
+
+        <div class="scr" id="s4">
+          <h3 class="center">Your skin results</h3>
+          <div class="ring">
+            <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#ede3d8" stroke-width="10"/><circle id="ringArc" cx="60" cy="60" r="52" fill="none" stroke="#b8925a" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" style="transition:stroke-dashoffset 1.2s ease"/></svg>
+            <div class="num"><b id="score">0</b><small>Skin guide</small></div>
+          </div>
+          <p class="center muted" style="font-size:13px" id="scoreLine"></p>
+          <div class="mini"><canvas id="cvMini" width="360" height="440"></canvas></div>
+          <div id="metrics"></div>
+          <div id="focus"></div>
+          <div class="sticky-cta"><button class="btn gold block" id="toPlan">See my 12 week plan</button></div>
+        </div>
+
+        <div class="scr" id="s5">
+          <h3>Your 12 week plan</h3>
+          <p class="muted" style="font-size:13px" id="planIntro"></p>
+          <div id="plan"></div>
+          <div id="routine"></div>
+          <div class="sticky-cta">
+            <button class="btn gold block" id="book">Book my consult</button>
+            <button class="btn ghost block" id="sendRep" style="margin-top:8px">Text me my plan</button>
+          </div>
+          <div id="leadForm" class="hidden card" style="margin-top:10px">
+            <label>First name</label><input id="lfName" autocomplete="given-name">
+            <label>Mobile</label><input id="lfMob" type="tel" autocomplete="tel" inputmode="tel">
+            <label>Email (optional)</label><input id="lfEmail" type="email" autocomplete="email">
+            <input type="text" id="lfWebsite" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+            <button class="btn block" id="lfSend" style="margin-top:10px">Send my plan</button>
+            <div class="err" id="lfErr"></div>
+            <p class="fine">By sending you agree to Skinlux contacting you about your plan by text and email. Reply STOP any time.</p>
+          </div>
+          <button class="btn ghost sm" id="again" style="margin-top:14px">Start again</button>
+          <p class="fine">Prices are from the Skinlux menu and are a guide. Cosmetic injectables are discussed only at a consult with a registered nurse.</p>
+        </div>
+      </div></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  var tt;
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove("show"); }, 3000); }
+  function T(id) { return S.treatments.filter(function (t) { return t.id === id; })[0]; }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-AU"); }
+
+  var W = 360, H = 440;
+  var cv = $("cv"), ctx = cv.getContext("2d", { willReadFrequently: true });
+  var base = document.createElement("canvas"); base.width = W; base.height = H;
+  var bctx = base.getContext("2d", { willReadFrequently: true });
+  var stream = null;
+
+  // ---------- Steps ----------
+  var cur = 0;
+  function go(n) {
+    cur = n;
+    for (var i = 0; i <= 5; i++) $("s" + i).classList.toggle("on", i === n);
+    [].forEach.call($("steps").children, function (s, i) { s.classList.toggle("on", i <= n); });
+    $("s" + n).scrollTop = 0;
+  }
+
+  // ---------- Live feed ----------
+  var qp = new URLSearchParams(location.search);
+  var source = (qp.get("src") || qp.get("utm_source") || "website").slice(0, 60);
+  function feed() {}
+
+  // ---------- Demo face (illustration, clothed, drawn in code) ----------
+  function rnd(seed) { return function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }; }
+  function drawDemoFace(c) {
+    var r = rnd(7);
+    var g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#d9d2ca"); g.addColorStop(1, "#bfb3a6");
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+    // hair behind
+    c.fillStyle = "#3b2a22"; c.beginPath(); c.ellipse(180, 200, 140, 175, 0, 0, Math.PI * 2); c.fill();
+    c.fillRect(40, 200, 280, 200);
+    // top (clothing) and neck
+    c.fillStyle = "#e3d8cc"; c.beginPath(); c.moveTo(20, H); c.quadraticCurveTo(40, 380, 120, 372); c.lineTo(240, 372); c.quadraticCurveTo(320, 380, 340, H); c.fill();
+    c.fillStyle = "#7a6455"; c.beginPath(); c.moveTo(0, H); c.quadraticCurveTo(10, 390, 110, 385); c.quadraticCurveTo(180, 420, 250, 385); c.quadraticCurveTo(350, 390, 360, H); c.fill();
+    c.fillStyle = "#dfb497"; c.fillRect(145, 330, 70, 60);
+    // face
+    var fg = c.createRadialGradient(165, 190, 30, 180, 215, 170); fg.addColorStop(0, "#efcbb1"); fg.addColorStop(1, "#d9a88a");
+    c.fillStyle = fg; c.beginPath(); c.ellipse(180, 215, 112, 155, 0, 0, Math.PI * 2); c.fill();
+    // fringe
+    c.fillStyle = "#3b2a22"; c.beginPath(); c.moveTo(62, 190); c.quadraticCurveTo(70, 50, 180, 52); c.quadraticCurveTo(300, 50, 298, 190); c.quadraticCurveTo(280, 95, 180, 82); c.quadraticCurveTo(85, 95, 62, 190); c.fill();
+    // cheek redness
+    [[112, 250], [248, 250]].forEach(function (p) {
+      var rg = c.createRadialGradient(p[0], p[1], 4, p[0], p[1], 46);
+      rg.addColorStop(0, "rgba(214,86,86,0.42)"); rg.addColorStop(1, "rgba(214,86,86,0)");
+      c.fillStyle = rg; c.beginPath(); c.arc(p[0], p[1], 46, 0, Math.PI * 2); c.fill();
+    });
+    // pigment spots
+    for (var i = 0; i < 26; i++) {
+      var x = 85 + r() * 190, y = 120 + r() * 160;
+      if (y > 165 && y < 200) continue;
+      c.fillStyle = "rgba(128,80,52," + (0.35 + r() * 0.35) + ")";
+      c.beginPath(); c.arc(x, y, 1.5 + r() * 2.8, 0, Math.PI * 2); c.fill();
+    }
+    // brows, eyes, nose, lips
+    c.strokeStyle = "#3b2a22"; c.lineWidth = 5; c.lineCap = "round";
+    c.beginPath(); c.moveTo(112, 160); c.quadraticCurveTo(135, 148, 158, 158); c.stroke();
+    c.beginPath(); c.moveTo(202, 158); c.quadraticCurveTo(225, 148, 248, 160); c.stroke();
+    [135, 225].forEach(function (x) {
+      c.fillStyle = "#fff"; c.beginPath(); c.ellipse(x, 182, 18, 9, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = "#4a3326"; c.beginPath(); c.arc(x, 182, 7, 0, Math.PI * 2); c.fill();
+    });
+    c.strokeStyle = "rgba(150,100,75,.7)"; c.lineWidth = 3;
+    c.beginPath(); c.moveTo(180, 200); c.quadraticCurveTo(172, 238, 166, 252); c.quadraticCurveTo(180, 262, 194, 252); c.stroke();
+    c.fillStyle = "#c27a72"; c.beginPath(); c.moveTo(148, 300); c.quadraticCurveTo(180, 288, 212, 300); c.quadraticCurveTo(180, 322, 148, 300); c.fill();
+    // fine texture on the skin
+    var id = c.getImageData(70, 60, 220, 310), d = id.data, rr = rnd(11);
+    for (var k = 0; k < d.length; k += 4) { var n = (rr() - 0.5) * 18; d[k] += n; d[k + 1] += n; d[k + 2] += n; }
+    c.putImageData(id, 70, 60);
+  }
+
+  function drawCover(img, c, mirror) {
+    var iw = img.videoWidth || img.naturalWidth || img.width, ih = img.videoHeight || img.naturalHeight || img.height;
+    var s = Math.max(W / iw, H / ih), dw = iw * s, dh = ih * s;
+    c.save();
+    if (mirror) { c.translate(W, 0); c.scale(-1, 1); }
+    c.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    c.restore();
+  }
+
+  function showStill() { ctx.clearRect(0, 0, W, H); ctx.drawImage(base, 0, 0); }
+
+  // ---------- Photo step ----------
+  function stopCam() { if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; } $("vid").classList.add("hidden"); $("snap").classList.add("hidden"); }
+  function havePhoto(how) {
+    stopCam();
+    showStill();
+    feed("app", "SKIN CHECK", "Photo " + how + ". Checked on the phone, not uploaded.");
+    setTimeout(startScan, 500);
+  }
+  $("start").onclick = function () {
+    go(1);
+    bctx.fillStyle = "#ede3d8"; bctx.fillRect(0, 0, W, H); showStill();
+    feed("app", "SKIN CHECK", "New skin check started from <b>" + source + "</b>.");
+  };
+  $("file").onchange = function (e) {
+    var f = e.target.files[0]; if (!f) return;
+    var img = new Image();
+    img.onload = function () { drawCover(img, bctx, false); URL.revokeObjectURL(img.src); havePhoto("uploaded"); };
+    img.onerror = function () { toast("That file didn't open. Try a JPG or PNG."); };
+    img.src = URL.createObjectURL(f);
+    e.target.value = "";
+  };
+  $("cam").onclick = function () {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast("Camera isn't available here. Please upload a selfie instead."); return; }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }).then(function (s) {
+      stream = s; var v = $("vid"); v.srcObject = s; v.classList.remove("hidden"); v.play();
+      $("snap").classList.remove("hidden"); $("hint1").textContent = "Look straight at the camera";
+    }).catch(function () { toast("Camera isn't available here. Please upload a selfie instead."); });
+  };
+  $("snap").onclick = function () { drawCover($("vid"), bctx, true); havePhoto("taken with the camera"); };
+
+  // ---------- Analysis (simple image checks inside the page) ----------
+  var ZONES = {
+    forehead: [0.32, 0.20, 0.68, 0.30],
+    cheekL: [0.22, 0.50, 0.40, 0.63],
+    cheekR: [0.60, 0.50, 0.78, 0.63],
+    nose: [0.45, 0.46, 0.55, 0.60],
+    chin: [0.40, 0.73, 0.60, 0.81]
+  };
+  function zoneData(z) {
+    var a = ZONES[z], x = Math.round(a[0] * W), y = Math.round(a[1] * H), w = Math.round((a[2] - a[0]) * W), h = Math.round((a[3] - a[1]) * H);
+    return { d: bctx.getImageData(x, y, w, h).data, w: w, h: h };
+  }
+  function stats(z) {
+    var zd = zoneData(z), d = zd.d, n = d.length / 4, sumL = 0, sumL2 = 0, red = 0, hf = 0, hfN = 0;
+    for (var i = 0; i < d.length; i += 4) {
+      var r = d[i], g = d[i + 1], b = d[i + 2], L = 0.299 * r + 0.587 * g + 0.114 * b;
+      sumL += L; sumL2 += L * L; red += r / (g + 1);
+      if ((i / 4) % zd.w < zd.w - 1) {
+        var L2 = 0.299 * d[i + 4] + 0.587 * d[i + 5] + 0.114 * d[i + 6];
+        hf += Math.abs(L - L2); hfN++;
+      }
+    }
+    var mean = sumL / n;
+    return { L: mean, sd: Math.sqrt(Math.max(0, sumL2 / n - mean * mean)), red: red / n, hf: hf / Math.max(1, hfN) };
+  }
+  var M = null;
+  function analyse() {
+    var f = stats("forehead"), cl = stats("cheekL"), cr = stats("cheekR"), no = stats("nose"), ch = stats("chin");
+    var cheekRed = (cl.red + cr.red) / 2, cheekSd = (cl.sd + cr.sd) / 2, L = (f.L + cl.L + cr.L + ch.L) / 4;
+    return {
+      redness: clamp(Math.round(100 - (cheekRed - 1.12) * 190), 38, 94),
+      evenness: clamp(Math.round(100 - cheekSd * 2.3), 38, 94),
+      texture: clamp(Math.round(100 - f.hf * 5.2), 38, 94),
+      dull: clamp(Math.round(40 + (L - 95) * 0.55), 38, 94),
+      congestion: clamp(Math.round(100 - (no.hf + ch.hf) / 2 * 5.5), 38, 94)
+    };
+  }
+
+  // ---------- Scan animation ----------
+  var LABELS = { forehead: "Texture", cheekL: "Redness", cheekR: "Evenness", nose: "Pores", chin: "Clarity" };
+  function startScan() {
+    go(2);
+    var sc = $("cvScan").getContext("2d"), t0 = performance.now(), dur = 3600;
+    var msgs = ["Finding your face", "Checking redness", "Checking evenness and spots", "Checking texture", "Checking pores and clarity", "Building your results"];
+    M = analyse();
+    (function frame(now) {
+      var p = Math.min(1, (now - t0) / dur);
+      sc.clearRect(0, 0, W, H); sc.drawImage(base, 0, 0);
+      sc.fillStyle = "rgba(43,36,32,.25)"; sc.fillRect(0, 0, W, H);
+      var y = (p * 2 % 1) * H;
+      var lg = sc.createLinearGradient(0, y - 40, 0, y);
+      lg.addColorStop(0, "rgba(184,146,90,0)"); lg.addColorStop(1, "rgba(241,230,211,.7)");
+      sc.fillStyle = lg; sc.fillRect(0, y - 40, W, 40);
+      sc.fillStyle = "#f1e6d3"; sc.fillRect(0, y, W, 2);
+      Object.keys(ZONES).forEach(function (z, i) {
+        if (p < 0.12 + i * 0.15) return;
+        var a = ZONES[z];
+        sc.strokeStyle = "#f1e6d3"; sc.lineWidth = 2;
+        sc.strokeRect(a[0] * W, a[1] * H, (a[2] - a[0]) * W, (a[3] - a[1]) * H);
+        sc.fillStyle = "rgba(43,36,32,.75)"; sc.fillRect(a[0] * W, a[1] * H - 16, 62, 16);
+        sc.fillStyle = "#f7f2ec"; sc.font = "600 11px Segoe UI, sans-serif"; sc.fillText(LABELS[z], a[0] * W + 5, a[1] * H - 4);
+      });
+      $("scanStatus").textContent = msgs[Math.min(msgs.length - 1, Math.floor(p * msgs.length))];
+      $("scanBar").style.width = Math.round(p * 100) + "%";
+      if (p < 1) requestAnimationFrame(frame); else setTimeout(function () { go(3); }, 300);
+    })(t0);
+  }
+
+  // ---------- Questions ----------
+  var AGES = ["Under 30", "30 to 39", "40 to 49", "50 plus"];
+  var CONCERNS = [
+    ["redness", "Redness or rosacea"], ["evenness", "Pigmentation and sun spots"], ["texture", "Texture and scars"],
+    ["dull", "Dull skin"], ["congestion", "Breakouts and pores"], ["firmness", "Loss of firmness"], ["lines", "Fine lines"]
+  ];
+  var DOWN = [[0, "None, I need to look normal"], [1, "A day or two is fine"], [2, "Up to a week"]];
+  var A = { age: 1, concerns: ["evenness"], down: 0, clinic: "booragoon" };
+  function chips(el, items, isOn, onClick) {
+    $(el).innerHTML = "";
+    items.forEach(function (it) {
+      var c = document.createElement("span"); c.className = "chip" + (isOn(it) ? " on" : ""); c.textContent = it[1];
+      c.onclick = function () { onClick(it); render(); };
+      $(el).appendChild(c);
+    });
+  }
+  function render() {
+    chips("qAge", AGES.map(function (a, i) { return [i, a]; }), function (it) { return it[0] === A.age; }, function (it) { A.age = it[0]; });
+    chips("qCon", CONCERNS, function (it) { return A.concerns.indexOf(it[0]) > -1; }, function (it) {
+      var i = A.concerns.indexOf(it[0]);
+      if (i > -1) A.concerns.splice(i, 1);
+      else if (A.concerns.length < 3) A.concerns.push(it[0]);
+      else toast("Pick up to 3. Tap one to remove it first.");
+    });
+    chips("qDown", DOWN, function (it) { return it[0] === A.down; }, function (it) { A.down = it[0]; });
+    chips("qClinic", [["booragoon", "Booragoon"], ["leederville", "Leederville"]], function (it) { return it[0] === A.clinic; }, function (it) { A.clinic = it[0]; });
+  }
+  render();
+
+  // ---------- Results ----------
+  var NAMES = { redness: "Redness", evenness: "Even tone", texture: "Smooth texture", dull: "Brightness", congestion: "Clear pores", firmness: "Firmness", lines: "Fine lines" };
+  var EXPLAIN = {
+    redness: "Some redness across the cheeks. Light based treatments can help calm it over a few sessions. Results vary from person to person.",
+    evenness: "Some uneven tone or small spots, often linked to sun. A short course plus daily SPF can help.",
+    texture: "Some roughness on the forehead. Resurfacing treatments can help smooth the skin over a few weeks.",
+    dull: "Skin looks a little tired. A brightening treatment can help it look fresher.",
+    congestion: "Some congestion around the nose and chin. A deep cleansing course can help keep pores clearer.",
+    firmness: "Some softening in firmness. Collagen stimulating treatments may help over a course, and your therapist will talk you through what is realistic.",
+    lines: "Some fine lines. These are best talked through with one of our registered nurses at a consultation."
+  };
+  var R = null, focus = [];
+  function results() {
+    R = {};
+    for (var k in M) R[k] = M[k];
+    var ageFirm = [88, 76, 64, 56][A.age], ageLines = [90, 78, 66, 58][A.age];
+    R.firmness = clamp(ageFirm - Math.round((94 - M.texture) / 6), 38, 94);
+    R.lines = clamp(ageLines - Math.round((94 - M.texture) / 5), 38, 94);
+    var keys = Object.keys(R);
+    var overall = Math.round(keys.reduce(function (s, k) { return s + R[k]; }, 0) / keys.length);
+    focus = keys.map(function (k) { return [k, R[k] - (A.concerns.indexOf(k) > -1 ? 14 : 0)]; })
+      .sort(function (a, b) { return a[1] - b[1]; }).slice(0, 3).map(function (x) { return x[0]; });
+
+    go(4);
+    $("score").textContent = "0";
+    $("ringArc").style.strokeDashoffset = 327;
+    setTimeout(function () { $("ringArc").style.strokeDashoffset = 327 * (1 - overall / 100); }, 80);
+    var n = 0, iv = setInterval(function () { n += 2; if (n >= overall) { n = overall; clearInterval(iv); } $("score").textContent = n; }, 22);
+    $("scoreLine").textContent = overall >= 80 ? "Your skin looks well cared for. A few small things to keep on top of." : overall >= 65 ? "A good base with a few areas you may want to focus on." : "A few areas a tailored plan can help with.";
+
+    $("metrics").innerHTML = keys.map(function (k) {
+      var v = R[k], tag = v >= 78 ? ["Good", "tag-good"] : v >= 62 ? ["Worth a look", "tag-mid"] : ["Focus area", "tag-focus"];
+      return '<div class="metric"><div class="top"><span>' + NAMES[k] + '</span><span class="' + tag[1] + '">' + tag[0] + '</span></div><div class="bar"><span data-w="' + v + '"></span></div></div>';
+    }).join("");
+    setTimeout(function () { [].forEach.call(document.querySelectorAll("#metrics .bar span"), function (s) { s.style.width = s.dataset.w + "%"; }); }, 80);
+
+    $("focus").innerHTML = "<h3 style='margin-top:14px'>Your top focus areas</h3>" + focus.map(function (k, i) {
+      return '<div class="focus-box"><b>' + (i + 1) + ". " + NAMES[k] + "</b><br>" + EXPLAIN[k] + "</div>";
+    }).join("");
+
+    // marked thumbnail
+    var mc = $("cvMini").getContext("2d");
+    mc.drawImage(base, 0, 0);
+    var zm = { forehead: "texture", cheekL: "redness", cheekR: "evenness", nose: "congestion", chin: "congestion" };
+    Object.keys(ZONES).forEach(function (z) {
+      var a = ZONES[z], v = R[zm[z]], col = v >= 78 ? "79,138,107" : v >= 62 ? "192,138,46" : "181,82,74";
+      mc.fillStyle = "rgba(" + col + ",.22)"; mc.strokeStyle = "rgb(" + col + ")"; mc.lineWidth = 2;
+      mc.beginPath(); mc.ellipse((a[0] + a[2]) / 2 * W, (a[1] + a[3]) / 2 * H, (a[2] - a[0]) / 2 * W, (a[3] - a[1]) / 2 * H, 0, 0, Math.PI * 2); mc.fill(); mc.stroke();
+    });
+
+    feed("app", "SKIN CHECK", "Score <b>" + overall + "</b>. Focus: " + focus.map(function (k) { return NAMES[k]; }).join(", ") + ". Age " + AGES[A.age] + ", downtime: " + ["none", "a day or two", "up to a week"][A.down] + ".");
+  }
+  $("toResults").onclick = function () {
+    if (!A.concerns.length) { toast("Pick at least one thing that bothers you."); return; }
+    results();
+  };
+
+  // ---------- Plan ----------
+  // Downtime level: 0 none, 1 a day or two, 2 up to a week. From prices come from the Skinlux menu.
+  var TX = {
+    "ipl-skin": { dt: 1, from: 240, cap: 3, why: "Targets redness and sun spots with light." },
+    "led": { dt: 0, from: 100, cap: 6, why: "Calms redness and helps healing. Often added on." },
+    "clinical-peel": { dt: 0, from: 220, cap: 4, why: "Resurfacing peel with LED for smoother, brighter skin." },
+    "bright": { dt: 0, from: 295, cap: 3, why: "Signature glow treatment with no downtime." },
+    "carbon": { dt: 0, from: 460, cap: 4, why: "Deep cleans pores and clears congestion." },
+    "diamond": { dt: 0, from: 195, cap: 8, why: "Builds collagen and firms with no downtime." },
+    "hifu": { dt: 0, from: 450, cap: 1, why: "Lifts and tightens. Results build over 8 to 12 weeks." },
+    "needling": { dt: 1, from: 330, cap: 3, why: "Builds collagen to smooth scars, texture and pigment." },
+    "nano-rf": { dt: 2, from: 520, cap: 3, why: "Fractional resurfacing for deeper texture and scars." },
+    "advanced-peel": { dt: 2, from: 195, cap: 2, why: "Stronger peel for stubborn pigment." }
+  };
+  var MAP = {
+    redness: ["ipl-skin", "led"],
+    evenness: ["ipl-skin", "advanced-peel", "needling", "clinical-peel"],
+    texture: ["needling", "nano-rf", "clinical-peel"],
+    dull: ["bright", "clinical-peel"],
+    congestion: ["carbon", "clinical-peel"],
+    firmness: ["hifu", "diamond"],
+    lines: ["injectable"]
+  };
+  function plan() {
+    var picks = [], consult = false;
+    focus.forEach(function (k) {
+      var opts = MAP[k];
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i] === "injectable") { consult = true; return; }
+        var tx = TX[opts[i]];
+        if (tx.dt <= A.down && picks.indexOf(opts[i]) < 0) { picks.push(opts[i]); return; }
+      }
+    });
+    picks = picks.slice(0, 3);
+    var total = 0, html = "";
+    picks.forEach(function (id) {
+      var t = T(id), tx = TX[id];
+      var sessions = t.interval_days ? Math.min(tx.cap, Math.floor(84 / t.interval_days) + 1) : 1;
+      var step = t.interval_days ? Math.max(1, Math.round(t.interval_days / 7)) : 12;
+      var weeks = []; for (var w = 0; w < sessions; w++) weeks.push(1 + w * step);
+      total += sessions * tx.from;
+      html += '<div class="tx"><div class="row between"><b>' + t.name + '</b><span class="badge gold">' + sessions + (sessions === 1 ? " session" : " sessions") + '</span></div>' +
+        '<p>' + tx.why + ' Downtime: ' + t.downtime.toLowerCase() + '</p>' +
+        '<div class="weeks">' + Array.apply(null, Array(12)).map(function (_, i) { return '<i class="' + (weeks.indexOf(i + 1) > -1 ? "s" : "") + '">' + (i + 1) + '</i>'; }).join("") + '</div>' +
+        '<p style="margin-top:6px">From ' + money(tx.from) + ' a session. Ask about packs and this month\'s offer.</p></div>';
+    });
+    if (consult) {
+      html += '<div class="tx" style="border-color:var(--gold)"><div class="row between"><b>Nurse consult for fine lines</b><span class="badge ok">Free</span></div>' +
+        '<p>Talk through your options with Nurse Leo or Nurse Maria. Treatment and pricing are discussed only at your consult.</p></div>';
+    }
+    if (!picks.length && !consult) html += '<div class="tx"><b>Skin consult</b><p>Your skin looks healthy. A consult with our therapist sets up a maintenance routine.</p></div>';
+    html += '<div class="total"><small style="color:var(--taupe);letter-spacing:1px;text-transform:uppercase;font-size:11px">Your 12 week plan</small><div class="v">' + (total ? "From " + money(total) : "Free consult") + '</div><small style="color:var(--taupe)">' + (consult ? "Plus a free nurse consult. " : "") + 'At ' + S.locations[A.clinic].name + '. Your therapist confirms it at your consult.</small></div>';
+    $("plan").innerHTML = html;
+    $("planIntro").textContent = "Made for your top focus areas" + (A.down === 0 ? ", with no downtime treatments only." : ", within the downtime you picked.");
+
+    var P = S.products, prods = [P[2]];
+    if (focus.indexOf("evenness") > -1 || focus.indexOf("dull") > -1 || focus.indexOf("redness") > -1) prods.push(P[0]);
+    if (focus.indexOf("texture") > -1 || focus.indexOf("lines") > -1 || focus.indexOf("firmness") > -1) prods.push(P[1]);
+    prods.push(P[3]);
+    $("routine").innerHTML = "<h3 style='margin-top:6px'>Your home routine</h3>" + prods.map(function (p) {
+      return '<div class="prod"><span><b>' + p.name + '</b><br><small>' + p.use + '</small></span><span>' + p.price + '</span></div>';
+    }).join("");
+
+    feed("ghl", "GHL", "Plan built: " + (picks.map(function (id) { return T(id).name; }).join(", ") || "consult only") + (consult ? " plus nurse consult" : "") + ". Plan value <b>" + money(total) + "</b>.");
+    return { picks: picks, total: total, consult: consult };
+  }
+  var lastPlan = null;
+  $("toPlan").onclick = function () { go(5); lastPlan = plan(); };
+
+  var sentLead = false;
+  $("sendRep").onclick = function () { $("leadForm").classList.toggle("hidden"); };
+  $("lfSend").onclick = function () {
+    var nm = $("lfName").value.trim(), mob = $("lfMob").value.trim(), em = $("lfEmail").value.trim();
+    $("lfErr").textContent = "";
+    if (!nm) { $("lfErr").textContent = "Please add your first name."; return; }
+    if (mob.replace(/\D/g, "").length < 9) { $("lfErr").textContent = "Please add your mobile number."; return; }
+    if (sentLead) { toast("Your plan is already on its way."); return; }
+    var btn = $("lfSend"); btn.disabled = true; btn.textContent = "Sending...";
+    var names = (lastPlan && lastPlan.picks || []).map(function (id) { return T(id).name; });
+    var body = {
+      source: "skin-check", clinic: A.clinic, first_name: nm, phone: mob, email: em, website: $("lfWebsite").value,
+      interest: names.join(", ") || "Skin consult",
+      message: "Skin check from " + source + ". Age: " + AGES[A.age] + ". Focus: " + focus.join(", ") +
+        ". Bothers them: " + A.concerns.join(", ") + ". Downtime: " + ["none", "a day or two", "up to a week"][A.down] +
+        ". Plan: " + (names.join(", ") || "consult only") + (lastPlan && lastPlan.consult ? " plus nurse consult" : "") +
+        ", from " + money(lastPlan ? lastPlan.total : 0) + "."
+    };
+    function done(ok, m) { btn.disabled = false; btn.textContent = "Send my plan"; if (!ok) $("lfErr").textContent = m || "Sorry, that didn't go through. Please call us on " + S.locations[A.clinic].phone + "."; }
+    fetch("/api/skinlux-lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .then(function (d) {
+        if (!d.ok) { done(false, d.error); return; }
+        sentLead = true; done(true);
+        $("leadForm").classList.add("hidden");
+        toast("Thanks " + nm + ". The team at " + S.locations[A.clinic].name + " will be in touch soon.");
+      })
+      .catch(function () { done(false); });
+  };
+  $("book").onclick = function () { window.open(S.booking, "_blank", "noopener"); };
+  $("again").onclick = function () { sentLead = false; $("leadForm").classList.add("hidden"); go(0); };
+})();
+</script>
+</body>
+</html>
