@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referral partner app | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph"><img src="assets/lllogo.png" alt="Legend Lending"><div style="font-size:11px;opacity:.6;margin-top:4px">Partner app · Car yard, Smithfield</div></div><div class="pb">
+    <label>Customer name</label><input id="n" value="Ava Collins">
+    <label>Mobile</label><input id="m" value="0411 555 302">
+    <label>What they're buying</label><input id="w" value="2020 Toyota Prado, $54,000">
+    <label class="row" style="color:var(--ink);font-size:13px"><input type="checkbox" id="ok" checked style="width:auto"> Customer agreed to be contacted by Legend Lending</label>
+    <div class="row mt"><button class="btn pri" style="width:100%" onclick="send()">Send to Legend</button></div>
+    <h3 style="font-size:15px;margin:18px 0 6px">Your referrals</h3><div class="list" id="mine"></div></div></div></div>
+  <div>
+    <div class="card"><h3>Partners ranked by settled deals</h3><table class="num"><thead><tr><th>Partner</th><th>Sent</th><th>Settled</th><th>Settled value</th></tr></thead><tbody id="top"></tbody></table></div>
+    <div class="note mt">Partners see status only. Any referral payments are disclosed to the customer as the credit rules require; the app keeps that record.</div>
+  </div>
+</div>
+<script>
+shell("09","Referral partner app","Car yards, boat dealers, mechanics, accountants and past customers send a lead in 30 seconds from their phone and watch it move to settled. Legend HQ ranks partners by settled deals.","referrer enquiries arriving by email and never tracked");
+const M=[["Liam O'Hare","Settled"],["Grace Tan","With lender"]];
+const T=[["Car yard, Smithfield",14,6,212000],["Boat dealer, Portsmith",9,4,151000],["Mechanic, Manunda",7,2,48000],["Past customers",11,5,139000]];
+function draw(){$("#mine").innerHTML=M.map(m=>`<div class="it in"><span>${m[0]}</span><span class="pill ${m[1]==="Settled"?"good":m[1]==="Received"?"gold":"warn"}">${m[1]}</span></div>`).join("");
+ $("#top").innerHTML=T.sort((a,b)=>b[2]-a[2]).map(t=>`<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td>${t[2]}</td><td>${money(t[3])}</td></tr>`).join("")}
+function send(){if(!$("#ok").checked){toast("Customer consent is needed first");return}M.unshift([$("#n").value,"Received"]);T.find(t=>t[0]==="Car yard, Smithfield")[1]++;toast("Lead in Legend HQ. Ben's phone buzzing.");draw();setTimeout(()=>{M[0][1]="Called";draw();toast("Partner notified: customer called")},2500)}
+draw();
+</script>
+</body></html>

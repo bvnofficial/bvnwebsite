@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website watch | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.days{display:grid;grid-template-columns:repeat(30,1fr);gap:3px}.days span{height:34px;border-radius:4px;background:var(--good)}.days span.down{background:var(--bad)}.days span.slow{background:var(--warn)}</style></head>
+<body>
+<div class="wrap">
+  <div class="grid g4"><div class="card kpi"><div class="l">keighranlegal.com</div><div class="v" id="st" style="color:var(--good)">Up</div><div class="d" id="ck">Checked just now</div></div><div class="card kpi"><div class="l">Uptime, 30 days</div><div class="v">99.2%</div><div class="d bad">1 outage</div></div><div class="card kpi"><div class="l">Contact form test</div><div class="v" style="color:var(--good)">Passed</div><div class="d">6:00am today</div></div><div class="card kpi"><div class="l">Seen from overseas</div><div class="v" style="color:var(--bad)">Blocked</div><div class="d bad">Check with your host</div></div></div>
+  <div class="card mt"><h3>Last 30 days</h3><div class="days" id="days"></div><div class="row mt muted" style="font-size:12px"><span><span class="pill good">Up</span></span><span><span class="pill warn">Slow</span></span><span><span class="pill bad">Down</span></span></div></div>
+  <div class="grid g2 mt"><div class="card"><h3>Alert log</h3><div class="list" id="log"></div></div>
+  <div class="card"><h3>Try it</h3><p class="muted">Simulate the site going down. Cindy gets a text within 5 minutes and HQ logs when it's back.</p><button class="btn dark" onclick="down()">Simulate an outage</button></div></div>
+</div>
+<script>
+shell("13","Website watch","Checks the site every five minutes from inside and outside Australia, and tests the contact form every morning. If either breaks, Cindy gets a text within minutes.","a site or form that's down for days before anyone notices");
+const L=[["Form test passed","Today 6:00am","good"],["Site back up after 5h 40m","12 days ago","good"],["Site down: Cindy texted","12 days ago","bad"],["Slow response: 6.2 seconds","19 days ago","warn"]];
+function draw(){$("#days").innerHTML=Array.from({length:30},(_,i)=>`<span class="${i===17?"down":i===10?"slow":""}" title="Day ${i+1}"></span>`).join("");$("#log").innerHTML=L.map(l=>`<div class="it in"><span>${l[0]}</span><span class="pill ${l[2]}">${l[1]}</span></div>`).join("")}
+function down(){$("#st").textContent="Down";$("#st").style.color="var(--bad)";L.unshift(["Site down: text sent to Cindy","Just now","bad"]);draw();toast("Text to Cindy: keighranlegal.com is down");setTimeout(()=>{$("#st").textContent="Up";$("#st").style.color="var(--good)";L.unshift(["Site back up after 4 minutes","Just now","good"]);draw()},4000)}
+draw();
+</script>
+</body></html>

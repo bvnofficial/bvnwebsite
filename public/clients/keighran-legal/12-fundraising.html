@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fundraising pages | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g21">
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="background:linear-gradient(135deg,#14213D,#2A3F6E);color:#fff;padding:28px"><div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2)">Team Keighran walks for mental health</div><h2 style="font-size:30px;margin:8px 0">Coastrek 2027</h2><p style="opacity:.8;margin:0">Six of us are walking the coast to raise money for mental health. Every dollar counts.</p></div>
+    <div style="padding:22px"><div class="row" style="justify-content:space-between"><div><span style="font-family:var(--serif);font-size:34px" id="raised"></span> <span class="muted">raised of $12,000</span></div><span class="pill gold" id="pct"></span></div><div class="bar mt" style="height:14px"><span id="pb"></span></div>
+    <h3 style="margin:22px 0 10px">Walkers</h3><div class="list" id="walkers"></div>
+    <h3 style="margin:22px 0 10px">Show your support</h3><div class="row" id="amts"></div><p class="muted" style="font-size:12px">In the live page this opens the charity's secure checkout. This demo takes no payment details.</p></div>
+  </div>
+  <div class="card"><h3>Recent support</h3><div class="list" id="don"></div></div>
+</div>
+<script>
+shell("12","Fundraising pages","A page for each cause, Coastrek and the rest, with a team leaderboard, a progress bar and a thank you to every supporter. Cindy sets it up in minutes and shares the link.","fundraising run from spreadsheets and group texts");
+const W=[["Cindy",2350],["Managing Director",1900],["Director, Hotels",1250],["Senior Associate",900],["Associate",780],["Graduate",510]];
+const D=[["Harbourside Property Advisory",500],["A. Nguyen",50],["Tran Partners",250]];
+function total(){return W.reduce((s,w)=>s+w[1],0)}
+function draw(){const t=total();$("#raised").textContent=money(t);$("#pct").textContent=Math.round(t/12000*100)+"%";$("#pb").style.width=Math.min(100,t/120)+"%";
+ const mx=Math.max(...W.map(w=>w[1]));$("#walkers").innerHTML=W.sort((a,b)=>b[1]-a[1]).map(w=>`<div class="it"><span style="min-width:150px">${w[0]}</span><div class="bar" style="flex:1"><span style="width:${w[1]/mx*100}%"></span></div><b style="min-width:70px;text-align:right">${money(w[1])}</b></div>`).join("");
+ $("#amts").innerHTML=[25,50,100,250].map(a=>`<button class="btn pri" onclick="give(${a})">${money(a)}</button>`).join("");
+ $("#don").innerHTML=D.map(d=>`<div class="it in"><span>${d[0]}</span><b>${money(d[1])}</b></div>`).join("")}
+function give(a){W[0][1]+=a;D.unshift(["You",a]);toast("Thank you email sent to the supporter");draw()}
+draw();
+</script>
+</body></html>

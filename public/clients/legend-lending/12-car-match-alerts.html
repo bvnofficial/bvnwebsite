@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Car match alerts | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g21">
+  <div class="card"><h3>People in nurture, and what they told us</h3><table><thead><tr><th>Name</th><th>Wants</th><th>Budget</th><th>Ready from</th><th>Status</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+  <div class="card"><h3>Text that goes out</h3><div class="chat" id="chat"><p class="muted">Press Run today's matches.</p></div><div class="row mt"><button class="btn pri" onclick="run()">Run today's matches</button></div></div>
+</div>
+<script>
+shell("12","Car match alerts","Leads in nurture tell you what they want and when. When their timing comes round, or a partner yard lists their car in budget, they get a friendly \"still after a Hilux?\" text and land back on Ben's call list.","\"not now\" leads that never come back");
+const today=new Date();const d=m=>{const x=new Date(today);x.setMonth(x.getMonth()+m);return x};
+const N=[["Ella Ford","Toyota RAV4",35000,d(0),""],["Liam Moss","Tinny with a 60hp",22000,d(2),""],["Nina Patel","Mazda CX5",30000,d(-1),""],["Josh Nguyen","Ford Ranger",55000,d(4),""],["Kim Lee","Hyundai i30",18000,d(0),""]];
+const YARD=[["Toyota RAV4",33990],["Mazda CX5",28500],["Hyundai i30",17990]];
+function draw(){$("#tb").innerHTML=N.map((n,i)=>`<tr><td><b>${n[0]}</b></td><td>${n[1]}</td><td>${money(n[2])}</td><td>${n[3]<=today?'<span class="pill warn">Now</span>':n[3].toLocaleDateString("en-AU",{month:"short",year:"numeric"})}</td><td>${n[4]?`<span class="pill good">${n[4]}</span>`:'<span class="pill">Nurture</span>'}</td><td>${n[4]==="Replied"?`<button class="btn go" onclick="toast('On Ben\\'s call list now')">Call</button>`:""}</td></tr>`).join("")}
+function run(){$("#chat").innerHTML="";let c=0;N.forEach((n,i)=>{const y=YARD.find(y=>y[0]===n[1]&&y[1]<=n[2]);if(n[3]<=today||y){c++;n[4]="Texted";
+ setTimeout(()=>{$("#chat").insertAdjacentHTML("beforeend",`<div class="mg out in">Hi ${n[0].split(" ")[0]}, Ben from Legend here. ${y?"A partner yard just listed a "+y[0]+" for "+money(y[1])+", right in your budget.":"You mentioned you'd be ready around now."} Still after a ${n[1]}? Happy to run the numbers. Reply STOP to opt out.</div>`);
+  if(i===0)setTimeout(()=>{$("#chat").insertAdjacentHTML("beforeend",`<div class="mg in in">Yes! Still looking, can you call me after 5?</div><div class="sysm in">Ella moved to Ben's call list for 5pm</div>`);N[0][4]="Replied";draw()},900);draw()},c*500)}});toast(c+" people matched today")}
+draw();
+</script>
+</body></html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referrer portal | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph">Refer to Keighran<br><small style="font-family:var(--sans);font-size:12px;opacity:.7">Signed in as Tran Partners</small></div><div class="pb">
+    <label>Client name</label><input id="cn" value="Oakvale Developments">
+    <label>Contact</label><input id="cc" value="Ben Ortiz, 0400 555 913">
+    <label>What they need</label><select id="cw"><option>Real estate</option><option>Hotels</option><option>Construction</option></select>
+    <label>Short note</label><textarea id="cnote" style="min-height:70px">Buying a 3 lot site in Penrith, wants advice on the DA conditions before exchange.</textarea>
+    <div class="row mt"><button class="btn pri" onclick="refer()">Send referral</button></div>
+    <h3 style="font-size:16px;margin:18px 0 8px">Your referrals</h3><div class="list" id="mine"></div></div></div></div>
+  <div>
+    <div class="card"><h3>Top referrers this year</h3><table><thead><tr><th>Referrer</th><th>Referred</th><th>Became matters</th><th>Last thank you</th></tr></thead><tbody id="top"></tbody></table></div>
+    <div class="note mt">Referrers see status only (received, contacted, engaged). Nothing about the client's legal matter is shared without consent.</div>
+  </div>
+</div>
+<script>
+shell("10","Referrer portal","Accountants, advisers and past colleagues send a matter in 30 seconds from their phone and see how it's going. HQ shows who sends the most work and who is due a coffee.","referrers never hearing back, no view of where work comes from");
+const M=[["Westmead Partners","Engaged"],["Ironbark Property Trust","Engaged"],["Lotus Hotels","Contacted"]];
+const T=[["Tran Partners (accountants)",6,4,"3 weeks ago"],["Harbourside Property Advisory",4,3,"5 days ago"],["Former colleagues",3,2,"2 months ago"],["Indigenous Chamber members",3,1,"2 weeks ago"]];
+function draw(){$("#mine").innerHTML=M.map(m=>`<div class="it in"><span>${m[0]}</span><span class="pill ${m[1]==="Engaged"?"good":m[1]==="Received"?"gold":"warn"}">${m[1]}</span></div>`).join("");
+ $("#top").innerHTML=T.map(t=>`<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td>${t[2]}</td><td>${/month/.test(t[3])?`<span class="pill bad">${t[3]}</span>`:t[3]}</td></tr>`).join("")}
+function refer(){M.unshift([$("#cn").value,"Received"]);T[0][1]++;toast("Referral in HQ. Conflict check started.");draw();setTimeout(()=>{M[0][1]="Contacted";draw();toast("Tran Partners notified: client contacted")},2500)}
+draw();
+</script>
+</body></html>

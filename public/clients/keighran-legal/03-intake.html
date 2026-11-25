@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart intake | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="card"><h3>New enquiry form</h3>
+    <label>Your name</label><input id="nm" value="Lena Ward">
+    <label>Organisation</label><input id="org" value="Riverbend Community Housing">
+    <label>What do you need help with?</label><select id="area" onchange="qs()"><option>Real estate</option><option>Hotels</option><option>Construction</option></select>
+    <div id="extra"></div>
+    <label>Other parties involved (the other side, lender, builder)</label><input id="other" value="Harbourline Developments Pty Ltd">
+    <label>Anything else</label><textarea id="msg">We're refreshing leases across 60 dwellings and need to start before the end of the financial year.</textarea>
+    <div class="row mt"><button class="btn pri" onclick="go()">Send enquiry</button></div>
+  </div>
+  <div>
+    <div class="card"><h3>What happens next, automatically</h3><ul class="tl" id="steps"><li>Waiting for an enquiry<small>Fill in the form and press Send</small></li></ul></div>
+    <div class="card mt" id="letter" style="display:none"></div>
+  </div>
+</div>
+<script>
+shell("03","Smart intake and conflict check","One enquiry form that asks the right questions for property, hotel or construction work. It checks every party against your client list before anyone calls back, then sends the engagement letter for online signing.","enquiries sitting in info@, engagement letters chased by hand");
+const CLIENTS=["Coastview Hotel Group Pty Ltd","Westmead Partners","Ironbark Property Trust","Harbourline Developments Pty Ltd","Bluegum Hospitality Pty Ltd","Kestrel Apartments Pty Ltd"];
+const Q={"Real estate":[["Type of matter",["Acquisition","Sale","Leasing","Development","Off the plan"]],["Approximate value",["Under $1m","$1m to $10m","Over $10m"]]],"Hotels":[["Type of matter",["Hotel management agreement","Hotel sale or purchase","Lease or franchise"]],["Number of rooms",["Under 50","50 to 200","Over 200"]]],"Construction":[["Type of matter",["Payment claim (SOPA)","Building contract","Defects","Dispute"]],["Your role",["Builder","Owner or developer","Subcontractor"]]]};
+function qs(){$("#extra").innerHTML=Q[$("#area").value].map(([l,o],i)=>`<label>${l}</label><select id="q${i}">${o.map(x=>`<option>${x}</option>`).join("")}</select>`).join("")}
+function norm(s){return s.toLowerCase().replace(/pty|ltd|limited|the|\./g,"").replace(/\s+/g," ").trim()}
+function go(){
+ const parties=[$("#org").value,...$("#other").value.split(/,| and /)].map(s=>s.trim()).filter(Boolean);
+ const hits=parties.map(p=>[p,CLIENTS.find(c=>norm(c).includes(norm(p))||norm(p).includes(norm(c)))]).filter(x=>x[1]);
+ const area=$("#area").value,type=$("#q0").value;
+ const S=[["Enquiry received","Tagged "+area+", "+type+". Auto reply sent to "+$("#nm").value.split(" ")[0]],["Conflict check run",parties.length+" parties checked against 186 clients and past matters"]];
+ if(hits.length){S.push(["Possible conflict found",hits.map(h=>h[0]+" matches existing client "+h[1]).join("; ")+". Sent to Duane to clear before anyone calls back.","bad"])}
+ else S.push(["No conflicts","Clear to act"],["Engagement letter sent","For online signing, with costs disclosure"]);
+ S.push(["Lawyer assigned",area==="Hotels"?"Director, Hotels":area==="Construction"?"Senior Associate":"Special Counsel"],["Call back task","Due within 2 business hours"]);
+ $("#steps").innerHTML="";S.forEach((s,i)=>setTimeout(()=>{$("#steps").insertAdjacentHTML("beforeend",`<li class="done in" style="${s[2]?"color:var(--bad)":""}"><b>${s[0]}</b><small>${s[1]}</small></li>`)},i*450));
+ const L=$("#letter");L.style.display="block";
+ L.innerHTML=hits.length?`<h3>Engagement letter on hold</h3><p class="muted">The letter waits until the conflict is cleared. <button class="btn" onclick="clearC()">Mark conflict cleared</button></p>`:letter();
+}
+function letter(){return`<h3>Engagement letter (draft)</h3><p style="font-family:var(--serif);line-height:1.6">Dear ${$("#nm").value.split(" ")[0]},<br><br>Thank you for asking Keighran Legal + Advisory to act for ${$("#org").value} on your ${$("#q0").value.toLowerCase()} matter. This letter sets out the scope of our work, who will do it, and our costs disclosure under the Legal Profession Uniform Law.</p><div class="row"><button class="btn dark" onclick="toast('Signed online. Matter opened.')">Client signs</button></div>`}
+function clearC(){$("#letter").innerHTML=letter();toast("Conflict cleared by Duane, letter released")}
+qs();
+</script>
+</body></html>

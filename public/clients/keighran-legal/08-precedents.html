@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Precedents and know how | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>mark{background:#F5EAD6;color:inherit;padding:0 2px;border-radius:3px}</style></head>
+<body>
+<div class="wrap">
+  <div class="card"><div class="row"><input id="q" style="flex:1;font-size:16px;padding:14px" value="make good clause where tenant can pay instead" oninput="run()"><button class="btn pri" onclick="run()">Search</button></div>
+  <div class="row mt" style="gap:6px"><span class="muted" style="font-size:12px">Try:</span><button class="btn" onclick="t(this)">HMA termination on sale of hotel</button><button class="btn" onclick="t(this)">sunset clause notice off the plan</button><button class="btn" onclick="t(this)">payment schedule time limit</button><button class="btn" onclick="t(this)">bank guarantee replacement after assignment</button></div></div>
+  <div class="card mt"><h3 id="cnt">Results</h3><div class="list" id="res"></div></div>
+</div>
+<script>
+shell("08","Precedents and know how","Search your own precedents, checklists and past advice by asking a question, not by remembering a folder name. Every result shows where it came from and who wrote it.","rebuilding a clause that was perfect two matters ago");
+const D=[
+ ["Clause","Make good: cash payment in lieu","Retail and commercial lease precedent v4","The landlord may elect to receive a payment equal to the reasonable cost of the make good works instead of the tenant carrying them out.","Special Counsel · 2025"],
+ ["Clause","Bank guarantee replacement on assignment","Commercial lease precedent v4","On an assignment the incoming tenant must provide a replacement bank guarantee before the outgoing guarantee is released.","Senior Associate · 2024"],
+ ["Clause","HMA termination on sale of the hotel","Hotel management agreement precedent (owner side)","The owner may terminate on a sale of the hotel on 90 days notice, subject to payment of the termination fee in schedule 6.","Director, Hotels · 2025"],
+ ["Checklist","Off the plan sunset clause checklist","Off the plan contracts know how","Rescission under a sunset clause needs written notice with reasons and at least 28 days before rescinding; check purchaser consent or a court order.","Managing Director · 2024"],
+ ["Advice","Payment schedules under SOPA: timing","Construction know how note","A respondent must provide a payment schedule within the time in the contract or 10 business days after the claim, whichever is earlier, or becomes liable for the claimed amount.","Senior Associate · 2025"],
+ ["Clause","Option to renew: exercise window","Retail lease precedent v4","The tenant may exercise the option by notice not earlier than 6 months and not later than 3 months before the terminating date.","Lawyer · 2023"],
+ ["Template","Engagement letter: hotel transactions","Engagement letters","Scope, team, costs disclosure under the Legal Profession Uniform Law and estimate ranges for hotel sales and purchases.","Operations · 2025"]];
+const STOP=new Set("a an the of on in for to where can instead with and after".split(" "));
+function run(){const w=$("#q").value.toLowerCase().split(/\W+/).filter(x=>x&&!STOP.has(x));
+ const r=D.map(d=>{const txt=(d[1]+" "+d[2]+" "+d[3]).toLowerCase();let s=0;w.forEach(x=>{if(txt.includes(x))s+=d[1].toLowerCase().includes(x)?3:1});if(/pay|cash/.test(w.join(" "))&&/payment equal|cash/.test(txt))s+=2;return[s,d]}).filter(x=>x[0]>0).sort((a,b)=>b[0]-a[0]);
+ const hl=s=>w.reduce((a,x)=>x.length>2?a.replace(new RegExp("("+x+")","ig"),"<mark>$1</mark>"):a,s);
+ $("#cnt").textContent=r.length+" results";
+ $("#res").innerHTML=r.map(([s,d])=>`<div class="it in" style="align-items:flex-start"><div><span class="pill gold">${d[0]}</span> <b>${hl(d[1])}</b><small>${d[2]} · ${d[4]}</small><div style="font-family:var(--serif);margin-top:6px;line-height:1.6">${hl(d[3])}</div></div><button class="btn" onclick="toast('Clause copied with its source note')">Copy</button></div>`).join("")||'<p class="muted">Nothing yet. Try other words.</p>'}
+function t(b){$("#q").value=b.textContent;run()}
+run();
+</script>
+</body></html>

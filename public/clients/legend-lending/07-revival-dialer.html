@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revival dialer | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap">
+  <div class="grid g4"><div class="card kpi"><div class="l">Old leads</div><div class="v">1,184</div><div class="d">newest first</div></div><div class="card kpi"><div class="l">This batch</div><div class="v" id="bt"></div><div class="bar mt"><span id="bb"></span></div></div><div class="card kpi"><div class="l">Calls today</div><div class="v" id="ct"></div><div class="d">target 25 to 35</div></div><div class="card kpi"><div class="l">Back in pipeline</div><div class="v" id="bp"></div></div></div>
+  <div class="grid g21 mt">
+    <div class="card" id="cur"></div>
+    <div class="card"><h3>Up next</h3><div class="list" id="next"></div></div>
+  </div>
+</div>
+<script>
+shell("07","Revival dialer","Works the 1,200 old leads newest first, in batches of 100: the opener on screen, the double call, one tap text, and anyone who says \"not yet\" goes to nurture with their email captured.","a year of paid leads sitting in a spreadsheet");
+const Q=[["Ruby Clarke","Enquired Oct 2026 · car · Meta"],["Josh Nguyen","Enquired Oct 2026 · ute · Google"],["Ella Ford","Enquired Sep 2026 · car · Meta"],["Liam Moss","Enquired Sep 2026 · boat · Messenger"],["Nina Patel","Enquired Aug 2026 · SUV · Meta"],["Dylan Hart","Enquired Aug 2026 · ute · Landing page"]];
+let k=0,done=62,calls=28,back=19,att=0;
+function draw(){const L=Q[k%Q.length];$("#bt").textContent=done+" of 100";$("#bb").style.width=done+"%";$("#ct").textContent=calls;$("#bp").textContent=back;
+ $("#cur").innerHTML=`<h3>${L[0]}</h3><p class="muted" style="margin-top:-6px">${L[1]} · called ${att} times today</p>
+ <div class="note" style="font-size:15px;line-height:1.6">"Hi, Ben from Legend Lending, hoping for 30 seconds. You enquired about car finance in the last year. Where are you on that journey?"</div>
+ <div class="row"><button class="btn go" onclick="o('Interested')">Interested: book Fit Session</button><button class="btn" onclick="o('No answer')">${att?"No answer again":"No answer: double call"}</button><button class="btn" onclick="o('Not yet')">Not yet: get email</button><button class="btn" onclick="o('Bought already')">Bought already</button></div>
+ <div id="em"></div>`;
+ $("#next").innerHTML=[1,2,3].map(j=>{const n=Q[(k+j)%Q.length];return`<div class="it"><span>${n[0]}</span><small>${n[1]}</small></div>`}).join("")}
+function o(r){calls++;if(r==="No answer"&&att===0){att=1;toast("Calling again now (double call)");draw();return}
+ if(r==="No answer"){toast("One text sent: \"Ben from Legend here, tried you twice, reply when it suits\"")}
+ if(r==="Interested"){back++;toast("Moved to Fit Session booked")}
+ if(r==="Not yet"){$("#em").innerHTML='<label>Email for the nurture list</label><div class="row"><input id="e" value="ella.ford@example.com" style="flex:1"><button class="btn dark" onclick="toast(\'Moved to long term nurture\');adv()">Save</button></div>';return}
+ if(r==="Bought already")toast("Tagged bought elsewhere. Asked about friends and family");
+ adv()}
+function adv(){att=0;k++;done=Math.min(100,done+1);draw()}
+draw();
+</script>
+</body></html>

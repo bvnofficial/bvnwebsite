@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad money board | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap">
+  <div class="row" id="per"></div>
+  <div class="grid g4 mt" id="k"></div>
+  <div class="card mt"><h3>Every ad, from spend to settled</h3><div style="overflow-x:auto"><table class="num"><thead><tr><th>Ad</th><th>Spend</th><th>Leads</th><th>Fit Sessions</th><th>Settled</th><th>Cost per lead</th><th>Cost per settled deal</th><th>Settled value</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+  <div class="card mt"><h3>Cost per settled deal</h3><div id="bars"></div></div>
+</div>
+<script>
+shell("10","Ad money board","Cost per lead, per Fit Session and per settled deal for every ad, Messenger vs landing page vs Google, updated daily from Meta, Google and Legend HQ.","guessing which ads actually make money");
+let P="30 days";const PER={"7 days":.25,"30 days":1,"90 days":3};
+const A=[["Messenger: Tradie ute",620,48,14,4,152000],["Messenger: First car",540,61,12,3,71000],["Landing page: Bad credit",780,92,9,2,46000],["Landing page: General",520,70,6,1,24000],["Google: car loans Cairns",900,31,7,2,61000],["Meta: Boat season",300,18,5,1,38000]];
+function draw(){const f=PER[P];$("#per").innerHTML=Object.keys(PER).map(p=>`<button class="btn ${p===P?"dark":""}" onclick="P='${p}';draw()">${p}</button>`).join("");
+ const rows=A.map(a=>[a[0],a[1]*f,Math.round(a[2]*f),Math.round(a[3]*f),Math.max(0,Math.round(a[4]*f)),a[5]*f]);
+ const sp=rows.reduce((s,r)=>s+r[1],0),st=rows.reduce((s,r)=>s+r[4],0),val=rows.reduce((s,r)=>s+r[5],0),ld=rows.reduce((s,r)=>s+r[2],0);
+ $("#k").innerHTML=[["Ad spend",money(sp)],["Leads",ld],["Settled deals",st],["Settled per $1 of ads",money(val/sp)]].map(x=>`<div class="card kpi"><div class="l">${x[0]}</div><div class="v">${x[1]}</div></div>`).join("");
+ $("#tb").innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${money(r[1])}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${money(r[1]/Math.max(1,r[2]))}</td><td><b>${r[4]?money(r[1]/r[4]):"none yet"}</b></td><td>${money(r[5])}</td></tr>`).join("");
+ const cps=rows.filter(r=>r[4]).map(r=>[r[0],r[1]/r[4]]).sort((a,b)=>a[1]-b[1]),mx=Math.max(...cps.map(c=>c[1]));
+ $("#bars").innerHTML=cps.map((c,i)=>`<div class="row" style="margin:8px 0"><span style="min-width:200px">${c[0]}</span><div class="bar ${i===0?"go":""}" style="flex:1;height:14px"><span style="width:${c[1]/mx*100}%"></span></div><b style="min-width:70px;text-align:right">${money(c[1])}</b></div>`).join("")+`<div class="note mt">Messenger ads cost the least per settled deal in this sample. Move budget there first.</div>`}
+draw();
+</script>
+</body></html>

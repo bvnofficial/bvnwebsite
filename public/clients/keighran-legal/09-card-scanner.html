@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event card scanner | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.bc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(20,33,61,.08);cursor:pointer;font-size:13px;line-height:1.5;transition:transform .15s}.bc:hover{transform:translateY(-2px)}.bc b{font-size:15px}.bc.on{outline:3px solid var(--gold)}</style></head>
+<body>
+<div class="wrap">
+  <div class="row" style="margin-bottom:12px"><label style="margin:0">Event</label><select id="ev" style="max-width:340px"><option>NSW Indigenous Chamber of Commerce summit</option><option>Supply Nation trade show</option><option>Property Council lunch</option></select></div>
+  <div class="grid g3" id="cards"></div>
+  <div class="grid g2 mt"><div class="card"><h3>Read from the card</h3><div id="read" class="muted">Tap a card to scan it.</div></div><div class="card"><h3>Contacts from this event</h3><div class="list" id="list"><p class="muted">None yet.</p></div></div></div>
+</div>
+<script>
+shell("09","Event card scanner","Photograph a business card at a Chamber or Supply Nation event. The contact lands in Keighran HQ tagged to the event, a thank you email goes out the next morning, and a follow up reminder is set for the lawyer who met them.","a stack of cards in a drawer after every event");
+const C=[["Priya Raman","Head of Property","Coastline Infrastructure","priya.raman@coastline.example","0412 555 018"],["Marcus Lee","Development Director","Northbridge Living","m.lee@northbridge.example","0423 555 207"],["Dana Walker","Procurement Lead, First Nations suppliers","State Transport Projects","dana.walker@transport.example","0438 555 641"]];
+const got=[];
+function cards(){$("#cards").innerHTML=C.map((c,i)=>`<div class="bc ${got.includes(i)?"on":""}" onclick="scan(${i})"><b>${c[0]}</b><br>${c[1]}<br><span style="color:var(--gold);font-weight:700">${c[2]}</span><br><span class="muted">${c[3]}<br>${c[4]}</span></div>`).join("")}
+function scan(i){if(got.includes(i))return;got.push(i);const c=C[i],ev=$("#ev").value;
+ $("#read").innerHTML='<div class="bar"><span style="width:100%;transition:width .8s" id="sb"></span></div>';
+ setTimeout(()=>{$("#read").innerHTML=`<div class="list in"><div class="it"><span>Name</span><b>${c[0]}</b></div><div class="it"><span>Role</span><b>${c[1]}</b></div><div class="it"><span>Company</span><b>${c[2]}</b></div><div class="it"><span>Email</span><b>${c[3]}</b></div><div class="it"><span>Mobile</span><b>${c[4]}</b></div><div class="it"><span>Tagged</span><span class="pill gold">${ev}</span></div>${/Procurement/.test(c[1])?'<div class="it"><span>Flag</span><span class="pill bad">Tender opportunity: added to the tender tracker</span></div>':""}</div>`;
+ $("#list").innerHTML=got.map(j=>`<div class="it in"><div><div class="t">${C[j][0]}</div><small>${C[j][2]}</small></div><span class="pill good">Thank you email tomorrow 8am</span></div>`).join("");cards();toast("Contact saved to HQ")},850)}
+cards();
+</script>
+</body></html>

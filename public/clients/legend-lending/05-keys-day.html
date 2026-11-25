@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keys day | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.cam{background:#1d1d1d;border-radius:16px;aspect-ratio:9/12;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#888}.cam video{width:100%;height:100%;object-fit:cover}.rec{position:absolute;top:10px;left:10px;background:var(--bad);color:#fff;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700;display:none}</style></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph"><img src="assets/lllogo.png" alt="Legend Lending"></div><div class="pb" id="ph"></div></div></div>
+  <div>
+    <div class="grid g3"><div class="card kpi"><div class="l">Videos this month</div><div class="v" id="v">7</div></div><div class="card kpi"><div class="l">Google reviews</div><div class="v" id="g">23</div></div><div class="card kpi"><div class="l">Used in ads</div><div class="v">4</div></div></div>
+    <div class="card mt"><h3>Video library</h3><div class="list" id="lib"></div><p class="muted" style="font-size:12px">Each video is tagged by vehicle and suburb, ready for Leonie to use in Meta ads and for the nurture texts. Customers tick consent before recording.</p></div>
+  </div>
+</div>
+<script>
+shell("05","Keys day","On settlement the customer gets a congratulations message and a link to record a 20 second video with their new car. Videos feed straight into ads and nurture texts, then a Google review request follows.","no testimonials or client videos for the nurture content");
+const L=[["Sophie L. · first car · Edmonton","Used in ad"],["Mark D. · Hilux · Gordonvale","Approved"],["Kate R. · CX5 · Redlynch","Approved"]];let stream=null;
+function step1(){$("#ph").innerHTML=`<h2 style="font-family:var(--serif)">Keys day, Jordan.</h2><p class="muted">Your Ranger is settled. Congrats from Ben and the team. Got 20 seconds to say how it went? Show us the new ride.</p>
+ <div class="cam" id="cam"><span>Camera preview</span><span class="rec" id="rec">REC 20</span></div>
+ <label class="row" style="margin:10px 0;color:var(--ink);font-size:13px"><input type="checkbox" id="ok" style="width:auto"> Legend Lending can share my video</label>
+ <div class="row"><button class="btn dark" onclick="camOn()">Use my camera</button><button class="btn pri" onclick="record()">Record 20 seconds</button></div>`}
+async function camOn(){try{stream=await navigator.mediaDevices.getUserMedia({video:true});$("#cam").innerHTML='<video autoplay playsinline muted></video><span class="rec" id="rec">REC 20</span>';$("#cam video").srcObject=stream}catch(e){toast("Camera not available here. The demo still works.")}}
+function record(){if(!$("#ok").checked){toast("Tick the consent box first");return}let s=20;$("#rec").style.display="block";const t=setInterval(()=>{s-=4;$("#rec").textContent="REC "+Math.max(0,s);if(s<=0){clearInterval(t);done()}},400)}
+function done(){if(stream){stream.getTracks().forEach(x=>x.stop());stream=null}L.unshift(["Jordan E. · Ranger · Smithfield","New, needs approval"]);$("#v").textContent=8;draw();
+ $("#ph").innerHTML=`<h2 style="font-family:var(--serif)">Legend. Thank you.</h2><p class="muted">One more favour? A Google review helps the next person find us.</p><button class="btn pri" style="width:100%" onclick="$('#g').textContent=24;toast('Opens the Google review box')">Leave a Google review</button>`}
+function draw(){$("#lib").innerHTML=L.map((l,i)=>`<div class="it in"><span>${l[0]}</span>${l[1]==="New, needs approval"?`<button class="btn" onclick="L[${i}][1]='Approved';draw()">Approve</button>`:`<span class="pill ${l[1]==="Used in ad"?"gold":"good"}">${l[1]}</span>`}</div>`).join("")}
+step1();draw();
+</script>
+</body></html>

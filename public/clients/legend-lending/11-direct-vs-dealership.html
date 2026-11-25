@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direct vs dealership | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap">
+  <div class="grid g4"><div class="card kpi"><div class="l">Direct share this month</div><div class="v" id="ds"></div><div class="d">set your own target</div></div><div class="card kpi"><div class="l">Direct revenue</div><div class="v" id="dr"></div></div><div class="card kpi"><div class="l">Dealership revenue</div><div class="v" id="dl"></div></div><div class="card kpi"><div class="l">Target line</div><div class="v"><input type="range" min="40" max="80" value="60" oninput="tg=+this.value;draw()" style="padding:0;border:0;accent-color:#C9A65B"></div><div class="d" id="tgl"></div></div></div>
+  <div class="card mt"><h3>Revenue by month</h3><svg id="ch" viewBox="0 0 900 320" style="width:100%;height:auto"></svg><div class="row muted" style="font-size:12px"><span><span class="pill gold">Direct</span></span><span><span class="pill">Dealership</span></span><span>Dashed line: direct share target</span></div></div>
+</div>
+<script>
+shell("11","Direct vs dealership tracker","The direct revenue milestone as a live number, month by month, with a target line. In September 2026 direct hit 50% ($60k of $120k).","the revenue mix only known at month end");
+let tg=60;const M=[["Jun",28,74],["Jul",34,72],["Aug",45,70],["Sep",60,60],["Oct",63,58],["Nov",64,59]];
+function draw(){const L=M[M.length-1];$("#ds").textContent=Math.round(L[1]/(L[1]+L[2])*100)+"%";$("#dr").textContent=money(L[1]*1000);$("#dl").textContent=money(L[2]*1000);$("#tgl").textContent=tg+"% direct";
+ const W=900,H=320,pad=40,bw=(W-pad*2)/M.length,mx=140;let s="";
+ M.forEach((m,i)=>{const x=pad+i*bw+bw*.2,w=bw*.6,hd=m[1]/mx*(H-70),hl=m[2]/mx*(H-70),base=H-30;
+  s+=`<rect x="${x}" y="${base-hl}" width="${w}" height="${hl}" fill="#D9D2C3" rx="4"/><rect x="${x}" y="${base-hl-hd}" width="${w}" height="${hd}" fill="#C9A65B" rx="4"/>`;
+  s+=`<text x="${x+w/2}" y="${H-10}" text-anchor="middle" font-size="13" fill="#6E6A62">${m[0]}</text><text x="${x+w/2}" y="${base-hl-hd-8}" text-anchor="middle" font-size="12" font-weight="700" fill="#141414">${Math.round(m[1]/(m[1]+m[2])*100)}%</text>`});
+ const ty=H-30-(tg/100)*(130/mx)*(H-70);s+=`<line x1="${pad}" x2="${W-pad}" y1="${ty}" y2="${ty}" stroke="#1F9D6B" stroke-width="2" stroke-dasharray="6 6"/><text x="${W-pad}" y="${ty-6}" text-anchor="end" font-size="12" fill="#1F9D6B">${tg}% direct on a $130k month</text>`;
+ $("#ch").innerHTML=s}
+draw();
+</script>
+</body></html>

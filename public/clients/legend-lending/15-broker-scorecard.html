@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Broker scorecard | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap">
+  <div class="row" id="per"></div>
+  <div class="card mt"><table class="num"><thead><tr><th>Broker</th><th>Leads</th><th>Avg speed to call</th><th>Fit Sessions</th><th>Show rate</th><th>Applications</th><th>Settled</th><th>Settled value</th></tr></thead><tbody id="tb"></tbody></table></div>
+  <div class="grid g2 mt"><div class="card"><h3>Settled value</h3><div id="bars"></div></div><div class="card"><h3>Coaching notes</h3><div class="list" id="notes"></div></div></div>
+</div>
+<script>
+shell("15","Broker scorecard","Speed to lead, Fit Sessions, show rate, applications and settlements for each broker, every week. The numbers Ben would otherwise piece together from memory.","no clear view of who needs help and where");
+let P="This month";const PER={"This week":.25,"This month":1,"This quarter":3};
+const B=[["Ben",61,52,22,.82,14,9,268000],["Mel",44,71,15,.8,9,6,171000],["Abbey",38,95,11,.73,7,4,112000],["Lydia",29,140,8,.75,5,3,79000]];
+function draw(){const f=PER[P];$("#per").innerHTML=Object.keys(PER).map(p=>`<button class="btn ${p===P?"dark":""}" onclick="P='${p}';draw()">${p}</button>`).join("");
+ const r=B.map(b=>[b[0],Math.round(b[1]*f),b[2],Math.round(b[3]*f),b[4],Math.round(b[5]*f),Math.round(b[6]*f),b[7]*f]);
+ $("#tb").innerHTML=r.map(b=>`<tr><td><b>${b[0]}</b></td><td>${b[1]}</td><td>${b[2]<=60?`<span class="pill good">${b[2]}s</span>`:b[2]<=100?`<span class="pill warn">${b[2]}s</span>`:`<span class="pill bad">${Math.floor(b[2]/60)}m ${b[2]%60}s</span>`}</td><td>${b[3]}</td><td>${Math.round(b[4]*100)}%</td><td>${b[5]}</td><td>${b[6]}</td><td>${money(b[7])}</td></tr>`).join("");
+ const mx=Math.max(...r.map(b=>b[7]));$("#bars").innerHTML=r.map(b=>`<div class="row" style="margin:8px 0"><span style="min-width:70px">${b[0]}</span><div class="bar" style="flex:1;height:14px"><span style="width:${b[7]/mx*100}%"></span></div><b style="min-width:90px;text-align:right">${money(b[7])}</b></div>`).join("");
+ $("#notes").innerHTML=`<div class="it"><span>Lydia's speed to call is over 2 minutes</span><span class="pill bad">Coach</span></div><div class="it"><span>Abbey's show rate is lowest: check reminder texts</span><span class="pill warn">Check</span></div><div class="it"><span>Mel converts Fit Sessions to applications best</span><span class="pill good">Share how</span></div>`}
+draw();
+</script>
+</body></html>

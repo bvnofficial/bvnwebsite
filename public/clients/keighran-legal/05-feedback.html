@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback and reviews | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.stars button{font-size:34px;background:none;border:0;cursor:pointer;color:#D8CFBD;padding:0 2px}.stars button.on{color:var(--gold)}</style></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph">Your matter is complete</div><div class="pb" id="survey"></div></div></div>
+  <div>
+    <div class="grid g3"><div class="card kpi"><div class="l">Average score</div><div class="v" id="avg">4.7</div></div><div class="card kpi"><div class="l">Google reviews</div><div class="v" id="gr">6</div></div><div class="card kpi"><div class="l">Calls for Duane</div><div class="v" id="cd">0</div></div></div>
+    <div class="card mt"><h3>Responses</h3><div class="list" id="resp"></div></div>
+  </div>
+</div>
+<script>
+shell("05","Feedback and reviews","When a matter closes, the client gets two questions on their phone. Happy clients get a one tap Google review link. Anyone under four stars goes to Duane for a call first, before they say it anywhere else.","great results that never turn into public reviews");
+let R=[["Saltwater Resorts",5,"Clear advice, fast turnaround on the sale documents.","Review left on Google"],["Westmead Partners",5,"Knew the hotel side better than anyone we spoke to.","Review left on Google"]];let score=0,calls=0,reviews=6;
+function survey(){$("#survey").innerHTML=`<p style="font-family:var(--serif);font-size:18px">Hi Tom, your lease matter with us has closed. How did we do?</p><div class="stars">${[1,2,3,4,5].map(i=>`<button class="${i<=score?"on":""}" onclick="score=${i};survey()">★</button>`).join("")}</div>
+ <label>Anything we could do better?</label><textarea id="c">${score&&score<4?"Took a while to hear back during the week.":"Very easy to deal with."}</textarea><div class="row mt"><button class="btn dark" ${score?"":"disabled"} onclick="submit()">Send</button></div>`}
+function submit(){const c=$("#c").value;if(score>=4){reviews++;R.unshift(["Kestrel Apartments",score,c,"Review link sent"]);$("#survey").innerHTML=`<p style="font-family:var(--serif);font-size:18px">Thank you. Would you share that on Google? It helps other developers find us.</p><button class="btn pri" onclick="toast('Opens the Google review box')">Leave a Google review</button>`}
+ else{calls++;R.unshift(["Kestrel Apartments",score,c,"Duane to call today"]);$("#survey").innerHTML=`<p style="font-family:var(--serif);font-size:18px">Thank you for telling us. Duane Keighran will call you personally today.</p>`;toast("Duane alerted by text")}
+ draw()}
+function draw(){$("#resp").innerHTML=R.map(r=>`<div class="it in"><div><div class="t">${r[0]} · ${"★".repeat(r[1])}${"☆".repeat(5-r[1])}</div><small>"${r[2]}"</small></div><span class="pill ${/Duane/.test(r[3])?"bad":/left/.test(r[3])?"good":"gold"}">${r[3]}</span></div>`).join("");
+ $("#cd").textContent=calls;$("#gr").textContent=reviews;const a=R.reduce((s,r)=>s+r[1],0)/R.length;$("#avg").textContent=a.toFixed(1)}
+survey();draw();
+</script>
+</body></html>

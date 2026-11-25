@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firm operations board | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap">
+  <div class="grid g4"><div class="card kpi"><div class="l">Overdue invoices</div><div class="v" id="k1"></div></div><div class="card kpi"><div class="l">Renewals in 60 days</div><div class="v" id="k2"></div></div><div class="card kpi"><div class="l">Open tasks</div><div class="v" id="k3"></div></div><div class="card kpi"><div class="l">On leave this month</div><div class="v">4 days</div><div class="d">2 people</div></div></div>
+  <div class="row mt" id="filters"></div>
+  <div class="card mt"><table><thead><tr><th>Item</th><th>Type</th><th>Owner</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+</div>
+<script>
+shell("11","Firm operations board","Overdue invoices with polite reminders, insurance and certificate renewals, leave, subscriptions and new starter tasks, all with an owner and a due date. Cindy's one list.","renewals found the week they lapse");
+let F="All";
+const I=[["Saltwater Resorts invoice","Invoice","Cindy",-4,"Reminder 1 sent"],["Bluegum Hospitality invoice","Invoice","Cindy",-11,"Call booked"],["Professional indemnity insurance","Renewal","Cindy",38,"Quotes requested"],["Practising certificates (all staff)","Renewal","Each lawyer",217,"Current"],["Legal research subscription","Subscription","Cindy",52,"Auto renews"],["New graduate: IT and email","Onboarding","Cindy",2,"Open"],["New graduate: conflict check training","Onboarding","Senior Associate",3,"Open"],["Fire warden refresher","Compliance","Cindy",20,"Open"],["Leave: Associate, 3 days","Leave","Managing Director",9,"Approved"]];
+function draw(){const types=["All",...new Set(I.map(i=>i[1]))];$("#filters").innerHTML=types.map(t=>`<button class="btn ${t===F?"dark":""}" onclick="F='${t}';draw()">${t}</button>`).join("");
+ const rows=I.filter(i=>F==="All"||i[1]===F).sort((a,b)=>a[3]-b[3]);
+ $("#tb").innerHTML=rows.map(i=>{const k=I.indexOf(i);return`<tr><td><b>${i[0]}</b></td><td>${i[1]}</td><td>${i[2]}</td><td>${i[3]<0?`<span class="pill bad">${-i[3]} days overdue</span>`:i[3]<=14?`<span class="pill warn">in ${i[3]} days</span>`:"in "+i[3]+" days"}</td><td>${i[4]}</td><td>${i[4]==="Done"?'<span class="pill good">Done</span>':i[1]==="Invoice"?`<button class="btn" onclick="rem(${k})">Send reminder</button>`:`<button class="btn" onclick="done(${k})">Done</button>`}</td></tr>`}).join("");
+ $("#k1").textContent=I.filter(i=>i[1]==="Invoice"&&i[4]!=="Done").length;$("#k2").textContent=I.filter(i=>i[1]==="Renewal"&&i[3]<=60).length;$("#k3").textContent=I.filter(i=>i[4]!=="Done").length}
+function rem(k){I[k][4]="Reminder "+(/1/.test(I[k][4])?"2":"1")+" sent";toast("Polite reminder queued for your OK");draw()}
+function done(k){I[k][4]="Done";draw()}
+draw();
+</script>
+</body></html>

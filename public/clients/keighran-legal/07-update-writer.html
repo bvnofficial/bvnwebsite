@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client update writer | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="card"><h3>Lawyer's rough notes</h3>
+    <label>Matter</label><select id="m"><option>Bluegum Hospitality · Hotel sale, Port Macquarie</option><option>Northgate Builders · SOPA dispute</option><option>Ironbark Property Trust · Settlement</option></select>
+    <label>What happened this week (shorthand is fine)</label>
+    <textarea id="notes" style="min-height:170px">dd nearly done. title clean. 2 leases missing estoppels (cafe + carpark). vendor sol agreed our HMA novation wording. need board res from client by fri. exchange target thurs wk.</textarea>
+    <label>Tone</label><select id="tone"><option>Plain and warm</option><option>Formal</option></select>
+    <div class="row mt"><button class="btn pri" onclick="write_()">Draft the update</button></div>
+  </div>
+  <div class="card"><h3>Draft for the lawyer to check</h3><div id="out" class="muted">Press Draft the update.</div></div>
+</div>
+<script>
+shell("07","Client update writer","The lawyer types three rough lines. It drafts a clear weekly update in the firm's voice, split into done, next and what we need from you. The lawyer checks it and sends it.","updates skipped on busy weeks");
+const EXP=[[/\bdd\b/gi,"due diligence"],[/\bsol\b/gi,"solicitor"],[/\bres\b/gi,"resolution"],[/\bhma\b/gi,"hotel management agreement"],[/\bwk\b/gi,"week"],[/\bthurs\b/gi,"Thursday"],[/\bfri\b/gi,"Friday"],[/\bmon\b/gi,"Monday"],[/\bsopa\b/gi,"Security of Payment Act"],[/\+/g,"and"]];
+function clean(s){EXP.forEach(([r,v])=>s=s.replace(r,v));s=s.trim();return s.charAt(0).toUpperCase()+s.slice(1)}
+function write_(){
+ const parts=$("#notes").value.split(/[.\n]+/).map(s=>s.trim()).filter(Boolean).map(clean);
+ const need=parts.filter(p=>/need|from client|please|by (monday|tuesday|wednesday|thursday|friday)/i.test(p));
+ const next=parts.filter(p=>!need.includes(p)&&/target|next|expect|exchange|settle|booked|due/i.test(p));
+ const done=parts.filter(p=>!need.includes(p)&&!next.includes(p));
+ const formal=$("#tone").value==="Formal";const who=$("#m").value.split(" · ")[0];
+ const li=a=>a.map(x=>`<li>${x.replace(/^Need /i,"We need ").replace(/ from client/i," from you")}.</li>`).join("");
+ $("#out").innerHTML=`<div style="font-family:var(--serif);line-height:1.7" class="in">${formal?"Dear Directors,":"Hi team at "+who+","}<br><br>${formal?"Please find below our weekly update on this matter.":"Here's where your matter is at this week."}
+ <h3 style="font-size:16px;margin:12px 0 4px">Done</h3><ul>${li(done)}</ul>${next.length?`<h3 style="font-size:16px;margin:12px 0 4px">Next</h3><ul>${li(next)}</ul>`:""}${need.length?`<h3 style="font-size:16px;margin:12px 0 4px">What we need from you</h3><ul>${li(need)}</ul>`:""}
+ ${formal?"Please let us know if you have any questions.":"Any questions, just reply to this email."}<br><br>${formal?"Kind regards,":"Cheers,"}<br>Director, Hotels<br>Keighran Legal + Advisory</div>
+ <div class="row mt"><button class="btn dark" onclick="toast('Sent, and logged on the matter')">Looks good, send</button><button class="btn" onclick="toast('Opened in Outlook to edit')">Edit first</button></div>`}
+</script>
+</body></html>

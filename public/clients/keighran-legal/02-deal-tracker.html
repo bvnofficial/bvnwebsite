@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deal Tracker | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div>
+    <div class="phone"><div class="scr"><div class="ph">My matter<br><small style="font-family:var(--sans);opacity:.7;font-size:12px">Westmead Partners · Site acquisition</small></div>
+      <div class="pb" id="client"></div></div></div>
+  </div>
+  <div>
+    <div class="card"><h3>Lawyer view</h3>
+      <div class="note">Each change here shows on the client's phone straight away and sends them a short text. No "any update?" emails.</div>
+      <div class="row"><button class="btn dark" onclick="advance()">Move to next stage</button><button class="btn" onclick="ask()">Ask for a document</button></div>
+      <label>Weekly update to the client</label><textarea id="upd">Searches are back and clean. The vendor's solicitor has agreed our changes to the special conditions. Next step is exchange, which we expect on Thursday.</textarea>
+      <div class="row mt"><button class="btn pri" onclick="send()">Send update</button></div>
+    </div>
+    <div class="card mt"><h3>What the client has done</h3><ul class="tl" id="log"></ul></div>
+  </div>
+</div>
+<script>
+shell("02","Deal Tracker client app","Every client sees their matter like a delivery tracker: what's done, what's next, who is waiting on whom, the settlement countdown, and one safe place to upload documents.","\"any update?\" emails and calls, clients feeling in the dark");
+const ST=[["Engagement signed","Signed online"],["Due diligence","Searches, title, zoning, leases"],["Contracts exchanged","10% deposit paid"],["Finance and approvals","Lender and FIRB if needed"],["Settlement booked","PEXA workspace open"],["Settled","Keys and documents handed over"]];
+let cur=1;const settle=new Date();settle.setDate(settle.getDate()+23);
+const DOCS=[["Signed engagement letter",true],["Company extract and director IDs",true],["Lender's letter of offer",false],["Board resolution to purchase",false]];
+const MSG=[["out","Hi team, welcome to your matter page. We'll post every step here."]];
+const LOG=[["Opened the matter page","2 days ago"],["Uploaded director IDs","Yesterday"]];
+function draw(){
+ const days=Math.round((settle-new Date())/864e5);
+ $("#client").innerHTML=`<div style="background:var(--ink);color:#fff;border-radius:14px;padding:14px;text-align:center"><div style="font-size:12px;opacity:.7">Settlement in</div><div style="font-family:var(--serif);font-size:42px;color:var(--gold)">${days} days</div><div style="font-size:12px;opacity:.7">${settle.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"})}</div></div>
+ <h3 style="font-size:16px;margin:16px 0 10px">Where we're at</h3><ul class="tl">${ST.map((s,i)=>`<li class="${i<cur?"done":i===cur?"now":""}"><b>${s[0]}</b><small>${i===cur?"In progress · "+s[1]:s[1]}</small></li>`).join("")}</ul>
+ <h3 style="font-size:16px;margin:10px 0">We need from you</h3>${DOCS.map((d,i)=>`<div class="it" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)"><span>${d[0]}</span>${d[1]?'<span class="pill good">Received</span>':`<label class="btn" style="margin:0;padding:5px 10px;font-size:12px;color:var(--ink)">Upload<input type="file" style="display:none" onchange="up(${i})"></label>`}</div>`).join("")}
+ <h3 style="font-size:16px;margin:16px 0 10px">Messages</h3><div class="chat">${MSG.map(m=>`<div class="mg ${m[0]} in">${m[1]}</div>`).join("")}</div>`;
+ $("#log").innerHTML=LOG.map(l=>`<li class="done">${l[0]}<small>${l[1]}</small></li>`).join("");
+}
+function advance(){if(cur<ST.length-1){cur++;MSG.push(["out","Update: we've moved to "+ST[cur][0].toLowerCase()+"."]);toast("Client texted: "+ST[cur][0]);draw()}}
+function ask(){DOCS.push(["Certificate of currency for the building",false]);MSG.push(["out","Could you upload a certificate of currency for the building insurance?"]);toast("Request sent to the client's phone");draw()}
+function send(){MSG.push(["out",$("#upd").value]);toast("Weekly update sent");draw()}
+function up(i){DOCS[i][1]=true;LOG.unshift(["Uploaded "+DOCS[i][0].toLowerCase(),"Just now"]);MSG.push(["in","Uploaded, thanks."]);toast("Document saved to the matter file");draw()}
+draw();
+</script>
+</body></html>

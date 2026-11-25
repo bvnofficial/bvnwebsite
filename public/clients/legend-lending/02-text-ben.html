@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Text Ben | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph"><img src="assets/lllogo.png" alt="Legend Lending"><div style="font-size:11px;opacity:.6;margin-top:4px">Messenger · usually replies instantly</div></div>
+    <div class="pb"><div class="chat" id="chat"></div></div>
+    <div style="display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)"><input id="in" placeholder="Reply like a customer" onkeydown="if(event.key==='Enter')say()"><button class="btn dark" onclick="say()">Send</button></div></div></div>
+  <div>
+    <div class="card"><h3>What the agent has worked out</h3><div class="list" id="facts"></div></div>
+    <div class="card mt"><h3>Quick replies to try</h3><div class="row" id="quick"></div>
+    <p class="muted" style="font-size:12px;margin-top:12px">Trained on Legend's own past Messenger chats and a written job description: who qualifies, who doesn't, how Ben talks. It never says "approved" or "pre approval", and it hands over to a human when it isn't sure.</p></div>
+  </div>
+</div>
+<script>
+shell("02","Text Ben, any hour","The AI agent on Messenger and SMS. It answers in seconds, asks Legend's qualifying questions, says no politely to anyone under the minimum, hands tricky ones to a broker, and books the Financial Fit Session into Ben's calendar.","leads that go cold overnight, chats lost inside Messenger");
+const F={want:"",emp:"",amt:0,credit:"",result:"",slot:""};let step=0;
+const QUICK=[["Looking at a 2021 Hilux"],["Full time, 4 years as a chippy"],["About 45k"],["Had a default 3 years ago"],["5:30 works"]];
+function add(w,t){$("#chat").insertAdjacentHTML("beforeend",`<div class="${w==="sys"?"sysm":"mg "+w} in">${t}</div>`);const pb=$("#chat").parentElement;pb.scrollTop=pb.scrollHeight}
+function facts(){$("#facts").innerHTML=[["Wants",F.want],["Employment",F.emp],["Loan amount",F.amt?money(F.amt):""],["Credit story",F.credit],["Outcome",F.result],["Fit Session",F.slot]].map(([k,v])=>`<div class="it"><span>${k}</span>${v?`<b>${v}</b>`:'<span class="muted">...</span>'}</div>`).join("")}
+function amt(t){const m=t.toLowerCase().replace(/,/g,"").match(/\$?(\d+(?:\.\d+)?)\s*(k|grand|thousand)?/);if(!m)return 0;let n=+m[1];if(m[2]||n<1000)n*=1000;return n}
+function bot(t){const l=t.toLowerCase();
+ if(step===0){F.want=/boat|tinny|quintrex/.test(l)?"Boat (marine finance)":/tractor|excavator|equipment|truck/.test(l)?"Equipment":t;step=1;return"Nice choice. Are you working at the moment? Full time, part time, casual, self employed, or on Centrelink?"}
+ if(step===1){F.emp=/centrelink|pension|dsp|jobseeker/.test(l)&&!/work|casual|part/.test(l)?"Centrelink only":/self|abn|sole trader|own business/.test(l)?"Self employed":/casual/.test(l)?"Casual":/part/.test(l)?"Part time":"Full time";
+  if(F.emp==="Centrelink only"){F.result="Handed to a broker";step=9;add("sys","Flagged for Mel: Centrelink only income. AI paused.");return"Thanks for being upfront. That one's best handled by one of our brokers directly, so I've passed your chat to Mel. She'll message you shortly."}
+  step=2;return"Good stuff. Roughly how much are you looking to borrow?"}
+ if(step===2){F.amt=amt(t);if(!F.amt)return"No worries, just a ballpark is fine. Something like 30k?";
+  if(F.amt<10000){F.result="Below minimum, moved to nurture";step=9;add("sys","Tagged below minimum. Moved to Nurture.");return"Thanks. The smallest loan we arrange is $10,000, so we're not the right fit for this one. If your plans change, message us anytime."}
+  step=3;return"Easy. Last one: how's your credit history? Clean, a few hiccups, or some defaults in the past? We don't judge, it just helps us pick the right lenders."}
+ if(step===3){F.credit=/default|bankrupt|part 9|bad/.test(l)?"Past defaults":/late|hiccup|missed/.test(l)?"A few hiccups":"Clean";F.result="Qualified";step=4;
+  return"Thanks. That's something we work with all the time. Next step is a free 15 minute Financial Fit Session with Ben to go through your options. Today 5:30pm or tomorrow 12:30pm?"}
+ if(step===4){F.slot=/tomorrow|12/.test(l)?"Tomorrow 12:30pm with Ben":"Today 5:30pm with Ben";step=5;add("sys","Booked in Ben's calendar. Lead moved to Fit Session booked. Reminder texts set.");
+  return"Booked. "+F.slot.replace(" with Ben","")+". Have your licence and last two "+(F.emp==="Self employed"?"BAS statements":"payslips")+" handy. Talk soon, legend."}
+ return"Ben will see this before your session. Anything else, just message here."}
+function say(t){const v=(t||$("#in").value).trim();if(!v)return;add("out",v);$("#in").value="";setTimeout(()=>{add("in",bot(v));facts()},600)}
+$("#quick").innerHTML=QUICK.map(q=>`<button class="btn" onclick="say('${q[0]}')">${q[0]}</button>`).join("");
+add("in","Hey, thanks for messaging Legend Lending. What are you looking to finance? A car, ute, boat, something else?");facts();
+</script>
+</body></html>

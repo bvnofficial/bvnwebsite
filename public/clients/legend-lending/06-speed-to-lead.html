@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speed to Lead | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.ring{font-size:56px;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;text-align:center}.ring.late{color:var(--bad)}</style></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr" style="background:#111;color:#fff"><div class="pb" id="ph"></div></div></div>
+  <div>
+    <div class="grid g3"><div class="card kpi"><div class="l">Avg speed to call</div><div class="v" id="avg">1m 12s</div><div class="d">this week</div></div><div class="card kpi"><div class="l">Called in 60s</div><div class="v" id="pct">78%</div></div><div class="card kpi"><div class="l">Passed to Mel</div><div class="v" id="pm">3</div></div></div>
+    <div class="card mt"><h3>Today's leads</h3><div class="list" id="log"></div></div>
+  </div>
+</div>
+<script>
+shell("06","Speed to Lead phone app","A new lead buzzes Ben's phone with the car, the amount and their job. One tap calls. If nobody calls within 60 seconds it passes to Mel. After the call, one tap logs the outcome and the cadence moves on its own.","the 1 minute rule living in a coaching note instead of a phone");
+const LEADS=[["Chloe Adams","2022 Toyota Corolla",26000,"Full time nurse","Messenger"],["Kyle Brennan","2020 Isuzu D MAX",41000,"Self employed sparky","Fit Check"],["Ruby Clarke","2019 Mazda 3",19000,"Casual, 2 jobs","Landing page"]];
+let i=0,s=0,t,passed=3;const log=[["Sam Whitfield","Called in 38s","good"],["Tom Riordan","Called in 52s","good"]];
+function ring(){const L=LEADS[i%LEADS.length];s=0;clearInterval(t);
+ $("#ph").innerHTML=`<div style="text-align:center;margin-top:30px"><div style="color:var(--gold2);font-size:12px;letter-spacing:2px">NEW LEAD · ${L[4].toUpperCase()}</div><div style="font-size:26px;font-weight:900;margin:10px 0">${L[0]}</div><div style="opacity:.8">${L[1]} · ${money(L[2])}</div><div style="opacity:.6;font-size:13px">${L[3]}</div>
+ <div class="ring" id="tm" style="margin:40px 0 6px">0:00</div><div style="opacity:.6;font-size:12px">call within 1 minute</div>
+ <div style="display:flex;gap:10px;margin-top:40px"><button class="btn go" style="flex:1;padding:16px" onclick="call()">Call</button><button class="btn" style="flex:1;padding:16px" onclick="pass()">Give to Mel</button></div></div>`;
+ t=setInterval(()=>{s++;$("#tm").textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");if(s>=60){$("#tm").classList.add("late");pass(true)}},1000)}
+function call(){clearInterval(t);const L=LEADS[i%LEADS.length];log.unshift([L[0],"Called in "+s+"s","good"]);
+ $("#ph").innerHTML=`<div style="margin-top:30px;text-align:center"><div style="font-size:12px;color:var(--gold2)">ON CALL WITH</div><div style="font-size:24px;font-weight:900">${L[0]}</div><p style="opacity:.6">How did it go?</p>${["Booked Fit Session","No answer","Not ready, nurture","Not a fit"].map(o=>`<button class="btn" style="width:100%;margin:5px 0;padding:14px" onclick="out('${o}')">${o}</button>`).join("")}</div>`;draw()}
+function out(o){toast(o==="No answer"?"Logged. Missed call text sent. Moved to Day 2":"Logged: "+o);i++;setTimeout(ring,1200);$("#ph").innerHTML='<p style="text-align:center;margin-top:120px;opacity:.6">Waiting for the next lead...</p>'}
+function pass(auto){clearInterval(t);const L=LEADS[i%LEADS.length];passed++;log.unshift([L[0],auto?"No call in 60s: passed to Mel":"Passed to Mel","warn"]);toast("Mel's phone is buzzing");i++;draw();setTimeout(ring,1500);$("#ph").innerHTML='<p style="text-align:center;margin-top:120px;opacity:.6">Passed to Mel. Next lead soon...</p>'}
+function draw(){$("#log").innerHTML=log.map(l=>`<div class="it in"><span>${l[0]}</span><span class="pill ${l[2]}">${l[1]}</span></div>`).join("");$("#pm").textContent=passed}
+ring();draw();
+</script>
+</body></html>

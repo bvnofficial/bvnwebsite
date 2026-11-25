@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document drop | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph"><img src="assets/lllogo.png" alt="Legend Lending"></div><div class="pb">
+    <h2 style="font-family:var(--serif)">Hi Mia, nearly there</h2><p class="muted">Snap these on your phone. Ben needs them to send your application to the lender.</p>
+    <div class="bar go" style="height:12px"><span id="pb"></span></div><p class="muted" id="pc" style="font-size:12px"></p>
+    <div class="list" id="docs"></div></div></div></div>
+  <div>
+    <div class="card"><h3>Broker view</h3><div class="list" id="bv"></div></div>
+    <div class="card mt"><h3>Reminders sent</h3><ul class="tl" id="rem"></ul></div>
+  </div>
+</div>
+<script>
+shell("03","Document drop","Applicants snap their licence, payslips and bank statements on their phone. A checklist shows what's missing, reminders go out until it's done, and the file is ready to send to Zinc.","applications stalled for days waiting on payslips");
+const D=[["Driver licence (front and back)",1],["Last 2 payslips",0],["3 months of bank statements",0],["Car listing or dealer quote",1],["Proof of address",0]];
+const R=[["Day 1: link sent by text",1],["Day 2: friendly reminder",1],["Day 4: Ben's personal text",0]];
+function draw(){const n=D.filter(d=>d[1]).length;$("#pb").style.width=n/D.length*100+"%";$("#pc").textContent=n+" of "+D.length+" done";
+ $("#docs").innerHTML=D.map((d,i)=>`<div class="it"><span>${d[0]}</span>${d[1]?'<span class="pill good">Done</span>':`<label class="btn pri" style="margin:0;padding:6px 10px;font-size:12px;color:var(--ink)">Snap<input type="file" accept="image/*,.pdf" style="display:none" onchange="up(${i})"></label>`}</div>`).join("")+(n===D.length?'<div class="note mt in">All done. Ben has everything and is sending it to the lender today.</div>':"");
+ $("#bv").innerHTML=`<div class="it"><span>Mia Costa · 2022 Quintrex 481 boat</span><span class="pill ${n===D.length?"good":"warn"}">${n===D.length?"Ready for Zinc":"Waiting on "+(D.length-n)}</span></div>`+D.map(d=>`<div class="it"><small>${d[0]}</small>${d[1]?'<span class="pill good">In</span>':'<span class="pill">Missing</span>'}</div>`).join("");
+ $("#rem").innerHTML=R.map(r=>`<li class="${r[1]?"done":"now"}">${r[0]}</li>`).join("")}
+function up(i){D[i][1]=1;toast("Saved to Mia's file");if(D.every(d=>d[1])){R.push(["All documents in: Ben notified",1]);toast("Complete. Ben notified, ready for Zinc")}draw()}
+draw();
+</script>
+</body></html>

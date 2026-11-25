@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>After hours receptionist | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph">Keighran Legal + Advisory<br><small style="font-family:var(--sans);font-size:12px;opacity:.7">After hours · 7:42pm</small></div>
+    <div class="pb"><div class="chat" id="chat"></div></div>
+    <div style="display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)"><input id="in" placeholder="Type like a client would" onkeydown="if(event.key==='Enter')say()"><button class="btn dark" onclick="say()">Send</button></div></div></div>
+  <div>
+    <div class="card"><h3>What lands in Keighran HQ</h3><div id="sum" class="muted">The summary appears here as the conversation goes.</div></div>
+    <div class="card mt"><h3>Try these</h3><div class="list">
+      <div class="it"><span>"We exchange on a hotel in Byron Bay tomorrow and the vendor changed the HMA"</span><button class="btn" onclick="ex(0)">Use</button></div>
+      <div class="it"><span>"Got a payment claim from our builder, what do I do"</span><button class="btn" onclick="ex(1)">Use</button></div>
+      <div class="it"><span>"Need a lease reviewed for a shop in Parramatta"</span><button class="btn" onclick="ex(2)">Use</button></div></div>
+      <p class="muted" style="font-size:12px">The same agent answers the phone with a voice. It never gives legal advice; it takes details, checks urgency and books a call.</p></div>
+  </div>
+</div>
+<script>
+shell("04","After hours receptionist","A voice and chat receptionist that answers when the office is closed. It takes the matter details, checks how urgent it is and books a call with the right lawyer. Every call lands in HQ with a summary.","developers and hotel operators who call at 7pm and try the next firm");
+const EX=["We exchange on a hotel in Byron Bay tomorrow and the vendor changed the HMA","Got a payment claim from our builder, what do I do","Need a lease reviewed for a shop in Parramatta"];
+const S={area:"",urgent:false,name:"",phone:"",step:0};
+function add(w,t){$("#chat").insertAdjacentHTML("beforeend",`<div class="mg ${w} in">${t}</div>`);const pb=$("#chat").parentElement;pb.scrollTop=pb.scrollHeight}
+function sum(){$("#sum").innerHTML=`<div class="list"><div class="it"><span>Area</span><b>${S.area||"..."}</b></div><div class="it"><span>Urgency</span>${S.urgent?'<span class="pill bad">Urgent: on call lawyer texted</span>':S.area?'<span class="pill good">Normal</span>':"..."}</div><div class="it"><span>Caller</span><b>${S.name||"..."}</b></div><div class="it"><span>Mobile</span><b>${S.phone||"..."}</b></div><div class="it"><span>Booked</span><b>${S.step>=3?"Tomorrow 8:30am with "+(S.area==="Hotels"?"Director, Hotels":S.area==="Construction"?"Senior Associate":"Special Counsel"):"..."}</b></div></div>`}
+function reply(t){const l=t.toLowerCase();
+ if(S.step===0){S.area=/hotel|hma|resort/.test(l)?"Hotels":/builder|payment claim|sopa|construction|defect/.test(l)?"Construction":"Real estate";S.urgent=/tomorrow|today|urgent|deadline|exchange|payment claim/.test(l);S.step=1;
+  return (S.urgent?"Thanks. That sounds time sensitive, so I'll flag it to our on call lawyer tonight. ":"Thanks, that's something our "+S.area.toLowerCase()+" team handles. ")+(S.area==="Construction"?"Payment claims have strict time limits, so please keep the date you received it handy. ":"")+"Can I take your name?"}
+ if(S.step===1){S.name=t.replace(/^(it's|its|i'm|im|my name is)\s*/i,"");S.step=2;return"Thanks "+S.name.split(" ")[0]+". What's the best mobile to reach you on?"}
+ if(S.step===2){S.phone=t;S.step=3;return"Done. I've booked a call for tomorrow at 8:30am"+(S.urgent?", and the on call lawyer has your details tonight":"")+". You'll get a text confirming it. Is there anything else you'd like the lawyer to know?"}
+ S.step=4;return"Got it, I've added that to the file. Speak soon.";}
+function say(){const v=$("#in").value.trim();if(!v)return;add("out",v);$("#in").value="";setTimeout(()=>{add("in",reply(v));sum()},500)}
+function ex(i){$("#in").value=EX[i];say()}
+add("in","Hi, you've reached Keighran Legal + Advisory. Our office is closed, but I can take your details and book a call with the right lawyer. What's it about?");sum();
+// the receptionist bubbles use the light style, the caller the dark style
+</script>
+</body></html>

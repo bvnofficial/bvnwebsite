@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wording checker | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.flag{background:#FBE4DF;color:var(--bad);border-radius:4px;padding:0 3px;font-weight:700}.ok{background:#DDF2E8;color:#14784F;border-radius:4px;padding:0 3px}</style></head>
+<body>
+<div class="wrap grid g2">
+  <div class="card"><h3>Paste an ad, text, web page or AI reply</h3>
+    <div class="row" style="gap:6px;margin-bottom:8px"><button class="btn" onclick="ex(0)">Website hero</button><button class="btn" onclick="ex(1)">Meta ad</button><button class="btn" onclick="ex(2)">Nurture text</button></div>
+    <textarea id="ta" style="min-height:220px" oninput="check()"></textarea>
+    <p class="muted" style="font-size:12px">Sample 1 uses phrases from the current legendlending.com.au home page.</p></div>
+  <div class="card"><h3>Result</h3><div id="out"></div></div>
+</div>
+<script>
+shell("08","Wording checker","Paste any ad, text, script or web page. It flags pre approval wording, promises of approval, missing opt outs and risky claims before anything goes out, and suggests safer words.","ASIC wording risk in fast moving ads and texts");
+const EX=["Lightning fast pre-approvals. Get Pre-Approved today, pre approval in 1 to 2 days. Knocked back before? We don't judge.","Bad credit? Guaranteed approval for everyone! Drive away today with no deposit. Apply now.","Hi Sam, Ben from Legend here. Still after that Hilux? Happy to run the numbers again this week. Reply STOP to opt out."];
+const R=[[/pre[\s-]?approv\w*/gi,"Pre approval wording","Use \"Financial Fit Session\" or \"find out where you stand\""],[/guarantee\w*/gi,"Promise of approval","Never promise approval. Try \"we work with lenders who look at the whole picture\""],[/for everyone|anyone approved|100% approval/gi,"Implies everyone is approved","Remove"],[/no deposit/gi,"No deposit claim","Add \"subject to lender criteria\""],[/drive away today/gi,"Same day promise","Say \"often within 24 to 48 hours once your documents are in\""],[/lowest rate|cheapest/gi,"Lowest rate claim","Say \"we compare 50+ lenders\""]];
+function ex(i){$("#ta").value=EX[i];check()}
+function check(){const t=$("#ta").value;let h=t.replace(/</g,"&lt;"),f=[];
+ R.forEach(([r,n,fix])=>{if(t.match(r)){f.push([n,fix]);h=h.replace(r,x=>`<span class="flag">${x}</span>`)}});
+ const sms=t.length<320;if(sms&&!/stop|opt out|unsubscribe/i.test(t))f.push(["No opt out","Add \"Reply STOP to opt out\" to every marketing text"]);
+ h=h.replace(/(Reply STOP to opt out)/i,'<span class="ok">$1</span>');
+ $("#out").innerHTML=`<div style="background:#FAF8F3;border-radius:10px;padding:14px;line-height:1.7;margin-bottom:12px">${h||'<span class="muted">Nothing to check yet.</span>'}</div>`+(t?(f.length?f.map(x=>`<div class="it in" style="display:block;padding:8px 0;border-bottom:1px solid var(--line)"><span class="pill bad">Fix</span> <b>${x[0]}</b><small>${x[1]}</small></div>`).join(""):'<span class="pill good">Looks good to send</span>'):"")}
+ex(0);
+</script>
+</body></html>

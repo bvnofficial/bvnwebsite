@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supplier impact statements | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g12">
+  <div class="card"><h3>Pick a client</h3><div class="list" id="cl"></div><label>Year</label><select id="yr" onchange="show(cur)"><option>FY2026</option><option>FY2025</option></select></div>
+  <div class="card" id="doc"></div>
+</div>
+<script>
+shell("15","Supplier impact statements","Clients with a Reconciliation Action Plan have to report what they spend with Indigenous businesses. Keighran sends each client a ready made yearly statement of their spend with the firm and what it supported. It makes their reporting easy and gives the firm a reason to be in touch.","clients asking for spend figures at RAP reporting time, and nothing to hand them");
+const C=[{n:"Coastview Hotel Group",m:6,f:184500},{n:"Westmead Partners",m:3,f:96200},{n:"Ironbark Property Trust",m:4,f:121800},{n:"Bluegum Hospitality",m:2,f:58300}];let cur=0;
+function list(){$("#cl").innerHTML=C.map((c,i)=>`<div class="it" style="cursor:pointer;${i===cur?"font-weight:700":""}" onclick="show(${i})"><span>${c.n}</span><span class="muted">${c.m} matters</span></div>`).join("")}
+function show(i){cur=i;list();const c=C[i],y=$("#yr").value,f=y==="FY2025"?c.f*0.78:c.f;
+ $("#doc").innerHTML=`<div class="in" style="font-family:var(--serif)"><div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--gold);padding-bottom:12px"><div><div style="font-size:20px">Keighran Legal <span style="color:var(--gold)">+</span> Advisory</div><div class="muted" style="font-family:var(--sans);font-size:12px">Aboriginal owned and run</div></div><div style="text-align:right;font-family:var(--sans);font-size:12px" class="muted">Supplier impact statement<br>${y}</div></div>
+ <h2 style="margin:18px 0 6px">${c.n}</h2><p class="muted" style="font-family:var(--sans)">Prepared for your Reconciliation Action Plan and supplier diversity reporting.</p>
+ <div class="grid g3 mt" style="font-family:var(--sans)"><div class="card kpi"><div class="l">Spend with Keighran</div><div class="v">${money(f)}</div></div><div class="card kpi"><div class="l">Matters</div><div class="v">${y==="FY2025"?Math.max(1,c.m-1):c.m}</div></div><div class="card kpi"><div class="l">Pathways hours supported</div><div class="v">${Math.round(f/900)}</div></div></div>
+ <p style="line-height:1.7;margin-top:16px">Your work with Keighran Legal + Advisory in ${y} was with an Aboriginal owned and run business that opens pathways for Aboriginal and Torres Strait Islander law students and graduates into corporate law.</p>
+ <p class="muted" style="font-family:var(--sans);font-size:12px">Figures come from billed invoices. Ownership certification details are attached for your records.</p></div>
+ <div class="row mt"><button class="btn dark" onclick="toast('PDF ready to send with a note from Duane')">Make PDF</button><button class="btn" onclick="toast('Scheduled for every client each July')">Send to all clients each July</button></div>`}
+show(0);
+</script>
+</body></html>

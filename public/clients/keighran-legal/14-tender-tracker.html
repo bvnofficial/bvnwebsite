@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tender and panel tracker | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.kan{display:grid;grid-template-columns:repeat(5,minmax(180px,1fr));gap:12px;overflow-x:auto}.col{background:#EFEAE0;border-radius:12px;padding:10px;min-height:260px}.col h4{margin:2px 4px 10px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}.tc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px;font-size:13px}.tc b{display:block}.tc small{color:var(--muted);display:block;margin:3px 0 8px}</style></head>
+<body>
+<div class="wrap">
+  <div class="grid g4"><div class="card kpi"><div class="l">Open opportunities</div><div class="v" id="k1"></div></div><div class="card kpi"><div class="l">Closing in 14 days</div><div class="v" id="k2"></div><div class="d bad">deadlines</div></div><div class="card kpi"><div class="l">Panels joined</div><div class="v" id="k3"></div></div><div class="card kpi"><div class="l">Capability statement</div><div class="v" style="font-size:20px">Updated</div><div class="d">Last month</div></div></div>
+  <div class="note mt">Government and large corporates have Indigenous procurement targets. This keeps every panel, tender and request for quote in one place, with deadlines, the documents each one needs, and reminders when panels reopen.</div>
+  <div class="kan" id="kan"></div>
+</div>
+<script>
+shell("14","Tender and panel tracker","Every government panel, tender and corporate request for quote in one pipeline, with deadlines, required documents and reminders when panels reopen. Built around the Indigenous procurement opportunity.","panel refreshes and tenders spotted too late");
+const ST=["Spotted","Preparing","Submitted","Shortlisted","Won or on panel"];
+const T=[
+ {n:"State property legal services panel refresh",o:"NSW government agency",d:12,s:0,docs:"Capability statement, insurances, 3 case studies"},
+ {n:"Social housing leasing program",o:"Community housing provider",d:20,s:1,docs:"Fee proposal, team CVs"},
+ {n:"Hotel portfolio legal adviser",o:"ASX listed hotel group (RAP partner)",d:9,s:1,docs:"Supplier diversity form, conflicts"},
+ {n:"Major projects property advice",o:"State transport projects",d:0,s:2,docs:"Submitted"},
+ {n:"Commonwealth legal services panel",o:"Federal department",d:0,s:4,docs:"On panel until 2028"},
+ {n:"University campus leasing",o:"Sydney university",d:30,s:0,docs:"Expression of interest"}];
+function draw(){$("#kan").innerHTML=ST.map((s,i)=>`<div class="col"><h4>${s}</h4>${T.filter(t=>t.s===i).map(t=>{const k=T.indexOf(t);return`<div class="tc in"><b>${t.n}</b><small>${t.o}<br>${t.d?`Closes in <b style="display:inline;color:${t.d<=14?"var(--bad)":"inherit"}">${t.d} days</b><br>`:""}${t.docs}</small>${i<4?`<button class="btn" onclick="mv(${k})">Move on</button>`:'<span class="pill good">Active</span>'}</div>`}).join("")}</div>`).join("");
+ $("#k1").textContent=T.filter(t=>t.s<4).length;$("#k2").textContent=T.filter(t=>t.d&&t.d<=14&&t.s<2).length;$("#k3").textContent=T.filter(t=>t.s===4).length}
+function mv(k){T[k].s++;if(T[k].s>=2)T[k].d=0;toast(T[k].s===4?"Won. Added to panels with renewal reminder":"Moved to "+ST[T[k].s]);draw()}
+draw();
+</script>
+</body></html>

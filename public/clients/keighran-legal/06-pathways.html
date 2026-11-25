@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pathways hub | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap">
+  <div class="grid g4"><div class="card kpi"><div class="l">In the program now</div><div class="v">5</div><div class="d">3 cadets, 2 graduates</div></div><div class="card kpi"><div class="l">Since 2021</div><div class="v">14</div><div class="d">people through the program</div></div><div class="card kpi"><div class="l">Admitted lawyers</div><div class="v">4</div><div class="d">from the program</div></div><div class="card kpi"><div class="l">Mentor check ins due</div><div class="v" id="due">2</div><div class="d bad">this week</div></div></div>
+  <div class="grid g21 mt">
+    <div class="card"><h3>The cohort</h3><table><thead><tr><th>Name</th><th>Stage</th><th>Rotation</th><th>Progress</th><th>Next check in</th></tr></thead><tbody id="tb"></tbody></table></div>
+    <div class="card" id="side"><h3>Pick a person</h3><p class="muted">Click a name to see their plan.</p></div>
+  </div>
+  <div class="card mt"><h3>Public story page (preview)</h3><div style="display:grid;grid-template-columns:1fr 2fr;gap:18px;align-items:center"><div style="background:var(--ink);color:#fff;border-radius:12px;padding:22px;font-family:var(--serif);font-size:22px;line-height:1.3">A seat at the corporate table.<div style="color:var(--gold);font-size:14px;margin-top:10px;font-family:var(--sans)">The Keighran Pathways program</div></div><p style="line-height:1.7">Keighran Legal + Advisory was founded to open pathways for young Aboriginal and Torres Strait Islander lawyers into corporate law. This page tells that story in the cadets' own words (with their OK), shows the program's real numbers, and gives future cadets one place to apply. It's also the page you attach to tenders and capability statements.</p></div></div>
+</div>
+<script>
+shell("06","Pathways hub","The cadet and graduate program in one place: onboarding, mentor check ins, rotations, study support and progress for every cadet and graduate, plus a public page that tells the story to clients and future cadets.","the firm's mission living in people's heads instead of a system");
+const P=[
+ {n:"Jarrah M.",s:"Cadet, 2nd year",r:"Real estate",p:45,c:"Tue",m:"Senior Associate",t:[["Induction and IT",1],["Precedents walkthrough",1],["Shadow a settlement",0],["Draft a lease schedule",0],["Mid year review",0]]},
+ {n:"Kirra D.",s:"Cadet, 3rd year",r:"Hotels",p:70,c:"Thu",m:"Director, Hotels",t:[["Induction and IT",1],["HMA term sheet review",1],["Attend a client meeting",1],["Research memo",0],["Mid year review",0]]},
+ {n:"Tom W.",s:"Cadet, 1st year",r:"Real estate",p:20,c:"Next week",m:"Associate",t:[["Induction and IT",1],["Meet the team",0],["Study plan for exams",0]]},
+ {n:"Ellie R.",s:"Graduate",r:"Construction",p:80,c:"Fri",m:"Special Counsel",t:[["PLT placement hours",1],["Run a SOPA response",1],["Admission paperwork",0]]},
+ {n:"Sam B.",s:"Graduate",r:"Real estate",p:60,c:"Done",m:"Managing Director",t:[["PLT placement hours",1],["First solo settlement",0],["Admission paperwork",0]]}];
+function draw(){$("#tb").innerHTML=P.map((x,i)=>`<tr style="cursor:pointer" onclick="pick(${i})"><td><b>${x.n}</b></td><td>${x.s}</td><td>${x.r}</td><td style="min-width:120px"><div class="bar"><span style="width:${x.p}%"></span></div></td><td>${x.c==="Done"?'<span class="pill good">Done</span>':`<span class="pill ${/Tue|Thu/.test(x.c)?"warn":""}">${x.c}</span>`}</td></tr>`).join("");$("#due").textContent=P.filter(x=>/Tue|Thu/.test(x.c)).length}
+function pick(i){const x=P[i];$("#side").innerHTML=`<h3>${x.n}</h3><p class="muted">${x.s} · ${x.r} · Mentor: ${x.m}</p><div class="list">${x.t.map((t,j)=>`<div class="it"><span>${t[0]}</span>${t[1]?'<span class="pill good">Done</span>':`<button class="btn" onclick="tick(${i},${j})">Mark done</button>`}</div>`).join("")}</div><div class="row mt"><button class="btn dark" onclick="P[${i}].c='Done';draw();pick(${i});toast('Check in logged with notes')">Log mentor check in</button></div>`}
+function tick(i,j){P[i].t[j][1]=1;P[i].p=Math.round(P[i].t.filter(t=>t[1]).length/P[i].t.length*100);draw();pick(i)}
+draw();
+</script>
+</body></html>

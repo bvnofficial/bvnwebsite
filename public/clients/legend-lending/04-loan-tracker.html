@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Loan tracker | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap grid g2">
+  <div class="phone"><div class="scr"><div class="ph"><img src="assets/lllogo.png" alt="Legend Lending"></div><div class="pb" id="ph"></div></div></div>
+  <div class="card"><h3>Broker side</h3><p class="muted">Each status change updates the customer's link and sends them a short text. No "any news?" calls.</p>
+    <button class="btn dark" onclick="next()">Move to next status</button><button class="btn" style="margin-left:6px" onclick="reset()">Reset</button>
+    <div class="list mt" id="sent"></div></div>
+</div>
+<script>
+shell("04","My Loan tracker","A link the customer keeps: application sent, with the lender, approved, settlement booked, keys. Like tracking a parcel, for their car loan.","\"any news?\" calls during the busiest part of the day");
+const S=[["Fit Session done","You chatted with Ben"],["Documents in","Everything received"],["Sent to the lender","Ben picked the best match from 50+ lenders"],["Lender is reviewing","Usually 1 to 2 business days"],["Approved","Contract on its way to you to sign"],["Settlement booked","Funds go to the seller"],["Keys in hand","Enjoy the new ride, legend"]];let cur=2;const sent=[];
+function draw(){$("#ph").innerHTML=`<h2 style="font-family:var(--serif)">Jordan's Ford Ranger</h2><p class="muted" style="margin-top:4px">2021 Ranger XLT · ${money(38000)}</p>
+ <div style="background:var(--ink);color:#fff;border-radius:14px;padding:14px;margin:12px 0"><div style="font-size:12px;color:var(--gold2)">RIGHT NOW</div><div style="font-size:20px;font-weight:800">${S[cur][0]}</div><div style="opacity:.7;font-size:13px">${S[cur][1]}</div></div>
+ <ul class="tl">${S.map((s,i)=>`<li class="${i<cur?"done":i===cur?"now":""}"><b>${s[0]}</b></li>`).join("")}</ul>
+ <button class="btn" style="width:100%" onclick="toast('Opens a text to Ben')">Message Ben</button>`;
+ $("#sent").innerHTML=sent.map(s=>`<div class="it in"><span>Text to Jordan: "${s}"</span><span class="pill good">Sent</span></div>`).join("")}
+function next(){if(cur<S.length-1){cur++;sent.unshift("Update on your Ranger: "+S[cur][0].toLowerCase()+". Check your tracker link.");if(cur===S.length-1)toast("Keys day: video and review request queued");draw()}}
+function reset(){cur=2;sent.length=0;draw()}
+draw();
+</script>
+</body></html>

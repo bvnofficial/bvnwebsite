@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settlements back to Meta | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<style>.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.st{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center;position:relative}.st b{display:block;font-size:15px}.st.on{border-color:var(--gold);box-shadow:0 0 0 3px #F3EBD8}@media(max-width:900px){.flow{grid-template-columns:1fr 1fr}}</style></head>
+<body>
+<div class="wrap">
+  <div class="flow" id="flow"></div>
+  <div class="grid g2 mt">
+    <div class="card"><h3>Events sent to Meta today</h3><table><thead><tr><th>Lead</th><th>Ad</th><th>Event</th><th>Value</th><th>Sent</th></tr></thead><tbody id="tb"></tbody></table><div class="row mt"><button class="btn pri" onclick="settle()">Mark a new deal settled</button></div></div>
+    <div class="card"><h3>What Meta learns</h3><div id="learn"></div></div>
+  </div>
+</div>
+<script>
+shell("13","Settlements sent back to Meta","Meta only knows who filled in a form. This sends every Fit Session and every settled deal back to Meta with its value, matched to the ad that found them, so Meta goes looking for people who actually settle.","ads that chase form fillers who never answer the phone");
+const STEP=[["Ad click","Meta ad"],["Lead","Form or Messenger"],["Fit Session","Booked in GHL"],["Settled","With loan value"]];let on=3;
+const E=[["Chloe A.","Messenger: First car","Lead",0,"8:02am"],["Kyle B.","Messenger: Tradie ute","Fit Session",0,"9:15am"],["Liam O.","Landing page: Bad credit","Settled",41000,"11:40am"]];
+function draw(){$("#flow").innerHTML=STEP.map((s,i)=>`<div class="st ${i===on?"on":""}"><b>${s[0]}</b><span class="muted">${s[1]}</span>${i>=1?'<div class="pill good" style="margin-top:6px">sent to Meta</div>':""}</div>`).join("");
+ $("#tb").innerHTML=E.map(e=>`<tr class="in"><td>${e[0]}</td><td>${e[1]}</td><td><span class="pill ${e[2]==="Settled"?"good":e[2]==="Fit Session"?"gold":""}">${e[2]}</span></td><td>${e[3]?money(e[3]):""}</td><td>${e[4]}</td></tr>`).join("");
+ const s=E.filter(e=>e[2]==="Settled").length;
+ $("#learn").innerHTML=`<div class="list"><div class="it"><span>Settled deals Meta knows about</span><b>${s+11}</b></div><div class="it"><span>Before: Meta optimised for</span><span class="pill">Form fills</span></div><div class="it"><span>After: Meta optimises for</span><span class="pill good">Settled deals</span></div><div class="it"><span>Best ad by settled value</span><b>Messenger: Tradie ute</b></div></div><div class="note mt">Only the event, its value and a hashed email or phone go to Meta. No credit or income details ever leave GHL.</div>`}
+function settle(){const n=["Jordan E.","Messenger: Tradie ute","Settled",38000,new Date().toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"})];E.unshift(n);on=3;toast("Settled event with $38,000 value sent to Meta");draw()}
+draw();
+</script>
+</body></html>

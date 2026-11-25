@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repeat business engine | Legend Lending demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script></head>
+<body>
+<div class="wrap">
+  <div class="grid g4"><div class="card kpi"><div class="l">Past settled customers</div><div class="v">412</div></div><div class="card kpi"><div class="l">Balloons due in 6 months</div><div class="v">17</div><div class="d bad">highest value</div></div><div class="card kpi"><div class="l">Upgrade window (2 to 3 years)</div><div class="v">38</div></div><div class="card kpi"><div class="l">Repeat deals this quarter</div><div class="v" id="rp">6</div></div></div>
+  <div class="row mt" id="tabs"></div>
+  <div class="card mt"><table><thead><tr><th>Customer</th><th>Loan</th><th>Why now</th><th>Message ready</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+</div>
+<script>
+shell("14","Repeat business engine","Past settled customers are the warmest leads Legend has. This watches every loan and taps people on the shoulder at the right moment: before a balloon payment, at the upgrade window, when rates drop, or when their rego comes round.","past customers who refinance or upgrade with someone else");
+let tab="Balloon due";let rp=6;
+const R=[["Balloon due","Angela S.","2022 Hilux · balloon $18,400","Balloon due in 4 months","Hi Angela, Ben from Legend. Your Hilux balloon is due in March. Want us to line up the best option now so there's no rush?"],
+ ["Balloon due","Peter K.","2021 Ranger · balloon $15,200","Balloon due in 6 months","Hi Peter, Ben here. Your Ranger balloon comes up mid year. Refinance, pay out or trade up? Happy to run all three."],
+ ["Upgrade window","Megan T.","2023 i30 · 3 years in","Equity likely positive","Hi Megan, it's been 3 years on the i30. A lot of people upgrade about now. Want to see what it would look like?"],
+ ["Upgrade window","Dan R.","2023 boat · 2.5 years in","Boat season starts soon","Hi Dan, Ben from Legend. Boat season is close. Thinking bigger this year? Happy to run the numbers."],
+ ["Rate check","Sara M.","2024 CX5 · 13.9% p.a.","Credit improved, rates lower","Hi Sara, Ben here. Your repayments have been spot on. You might qualify for a better rate now. Want me to check?"],
+ ["Rego and birthday","Ken W.","2022 D MAX","Rego due next month","Hi Ken, quick one from Legend: your D MAX rego is due next month. Need finance for anything else this year?"]];
+function draw(){const tabs=[...new Set(R.map(r=>r[0]))];$("#tabs").innerHTML=tabs.map(t=>`<button class="btn ${t===tab?"dark":""}" onclick="tab='${t}';draw()">${t}</button>`).join("");
+ $("#tb").innerHTML=R.filter(r=>r[0]===tab).map(r=>{const k=R.indexOf(r);return`<tr class="in"><td><b>${r[1]}</b></td><td>${r[2]}</td><td>${r[3]}</td><td style="max-width:420px;font-size:13px">"${r[4]}"</td><td>${r[5]?'<span class="pill good">Sent</span>':`<button class="btn pri" onclick="send(${k})">Send</button>`}</td></tr>`}).join("");$("#rp").textContent=rp}
+function send(k){R[k][5]=1;toast("Text sent, reply goes to Ben's call list");if(k===0){setTimeout(()=>{rp++;toast("Angela replied: yes please. Fit Session booked");draw()},1500)}draw()}
+draw();
+</script>
+</body></html>
