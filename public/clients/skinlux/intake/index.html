@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before your visit | Skinlux Face &amp; Body</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/data.js"></script>
+<script src="../assets/live-settings.js?v=1"></script>
+<style>
+  .split { max-width: 720px; margin: 0 auto; }
+  .hidden2 { display: none !important; }
+  .top { display:flex; align-items:center; justify-content:space-between; max-width:720px; margin:0 auto; padding:18px 4px 6px; }
+  .top .lg { font-family: var(--serif); font-size: 24px; letter-spacing: 3px; }
+  .top small { color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; }
+  .done { text-align:center; padding:40px 20px; }
+  @media (max-width: 950px) { .split { grid-template-columns: 1fr; } }
+  .sticky { position: sticky; top: 64px; }
+  .form-sec { font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin: 22px 0 4px; }
+  .form-sec:first-child { margin-top: 0; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .q { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .q:last-child { border-bottom: 0; }
+  .yn { display: inline-flex; background: var(--sand); border-radius: 99px; padding: 3px; flex: 0 0 auto; }
+  .yn button { border: 0; background: transparent; padding: 5px 14px; border-radius: 99px; font: 600 13px var(--sans); color: var(--mocha); cursor: pointer; }
+  .yn button.on { background: var(--white); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .yn button.on.yes { background: var(--ink); color: var(--cream); }
+  .bdd { background: var(--gold-soft); border-radius: 12px; padding: 4px 14px; margin-top: 8px; }
+  .sig-wrap { position: relative; border: 1.5px dashed var(--taupe); border-radius: 12px; background: var(--white); height: 150px; touch-action: none; }
+  .sig-wrap canvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
+  .sig-wrap .ph { position: absolute; left: 14px; bottom: 10px; font-size: 12px; color: var(--muted); pointer-events: none; }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; font-size: 13px; cursor: pointer; }
+  .consent input { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; }
+
+  .status-box { border-radius: 14px; padding: 18px; margin: 12px 0 14px; transition: background .3s; }
+  .status-box b { font-family: var(--serif); font-size: 28px; display: block; line-height: 1.1; }
+  .status-box span { font-size: 13px; }
+  .status-box.ok { background: var(--ok-soft); color: var(--ok); }
+  .status-box.warn { background: var(--warn-soft); color: var(--warn); }
+  .status-box.bad { background: var(--bad-soft); color: var(--bad); }
+  .flag { display: flex; gap: 10px; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; font-size: 14px; animation: fi .25s ease-out; }
+  @keyframes fi { from { opacity: 0; transform: translateX(6px); } to { opacity: 1; transform: none; } }
+  .flag .lv { flex: 0 0 auto; }
+  .flag.bad { background: var(--bad-soft); }
+  .flag.warn { background: var(--warn-soft); }
+  .flag.info { background: var(--sand); color: var(--mocha); }
+  .flag b { display: block; }
+  .flag small { color: var(--ink); opacity: 0.75; }
+  .meta { display: grid; grid-template-columns: 110px 1fr; gap: 6px 10px; font-size: 14px; }
+  .meta dt { color: var(--muted); }
+  .meta dd { margin: 0; }
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="top"><span class="lg">SKINLUX</span><small>Face and Body, Perth</small></div>
+
+<div class="page">
+  <div class="page-head">
+    <h1 style="text-align:center">Before your visit</h1>
+    <p style="text-align:center;max-width:620px;margin:0 auto">A few questions about your health and skin so your clinician can make sure your treatment is right for you. It takes about 3 minutes.</p>
+  </div>
+
+  <div class="split">
+    <form class="card" id="form" novalidate>
+      <h3 style="margin:0">Your form</h3>
+      <p class="muted" style="font-size:13px">Your answers are private. Only your clinician and the Skinlux team see them.</p>
+
+      <div class="form-sec">Your details</div>
+      <div class="two">
+        <div><label for="fn">First name</label><input id="fn" autocomplete="given-name"></div>
+        <div><label for="ln">Last name</label><input id="ln" autocomplete="family-name"></div>
+        <div><label for="dob">Date of birth</label><input id="dob" type="date"></div>
+        <div><label for="mob">Mobile</label><input id="mob" type="tel" autocomplete="tel" inputmode="tel"></div>
+        <div><label for="em">Email</label><input id="em" type="email" autocomplete="email"></div>
+        <div><label for="cl">Clinic</label><select id="cl"><option value="booragoon">Booragoon</option><option value="leederville">Leederville</option></select></div>
+        <div><label for="vd">Appointment date</label><input id="vd" type="date"></div>
+      </div>
+      <input type="text" id="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <label for="tx">Treatment booked</label>
+      <select id="tx"></select>
+      <small id="tx-info" style="font-size:12px"></small>
+
+      <div class="form-sec">Medical questions</div>
+      <div id="qs"></div>
+      <label for="meds">Medications, supplements or skin products you use</label>
+      <textarea id="meds" placeholder="For example: vitamin A serum, antibiotics, Roaccutane"></textarea>
+
+      <div id="bdd-wrap" class="hidden">
+        <div class="form-sec">A few more questions for injectables</div>
+        <p class="muted" style="font-size:13px;margin:0">We ask everyone these. They help your nurse make sure treatment is right for you.</p>
+        <div class="bdd" id="bdd"></div>
+      </div>
+
+      <div class="form-sec">Consent</div>
+      <label class="consent"><input type="checkbox" id="consent"><span>I have answered truthfully, I understand the treatment, its risks and aftercare, and I consent to treatment. I will tell my clinician if anything changes.</span></label>
+      <label>Signature</label>
+      <div class="sig-wrap"><canvas id="sig"></canvas><span class="ph" id="sig-ph">Sign here with your finger or mouse</span></div>
+      <div class="row between" style="margin-top:8px">
+        <button class="btn ghost sm" type="button" id="sig-clear">Clear signature</button>
+        <button class="btn" type="submit" id="go">Send my form</button>
+      </div>
+      <div id="form-err" style="color:var(--bad);font-size:13px;margin-top:8px"></div>
+    </form>
+
+    <div class="sticky hidden2">
+      <div class="card">
+        <div class="row between"><h3 style="margin:0">Clinician view</h3><span class="badge ok">Live</span></div>
+        <div class="status-box ok" id="status"><b>Clear to treat</b><span>No contraindications for this treatment.</span></div>
+        <dl class="meta">
+          <dt>Client</dt><dd id="c-name"></dd>
+          <dt>Treatment</dt><dd id="c-tx"></dd>
+          <dt>Not for</dt><dd id="c-notfor"></dd>
+          <dt>Medications</dt><dd id="c-meds"></dd>
+          <dt>Consent</dt><dd id="c-consent"></dd>
+          <dt>Signature</dt><dd id="c-sig"></dd>
+        </dl>
+        <h3 style="margin-top:16px;font-size:18px">Flags</h3>
+        <div id="flags"></div>
+      </div>
+      <div class="card soft" style="margin-top:14px">
+        <b style="font-size:14px">Try a scenario</b>
+        <div class="presets">
+          <span class="chip" data-p="clear">Clear, needling</span>
+          <span class="chip" data-p="retinol">Retinol and needling</span>
+          <span class="chip" data-p="fish">Fish allergy, bio stimulating injection</span>
+          <span class="chip" data-p="tan">Spray tan, IPL hair</span>
+          <span class="chip" data-p="preg">Pregnant, HIFU</span>
+          <span class="chip" data-p="metal">Metal implant, body sculpting</span>
+          <span class="chip" data-p="inj">Wrinkle relaxers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  var tt;
+  function toast(m) { var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove("show"); }, 2600); }
+  function nm(t) { return t.injectable ? t.name.replace(/\s*\(.*\)\s*/, "") : t.name; }
+  function byId(id) { return S.treatments.filter(function (t) { return t.id === id; })[0]; }
+
+  $("tx").innerHTML = S.treatments.map(function (t) { return '<option value="' + t.id + '"' + "" + '>' + nm(t) + '</option>'; }).join("");
+
+  var QS = [
+    ["preg", "Are you pregnant, trying to conceive or breastfeeding?"],
+    ["fish", "Do you have a fish or seafood allergy?"],
+    ["metal", "Do you have a pacemaker or any metal implants?"],
+    ["acne", "Do you have active acne or inflamed skin in the area?"],
+    ["laser", "Have you had a laser or peel in the last 2 weeks?"],
+    ["retinol", "Have you used retinol or vitamin A in the last week?"],
+    ["tan", "Do you have a spray tan or fake tan on now?"],
+    ["neuro", "Do you have a neurological condition?"]
+  ];
+  var BDD = [
+    ["b1", "Do you spend a lot of time each day worrying about how you look?"],
+    ["b2", "Does a concern about your appearance get in the way of work, study or seeing friends?"],
+    ["b3", "Have you been unhappy with past treatments even when others thought they looked fine?"]
+  ];
+  var ans = {};
+  function qRow(q) {
+    ans[q[0]] = false;
+    return '<div class="q"><span>' + q[1] + '</span><span class="yn" data-k="' + q[0] + '"><button type="button" class="on" data-v="0">No</button><button type="button" class="yes" data-v="1">Yes</button></span></div>';
+  }
+  $("qs").innerHTML = QS.map(qRow).join("");
+  $("bdd").innerHTML = BDD.map(qRow).join("");
+  document.querySelectorAll(".yn").forEach(function (g) {
+    g.querySelectorAll("button").forEach(function (b) {
+      b.onclick = function () { setYN(g.dataset.k, b.dataset.v === "1"); update(); };
+    });
+  });
+  function setYN(k, v) {
+    ans[k] = v;
+    var g = document.querySelector('.yn[data-k="' + k + '"]');
+    g.querySelectorAll("button").forEach(function (b) { b.classList.toggle("on", (b.dataset.v === "1") === v); });
+  }
+
+  // Signature pad
+  var cv = $("sig"), ctx = cv.getContext("2d"), drawing = false, signed = false, last = null;
+  function sizeCanvas() {
+    var r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    cv.width = r.width * dpr; cv.height = r.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#2b2420";
+  }
+  sizeCanvas(); window.addEventListener("resize", function () { sizeCanvas(); signed = false; $("sig-ph").style.display = ""; update(); });
+  function pos(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  cv.addEventListener("pointerdown", function (e) { drawing = true; last = pos(e); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointermove", function (e) {
+    if (!drawing) return;
+    var p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    last = p;
+    if (!signed) { signed = true; $("sig-ph").style.display = "none"; update(); }
+  });
+  cv.addEventListener("pointerup", function () { drawing = false; });
+  cv.addEventListener("pointercancel", function () { drawing = false; });
+  $("sig-clear").onclick = function () { ctx.clearRect(0, 0, cv.width, cv.height); signed = false; $("sig-ph").style.display = ""; update(); };
+
+  ["fn", "ln", "meds", "tx", "consent"].forEach(function (id) { $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
+
+  var LABEL = { preg: "Pregnant or breastfeeding", fish: "Fish or seafood allergy", metal: "Pacemaker or metal implant", acne: "Active acne or inflamed skin", laser: "Laser or peel in the last 2 weeks", retinol: "Retinol in the last week", tan: "Spray tan on", neuro: "Neurological condition" };
+
+  function update() {
+    var t = byId($("tx").value);
+    var flags = [];
+    var inj = t.injectable;
+    $("bdd-wrap").classList.toggle("hidden", !inj);
+    $("tx-info").textContent = t.time + ". " + (t.not_for ? "Not suitable for: " + t.not_for + "." : "");
+
+    function red(k, why) { flags.push({ lv: "bad", title: LABEL[k], why: why }); }
+    function amber(k, why) { flags.push({ lv: "warn", title: LABEL[k] || k, why: why }); }
+    var used = {};
+
+    if (ans.preg && (["hifu", "needling", "relaxers", "rejuran", "fillers", "body"].indexOf(t.id) > -1 || /pregnan/i.test(t.not_for))) { red("preg", "Not suitable during pregnancy or breastfeeding. Rebook after, or offer a pregnancy safe option."); used.preg = 1; }
+    if (ans.fish && t.id === "rejuran") { red("fish", "This injection is made from fish DNA. Do not treat. Nurse to discuss alternatives."); used.fish = 1; }
+    if (ans.metal && t.id === "body") { red("metal", "EMS and Venus Legacy are not suitable with a pacemaker or metal implants. Do not treat."); used.metal = 1; }
+    if (ans.acne && t.id === "needling") { red("acne", "Needling over active acne or inflamed skin can spread bacteria. Treat the acne first, then rebook."); used.acne = 1; }
+    if (ans.acne && t.id === "rejuran") { amber("acne", "Check for active infection in the area before treating."); used.acne = 1; }
+    if (ans.retinol && t.id === "needling") { amber("retinol", "Retinol in the last week makes skin more reactive. Therapist to check the skin, and consider moving the appointment."); used.retinol = 1; }
+    if (ans.tan && t.id === "ipl-hair") { red("tan", "The light targets pigment, so a tan can cause burns. Remove the tan fully or rebook."); used.tan = 1; }
+    if (ans.tan && t.id === "ipl-skin") { red("tan", "Tanned skin raises the burn risk with IPL. Rebook once the tan has gone."); used.tan = 1; }
+    if (ans.laser && t.id === "rejuran") { red("laser", "Recent laser or peel. Wait until the skin has fully healed before this injection."); used.laser = 1; }
+    if (ans.laser && ["needling", "nano-rf", "advanced-peel", "clinical-peel", "ipl-skin", "carbon", "plasma"].indexOf(t.id) > -1) { amber("laser", "Recent laser or peel. Check the skin has healed before treating."); used.laser = 1; }
+    if (ans.neuro && t.id === "relaxers") { amber("neuro", "Some neurological conditions rule out wrinkle relaxers. Nurse to assess at the consult."); used.neuro = 1; }
+
+    var meds = $("meds").value.trim();
+    if (meds) {
+      if (/roaccutane|isotretinoin|accutane|oratane/i.test(meds) && ["needling", "nano-rf", "advanced-peel", "clinical-peel", "ipl-skin", "ipl-hair", "carbon", "plasma"].indexOf(t.id) > -1) {
+        flags.push({ lv: "bad", title: "Isotretinoin", why: "Do not resurface, laser or needle while on isotretinoin or within 6 months of stopping." });
+      } else if (/retin|vitamin a|tretinoin/i.test(meds) && t.id === "needling" && !used.retinol) {
+        amber("Vitamin A product listed", "Check when it was last used. Stop for a week before needling.");
+      } else if (/antibiotic|doxy|minocycline|st john/i.test(meds) && ["ipl-skin", "ipl-hair", "carbon"].indexOf(t.id) > -1) {
+        amber("Light sensitive medication", "Some antibiotics make skin sensitive to light. Do a test patch first.");
+      } else {
+        flags.push({ lv: "info", title: "Medications listed", why: "Clinician to review: " + meds });
+      }
+    }
+    if (inj) {
+      flags.push({ lv: "warn", title: "Nurse review required", why: "Injectable treatment. Nurse Leo or Nurse Maria reviews the full history and BDD screening before treating." });
+      var b = ["b1", "b2", "b3"].filter(function (k) { return ans[k]; }).length;
+      if (b >= 2) flags.push({ lv: "bad", title: "BDD screening: " + b + " of 3 yes", why: "Nurse to have a supportive conversation before any treatment. Treatment may not be right today." });
+      else if (b === 1) flags.push({ lv: "warn", title: "BDD screening: 1 of 3 yes", why: "Nurse to talk through expectations at the consult." });
+    }
+    // Ticked answers that don't affect this treatment
+    QS.forEach(function (q) {
+      if (ans[q[0]] && !used[q[0]]) flags.push({ lv: "info", title: LABEL[q[0]], why: "Noted. Not a concern for " + nm(t) + "." });
+    });
+
+    window._flags = flags; window._tx = t;
+    var hasBad = flags.some(function (f) { return f.lv === "bad"; }), hasWarn = flags.some(function (f) { return f.lv === "warn"; });
+    var st = $("status");
+    if (hasBad) { st.className = "status-box bad"; st.innerHTML = "<b>Do not treat today</b><span>A contraindication needs action before " + nm(t) + ".</span>"; }
+    else if (hasWarn) { st.className = "status-box warn"; st.innerHTML = "<b>" + (inj ? "Nurse review required" : "Check before treating") + "</b><span>" + (inj ? "Injectables are always reviewed by a nurse." : "Clinician to review the flags below.") + "</span>"; }
+    else { st.className = "status-box ok"; st.innerHTML = "<b>Clear to treat</b><span>No contraindications found for " + nm(t) + ".</span>"; }
+
+    var lvTxt = { bad: '<span class="badge bad">Stop</span>', warn: '<span class="badge warn">Check</span>', info: '<span class="badge gold">Note</span>' };
+    $("flags").innerHTML = flags.length ? flags.map(function (f) {
+      return '<div class="flag ' + f.lv + '"><span class="lv">' + lvTxt[f.lv] + '</span><div><b></b><small></small></div></div>';
+    }).join("") : '<p class="muted" style="font-size:14px">Nothing flagged.</p>';
+    document.querySelectorAll("#flags .flag").forEach(function (el, i) { el.querySelector("b").textContent = flags[i].title; el.querySelector("small").textContent = flags[i].why; });
+
+    $("c-name").textContent = ($("fn").value + " " + $("ln").value).trim() || "Not given";
+    $("c-tx").textContent = nm(t);
+    $("c-notfor").textContent = t.not_for || "Nothing listed";
+    $("c-meds").textContent = meds || "None listed";
+    $("c-consent").innerHTML = $("consent").checked ? '<span class="badge ok">Given</span>' : '<span class="badge warn">Not yet</span>';
+    $("c-sig").innerHTML = signed ? '<span class="badge ok">Signed</span>' : '<span class="badge warn">Not yet</span>';
+  }
+
+  var PRE = {
+    clear: { tx: "needling", yes: [] },
+    retinol: { tx: "needling", yes: ["retinol"] },
+    fish: { tx: "rejuran", yes: ["fish"] },
+    tan: { tx: "ipl-hair", yes: ["tan"] },
+    preg: { tx: "hifu", yes: ["preg"] },
+    metal: { tx: "body", yes: ["metal"] },
+    inj: { tx: "relaxers", yes: [] }
+  };
+  document.querySelectorAll(".presets .chip").forEach(function (c) {
+    c.onclick = function () {
+      var p = PRE[c.dataset.p];
+      document.querySelectorAll(".presets .chip").forEach(function (x) { x.classList.toggle("on", x === c); });
+      $("tx").value = p.tx;
+      Object.keys(ans).forEach(function (k) { setYN(k, p.yes.indexOf(k) > -1); });
+      $("meds").value = "";
+      update();
+    };
+  });
+
+  var qp = new URLSearchParams(location.search);
+  if (qp.get("clinic") === "leederville") $("cl").value = "leederville";
+  if (qp.get("t") && byId(qp.get("t"))) $("tx").value = qp.get("t");
+  if (qp.get("date")) $("vd").value = qp.get("date");
+  $("form").onsubmit = function (e) {
+    e.preventDefault();
+    var fn = $("fn").value.trim(), mob = $("mob").value.trim();
+    if (!fn) { $("form-err").textContent = "Please add your first name."; return; }
+    if (mob.replace(/\D/g, "").length < 9) { $("form-err").textContent = "Please add your mobile number."; return; }
+    if (!$("consent").checked) { $("form-err").textContent = "Please tick the consent box."; return; }
+    if (!signed) { $("form-err").textContent = "Please sign in the box above."; return; }
+    $("form-err").textContent = "";
+    update();
+    var t = window._tx, yes = Object.keys(ans).filter(function (k) { return ans[k]; });
+    var allQ = QS.concat(t.injectable ? BDD : []);
+    var btn = $("go"); btn.disabled = true; btn.textContent = "Sending...";
+    var sig = ""; try { sig = cv.toDataURL("image/png"); } catch (x) {}
+    fetch("/api/skinlux-intake", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+      first_name: fn, last_name: $("ln").value.trim(), dob: $("dob").value, phone: mob, email: $("em").value.trim(), clinic: $("cl").value,
+      visit: $("vd").value, treatment_id: t.id, treatment: nm(t), meds: $("meds").value.trim(),
+      answers: allQ.map(function (q) { return [q[1], ans[q[0]] ? "Yes" : "No"]; }), yes: yes,
+      flags: (window._flags || []).filter(function (f) { return f.lv !== "info" || /Medications/.test(f.title); }).map(function (f) { return { lv: f.lv, title: f.title, why: f.why }; }),
+      consent: true, signature: sig, website: $("website").value })
+    }).then(function (r) { return r.json().catch(function () { return { ok: false }; }); }).then(function (d) {
+      if (!d.ok) { btn.disabled = false; btn.textContent = "Send my form"; $("form-err").textContent = d.error || "Sorry, that didn't go through. Please call us."; return; }
+      $("form").innerHTML = '<div class="done"><h2 style="margin:0 0 8px"></h2><p class="muted"></p></div>';
+      $("form").querySelector("h2").textContent = "Thanks, " + fn;
+      $("form").querySelector("p").textContent = "Your form is with the Skinlux " + ($("cl").value === "leederville" ? "Leederville" : "Booragoon") + " team. If anything changes before your visit, tell your clinician on the day.";
+      window.scrollTo(0, 0);
+    }).catch(function () { btn.disabled = false; btn.textContent = "Send my form"; $("form-err").textContent = "Sorry, that didn't go through. Please call us."; });
+  };
+
+  update();
+})();
+</script>
+</body>
+</html>

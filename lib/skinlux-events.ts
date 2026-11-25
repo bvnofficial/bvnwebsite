@@ -4,7 +4,10 @@
 //
 // Env (Vercel): GHL_HOOK_{BOORAGOON|LEEDERVILLE}_{ABANDONED|TREATMENT|PRODUCT|BOOKED|LEAD}
 import { Clinic, DEFAULT_PRODUCT_LIFE, PRODUCTS, aftercareSms, findTreatment, ghlDate } from "@/lib/skinlux-data";
-import { AUTO_OF_KIND, loadSettings, productLife, treatmentDays } from "@/lib/skinlux-settings";
+import { AUTO_OF_KIND, currentSettings, loadSettings, productLife, treatmentDays } from "@/lib/skinlux-settings";
+import { logEvent } from "@/lib/skinlux-store";
+import { recordInGhl } from "@/lib/skinlux-ghl";
+import { takeFromStock } from "@/lib/skinlux-apps";
 
 export const EVENT_KIND: Record<string, string> = {
   incomplete_booking: "ABANDONED",
@@ -99,7 +102,38 @@ export function buildEvent(body: Obj): Built {
   return { ok: true, clinic, kind, payload: { ...base, service: s(body.service), date: s(body.date), value: Number(body.value) || 0 } };
 }
 
-export async function sendEvent(b: Extract<Built, { ok: true }>): Promise<{ ok: boolean; status: number; error?: string; paused?: boolean }> {
+/** Price of a treatment from HQ Settings ("from" price), for the numbers in HQ. */
+function valueOf(b: Extract<Built, { ok: true }>): number {
+  const p = b.payload;
+  if (typeof p.value === "number" && p.value) return p.value;
+  const st = currentSettings();
+  if (p.treatment) return st.treatments.find((t) => t.name === p.treatment)?.from || 0;
+  if (p.product) {
+    const pr = st.products.find((x) => x.name === p.product);
+    return pr ? Number(String(pr.price).replace(/[^\d.]/g, "")) || 0 : 0;
+  }
+  return 0;
+}
+
+/** Every event is recorded twice before any message logic: in the Skinlux
+ *  event log (HQ numbers, scorecard, today) and on the GoHighLevel contact
+ *  (so HQ and the staff app see it while the workflows are still drafts). */
+export async function recordEvent(b: Extract<Built, { ok: true }>, extra: { source?: string } = {}): Promise<string | null> {
+  await loadSettings().catch(() => null);
+  const p = b.payload;
+  const name = `${String(p.first_name || "")} ${String(p.last_name || "").slice(0, 1)}`.trim();
+  const item = String(p.treatment || p.product || p.interest || p.abandoned_service || p.service || "");
+  const [, id] = await Promise.all([
+    logEvent({ k: String(p.event), c: b.clinic, n: name, t: String(p.therapist || ""), i: item, v: valueOf(b),
+      s: extra.source || String(p.source || ""), inj: p.injectable === "yes" ? 1 : undefined }),
+    recordInGhl(b.clinic, p).catch(() => null),
+    p.event === "product_sold" ? takeFromStock(b.clinic, String(p.product)) : Promise.resolve(),
+  ]);
+  return id;
+}
+
+export async function sendEvent(b: Extract<Built, { ok: true }>, opts: { skipRecord?: boolean } = {}): Promise<{ ok: boolean; status: number; error?: string; paused?: boolean }> {
+  if (!opts.skipRecord) await recordEvent(b).catch(() => null);
   // Jellie can pause a follow up per clinic in HQ Settings. New leads are never paused.
   const auto = AUTO_OF_KIND[b.kind];
   if (auto) {

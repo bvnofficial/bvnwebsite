@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join the waitlist | Skinlux Face &amp; Body</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/data.js"></script>
+<script src="../assets/live-settings.js?v=1"></script>
+<style>
+  .wrap { max-width: 620px; margin: 0 auto; padding: 22px 16px 60px; }
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 18px; }
+  .top .lg { font-family: var(--serif); font-size: 24px; letter-spacing: 3px; }
+  .top small { color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; }
+  .box { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 26px; }
+  h1 { font-size: 32px; margin: 0 0 8px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 5px; }
+  input, select, textarea { width: 100%; font: inherit; font-size: 16px; padding: 11px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: #fff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips .chip { padding: 9px 14px; font-size: 14px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  @media (max-width: 520px) { .two { grid-template-columns: 1fr; } }
+  .err { color: var(--bad); font-size: 13px; min-height: 18px; margin-top: 8px; }
+  .fine { font-size: 11.5px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span class="lg">SKINLUX</span><small>Face and Body, Perth</small></div>
+  <div class="box" id="box">
+    <h1>Get the next free spot</h1>
+    <p class="muted" style="margin:0">When someone cancels, we text the waitlist for that treatment. First to say yes gets the spot.</p>
+    <form id="f" novalidate>
+      <label>Clinic</label>
+      <div class="chips" id="cl"><span class="chip on" data-c="booragoon">Booragoon</span><span class="chip" data-c="leederville">Leederville</span></div>
+      <label for="tx">Treatment</label>
+      <select id="tx"></select>
+      <label>Best times for you</label>
+      <div class="chips" id="times"><span class="chip" data-t="Mornings">Mornings</span><span class="chip" data-t="Afternoons">Afternoons</span><span class="chip" data-t="Evenings">Evenings</span><span class="chip" data-t="Weekends">Weekends</span><span class="chip on" data-t="Any time">Any time</span></div>
+      <div class="two">
+        <div><label for="fn">First name</label><input id="fn" autocomplete="given-name"></div>
+        <div><label for="ln">Last name</label><input id="ln" autocomplete="family-name"></div>
+      </div>
+      <label for="mob">Mobile</label><input id="mob" type="tel" inputmode="tel" autocomplete="tel">
+      <label for="em">Email (optional)</label><input id="em" type="email" autocomplete="email">
+      <label for="nt">Anything we should know (optional)</label><input id="nt" maxlength="300">
+      <input type="text" id="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <button class="btn gold block" type="submit" id="go" style="margin-top:18px">Join the waitlist</button>
+      <div class="err" id="err"></div>
+      <p class="fine">By joining you agree to Skinlux texting you about free appointment times. Reply STOP any time to come off the list.</p>
+    </form>
+  </div>
+</div>
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  var clinic = "booragoon";
+  var qp = new URLSearchParams(location.search);
+  if (qp.get("clinic") === "leederville") clinic = "leederville";
+  function nm(t) { return t.injectable ? t.name.replace(/\s*\(.*\)\s*/, "") : t.name; }
+  $("tx").innerHTML = '<option value="">Any treatment</option>' + S.treatments.map(function (t) { return '<option value="' + t.id + '">' + nm(t) + "</option>"; }).join("");
+  if (qp.get("t")) $("tx").value = qp.get("t");
+  function chips(id, attr, multi) {
+    [].forEach.call(document.querySelectorAll("#" + id + " .chip"), function (c) {
+      c.onclick = function () {
+        if (!multi) { [].forEach.call(document.querySelectorAll("#" + id + " .chip"), function (x) { x.classList.toggle("on", x === c); }); }
+        else {
+          if (c.dataset[attr] === "Any time") { [].forEach.call(document.querySelectorAll("#" + id + " .chip"), function (x) { x.classList.toggle("on", x === c); }); }
+          else { c.classList.toggle("on"); document.querySelector('#' + id + ' [data-t="Any time"]').classList.remove("on"); }
+        }
+        if (id === "cl") clinic = c.dataset.c;
+      };
+    });
+  }
+  chips("cl", "c", false); chips("times", "t", true);
+  [].forEach.call(document.querySelectorAll("#cl .chip"), function (x) { x.classList.toggle("on", x.dataset.c === clinic); });
+  $("f").onsubmit = function (e) {
+    e.preventDefault();
+    var fn = $("fn").value.trim(), mob = $("mob").value.trim();
+    $("err").textContent = "";
+    if (!fn) { $("err").textContent = "Please add your first name."; return; }
+    if (mob.replace(/\D/g, "").length < 9) { $("err").textContent = "Please add your mobile number."; return; }
+    var times = [].map.call(document.querySelectorAll("#times .chip.on"), function (c) { return c.dataset.t; }).join(", ") || "Any time";
+    var btn = $("go"); btn.disabled = true; btn.textContent = "Sending...";
+    fetch("/api/skinlux-waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+      clinic: clinic, treatment_id: $("tx").value, times: times, first_name: fn, last_name: $("ln").value.trim(), phone: mob,
+      email: $("em").value.trim(), note: $("nt").value.trim(), website: $("website").value }) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .then(function (d) {
+        if (!d.ok) { btn.disabled = false; btn.textContent = "Join the waitlist"; $("err").textContent = d.error || "Sorry, that didn't go through. Please call us."; return; }
+        $("box").innerHTML = '<h1></h1><p class="muted"></p><a class="btn" target="_blank" rel="noopener">Or book a time now</a>';
+        $("box").querySelector("h1").textContent = "You're on the list, " + fn;
+        $("box").querySelector("p").textContent = "We'll text you as soon as a spot opens at " + S.locations[clinic].name + ". Reply STOP any time to come off the list.";
+        $("box").querySelector("a").href = S.booking;
+      })
+      .catch(function () { btn.disabled = false; btn.textContent = "Join the waitlist"; $("err").textContent = "Sorry, that didn't go through. Please call us."; });
+  };
+})();
+</script>
+</body>
+</html>

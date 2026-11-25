@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxHqReqOk } from "@/lib/skinlux-hq-gate";
 import { loadSettings } from "@/lib/skinlux-settings";
+import { logEvent, readEvents, storeConfigured } from "@/lib/skinlux-store";
+import { loadIntake, loadStock, loadTraining, loadWaitlist } from "@/lib/skinlux-apps";
 
 /**
  * Skinlux HQ live feed (read only).
@@ -110,9 +112,12 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
     after = `&startAfterId=${m.startAfterId}&startAfter=${m.startAfter}`;
   }
 
-  const [pipes, convs] = await Promise.all([
+  const [pipes, convs, taskRes] = await Promise.all([
     get(token, `/opportunities/pipelines?locationId=${L}`),
     get(token, `/conversations/search?locationId=${L}&limit=40&sort=desc&sortBy=last_message_date`, V_CONV),
+    fetch(`${GHL}/locations/${L}/tasks/search`, { method: "POST", cache: "no-store",
+      headers: { Authorization: `Bearer ${token}`, Version: V, Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: false, limit: 100 }) }).then((r) => (r.ok ? r.json() : null)).catch(() => null) as Promise<J | null>,
   ]);
   if (!pipes) errors.push(`${clinic}: pipelines`);
   if (!convs) errors.push(`${clinic}: conversations`);
@@ -219,7 +224,15 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
       };
     });
 
-  return { clients: clientRows, convos, leads };
+  const tasks = (((taskRes && taskRes.tasks) || []) as J[]).map((t) => {
+    const c = (t.contactDetails || {}) as J;
+    const due = ms(t.dueDate);
+    return { id: String(t._id || t.id), title: clean(t.title), body: clean(t.body), clinic, due, dueTxt: due ? when(due) : "",
+      overdue: !!due && due < Date.now(), name: clean([c.firstName, c.lastName].filter(Boolean).join(" ")), phone: clean(c.phone),
+      contactId: String(t.contactId || c.id || ""), assigned: clean(t.assignedTo || "") };
+  });
+
+  return { clients: clientRows, convos, leads, tasks };
 }
 
 function flowsFrom(list: J[]): J[] {
@@ -254,6 +267,27 @@ async function siteCheck(): Promise<J> {
   }
 }
 
+let lastSiteLog = 0;
+async function appsSummary(errors: string[]): Promise<J> {
+  if (!storeConfigured()) return { store: false, events: [] };
+  try {
+    const [events, stock, wait, intake, training] = await Promise.all([readEvents(62), loadStock(), loadWaitlist(), loadIntake(), loadTraining()]);
+    return {
+      store: true,
+      events: events.slice(0, 4000),
+      stock: stock.items.map((i) => ({ n: i.name, c: i.clinic, kind: i.kind, left: i.left, min: i.min, order: i.order })),
+      waitlist: { people: wait.people.filter((p) => p.status === "waiting").map((p) => ({ c: p.clinic, t: p.treatment, n: `${p.first} ${p.last.slice(0, 1)}`.trim(), at: p.at, times: p.times })),
+        slots: wait.slots.filter((s) => s.status === "open").map((s) => ({ c: s.clinic, t: s.treatment, when: s.when })),
+        filled: wait.slots.filter((s) => s.status === "filled").map((s) => ({ c: s.clinic, t: s.treatment, at: s.at })) },
+      intake: intake.forms.slice(0, 300).map((f) => ({ id: f.id, at: f.at, c: f.clinic, n: f.name, t: f.treatment, visit: f.visit, flags: f.flags, cleared: f.cleared, contactId: f.contactId })),
+      training: { protocols: training.protocols.map((p) => ({ id: p.id, t: p.treatment, status: p.status })), reads: training.reads },
+    };
+  } catch {
+    errors.push("apps");
+    return { store: true, events: [] };
+  }
+}
+
 async function build(): Promise<J> {
   const errors: string[] = [];
   const sitePromise = siteCheck();
@@ -262,12 +296,14 @@ async function build(): Promise<J> {
     if (!token || !loc) return null;
     return readClinic(c, token, loc, errors);
   }));
-  const live = parts.filter(Boolean) as { clients: J[]; convos: J[]; leads: J[] }[];
+  const live = parts.filter(Boolean) as { clients: J[]; convos: J[]; leads: J[]; tasks: J[] }[];
   if (!live.length) return { configured: false };
 
   const allClients = live.flatMap((p) => p.clients);
   const convos = live.flatMap((p) => p.convos);
   const leads = live.flatMap((p) => p.leads);
+  const tasks = live.flatMap((p) => p.tasks).sort((a, b) => (a.due || 9e15) - (b.due || 9e15));
+  const apps = await appsSummary(errors);
   const srcCount: Record<string, [number, number]> = {};
   leads.forEach((l) => { const k = l.src || "Other"; srcCount[k] = srcCount[k] || [0, 0]; srcCount[k][0]++; if (l.s === 3) srcCount[k][1]++; });
 
@@ -279,8 +315,15 @@ async function build(): Promise<J> {
     clients: allClients, convos, leads,
     sources: Object.entries(srcCount).map(([k, v]) => [k, v[0], v[1]]).sort((a, b) => (b[1] as number) - (a[1] as number)),
     flows: flowsFrom(allClients),
-    site: await sitePromise,
+    site: await (async () => {
+      const site = await sitePromise;
+      if (Date.now() - lastSiteLog > 10 * 60_000) { lastSiteLog = Date.now(); await logEvent({ k: "site", c: "web", s: site.up ? "up" : "down", v: site.ms }); }
+      return site;
+    })(),
     automations: (await loadSettings()).automations,
+    team: (await loadSettings()).team,
+    tasks,
+    ...apps,
     errors,
   };
 }
