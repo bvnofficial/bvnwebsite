@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildEvent, sendEvent } from "@/lib/skinlux-events";
+import { loadSettings } from "@/lib/skinlux-settings";
 
 /**
  * Shopify to workflow 3 (product sale). Skinlux's Shopify sends "Order
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   const cust: J = order.customer || {};
   const addr: J = order.billing_address || order.shipping_address || {};
-  const clinic = (process.env.SKINLUX_SHOPIFY_CLINIC || "booragoon").toLowerCase();
+  const clinic = (await loadSettings()).shopifyClinic; // set in HQ Settings
   const base = {
     event: "product_sold",
     clinic,

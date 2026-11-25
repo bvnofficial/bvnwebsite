@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxStaffReqOk } from "@/lib/skinlux-staff-gate";
-import { PRODUCTS, THERAPISTS, TREATMENTS } from "@/lib/skinlux-data";
+import { TREATMENTS } from "@/lib/skinlux-data";
+import { loadSettings } from "@/lib/skinlux-settings";
 
 /**
  * Skinlux staff app data, per clinic, from GoHighLevel:
@@ -17,9 +18,14 @@ export async function GET(req: NextRequest) {
   const out = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
   if (!(await skinluxStaffReqOk(req))) return out(401, { ok: false, error: "Not signed in" });
   const u = req.nextUrl.searchParams;
-  if (u.get("view") === "meta")
+  if (u.get("view") === "meta") {
+    // team and products come from HQ Settings
+    const st = await loadSettings();
+    const want = (u.get("clinic") || "").toLowerCase();
+    const team = st.team.filter((m) => !want || m.clinics.length === 0 || m.clinics.includes(want as "booragoon" | "leederville"));
     return out(200, { ok: true, treatments: TREATMENTS.map((t) => ({ name: t.name, injectable: t.injectable })),
-      therapists: THERAPISTS, products: PRODUCTS.map((p) => p.name) });
+      therapists: team.map((m) => m.name), team: st.team, products: st.products.map((p) => p.name) });
+  }
   const clinic = (u.get("clinic") || "").toLowerCase();
   if (clinic !== "booragoon" && clinic !== "leederville") return out(400, { ok: false, error: "Pick a clinic" });
   const C = clinic.toUpperCase();

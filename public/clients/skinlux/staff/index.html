@@ -102,12 +102,18 @@
 
   api("/api/skinlux-staff?view=meta").then(function(m){
     meta=m;if(!m.ok)return;
-    m.therapists.forEach(function(n){$("therapist").add(new Option(n,n))});
+    fillTeam();
     m.treatments.forEach(function(t){$("treatment").add(new Option(t.name+(t.injectable?" (injectable)":""),t.name))});
     m.products.forEach(function(p){$("product").add(new Option(p,p))});
-    try{var s=JSON.parse(localStorage.getItem("sl-staff")||"{}");if(s.c)$("clinic").value=s.c;if(s.t)$("therapist").value=s.t}catch(e){}
+    try{var s=JSON.parse(localStorage.getItem("sl-staff")||"{}");if(s.c)$("clinic").value=s.c;fillTeam();if(s.t)$("therapist").value=s.t}catch(e){}
   });
-  $("clinic").onchange=function(){save();picked=null;$("results").innerHTML="";if(tab==="calls")loadCalls()};
+  // team names for the picked clinic, from HQ Settings
+  function fillTeam(){var sel=$("therapist"),cur=sel.value,c=$("clinic").value;
+    while(sel.options.length>1)sel.remove(1);
+    var list=(meta.team||[]).filter(function(m){return !m.clinics.length||m.clinics.indexOf(c)>-1}).map(function(m){return m.name});
+    if(!meta.team)list=meta.therapists||[];
+    list.forEach(function(n){sel.add(new Option(n,n))});if(list.indexOf(cur)>-1)sel.value=cur}
+  $("clinic").onchange=function(){if(meta&&meta.ok)fillTeam();save();picked=null;$("results").innerHTML="";if(tab==="calls")loadCalls()};
   $("therapist").onchange=save;
   $("treatment").onchange=function(){var t=(meta.treatments||[]).find(function(x){return x.name===$("treatment").value});$("injNote").hidden=!(t&&t.injectable)};
 

@@ -4,6 +4,7 @@
 //
 // Env (Vercel): GHL_HOOK_{BOORAGOON|LEEDERVILLE}_{ABANDONED|TREATMENT|PRODUCT|BOOKED|LEAD}
 import { Clinic, DEFAULT_PRODUCT_LIFE, PRODUCTS, aftercareSms, findTreatment, ghlDate } from "@/lib/skinlux-data";
+import { AUTO_OF_KIND, loadSettings, productLife, treatmentDays } from "@/lib/skinlux-settings";
 
 export const EVENT_KIND: Record<string, string> = {
   incomplete_booking: "ABANDONED",
@@ -48,6 +49,7 @@ async function editedAftercare(clinic: Clinic, treatment: string, injectable: bo
 }
 
 export async function buildEventWithEdits(body: Obj): Promise<Built> {
+  await loadSettings();
   const b = buildEvent(body);
   if (!b.ok || b.payload.event !== "treatment_done") return b;
   const t = findTreatment(String(b.payload.treatment));
@@ -73,17 +75,18 @@ export function buildEvent(body: Obj): Built {
   if (event === "treatment_done") {
     const t = findTreatment(s(body.treatment));
     if (!t) return { ok: false, error: "Pick a treatment from the list" };
+    const days = treatmentDays(t.name) || { rebookDays: t.rebookDays, checkinDay: t.checkinDay }; // Jellie's HQ settings
     return { ok: true, clinic, kind, payload: { ...base,
       treatment: t.name, therapist: s(body.therapist), injectable: t.injectable ? "yes" : "no",
-      aftercare_sms: aftercareSms(t, first, clinic), checkin_day: t.checkinDay,
-      next_due_date: t.rebookDays ? ghlDate(t.rebookDays) : "", hifu: t.name === "HIFU" ? "yes" : "no",
+      aftercare_sms: aftercareSms(t, first, clinic), checkin_day: days.checkinDay,
+      next_due_date: days.rebookDays ? ghlDate(days.rebookDays) : "", hifu: t.name === "HIFU" ? "yes" : "no",
       package_name: s(body.package_name), package_sessions_left: Number(body.package_sessions_left) || 0,
     } };
   }
   if (event === "product_sold") {
     const product = s(body.product);
     if (!product) return { ok: false, error: "Pick a product" };
-    const life = PRODUCTS.find((p) => p.name === product)?.lifeDays || DEFAULT_PRODUCT_LIFE;
+    const life = productLife(product) || PRODUCTS.find((p) => p.name === product)?.lifeDays || DEFAULT_PRODUCT_LIFE;
     return { ok: true, clinic, kind, payload: { ...base, product, product_reorder_date: ghlDate(Math.max(1, life - 10)) } };
   }
   if (event === "new_lead") {
@@ -96,7 +99,13 @@ export function buildEvent(body: Obj): Built {
   return { ok: true, clinic, kind, payload: { ...base, service: s(body.service), date: s(body.date), value: Number(body.value) || 0 } };
 }
 
-export async function sendEvent(b: Extract<Built, { ok: true }>): Promise<{ ok: boolean; status: number; error?: string }> {
+export async function sendEvent(b: Extract<Built, { ok: true }>): Promise<{ ok: boolean; status: number; error?: string; paused?: boolean }> {
+  // Jellie can pause a follow up per clinic in HQ Settings. New leads are never paused.
+  const auto = AUTO_OF_KIND[b.kind];
+  if (auto) {
+    const st = await loadSettings();
+    if (st.automations[b.clinic] && st.automations[b.clinic][auto] === false) return { ok: true, status: 200, paused: true };
+  }
   const url = process.env[`GHL_HOOK_${b.clinic.toUpperCase()}_${b.kind}`];
   if (!url) return { ok: false, status: 503, error: `The ${b.kind.toLowerCase()} workflow isn't connected yet` };
   const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b.payload) }).catch(() => null);

@@ -612,15 +612,42 @@
   }
 
   /* ---------- Workflows ---------- */
-  var MSGCARD = !LIVE ? "" : '<div class="card" style="margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:220px"><b>Your messages</b><br><span class="muted">Edit the wording of every text and email your clients get, for one clinic or both.</span></div><a class="btn sm" href="' + (LIVE ? "messages.html" : "hq/messages.html") + '">Edit messages</a></div>';
+  var MSGCARD = !LIVE ? "" : '<div class="card" style="margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:220px"><b>You control everything here</b><br><span class="muted">Message wording, your offer pages, and Settings for follow ups on or off, clinic details and links, treatment prices and timing, products and your team.</span></div><a class="btn sm" href="messages.html">Your messages</a><a class="btn sm ghost" href="offers.html">Your offers</a><a class="btn sm ghost" href="settings.html">Settings</a></div>';
+  // live: flows 1 to 3 map to the follow up switches in Settings
+  var FLOW_AUTO = ["abandoned", "treatment", "product"];
+  function liveFlowOn(i) {
+    var a = LIVE && LIVE.automations, k = FLOW_AUTO[i];
+    if (!a || !k) return null;
+    var cs = clinicsList(), on = cs.filter(function (c) { return a[c] && a[c][k] !== false; });
+    return on.length === cs.length ? "on" : on.length ? "some" : "off";
+  }
+  function liveFlowToggle(i, fl) {
+    var K = null; try { K = localStorage.getItem("skinluxhq-key"); } catch (e) {}
+    var H = { Accept: "application/json", "Content-Type": "application/json" }; if (K) H.Authorization = "Bearer " + K;
+    var turnOn = liveFlowOn(i) !== "on", cs = clinicsList();
+    fetch("/api/skinlux-hq/settings", { headers: H, credentials: "include", cache: "no-store" }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.ok) throw new Error(d.error);
+      var st = d.settings;
+      cs.forEach(function (c) { st.automations[c][FLOW_AUTO[i]] = turnOn; });
+      return fetch("/api/skinlux-hq/settings", { method: "PUT", headers: H, credentials: "include", body: JSON.stringify({ settings: st }) }).then(function (r) { return r.json(); });
+    }).then(function (d) {
+      if (!d || !d.ok) throw new Error(d && d.error);
+      LIVE.automations = d.settings.automations;
+      toast(fl.n + (turnOn ? " is back on" : " is paused") + (cs.length === 1 ? " at " + cs[0].charAt(0).toUpperCase() + cs[0].slice(1) : " at both clinics") + ".");
+      renderFlows();
+    }).catch(function () { toast("Couldn't change that. Try again in a minute."); });
+  }
   function renderFlows() {
     var h = MSGCARD + '<div class="note" style="margin-bottom:16px">Every workflow runs in GoHighLevel and reads from Timely directly. Switch one off and nobody new enters it. People already in it finish their current step.</div><div class="stack">';
     FLOWS.forEach(function (f, i) {
+      var lv = LIVE ? liveFlowOn(i) : null;
+      if (lv) f.on = lv !== "off";
       function stat(x) { return "<div><b>" + (typeof x[0] === "number" ? sc(x[0]) : x[0]) + "</b>" + x[1] + "</div>"; }
       h += '<div class="card flow' + (f.on ? "" : " off") + '"><div><h3 style="margin:0">' + f.n + "</h3>" +
         '<div class="stats">' + (f.now ? "<div><b>" + sc(f.now) + "</b>in it right now</div>" : "") + stat(f.a) + stat(f.b) + stat(f.c) + "</div>" +
         '<small class="muted">Latest</small><ul>' + f.log.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" +
-        '<div class="row"><small class="muted">' + (f.on ? "On" : "Paused") + '</small><button class="switch' + (f.on ? " on" : "") + '" data-flow="' + i + '" aria-label="Turn ' + esc(f.n) + (f.on ? " off" : " on") + '"></button></div></div>';
+        (LIVE && !lv ? '<div class="row"><small class="muted">Runs in GoHighLevel</small></div></div>' :
+        '<div class="row"><small class="muted">' + (lv === "some" ? "On at one clinic" : f.on ? "On" : "Paused") + '</small><button class="switch' + (f.on ? " on" : "") + '" data-flow="' + i + '" aria-label="Turn ' + esc(f.n) + (f.on ? " off" : " on") + '"></button></div></div>');
     });
     $("v-flows").innerHTML = h + "</div>";
   }
@@ -833,7 +860,9 @@
     }
     var fw = t.closest("[data-flow]");
     if (fw) {
-      var fl = FLOWS[+fw.getAttribute("data-flow")]; fl.on = !fl.on;
+      var fi = +fw.getAttribute("data-flow"), fl = FLOWS[fi];
+      if (LIVE && FLOW_AUTO[fi]) { liveFlowToggle(fi, fl); return; }
+      fl.on = !fl.on;
       toast(fl.n + (fl.on ? " is back on." : " is paused. Nobody new enters it."));
       renderFlows(); return;
     }

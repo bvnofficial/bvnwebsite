@@ -7,6 +7,7 @@
 <title>Free skin check | Skinlux Face &amp; Body</title>
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/data.js"></script>
+<script src="../assets/live-settings.js?v=1"></script>
 <script src="analyse.js?v=6"></script>
 <style>
   .layout { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 28px; align-items: start; }
@@ -541,21 +542,21 @@
       for (var i = 0; i < opts.length; i++) {
         if (opts[i] === "injectable") { consult = true; return; }
         var tx = TX[opts[i]];
-        if (tx.dt <= A.down && picks.indexOf(opts[i]) < 0) { picks.push(opts[i]); return; }
+        if (tx.dt <= A.down && T(opts[i]) && picks.indexOf(opts[i]) < 0) { picks.push(opts[i]); return; }
       }
     });
     picks = picks.slice(0, 3);
     var total = 0, html = "";
     picks.forEach(function (id) {
-      var t = T(id), tx = TX[id];
+      var t = T(id), tx = TX[id], from = t.from > 0 ? t.from : tx.from; // price from HQ Settings
       var sessions = t.interval_days ? Math.min(tx.cap, Math.floor(84 / t.interval_days) + 1) : 1;
       var step = t.interval_days ? Math.max(1, Math.round(t.interval_days / 7)) : 12;
       var weeks = []; for (var w = 0; w < sessions; w++) weeks.push(1 + w * step);
-      total += sessions * tx.from;
+      total += sessions * from;
       html += '<div class="tx"><div class="row between"><b>' + t.name + '</b><span class="badge gold">' + sessions + (sessions === 1 ? " session" : " sessions") + '</span></div>' +
         '<p>' + tx.why + ' Downtime: ' + t.downtime.toLowerCase() + '</p>' +
         '<div class="weeks">' + Array.apply(null, Array(12)).map(function (_, i) { return '<i class="' + (weeks.indexOf(i + 1) > -1 ? "s" : "") + '">' + (i + 1) + '</i>'; }).join("") + '</div>' +
-        '<p style="margin-top:6px">From ' + money(tx.from) + ' a session. Ask about packs and this month\'s offer.</p></div>';
+        '<p style="margin-top:6px">From ' + money(from) + ' a session. Ask about packs and this month\'s offer.</p></div>';
     });
     if (consult) {
       html += '<div class="tx" style="border-color:var(--gold)"><div class="row between"><b>Nurse consult for fine lines</b><span class="badge ok">Free</span></div>' +
@@ -566,12 +567,12 @@
     $("plan").innerHTML = html;
     $("planIntro").textContent = "Made for your top focus areas" + (A.down === 0 ? ", with no downtime treatments only." : ", within the downtime you picked.");
 
-    var P = S.products, prods = [P[2]];
-    if (focus.indexOf("evenness") > -1 || focus.indexOf("dull") > -1 || focus.indexOf("redness") > -1) prods.push(P[0]);
-    if (focus.indexOf("texture") > -1 || focus.indexOf("lines") > -1 || focus.indexOf("firmness") > -1) prods.push(P[1]);
-    prods.push(P[3]);
-    $("routine").innerHTML = "<h3 style='margin-top:6px'>Your home routine</h3>" + prods.map(function (p) {
-      return '<div class="prod"><span><b>' + p.name + '</b><br><small>' + p.use + '</small></span><span>' + p.price + '</span></div>';
+    // Routine products come from HQ Settings (each product is marked for everyone, tone, texture or clear skin)
+    var want = { everyone: true, tone: /evenness|dull|redness/.test(focus.join()), texture: /texture|lines|firmness/.test(focus.join()), clear: focus.indexOf("congestion") > -1 };
+    var prods = (S.routine_products || []).filter(function (p) { return want[p.routine]; }).slice(0, 5);
+    function e(x) { return String(x || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    $("routine").innerHTML = !prods.length ? "" : "<h3 style='margin-top:6px'>Your home routine</h3>" + prods.map(function (p) {
+      return '<div class="prod"><span><b>' + e(p.name) + '</b><br><small>' + e(p.use) + '</small></span><span>' + e(p.price) + '</span></div>';
     }).join("");
 
     feed("ghl", "GHL", "Plan built: " + (picks.map(function (id) { return T(id).name; }).join(", ") || "consult only") + (consult ? " plus nurse consult" : "") + ". Plan value <b>" + money(total) + "</b>.");

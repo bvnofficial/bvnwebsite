@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .wrap{max-width:980px;margin:0 auto;padding:20px 18px 110px}
+  .top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 18px}
+  .top h1{margin:0;font-size:30px;flex:1}
+  h2{font-size:20px;margin:0 0 4px}
+  .sec{margin-top:18px}
+  .sub{font-size:13px;color:var(--muted);margin:0 0 12px}
+  label{display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px}
+  input,select,textarea{width:100%;font:inherit;font-size:14px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--line);background:#fff}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);padding:6px 6px;border-bottom:1px solid var(--line)}
+  td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+  td input[type=checkbox]{width:18px;height:18px}
+  .scroll{overflow-x:auto}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  .sw{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .sw b{flex:1;font-size:14px}.sw small{display:block;color:var(--muted);font-weight:400}
+  .sw input{width:20px;height:20px}
+  .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:99px;overflow:hidden}
+  .seg button{font:inherit;font-size:13px;border:0;background:#fff;padding:7px 14px;cursor:pointer}
+  .seg button.on{background:var(--ink);color:#fff}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:var(--ink);color:#fff;padding:12px 18px;display:none;align-items:center;gap:12px;z-index:8}
+  .bar span{flex:1;font-size:14px}
+  .err{color:#b83a2e;font-size:13px;margin-top:8px;min-height:18px}
+  .toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;display:none;z-index:9}
+  .x{border:0;background:none;color:#b83a2e;font-size:18px;cursor:pointer}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Settings</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Settings</h1></div>
+  <div class="card soft"><b>Everything that runs Skinlux's follow ups and pages is controlled here.</b> <span class="muted">Message wording is under Your messages, offers under Your offers. Changes here show on the website pages within a minute.</span></div>
+  <div id="app"><p class="muted" style="margin-top:20px">Loading your settings</p></div>
+</div>
+<div class="bar" id="bar"><span>You have unsaved changes</span><button class="btn sm gold" id="saveAll">Save settings</button></div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var K=null;try{K=localStorage.getItem("skinluxhq-key")}catch(e){}
+  var H={Accept:"application/json","Content-Type":"application/json"};if(K)H.Authorization="Bearer "+K;
+  function $(id){return document.getElementById(id)}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function toast(t){var e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(function(){e.style.display="none"},3000)}
+  var D=null,S=null,clinic="booragoon";
+  var CL={booragoon:"Booragoon",leederville:"Leederville"};
+  var AUTOS=[["abandoned","Abandoned booking","Texts and emails people who start an online booking and don't finish"],["treatment","After a treatment","Aftercare, check in, review request and next session reminder"],["product","Product sales","How to use it, check in and restock reminder"]];
+  var VALS=[["clinic_phone","Clinic phone"],["clinic_address","Address"],["clinic_hours","Opening hours"],["sender_name","Who messages come from","For example: The Skinlux Booragoon team"],["booking_link","Booking link (Timely)"],["consult_link","Consult booking link"],["review_link","Google review link"],["voucher_link","Gift voucher link"],["shop_link","Online shop link"],["abandoned_offer","Abandoned booking offer","Shown to new clients who didn't finish booking. Never for injectables."]];
+  var ROUT=[["","Not in the skin check"],["everyone","Everyone"],["tone","Tone, redness, dullness"],["texture","Texture and lines"],["clear","Breakouts and pores"]];
+  function dirty(){$("bar").style.display="flex"}
+  fetch("/api/skinlux-hq/settings",{headers:H,credentials:"include",cache:"no-store"}).then(function(r){return r.json()}).then(function(d){
+    if(!d.ok){$("app").innerHTML='<div class="card" style="margin-top:16px">'+esc(d.error||"Couldn't load your settings")+"</div>";return}
+    D=d;S=d.settings;draw()}).catch(function(){$("app").innerHTML='<div class="card" style="margin-top:16px">Couldn\'t reach Skinlux HQ. Try again in a minute.</div>'});
+
+  function draw(){
+    var h="";
+    // follow up switches
+    h+='<div class="card sec"><h2>Follow ups on or off</h2><p class="sub">Pause a follow up for one clinic, for example during a holiday. While it\'s off, nothing new starts for that follow up. New enquiries are always saved.</p><div class="grid2">';
+    ["booragoon","leederville"].forEach(function(c){
+      h+='<div><b>'+CL[c]+'</b>'+AUTOS.map(function(a){return'<label class="sw"><b>'+a[1]+'<small>'+a[2]+'</small></b><input type="checkbox" data-auto="'+c+'.'+a[0]+'"'+(S.automations[c][a[0]]?" checked":"")+'></label>'}).join("")+'</div>'});
+    h+='</div></div>';
+    // clinic details
+    h+='<div class="card sec"><h2>Clinic details</h2><p class="sub">Used inside your texts and emails. Each clinic has its own.</p><div class="seg" id="cseg"><button data-c="booragoon" class="on">Booragoon</button><button data-c="leederville">Leederville</button></div><div id="cvals"></div><button class="btn sm" id="saveClinic" style="margin-top:12px">Save clinic details</button><div class="err" id="cerr"></div></div>';
+    // website
+    h+='<div class="card sec"><h2>Website pages</h2><p class="sub">The booking link on the quiz, skin check and offer pages, and which clinic online shop orders count for.</p><div class="grid2"><div><label>Booking link</label><input id="booking" value="'+esc(S.booking)+'"></div><div><label>Online shop orders belong to</label><select id="shopc"><option value="booragoon">Booragoon</option><option value="leederville">Leederville</option></select></div></div></div>';
+    // treatments
+    h+='<div class="card sec"><h2>Treatments</h2><p class="sub">Show online: the quiz and skin check can suggest it. Price text shows in the quiz; the from price is per session in the skin check plan. Next due: days until the next session reminder (0 for none). Check in: day 2 or 3 after the treatment. Injectable prices stay off the website by law.</p><div class="scroll"><table><tr><th>Treatment</th><th>Show online</th><th>Price text (quiz)</th><th>From $ (skin check)</th><th>Next due (days)</th><th>Check in</th></tr>'+
+      S.treatments.map(function(t,i){return'<tr data-t="'+i+'"><td><b>'+esc(t.name)+'</b>'+(t.injectable?'<br><small class="muted">Injectable</small>':"")+'</td><td><input type="checkbox" class="t-on"'+(t.online?" checked":"")+'></td><td><input class="t-price" value="'+esc(t.price)+'"'+(t.injectable?" disabled":"")+'></td><td><input class="t-from" type="number" min="0" value="'+t.from+'"'+(t.injectable?" disabled":"")+' style="width:90px"></td><td><input class="t-days" type="number" min="0" value="'+t.rebookDays+'" style="width:80px"></td><td><select class="t-ci" style="width:80px"><option value="2"'+(t.checkinDay===2?" selected":"")+'>Day 2</option><option value="3"'+(t.checkinDay===3?" selected":"")+'>Day 3</option></select></td></tr>'}).join("")+'</table></div></div>';
+    // products
+    h+='<div class="card sec"><h2>Products</h2><p class="sub">The list the staff app shows for Product sold. Lasts (days) sets the restock reminder, 10 days before it runs out. Skin check: which plans suggest it in the home routine.</p><div class="scroll"><table id="ptab"><tr><th>Product</th><th>Price</th><th>How to use</th><th>Lasts (days)</th><th>Skin check</th><th></th></tr></table></div><button class="btn sm ghost" id="addP" style="margin-top:10px">Add a product</button></div>';
+    // team
+    h+='<div class="card sec"><h2>Team</h2><p class="sub">Names in the staff app under "Who are you?".</p><table id="mtab"><tr><th>Name</th><th>Booragoon</th><th>Leederville</th><th></th></tr></table><button class="btn sm ghost" id="addM" style="margin-top:10px">Add a team member</button></div><div class="err" id="serr"></div>';
+    $("app").innerHTML=h;
+    $("shopc").value=S.shopifyClinic;
+    S.products.forEach(addProd);S.team.forEach(addMem);
+    $("addP").onclick=function(){addProd({name:"",price:"",use:"",lifeDays:85,routine:""});dirty()};
+    $("addM").onclick=function(){addMem({name:"",clinics:["booragoon","leederville"]});dirty()};
+    $("app").addEventListener("input",function(e){if(!e.target.closest("#cvals"))dirty()});
+    $("app").addEventListener("change",function(e){if(!e.target.closest("#cvals"))dirty()});
+    [].forEach.call(document.querySelectorAll("#cseg button"),function(b){b.onclick=function(){clinic=b.dataset.c;[].forEach.call(document.querySelectorAll("#cseg button"),function(x){x.classList.toggle("on",x===b)});drawClinic()}});
+    drawClinic();
+    $("saveClinic").onclick=saveClinic;
+  }
+  function addProd(p){
+    var tr=document.createElement("tr");
+    tr.innerHTML='<td><input class="p-n" value="'+esc(p.name)+'"></td><td><input class="p-pr" value="'+esc(p.price)+'" style="width:90px"></td><td><input class="p-u" value="'+esc(p.use)+'"></td><td><input class="p-l" type="number" min="10" value="'+(p.lifeDays||85)+'" style="width:80px"></td><td><select class="p-r">'+ROUT.map(function(r){return'<option value="'+r[0]+'"'+(r[0]===p.routine?" selected":"")+'>'+r[1]+'</option>'}).join("")+'</select></td><td><button class="x" title="Remove">&times;</button></td>';
+    tr.querySelector(".x").onclick=function(){tr.remove();dirty()};
+    $("ptab").appendChild(tr);
+  }
+  function addMem(m){
+    var tr=document.createElement("tr");
+    tr.innerHTML='<td><input class="m-n" value="'+esc(m.name)+'"></td><td><input type="checkbox" class="m-b"'+(m.clinics.indexOf("booragoon")>-1?" checked":"")+'></td><td><input type="checkbox" class="m-l"'+(m.clinics.indexOf("leederville")>-1?" checked":"")+'></td><td><button class="x" title="Remove">&times;</button></td>';
+    tr.querySelector(".x").onclick=function(){tr.remove();dirty()};
+    $("mtab").appendChild(tr);
+  }
+  function drawClinic(){
+    var v=D.clinics[clinic];
+    if(!v){$("cvals").innerHTML='<p class="muted">This clinic isn\'t connected.</p>';return}
+    $("cvals").innerHTML='<div class="grid2">'+VALS.map(function(x){var val=v[x[0]]||"";return'<div><label>'+x[1]+'</label><input data-v="'+x[0]+'" value="'+esc(/^SET ME/.test(val)?"":val)+'" placeholder="'+esc(/^SET ME/.test(val)?"Not set yet":"")+'">'+(x[2]?'<div class="muted" style="font-size:12px;margin-top:3px">'+esc(x[2])+'</div>':"")+'</div>'}).join("")+'</div>';
+  }
+  function saveClinic(){
+    var vals={};[].forEach.call(document.querySelectorAll("#cvals [data-v]"),function(i){var old=D.clinics[clinic][i.dataset.v]||"";if(i.value!==old&&!(i.value===""&&/^SET ME/.test(old)))vals[i.dataset.v]=i.value});
+    $("cerr").textContent="";
+    if(!Object.keys(vals).length){toast("Nothing changed");return}
+    fetch("/api/skinlux-hq/settings",{method:"PUT",headers:H,credentials:"include",body:JSON.stringify({clinic:clinic,values:vals})}).then(function(r){return r.json()}).then(function(d){
+      if(!d.ok){$("cerr").textContent=d.error||"Couldn't save";return}
+      Object.keys(vals).forEach(function(k){D.clinics[clinic][k]=vals[k]});
+      if(vals.clinic_phone){S.phones[clinic]=vals.clinic_phone;saveSettings(true)}
+      toast(CL[clinic]+" details saved")}).catch(function(){$("cerr").textContent="Couldn't reach Skinlux HQ"});
+  }
+  function collect(){
+    var au={booragoon:{},leederville:{}};
+    [].forEach.call(document.querySelectorAll("[data-auto]"),function(i){var k=i.dataset.auto.split(".");au[k[0]][k[1]]=i.checked});
+    var tr=[].map.call(document.querySelectorAll("[data-t]"),function(r){var t=S.treatments[+r.dataset.t];return{id:t.id,online:r.querySelector(".t-on").checked,price:r.querySelector(".t-price").value,from:+r.querySelector(".t-from").value||0,rebookDays:+r.querySelector(".t-days").value||0,checkinDay:+r.querySelector(".t-ci").value}});
+    var pr=[].map.call(document.querySelectorAll("#ptab tr"),function(r){if(!r.querySelector(".p-n"))return null;return{name:r.querySelector(".p-n").value,price:r.querySelector(".p-pr").value,use:r.querySelector(".p-u").value,lifeDays:+r.querySelector(".p-l").value||85,routine:r.querySelector(".p-r").value}}).filter(Boolean);
+    var tm=[].map.call(document.querySelectorAll("#mtab tr"),function(r){if(!r.querySelector(".m-n"))return null;var c=[];if(r.querySelector(".m-b").checked)c.push("booragoon");if(r.querySelector(".m-l").checked)c.push("leederville");return{name:r.querySelector(".m-n").value,clinics:c}}).filter(Boolean);
+    return{booking:$("booking").value,phones:S.phones,automations:au,treatments:tr,products:pr,team:tm,shopifyClinic:$("shopc").value};
+  }
+  function saveSettings(quiet){
+    $("serr").textContent="";var btn=$("saveAll");btn.disabled=true;
+    fetch("/api/skinlux-hq/settings",{method:"PUT",headers:H,credentials:"include",body:JSON.stringify({settings:collect()})}).then(function(r){return r.json()}).then(function(d){
+      btn.disabled=false;
+      if(!d.ok){$("serr").textContent=d.error||"Couldn't save";toast(d.error||"Couldn't save");return}
+      S=d.settings;$("bar").style.display="none";if(!quiet)toast("Settings saved")}).catch(function(){btn.disabled=false;$("serr").textContent="Couldn't reach Skinlux HQ"});
+  }
+  $("saveAll").onclick=function(){saveSettings(false)};
+  window.addEventListener("beforeunload",function(e){if($("bar").style.display==="flex"){e.preventDefault();e.returnValue=""}});
+})();
+</script>
+</body>
+</html>

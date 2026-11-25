@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxHqReqOk } from "@/lib/skinlux-hq-gate";
+import { loadSettings } from "@/lib/skinlux-settings";
 
 /**
  * Skinlux HQ live feed (read only).
@@ -279,6 +280,7 @@ async function build(): Promise<J> {
     sources: Object.entries(srcCount).map(([k, v]) => [k, v[0], v[1]]).sort((a, b) => (b[1] as number) - (a[1] as number)),
     flows: flowsFrom(allClients),
     site: await sitePromise,
+    automations: (await loadSettings()).automations,
     errors,
   };
 }
