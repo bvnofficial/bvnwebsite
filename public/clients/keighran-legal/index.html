@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keighran App Suite | Demo</title>
+<style>
+:root{--ink:#14213D;--gold:#C8963E;--gold2:#E7C98F;--cream:#F7F4EE;--line:#E6E0D4;--muted:#6B7280;--serif:Georgia,"Times New Roman",serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--cream)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0}
+.hero{background:linear-gradient(135deg,#14213D 0%,#24365F 100%);color:#F3EEE4;padding:60px 20px 50px;text-align:center}
+.hero .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold2)}
+.hero h1{font-size:44px;margin:12px 0}.hero p{max-width:680px;margin:0 auto;opacity:.85;line-height:1.6}
+.stack{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}.stack span{border:1px solid rgba(243,238,228,.3);padding:6px 14px;border-radius:99px;font-size:13px}
+.wrap{max-width:1120px;margin:0 auto;padding:10px 20px 60px}
+.st{display:flex;align-items:baseline;gap:12px;margin:38px 0 14px}.st .c{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{display:block;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;text-decoration:none;color:var(--ink);position:relative;transition:transform .15s,box-shadow .15s}
+a.card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(20,33,61,.12)}
+.card .n{font-family:var(--serif);color:var(--gold);font-weight:700;letter-spacing:1px}.card h3{margin:4px 0 8px;font-size:20px}
+.card p{color:var(--muted);font-size:14px;margin:0;line-height:1.55}.card .fix{margin-top:12px;font-size:12px;color:#7A5A22}
+.card.pick:after{content:"Show on the call";position:absolute;top:14px;right:14px;background:var(--gold);color:var(--ink);font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px}
+.big{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}@media(max-width:900px){.big{grid-template-columns:1fr}}
+.big .card{padding:26px}.big h3{font-size:26px}
+.foot{margin-top:44px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <img src="assets/logo.png" alt="Keighran Legal + Advisory" style="height:70px;margin-bottom:18px" onerror="this.outerHTML='<div style=&quot;font-family:Georgia,serif;font-size:26px;color:#fff;margin-bottom:14px&quot;>Keighran Legal <span style=&quot;color:#C8963E&quot;>+</span> Advisory</div>'"><div class="tag">App suite demo · Prepared for Cindy</div>
+  <h1>The Keighran App Suite</h1>
+  <p>Keighran HQ and twelve apps for a commercial firm that wins work through relationships. Your practice management system stays where it is. Everything here plugs in around it.</p>
+  <div class="stack"><span>Real estate</span><span>Hotels</span><span>Construction</span><span>Keighran HQ</span><span>GoHighLevel</span></div>
+</div>
+<div class="wrap">
+  <div class="st"><h2>Start here</h2><span class="c">the two to try live</span></div>
+  <div class="big">
+    <a class="card pick" href="hq.html"><div class="n">HQ</div><h3>Keighran HQ</h3><p>One screen for Cindy and Duane: new enquiries with the conflict check, every matter from enquiry to final invoice, key dates across all files, referrers due a call, client feedback, team workload, onboarding, overdue invoices and whether the website is up.</p><div class="fix">Fixes: checking inboxes, spreadsheets and the matter system to know how the week is going</div></a>
+    <a class="card pick" href="key-date-finder.html"><div class="n">01</div><h3>Key Date Finder</h3><p>Drop in a lease, a contract for sale or a hotel management agreement. In seconds it lists every date that matters: sunset date, settlement, option windows, rent reviews, notice periods, make good. One tap loads them into Key Dates, with reminders to the lawyer and the client.</p><div class="fix">Fixes: dates read by hand from 80 page documents, the missed option window nobody wants to explain</div></a>
+  </div>
+
+  <div class="st"><h2>For your clients</h2><span class="c">4 apps</span></div>
+  <div class="grid">
+    <div class="card pick"><div class="n">02</div><h3>Deal Tracker client app</h3><p>Every client sees their matter like a delivery tracker: what's done, what's next, who is waiting on whom, the settlement countdown and a secure place to upload documents. Weekly plain English updates arrive on their own.</p><div class="fix">Fixes: "any update?" emails and calls, clients feeling in the dark</div></div>
+    <div class="card"><div class="n">03</div><h3>Smart intake and conflict check</h3><p>A short enquiry form that asks the right questions for property, hotel or construction work, runs the conflict check against your client list, then sends the engagement letter for online signing.</p><div class="fix">Fixes: enquiries sitting in info@, engagement letters chased by hand</div></div>
+    <div class="card"><div class="n">04</div><h3>After hours receptionist</h3><p>An AI voice and chat receptionist that answers when the office is closed, takes the matter details, checks urgency and books a call with the right lawyer. Every call lands in HQ with a summary.</p><div class="fix">Fixes: developers and hotel operators who call at 7pm and try the next firm</div></div>
+    <div class="card"><div class="n">05</div><h3>Feedback and reviews</h3><p>When a matter closes the client gets a two question survey. Happy clients get a Google review link; anyone under four stars goes to Duane for a call first.</p><div class="fix">Fixes: great results that never turn into public reviews</div></div>
+  </div>
+
+  <div class="st"><h2>For your team</h2><span class="c">4 apps</span></div>
+  <div class="grid">
+    <div class="card"><div class="n">06</div><h3>Pathways hub</h3><p>The cadet and graduate program in one app: onboarding checklist, mentor check ins, rotations, study support and progress for every Aboriginal and Torres Strait Islander cadet and graduate. A public page tells their story to clients and future cadets.</p><div class="fix">Fixes: the firm's mission living in people's heads instead of a system</div></div>
+    <div class="card"><div class="n">07</div><h3>Client update writer</h3><p>The lawyer types three rough lines; it drafts a clear weekly update in the firm's voice for them to check and send.</p><div class="fix">Fixes: updates skipped on busy weeks</div></div>
+    <div class="card"><div class="n">08</div><h3>Precedents and know how</h3><p>Search your own precedents, checklists and past advice by question, not by folder name.</p><div class="fix">Fixes: rebuilding a clause that was perfect two matters ago</div></div>
+    <div class="card"><div class="n">09</div><h3>Event card scanner</h3><p>Photograph a business card at a Chamber or Supply Nation event. The contact lands in HQ tagged to the event, a thank you email goes out and a follow up reminder is set.</p><div class="fix">Fixes: a stack of cards in a drawer after every event</div></div>
+  </div>
+
+  <div class="st"><h2>For Cindy and Duane</h2><span class="c">4 apps</span></div>
+  <div class="grid">
+    <div class="card pick"><div class="n">10</div><h3>Referrer portal</h3><p>Accountants, advisers and past colleagues send a matter in 30 seconds from their phone and see how it's going. HQ shows who sends the most work and who is due a coffee.</p><div class="fix">Fixes: referrers never hearing back, no view of where work comes from</div></div>
+    <div class="card"><div class="n">11</div><h3>Firm operations board</h3><p>Overdue invoices with polite reminders, insurance and certificate renewals, leave, subscriptions and new starter tasks, all with owners and due dates.</p><div class="fix">Fixes: renewals found the week they lapse</div></div>
+    <div class="card"><div class="n">12</div><h3>Fundraising pages</h3><p>A page per cause (Coastrek and the rest) with a team leaderboard, progress bar and thank you messages to every donor.</p><div class="fix">Fixes: fundraising run from spreadsheets and group texts</div></div>
+    <div class="card"><div class="n">13</div><h3>Website watch</h3><p>Checks the site every five minutes and tests the contact form every morning. If either breaks, Cindy gets a text within minutes.</p><div class="fix">Fixes: a site or form that's down for days before anyone notices</div></div>
+  </div>
+  <div class="foot">Demo with sample data. Prepared by Benjamin Vincent Yson for Keighran Legal + Advisory, November 2026.</div>
+</div>
+</body>
+</html>

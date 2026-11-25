@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keighran HQ | Demo</title>
+<style>
+:root{--ink:#14213D;--ink2:#1E2F55;--gold:#C8963E;--gold2:#E7C98F;--cream:#F7F4EE;--white:#fff;--line:#E6E0D4;--muted:#6B7280;--bad:#B4442F;--good:#2F7A4F;--warn:#B7791F;--serif:Georgia,"Times New Roman",serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--cream);font-size:14px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0}
+.demo-bar{background:var(--ink);color:var(--gold2);font-size:12px;letter-spacing:1px;text-transform:uppercase;text-align:center;padding:8px}
+.wrap{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:calc(100vh - 32px)}
+.side{background:var(--ink);color:#DCE3F0;padding:22px 14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-family:var(--serif);font-size:24px;color:#fff;padding:0 10px;line-height:1.1}.logo span{color:var(--gold)}
+.logo-sub{font-size:12px;opacity:.65;padding:4px 10px 14px}
+.grp{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;opacity:.5;padding:14px 10px 6px}
+.nav{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:transparent;color:inherit;padding:9px 10px;border-radius:8px;font:inherit;cursor:pointer;text-align:left}
+.nav:hover{background:rgba(255,255,255,.06)}.nav.on{background:var(--gold);color:var(--ink);font-weight:600}
+.nav .b{background:rgba(255,255,255,.14);border-radius:99px;font-size:11px;padding:1px 8px}.nav.on .b{background:rgba(20,33,61,.15)}
+main{padding:26px 30px 60px;min-width:0}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.head .sub{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-top:4px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:2fr 1fr}
+@media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}.wrap{grid-template-columns:1fr}.side{position:static;height:auto}}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h3{font-size:18px;margin-bottom:12px}
+.kpi .l{font-size:12px;color:var(--muted)}.kpi .v{font-family:var(--serif);font-size:32px;font-weight:600;margin:4px 0}.kpi .d{font-size:12px;color:var(--good)}.kpi .d.bad{color:var(--bad)}
+.kpi{border-left:3px solid var(--gold)}
+table{width:100%;border-collapse:collapse}th{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:10px 6px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border-bottom:0}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600;background:#EEF1F6;color:var(--ink2)}
+.pill.good{background:#E3F1E8;color:var(--good)}.pill.bad{background:#F6E3DF;color:var(--bad)}.pill.warn{background:#FBF0DC;color:var(--warn)}.pill.gold{background:#F5EAD6;color:#8A6420}
+.btn{border:1px solid var(--ink);background:var(--white);color:var(--ink);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.btn.pri{background:var(--ink);color:#fff}.btn:disabled{opacity:.5;cursor:default}
+.list .it{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.list .it:last-child{border-bottom:0}
+.it .t{font-weight:600}.it small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+.bar{height:10px;background:#EFE9DD;border-radius:99px;overflow:hidden}.bar span{display:block;height:100%;background:var(--gold);border-radius:99px}
+.brow{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;padding:6px 0}.brow b{text-align:right;font-family:var(--serif);font-size:18px}
+.kan{display:grid;grid-template-columns:repeat(6,minmax(170px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px}
+.col{background:#EFEAE0;border-radius:12px;padding:10px;min-height:200px}.col h4{margin:2px 4px 10px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:flex;justify-content:space-between}
+.mc{background:#fff;border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid var(--line);cursor:pointer}.mc:hover{border-color:var(--gold)}
+.mc .n{font-weight:600;font-size:13px}.mc small{color:var(--muted);display:block;margin-top:3px}
+.days{font-family:var(--serif);font-size:22px;font-weight:600;min-width:56px;text-align:center}.days.red{color:var(--bad)}.days.amb{color:var(--warn)}
+.note{background:#F5EAD6;border-radius:10px;padding:12px 14px;font-size:13px;color:#5B4520;margin-bottom:16px}
+.scrim{position:fixed;inset:0;background:rgba(20,33,61,.35);display:none;z-index:50}.scrim.show{display:block}
+.panel{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:100%;background:#fff;z-index:60;transform:translateX(105%);transition:transform .25s;padding:24px;overflow-y:auto}.panel.show{transform:none}
+.panel .x{position:absolute;top:14px;right:14px;border:0;background:#EFEAE0;border-radius:99px;width:30px;height:30px;cursor:pointer;font-size:16px}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px 12px;margin:14px 0}.kv span{color:var(--muted)}
+.tl{list-style:none;padding:0 0 0 14px;margin:0;border-left:2px solid var(--line)}.tl li{padding:0 0 12px;position:relative}.tl li:before{content:"";position:absolute;left:-20px;top:4px;width:10px;height:10px;border-radius:99px;background:var(--gold)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .2s;z-index:70}.toast.show{opacity:1}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="demo-bar">Demo with sample data. Names, matters and figures are made up.</div>
+<div class="wrap">
+<aside class="side">
+  <div style="padding:0 8px 6px"><img src="assets/logo.png" alt="Keighran Legal + Advisory" style="width:100%;max-width:190px;display:block" onerror="this.outerHTML='<div class=logo>Keighran <span>HQ</span></div>'"></div>
+  <div class="logo-sub">Keighran Legal + Advisory · HQ</div>
+  <div id="nav"></div>
+</aside>
+<main id="main"></main>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="panel" id="panel"></div>
+<div class="toast" id="toast"></div>
+<script>
+const NAV=[
+ ["Today",[["overview","Overview"],["enquiries","New enquiries"],["dates","Key dates"]]],
+ ["Work",[["matters","Matters"],["referrals","Referrers and relationships"],["feedback","Client feedback"]]],
+ ["Running the firm",[["team","Team and onboarding"],["ops","Operations"],["site","Website and forms"],["connections","Connections"]]]
+];
+const ENQ=[
+ {id:1,name:"Harbourline Developments",type:"Real Estate",what:"Off the plan contracts, 42 lots, Parramatta",src:"Referral",ref:"M. Tran, Tran Partners",when:"18 min ago",conflict:"pending",letter:"none",value:"High"},
+ {id:2,name:"Coastview Hotel Group",type:"Hotels",what:"Hotel management agreement review",src:"Repeat client",ref:"",when:"2 hrs ago",conflict:"clear",letter:"sent",value:"High"},
+ {id:3,name:"Northgate Builders",type:"Construction",what:"Payment claim dispute, SOPA",src:"Website form",ref:"",when:"Yesterday",conflict:"clear",letter:"none",value:"Medium"},
+ {id:4,name:"Riverbend Community Housing",type:"Real Estate",what:"Lease portfolio refresh, 60 dwellings",src:"Event follow up",ref:"Indigenous Chamber event",when:"Yesterday",conflict:"pending",letter:"none",value:"Medium"},
+ {id:5,name:"S. Patel",type:"Real Estate",what:"Retail lease, single shop",src:"LinkedIn",ref:"",when:"2 days ago",conflict:"clear",letter:"signed",value:"Low"}
+];
+const STAGES=["Enquiry","Conflict check","Engagement signed","Active","Settlement or completion","Billing and close"];
+const MATTERS=[
+ {n:"Coastview Hotel Group",a:"Hotels",s:0,l:"Director, Hotels",d:"HMA review"},
+ {n:"Harbourline Developments",a:"Real Estate",s:1,l:"Managing Director",d:"Off the plan, 42 lots"},
+ {n:"Riverbend Community Housing",a:"Real Estate",s:1,l:"Senior Associate",d:"Lease portfolio"},
+ {n:"S. Patel",a:"Real Estate",s:2,l:"Lawyer",d:"Retail lease"},
+ {n:"Westmead Partners",a:"Real Estate",s:3,l:"Special Counsel",d:"Site acquisition"},
+ {n:"Bluegum Hospitality",a:"Hotels",s:3,l:"Director, Hotels",d:"Hotel sale, Cairns"},
+ {n:"Northgate Builders",a:"Construction",s:3,l:"Senior Associate",d:"SOPA dispute"},
+ {n:"Ironbark Property Trust",a:"Real Estate",s:4,l:"Managing Director",d:"Settlement 2 Dec"},
+ {n:"Kestrel Apartments",a:"Real Estate",s:4,l:"Associate",d:"Strata subdivision"},
+ {n:"Saltwater Resorts",a:"Hotels",s:5,l:"Director, Hotels",d:"Final invoice sent"}
+];
+const DATES=[
+ {d:2,t:"Settlement",m:"Ironbark Property Trust",who:"Managing Director",sent:false},
+ {d:5,t:"Sunset date",m:"Kestrel Apartments, lot 14",who:"Associate",sent:false},
+ {d:9,t:"Option to renew lease, last day",m:"S. Patel, retail lease",who:"Lawyer",sent:true},
+ {d:14,t:"Payment schedule due (SOPA)",m:"Northgate Builders",who:"Senior Associate",sent:false},
+ {d:21,t:"Due diligence ends",m:"Bluegum Hospitality",who:"Director, Hotels",sent:false},
+ {d:38,t:"HMA renewal notice window opens",m:"Coastview Hotel Group",who:"Director, Hotels",sent:false},
+ {d:61,t:"Lease expiry",m:"Westmead Partners, tenancy 3",who:"Special Counsel",sent:false}
+];
+const REFS=[
+ {n:"M. Tran, Tran Partners (accountants)",m:6,last:"3 weeks ago",due:true,v:"High"},
+ {n:"Harbourside Property Advisory",m:4,last:"5 days ago",due:false,v:"High"},
+ {n:"Supply Nation trade show contacts",m:3,last:"6 weeks ago",due:true,v:"Medium"},
+ {n:"NSW Indigenous Chamber members",m:3,last:"2 weeks ago",due:false,v:"Medium"},
+ {n:"Former colleagues, big firm referrals",m:2,last:"2 months ago",due:true,v:"High"}
+];
+const TEAM=[
+ {n:"Managing Director",act:9,due:3},{n:"Director, Hotels",act:7,due:2},{n:"Special Counsel",act:5,due:1},{n:"Senior Associate",act:8,due:4},{n:"Associate",act:6,due:1},{n:"Lawyer",act:4,due:0}
+];
+const ONB=[["Practising certificate on file",true],["IT and email set up",true],["Precedents library walkthrough",true],["Conflict check training",false],["Shadow a settlement",false],["Mentor check in, week 4",false]];
+const FB=[
+ {c:"Saltwater Resorts",s:5,q:"Clear advice, fast turnaround on the sale docs.",rev:"Review asked"},
+ {c:"Westmead Partners",s:5,q:"Knew the hotel side better than anyone we spoke to.",rev:"Left on Google"},
+ {c:"Kestrel Apartments",s:4,q:"Good result. Would like more updates during the week.",rev:"Not asked yet"}
+];
+let view="overview";
+const $=s=>document.querySelector(s);
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2200)}
+function counts(){return{enquiries:ENQ.filter(e=>e.letter!=="signed").length,dates:DATES.filter(d=>d.d<=14).length,referrals:REFS.filter(r=>r.due).length}}
+function drawNav(){const c=counts();$("#nav").innerHTML=NAV.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([k,l])=>`<button class="nav ${k===view?"on":""}" onclick="go('${k}')">${l}${c[k]?`<span class="b">${c[k]}</span>`:""}</button>`).join("")).join("")}
+function go(k){view=k;drawNav();render();window.scrollTo(0,0)}
+function head(t,s,extra=""){return`<div class="head"><div><h1>${t}</h1><div class="sub">${s}</div></div>${extra}</div>`}
+function pillFor(v){return v==="clear"||v==="signed"?"good":v==="pending"?"warn":v==="sent"?"gold":""}
+const V={
+overview(){const c=counts();const areas={"Real Estate":0,Hotels:0,Construction:0};MATTERS.forEach(m=>areas[m.a]++);const src={};ENQ.forEach(e=>src[e.src]=(src[e.src]||0)+1);const mx=Math.max(...Object.values(areas));
+return head("Good morning, Cindy","Wednesday at a glance")+`
+<div class="grid g4">
+<div class="card kpi"><div class="l">New enquiries this week</div><div class="v">${ENQ.length}</div><div class="d">3 from referrers</div></div>
+<div class="card kpi"><div class="l">Open matters</div><div class="v">${MATTERS.length}</div><div class="d">2 opened this week</div></div>
+<div class="card kpi"><div class="l">Key dates in 14 days</div><div class="v">${c.dates}</div><div class="d bad">1 in 2 days</div></div>
+<div class="card kpi"><div class="l">Referrers due a catch up</div><div class="v">${c.referrals}</div><div class="d bad">Oldest 2 months</div></div>
+</div>
+<div class="grid g3" style="margin-top:16px">
+<div class="card"><h3>Needs you today</h3><div class="list">
+<div class="it"><div><div class="t">Conflict check: Harbourline Developments</div><small>Referral from Tran Partners, 18 minutes ago</small></div><button class="btn pri" onclick="go('enquiries')">Open</button></div>
+<div class="it"><div><div class="t">Settlement in 2 days: Ironbark Property Trust</div><small>Client reminder not sent yet</small></div><button class="btn pri" onclick="go('dates')">Open</button></div>
+<div class="it"><div><div class="t">Catch up with Tran Partners</div><small>6 matters sent this year, last contact 3 weeks ago</small></div><button class="btn" onclick="go('referrals')">Open</button></div>
+<div class="it"><div><div class="t">New starter onboarding: 3 steps left</div><small>Conflict check training booked for Thursday</small></div><button class="btn" onclick="go('team')">Open</button></div>
+<div class="it"><div><div class="t">2 invoices over 30 days</div><small>Saltwater Resorts, Bluegum Hospitality</small></div><button class="btn" onclick="go('ops')">Open</button></div>
+</div></div>
+<div class="card"><h3>Open matters by area</h3>${Object.entries(areas).map(([k,v])=>`<div class="brow"><span>${k}</span><div class="bar"><span style="width:${v/mx*100}%"></span></div><b>${v}</b></div>`).join("")}
+<h3 style="margin-top:20px">Where enquiries came from</h3>${Object.entries(src).map(([k,v])=>`<div class="brow"><span>${k}</span><div class="bar"><span style="width:${v/ENQ.length*100}%"></span></div><b>${v}</b></div>`).join("")}</div>
+</div>`},
+enquiries(){return head("New enquiries","Every enquiry, one list, from email, website, phone and referrers")+`
+<div class="note">Each enquiry runs a conflict check against your client list before anyone calls back. Once clear, the engagement letter goes out for online signing and the matter opens in your practice management system.</div>
+<div class="card"><table><thead><tr><th>Who</th><th>Matter</th><th>Source</th><th>Received</th><th>Conflict check</th><th>Engagement letter</th><th></th></tr></thead><tbody>
+${ENQ.map(e=>`<tr><td><b>${e.name}</b><br><span class="muted">${e.type}</span></td><td>${e.what}</td><td>${e.src}${e.ref?`<br><span class="muted">${e.ref}</span>`:""}</td><td>${e.when}</td>
+<td><span class="pill ${pillFor(e.conflict)}">${e.conflict==="clear"?"Clear":"Pending"}</span></td>
+<td><span class="pill ${pillFor(e.letter)}">${e.letter==="none"?"Not sent":e.letter==="sent"?"Sent":"Signed"}</span></td>
+<td>${e.conflict==="pending"?`<button class="btn pri" onclick="runConflict(${e.id})">Run check</button>`:e.letter==="none"?`<button class="btn pri" onclick="sendLetter(${e.id})">Send letter</button>`:e.letter==="sent"?`<button class="btn" onclick="toast('Reminder sent')">Remind</button>`:`<span class="pill good">Matter open</span>`}</td></tr>`).join("")}
+</tbody></table></div>`},
+dates(){return head("Key dates","Settlements, sunset dates, options, notices and deadlines across every matter")+`
+<div class="note">Dates come from the matter file. The responsible lawyer gets reminders at 30, 14, 7 and 2 days, and the client gets a plain English heads up you approve first.</div>
+<div class="card"><div class="list">${DATES.map((x,i)=>`<div class="it"><div style="display:flex;gap:14px;align-items:center"><div class="days ${x.d<=7?"red":x.d<=14?"amb":""}">${x.d}d</div><div><div class="t">${x.t}</div><small>${x.m} · ${x.who}</small></div></div>${x.sent?`<span class="pill good">Client reminded</span>`:`<button class="btn pri" onclick="remind(${i})">Remind client</button>`}</div>`).join("")}</div></div>`},
+matters(){return head("Matters","From first enquiry to final invoice")+`<div class="kan">${STAGES.map((s,i)=>{const ms=MATTERS.filter(m=>m.s===i);return`<div class="col"><h4>${s}<span>${ms.length}</span></h4>${ms.map(m=>`<div class="mc" onclick="openMatter('${m.n}')"><div class="n">${m.n}</div><small>${m.a} · ${m.d}</small><small>${m.l}</small></div>`).join("")}</div>`}).join("")}</div>`},
+referrals(){return head("Referrers and relationships","Who sends you work, and who is due a call")+`
+<div class="grid g3"><div class="card"><h3>Referrers</h3><table><thead><tr><th>Referrer</th><th>Matters this year</th><th>Last contact</th><th></th></tr></thead><tbody>
+${REFS.map((r,i)=>`<tr><td><b>${r.n}</b></td><td>${r.m}</td><td>${r.last}</td><td>${r.due?`<button class="btn pri" onclick="logTouch(${i})">Log catch up</button>`:`<span class="pill good">Up to date</span>`}</td></tr>`).join("")}</tbody></table></div>
+<div class="card"><h3>After events</h3><div class="list">
+<div class="it"><div><div class="t">Indigenous Chamber summit</div><small>14 cards scanned, 9 thank you emails sent, 3 coffees booked</small></div></div>
+<div class="it"><div><div class="t">Supply Nation trade show</div><small>22 contacts, 5 asked for the firm profile</small></div></div>
+<div class="it"><div><div class="t">Property Council lunch</div><small>Follow ups due Friday</small></div></div></div>
+<p class="muted" style="font-size:13px">Scan a business card on your phone and the contact lands here with the event tagged. A thank you email and a reminder to follow up go out on their own.</p></div></div>`},
+feedback(){return head("Client feedback","A short survey when each matter closes, and a Google review ask for happy clients")+`
+<div class="grid g4"><div class="card kpi"><div class="l">Average score</div><div class="v">4.7</div><div class="d">From 18 closed matters</div></div><div class="card kpi"><div class="l">Google reviews</div><div class="v">6</div><div class="d">Up from 0</div></div><div class="card kpi"><div class="l">Would refer us</div><div class="v">94%</div><div class="d">17 of 18</div></div><div class="card kpi"><div class="l">Needs a call</div><div class="v">1</div><div class="d bad">Score under 4</div></div></div>
+<div class="card" style="margin-top:16px"><div class="list">${FB.map(f=>`<div class="it"><div><div class="t">${f.c} · ${"★".repeat(f.s)}${"☆".repeat(5-f.s)}</div><small>"${f.q}"</small></div><span class="pill ${f.rev==="Left on Google"?"good":f.rev==="Review asked"?"gold":""}">${f.rev}</span></div>`).join("")}</div></div>`},
+team(){return head("Team and onboarding","Workload, deadlines and new starters")+`
+<div class="grid g2"><div class="card"><h3>Workload</h3><table><thead><tr><th>Role</th><th>Active matters</th><th>Key dates in 14 days</th></tr></thead><tbody>${TEAM.map(t=>`<tr><td>${t.n}</td><td><div class="bar" style="width:${t.act*10}%;min-width:20px"><span style="width:100%"></span></div> ${t.act}</td><td>${t.due?`<span class="pill ${t.due>2?"bad":"warn"}">${t.due}</span>`:"0"}</td></tr>`).join("")}</tbody></table></div>
+<div class="card"><h3>New starter: graduate lawyer</h3><div class="list">${ONB.map((o,i)=>`<div class="it"><div class="t" style="font-weight:400">${o[0]}</div>${o[1]?`<span class="pill good">Done</span>`:`<button class="btn" onclick="tick(${i})">Mark done</button>`}</div>`).join("")}</div>
+<p class="muted" style="font-size:13px">The same checklist runs for cadets, graduates and lateral hires, so every new person gets the same start.</p></div></div>`},
+ops(){return head("Operations","The things that keep the firm running")+`
+<div class="grid g4"><div class="card kpi"><div class="l">Invoices over 30 days</div><div class="v">2</div><div class="d bad">Reminders queued</div></div><div class="card kpi"><div class="l">Renewals in 60 days</div><div class="v">3</div><div class="d">PI insurance, 2 subscriptions</div></div><div class="card kpi"><div class="l">Leave this month</div><div class="v">4 days</div><div class="d">2 people</div></div><div class="card kpi"><div class="l">Coastrek team</div><div class="v">68%</div><div class="d">of fundraising goal</div></div></div>
+<div class="grid g2" style="margin-top:16px"><div class="card"><h3>Overdue invoices</h3><div class="list">
+<div class="it"><div><div class="t">Saltwater Resorts</div><small>34 days, polite reminder sent day 30</small></div><button class="btn" onclick="toast('Second reminder queued for your OK')">Queue reminder</button></div>
+<div class="it"><div><div class="t">Bluegum Hospitality</div><small>41 days, call booked with their finance team</small></div><span class="pill warn">Call Friday</span></div></div></div>
+<div class="card"><h3>Coming up</h3><div class="list">
+<div class="it"><div><div class="t">Professional indemnity renewal</div><small>Due in 38 days</small></div><span class="pill warn">Start</span></div>
+<div class="it"><div><div class="t">Practising certificates</div><small>All 9 current until 30 June</small></div><span class="pill good">OK</span></div>
+<div class="it"><div><div class="t">Coastrek training walk</div><small>Saturday 7am, 6 walkers signed up</small></div><span class="pill gold">Team</span></div></div></div></div>`},
+site(){return head("Website and forms","Is the site up, and are the forms reaching you")+`
+<div class="grid g4"><div class="card kpi"><div class="l">Website</div><div class="v" style="color:var(--good)">Up</div><div class="d">Checked every 5 minutes</div></div><div class="card kpi"><div class="l">Uptime, 30 days</div><div class="v">99.2%</div><div class="d bad">1 outage, 5h 40m</div></div><div class="card kpi"><div class="l">Contact form test</div><div class="v" style="color:var(--good)">Passed</div><div class="d">Tested 6am today</div></div><div class="card kpi"><div class="l">Enquiries from site</div><div class="v">7</div><div class="d">This month</div></div></div>
+<div class="card" style="margin-top:16px"><h3>Last outage</h3><p>The site stopped answering for 5 hours 40 minutes. HQ texted you after 5 minutes and logged when it came back. A form test runs every morning, so a broken form never goes unnoticed for weeks.</p></div>`},
+connections(){return head("Connections","HQ sits beside the tools you already use")+`
+<div class="card"><table><thead><tr><th>Tool</th><th>What HQ uses it for</th><th>Status</th></tr></thead><tbody>
+<tr><td><b>Your practice management system</b></td><td>Matters, key dates, billing status. It stays your system of record.</td><td><span class="pill warn">To confirm with Cindy</span></td></tr>
+<tr><td><b>Microsoft 365 or Google mail</b></td><td>Enquiries from email, calendar for catch ups</td><td><span class="pill">Ready to connect</span></td></tr>
+<tr><td><b>GoHighLevel</b></td><td>Enquiry pipeline, forms, online signing, reminders, feedback surveys, review asks</td><td><span class="pill good">Included</span></td></tr>
+<tr><td><b>Website</b></td><td>Contact form, uptime and form tests</td><td><span class="pill good">Included</span></td></tr>
+<tr><td><b>Accounting</b></td><td>Overdue invoices and reminders</td><td><span class="pill warn">To confirm</span></td></tr>
+<tr><td><b>LinkedIn</b></td><td>Event and referrer contacts</td><td><span class="pill">Optional</span></td></tr></tbody></table></div>`}
+};
+function render(){$("#main").innerHTML=V[view]()}
+function runConflict(id){const e=ENQ.find(x=>x.id===id);e.conflict="clear";toast("No conflicts found for "+e.name);drawNav();render()}
+function sendLetter(id){const e=ENQ.find(x=>x.id===id);e.letter="sent";toast("Engagement letter sent for online signing");drawNav();render()}
+function remind(i){DATES[i].sent=true;toast("Client reminder sent");render()}
+function logTouch(i){REFS[i].due=false;REFS[i].last="Today";toast("Catch up logged");drawNav();render()}
+function tick(i){ONB[i][1]=true;render()}
+function openMatter(n){const m=MATTERS.find(x=>x.n===n);$("#panel").innerHTML=`<button class="x" onclick="closeP()">×</button><h2>${m.n}</h2><div class="muted">${m.a} · ${m.d}</div>
+<div class="kv"><span>Stage</span><b>${STAGES[m.s]}</b><span>Lawyer</span><b>${m.l}</b><span>Source</span><b>Referral</b><span>Next key date</span><b>In 14 days</b></div>
+<h3 style="font-size:16px;margin:16px 0 10px">Timeline</h3><ul class="tl"><li>Enquiry received<br><small class="muted">Referral form</small></li><li>Conflict check clear</li><li>Engagement letter signed</li><li>Matter opened in practice management</li><li>Client update sent<br><small class="muted">Weekly summary</small></li></ul>
+<div style="margin-top:16px;display:flex;gap:8px"><button class="btn pri" onclick="toast('Update drafted for your review')">Draft client update</button></div>`;$("#panel").classList.add("show");$("#scrim").classList.add("show")}
+function closeP(){$("#panel").classList.remove("show");$("#scrim").classList.remove("show")}
+$("#scrim").onclick=closeP;
+drawNav();render();
+</script>
+</body>
+</html>

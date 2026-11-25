@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legend HQ | Demo</title>
+<style>
+:root{--ink:#141414;--ink2:#2A2A2A;--acc:#C9A65B;--acc2:#E8D3A0;--go:#1F9D6B;--bg:#F4F1EA;--white:#fff;--line:#E1E7EC;--muted:#667685;--bad:#D9483B;--warn:#C98410;--sans:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);font-size:14px}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.3px}
+.demo-bar{background:var(--acc);color:var(--ink);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center;padding:7px}
+.wrap{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:calc(100vh - 31px)}
+.side{background:var(--ink);color:#CFE0EA;padding:22px 14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-size:26px;font-weight:900;color:#fff;padding:0 10px;letter-spacing:-.5px}.logo span{color:var(--acc)}
+.logo-sub{font-size:12px;opacity:.6;padding:2px 10px 12px}
+.grp{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;opacity:.45;padding:14px 10px 6px}
+.nav{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:transparent;color:inherit;padding:9px 10px;border-radius:8px;font:inherit;cursor:pointer;text-align:left}
+.nav:hover{background:rgba(255,255,255,.06)}.nav.on{background:var(--acc);color:var(--ink);font-weight:700}
+.nav .b{background:rgba(255,255,255,.15);border-radius:99px;font-size:11px;padding:1px 8px}.nav.on .b{background:rgba(11,31,42,.15)}.nav .b.hot{background:var(--bad);color:#fff}
+main{padding:24px 28px 60px;min-width:0}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}.head .sub{color:var(--muted);margin-top:4px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1.6fr 1fr}
+@media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}.wrap{grid-template-columns:1fr}.side{position:static;height:auto}}
+.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px}.card h3{font-size:17px;margin-bottom:12px}
+.kpi .l{font-size:12px;color:var(--muted);font-weight:600}.kpi .v{font-size:32px;font-weight:900;margin:4px 0}.kpi .d{font-size:12px;color:var(--go);font-weight:600}.kpi .d.bad{color:var(--bad)}
+.hot{background:linear-gradient(90deg,#2B1D06,#141414);color:#fff;border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.hot .tm{font-size:40px;font-weight:900;color:var(--acc);font-variant-numeric:tabular-nums}.hot .tm.late{color:var(--bad)}
+.hot small{opacity:.7;display:block}
+table{width:100%;border-collapse:collapse}th{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:10px 6px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border-bottom:0}
+.num td,.num th{text-align:right}.num td:first-child,.num th:first-child{text-align:left}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;background:#E8EEF2;color:var(--ink2)}
+.pill.good{background:#DDF5EA;color:#0E8A5B}.pill.bad{background:#FBE2DF;color:var(--bad)}.pill.warn{background:#FCEFD6;color:var(--warn)}.pill.acc{background:#FFF1D6;color:#8A5A00}
+.btn{border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:8px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--ink);color:#fff}.btn.go{background:var(--go);border-color:var(--go);color:#fff}.btn.acc{background:var(--acc);border-color:var(--acc)}
+.list .it{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.list .it:last-child{border-bottom:0}
+.it .t{font-weight:700}.it small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+.bar{height:10px;background:#E8EEF2;border-radius:99px;overflow:hidden}.bar span{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .4s}
+.bar.go span{background:var(--go)}
+.daycol{display:grid;grid-template-columns:repeat(6,minmax(180px,1fr));gap:12px;overflow-x:auto}
+.dc{background:#E9EFF3;border-radius:12px;padding:10px;min-height:220px}.dc h4{margin:2px 4px 10px;font-size:12px;text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between}
+.lc{background:#fff;border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid var(--line)}.lc .n{font-weight:700}.lc small{display:block;color:var(--muted);margin:2px 0 8px}
+.lc .acts{display:flex;gap:6px;flex-wrap:wrap}.lc .acts .btn{padding:4px 8px;font-size:12px}
+.kan{display:grid;grid-template-columns:repeat(11,minmax(120px,1fr));gap:8px;overflow-x:auto}
+.kc{background:#E9EFF3;border-radius:10px;padding:8px;min-height:150px}.kc h4{font-size:11px;text-transform:uppercase;letter-spacing:.6px;margin:0 0 8px;color:var(--muted);min-height:28px}
+.kc .cnt{font-size:24px;font-weight:900;margin-bottom:6px}.kc .m{background:#fff;border-radius:8px;padding:6px 8px;margin-bottom:6px;font-size:12px;border:1px solid var(--line)}
+.chat{display:grid;grid-template-columns:280px 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;min-height:440px}
+@media(max-width:900px){.chat{grid-template-columns:1fr}}
+.threads{border-right:1px solid var(--line)}.th{padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer}.th.on{background:#FFF6E3}.th .n{font-weight:700;display:flex;justify-content:space-between}.th small{color:var(--muted)}
+.msgs{padding:16px;display:flex;flex-direction:column;gap:8px;background:#F7FAFB}
+.mg{max-width:76%;padding:9px 12px;border-radius:14px;line-height:1.45}.mg.in{background:#fff;border:1px solid var(--line);align-self:flex-start}.mg.out{background:var(--ink);color:#fff;align-self:flex-end}
+.mg .who{font-size:11px;opacity:.6;display:block;margin-bottom:2px}
+.sysm{align-self:center;font-size:12px;color:var(--muted);background:#E9EFF3;padding:4px 10px;border-radius:99px}
+.note{background:#FFF1D6;border-radius:10px;padding:12px 14px;font-size:13px;color:#5E4300;margin-bottom:16px}
+textarea{width:100%;min-height:110px;border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit}
+.flag{background:#FBE2DF;color:var(--bad);border-radius:4px;padding:0 3px;font-weight:700}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .2s;z-index:70}.toast.show{opacity:1}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="demo-bar">Demo with sample data. Leads, names and figures are made up.</div>
+<div class="wrap">
+<aside class="side"><div style="padding:0 8px 6px"><img src="assets/lllogo.png" alt="Legend Lending" style="width:100%;max-width:190px;display:block"></div><div class="logo-sub" style="padding-left:10px;letter-spacing:2px;text-transform:uppercase;color:#C9A65B">HQ</div><div id="nav"></div></aside>
+<main id="main"></main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const CAD=[1,2,4,7,11,14];
+const NAV=[["Today",[["overview","Overview"],["calls","Calls due"],["inbox","Inbox and AI agent"]]],["Pipeline",[["pipeline","Pipeline"],["reactivate","Old lead revival"],["sequences","Follow up sequences"],["zinc","Zinc handoff"]]],["Numbers",[["funnel","Funnel by source"],["compliance","Wording check"]]]];
+let LEADS=[
+ {id:1,n:"Jordan Ellis",src:"Messenger",car:"2021 Ford Ranger",amt:38000,day:1,att:0},
+ {id:2,n:"Priya Nair",src:"Landing page",car:"2022 Toyota RAV4",amt:41000,day:1,att:1},
+ {id:3,n:"Sam Whitfield",src:"Google",car:"2020 Toyota LandCruiser 79",amt:68000,day:2,att:1},
+ {id:4,n:"Kayla Brooks",src:"Landing page",car:"2023 Kia Sportage",amt:36000,day:2,att:2},
+ {id:5,n:"Tom Riordan",src:"Referrer",car:"2020 Isuzu DMAX",amt:33000,day:4,att:3},
+ {id:6,n:"Mia Costa",src:"Landing page",car:"2022 Quintrex 481 boat (marine)",amt:36000,day:4,att:3},
+ {id:7,n:"Liam O'Hare",src:"Meta lead form",car:"2021 Toyota Hilux",amt:45000,day:7,att:4},
+ {id:8,n:"Grace Tan",src:"Email",car:"Kubota tractor (equipment, ABN)",amt:29000,day:11,att:6},
+ {id:9,n:"Dylan Pike",src:"Meta lead form",car:"2022 Mitsubishi Triton",amt:39000,day:14,att:7}
+];
+const STAGES=[["New lead",14],["Contact attempted",23],["Connected, qualifying",9],["Fit Session booked",7],["Session attended",5],["No show",2],["Application in Zinc",6],["Approved",4],["Settled",5],["Nurture",31],["Lost",11]];
+const THREADS=[
+ {n:"Jordan Ellis",ch:"Messenger",st:"Booked",msgs:[["in","Hey is finance available for a ute? Looking at a Ranger"],["out","Hi Jordan, it's the Legend Lending assistant. Yes, we help with ute finance all the time. Can I ask a few quick questions so the right person calls you?"],["in","yep"],["out","Are you working full time at the moment, and roughly how much are you hoping to borrow?"],["in","Full time 3 years as a sparky. About 38k"],["out","Thanks. That's well within what we look at. The next step is a free 15 minute Financial Fit Session with Ben to go through your options. Does tomorrow at 12:30 or 5:30 suit?"],["in","5:30 works"],["sys","Booked: Financial Fit Session, Thu 5:30pm with Ben. Lead moved to Fit Session booked."]]},
+ {n:"Hannah Moore",ch:"SMS",st:"Qualifying",msgs:[["in","Saw your ad. Can I get a car loan on Centrelink?"],["out","Hi Hannah, thanks for asking. Are you also working at the moment, part time or casual?"],["in","casual 20 hrs a week at Woolies"],["sys","Flagged for Ben: casual income plus benefits. AI paused for a human reply."]]},
+ {n:"Aaron Blake",ch:"Messenger",st:"Not a fit",msgs:[["in","need 3k for a car today"],["out","Hi Aaron, thanks for getting in touch. The smallest loan we arrange is 10,000, so we're not the right fit for this one. If your plans change, message us anytime."],["sys","Tagged: below minimum loan. Moved to Nurture."]]}
+];
+let BATCH={done:3,cur:62};
+let secs=0;
+const $=s=>document.querySelector(s);let view="overview";
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2300)}
+function money(n){return"$"+n.toLocaleString("en-AU")}
+function drawNav(){const c={calls:LEADS.length,inbox:2};$("#nav").innerHTML=NAV.map(([g,it])=>`<div class="grp">${g}</div>`+it.map(([k,l])=>`<button class="nav ${k===view?"on":""}" onclick="go('${k}')">${l}${c[k]?`<span class="b ${k==="calls"?"hot":""}">${c[k]}</span>`:""}</button>`).join("")).join("")}
+function go(k){view=k;drawNav();render();scrollTo(0,0)}
+function head(t,s,x=""){return`<div class="head"><div><h1>${t}</h1><div class="sub">${s}</div></div>${x}</div>`}
+const V={
+overview(){return head("Morning, Ben","Here's who to call and what came in overnight")+`
+<div class="hot" id="hot"><div><small>NEW LEAD · Messenger · just now</small><div style="font-size:20px;font-weight:800">Chloe Adams, 2022 Toyota Corolla, about $26,000, Cairns</div><small>Full time nurse. Asked about weekly repayments.</small></div>
+<div style="text-align:center"><div class="tm" id="tm">0:00</div><small>call within 1 minute</small></div>
+<div style="display:flex;gap:8px"><button class="btn go" onclick="callHot()">Call now</button><button class="btn" style="background:transparent;color:#fff;border-color:#fff" onclick="toast('Passed to Mel')">Give to Mel</button></div></div>
+<div class="grid g4">
+<div class="card kpi"><div class="l">Calls due today</div><div class="v">${LEADS.length}</div><div class="d bad">3 are third calls or later</div></div>
+<div class="card kpi"><div class="l">New leads, 7 days</div><div class="v">41</div><div class="d">Messenger 17 · Meta 14 · Google 6</div></div>
+<div class="card kpi"><div class="l">Fit Sessions this week</div><div class="v">7</div><div class="d">4 booked by the AI agent</div></div>
+<div class="card kpi"><div class="l">Settled this month</div><div class="v">${money(61500)}</div><div class="d">5 deals</div></div></div>
+<div class="grid g3" style="margin-top:16px"><div class="card"><h3>Needs you today</h3><div class="list">
+<div class="it"><div><div class="t">9 calls due across Day 1 to Day 14</div><small>Open Calls due and work top to bottom</small></div><button class="btn pri" onclick="go('calls')">Start calling</button></div>
+<div class="it"><div><div class="t">Hannah Moore needs a human reply</div><small>AI paused: casual income plus benefits</small></div><button class="btn pri" onclick="go('inbox')">Reply</button></div>
+<div class="it"><div><div class="t">2 no shows from yesterday</div><small>No show texts sent, rebook link inside</small></div><span class="pill warn">Running</span></div>
+<div class="it"><div><div class="t">Old lead revival: 7 replies overnight</div><small>Batch 4 of 12, 3 want a call</small></div><button class="btn" onclick="go('reactivate')">Open</button></div>
+<div class="it"><div><div class="t">1 application stalled in Zinc for 6 days</div><small>Waiting on payslips from Mia Costa</small></div><button class="btn" onclick="go('zinc')">Open</button></div></div></div>
+<div class="card"><h3>This month: dealership vs direct</h3><div class="bar go" style="height:16px"><span style="width:52%"></span></div><div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px"><span><b>Direct 52%</b> ${money(64000)}</span><span class="muted">Dealership 48% ${money(59000)}</span></div>
+<h3 style="margin-top:22px">Speed to first call</h3><div style="font-size:30px;font-weight:900">2m 40s</div><div class="muted">average this week, down from 3 hours</div></div></div>`},
+calls(){return head("Calls due","Grouped by cadence day. Log the call and HQ does the rest.")+`
+<div class="note">Tap <b>No answer</b> and HQ logs the attempt, texts the lead who called and why, and moves them to the next cadence day. <b>Connected</b> moves them to qualifying.</div>
+<div class="daycol">${CAD.map(d=>{const ls=LEADS.filter(l=>l.day===d);return`<div class="dc"><h4>Day ${d}<span>${ls.length}</span></h4>${ls.map(l=>`<div class="lc"><div class="n">${l.n}</div><small>${l.src} · ${l.car} · ${money(l.amt)}<br>Attempts: ${l.att}</small><div class="acts"><button class="btn" onclick="noAns(${l.id})">No answer</button><button class="btn go" onclick="conn(${l.id})">Connected</button></div></div>`).join("")||'<div class="muted" style="padding:8px">All done</div>'}</div>`}).join("")}</div>`},
+inbox(){return head("Inbox and AI agent","Messenger and SMS in one place. The AI agent qualifies, books, or hands over.")+`
+<div class="grid g4" style="margin-bottom:16px"><div class="card kpi"><div class="l">Chats this week</div><div class="v">38</div></div><div class="card kpi"><div class="l">Handled by AI</div><div class="v">31</div></div><div class="card kpi"><div class="l">Booked by AI</div><div class="v">9</div></div><div class="card kpi"><div class="l">Handed to Ben</div><div class="v">4</div></div></div>
+<div class="chat"><div class="threads">${THREADS.map((t,i)=>`<div class="th ${i===cur?"on":""}" onclick="pick(${i})"><div class="n">${t.n}<span class="pill ${t.st==="Booked"?"good":t.st==="Qualifying"?"warn":""}">${t.st}</span></div><small>${t.ch}</small></div>`).join("")}</div>
+<div class="msgs">${THREADS[cur].msgs.map(m=>m[0]==="sys"?`<div class="sysm">${m[1]}</div>`:`<div class="mg ${m[0]}"><span class="who">${m[0]==="in"?THREADS[cur].n:"Legend assistant"}</span>${m[1]}</div>`).join("")}</div></div>`},
+pipeline(){return head("Pipeline","Every source, one pipeline, from first enquiry to settlement")+`<div class="kan">${STAGES.map(([s,c],i)=>`<div class="kc"><h4>${s}</h4><div class="cnt">${c}</div>${LEADS.slice(i%5,i%5+2).map(l=>`<div class="m">${l.n}<br><span class="muted">${money(l.amt)}</span></div>`).join("")}</div>`).join("")}</div>`},
+reactivate(){const pct=Math.round(BATCH.done/12*100);return head("Old lead revival","1,184 past car finance enquiries, newest first, 100 at a time")+`
+<div class="grid g4"><div class="card kpi"><div class="l">Batches done</div><div class="v">${BATCH.done} of 12</div><div class="bar" style="margin-top:6px"><span style="width:${pct}%"></span></div></div><div class="card kpi"><div class="l">Replies</div><div class="v">64</div><div class="d">21% reply rate</div></div><div class="card kpi"><div class="l">Back in pipeline</div><div class="v">19</div><div class="d">6 sessions booked</div></div><div class="card kpi"><div class="l">Settled from old leads</div><div class="v">${money(52000)}</div><div class="d">2 deals</div></div></div>
+<div class="grid g2" style="margin-top:16px"><div class="card"><h3>Current batch: 4</h3><div class="bar" style="height:14px"><span id="bb" style="width:${BATCH.cur}%"></span></div><p class="muted">${BATCH.cur} of 100 contacted. Calls today: 28 of 30.</p>
+<div class="list"><div class="it"><div><div class="t">Opener</div><small>"Hi, Ben from Legend Lending, hoping for 30 seconds. You enquired about car finance in the last year. Where are you on that journey?"</small></div></div>
+<div class="it"><div><div class="t">If no answer</div><small>Double call, then one text. Not ready: capture email and move to nurture.</small></div></div></div>
+<button class="btn acc" onclick="nextBatch()">Release next 10</button></div>
+<div class="card"><h3>Hot replies</h3><div class="list">
+<div class="it"><div><div class="t">Ruby Clarke</div><small>"Still looking actually, my old car just died"</small></div><button class="btn go" onclick="toast('Calling Ruby')">Call</button></div>
+<div class="it"><div><div class="t">Josh Nguyen</div><small>"Bought one already but my partner needs one"</small></div><button class="btn go" onclick="toast('Calling Josh')">Call</button></div>
+<div class="it"><div><div class="t">Ella Ford</div><small>"Not until March"</small></div><span class="pill">Nurture till March</span></div></div></div></div>`},
+sequences(){const S=[["Never answered","Top priority",46,9],["No show to Fit Session","Rebook link",8,5],["Application stalled","Document reminders",5,3],["Declined or lost","Long term, monthly",63,4],["General follow up","Tips and stories",112,7]];return head("Follow up sequences","Texts and emails that keep going when the calls stop")+`
+<div class="card"><table class="num"><thead><tr><th>Sequence</th><th>Purpose</th><th>In it now</th><th>Replied this month</th><th>Status</th></tr></thead><tbody>${S.map(s=>`<tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td><td><span class="pill good">On</span></td></tr>`).join("")}</tbody></table></div>
+<div class="note" style="margin-top:16px">Every message carries an opt out and has passed the wording check. Content: client stories, short videos, eligibility tips and offers.</div>`},
+zinc(){return head("Zinc handoff","When a lead starts an application, it goes to Zinc. HQ keeps watching.")+`
+<div class="card"><table><thead><tr><th>Client</th><th>Sent to Zinc</th><th>Status</th><th>Waiting on</th><th></th></tr></thead><tbody>
+<tr><td><b>Mia Costa</b></td><td>6 days ago</td><td><span class="pill bad">Stalled</span></td><td>Two payslips</td><td><button class="btn" onclick="toast('Upload link texted to Mia')">Text upload link</button></td></tr>
+<tr><td><b>Tom Riordan</b></td><td>2 days ago</td><td><span class="pill warn">With lender</span></td><td>Lender decision</td><td></td></tr>
+<tr><td><b>Grace Tan</b></td><td>Yesterday</td><td><span class="pill good">Approved</span></td><td>Settlement date</td><td><button class="btn" onclick="toast('Congrats text sent')">Send congrats</button></td></tr></tbody></table>
+<p class="muted" style="font-size:13px">How HQ talks to Zinc depends on what Zinc allows (API or import). To confirm in week 1.</p></div>`},
+funnel(){const R=[["Messenger",120,96,52,22,19,12,9,7,620,1700],["Meta landing page",210,128,41,14,9,6,4,3,1300,2100],["Google ads",74,49,18,6,5,3,2,1,900,1400],["Referrers",22,21,15,9,8,6,5,4,0,0],["Email enquiries",31,24,10,4,3,2,1,1,0,0]];return head("Funnel by source","From first enquiry to settled, per source. Last 30 days.")+`
+<div class="card" style="overflow-x:auto"><table class="num"><thead><tr><th>Source</th><th>Leads</th><th>Contacted</th><th>Qualified</th><th>Booked</th><th>Attended</th><th>Applied</th><th>Approved</th><th>Settled</th><th>Ad spend</th><th>Cost per settlement</th></tr></thead><tbody>
+${R.map(r=>`<tr><td><b>${r[0]}</b></td>${r.slice(1,9).map(x=>`<td>${x}</td>`).join("")}<td>${r[9]?money(r[9]):"none"}</td><td><b>${r[9]?money(Math.round(r[9]/r[8])):"none"}</b></td></tr>`).join("")}</tbody></table></div>
+<div class="note" style="margin-top:16px">Messenger costs the least per settled deal in this sample, so HQ would move budget toward "Text us now" ads.</div>`},
+compliance(){return head("Wording check","Paste any ad, text, web page or AI reply before it goes out. The sample uses phrases from your current website.")+`
+<div class="card"><textarea id="ta">Lightning fast pre-approvals. Get Pre-Approved today, pre approval in 1 to 2 days. Approval guaranteed for everyone, even bad credit.</textarea><div style="margin-top:10px"><button class="btn pri" onclick="check()">Check wording</button></div><div id="out" style="margin-top:14px"></div></div>`}
+};
+let cur=0;function pick(i){cur=i;render()}
+function render(){$("#main").innerHTML=V[view]();if(view==="overview")tick()}
+let timer;function tick(){clearInterval(timer);timer=setInterval(()=>{const e=$("#tm");if(!e){clearInterval(timer);return}secs++;e.textContent=Math.floor(secs/60)+":"+String(secs%60).padStart(2,"0");if(secs>=60)e.classList.add("late")},1000)}
+function callHot(){clearInterval(timer);$("#hot").innerHTML='<div style="font-size:18px;font-weight:800">Called Chloe in '+secs+' seconds. Logged to her record.</div>';toast("Call logged")}
+function noAns(id){const l=LEADS.find(x=>x.id===id);l.att++;const i=CAD.indexOf(l.day);if(i<CAD.length-1){l.day=CAD[i+1];toast("Logged. Text sent to "+l.n.split(" ")[0]+". Moved to Day "+l.day)}else{LEADS=LEADS.filter(x=>x.id!==id);toast(l.n+" moved to the Never answered sequence")}drawNav();render()}
+function conn(id){const l=LEADS.find(x=>x.id===id);LEADS=LEADS.filter(x=>x.id!==id);toast(l.n+" moved to Connected, qualifying");drawNav();render()}
+function nextBatch(){BATCH.cur=Math.min(100,BATCH.cur+10);if(BATCH.cur>=100){BATCH.done++;BATCH.cur=0}render();toast("10 more leads released to today's calls")}
+function check(){const t=$("#ta").value;const rules=[[/pre[\s-]?approv\w*/gi,'Say "Financial Fit Session" instead of pre approval'],[/guarantee\w*/gi,"Never promise approval"],[/bad credit/gi,"Needs care: no promises about credit history"],[/everyone/gi,"Implies approval for all"]];let html=t,found=[];rules.forEach(([r,m])=>{if(t.match(r)){found.push(m);html=html.replace(r,x=>`<span class="flag">${x}</span>`)}});const opt=/stop|opt out/i.test(t);if(!opt)found.push("Add an opt out, for example: Reply STOP to opt out");$("#out").innerHTML=`<div style="padding:12px;background:#F7FAFB;border-radius:10px;margin-bottom:10px">${html}</div>`+(found.length?found.map(f=>`<div class="it" style="padding:6px 0"><span class="pill bad">Fix</span> ${f}</div>`).join(""):'<span class="pill good">Looks good</span>')}
+drawNav();render();
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Car Finance Fit Check | Legend Lending</title>
+<style>
+:root{--ink:#141414;--ink2:#262626;--gold:#C9A65B;--gold2:#E8D3A0;--bg:#EFECE5;--line:#E4DED1;--muted:#6E6A62;--go:#1F9D6B;--bad:#C2412D;--sans:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;--serif:Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg)}
+.stage{max-width:1180px;margin:0 auto;padding:28px 20px 50px;display:grid;grid-template-columns:420px minmax(0,1fr);gap:28px;align-items:start}
+@media(max-width:960px){.stage{grid-template-columns:1fr}}
+.phone{background:#0D0D0D;border-radius:38px;padding:12px;box-shadow:0 30px 60px rgba(0,0,0,.25)}
+.screen{background:#fff;border-radius:28px;overflow:hidden;min-height:760px;display:flex;flex-direction:column}
+.bar{background:var(--ink);padding:18px 20px 16px;text-align:center}.bar img{height:44px}
+.prog{height:4px;background:#2A2A2A}.prog span{display:block;height:100%;background:var(--gold);transition:width .3s}
+.body{padding:22px 22px 26px;flex:1;display:flex;flex-direction:column}
+.step{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:800}
+h1{font-family:var(--serif);font-size:26px;margin:6px 0 6px;line-height:1.2}h2{font-family:var(--serif);margin:0}
+.sub{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:16px}
+input,select{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;font-size:15px;background:#fff}
+input:focus{outline:none;border-color:var(--gold)}
+.opts{display:grid;gap:9px}.opt{border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center;background:#fff;font:inherit;text-align:left}
+.opt small{font-weight:400;color:var(--muted)}.opt.on{border-color:var(--gold);background:#FBF5E8}
+.cars{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.car{border:1.5px solid var(--line);border-radius:12px;padding:10px;cursor:pointer;font-size:13px;background:#fff;text-align:left;font-family:inherit}.car b{display:block}.car.on{border-color:var(--gold);background:#FBF5E8}
+.found{background:#FBF5E8;border-radius:12px;padding:12px;margin-top:10px;font-size:14px;display:none}
+.go{margin-top:auto;padding-top:16px}.btn{width:100%;border:0;border-radius:14px;padding:15px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;background:var(--gold);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}.btn.dark{background:var(--ink);color:#fff}.btn.line{background:#fff;border:1.5px solid var(--ink);margin-top:8px}
+.back{background:none;border:0;color:var(--muted);font:inherit;cursor:pointer;padding:8px 0 0}
+.range{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:4px}
+input[type=range]{padding:0;border:0;accent-color:var(--gold)}
+.big{font-family:var(--serif);font-size:46px;font-weight:700;line-height:1}.big small{font-size:16px;color:var(--muted);font-weight:400}
+.res{background:var(--ink);color:#fff;border-radius:18px;padding:20px;margin:6px 0 14px}.res .l{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--gold2)}
+.res .big{color:var(--gold)}.res .row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid rgba(255,255,255,.12)}
+.terms{display:flex;gap:6px;margin:10px 0}.terms button{flex:1;border:1.5px solid #444;background:transparent;color:#fff;border-radius:10px;padding:8px;font:inherit;cursor:pointer}.terms button.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.bring{font-size:14px;line-height:1.7;padding-left:18px;margin:6px 0 12px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.slot{border:1.5px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;text-align:center;font-weight:600;background:#fff;font-family:inherit}.slot.on{border-color:var(--gold);background:#FBF5E8}
+.fine{font-size:10.5px;color:var(--muted);line-height:1.45;margin-top:14px}
+.warn{background:#FBEDE9;color:var(--bad);border-radius:12px;padding:12px;font-size:14px;margin-top:10px}
+.side h2{font-size:28px;margin-bottom:6px}.side .sub{max-width:560px}
+.crm{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px}
+.crm h3{margin:0 0 10px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:7px 12px;font-size:14px}.kv span{color:var(--muted)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}.tag{background:#F3EEE2;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
+.score{font-family:var(--serif);font-size:40px;font-weight:700}
+.feed{list-style:none;margin:0;padding:0}.feed li{padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;animation:in .3s ease both}.feed li:last-child{border-bottom:0}.feed b{color:var(--go)}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.live{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--go);margin-right:6px;animation:pulse 1.4s infinite}@keyframes pulse{50%{opacity:.3}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone"><div class="screen">
+    <div class="bar"><img src="assets/lllogo.png" alt="Legend Lending"></div>
+    <div class="prog"><span id="prog" style="width:0"></span></div>
+    <div class="body" id="app"></div>
+  </div></div>
+  <div class="side">
+    <h2>Car Finance Fit Check</h2>
+    <div class="sub">What the customer sees on the left. What lands in GoHighLevel on the right, live, as they answer. By the time Ben calls, he already knows the car, the amount, the job and the credit story.</div>
+    <div class="crm"><h3><span><span class="live"></span>New contact in GoHighLevel</span><span class="tag" id="stage">New lead</span></h3>
+      <div class="kv" id="kv"></div></div>
+    <div class="crm"><h3>Lead score for Ben <span class="score" id="score">?</span></h3><div class="tags" id="tags"></div></div>
+    <div class="crm"><h3>Automation feed</h3><ul class="feed" id="feed"><li>Waiting for the first answer...</li></ul></div>
+  </div>
+</div>
+<script>
+const CARS=[
+ {n:"Toyota Hilux SR5",y:2021,p:52000,t:"Ute"},{n:"Ford Ranger XLT",y:2022,p:58000,t:"Ute"},
+ {n:"Toyota LandCruiser 79",y:2020,p:78000,t:"4WD"},{n:"Isuzu D-MAX LS-U",y:2021,p:44000,t:"Ute"},
+ {n:"Mazda CX-5 Maxx",y:2019,p:27000,t:"SUV"},{n:"Quintrex 481 + Yamaha 90",y:2022,p:38000,t:"Boat"}
+];
+const S={car:null,price:0,deposit:0,emp:"",income:"",res:"",credit:"",term:5,name:"",phone:"",email:"",slot:""};
+const MIN=10000;let step=0;const $=s=>document.querySelector(s);
+const money=n=>"$"+Math.round(n).toLocaleString("en-AU");
+const BANDS={"Clean":[7.5,10.5],"A few hiccups":[10.5,15.5],"Past defaults":[15,21],"Not sure":[9,16]};
+function weekly(P,ratePct,years){const r=ratePct/100/52,n=years*52;return P*r/(1-Math.pow(1+r,-n))}
+function loan(){return Math.max(0,S.price-S.deposit)}
+function feed(t){const f=$("#feed");if(f.firstElementChild&&f.firstElementChild.textContent.startsWith("Waiting"))f.innerHTML="";const li=document.createElement("li");li.innerHTML=t;f.prepend(li)}
+function crm(){const L=loan();$("#kv").innerHTML=[
+ ["Source","Fit Check · Meta ad"],["Vehicle",S.car?`${S.car.y} ${S.car.n}`:"waiting"],["Price",S.price?money(S.price):"waiting"],["Deposit or trade in",S.price?money(S.deposit):"waiting"],
+ ["Loan amount",S.price?money(L):"waiting"],["Employment",S.emp||"waiting"],["Monthly income",S.income||"waiting"],["Living situation",S.res||"waiting"],["Credit history",S.credit||"waiting"],
+ ["Name",S.name||"waiting"],["Mobile",S.phone||"waiting"],["Email",S.email||"waiting"],["Fit Session",S.slot||"not booked"]].map(([k,v])=>`<span>${k}</span><b style="${v==="waiting"||v==="not booked"?"color:#B5AE9F;font-weight:400":""}">${v}</b>`).join("");
+ let sc=0;const tags=[];if(S.car)tags.push(S.car.t.toLowerCase());if(L>=MIN){sc+=2;tags.push("loan "+(L>=40000?"40k plus":"10k to 40k"))}else if(S.price)tags.push("below minimum");
+ if(S.emp==="Full time"){sc+=3}else if(S.emp==="Self employed"||S.emp==="Part time"){sc+=2}else if(S.emp)sc+=1;if(S.emp)tags.push(S.emp.toLowerCase());
+ if(S.credit==="Clean")sc+=3;else if(S.credit==="A few hiccups")sc+=2;else if(S.credit)sc+=1;if(S.credit)tags.push("credit: "+S.credit.toLowerCase());
+ if(S.res==="Own home")sc+=1;if(S.slot){sc+=2;tags.push("fit session booked")}
+ const g=!S.emp?"?":sc>=9?"A":sc>=6?"B":"C";$("#score").textContent=g;$("#score").style.color=g==="A"?"#1F9D6B":g==="B"?"#C9A65B":"#6E6A62";
+ $("#tags").innerHTML=["fit check",...tags].map(t=>`<span class="tag">${t}</span>`).join("");
+ $("#stage").textContent=S.slot?"Fit Session booked":S.phone?"New lead":"Started"}
+function pick(k,v,el){S[k]=v;document.querySelectorAll(el).forEach(b=>b.classList.toggle("on",b.dataset.v===v));$("#nx").disabled=false;crm()}
+function parseLink(u){const m=u.toLowerCase().match(/(19|20)\d{2}-([a-z]+)-([a-z0-9]+)(?:-([a-z0-9]+))?/);if(!m)return null;const y=+m[0].slice(0,4);const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):"";
+ const known=CARS.find(c=>c.n.toLowerCase().includes(m[3]));const name=cap(m[2])+" "+cap(m[3])+(m[4]?" "+m[4].toUpperCase():"");return{n:name,y,p:known?known.p:35000,t:known?known.t:"Car"}}
+const STEPS=[
+ ()=>`<div class="step">Step 1 of 5</div><h1>What are you looking to buy?</h1><div class="sub">Paste the link from Carsales, Gumtree or a dealer site, or pick one below.</div>
+ <input id="link" placeholder="Paste a car listing link" oninput="lk(this.value)"><div class="found" id="fnd"></div>
+ <div class="cars">${CARS.map((c,i)=>`<button class="car ${S.car&&S.car.n===c.n?"on":""}" onclick="car(${i})"><b>${c.y} ${c.n}</b>${money(c.p)} <span style="color:var(--muted)">sample price</span></button>`).join("")}</div>
+ <div class="go"><button class="btn" id="nx" ${S.car?"":"disabled"} onclick="next()">Next</button></div>`,
+ ()=>`<div class="step">Step 2 of 5</div><h1>${S.car.y} ${S.car.n}</h1><div class="sub">Check the price and tell us about any deposit or trade in. No deposit is fine.</div>
+ <label>Price</label><input type="number" value="${S.price}" oninput="S.price=+this.value||0;crm();dep()" style="margin:6px 0 14px">
+ <label>Deposit or trade in: <b id="dv">${money(S.deposit)}</b></label><input type="range" min="0" max="${Math.round(S.price*.5)}" step="500" value="${S.deposit}" oninput="S.deposit=+this.value;$('#dv').textContent=money(S.deposit);crm();dep()">
+ <div class="range"><span>$0</span><span>${money(S.price*.5)}</span></div>
+ <div class="found" style="display:block" id="la">You'd be borrowing about <b>${money(loan())}</b></div><div id="mw"></div>
+ <div class="go"><button class="btn" id="nx" onclick="next()">Next</button><button class="back" onclick="back()">Back</button></div>`,
+ ()=>`<div class="step">Step 3 of 5</div><h1>Your work and home</h1><div class="sub">Casual, self employed or on benefits? Plenty of our clients are. It just helps us pick the right lenders.</div>
+ <div class="opts">${["Full time","Part time","Casual","Self employed","Centrelink"].map(v=>`<button class="opt emp ${S.emp===v?"on":""}" data-v="${v}" onclick="pick('emp','${v}','.emp')">${v}</button>`).join("")}</div>
+ <label style="display:block;margin-top:14px">Monthly income after tax</label><select onchange="S.income=this.value;crm()" style="margin-top:6px"><option value="">Choose</option>${["Under $3,000","$3,000 to $5,000","$5,000 to $8,000","Over $8,000"].map(v=>`<option ${S.income===v?"selected":""}>${v}</option>`).join("")}</select>
+ <label style="display:block;margin-top:14px">Living situation</label><select onchange="S.res=this.value;crm()" style="margin-top:6px"><option value="">Choose</option>${["Own home","Renting","Living with family"].map(v=>`<option ${S.res===v?"selected":""}>${v}</option>`).join("")}</select>
+ <div class="go"><button class="btn" id="nx" ${S.emp?"":"disabled"} onclick="next()">Next</button><button class="back" onclick="back()">Back</button></div>`,
+ ()=>`<div class="step">Step 4 of 5</div><h1>How's your credit history?</h1><div class="sub">Knocked back before? We don't judge. Be honest and we'll find a way forward.</div>
+ <div class="opts">${[["Clean","No missed payments"],["A few hiccups","Late payments, a small default"],["Past defaults","Defaults, Part 9 or bankruptcy"],["Not sure","That's fine too"]].map(([v,s])=>`<button class="opt cr ${S.credit===v?"on":""}" data-v="${v}" onclick="pick('credit','${v}','.cr')">${v}<small>${s}</small></button>`).join("")}</div>
+ <div class="go"><button class="btn" id="nx" ${S.credit?"":"disabled"} onclick="next()">See my estimate</button><button class="back" onclick="back()">Back</button></div>`,
+ ()=>{const L=loan(),b=BANDS[S.credit]||[9,16];const lo=weekly(L,b[0],S.term),hi=weekly(L,b[1],S.term);
+ return`<div class="step">Your estimate</div><h1>${S.car.y} ${S.car.n}</h1>
+ <div class="res"><div class="l">Estimated weekly repayment</div><div class="big">${money(lo)} to ${money(hi)}<small style="color:#bbb"> a week</small></div>
+ <div class="terms">${[3,5,7].map(t=>`<button class="${S.term===t?"on":""}" onclick="S.term=${t};draw()">${t} years</button>`).join("")}</div>
+ <div class="row"><span>Borrowing</span><b>${money(L)}</b></div><div class="row"><span>Rate range used</span><b>${b[0]}% to ${b[1]}% p.a.</b></div><div class="row"><span>Lenders we compare</span><b>50+</b></div></div>
+ <b>Bring to your Fit Session</b><ul class="bring"><li>Driver licence</li><li>${S.emp==="Self employed"?"ABN and your last BAS or tax return":S.emp==="Centrelink"?"Your Centrelink income statement":"Your last 2 payslips"}</li><li>The car listing or dealer quote</li></ul>
+ <div class="go"><button class="btn" onclick="next()">Book my free Financial Fit Session</button><button class="btn line" onclick="sms()">Rather text? Text Ben</button></div>
+ <div class="fine">Estimate only. This is not a quote, a credit assessment or an approval. Your actual rate, fees and repayments depend on the lender, your credit profile and the vehicle, and comparison rates may differ. Legend Lending is an Authorised Credit Representative (Credit Representative number 471280) of Ausloans Pty Ltd (Australian Credit Licence 383999). ABN 57 652 799 374.</div>`},
+ ()=>`<div class="step">Step 5 of 5</div><h1>Book your Financial Fit Session</h1><div class="sub">15 minutes on the phone with Ben. Free, no obligation, and nothing is submitted to a lender until we've spoken.</div>
+ <input placeholder="Full name" value="${S.name}" oninput="S.name=this.value;crm()" style="margin-bottom:8px"><input placeholder="Mobile" value="${S.phone}" oninput="S.phone=this.value;crm()" style="margin-bottom:8px"><input placeholder="Email" value="${S.email}" oninput="S.email=this.value;crm()">
+ <div class="slots">${["Today 4:30pm","Today 6:00pm","Tomorrow 8:30am","Tomorrow 12:30pm"].map(v=>`<button class="slot ${S.slot===v?"on":""}" data-v="${v}" onclick="pick('slot','${v}','.slot')">${v}</button>`).join("")}</div>
+ <div class="go"><button class="btn" id="nx" ${S.slot?"":"disabled"} onclick="book()">Confirm my session</button><button class="back" onclick="back()">Back</button></div>`,
+ ()=>`<div style="text-align:center;margin-top:40px"><div style="font-size:54px;color:var(--gold);font-family:var(--serif)">LL</div><h1>You're booked, ${S.name.split(" ")[0]||"legend"}.</h1><div class="sub">${S.slot} with Ben. We've texted you a confirmation and what to bring. Reply to that text anytime.</div></div>
+ <div class="res"><div class="l">Your car</div><div style="font-size:18px;font-weight:700;margin-top:4px">${S.car.y} ${S.car.n}</div><div class="row"><span>Borrowing</span><b>${money(loan())}</b></div></div>
+ <div class="go"><button class="btn dark" onclick="restart()">Start again</button></div>`
+];
+function draw(){$("#app").innerHTML=STEPS[step]();$("#prog").style.width=Math.min(100,step/6*100)+"%";if(step===1)dep()}
+function next(){if(step===0)feed(`Contact created, tagged <b>fit check</b>, source Meta ad`);if(step===1)feed(`Loan amount set to <b>${money(loan())}</b>`);if(step===2)feed(`Employment <b>${S.emp}</b> saved to custom field`);if(step===3){feed(`Estimate shown. Lead moved to <b>New lead</b>. Ben's phone buzzed with a 1 minute timer`)}step++;draw()}
+function back(){step=Math.max(0,step-1);draw()}
+function car(i){S.car=CARS[i];S.price=CARS[i].p;S.deposit=0;document.querySelectorAll(".car").forEach((b,j)=>b.classList.toggle("on",i===j));$("#nx").disabled=false;crm()}
+function lk(v){const c=parseLink(v);const f=$("#fnd");if(c){S.car=c;S.price=c.p;S.deposit=0;f.style.display="block";f.innerHTML=`Found: <b>${c.y} ${c.n}</b>. We'll use ${money(c.p)} as the price for now.`;$("#nx").disabled=false;crm()}else{f.style.display=v?"block":"none";f.textContent="Couldn't read that link. Pick a car below instead."}}
+function dep(){const L=loan();$("#la")&&($("#la").innerHTML=`You'd be borrowing about <b>${money(L)}</b>`);$("#mw").innerHTML=L<MIN?`<div class="warn">That's under our ${money(MIN)} minimum. Message us anyway and we'll point you somewhere useful.</div>`:"";const n=$("#nx");if(n)n.disabled=L<MIN}
+function book(){if(!S.name||!S.phone){alert("Add your name and mobile");return}feed(`Fit Session booked for <b>${S.slot}</b> in Ben's calendar. Confirmation text sent`);feed(`Stage moved to <b>Fit Session booked</b>. No show sequence armed`);step++;draw();crm()}
+function sms(){feed(`Customer tapped <b>Text Ben</b>. Conversation opened in GHL; AI agent replied in 4 seconds`);alert("Opens their messages app with: Hi Ben, I just did the Fit Check for the "+S.car.y+" "+S.car.n+".")}
+function restart(){Object.assign(S,{car:null,price:0,deposit:0,emp:"",income:"",res:"",credit:"",term:5,name:"",phone:"",email:"",slot:""});step=0;$("#feed").innerHTML="<li>Waiting for the first answer...</li>";draw();crm()}
+draw();crm();
+</script>
+</body>
+</html>

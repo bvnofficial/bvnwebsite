@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Key Date Finder | Keighran Legal + Advisory</title>
+<style>
+:root{--ink:#14213D;--ink2:#1E2F55;--gold:#C8963E;--gold2:#E7C98F;--cream:#F7F4EE;--line:#E6E0D4;--muted:#6B7280;--bad:#B4442F;--good:#2F7A4F;--warn:#B7791F;--serif:Georgia,"Times New Roman",serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--cream);font-size:14px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0}
+.top{background:var(--ink);color:#F3EEE4;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:14px}.brand img{height:42px;display:block}
+.wordmark{font-family:var(--serif);font-size:20px;color:#fff;line-height:1.1}.wordmark span{color:var(--gold)}
+.top .t{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2)}
+.hero{padding:30px 28px 10px;max-width:1280px;margin:0 auto}.hero h1{font-size:34px}.hero p{color:var(--muted);max-width:760px;line-height:1.6}
+.wrap{max-width:1280px;margin:0 auto;padding:10px 28px 60px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media(max-width:1000px){.wrap{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 14px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.drop{border:2px dashed #CFC5B2;border-radius:12px;padding:14px;text-align:center;color:var(--muted);margin-bottom:12px;cursor:pointer}.drop.over{background:#F5EAD6;border-color:var(--gold)}
+textarea{width:100%;height:470px;border:1px solid var(--line);border-radius:10px;padding:14px;font:13px/1.6 var(--serif);color:var(--ink);resize:vertical}
+.btn{border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:8px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer}.btn.pri{background:var(--gold);border-color:var(--gold);color:var(--ink)}.btn.dark{background:var(--ink);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.scan{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin:12px 0;display:none}.scan span{display:block;height:100%;width:0;background:var(--gold);transition:width 1.1s ease}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.sum div{background:var(--cream);border-radius:10px;padding:10px}.sum b{font-family:var(--serif);font-size:26px;display:block}.sum small{color:var(--muted)}
+.ev{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);animation:in .35s ease both}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ev:last-child{border-bottom:0}.ev .d{font-family:var(--serif);font-size:20px;font-weight:600;text-align:center}.ev .d small{display:block;font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:400}
+.ev .d.red{color:var(--bad)}.ev .d.amb{color:var(--warn)}.ev .d.past{color:#A8A29E}
+.ev .what{font-weight:700}.ev .when{font-size:15px;margin:2px 0}.ev .src{font-size:12px;color:var(--muted);font-style:italic}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700;background:#F5EAD6;color:#7A5A22;margin-left:6px}
+.pill.calc{background:#E6ECF7;color:var(--ink2)}
+.empty{color:var(--muted);text-align:center;padding:40px 10px}
+.note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .2s;z-index:70}.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand"><img src="assets/logo.png" alt="Keighran Legal + Advisory" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'wordmark',innerHTML:'Keighran Legal <span>+</span> Advisory'}))"></div>
+  <div class="t">Key Date Finder · Demo</div>
+</div>
+<div class="hero"><h1>Every date in the document, in seconds</h1><p>Paste or drop a lease, a contract for sale or a hotel management agreement. Key Date Finder reads the defined dates, works out the relative ones ("not later than 3 months before the Terminating Date"), and lists every deadline with the clause it came from. One tap loads them into Keighran HQ with reminders for the lawyer and the client.</p></div>
+<div class="wrap">
+  <div class="card">
+    <div class="tabs" id="tabs"></div>
+    <div class="drop" id="drop">Drop a .txt file here, or paste text below. Samples are made up.</div>
+    <textarea id="doc" spellcheck="false"></textarea>
+    <div class="scan" id="scan"><span></span></div>
+    <div class="row" style="margin-top:12px"><button class="btn pri" onclick="run()">Find the dates</button><span class="note" style="margin:0">Works on the text itself. Nothing leaves this page.</span></div>
+  </div>
+  <div class="card">
+    <h2 style="font-size:22px;margin-bottom:12px">Key dates found</h2>
+    <div id="out"><div class="empty">Pick a sample on the left and press Find the dates.</div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const SAMPLES={
+"Retail lease":`LEASE: Shop 4, 120 Church Street, Parramatta NSW 2150
+Landlord: Harbourline Developments Pty Ltd
+Tenant: Patel Pharmacy Group Pty Ltd
+
+1. Term
+1.1 The Commencement Date is 1 February 2024.
+1.2 The Terminating Date is 31 January 2029.
+
+2. Rent review
+2.1 The rent is reviewed to CPI on each anniversary of the Commencement Date, except a Market Review Date.
+2.2 The Market Review Date is 1 February 2027.
+2.3 The Landlord must give the Tenant a market rent proposal not earlier than 3 months before the Market Review Date.
+
+3. Option to renew
+3.1 The Tenant may renew this lease for one further term of 5 years.
+3.2 To exercise the option the Tenant must give written notice not earlier than 6 months and not later than 3 months before the Terminating Date.
+
+4. Security
+4.1 The bank guarantee must remain in force until 6 months after the Terminating Date.
+
+5. Make good
+5.1 The Tenant must complete the make good works by the Terminating Date.
+
+6. Insurance
+6.1 The Tenant must give the Landlord a certificate of currency for its public liability insurance by 1 July 2027.`,
+"Off the plan contract":`CONTRACT FOR THE SALE AND PURCHASE OF LAND (OFF THE PLAN)
+Property: Lot 14 in the proposed strata plan, Kestrel Apartments, Penrith NSW 2750
+Vendor: Kestrel Apartments Pty Ltd
+Purchaser: J. and A. Morgan
+
+1. Dates
+1.1 The Contract Date is 12 November 2026.
+1.2 The Sunset Date is 30 June 2028.
+
+2. Cooling off
+2.1 The cooling off period ends 10 business days after the Contract Date.
+
+3. Deposit
+3.1 The deposit bond expires on 31 July 2028.
+3.2 The purchaser must replace the deposit bond with cash not later than 14 days before the expiry of the deposit bond on 31 July 2028.
+
+4. Registration and completion
+4.1 The vendor must use reasonable endeavours to register the strata plan before the Sunset Date.
+4.2 Completion is due 21 days after the purchaser is served with notice that the strata plan is registered.
+
+5. Rescission
+5.1 If the strata plan is not registered by the Sunset Date, the vendor must give the purchaser at least 28 days written notice before rescinding, and the purchaser may rescind at any time after the Sunset Date.
+
+6. Inspection
+6.1 The purchaser may inspect the lot once within 14 days before completion.`,
+"Hotel management agreement":`HOTEL MANAGEMENT AGREEMENT
+Hotel: Bluegum Hotel, Port Macquarie NSW 2444
+Owner: Bluegum Hospitality Pty Ltd
+Operator: Coastview Hotel Group Pty Ltd
+
+1. Term
+1.1 The Commencement Date is 1 July 2021.
+1.2 The Expiry Date is 30 June 2036.
+1.3 The Operator may extend the term by 5 years by giving notice not later than 12 months before the Expiry Date.
+
+2. Budgets and reporting
+2.1 The Operator must submit the Annual Operating Plan for each Fiscal Year not later than 60 days before the Fiscal Year Start.
+2.2 The Fiscal Year Start is 1 July 2027.
+
+3. Performance test
+3.1 The Performance Test is first measured for the fiscal year ending 30 June 2027.
+3.2 The Owner may terminate by notice within 90 days after the Performance Test Date if the Operator fails the Performance Test.
+3.3 The Performance Test Date is 30 June 2027.
+
+4. FF&E reserve
+4.1 The parties will review the FF&E reserve percentage on 1 July 2027.
+
+5. Insurance
+5.1 The Operator must renew the hotel's insurance by 30 September 2027.`
+};
+const MONTHS=["january","february","march","april","may","june","july","august","september","october","november","december"];
+const NUM={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,fourteen:14,twenty:20,thirty:30,sixty:60,ninety:90};
+const $=s=>document.querySelector(s);let cur="Retail lease";let found=[];
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2400)}
+function tabs(){$("#tabs").innerHTML=Object.keys(SAMPLES).map(k=>`<button class="tab ${k===cur?"on":""}" onclick="pick('${k}')">${k}</button>`).join("")}
+function pick(k){cur=k;tabs();$("#doc").value=SAMPLES[k];$("#out").innerHTML='<div class="empty">Press Find the dates.</div>'}
+function pd(s){const m=s.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);if(!m)return null;const mi=MONTHS.indexOf(m[2].toLowerCase());if(mi<0)return null;return new Date(+m[3],mi,+m[1])}
+function fmt(d){return d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"long",year:"numeric"})}
+function addUnits(d,n,unit,dir){const r=new Date(d);const s=dir==="before"?-1:1;unit=unit.toLowerCase();
+ if(unit.startsWith("business")){let k=0;while(k<n){r.setDate(r.getDate()+s);const w=r.getDay();if(w!==0&&w!==6)k++}return r}
+ if(unit.startsWith("day"))r.setDate(r.getDate()+s*n);else if(unit.startsWith("month"))r.setMonth(r.getMonth()+s*n);else if(unit.startsWith("year"))r.setFullYear(r.getFullYear()+s*n);return r}
+function kind(t){t=t.toLowerCase();
+ const K=[["option","Option to renew"],["market rent proposal","Market rent proposal"],["market review","Market rent review"],["cpi","CPI rent review"],["cooling off","Cooling off ends"],["replace the deposit bond","Replace deposit bond with cash"],["deposit bond","Deposit bond expires"],["rescind","Sunset rescission"],["sunset","Sunset date"],["extend the term","Extension notice deadline"],["annual operating plan","Annual Operating Plan due"],["performance test","Performance test"],["ff&e","FF&E reserve review"],["bank guarantee","Bank guarantee may be released"],["make good","Make good complete"],["certificate of currency","Insurance certificate due"],["renew the hotel's insurance","Insurance renewal due"],["insurance","Insurance"],["fiscal year start is","Fiscal year starts"],["terminating date is","Lease ends"],["expiry date is","Agreement ends"],["commencement date is","Commencement"],["contract date is","Contract date"]];
+ for(const[k,v]of K)if(t.includes(k))return v;return"Key date"}
+function who(k){return/option|renew|extension|bond|rescission|cooling/i.test(k)?"Client and lawyer":"Lawyer"}
+function run(){
+ const text=$("#doc").value;const clauses=text.split(/\n(?=\d+\.\d+\s)/);const defs={};
+ const reDef=/(?:The\s+)?([A-Z][A-Za-z&]*(?:\s+[A-Z][A-Za-z&]*)*\s+(?:Date|Start))\s+is\s+(\d{1,2}\s+[A-Za-z]+\s+\d{4})/g;let m;
+ while((m=reDef.exec(text)))defs[m[1].trim()]=pd(m[2]);
+ const out=[];const seen=new Set();
+ function push(date,label,clause,src,calc){if(!date)return;const key=label+date.toDateString();if(seen.has(key))return;seen.add(key);out.push({date,label,clause,src,calc})}
+ clauses.forEach(c=>{const num=(c.match(/^(\d+\.\d+)/)||[])[1]||"";const line=c.replace(/^\d+\.\d+\s*/,"").trim().split("\n")[0];
+  const relRe=/(not earlier than|not later than|at least|within)?\s*(\d+|[a-z]+)\s+(business days|days|months|years)\s+(before|after)\s+(?:the\s+)?(?:expiry of the deposit bond on\s+(\d{1,2}\s+[A-Za-z]+\s+\d{4})|([A-Z][A-Za-z&]*(?:\s+[A-Z][A-Za-z&]*)*\s+(?:Date|Start)))/g;let r,hadRel=false;
+  while(!/not earlier than \d+ (?:months|days) and not later than/.test(line)&&(r=relRe.exec(line))){const n=/^\d+$/.test(r[2])?+r[2]:NUM[r[2]];if(!n)continue;const base=r[5]?pd(r[5]):defs[r[6]];if(!base)continue;hadRel=true;
+   const d=addUnits(base,n,r[3],r[4]);let lab=kind(line);
+   if(/option/i.test(line))lab=r[1]==="not earlier than"?"Option window opens":"Option window closes (last day to exercise)";
+   else if(r[1]==="not later than")lab=lab+": last day";else if(r[1]==="within")lab=lab+": window closes";else if(r[1]==="not earlier than")lab=lab+": earliest date";else if(r[1]==="at least")lab="Last day to serve rescission notice (if rescinding on the Sunset Date)";
+   push(d,lab,num,r[0].trim(),true)}
+  const two=line.match(/not earlier than (\d+) (months|days) and not later than (\d+) (months|days) before (?:the\s+)?([A-Z][A-Za-z&]*(?:\s+[A-Z][A-Za-z&]*)*\s+Date)/);
+  if(two&&defs[two[5]]){hadRel=true;push(addUnits(defs[two[5]],+two[1],two[2],"before"),"Option window opens",num,"not earlier than "+two[1]+" "+two[2]+" before the "+two[5],true);push(addUnits(defs[two[5]],+two[3],two[4],"before"),"Option window closes (last day to exercise)",num,"not later than "+two[3]+" "+two[4]+" before the "+two[5],true)}
+  const rs=line.match(/at least (\d+) days written notice before rescinding/);
+  if(rs&&defs["Sunset Date"]){hadRel=true;push(addUnits(defs["Sunset Date"],+rs[1],"days","before"),"Last day to serve "+rs[1]+" day rescission notice (to rescind on the Sunset Date)",num,"at least "+rs[1]+" days written notice before rescinding",true)}
+  const by=line.match(/\bby the ([A-Z][A-Za-z&]*(?:\s+[A-Z][A-Za-z&]*)*\s+Date)\b/);
+  if(by&&defs[by[1]]&&!/register/i.test(line)){hadRel=true;push(defs[by[1]],kind(line),num,"by the "+by[1],true)}
+  if(/each anniversary of the Commencement Date/i.test(line)&&defs["Commencement Date"]){const end=defs["Terminating Date"]||new Date(2100,0,1);const mr=defs["Market Review Date"];let d=new Date(defs["Commencement Date"]);d.setFullYear(d.getFullYear()+1);while(d<end){if(!mr||d.getTime()!==mr.getTime())push(new Date(d),"CPI rent review",num,"each anniversary of the Commencement Date",true);d=new Date(d);d.setFullYear(d.getFullYear()+1)}}
+  if(/21 days after the purchaser is served/i.test(line))out.push({date:null,label:"Completion: 21 days after notice of registration",clause:num,src:"date set when the strata plan registers",calc:true});
+  if(!hadRel){const all=line.match(/\d{1,2}\s+[A-Z][a-z]+\s+\d{4}/g)||[];all.forEach(s=>push(pd(s),kind(line),num,s,false))}
+ });
+ const today=new Date();today.setHours(0,0,0,0);
+ out.sort((a,b)=>(a.date?a.date:new Date(2999,0,1))-(b.date?b.date:new Date(2999,0,1)));found=out;
+ const sc=$("#scan");sc.style.display="block";sc.firstElementChild.style.width="0";setTimeout(()=>sc.firstElementChild.style.width="100%",20);
+ $("#out").innerHTML='<div class="empty">Reading the document...</div>';
+ setTimeout(()=>{sc.style.display="none";
+  const fut=out.filter(e=>e.date&&e.date>=today),calc=out.filter(e=>e.calc).length,next=fut[0];
+  $("#out").innerHTML=`<div class="sum"><div><b>${out.length}</b><small>dates found</small></div><div><b>${calc}</b><small>worked out from clauses</small></div><div><b>${next?Math.round((next.date-today)/864e5)+"d":"none"}</b><small>to the next one</small></div></div>`+
+  out.map((e,i)=>{let cls="",dl="";if(e.date){const dd=Math.round((e.date-today)/864e5);cls=dd<0?"past":dd<=30?"red":dd<=90?"amb":"";dl=dd<0?"passed":dd+" days"}else{dl="pending"}
+   return`<div class="ev" style="animation-delay:${i*70}ms"><div class="d ${cls}">${e.date?e.date.getDate():"?"}<small>${e.date?e.date.toLocaleDateString("en-AU",{month:"short",year:"2-digit"}):""}</small></div><div><div class="what">${e.label}${e.calc?'<span class="pill calc">worked out</span>':'<span class="pill">stated</span>'}</div><div class="when">${e.date?fmt(e.date):"Set when the event happens"} <span style="color:var(--muted)">· ${dl}</span></div><div class="src">Clause ${e.clause}: "${e.src}" · Remind: ${who(e.label)}</div></div></div>`}).join("")+
+  `<div class="row" style="margin-top:16px"><button class="btn dark" onclick="toast('${out.length} key dates loaded into Keighran HQ with reminders at 30, 14, 7 and 2 days')">Load into Keighran HQ</button><button class="btn" onclick="ics()">Add to Outlook calendar</button></div>
+  <div class="note">Business days skip weekends only in this demo; the live version also skips NSW public holidays. Every date is shown with its clause so the lawyer can check it in one glance.</div>`},1150)}
+function ics(){const lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Keighran//Key Date Finder//EN"];found.filter(e=>e.date).forEach((e,i)=>{const d=e.date;const s=d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");lines.push("BEGIN:VEVENT","UID:kdf"+i+s+"@keighran","DTSTAMP:"+s+"T000000Z","DTSTART;VALUE=DATE:"+s,"SUMMARY:"+cur+": "+e.label,"DESCRIPTION:Clause "+e.clause,"BEGIN:VALARM","TRIGGER:-P14D","ACTION:DISPLAY","DESCRIPTION:Reminder","END:VALARM","END:VEVENT")});lines.push("END:VCALENDAR");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([lines.join("\r\n")],{type:"text/calendar"}));a.download="key-dates.ics";a.click();toast("Calendar file ready")}
+const dz=$("#drop");dz.ondragover=e=>{e.preventDefault();dz.classList.add("over")};dz.ondragleave=()=>dz.classList.remove("over");
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove("over");const f=e.dataTransfer.files[0];if(!f)return;if(!/\.txt$/i.test(f.name)){toast("This demo reads .txt. The live version reads Word and PDF.");return}f.text().then(t=>{$("#doc").value=t;cur="";tabs();run()})};
+tabs();pick(cur);
+</script>
+</body>
+</html>

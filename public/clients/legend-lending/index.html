@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legend App Suite | Demo</title>
+<style>
+:root{--ink:#141414;--acc:#C9A65B;--go:#1F9D6B;--bg:#F4F1EA;--line:#E1E7EC;--muted:#667685;--sans:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg)}
+h1,h2,h3{margin:0;font-weight:900;letter-spacing:-.4px}
+.hero{background:radial-gradient(circle at 20% 0%,#3A2F18 0%,#141414 60%);color:#EAF2F6;padding:60px 20px 52px;text-align:center}
+.hero .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--acc);font-weight:700}
+.hero h1{font-size:48px;margin:12px 0}.hero p{max-width:700px;margin:0 auto;opacity:.85;line-height:1.6}
+.stack{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}.stack span{border:1px solid rgba(234,242,246,.3);padding:6px 14px;border-radius:99px;font-size:13px}
+.wrap{max-width:1120px;margin:0 auto;padding:10px 20px 60px}
+.st{display:flex;align-items:baseline;gap:12px;margin:38px 0 14px}.st .c{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}@media(max-width:900px){.grid,.big{grid-template-columns:1fr!important}}
+.big{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+.card{display:block;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;text-decoration:none;color:var(--ink);position:relative;transition:transform .15s,box-shadow .15s}
+a.card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(11,31,42,.14)}
+.card .n{color:var(--acc);font-weight:900;letter-spacing:1px}.card h3{margin:4px 0 8px;font-size:20px}.big h3{font-size:26px}
+.card p{color:var(--muted);font-size:14px;margin:0;line-height:1.55}.card .fix{margin-top:12px;font-size:12px;color:#0E8A5B;font-weight:600}
+.card.pick:after{content:"Show on the call";position:absolute;top:14px;right:14px;background:var(--acc);color:var(--ink);font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px}
+.brief{background:#FFF1D6;border-radius:16px;padding:20px;margin-top:30px}
+.brief h3{margin-bottom:8px}.brief ul{margin:0;padding-left:18px;line-height:1.8;color:#5E4300}
+.foot{margin-top:44px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <img src="assets/lllogo.png" alt="Legend Lending" style="height:70px;margin-bottom:18px"><div class="tag">App suite demo · Prepared for Ben and Luisa</div>
+  <h1>The Legend App Suite</h1>
+  <p>Legend HQ and twelve apps so no paid lead goes cold, every lead is traced from ad to settlement, and Ben stops being the bottleneck. Zinc stays where it is. Everything else plugs in around it.</p>
+  <div class="stack"><span>Cairns</span><span>Car, marine, equipment and business finance</span><span>50+ lenders</span><span>Messenger</span><span>Meta</span><span>Google</span><span>GoHighLevel</span><span>Legend HQ</span><span>Zinc</span></div>
+</div>
+<div class="wrap">
+  <div class="brief"><h3>What your brief asked for, and where it lives</h3><ul>
+  <li>One pipeline for every source, 11 stages: <b>Legend HQ, Pipeline</b></li>
+  <li>Day 1, 2, 4, 7, 11 and 14 cadence, auto text after missed calls, calls due screen: <b>Legend HQ, Calls due</b> and <b>app 06</b></li>
+  <li>AI agent on Messenger and SMS that qualifies and books: <b>Legend HQ, Inbox</b> and <b>app 02</b></li>
+  <li>1,200 old leads worked in batches of 100: <b>Legend HQ, Old lead revival</b></li>
+  <li>Funnel by source and the dealership vs direct split: <b>Legend HQ, Funnel by source</b></li>
+  <li>No "pre approval" wording anywhere: <b>Legend HQ, Wording check</b></li></ul></div>
+
+  <div class="st"><h2>Start here</h2><span class="c">the two to try live</span></div>
+  <div class="big">
+    <a class="card pick" href="hq.html"><div class="n">HQ</div><h3>Legend HQ</h3><p>Ben opens one screen in the morning: the new lead with a one minute timer, calls due grouped by cadence day, the AI agent's chats, old lead revival, sequences, Zinc applications and the full funnel by source with cost per settled deal.</p><div class="fix">Fixes: the spreadsheet, the memory, the third call nobody makes</div></a>
+    <a class="card pick" href="fit-check.html"><div class="n">01</div><h3>Car Finance Fit Check</h3><p>A shopper pastes the link to the car they want, or picks make, model and year. Five quick questions later they see an estimated weekly repayment range for that exact car, what they'll need to bring, and a button to book a Financial Fit Session or text Ben. Every check lands in GHL as a tagged, scored lead. Estimate only, not a credit assessment.</p><div class="fix">Fixes: landing page leads who never answer the phone. They've already told you the car, the amount and their job.</div></a>
+  </div>
+
+  <div class="st"><h2>For your customers</h2><span class="c">4 apps</span></div>
+  <div class="grid">
+    <div class="card pick"><div class="n">02</div><h3>Text Ben, any hour</h3><p>The AI agent on Messenger and SMS, trained on your real past chats. It answers in seconds, asks your qualifying questions, says no politely to anyone under your minimum and books the Fit Session into Ben's calendar. Try it live on the call.</p><div class="fix">Fixes: leads that go cold overnight, chats lost inside Messenger</div></div>
+    <div class="card"><div class="n">03</div><h3>Document drop</h3><p>Applicants snap their licence, payslips and bank statements on their phone. A checklist shows what's missing; reminders go out until it's done, then the file is ready for Zinc.</p><div class="fix">Fixes: applications stalled for days waiting on payslips</div></div>
+    <div class="card"><div class="n">04</div><h3>My Loan tracker</h3><p>A link the customer keeps: application sent, with the lender, approved, settlement booked, keys. Like tracking a parcel, for their car loan.</p><div class="fix">Fixes: "any news?" calls during the busiest part of the day</div></div>
+    <div class="card"><div class="n">05</div><h3>Keys day</h3><p>On settlement the customer gets a congratulations message and a link to record a 20 second video with their new car. Videos feed straight into your ads and nurture texts.</p><div class="fix">Fixes: no testimonials or client videos for the nurture content</div></div>
+  </div>
+
+  <div class="st"><h2>For Ben, Luisa and Leo</h2><span class="c">3 apps</span></div>
+  <div class="grid">
+    <div class="card pick"><div class="n">06</div><h3>Speed to Lead phone app</h3><p>A new lead buzzes Ben's phone with the car, amount and job. One tap calls. If nobody calls in 60 seconds it passes to Leo. After the call, one tap logs the outcome and the cadence moves on its own.</p><div class="fix">Fixes: the 1 minute rule living in a coaching note instead of a phone</div></div>
+    <div class="card"><div class="n">07</div><h3>Revival dialer</h3><p>Works the 1,200 old leads newest first in batches of 100: the opener on screen, double call, one tap text, and anyone who says "not yet" goes to nurture with their email captured.</p><div class="fix">Fixes: a year of paid leads sitting in a spreadsheet</div></div>
+    <div class="card"><div class="n">08</div><h3>Wording checker</h3><p>Paste any ad, text or script. It flags "pre approval", promises of approval, missing opt outs and risky claims before anything goes out.</p><div class="fix">Fixes: ASIC wording risk in fast moving ads and texts</div></div>
+  </div>
+
+  <div class="st"><h2>For growing the direct channel</h2><span class="c">4 apps</span></div>
+  <div class="grid">
+    <div class="card pick"><div class="n">09</div><h3>Referral partner app</h3><p>Mechanics, car yards, accountants and past customers send a lead in 30 seconds from their phone and watch it move to settled. HQ ranks partners by settled deals.</p><div class="fix">Fixes: referrer enquiries arriving by email and never tracked</div></div>
+    <div class="card"><div class="n">10</div><h3>Ad money board</h3><p>Cost per lead, per Fit Session and per settled deal for every ad, Messenger vs landing page vs Google, updated daily.</p><div class="fix">Fixes: guessing which ads actually make money</div></div>
+    <div class="card"><div class="n">11</div><h3>Direct vs dealership tracker</h3><p>The 50% direct milestone as a live number, month by month, with a target line.</p><div class="fix">Fixes: the revenue mix only known at month end</div></div>
+    <div class="card"><div class="n">12</div><h3>Car match alerts</h3><p>Leads in nurture tell you what they want. When their budget and timing line up, they get a friendly "still after a Hilux?" text and land back on Ben's call list.</p><div class="fix">Fixes: "not now" leads that never come back</div></div>
+  </div>
+  <div class="foot">Demo with sample data. Prepared by Benjamin Vincent Yson for Legend Lending, November 2026.</div>
+</div>
+</body>
+</html>
