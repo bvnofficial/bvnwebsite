@@ -7,6 +7,7 @@
 <title>Free skin check | Skinlux Face &amp; Body</title>
 <link rel="stylesheet" href="../assets/style.css">
 <script src="../assets/data.js"></script>
+<script src="analyse.js?v=6"></script>
 <style>
   .layout { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 28px; align-items: start; }
   @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
@@ -123,7 +124,7 @@
             <input type="file" id="file" accept="image/*" class="hidden">
             <button class="btn ghost block" id="cam">Use my camera</button>
           </div>
-          <div class="tips">Best results: daylight, no makeup, hair off your face.</div>
+          <div class="tips">Best results: daylight facing a window, no makeup, no glasses, hair off your face and a relaxed face with no smile.</div>
         </div>
 
         <div class="scr" id="s2">
@@ -131,6 +132,12 @@
           <div class="stage"><canvas id="cvScan" width="360" height="440"></canvas></div>
           <div class="scan-status" id="scanStatus">Finding your face</div>
           <div class="bar" style="margin-top:8px"><span id="scanBar" style="width:0"></span></div>
+          <div id="qualBox" class="hidden card" style="margin-top:12px">
+            <b>A better photo gives better results</b>
+            <ul id="qualList" style="padding-left:18px;margin:8px 0 12px;font-size:13px"></ul>
+            <button class="btn gold block" id="qRetake">Take a new photo</button>
+            <button class="btn ghost block" id="qAnyway" style="margin-top:8px">Use this photo anyway</button>
+          </div>
         </div>
 
         <div class="scr" id="s3">
@@ -197,6 +204,9 @@
   var base = document.createElement("canvas"); base.width = W; base.height = H;
   var bctx = base.getContext("2d", { willReadFrequently: true });
   var stream = null;
+  // A sharper copy of the same framing, used for measuring
+  var HI = 3, hi = document.createElement("canvas"); hi.width = W * HI; hi.height = H * HI;
+  var hctx = hi.getContext("2d", { willReadFrequently: true }), srcPerHi = 1;
 
   // ---------- Steps ----------
   var cur = 0;
@@ -267,6 +277,14 @@
     if (mirror) { c.translate(W, 0); c.scale(-1, 1); }
     c.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
     c.restore();
+    if (c === bctx) {
+      var s2 = s * HI; srcPerHi = 1 / s2;
+      hctx.save();
+      if (mirror) { hctx.translate(W * HI, 0); hctx.scale(-1, 1); }
+      hctx.imageSmoothingQuality = "high";
+      hctx.drawImage(img, (W * HI - iw * s2) / 2, (H * HI - ih * s2) / 2, iw * s2, ih * s2);
+      hctx.restore();
+    }
   }
 
   function showStill() { ctx.clearRect(0, 0, W, H); ctx.drawImage(base, 0, 0); }
@@ -281,6 +299,7 @@
   }
   $("start").onclick = function () {
     go(1);
+    if (window.SkinScan) SkinScan.load().catch(function () {});
     bctx.fillStyle = "#ede3d8"; bctx.fillRect(0, 0, W, H); showStill();
     feed("app", "SKIN CHECK", "New skin check started from <b>" + source + "</b>.");
   };
@@ -327,7 +346,7 @@
     return { L: mean, sd: Math.sqrt(Math.max(0, sumL2 / n - mean * mean)), red: red / n, hf: hf / Math.max(1, hfN) };
   }
   var M = null;
-  function analyse() {
+  function analyseBasic() {
     var f = stats("forehead"), cl = stats("cheekL"), cr = stats("cheekR"), no = stats("nose"), ch = stats("chin");
     var cheekRed = (cl.red + cr.red) / 2, cheekSd = (cl.sd + cr.sd) / 2, L = (f.L + cl.L + cr.L + ch.L) / 4;
     return {
@@ -340,14 +359,20 @@
   }
 
   // ---------- Scan animation ----------
-  var LABELS = { forehead: "Texture", cheekL: "Redness", cheekR: "Evenness", nose: "Pores", chin: "Clarity" };
+  var LABELS = { forehead: "Texture and lines", cheekL: "Redness", cheekR: "Even tone", nose: "Pores", chin: "Clarity", eyeL: "Lines", eyeR: "Lines" };
+  var REG = null, RAW = null, LOWQ = false;
   function startScan() {
     go(2);
-    var sc = $("cvScan").getContext("2d"), t0 = performance.now(), dur = 3600;
-    var msgs = ["Finding your face", "Checking redness", "Checking evenness and spots", "Checking texture", "Checking pores and clarity", "Building your results"];
-    M = analyse();
+    $("qualBox").classList.add("hidden");
+    var sc = $("cvScan").getContext("2d"), t0 = performance.now(), dur = 3600, result = null, finished = false;
+    var msgs = ["Finding your face", "Mapping your skin", "Checking redness", "Checking evenness and spots", "Checking texture and lines", "Checking pores and clarity", "Building your results"];
+    REG = null;
+    (window.SkinScan ? SkinScan.run(hi, { srcPerPx: srcPerHi }) : Promise.resolve({ ok: false, reason: "load" }))
+      .catch(function (e) { return { ok: false, reason: "load", error: String(e) }; })
+      .then(function (r) { result = r; if (r.ok) REG = r.regions; });
     (function frame(now) {
       var p = Math.min(1, (now - t0) / dur);
+      if (!result) p = Math.min(p, 0.3);
       sc.clearRect(0, 0, W, H); sc.drawImage(base, 0, 0);
       sc.fillStyle = "rgba(43,36,32,.25)"; sc.fillRect(0, 0, W, H);
       var y = (p * 2 % 1) * H;
@@ -355,19 +380,41 @@
       lg.addColorStop(0, "rgba(184,146,90,0)"); lg.addColorStop(1, "rgba(241,230,211,.7)");
       sc.fillStyle = lg; sc.fillRect(0, y - 40, W, 40);
       sc.fillStyle = "#f1e6d3"; sc.fillRect(0, y, W, 2);
-      Object.keys(ZONES).forEach(function (z, i) {
-        if (p < 0.12 + i * 0.15) return;
-        var a = ZONES[z];
+      if (REG) Object.keys(REG).forEach(function (z, i) {
+        if (p < 0.3 + i * 0.09) return;
+        var r = REG[z], cx = r.x * W, cy = r.y * H;
         sc.strokeStyle = "#f1e6d3"; sc.lineWidth = 2;
-        sc.strokeRect(a[0] * W, a[1] * H, (a[2] - a[0]) * W, (a[3] - a[1]) * H);
-        sc.fillStyle = "rgba(43,36,32,.75)"; sc.fillRect(a[0] * W, a[1] * H - 16, 62, 16);
-        sc.fillStyle = "#f7f2ec"; sc.font = "600 11px Segoe UI, sans-serif"; sc.fillText(LABELS[z], a[0] * W + 5, a[1] * H - 4);
+        sc.beginPath(); sc.ellipse(cx, cy, r.rx * W, r.ry * H, 0, 0, Math.PI * 2); sc.stroke();
+        if (z === "eyeR") return;
+        var label = LABELS[z], tw = label.length * 6 + 10;
+        sc.fillStyle = "rgba(43,36,32,.75)"; sc.fillRect(cx - tw / 2, cy - r.ry * H - 18, tw, 16);
+        sc.fillStyle = "#f7f2ec"; sc.font = "600 11px Segoe UI, sans-serif"; sc.textAlign = "center"; sc.fillText(label, cx, cy - r.ry * H - 6); sc.textAlign = "start";
       });
-      $("scanStatus").textContent = msgs[Math.min(msgs.length - 1, Math.floor(p * msgs.length))];
+      $("scanStatus").textContent = !result && p >= 0.3 ? "Mapping your skin" : msgs[Math.min(msgs.length - 1, Math.floor(p * msgs.length))];
       $("scanBar").style.width = Math.round(p * 100) + "%";
-      if (p < 1) requestAnimationFrame(frame); else setTimeout(function () { go(3); }, 300);
+      if (p < 1) requestAnimationFrame(frame); else if (!finished) { finished = true; setTimeout(function () { finish(result); }, 300); }
     })(t0);
   }
+  function finish(r) {
+    if (!r.ok && r.reason === "noface") {
+      go(1); $("hint1").textContent = "No face found. Try again, front on, in good light";
+      toast("We couldn't find a face in that photo. Try a clear, front on selfie in good light.");
+      return;
+    }
+    if (r.ok) {
+      M = r.scores; RAW = r.raw; LOWQ = r.quality.length > 0;
+      if (r.quality.length) {
+        $("qualList").innerHTML = r.quality.map(function () { return "<li></li>"; }).join("");
+        [].forEach.call($("qualList").children, function (li, i) { li.textContent = r.quality[i].msg; });
+        $("qualBox").classList.remove("hidden");
+        $("scanStatus").textContent = "Photo checked";
+        return;
+      }
+    } else { M = analyseBasic(); RAW = { basic: true, error: r.error || "" }; LOWQ = true; }
+    go(3);
+  }
+  $("qRetake").onclick = function () { go(1); $("hint1").textContent = "Line your face up inside the oval"; };
+  $("qAnyway").onclick = function () { go(3); };
 
   // ---------- Questions ----------
   var AGES = ["Under 30", "30 to 39", "40 to 49", "50 plus"];
@@ -414,8 +461,9 @@
     R = {};
     for (var k in M) R[k] = M[k];
     var ageFirm = [88, 76, 64, 56][A.age], ageLines = [90, 78, 66, 58][A.age];
-    R.firmness = clamp(ageFirm - Math.round((94 - M.texture) / 6), 38, 94);
-    R.lines = clamp(ageLines - Math.round((94 - M.texture) / 5), 38, 94);
+    var lineScore = M.lines != null ? M.lines : M.texture;
+    R.lines = M.lines != null ? clamp(Math.round(0.4 * ageLines + 0.6 * M.lines), 38, 94) : clamp(ageLines - Math.round((94 - M.texture) / 5), 38, 94);
+    R.firmness = clamp(ageFirm - Math.round((94 - lineScore) / 6), 38, 94);
     var keys = Object.keys(R);
     var overall = Math.round(keys.reduce(function (s, k) { return s + R[k]; }, 0) / keys.length);
     focus = keys.map(function (k) { return [k, R[k] - (A.concerns.indexOf(k) > -1 ? 14 : 0)]; })
@@ -427,6 +475,13 @@
     setTimeout(function () { $("ringArc").style.strokeDashoffset = 327 * (1 - overall / 100); }, 80);
     var n = 0, iv = setInterval(function () { n += 2; if (n >= overall) { n = overall; clearInterval(iv); } $("score").textContent = n; }, 22);
     $("scoreLine").textContent = overall >= 80 ? "Your skin looks well cared for. A few small things to keep on top of." : overall >= 65 ? "A good base with a few areas you may want to focus on." : "A few areas a tailored plan can help with.";
+    if (LOWQ) $("scoreLine").textContent += " Your photo wasn't ideal, so treat this as a rough guide.";
+    if (/[?&]debug=1/.test(location.search)) {
+      var dbg = document.getElementById("dbg") || document.createElement("pre");
+      dbg.id = "dbg"; dbg.style.cssText = "font-size:10px;white-space:pre-wrap;background:#fff;padding:8px;border-radius:8px";
+      dbg.textContent = JSON.stringify({ scores: M, raw: RAW }, null, 1);
+      $("focus").after(dbg);
+    }
 
     $("metrics").innerHTML = keys.map(function (k) {
       var v = R[k], tag = v >= 78 ? ["Good", "tag-good"] : v >= 62 ? ["Worth a look", "tag-mid"] : ["Focus area", "tag-focus"];
@@ -441,9 +496,10 @@
     // marked thumbnail
     var mc = $("cvMini").getContext("2d");
     mc.drawImage(base, 0, 0);
-    var zm = { forehead: "texture", cheekL: "redness", cheekR: "evenness", nose: "congestion", chin: "congestion" };
-    Object.keys(ZONES).forEach(function (z) {
-      var a = ZONES[z], v = R[zm[z]], col = v >= 78 ? "79,138,107" : v >= 62 ? "192,138,46" : "181,82,74";
+    var zm = { forehead: ["texture", "lines"], cheekL: ["redness", "evenness"], cheekR: ["redness", "evenness"], nose: ["congestion"], chin: ["congestion"], eyeL: ["lines"], eyeR: ["lines"] };
+    var ZS = REG ? Object.keys(REG).reduce(function (o, k) { var r = REG[k]; o[k] = [r.x - r.rx, r.y - r.ry, r.x + r.rx, r.y + r.ry]; return o; }, {}) : ZONES;
+    Object.keys(ZS).forEach(function (z) {
+      var a = ZS[z], v = Math.min.apply(null, zm[z].map(function (k) { return R[k]; })), col = v >= 78 ? "79,138,107" : v >= 62 ? "192,138,46" : "181,82,74";
       mc.fillStyle = "rgba(" + col + ",.22)"; mc.strokeStyle = "rgb(" + col + ")"; mc.lineWidth = 2;
       mc.beginPath(); mc.ellipse((a[0] + a[2]) / 2 * W, (a[1] + a[3]) / 2 * H, (a[2] - a[0]) / 2 * W, (a[3] - a[1]) / 2 * H, 0, 0, Math.PI * 2); mc.fill(); mc.stroke();
     });
