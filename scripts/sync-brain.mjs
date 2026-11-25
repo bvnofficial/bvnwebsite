@@ -18,7 +18,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, "..", "data", "command-center-brain.json");
 
 const VAULT =
-  process.env.BRAIN_VAULT_PATH || "C:\\Users\\bevin\\Desktop\\CLAUDE BRAIN";
+  process.env.BRAIN_VAULT_PATH || "C:\\Users\\bevin\\Desktop\\Claude\\CLAUDE BRAIN";
 
 const SKIP_DIRS = new Set([".obsidian", "_Reference", "90-meta"]);
 const SKIP_FILES = new Set(["README.md", "START HERE.md", "MEMORY.md", "CLAUDE.md"]);

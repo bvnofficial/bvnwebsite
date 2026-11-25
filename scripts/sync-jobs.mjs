@@ -21,7 +21,7 @@ const OUT = join(REPO, "data", "command-center-jobs.json");
 
 const QUEUE_PATH =
   process.env.JOB_QUEUE_PATH ||
-  "C:\\Users\\bevin\\Desktop\\CLAUDE-BVN\\job-scraper\\queue.json";
+  "C:\\Users\\bevin\\Desktop\\Claude\\CLAUDE-BVN\\job-scraper\\queue.json";
 
 // Weighted keywords — strong signals score higher. Keep in step with
 // profile.keywords in data/command-center.ts.

@@ -90,5 +90,65 @@ export async function POST(req: Request) {
     if (/duplicate|unique/i.test(error.message)) return NextResponse.json({ error: "Someone just grabbed that slot. Please pick another." }, { status: 409 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Tell BVN about the new booking. A failed email must not undo the booking.
+  try {
+    await notifyBooking({ name, email, company, notes, visitorTz, when: v.when! });
+  } catch (err) {
+    console.error("Booking saved but notification failed:", err);
+  }
   return NextResponse.json({ ok: true });
+}
+
+const NOTIFY_TO = "bvn@bvnofficial.com";
+
+function esc(s: string) {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+}
+
+async function notifyBooking(b: { name: string; email: string; company: string; notes: string; visitorTz: string; when: Date }) {
+  const manila = b.when.toLocaleString("en-US", { timeZone: "Asia/Manila", dateStyle: "full", timeStyle: "short" });
+  const subject = `New call booked: ${b.name}${b.company ? ` (${b.company})` : ""}, ${manila} PH`;
+  const text = [
+    `Name: ${b.name}`,
+    `Email: ${b.email}`,
+    `Company: ${b.company || "-"}`,
+    `When (PH): ${manila}`,
+    `When (UTC): ${b.when.toISOString()}`,
+    `Visitor timezone: ${b.visitorTz || "-"}`,
+    `Notes:`,
+    b.notes || "-",
+  ].join("\n");
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#111">
+<h2 style="color:#E86010;margin:0 0 12px">New call booked on bvnofficial.com</h2>
+<p style="white-space:pre-wrap;margin:0">${esc(text)}</p></div>`;
+
+  // Primary: Resend (HTTP, works on Vercel).
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
+      body: JSON.stringify({ from: `BVN Website <${NOTIFY_TO}>`, to: [NOTIFY_TO], reply_to: b.email, subject, html, text }),
+    });
+    if (res.ok) return;
+    console.error("Resend booking email error:", await res.text());
+  }
+
+  // Fallback: SMTP.
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpUser = process.env.EMAIL_ADDRESS;
+  const smtpPass = process.env.EMAIL_PASSWORD;
+  const smtpPort = Number(process.env.SMTP_PORT || 465);
+  if (smtpHost && smtpUser && smtpPass) {
+    const nodemailer = await import("nodemailer");
+    const transporter = nodemailer.createTransport({
+      host: smtpHost, port: smtpPort, secure: smtpPort === 465,
+      auth: { user: smtpUser, pass: smtpPass },
+    });
+    await transporter.sendMail({ from: `"BVN Website" <${smtpUser}>`, to: NOTIFY_TO, replyTo: b.email, subject, html, text });
+    return;
+  }
+
+  if (!resendKey) throw new Error("No RESEND_API_KEY or SMTP credentials set");
 }
