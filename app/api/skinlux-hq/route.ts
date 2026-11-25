@@ -214,7 +214,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
 
   // leads: open opportunities in the Leads pipeline (or any pipeline with "lead" in its name)
   const leads = oppsRaw
-    .filter((o) => /lead/i.test(pipeName[o.pipelineId] || ""))
+    .filter((o) => /lead/i.test(pipeName[o.pipelineId] || "") && !isExample((o.contact && o.contact.name) || o.name))
     .map((o) => {
       const sn = stageName[o.pipelineStageId] || "";
       const s = (STAGE_INDEX.find(([re]) => re.test(sn)) || [null, 0])[1] as number;
