@@ -140,11 +140,17 @@ header .btn{padding:12px 20px;white-space:nowrap}
 
 /* stats and marquee */
 .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg2)}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
-.stats div{padding:36px 24px;border-left:1px solid var(--line)}
+.stats .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.stats .star{color:#f5b301}
+.stats div{padding:22px 24px;border-left:1px solid var(--line)}
 .stats div:first-child{border-left:0}
-.stats b{display:block;font-family:Archivo,sans-serif;font-stretch:118%;font-size:clamp(40px,4.6vw,62px);line-height:1;color:#fff}
+.stats b{display:block;font-family:Archivo,sans-serif;font-stretch:118%;font-size:clamp(28px,2.8vw,40px);line-height:1;color:#fff}
 .stats div>span{font-size:14px;color:var(--muted)}
+.clients{padding:34px 0 38px;border-bottom:1px solid var(--line)}
+.clients .lbl{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 16px}
+.clients .logos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.clients .logos div{background:#fff;border-radius:10px;height:84px;display:grid;place-items:center;padding:14px 18px}
+.clients .logos img{max-width:100%;max-height:46px;object-fit:contain;filter:none!important;opacity:1!important}
 .marquee{overflow:hidden;padding:28px 0;border-bottom:1px solid var(--line);white-space:nowrap}
 .marquee .t{display:inline-flex;gap:60px;animation:mq 36s linear infinite;padding-right:60px}
 .marquee span{font-family:Archivo,sans-serif;font-stretch:118%;font-size:28px;text-transform:uppercase;color:#4a4b50;display:inline-flex;align-items:center;gap:60px}
@@ -356,7 +362,7 @@ footer a:hover{color:#fff}
   .grid3{grid-template-columns:1fr 1fr}
   .steps{grid-template-columns:1fr 1fr}
   .stats .wrap{grid-template-columns:1fr 1fr}
-  .stats div:nth-child(3){border-left:0}
+  .stats div:nth-child(3){border-left:0;grid-column:1/-1}
   .stats div:nth-child(n+3){border-top:1px solid var(--line)}
   .logos{grid-template-columns:repeat(3,1fr)}
   .pview{display:none}
@@ -581,7 +587,71 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
   .g-boom .ip-gate .arm{width:80vw}
 }
 @media (prefers-reduced-motion:reduce){.ip-gate{display:none}.ip-hero *,.ip-txt>*{animation:none!important}.ip-pic.rv img{clip-path:none}}
-.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}.ip-err{color:var(--red);font-weight:600;font-size:14px;margin:0}.ip-err a{color:inherit}button[disabled]{opacity:.7;cursor:wait}</style>
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}.ip-err{color:var(--red);font-weight:600;font-size:14px;margin:0}.ip-err a{color:inherit}button[disabled]{opacity:.7;cursor:wait}
+.lp-hero{position:relative;overflow:hidden;background:var(--ip-dark);color:var(--ip-dtext)}
+.lp-hero>.ip-media{position:absolute;inset:0}
+.lp-hero>.ip-media::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,rgba(8,8,10,.92) 0%,rgba(8,8,10,.78) 48%,rgba(8,8,10,.55))}
+.lp-hero .wrap{position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:56px;align-items:start;padding-top:calc(var(--ip-top) + 130px);padding-bottom:72px}
+.lp-hero .ip-eb{color:#ff7a5c}
+.lp-hero h1{font-size:clamp(32px,3.8vw,52px);margin:12px 0 18px;overflow-wrap:break-word}
+.lp-hero .ip-lead{color:var(--ip-dtext)}
+.lp-hero .ip-ticks li{color:var(--ip-dtext)}
+.lp-hero .ip-crumbs{color:var(--ip-dtext)}
+.lp-form h2{font-size:24px;margin:0}
+.lp-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ip-muted)}
+.lp-prog{height:4px;background:var(--ip-line);border-radius:4px;overflow:hidden}.lp-prog i{display:block;height:100%;width:50%;background:var(--red);transition:width .35s}
+.lp-form.s2 .lp-prog i{width:100%}
+.lp-form.js .lp-s2{display:none}.lp-form.js.s2 .lp-s1{display:none}.lp-form.js.s2 .lp-s2{display:grid}
+.lp-s1,.lp-s2{display:grid;gap:14px}
+.lp-form .lp-back{background:none;border:0;color:var(--ip-muted);font:inherit;font-size:14px;cursor:pointer;text-decoration:underline;justify-self:start;padding:0}
+.lp-form .lp-next{display:none}.lp-form.js .lp-next{display:flex}
+.lp-small{font-size:14px;color:var(--ip-muted);margin:0}.lp-small a{color:var(--red);font-weight:700}
+.lp-brands{margin:26px 0 0;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ip-dmuted);text-align:center}
+.lp-stats .ip-stat b{font-size:clamp(28px,2.8vw,40px)}.lp-stats .ip-stat b .star{display:inline;margin:0;color:#f5b301}
+.lp-num{display:block;font-size:14px;font-weight:700;letter-spacing:.12em;color:var(--red);margin-bottom:10px}
+.lp-offer{background:var(--ip-surf);color:var(--ip-text);border:1px solid var(--ip-line);border-radius:var(--ip-r);overflow:hidden;display:flex;flex-direction:column}
+.lp-offer .ph{aspect-ratio:16/10;overflow:hidden;background:var(--ip-surf2)}.lp-offer .ph img{width:100%;height:100%;object-fit:cover}
+.lp-offer .bd{padding:22px 22px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.lp-offer .tag{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.lp-offer h3{font-size:22px;margin:0}.lp-offer p{margin:0;color:var(--ip-muted);font-size:16px}
+.lp-offer .meta{font-weight:700;color:var(--ip-text)}
+.lp-offer .btn{margin-top:auto;align-self:flex-start}
+.lp-vs{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.lp-vs>div{border:1px solid var(--ip-line);border-radius:var(--ip-r);padding:28px;background:var(--ip-surf);color:var(--ip-text)}
+.lp-vs h3{font-size:20px;margin:0 0 14px}
+.lp-vs ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.lp-vs li{padding-left:30px;position:relative;color:var(--ip-muted)}
+.lp-vs .no li::before{content:"\2715";position:absolute;left:4px;color:var(--ip-muted);font-weight:700}
+.lp-vs .yes{border-color:var(--red)}.lp-vs .yes li{color:var(--ip-text)}
+.lp-vs .yes li::before{content:"\2713";position:absolute;left:4px;color:var(--red);font-weight:700}
+.lp-end{text-align:center}.lp-end h2{font-size:clamp(26px,2.8vw,40px);margin:0 0 12px}.lp-end p{color:var(--ip-dmuted);font-size:18px;margin:0 0 26px}
+.lp-end .ip-ctas{justify-content:center}
+.lp-freq{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:26px}
+.lp-freq div{border-top:3px solid var(--red);padding-top:12px}.lp-freq b{display:block;font-size:20px}.lp-freq span{color:var(--ip-muted);font-size:15px}
+.lp-reasons{list-style:none;padding:0;margin:0;display:grid;gap:18px}
+.lp-reasons li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;border-bottom:1px solid var(--ip-line);padding-bottom:18px}
+.lp-reasons .n{font-size:34px;font-weight:700;color:var(--red);line-height:1}
+.lp-reasons h3{font-size:21px;margin:0 0 6px}.lp-reasons p{margin:0;color:var(--ip-muted)}
+.lp-reasons .eg{margin-top:8px;font-size:15px}.lp-reasons .eg b{color:var(--ip-text)}
+.lp-vm{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px}
+.lp-vm div{background:var(--ip-dark);color:var(--ip-dtext);border-radius:var(--ip-r);padding:28px}
+.lp-vm b{display:block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#ff7a5c;margin-bottom:8px}.lp-vm p{margin:0;font-size:20px}
+.lp-photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.lp-photos figure{margin:0;border-radius:var(--ip-r);overflow:hidden;background:var(--ip-surf);border:1px solid var(--ip-line)}
+.lp-photos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.lp-photos figcaption{padding:14px 16px;font-size:15px;color:var(--ip-muted)}
+.lp-role{border:1px solid var(--ip-line);border-left:4px solid var(--red);border-radius:var(--ip-r);padding:28px;background:var(--ip-surf);color:var(--ip-text);margin-bottom:18px}
+.lp-role h3{font-size:24px;margin:0 0 6px}.lp-role .where{font-weight:700;color:var(--ip-muted);margin:0 0 12px}.lp-role p{color:var(--ip-muted)}
+.lp-role .btn{margin-top:8px}
+.lp-apply{max-width:760px}
+@media (max-width:900px){
+  .lp-hero .wrap{grid-template-columns:1fr;gap:34px;padding-top:calc(var(--ip-top) + 104px);padding-bottom:48px}
+  .lp-vs,.lp-vm{grid-template-columns:1fr}
+  .lp-photos{grid-template-columns:1fr 1fr}
+  .lp-freq{grid-template-columns:1fr}
+}
+@media (max-width:560px){.lp-photos{grid-template-columns:1fr}.lp-reasons li{grid-template-columns:44px minmax(0,1fr)}}
+</style>
 </head>
 <body class="ip">
 
@@ -604,7 +674,7 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
 <header>
   <div class="wrap">
     <a class="brand" href="index.html"><img decoding="async" src="https://apexgates.com.au/wp-content/uploads/2018/10/logo_sml.png" alt="Apex Gates, automatic gate specialist"></a>
-    <nav><ul><li><a href="residential.html">Homes and strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="products.html">Products</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="projects.html" aria-current="page">Projects</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D designer</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
+    <nav><ul><li><a href="residential.html">Residential</a></li><li><a href="strata.html">Strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="maintenance.html">Maintenance</a></li><li><a href="products.html">Products</a></li><li><a href="projects.html" aria-current="page">Projects</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D designer</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
     <a class="btn btn-red" href="#quote">Request a quote</a>
     <button class="menu-btn" aria-label="Open menu">Menu</button>
   </div>
@@ -628,12 +698,12 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
     <div class="fgrid">
       <div><p class="fh">Apex Gates</p><p style="margin:0;max-width:420px">Perth's automatic gate specialist for homes, strata and commercial sites. A WA owned and operated family company, established 2005. ABN 26 998 193 690.</p></div>
       <div><p class="fh">Products</p><ul><li><a href="cantilever-gates.html">Cantilever gates</a></li><li><a href="sliding-telescopic-gates.html">Sliding and telescopic gates</a></li><li><a href="swing-bifold-gates.html">Swing and bifold gates</a></li><li><a href="bollards-road-blockers.html">Bollards and road blockers</a></li><li><a href="turnstiles-pedestrian-gates.html">Turnstiles</a></li><li><a href="access-control-intercoms.html">Access control</a></li></ul></div>
-      <div><p class="fh">Properties</p><ul><li><a href="residential.html#homes">Homes</a></li><li><a href="residential.html#strata">Strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="service-contracts.html">Service contracts</a></li><li><a href="repairs.html">Repairs and breakdowns</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a></li></ul></div>
-      <div><p class="fh">Contact</p><ul><li><a href="tel:0477884422">Office 0477 88 44 22</a></li><li><a href="mailto:info@apexgates.com.au">info@apexgates.com.au</a></li><li><a href="contact.html#area">Malaga WA</a></li><li><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a></li><li><a href="https://www.instagram.com/apexgates/">Instagram @apexgates</a></li></ul></div>
+      <div><p class="fh">Properties</p><ul><li><a href="residential.html">Residential gates</a></li><li><a href="strata.html">Strata</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="maintenance.html">Maintenance</a></li><li><a href="repairs.html">Repairs and breakdowns</a></li><li><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a></li></ul></div>
+      <div><p class="fh">Contact</p><ul><li><a href="tel:0477884422">Office 0477 88 44 22</a></li><li><a href="mailto:info@apexgates.com.au">info@apexgates.com.au</a></li><li><a href="contact.html#area">Malaga WA</a></li><li><a href="careers.html">Careers</a></li><li><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a></li><li><a href="https://www.instagram.com/apexgates/">Instagram @apexgates</a></li></ul></div>
     </div>
     <div class="big" aria-hidden="true">Apex Gates</div>
     <div class="legal"><span>Apex Gates. ABN 26 998 193 690.</span><a href="privacy.html">Privacy</a></div>
-  <div class="ip-fnav"><a href="index.html">Home</a><a href="products.html">Products</a><a href="residential.html">Homes and strata</a><a href="commercial.html">Commercial</a><a href="service-contracts.html">Service contracts</a><a href="repairs.html">Repairs and breakdowns</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="faqs.html">FAQs</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a><a href="https://www.instagram.com/apexgates/">Instagram</a></div></div>
+  <div class="ip-fnav"><a href="index.html">Home</a><a href="products.html">Products</a><a href="residential.html">Residential gates</a><a href="strata.html">Strata</a><a href="commercial.html">Commercial</a><a href="maintenance.html">Maintenance</a><a href="repairs.html">Repairs and breakdowns</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="faqs.html">FAQs</a><a href="contact.html">Contact</a><a href="careers.html">Careers</a><a href="privacy.html">Privacy</a><a href="https://www.bvnofficial.com/clients/apex-gates/gate-visualiser/index.html">3D gate designer</a><a href="https://www.facebook.com/Apex-Gates-2403936656289438/">Facebook</a><a href="https://www.instagram.com/apexgates/">Instagram</a></div></div>
 </footer>
 <nav class="mbar" aria-label="Quick actions"><a href="tel:0477884422"><svg viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 005 5L15 12l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2"/></svg>Call</a><a href="#quote"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z"/></svg>Get a quote</a></nav>
 <div class="track" id="track"></div>
@@ -667,11 +737,19 @@ a.ip-card:hover .more::after{transform:translateX(6px)}
     return await new Promise(r=>c.toBlob(r,'image/jpeg',.82))}catch(e){return f.size<3e6?f:null}};
   document.querySelectorAll('form').forEach(f=>{f.removeAttribute('onsubmit');f.addEventListener('submit',async x=>{x.preventDefault();
     const b=f.querySelector('[type=submit]'),t=b.textContent;b.disabled=true;b.textContent='Sending...';
-    try{const fd=new FormData(f),fi=f.querySelector('input[type=file]');fd.delete('photos');
+    try{const fd=new FormData(f),fi=f.querySelector('input[name=photos]');fd.delete('photos');
       for(const p of [...(fi?fi.files:[])].slice(0,5)){const j=await shrink(p);if(j)fd.append('photos',j,'photo.jpg')}
-      fd.append('page',location.href);const r=await fetch(API,{method:'POST',body:fd});if(!r.ok)throw new Error(r.status);location.href='thank-you.html'}
+      fd.append('page',location.href);const r=await fetch(API,{method:'POST',body:fd});if(!r.ok)throw new Error(r.status);try{window.dataLayer&&dataLayer.push({event:'apex_form_sent',form:fd.get('form')||'quote'})}catch(_){}location.href=f.dataset.thanks||'thank-you.html'}
     catch(e){b.disabled=false;b.textContent=t;let m=f.querySelector('.ip-err');if(!m){m=document.createElement('p');m.className='ip-err';m.setAttribute('role','alert');b.after(m)}
       m.innerHTML='That did not send. Please try again, or call <a href="tel:0477884422">0477 88 44 22</a>.'}})});
+
+
+  document.querySelectorAll('.lp-form').forEach(f=>{f.classList.add('js');
+    const go=s=>{f.classList.toggle('s2',s===2);const l=f.querySelector('.lp-step');if(l)l.textContent='Step '+s+' of 2';
+      const t=f.querySelector(s===2?'.lp-s2 input:not([type=hidden])':'.lp-s1 input');if(t)t.focus({preventScroll:true})};
+    f.querySelector('.lp-next').addEventListener('click',()=>go(2));
+    f.querySelector('.lp-back').addEventListener('click',()=>go(1));
+    f.addEventListener('invalid',()=>go(2),true)});
 
   const bar=document.querySelector('.mbar');
   if(bar){const fo=new IntersectionObserver(es=>es.forEach(x=>bar.classList.toggle('away',x.isIntersecting)),{threshold:.15});document.querySelectorAll('form').forEach(f=>fo.observe(f))}

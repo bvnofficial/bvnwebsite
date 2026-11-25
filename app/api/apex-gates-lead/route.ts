@@ -37,12 +37,29 @@ const CORS = {
 
 // Multiple choice answers from the quote form, in the order the office reads them.
 const ANSWERS: [string, string][] = [
+  ["role", "Role"],
+  ["complex", "Strata company or complex"],
   ["property", "Property"],
   ["need", "Needs"],
+  ["issue", "What is happening"],
   ["gate", "Gate"],
   ["leaves", "Single or double"],
+  ["gates", "How many gates"],
+  ["brand", "Motor brand"],
   ["power", "Power"],
+  ["urgency", "How urgent"],
 ];
+
+// Landing pages (Nov 25 2026): each page sends form=<key> so the office and the ads can see
+// which page brought the lead. Careers applications are not sales leads: no opportunity.
+const FORMS: Record<string, { source: string; tag: string }> = {
+  residential: { source: "Website residential page", tag: "website-residential" },
+  strata: { source: "Website strata page", tag: "website-strata" },
+  maintenance: { source: "Website maintenance page", tag: "website-maintenance" },
+  careers: { source: "Website careers page", tag: "job-applicant" },
+};
+const MAX_CV_BYTES = 4_000_000;
+const CV_TYPES = /^(application\/pdf|application\/msword|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|image\/)/;
 
 // 04xx xxx xxx / 08 xxxx xxxx → +61 E.164 so GHL dedupes and can text.
 function normalizeAuPhone(raw: string): string {
@@ -111,14 +128,19 @@ export async function POST(req: NextRequest) {
     const design = text(fd, "design", 4000);
     const designLink = text(fd, "design_link", 4000);
     const page = text(fd, "page", 300);
-    const fromDesigner = text(fd, "form", 20) === "designer";
+    const formKey = text(fd, "form", 20);
+    const fromDesigner = formKey === "designer";
+    const landing = FORMS[formKey];
+    const isJob = formKey === "careers";
 
     if (!name || (!phone && !email)) {
       return NextResponse.json({ error: "Missing name, or a phone or email." }, { status: 400, headers: CORS });
     }
 
-    const source = fromDesigner ? "Website 3D gate designer" : "Website quote form";
-    const tags = ["website-lead", fromDesigner ? "website-3d-designer" : "website-quote"];
+    const source = fromDesigner ? "Website 3D gate designer" : landing ? landing.source : "Website quote form";
+    const tags = isJob
+      ? ["job-applicant", `role-${text(fd, "role", 60).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "unknown"}`]
+      : ["website-lead", fromDesigner ? "website-3d-designer" : "website-quote", ...(landing ? [landing.tag] : [])];
     const [firstName, ...rest] = name.split(/\s+/);
 
     // 1) Upsert the contact (dedupes on phone/email within the location).
@@ -151,16 +173,36 @@ export async function POST(req: NextRequest) {
       if (url) photoUrls.push(url);
     }
 
+    // 2b) A job applicant's CV (PDF, Word or a photo of it).
+    let cvUrl: string | null = null;
+    const cv = fd.get("cv");
+    let cvSkipped = false;
+    if (isJob && typeof cv === "object" && cv !== null && "arrayBuffer" in cv && cv.size > 0) {
+      if (cv.size <= MAX_CV_BYTES && CV_TYPES.test(cv.type)) {
+        const ext = (cv.name.split(".").pop() || "pdf").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5);
+        cvUrl = await uploadPhoto(token, cv, `apex-cv-${firstName || "applicant"}-${stamp}.${ext}`.toLowerCase().replace(/[^a-z0-9.-]+/g, "-"));
+      }
+      if (!cvUrl) cvSkipped = true;
+    }
+
     // 3) Everything they told us, in one note the office can read top to bottom.
-    const lines: string[] = [`${source} enquiry`];
-    for (const [k, label] of ANSWERS) {
+    const lines: string[] = [isJob ? `${source}: job application` : `${source} enquiry`];
+    if (isJob) {
+      const role = text(fd, "role", 120);
+      const fault = text(fd, "fault");
+      if (role) lines.push(`Applying for: ${role}`);
+      if (fault) lines.push("", `The last gate fault they fixed: ${fault}`);
+      if (cvUrl) lines.push("", `CV: ${cvUrl}`);
+      if (cvSkipped) lines.push("", "They attached a CV that could not be uploaded (too big or not a PDF, Word file or picture). Ask them to email it.");
+    }
+    for (const [k, label] of isJob ? [] : ANSWERS) {
       const v = text(fd, k, 200);
       if (v) lines.push(`${label}: ${v}`);
     }
-    if (suburb) lines.push(`Site suburb: ${suburb}`);
+    if (suburb) lines.push(isJob ? `Lives in: ${suburb}` : `Site suburb: ${suburb}`);
     if (design) lines.push("", "Their design:", design);
     if (designLink) lines.push("", `Open their design in 3D: ${designLink}`);
-    if (details) lines.push("", `Notes from the customer: ${details}`);
+    if (details) lines.push("", isJob ? `About them: ${details}` : `Notes from the customer: ${details}`);
     if (photoUrls.length) lines.push("", fromDesigner ? "Picture and photos:" : "Photos:", ...photoUrls);
     if (files.length > photoUrls.length) lines.push("", `${files.length - photoUrls.length} photo(s) could not be uploaded.`);
     if (page) lines.push("", `Sent from: ${page}`);
@@ -172,8 +214,8 @@ export async function POST(req: NextRequest) {
 
     // 4) Open an opportunity at New Lead in the Marketing Pipeline.
     let opportunityId: string | undefined;
-    if (contactId) {
-      const what = fromDesigner ? "3D gate design" : text(fd, "need", 80) || "Quote request";
+    if (contactId && !isJob) {
+      const what = fromDesigner ? "3D gate design" : text(fd, "need", 80) || text(fd, "issue", 80) || (formKey === "maintenance" ? "Gate service" : "Quote request");
       const oppRes = await ghl("/opportunities/", token, {
         pipelineId: PIPELINE_ID,
         pipelineStageId: STAGE_ID,
