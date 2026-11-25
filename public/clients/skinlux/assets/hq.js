@@ -688,7 +688,8 @@
         var LIVE_APPS = { "Staff app": ["../staff/index.html", "Live: treatment done, product sold and call backs"],
           "Ad compliance checker": ["compliance.html", "Live: paste any ad or message to check it"],
           "Treatment finder quiz": ["../quiz/index.html", "Live: quiz leads go to Leads and the new lead workflow"],
-          "AI Skin Check": ["../skin-check/index.html", "Live: plan leads go to Leads and the new lead workflow"] };
+          "AI Skin Check": ["../skin-check/index.html", "Live: plan leads go to Leads and the new lead workflow"],
+          "Offer page builder": ["offers.html", "Live: make offer pages with a spots left counter"] };
         var live = LIVE && LIVE_APPS[a[0]];
         if (LIVE) { a = a.slice(); a[3] = live ? [["Live", live[1]]] : [["Soon", "its numbers show here once this app is live"]]; a[1] = live ? live[0] : "../" + a[1]; }
         if (LIVE && a[0] === "Website and review monitor" && LIVE.site) { a[3] = [[LIVE.site.up ? "Up" : "Down", LIVE.site.up ? "website loads in " + (LIVE.site.ms / 1000).toFixed(1) + "s" : "website isn't answering"], ["Soon", "Google reviews, once Jellie shares the profiles"]]; a[4] = "connections"; }

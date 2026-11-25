@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offer | Skinlux Face &amp; Body</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/data.js"></script>
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 22px 16px 60px; }
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 18px; }
+  .top .lg { font-family: var(--serif); font-size: 24px; letter-spacing: 3px; }
+  .top small { color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; }
+  .offer { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  @media (max-width: 820px) { .offer { grid-template-columns: 1fr; } }
+  .hero { background: var(--ink); color: var(--cream); border-radius: var(--radius); padding: 34px 32px; position: relative; overflow: hidden; }
+  .hero::after { content: ""; position: absolute; right: -80px; top: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(184,146,90,.45), rgba(184,146,90,0) 70%); }
+  .eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-soft); font-weight: 700; }
+  .hero h1 { font-size: 38px; line-height: 1.12; margin: 8px 0 12px; color: #fff; }
+  @media (max-width: 600px) { .hero h1 { font-size: 30px; } .hero { padding: 26px 22px; } }
+  .hero p { color: #e9dfd2; font-size: 15px; line-height: 1.6; }
+  .price { display: flex; align-items: baseline; gap: 14px; margin: 18px 0 6px; flex-wrap: wrap; }
+  .price b { font-family: var(--serif); font-size: 54px; color: #fff; line-height: 1; }
+  .price s { color: #bfb2a3; font-size: 18px; }
+  .incl { list-style: none; padding: 0; margin: 16px 0 0; }
+  .incl li { padding: 7px 0 7px 28px; position: relative; font-size: 15px; border-top: 1px solid rgba(255,255,255,.1); }
+  .incl li::before { content: ""; position: absolute; left: 4px; top: 13px; width: 12px; height: 7px; border-left: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(-45deg); }
+  .side { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px 24px; }
+  .spots { margin-bottom: 18px; }
+  .spots .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+  .spots .row b { font-size: 16px; }
+  .meter { height: 10px; border-radius: 99px; background: var(--sand); overflow: hidden; }
+  .meter span { display: block; height: 100%; background: var(--gold); border-radius: 99px; transition: width 1s ease; width: 0; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 4px; }
+  input[type=text], input[type=tel], input[type=email] { width: 100%; font: inherit; font-size: 16px; padding: 11px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: #fff; }
+  .clinics { display: flex; gap: 8px; flex-wrap: wrap; }
+  .clinics .chip { padding: 9px 15px; font-size: 14px; }
+  .fine { font-size: 11.5px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+  .err { color: var(--bad); font-size: 13px; min-height: 18px; margin-top: 8px; }
+  .closed { text-align: center; padding: 40px 20px; }
+  .preview-bar { background: #f4e0bb; border-radius: 10px; padding: 9px 14px; font-size: 13px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span class="lg">SKINLUX</span><small>Face and Body, Perth</small></div>
+  <div id="app"><p class="muted" style="text-align:center;padding:60px 0">Loading the offer</p></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  var S = window.SKINLUX;
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function money(n) { return "$" + (Math.round(n * 100) % 100 ? n.toFixed(2) : Math.round(n).toLocaleString("en-AU")); }
+  function niceDate(d) { var p = d.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long" }); }
+  var qp = new URLSearchParams(location.search), slug = qp.get("o") || "", preview = qp.get("preview") === "1";
+  var phones = Object.keys(S.locations).map(function (k) { return S.locations[k].name + " " + S.locations[k].phone; }).join(" or ");
+  function closed(msg) {
+    $("app").innerHTML = '<div class="side closed"><h2></h2><p class="muted"></p><a class="btn" target="_blank" rel="noopener">Book a treatment</a></div>';
+    $("app").querySelector("h2").textContent = msg;
+    $("app").querySelector("p").textContent = "Call us on " + phones + " to hear about this month's offers.";
+    $("app").querySelector("a").href = S.booking;
+  }
+  if (!slug) { closed("Pick an offer from our website"); return; }
+  fetch("/api/skinlux-offers?o=" + encodeURIComponent(slug), { cache: "no-store" })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d.ok) { closed("This offer isn't available"); return; }
+      var o = d.offer;
+      if (!o.open && !preview) {
+        closed(o.status === "full" ? "All spots for this offer have gone" : o.status === "ended" ? "This offer has ended" : "This offer isn't available");
+        return;
+      }
+      draw(o);
+    })
+    .catch(function () { closed("This offer can't load right now"); });
+
+  function draw(o) {
+    document.title = o.name + " | Skinlux Face & Body";
+    var clinicTxt = o.clinic === "both" ? "Booragoon and Leederville" : S.locations[o.clinic].name;
+    var h = (preview && !o.open ? '<div class="preview-bar">Preview only. This offer is ' + (o.status === "off" ? "turned off" : o.status) + ", so the form below won't send.</div>" : "") +
+      '<div class="offer"><div class="hero"><div class="eyebrow">' + esc(o.name) + "</div><h1>" + esc(o.headline) + "</h1>" +
+      '<div class="price"><b>' + money(o.price) + "</b><s>Usually " + money(o.usual) + "</s></div>" +
+      "<p>" + esc(o.sub) + "</p>" +
+      (o.includes.length ? '<ul class="incl">' + o.includes.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
+      "</div>" +
+      '<div class="side"><div class="spots"><div class="row"><b>' + o.left + " of " + o.spots + " spots left</b><span>Ends " + esc(niceDate(o.ends)) + "</span></div>" +
+      '<div class="meter"><span id="meter"></span></div></div>' +
+      '<form id="f" novalidate><h3 style="margin:0 0 2px">Claim your spot</h3><p class="muted" style="font-size:13px;margin:0">At ' + esc(clinicTxt) + ". We'll be in touch to book your time.</p>" +
+      (o.clinic === "both" ? '<label>Your clinic</label><div class="clinics"><span class="chip on" data-c="booragoon">Booragoon</span><span class="chip" data-c="leederville">Leederville</span></div>' : "") +
+      '<label for="fn">First name</label><input type="text" id="fn" autocomplete="given-name">' +
+      '<label for="mob">Mobile</label><input type="tel" id="mob" autocomplete="tel" inputmode="tel">' +
+      '<label for="em">Email (optional)</label><input type="email" id="em" autocomplete="email">' +
+      '<input type="text" id="website" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">' +
+      '<button class="btn gold block" type="submit" id="go" style="margin-top:16px">Claim my spot</button><div class="err" id="err"></div>' +
+      '<p class="fine">By claiming you agree to Skinlux contacting you about this offer by text and email. Reply STOP any time. Offer price is for the treatment shown, for new bookings at ' + esc(clinicTxt) + ", while spots last or until " + esc(niceDate(o.ends)) + ". Your therapist checks the treatment suits you at your appointment. Results vary from person to person.</p>" +
+      "</form></div></div>";
+    $("app").innerHTML = h;
+    setTimeout(function () { $("meter").style.width = Math.round(o.left / o.spots * 100) + "%"; }, 80);
+    var clinic = o.clinic === "both" ? "booragoon" : o.clinic;
+    [].forEach.call(document.querySelectorAll(".clinics .chip"), function (c) {
+      c.onclick = function () { clinic = c.dataset.c; [].forEach.call(document.querySelectorAll(".clinics .chip"), function (x) { x.classList.toggle("on", x === c); }); };
+    });
+    $("f").onsubmit = function (e) {
+      e.preventDefault();
+      var fn = $("fn").value.trim(), mob = $("mob").value.trim(), em = $("em").value.trim();
+      $("err").textContent = "";
+      if (!fn) { $("err").textContent = "Please add your first name."; return; }
+      if (mob.replace(/\D/g, "").length < 9) { $("err").textContent = "Please add your mobile number."; return; }
+      if (preview && !o.open) { $("err").textContent = "Preview only, nothing was sent."; return; }
+      var btn = $("go"); btn.disabled = true; btn.textContent = "Sending...";
+      fetch("/api/skinlux-offers", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ o: o.slug, clinic: clinic, first_name: fn, phone: mob, email: em, website: $("website").value }) })
+        .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+        .then(function (d) {
+          if (!d.ok) { btn.disabled = false; btn.textContent = "Claim my spot"; $("err").textContent = d.error || "Sorry, that didn't go through. Please call us on " + phones + "."; return; }
+          $("f").innerHTML = '<h3 style="margin:0 0 6px"></h3><p style="font-size:14px"></p><a class="btn gold block" target="_blank" rel="noopener">Book my time now</a>';
+          $("f").querySelector("h3").textContent = "You're in, " + fn;
+          $("f").querySelector("p").textContent = "Your spot is saved. The team at " + S.locations[clinic].name + " will be in touch soon, or you can pick a time straight away.";
+          $("f").querySelector("a").href = S.booking;
+        })
+        .catch(function () { btn.disabled = false; btn.textContent = "Claim my spot"; $("err").textContent = "Sorry, that didn't go through. Please call us on " + phones + "."; });
+    };
+  }
+})();
+</script>
+</body>
+</html>

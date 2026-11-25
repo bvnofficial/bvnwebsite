@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your offers | Skinlux HQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/data.js"></script>
+<style>
+  .wrap{max-width:900px;margin:0 auto;padding:20px 18px 80px}
+  .top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 18px}
+  .top h1{margin:0;font-size:30px;flex:1}
+  .ocard{margin-bottom:12px}
+  .ocard .head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .ocard .head b{flex:1;min-width:200px;font-size:17px}
+  .pill{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--sand)}
+  .pill.open{background:var(--ok-soft);color:var(--ok)}
+  .pill.full,.pill.ended{background:#f1cdc8}
+  .meta{font-size:13px;color:var(--muted);margin:6px 0 10px}
+  .meter{height:8px;border-radius:99px;background:var(--sand);overflow:hidden;margin:6px 0 10px}
+  .meter span{display:block;height:100%;background:var(--gold)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media(max-width:640px){.row2,.row3{grid-template-columns:1fr}}
+  label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
+  input,select,textarea{width:100%;font:inherit;font-size:15px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff}
+  textarea{min-height:80px;resize:vertical;line-height:1.5}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  .err{color:#b83a2e;font-size:13px;margin-top:8px;min-height:18px}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;display:none;z-index:9}
+  .chk{display:flex;gap:8px;align-items:center;font-weight:600;margin-top:14px}
+  .chk input{width:18px;height:18px}
+  .link{font-size:12.5px;word-break:break-all;background:var(--cream);border-radius:8px;padding:6px 9px}
+</style>
+</head>
+<body>
+<div class="demo-bar"><a href="index.html" class="brand">SKINLUX HQ</a><span>Your offers</span><span class="spacer"></span><a href="index.html" style="color:inherit">Back to HQ</a></div>
+<div class="wrap">
+  <div class="top"><h1>Your offers</h1><button class="btn" id="new">New offer</button></div>
+  <div class="card soft"><b>Make this month's offer pages here.</b> <span class="muted">Fill in the offer, press Save, then turn it on and share the link in ads, posts, emails or a QR code. The spots left counter goes down by one each time someone claims a spot on the page, and every claim lands in GoHighLevel as a new lead. If people book the offer at the desk or by phone, add them under "Spots already taken" so the counter stays true. Injectables can't have offers (AHPRA), and words like "best" or "guaranteed" are blocked.</span></div>
+  <div id="editor" class="card" style="display:none;margin-top:16px"></div>
+  <div id="list"><p class="muted" style="margin-top:20px">Loading your offers</p></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var S=window.SKINLUX;
+  var K=null;try{K=localStorage.getItem("skinluxhq-key")}catch(e){}
+  var H={Accept:"application/json","Content-Type":"application/json"};if(K)H.Authorization="Bearer "+K;
+  function $(id){return document.getElementById(id)}
+  function toast(t){var e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(function(){e.style.display="none"},3000)}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function money(n){return "$"+(+n).toLocaleString("en-AU")}
+  function slugify(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,50)}
+  function pageUrl(slug){return location.origin+"/clients/skinlux/offers/index.html?o="+encodeURIComponent(slug)}
+  function endOfMonth(){var d=new Date(Date.now()+8*3600e3);var e=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0));return e.toISOString().slice(0,10)}
+  var TREATS=S.treatments.filter(function(t){return !t.injectable});
+  var OFFERS=[];
+  function load(){
+    fetch("/api/skinlux-offers",{headers:H,credentials:"include",cache:"no-store"}).then(function(r){return r.json()}).then(function(d){
+      if(!d.ok){$("list").innerHTML='<div class="card" style="margin-top:16px">'+esc(d.error||"Couldn't load your offers")+"</div>";return}
+      OFFERS=d.offers;draw()}).catch(function(){$("list").innerHTML='<div class="card" style="margin-top:16px">Couldn\'t reach Skinlux HQ. Try again in a minute.</div>'});
+  }
+  var STATUS={open:"Live",off:"Off",ended:"Ended",full:"All spots gone"};
+  function draw(){
+    if(!OFFERS.length){$("list").innerHTML='<p class="muted" style="margin-top:20px">No offers yet. Press New offer to make your first one.</p>';return}
+    $("list").innerHTML='<div class="grp" style="margin:22px 0 10px;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Your offers</div>'+OFFERS.map(function(o,i){
+      var v=o.view,taken=o.spots-v.left;
+      return '<div class="card ocard" data-i="'+i+'"><div class="head"><b>'+esc(o.name)+'</b><span class="pill '+v.status+'">'+STATUS[v.status]+'</span></div>'+
+        '<div class="meta">'+money(o.price)+' (usually '+money(o.usual)+'), '+(o.clinic==="both"?"both clinics":S.locations[o.clinic].name)+', ends '+esc(o.ends)+'</div>'+
+        '<div style="font-size:14px"><b>'+taken+' of '+o.spots+'</b> spots taken, '+v.left+' left</div><div class="meter"><span style="width:'+Math.round(taken/o.spots*100)+'%"></span></div>'+
+        '<div class="link">'+esc(pageUrl(o.slug))+'</div>'+
+        '<div class="tools"><button class="btn sm edit">Edit</button><button class="btn sm ghost toggle">'+(o.live?"Turn off":"Turn on")+'</button><button class="btn sm ghost copy">Copy link</button><a class="btn sm ghost" target="_blank" rel="noopener" href="'+esc(pageUrl(o.slug))+'&preview=1">Preview</a><button class="btn sm ghost del">Delete</button></div><div class="err"></div></div>';
+    }).join("");
+    document.querySelectorAll(".ocard").forEach(function(card){
+      var o=OFFERS[+card.dataset.i];
+      card.querySelector(".edit").onclick=function(){edit(o)};
+      card.querySelector(".copy").onclick=function(){navigator.clipboard.writeText(pageUrl(o.slug)).then(function(){toast("Link copied")},function(){toast(pageUrl(o.slug))})};
+      card.querySelector(".toggle").onclick=function(){var x=JSON.parse(JSON.stringify(o));delete x.view;x.live=!o.live;save(x,o.slug,card.querySelector(".err"),x.live?"Offer is live":"Offer turned off")};
+      card.querySelector(".del").onclick=function(){
+        if(!confirm("Delete \""+o.name+"\"? The link will stop working."))return;
+        fetch("/api/skinlux-offers?o="+encodeURIComponent(o.slug),{method:"DELETE",headers:H,credentials:"include"}).then(function(r){return r.json()}).then(function(d){if(d.ok){toast("Offer deleted");setTimeout(load,1800)}else card.querySelector(".err").textContent=d.error||"Couldn't delete it"})};
+    });
+  }
+  function save(offer,was,errEl,msg,done){
+    errEl.textContent="";
+    fetch("/api/skinlux-offers",{method:"PUT",headers:H,credentials:"include",body:JSON.stringify({offer:offer,was:was})}).then(function(r){return r.json()}).then(function(d){
+      if(!d.ok){errEl.textContent=d.error||"Couldn't save it";if(done)done(false);return}
+      toast(msg||"Saved");if(done)done(true);setTimeout(load,1800)}).catch(function(){errEl.textContent="Couldn't reach Skinlux HQ";if(done)done(false)});
+  }
+  function edit(o){
+    var isNew=!o;o=o||{treatment:"hifu",name:"",headline:"",sub:"",includes:[],price:"",usual:"",spots:30,claimed:0,clinic:"both",ends:endOfMonth(),live:false,slug:""};
+    var e=$("editor");e.style.display="block";
+    e.innerHTML='<h2 style="margin:0 0 4px">'+(isNew?"New offer":"Edit offer")+'</h2>'+
+      '<label>Treatment</label><select id="e-t">'+TREATS.map(function(t){return'<option value="'+t.id+'"'+(t.id===o.treatment?" selected":"")+">"+esc(t.name)+"</option>"}).join("")+'</select><div class="hint" id="e-tp"></div>'+
+      '<label>Offer name</label><input id="e-n" maxlength="80" placeholder="For example: Double chin HIFU">'+
+      '<label>Headline</label><input id="e-h" maxlength="120" placeholder="For example: Lift and define under the chin with no downtime">'+
+      '<label>Short description</label><textarea id="e-s" maxlength="600"></textarea>'+
+      '<label>What\'s included (one per line)</label><textarea id="e-i" placeholder="Skin consult\nLED add on"></textarea>'+
+      '<div class="row3"><div><label>Offer price ($)</label><input id="e-p" type="number" min="1" step="1"></div><div><label>Usual price ($)</label><input id="e-u" type="number" min="1" step="1"></div><div><label>Spots</label><input id="e-sp" type="number" min="1" max="500"></div></div>'+
+      '<div class="row3"><div><label>Spots already taken</label><input id="e-c" type="number" min="0"><div class="hint">Desk and phone bookings of this offer</div></div><div><label>Clinic</label><select id="e-cl"><option value="both">Both clinics</option><option value="booragoon">Booragoon</option><option value="leederville">Leederville</option></select></div><div><label>Last day</label><input id="e-e" type="date"></div></div>'+
+      '<label>Link name</label><input id="e-sl" maxlength="50"><div class="hint" id="e-url"></div>'+
+      '<label class="chk"><input type="checkbox" id="e-l"> Live (the page takes claims)</label>'+
+      '<div class="tools"><button class="btn" id="e-save">Save</button><button class="btn ghost" id="e-cancel">Cancel</button></div><div class="err" id="e-err"></div>';
+    $("e-n").value=o.name;$("e-h").value=o.headline;$("e-s").value=o.sub;$("e-i").value=(o.includes||[]).join("\n");
+    $("e-p").value=o.price;$("e-u").value=o.usual;$("e-sp").value=o.spots;$("e-c").value=o.claimed||0;$("e-cl").value=o.clinic;$("e-e").value=o.ends;$("e-sl").value=o.slug;$("e-l").checked=!!o.live;
+    var slugTouched=!isNew;
+    function tp(){var t=TREATS.filter(function(x){return x.id===$("e-t").value})[0];$("e-tp").textContent=t?"Menu price: "+t.price:""}
+    function url(){$("e-url").textContent=pageUrl($("e-sl").value||"your-offer")}
+    $("e-t").onchange=tp;tp();
+    $("e-n").oninput=function(){if(!slugTouched){$("e-sl").value=slugify($("e-n").value);url()}};
+    $("e-sl").oninput=function(){slugTouched=true;$("e-sl").value=slugify($("e-sl").value);url()};url();
+    $("e-cancel").onclick=function(){e.style.display="none"};
+    $("e-save").onclick=function(){
+      var btn=this;btn.disabled=true;
+      var x={treatment:$("e-t").value,name:$("e-n").value,headline:$("e-h").value,sub:$("e-s").value,includes:$("e-i").value.split("\n"),
+        price:$("e-p").value,usual:$("e-u").value,spots:$("e-sp").value,claimed:$("e-c").value,clinic:$("e-cl").value,ends:$("e-e").value,slug:$("e-sl").value,live:$("e-l").checked};
+      save(x,isNew?"":o.slug,$("e-err"),"Offer saved",function(ok){btn.disabled=false;if(ok)e.style.display="none"});
+    };
+    e.scrollIntoView({behavior:"smooth"});
+  }
+  $("new").onclick=function(){edit(null)};
+  load();
+})();
+</script>
+</body>
+</html>
