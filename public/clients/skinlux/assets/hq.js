@@ -690,6 +690,7 @@
           "Treatment finder quiz": ["../quiz/index.html", "Live: quiz leads go to Leads and the new lead workflow"] };
         var live = LIVE && LIVE_APPS[a[0]];
         if (LIVE) { a = a.slice(); a[3] = live ? [["Live", live[1]]] : [["Soon", "its numbers show here once this app is live"]]; a[1] = live ? live[0] : "../" + a[1]; }
+        if (LIVE && a[0] === "Website and review monitor" && LIVE.site) { a[3] = [[LIVE.site.up ? "Up" : "Down", LIVE.site.up ? "website loads in " + (LIVE.site.ms / 1000).toFixed(1) + "s" : "website isn't answering"], ["Soon", "Google reviews, once Jellie shares the profiles"]]; a[4] = "connections"; }
         return '<div class="card"><div class="muted" style="font-size:12px;letter-spacing:1px;text-transform:uppercase">' + a[2] + '</div><h3 style="margin:4px 0 12px">' + a[0] + "</h3>" +
           '<div class="grid g2" style="gap:10px">' + a[3].map(function (k) { return '<div><div style="font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1">' + k[0] + '</div><div class="muted" style="font-size:12.5px">' + k[1] + "</div></div>"; }).join("") + "</div>" +
           '<div class="row" style="gap:8px;margin-top:14px"><a class="btn sm" href="' + a[1] + '" target="_blank" rel="noopener">' + (live ? "Open app" : LIVE ? "See the demo" : "Open app") + "</a>" +
@@ -702,18 +703,25 @@
   function renderConn() {
     if (LIVE) {
       var on = LIVE.clinics || [];
+      var site = LIVE.site || null;
+      var siteTxt = !site ? "Waiting" : site.up ? "Up, loads in " + (site.ms / 1000).toFixed(1) + "s" : "DOWN, not answering";
       var LC = [
         ["GoHighLevel", on.length ? "Connected: " + on.map(LOC).join(" and ") : "Not connected", on.length === 2 ? "Live" : "Waiting"],
         ["Timely", "Clients, bookings, visits and sales through the Timely link", "Waiting"],
         ["clientcare inbox", "Incomplete booking emails, forwarded to GoHighLevel", "Waiting"],
+        ["Shopify", "Online orders go to the product sale workflow", "Live"],
         ["Instagram, Facebook and WhatsApp", "Connected by Jellie inside GoHighLevel", "Waiting"],
         ["Google Business Profiles", "Reviews for both clinics", "Waiting"],
-        ["Staff app", "Treatment done taps and product sales", "Waiting"],
-        ["Website monitor", "skinluxfaceandbody.com.au", "Waiting"]
+        ["Staff app", "Treatment done taps and product sales", "Live"],
+        ["Website monitor", "skinluxfaceandbody.com.au, checked each time HQ refreshes", siteTxt]
       ];
       $("v-connections").innerHTML = '<div class="card"><div class="section-title"><h3>Connections</h3><span class="muted">Last sync ' +
         new Date(LIVE.syncedAt).toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" }) + "</span></div>" +
-        LC.map(function (c) { var ok = c[2] === "Live"; return '<div class="conn"><i' + (ok ? "" : ' style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"') + '></i><div><b>' + c[0] + '</b><div class="muted" style="font-size:13px">' + c[1] + '</div></div><small class="muted">' + c[2] + "</small></div>"; }).join("") +
+        LC.map(function (c) {
+          var ok = c[2] === "Live" || /^Up/.test(c[2]), bad = /^DOWN/.test(c[2]);
+          var dot = ok ? "" : bad ? ' style="background:#c0392b;box-shadow:0 0 0 3px #f6d5d1"' : ' style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"';
+          return '<div class="conn"><i' + dot + '></i><div><b>' + c[0] + '</b><div class="muted" style="font-size:13px">' + c[1] + '</div></div><small' + (bad ? ' style="color:#c0392b;font-weight:600"' : ' class="muted"') + '>' + c[2] + "</small></div>";
+        }).join("") +
         ((LIVE.errors || []).length ? '<p class="muted" style="margin-top:10px">Not read this time: ' + esc(LIVE.errors.join(", ")) + "</p>" : "") + "</div>";
       return;
     }
@@ -748,6 +756,7 @@
   /* ---------- Notifications ---------- */
   function notifs() {
     var out = [];
+    if (LIVE && LIVE.site && !LIVE.site.up) out.push({ k: "site" + new Date().toDateString(), cls: "bad", t: "<b>The website is down.</b> skinluxfaceandbody.com.au isn't answering. Call the web host.", go: ["connections"] });
     openConvos().forEach(function (v) {
       if (v.nurse) out.push({ k: "n" + v.id, cls: "bad", t: "<b>" + esc(v.name) + "</b> needs a nurse: " + esc(v.msgs.filter(function (m) { return m.f === "them"; }).slice(-1)[0].t), go: ["inbox", v.id] });
       else if (v.ch === "scan" && v.unread) out.push({ k: "s" + v.id, cls: "warn", t: "<b>" + esc(v.name) + "</b> did the Skin Check. Call within 15 minutes.", go: ["inbox", v.id] });

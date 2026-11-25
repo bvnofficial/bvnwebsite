@@ -236,8 +236,26 @@ function flowsFrom(list: J[]): J[] {
   ];
 }
 
+// Website monitor: is skinluxfaceandbody.com.au answering? Checked with every
+// HQ refresh (cached with the rest of the feed for a minute).
+const SITE_URL = "https://www.skinluxfaceandbody.com.au/";
+async function siteCheck(): Promise<J> {
+  const t0 = Date.now();
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 5000);
+  try {
+    const r = await fetch(SITE_URL, { method: "GET", redirect: "follow", cache: "no-store", signal: ctl.signal });
+    return { url: SITE_URL, up: r.status < 500, status: r.status, ms: Date.now() - t0, at: Date.now() };
+  } catch {
+    return { url: SITE_URL, up: false, status: 0, ms: Date.now() - t0, at: Date.now() };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function build(): Promise<J> {
   const errors: string[] = [];
+  const sitePromise = siteCheck();
   const parts = await Promise.all(CLINICS.map(async (c) => {
     const { token, loc } = keys(c);
     if (!token || !loc) return null;
@@ -260,6 +278,7 @@ async function build(): Promise<J> {
     clients: allClients, convos, leads,
     sources: Object.entries(srcCount).map(([k, v]) => [k, v[0], v[1]]).sort((a, b) => (b[1] as number) - (a[1] as number)),
     flows: flowsFrom(allClients),
+    site: await sitePromise,
     errors,
   };
 }
