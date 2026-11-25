@@ -88,7 +88,11 @@ function unb64u(s: string): string {
 const cut = (x: unknown, n: number) => String(x ?? "").replace(/\s+/g, " ").trim().slice(0, n);
 
 /** Never throws: logging must not stop an event from reaching GoHighLevel. */
+/** System tests use the client name "Test Bvnsystem" and never count in HQ. */
+export const isTestName = (n: unknown) => /^test b(vnsystem)?$/i.test(String(n || "").trim());
+
 export async function logEvent(e: LogEvent): Promise<void> {
+  if (isTestName(e.n)) return;
   try {
     const at = Date.now();
     const small: LogEvent = { k: cut(e.k, 24), c: cut(e.c, 12) };
@@ -158,4 +162,23 @@ export async function getFile(path: string): Promise<Blob | null> {
   const b = await bucket();
   const { data } = await b.download(path);
   return data || null;
+}
+
+/** Removes event files written by system tests (client name "Test B"). */
+export async function purgeTestEvents(): Promise<number> {
+  const b = await bucket();
+  let n = 0;
+  for (let t = Date.now(); t > Date.now() - 62 * 86400_000; t -= 28 * 86400_000) {
+    const m = new Date(t + 8 * 3600_000).toISOString().slice(0, 7);
+    const { data } = await b.list(`ev/${m}`, { limit: 1000, sortBy: { column: "name", order: "desc" } });
+    const kill: string[] = [];
+    for (const f of data || []) {
+      const mm = /^(\d+)_[a-z0-9]+_([A-Za-z0-9_-]+)\.json$/.exec(f.name);
+      if (!mm) continue;
+      try { if (isTestName((JSON.parse(unb64u(mm[2])) as LogEvent).n)) kill.push(`ev/${m}/${f.name}`); } catch { /* skip */ }
+    }
+    if (kill.length) { await b.remove(kill); n += kill.length; }
+  }
+  evCache = null;
+  return n;
 }

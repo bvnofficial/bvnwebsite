@@ -138,7 +138,8 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
   });
 
   // GoHighLevel ships every new account with "(example)" contacts and tasks; HQ hides them
-  const isExample = (n: unknown) => /^\(example\)/i.test(String(n || "").trim());
+  // (also hides the "Test Bvnsystem" contact used for system tests)
+  const isExample = (n: unknown) => /^\(example\)|bvnsystem/i.test(String(n || "").trim());
   const byId: Record<string, J> = {};
   const clientRows = contactsRaw.filter((c) => !isExample(c.contactName || c.firstName)).map((c) => {
     const name = clean(c.contactName || [c.firstName, c.lastName].filter(Boolean).join(" ")) || clean(c.email) || clean(c.phone) || "Unnamed";
@@ -226,7 +227,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
       };
     });
 
-  const tasks = (((taskRes && taskRes.tasks) || []) as J[]).filter((t) => !/^\(Example\)/.test(String(t.title || ""))).map((t) => {
+  const tasks = (((taskRes && taskRes.tasks) || []) as J[]).filter((t) => !/^\(Example\)|bvnsystem/i.test(String(t.title || ""))).map((t) => {
     const c = (t.contactDetails || {}) as J;
     const due = ms(t.dueDate);
     return { id: String(t._id || t.id), title: clean(t.title), body: clean(t.body), clinic, due, dueTxt: due ? when(due) : "",

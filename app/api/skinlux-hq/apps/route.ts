@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxHqReqOk } from "@/lib/skinlux-hq-gate";
-import { getFile, writeDoc, storeConfigured } from "@/lib/skinlux-store";
+import { getFile, writeDoc, storeConfigured, purgeTestEvents, isTestName } from "@/lib/skinlux-store";
 import { cleanStock, cleanTraining, cleanWaitlist, loadIntake, loadStock, loadTraining, loadWaitlist } from "@/lib/skinlux-apps";
 import { loadSettings } from "@/lib/skinlux-settings";
 import { ghl, setAppLink } from "@/lib/skinlux-ghl";
@@ -94,6 +94,19 @@ export async function POST(req: NextRequest) {
     if (Number(x.stage) === 4) body.status = "lost";
     const done = await ghl(clinic, `/opportunities/${x.id}`, { method: "PUT", body });
     return done ? out(200, { ok: true }) : out(502, { ok: false, error: "GoHighLevel didn't take that change" });
+  }
+  if (b.action === "purge-tests") {
+    const removed = await purgeTestEvents();
+    const log = await loadIntake();
+    const before = log.forms.length;
+    log.forms = log.forms.filter((f) => !/bvnsystem/i.test(f.name));
+    if (log.forms.length !== before) await writeDoc("intake", log);
+    const w = await loadWaitlist();
+    const wb = w.people.length + w.slots.length;
+    w.people = w.people.filter((p) => !/bvnsystem/i.test(p.last));
+    w.slots = w.slots.filter((s) => !/system test/i.test(s.when));
+    if (w.people.length + w.slots.length !== wb) await writeDoc("waitlist", w);
+    return out(200, { ok: true, events: removed, intake: before - log.forms.length, waitlist: wb - w.people.length - w.slots.length, testName: isTestName("Test B") });
   }
   if (b.action === "clear-intake") {
     const log = await loadIntake();

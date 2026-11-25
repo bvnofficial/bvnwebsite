@@ -61,5 +61,18 @@ export async function POST(req: NextRequest) {
   });
   if (!res.ok) return no(502, `GoHighLevel said no (${res.status})`);
   const d = await res.json().catch(() => ({}));
-  return NextResponse.json({ ok: true, messageId: d.messageId || d.id || null }, { headers: { "cache-control": "no-store" } });
+  const messageId = d.messageId || d.id || null;
+  // GoHighLevel accepts first and fails later (for example: no SMS number yet). Check before saying "sent".
+  if (messageId) {
+    await new Promise((r) => setTimeout(r, 2000));
+    const m = await fetch(`${GHL}/conversations/messages/${messageId}`, {
+      headers: { Authorization: `Bearer ${token}`, Version: V_CONV, Accept: "application/json" }, cache: "no-store",
+    }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    const msg = m && (m.message || m);
+    if (msg && String(msg.status) === "failed") {
+      const why = String(msg.error || "");
+      return no(502, /no numbers/i.test(why) ? "Not sent: this clinic has no SMS number in GoHighLevel yet" : `Not sent: ${why.replace(/^Failed:\s*/, "").slice(0, 160) || "GoHighLevel couldn't deliver it"}`);
+    }
+  }
+  return NextResponse.json({ ok: true, messageId }, { headers: { "cache-control": "no-store" } });
 }
