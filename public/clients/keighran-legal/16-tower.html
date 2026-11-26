@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Off the Plan Tower | Keighran demo</title><link rel="stylesheet" href="assets/app.css"><script src="assets/app.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+#stage{position:relative;height:620px;border-radius:14px;overflow:hidden;background:radial-gradient(circle at 50% 20%,#24365F 0%,#0D1529 75%);touch-action:none}
+#stage canvas{display:block;cursor:grab}
+.ov{position:absolute;left:16px;top:14px;color:#F3EEE4;pointer-events:none}
+.ov .nm{font-family:var(--serif);font-size:22px}.ov .sb{font-size:12px;opacity:.75;margin-top:2px}
+.ov .dt{margin-top:10px;font-family:var(--serif);font-size:30px;color:var(--gold2)}
+.lg{position:absolute;left:14px;bottom:14px;right:14px;display:flex;flex-wrap:wrap;gap:6px}
+.lg button{border:1px solid rgba(255,255,255,.22);background:rgba(13,21,41,.72);color:#F3EEE4;border-radius:99px;padding:5px 11px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--sans)}
+.lg button.on{border-color:var(--gold);background:rgba(200,150,62,.25)}
+.lg i{width:10px;height:10px;border-radius:3px;display:inline-block}.lg b{font-weight:700}
+.tip{position:absolute;pointer-events:none;background:#fff;color:var(--ink);padding:7px 11px;border-radius:9px;font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.3);display:none;white-space:nowrap;z-index:3}
+.rt{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:6px}
+.rt button{background:rgba(13,21,41,.72);border:1px solid rgba(255,255,255,.22);color:#F3EEE4;border-radius:10px;padding:6px 10px;font-size:12px;cursor:pointer}
+.rt button.on{border-color:var(--gold)}
+.ctl{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-top:14px}
+.ctl label{font-size:12px;color:var(--muted);white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--gold)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:7px 14px;font-size:13px;cursor:pointer;color:var(--ink)}.seg button.on{background:var(--ink);color:#fff}
+.kp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:16px}@media(max-width:960px){.kp{grid-template-columns:repeat(2,1fr)}#stage{height:480px}}
+.kd{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.kd:last-child{border-bottom:0}
+.kd .c{color:var(--muted);font-size:11px}.kd .w{white-space:nowrap;text-align:right}
+.past{color:var(--muted);text-decoration:line-through}
+.soon{color:var(--bad);font-weight:700}
+.bars .r{display:grid;grid-template-columns:150px 1fr 34px;gap:8px;align-items:center;font-size:12px;margin:6px 0}
+.bars .t{height:10px;border-radius:99px;background:#EEE9DF;overflow:hidden}.bars .t div{height:100%;border-radius:99px;transition:width .3s}
+.law{background:#F5EAD6;color:#6E5212;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.5;margin-top:12px}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="kp" id="kp"></div>
+  <div class="grid g21">
+    <div>
+      <div id="stage">
+        <div class="ov"><div class="nm">Kestrel Apartments, Penrith</div><div class="sb">84 lots over 14 levels · Developer client · Sample project</div><div class="dt" id="dt"></div></div>
+        <div class="rt"><button id="spin" class="on" title="Turn the tower slowly">Auto turn</button><button id="reset">Reset view</button></div>
+        <div class="lg" id="lg"></div>
+        <div class="tip" id="tip"></div>
+      </div>
+      <div class="card mt">
+        <div class="ctl"><label>Project date</label><input type="range" id="day"><button class="btn dark" id="play">Play</button></div>
+        <div class="ctl"><label>Show levels</label><input type="range" id="lv" min="1" max="14" value="14"><span id="lvt" class="muted" style="font-size:12px;white-space:nowrap">All 14</span></div>
+        <div class="row" style="margin-top:12px;gap:10px;flex-wrap:wrap;align-items:center"><span class="muted" style="font-size:12px">Scenario</span>
+          <div class="seg"><button id="sc1" class="on">Plan registers on time</button><button id="sc2">Plan registers late</button></div>
+          <button class="btn" id="today">Jump to today</button></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" id="side"></div>
+    </div>
+  </div>
+</div>
+<script type="module">
+import * as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+shell("16","Off the Plan Tower","Every lot in a development as one 3D building. Each apartment is coloured by where its contract stands: exchanged, deposit bond at risk, settled, rescinded or past the sunset date. Tap a lot to see its buyer, price and every key date the Key Date Finder pulled from its contract. Drag the date to watch the whole project play out.","eighty contracts tracked in a spreadsheet, and the one bond that expires before settlement");
+
+/* ---------- dates ---------- */
+const D=(y,m,d)=>new Date(y,m-1,d,12);
+const add=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const addBus=(d,n)=>{let x=new Date(d);while(n>0){x=add(x,1);const w=x.getDay();if(w!==0&&w!==6)n--}return x};
+const fmt=d=>d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
+const diff=(a,b)=>Math.round((b-a)/864e5);
+const START=D(2025,2,15),END=D(2028,9,30),TODAY=D(2026,11,26),LAUNCH=D(2025,3,1),SUNSET=D(2028,6,30),REG=D(2028,5,12),SETTLE_DUE=add(REG,21);
+const FLOORS=14,PER=6;
+
+/* ---------- sample lots ---------- */
+let seed=20251;const r=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const FN=["Amelia","Hamish","Priya","Tom","Grace","Lachlan","Mei","Oliver","Zara","Jack","Aisha","Noah","Chloe","Ravi","Sophie","Kai","Ella","Marcus","Isla","Daniel","Leah","Sam","Nina","Ben"];
+const LN=["Hartley","Okafor","Nguyen","Brennan","Castell","Moreau","Patel","Whitlock","Kovacs","Delaney","Rahman","Fitzroy","Tan","Lindqvist","Marchetti","Osei","Carrick","Yamada","Holt","Ferreira"];
+const BASE={1:640000,2:845000,3:1185000};
+const lots=[];
+for(let f=1;f<=FLOORS;f++)for(let u=0;u<PER;u++){
+  const n=(f-1)*PER+u+1,beds=(u===0||u===5)?3:(u===2||u===3)?1:2;
+  const price=Math.round(BASE[beds]*(1+.013*(f-1))*(.97+r()*.06)/5000)*5000;
+  const sold=r()<.9;const exch=sold?add(LAUNCH,Math.floor(Math.pow(r(),1.9)*640)):null;
+  const bond=sold&&r()<.42;const bondExp=bond?add(exch,(17+Math.floor(r()*20))*30):null;
+  const resc=sold&&r()<.045?addBus(exch,1+Math.floor(r()*8)):null;
+  const def=sold&&!resc&&r()<.05;
+  lots.push({n,f,u,beds,price,exch,bond,bondExp,resc,def,off:Math.floor(r()*21),buyer:FN[Math.floor(r()*FN.length)]+" "+LN[Math.floor(r()*LN.length)],mesh:null});
+}
+// Lot 14 matches the sample contract in the Key Date Finder
+Object.assign(lots[13],{exch:D(2026,11,12),bond:true,bondExp:D(2028,7,31),resc:null,def:false,buyer:"J. and A. Morgan"});
+
+let scen="ontime",day=TODAY,sel=null,filter=null;
+const STAT={unsold:{c:"#8D96A8",t:"Unsold"},exchanged:{c:"#3E6FB0",t:"Exchanged"},bond:{c:"#E3A33B",t:"Bond expires before settlement"},action:{c:"#E06A3A",t:"Notice needed"},late:{c:"#8A4FB8",t:"Past sunset date"},settled:{c:"#2F9E5F",t:"Settled"},rescinded:{c:"#C0453A",t:"Rescinded"}};
+const settleBy=()=>scen==="ontime"?SETTLE_DUE:SUNSET;
+function status(l,d){
+  if(!l.exch||d<l.exch)return"unsold";
+  if(l.resc&&d>=l.resc)return"rescinded";
+  if(scen==="ontime"&&d>=REG){if(l.def){if(d>SETTLE_DUE)return"action"}else if(d>=add(REG,l.off))return"settled"}
+  if(scen==="late"){if(d>SUNSET)return"late";if(d>=add(SUNSET,-28))return"action"}
+  if(l.bond&&l.bondExp<settleBy()&&d>=add(l.bondExp,-180))return"bond";
+  return"exchanged";
+}
+function keyDates(l){
+  const k=[];if(!l.exch)return k;
+  k.push([l.exch,"Contract exchanged","cl 1.1"]);
+  k.push([addBus(l.exch,10),"Cooling off ends","cl 2.1, 10 business days"]);
+  if(l.resc)k.push([l.resc,"Rescinded in cooling off","0.25% of price forfeited"]);
+  if(l.bond)k.push([l.bondExp,"Deposit bond expires","cl 3.1, replace with cash 14 days before (cl 3.2)"]);
+  if(scen==="ontime"){k.push([REG,"Strata plan registered","notice to buyers the same day"]);k.push([SETTLE_DUE,"Settlement due","cl 4.2, 21 days after notice of registration"]);if(l.def)k.push([add(SETTLE_DUE,1),"Notice to complete can be served","buyer did not settle"])}
+  else{k.push([add(SUNSET,-28),"Last day to serve 28 day notice","cl 5.1 rescission notice"])}
+  k.push([SUNSET,"Sunset date","cl 1.2"]);
+  return k.sort((a,b)=>a[0]-b[0]);
+}
+
+/* ---------- 3D scene ---------- */
+const stage=document.getElementById("stage");
+let renderer;
+try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true})}catch(e){stage.insertAdjacentHTML("beforeend",'<div style="position:absolute;inset:0;display:grid;place-items:center;color:#fff">This device cannot show 3D. Try Chrome or Edge.</div>')}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+stage.prepend(renderer.domElement);
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x0D1529,90,220);
+const cam=new THREE.PerspectiveCamera(38,1,.1,600);
+const ctl=new OrbitControls(cam,renderer.domElement);ctl.enableDamping=true;ctl.autoRotate=true;ctl.autoRotateSpeed=.55;ctl.maxPolarAngle=Math.PI*.48;ctl.minDistance=22;ctl.maxDistance=140;
+function home(){const k=stage.clientWidth/stage.clientHeight<1.3?1.45:1.1;cam.position.set(44*k,36*k+6,52*k);ctl.target.set(0,22,0);ctl.update()}home();
+scene.add(new THREE.HemisphereLight(0xDFE8FF,0x1A2238,1.1));
+const sun=new THREE.DirectionalLight(0xFFF1D6,1.8);sun.position.set(40,80,30);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-50,right:50,top:60,bottom:-20,far:200});scene.add(sun);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(500,500),new THREE.MeshStandardMaterial({color:0x18233D,roughness:1}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+const road=new THREE.MeshStandardMaterial({color:0x101828,roughness:1});
+[[0,15,200,7],[-21,0,7,200]].forEach(([x,z,w,d])=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),road);m.rotation.x=-Math.PI/2;m.position.set(x,.02,z);scene.add(m)});
+const ctxMat=new THREE.MeshStandardMaterial({color:0x2B3B5E,roughness:.9});
+for(let i=0;i<34;i++){const a=r()*Math.PI*2,rad=26+r()*60,w=6+r()*9,d=6+r()*9,h=3+Math.pow(r(),2)*26;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),ctxMat);b.position.set(Math.cos(a)*rad,h/2,Math.sin(a)*rad);if(Math.abs(b.position.z-15)<9||Math.abs(b.position.x+21)<9)continue;b.castShadow=b.receiveShadow=true;scene.add(b)}
+const podium=new THREE.Mesh(new THREE.BoxGeometry(17.4,3.4,12.2),new THREE.MeshStandardMaterial({color:0xB9AB92,roughness:.8}));podium.position.y=1.7;podium.castShadow=podium.receiveShadow=true;scene.add(podium);
+const glass=new THREE.Mesh(new THREE.BoxGeometry(17.5,1.6,12.3),new THREE.MeshStandardMaterial({color:0x223355,roughness:.2,metalness:.5}));glass.position.y=1.4;scene.add(glass);
+const W=5.4,H=3,Dp=5.4,FH=3.25,Y0=3.4;
+const box=new THREE.BoxGeometry(W,H,Dp),edges=new THREE.EdgesGeometry(box),edgeMat=new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.22});
+const slabGeo=new THREE.BoxGeometry(17.2,.22,11.6),slabMat=new THREE.MeshStandardMaterial({color:0xE9E4DA,roughness:.7});
+const floors=[];const pick=[];
+for(let f=1;f<=FLOORS;f++){const g=new THREE.Group();g.position.y=Y0+(f-1)*FH;scene.add(g);floors.push(g);
+  const s=new THREE.Mesh(slabGeo,slabMat);s.position.y=.11;s.castShadow=s.receiveShadow=true;g.add(s);}
+lots.forEach(l=>{const mat=new THREE.MeshStandardMaterial({color:0x8D96A8,roughness:.32,metalness:.15,transparent:true,opacity:.95});
+  const m=new THREE.Mesh(box,mat);m.position.set((l.u%3-1)*(W+.25),.22+H/2,(Math.floor(l.u/3)-.5)*(Dp+.25));m.castShadow=m.receiveShadow=true;
+  m.add(new THREE.LineSegments(edges,edgeMat));m.userData.lot=l;l.mesh=m;l.target=new THREE.Color(0x8D96A8);floors[l.f-1].add(m);pick.push(m)});
+const roof=new THREE.Mesh(new THREE.BoxGeometry(17.2,1.2,11.6),new THREE.MeshStandardMaterial({color:0xC8963E,roughness:.5,metalness:.3}));roof.position.y=Y0+FLOORS*FH+.6;roof.castShadow=true;scene.add(roof);
+const plant=new THREE.Mesh(new THREE.BoxGeometry(6,1.6,4),slabMat);plant.position.y=roof.position.y+1.4;scene.add(plant);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(15,.12,8,90),new THREE.MeshBasicMaterial({color:0xC8963E}));ring.rotation.x=Math.PI/2;ring.position.y=.06;scene.add(ring);
+
+function size(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()}
+new ResizeObserver(size).observe(stage);size();
+
+/* ---------- picking ---------- */
+const ray=new THREE.Raycaster(),mp=new THREE.Vector2(),tip=document.getElementById("tip");let down=null,hover=null;
+function hit(e){const b=renderer.domElement.getBoundingClientRect();mp.x=(e.clientX-b.left)/b.width*2-1;mp.y=-(e.clientY-b.top)/b.height*2+1;ray.setFromCamera(mp,cam);const h=ray.intersectObjects(pick.filter(m=>m.parent.visible),false);return h.length?h[0].object.userData.lot:null}
+renderer.domElement.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY];ctl.autoRotate=false;document.getElementById("spin").classList.remove("on")});
+renderer.domElement.addEventListener("pointermove",e=>{const l=hit(e);hover=l;if(l){const b=stage.getBoundingClientRect();tip.style.display="block";tip.style.left=(e.clientX-b.left+14)+"px";tip.style.top=(e.clientY-b.top+10)+"px";const s=status(l,day);tip.innerHTML=`<b>Lot ${l.n}</b> · Level ${l.f} · ${l.beds} bed · ${money(l.price)}<br><span style="color:${STAT[s].c};font-weight:700">${STAT[s].t}</span>`;renderer.domElement.style.cursor="pointer"}else{tip.style.display="none";renderer.domElement.style.cursor="grab"}});
+renderer.domElement.addEventListener("pointerleave",()=>{tip.style.display="none";hover=null});
+renderer.domElement.addEventListener("pointerup",e=>{if(!down)return;const moved=Math.hypot(e.clientX-down[0],e.clientY-down[1]);down=null;if(moved>5)return;const l=hit(e);sel=l;side()});
+
+/* ---------- UI ---------- */
+const $d=document.getElementById("day");$d.min=0;$d.max=diff(START,END);$d.value=diff(START,TODAY);
+$d.oninput=()=>{day=add(START,+$d.value);paint()};
+let timer=null;document.getElementById("play").onclick=function(){if(timer){clearInterval(timer);timer=null;this.textContent="Play";return}if(+$d.value>=+$d.max)$d.value=0;this.textContent="Pause";timer=setInterval(()=>{$d.value=Math.min(+$d.max,+$d.value+9);day=add(START,+$d.value);paint();if(+$d.value>=+$d.max){clearInterval(timer);timer=null;document.getElementById("play").textContent="Play"}},60)};
+document.getElementById("today").onclick=()=>{$d.value=diff(START,TODAY);day=TODAY;paint()};
+const lv=document.getElementById("lv");lv.oninput=()=>{floors.forEach((g,i)=>g.visible=i<+lv.value);roof.visible=plant.visible=+lv.value===FLOORS;document.getElementById("lvt").textContent=+lv.value===FLOORS?"All 14":"Up to level "+lv.value};
+const setSc=s=>{scen=s;document.getElementById("sc1").classList.toggle("on",s==="ontime");document.getElementById("sc2").classList.toggle("on",s==="late");paint()};
+document.getElementById("sc1").onclick=()=>setSc("ontime");document.getElementById("sc2").onclick=()=>setSc("late");
+document.getElementById("spin").onclick=function(){ctl.autoRotate=!ctl.autoRotate;this.classList.toggle("on",ctl.autoRotate)};
+document.getElementById("reset").onclick=()=>{home();lv.value=FLOORS;lv.oninput();filter=null;sel=null;paint()};
+
+function counts(){const c={};Object.keys(STAT).forEach(k=>c[k]=0);lots.forEach(l=>c[status(l,day)]++);return c}
+function paint(){
+  document.getElementById("dt").textContent=fmt(day)+(diff(day,TODAY)===0?" · today":"");
+  const c=counts();
+  lots.forEach(l=>{const s=status(l,day);l.s=s;l.target.set(STAT[s].c);const m=l.mesh.material;const dim=filter&&filter!==s;m.opacity=dim?.12:s==="unsold"?.55:.96;m.emissive.set(l===sel?0xC8963E:0x000000);m.emissiveIntensity=l===sel?.55:0;l.mesh.scale.setScalar(l===sel?1.06:1)});
+  document.getElementById("lg").innerHTML=Object.entries(STAT).filter(([k])=>c[k]>0||k==="settled").map(([k,v])=>`<button data-k="${k}" class="${filter===k?"on":""}"><i style="background:${v.c}"></i>${v.t} <b>${c[k]}</b></button>`).join("");
+  document.querySelectorAll("#lg button").forEach(b=>b.onclick=()=>{filter=filter===b.dataset.k?null:b.dataset.k;paint()});
+  const soldL=lots.filter(l=>l.s!=="unsold"&&l.s!=="rescinded");const val=soldL.reduce((a,l)=>a+l.price,0);
+  const toSun=diff(day,SUNSET);
+  document.getElementById("kp").innerHTML=[
+    ["Lots exchanged",soldL.length+" of "+lots.length,Math.round(soldL.length/lots.length*100)+"% sold"],
+    ["Value under contract","$"+(val/1e6).toFixed(1)+"m","deposits held: $"+(val*.1/1e6).toFixed(1)+"m"],
+    ["Settled",c.settled,c.settled?money(lots.filter(l=>l.s==="settled").reduce((a,l)=>a+l.price,0)):"none yet"],
+    ["Bonds at risk",c.bond,c.bond?"expire before settlement":"all clear",c.bond>0],
+    ["Sunset date",toSun>0?toSun+" days":"passed",fmt(SUNSET),toSun<=60]
+  ].map(([l,v,d,bad])=>`<div class="card kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="d ${bad?"bad":""}">${d}</div></div>`).join("");
+  side();
+}
+function side(){
+  const el=document.getElementById("side");
+  if(!sel){const c=counts(),tot=lots.length;
+    el.innerHTML=`<h3>Project at ${fmt(day)}</h3><div class="bars">${Object.entries(STAT).map(([k,v])=>`<div class="r"><span>${v.t}</span><div class="t"><div style="width:${c[k]/tot*100}%;background:${v.c}"></div></div><b>${c[k]}</b></div>`).join("")}</div>
+    <h3 style="margin-top:18px">Needs attention</h3><div class="list">${lots.filter(l=>["bond","action","late"].includes(l.s)).slice(0,6).map(l=>`<div class="it" style="cursor:pointer" data-n="${l.n}"><span>Lot ${l.n} · ${l.buyer}</span><span class="pill" style="background:${STAT[l.s].c}22;color:${STAT[l.s].c}">${STAT[l.s].t}</span></div>`).join("")||'<div class="muted">Nothing due. Drag the date forward to see what comes up.</div>'}</div>
+    <p class="muted" style="font-size:12px;margin-top:14px">Tap any apartment in the tower to open its matter.</p>
+    ${scen==="late"?lawNote():""}`;
+    el.querySelectorAll("[data-n]").forEach(x=>x.onclick=()=>{sel=lots[+x.dataset.n-1];paint()});return}
+  const l=sel,s=status(l,day),kd=keyDates(l);
+  const act={bond:"Ask the buyer for a replacement bond or cash deposit",action:scen==="ontime"?"Draft the notice to complete":"Prepare the sunset notice and the buyer consent request",late:"Brief the developer on options past the sunset date",exchanged:"Send the buyer a progress update",settled:"Close the file and send the feedback request",unsold:"Nothing to do until it sells",rescinded:"Release the lot back to the agent"}[s];
+  el.innerHTML=`<div class="row" style="justify-content:space-between"><h3 style="margin:0">Lot ${l.n}</h3><button class="btn" id="cl">Back to project</button></div>
+  <p class="muted" style="margin:6px 0 10px">Level ${l.f} · ${l.beds} bedroom · ${money(l.price)}</p>
+  <span class="pill" style="background:${STAT[s].c}22;color:${STAT[s].c}">${STAT[s].t}</span>
+  <div class="list mt"><div class="it"><span>Buyer</span><b>${l.exch?l.buyer:"Not sold"}</b></div><div class="it"><span>Deposit</span><b>${l.exch?(l.bond?"Deposit bond, "+money(l.price*.1):"Cash in trust, "+money(l.price*.1)):"..."}</b></div></div>
+  <h3 style="margin-top:16px;font-size:16px">Key dates from the contract</h3>
+  <div>${kd.length?kd.map(([d,t,c])=>{const n=diff(day,d);return`<div class="kd"><div><div class="${n<0?"past":""}">${t}</div><div class="c">${c}</div></div><div class="w"><div>${fmt(d)}</div><div class="c ${n>=0&&n<=60?"soon":""}">${n<0?"passed":n===0?"today":"in "+n+" days"}</div></div></div>`}).join(""):'<div class="muted">No contract yet.</div>'}</div>
+  <button class="btn dark mt" id="act" style="width:100%">${act}</button>
+  ${s==="action"&&scen==="late"||s==="late"?lawNote():""}
+  ${l.bond&&l.bondExp<settleBy()?`<div class="law">The deposit bond expires on ${fmt(l.bondExp)}, before settlement is expected. HQ reminds the buyer's solicitor 180 days out and again at 60 and 30.</div>`:""}`;
+  document.getElementById("cl").onclick=()=>{sel=null;paint()};
+  document.getElementById("act").onclick=()=>toast("Drafted in Keighran HQ and added to the matter");
+}
+function lawNote(){return`<div class="law">NSW: for a residential off the plan contract, a vendor can only rescind under a sunset clause with the buyer's written consent or a Supreme Court order (Conveyancing Act 1919, s 66ZS). The tower shows which lots that affects, so the developer sees the exposure at a glance.</div>`}
+
+/* ---------- loop ---------- */
+paint();
+(function loop(){requestAnimationFrame(loop);lots.forEach(l=>l.mesh.material.color.lerp(l.target,.12));ctl.update();renderer.render(scene,cam)})();
+</script>
+</body></html>
