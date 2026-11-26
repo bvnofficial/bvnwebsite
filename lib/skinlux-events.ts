@@ -8,6 +8,7 @@ import { AUTO_OF_KIND, currentSettings, loadSettings, productLife, treatmentDays
 import { logEvent } from "@/lib/skinlux-store";
 import { recordInGhl } from "@/lib/skinlux-ghl";
 import { takeFromStock } from "@/lib/skinlux-apps";
+import { meLink } from "@/lib/skinlux-me";
 
 export const EVENT_KIND: Record<string, string> = {
   incomplete_booking: "ABANDONED",
@@ -133,8 +134,16 @@ export async function recordEvent(b: Extract<Built, { ok: true }>, extra: { sour
   return id;
 }
 
-export async function sendEvent(b: Extract<Built, { ok: true }>, opts: { skipRecord?: boolean } = {}): Promise<{ ok: boolean; status: number; error?: string; paused?: boolean }> {
-  if (!opts.skipRecord) await recordEvent(b).catch(() => null);
+export async function sendEvent(b: Extract<Built, { ok: true }>, opts: { skipRecord?: boolean; contactId?: string | null } = {}): Promise<{ ok: boolean; status: number; error?: string; paused?: boolean }> {
+  const id = opts.skipRecord ? opts.contactId : await recordEvent(b).catch(() => null);
+  // The aftercare text ends with the client's own app link, where Jellie's full aftercare guide is.
+  if (b.payload.event === "treatment_done" && id && typeof b.payload.aftercare_sms === "string") {
+    const link = meLink(id, b.clinic);
+    if (link) {
+      b.payload.client_app_link = link;
+      if (!b.payload.aftercare_sms.includes(link)) b.payload.aftercare_sms += ` Your full aftercare: ${link}`;
+    }
+  }
   // Jellie can pause a follow up per clinic in HQ Settings. New leads are never paused.
   const auto = AUTO_OF_KIND[b.kind];
   if (auto) {

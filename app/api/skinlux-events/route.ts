@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   const built = await buildEventWithEdits(body as Record<string, unknown>);
   if (!built.ok) return out(400, built);
   const contactId = await recordEvent(built).catch(() => null);
-  const sent = await sendEvent(built, { skipRecord: true });
+  const sent = await sendEvent(built, { skipRecord: true, contactId });
   let review = "";
   if ((body as Record<string, unknown>).review_now === true && built.payload.event === "treatment_done" && contactId) {
     review = await askForReview(built.clinic, contactId, String(built.payload.first_name || "")).catch(() => "");

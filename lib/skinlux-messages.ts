@@ -232,6 +232,16 @@ export const SKINLUX_MESSAGES: SkinluxMessage[] = [
   "label": "IPL hair removal (SHR)"
  },
  {
+  "name": "msg_aftercare_cosmelan",
+  "group": "Aftercare (sent 30 min after Treatment done)",
+  "label": "Cosmelan"
+ },
+ {
+  "name": "msg_aftercare_tattoo_removal",
+  "group": "Aftercare (sent 30 min after Treatment done)",
+  "label": "Tattoo removal"
+ },
+ {
   "name": "msg_aftercare_injectables_all",
   "group": "Aftercare (sent 30 min after Treatment done)",
   "label": "Injectables (all)"

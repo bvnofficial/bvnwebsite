@@ -69,7 +69,16 @@
     if (D.history && D.history.length) home += '<div class="c"><div class="eyebrow">Your visits</div>' + D.history.map(function (h) { return '<div class="prod"><div><b>' + esc(h.what) + '</b><div class="muted" style="font-size:13px">' + esc(h.date) + (h.who ? " with " + esc(h.who) : "") + "</div></div></div>"; }).join("") + "</div>";
     if (!D.birthday) home += '<div class="c"><div class="eyebrow">Your birthday</div><p style="margin:4px 0 10px">Tell us your birthday and we will send you a little treat in your birthday week.</p><input type="date" id="dob" style="width:100%;font:inherit;font-size:16px;padding:10px;border-radius:12px;border:1.5px solid var(--line)"><button class="btn sm" id="saveDob" style="margin-top:10px">Save my birthday</button><div class="err" id="derr"></div></div>';
     home += '<div class="c"><div class="eyebrow">Skinlux ' + esc(D.clinicName) + '</div><p style="margin:4px 0 12px">Questions about your skin or a booking? We\'re here.</p><div class="row" style="gap:8px"><a class="btn sm" href="' + tel + '">Call ' + esc(D.phone) + '</a><button class="btn sm ghost" data-go="msg">Send a message</button></div></div>';
-    var care = D.last ? '<div class="c"><div class="eyebrow">Aftercare</div><h3>' + esc(D.last.treatment) + '</h3><p style="font-size:15.5px;line-height:1.6">' + esc(D.last.aftercare) + "</p>" +
+    function guideHtml(g) {
+      if (!g || !g.sections || !g.sections.length) return "";
+      var h = '<div class="guide"><div class="eyebrow" style="margin-top:6px">Your full aftercare</div>' + (g.intro ? '<p style="font-size:15px;line-height:1.6">' + esc(g.intro) + "</p>" : "");
+      g.sections.forEach(function (sec) {
+        h += '<h4 style="margin:14px 0 6px;font-size:15px">' + esc(sec.title) + '</h4><ul style="margin:0 0 4px;padding-left:20px;font-size:15px;line-height:1.55">' +
+          sec.points.map(function (pt) { return "<li style=\"margin:0 0 6px\">" + esc(pt) + "</li>"; }).join("") + "</ul>";
+      });
+      return h + "</div>";
+    }
+    var care = D.last ? '<div class="c"><div class="eyebrow">Aftercare</div><h3>' + esc(D.last.treatment) + '</h3><p style="font-size:15.5px;line-height:1.6">' + esc(D.last.aftercare) + "</p>" + guideHtml(D.last.guide) +
       '<p class="muted" style="font-size:13px">Something doesn\'t feel right? Message us and ' + (D.last.injectable ? "a nurse" : "your therapist") + ' will get back to you. If it\'s urgent, call the clinic.</p><div class="row" style="gap:8px"><button class="btn sm" data-go="msg">Message the clinic</button><a class="btn sm ghost" href="' + tel + '">Call</a></div></div>'
       : '<div class="c"><p class="muted" style="margin:0">Your aftercare shows here after your next treatment.</p></div>';
     var skin = "";

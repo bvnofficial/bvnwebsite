@@ -38,6 +38,7 @@ export const TREATMENT_TAG: Record<string, string> = {
   "Advanced Peels": "treated-advanced-peel", "Nano fractional RF": "treated-nano-rf", "Diamond Polar RF": "treated-diamond",
   "Electrocautery": "treated-electro", "Exo Grow": "treated-exogrow", "LED therapy": "treated-led",
   "Body Sculpting": "treated-body", "Plasma Fibroblast": "treated-plasma", "IPL hair removal (SHR)": "treated-ipl-hair",
+  "Cosmelan": "treated-cosmelan", "Tattoo removal": "treated-tattoo",
 };
 
 const fieldCache: Record<string, { at: number; byName: Record<string, string> }> = {};

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readToken } from "@/lib/skinlux-me";
 import { addNote, addTask, ghl } from "@/lib/skinlux-ghl";
 import { editedAftercare } from "@/lib/skinlux-events";
+import { aftercareGuide } from "@/lib/skinlux-aftercare";
 import { CLINICS, TREATMENTS } from "@/lib/skinlux-data";
 import { loadSettings } from "@/lib/skinlux-settings";
 import { logEvent, readEvents } from "@/lib/skinlux-store";
@@ -49,8 +50,8 @@ export async function GET(req: NextRequest) {
   if (t) {
     const edited = await editedAftercare(who.clinic, t.name, t.injectable).catch(() => null);
     aftercare = edited || (t.injectable ? "Follow the aftercare your nurse gave you. Any questions or worries, message us here and a nurse will call you."
-      : t.aftercare ? t.aftercare.charAt(0).toUpperCase() + t.aftercare.slice(1) + "."
-      : "Your therapist went through your aftercare with you. Any questions, message us here.");
+      : t.aftercare || "Your therapist went through your aftercare with you. Any questions, message us here.");
+    aftercare = aftercare.replace(/reply here/gi, "message us here");
   }
   const prodName = f("Last product bought");
   const prod = st.products.find((p) => p.name === prodName);
@@ -69,7 +70,7 @@ export async function GET(req: NextRequest) {
     first: String(c.firstName || "").trim(),
     clinic: who.clinic, clinicName: CLINICS[who.clinic].name, phone: st.phones[who.clinic] || CLINICS[who.clinic].phone,
     booking: st.booking,
-    last: lastT ? { treatment: lastT, date: niceDate(f("Last treatment date")), aftercare, injectable: !!(t && t.injectable) } : null,
+    last: lastT ? { treatment: lastT, date: niceDate(f("Last treatment date")), aftercare, guide: aftercareGuide(lastT), injectable: !!(t && t.injectable) } : null,
     next: f("Next due date") ? { date: niceDate(f("Next due date")), treatment: lastT } : null,
     birthday: c.dateOfBirth ? String(c.dateOfBirth).slice(0, 10) : "",
     pack: f("Package name") ? { name: f("Package name"), left: Number(f("Package sessions left")) || 0 } : null,
