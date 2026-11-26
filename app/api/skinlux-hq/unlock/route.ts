@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SKINLUX_HQ_COOKIE, SKINLUX_HQ_HOME, skinluxHqToken } from "@/lib/skinlux-hq-gate";
+import { SKINLUX_HQ_COOKIE, SKINLUX_HQ_HOME, skinluxHqToken, skinluxMgrToken } from "@/lib/skinlux-hq-gate";
 
 // Checks the Skinlux HQ password and sets the access cookie that the
 // middleware and /api/skinlux-hq look for. The password never reaches the browser.
 export async function POST(req: NextRequest) {
   const form = await req.formData();
   const password = String(form.get("password") || "");
-  const expected = process.env.SKINLUX_HQ_PASSWORD;
-
-  let ok = !!expected && password.length === expected.length;
-  if (ok && expected) {
+  // owner password, or the manager's (same HQ, money hidden)
+  const match = (expected: string | undefined) => {
+    if (!expected || password.length !== expected.length) return false;
     let diff = 0;
     for (let i = 0; i < expected.length; i++) diff |= password.charCodeAt(i) ^ expected.charCodeAt(i);
-    ok = diff === 0;
-  }
+    return diff === 0;
+  };
+  const isOwner = match(process.env.SKINLUX_HQ_PASSWORD);
+  const ok = isOwner || match(process.env.SKINLUX_MANAGER_PASSWORD);
 
   const wantsJson = (req.headers.get("accept") || "").includes("application/json");
   if (ok) {
-    const token = await skinluxHqToken();
+    const token = isOwner ? await skinluxHqToken() : await skinluxMgrToken();
     // JSON for the sign-in form's script (also used inside the framed dashboard)
     const res = wantsJson
       ? NextResponse.json({ ok: true, token }, { headers: { "cache-control": "no-store" } })

@@ -15,7 +15,7 @@
   }
   function feed() { return api("GET", "/api/skinlux-hq"); }
   var CL = { booragoon: "Booragoon", leederville: "Leederville", both: "Both clinics" };
-  function money(n) { return "$" + Math.round(n || 0).toLocaleString("en-AU"); }
+  function money(n) { return window.HQ_MGR ? "Owner only" : "$" + Math.round(n || 0).toLocaleString("en-AU"); }
   function perthDay(t) { return new Date(t + 8 * 3600000).toISOString().slice(0, 10); }
   function ago(t) {
     var m = Math.round((Date.now() - t) / 60000);

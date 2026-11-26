@@ -30,7 +30,7 @@
   [].forEach.call(document.querySelectorAll("#per button"), function (b) {
     b.onclick = function () { days = +b.dataset.d; [].forEach.call(document.querySelectorAll("#per button"), function (x) { x.classList.toggle("on", x === b); }); draw(); };
   });
-  Q.feed().then(function (f) { F = f; draw(); });
+  Q.feed().then(function (f) { F = f; window.HQ_MGR = f.role === "manager"; draw(); });
   function draw() {
     if (!F) return;
     if (F.configured === false || F.ok === false) { $("tbl").innerHTML = '<tr><td class="empty">Couldn\'t load the numbers. Open HQ first, then come back.</td></tr>'; return; }

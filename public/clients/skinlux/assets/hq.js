@@ -264,6 +264,9 @@
   // /api/skinlux-hq before this script runs. Then real GoHighLevel data replaces
   // the samples, and anything without a live source yet shows empty.
   var LIVE = window.SKINLUX_HQ_LIVE || null;
+  // manager sign in: same HQ, money hidden (the server already removes the values)
+  var MGR = !!(LIVE && LIVE.role === "manager");
+  function m$(n, txt) { return MGR ? (txt.indexOf("retail") > -1 ? "Values for the owner" : "Values for the owner") : money(n) + txt; }
   if (LIVE) {
     CONVOS = LIVE.convos || []; CLIENTS = LIVE.clients || []; LEADS = LIVE.leads || [];
     FLOWS = LIVE.flows || []; SOURCES = LIVE.sources || []; REVIEWS = []; TEAM = [];
@@ -326,7 +329,7 @@
         return '<button class="nav' + (ui.view === n[0] ? " on" : "") + '" data-go="' + n[0] + '">' + I(n[2]) + "<span>" + n[1] + "</span>" +
           (ct ? '<span class="ct' + (red ? " red" : "") + '">' + ct + "</span>" : "") + "</button>";
       }).join("") +
-      (LIVE ? '<div class="sync"><span class="dot-live"></span>GoHighLevel live, ' + hm(LIVE.syncedAt) + '<br><span class="dot-live"></span>Staff app, shop and forms live<br><span class="dot-live" style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"></span>Timely: waiting on access</div>'
+      (LIVE ? (MGR ? '<div class="sync" style="margin-bottom:6px"><b>Manager view</b><br><small class="muted">Revenue and values are for the owner</small></div>' : "") + '<div class="sync"><span class="dot-live"></span>GoHighLevel live, ' + hm(LIVE.syncedAt) + '<br><span class="dot-live"></span>Staff app, shop and forms live<br><span class="dot-live" style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"></span>Timely: waiting on access</div>'
         : '<div class="sync"><span class="dot-live"></span>Timely synced 2 min ago<br><span class="dot-live"></span>GoHighLevel live<br><small class="muted">Direct links, no Zapier</small></div>');
   }
 
@@ -373,7 +376,7 @@
     var h = '<div class="dash-head" style="margin-top:26px"><h2 style="margin:0">The numbers</h2><div class="switches"><div class="seg" id="segNp">' +
       [["today", "Today"], ["week", "7 days"], ["month", "30 days"]].map(function (x) { return '<button data-np="' + x[0] + '"' + (ui_np === x[0] ? ' class="on"' : "") + ">" + x[1] + "</button>"; }).join("") +
       '</div><span class="stamp" style="margin:0">Live, ' + hm(LIVE.syncedAt) + "</span></div></div>" +
-      '<div class="grid g4">' + kpi("Treatments done", tx.length, money(sumV(tx)) + " at your from prices") + kpi("Products sold", px.length, money(sumV(px)) + " retail, clinic and online") +
+      '<div class="grid g4">' + kpi("Treatments done", tx.length, m$(sumV(tx), " at your from prices")) + kpi("Products sold", px.length, m$(sumV(px), " retail, clinic and online")) +
       kpi("New leads", ld.length, sk + " skin check, " + qz + " quiz, " + of + " offer pages") + kpi("Abandoned bookings", ab.length, bk.length + " bookings came back") + "</div>";
     var byT = {}; tx.forEach(function (e) { byT[e.i] = (byT[e.i] || 0) + 1; });
     var byP = {}; px.forEach(function (e) { var n = String(e.i || "").replace(/^Skin[Cc]are Doctor /, ""); byP[n] = (byP[n] || 0) + 1; });
@@ -386,7 +389,24 @@
     var w = (LIVE.waitlist && LIVE.waitlist.people || []).filter(function (p) { return inClinic(p.c); }).length;
     h += '<div class="grid g4 mt">' + kpi("Intake forms", evs("intake", d).length, intakeOpen().length + " waiting for a nurse") + kpi("On the waitlist", w, "Waiting for a free spot") +
       kpi("Client app messages", evs("client_app", d).length, "Messages, set asides and call backs") + kpi("Website", LIVE.site ? (LIVE.site.up ? "Up" : "DOWN") : "...", LIVE.site && LIVE.site.up ? "Loads in " + (LIVE.site.ms / 1000).toFixed(1) + "s" : "Checked each refresh") + "</div>" +
-      '<div class="card soft mt"><b>Revenue, bookings and rebook rate come from Timely.</b> <span class="muted">They show here once Timely admin access is shared. Until then, treatment and product values above use your Settings prices.</span></div>';
+      (MGR ? "" : '<div class="card soft mt"><b>Revenue, bookings and rebook rate come from Timely.</b> <span class="muted">They show here once Timely admin access is shared. Until then, treatment and product values above use your Settings prices.</span></div>');
+    // birthdays in the next 14 days (from the date of birth on each GoHighLevel contact)
+    var today = new Date(perthDay(Date.now()) + "T00:00:00Z"), bdays = [];
+    CLIENTS.forEach(function (c) {
+      if (!c.dob || !inClinic(c.clinic)) return;
+      var p = c.dob.split("-"), nx = new Date(Date.UTC(today.getUTCFullYear(), +p[1] - 1, +p[2]));
+      if (nx < today) nx = new Date(Date.UTC(today.getUTCFullYear() + 1, +p[1] - 1, +p[2]));
+      var days = Math.round((nx - today) / 86400000);
+      if (days <= 14) bdays.push({ c: c, days: days, label: nx.toLocaleDateString("en-AU", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" }) });
+    });
+    bdays.sort(function (a, b) { return a.days - b.days; });
+    h += '<div class="card mt"><div class="section-title"><h3>Birthdays coming up</h3><span class="muted">Next 14 days. The birthday message goes out in their birthday week once it is switched on.</span></div>' +
+      (bdays.length ? "<table><tbody>" + bdays.map(function (b) {
+        var first = b.c.name.split(" ")[0];
+        var msg = "Hi " + first + ", happy birthday from Skinlux! We'd love to help you glow for it. Book here: " + S.booking;
+        return "<tr><td><b>" + esc(b.c.name) + "</b></td><td>" + (b.days === 0 ? "Today" : b.days === 1 ? "Tomorrow" : esc(b.label)) + "</td><td>" + LOC(b.c.clinic) + "</td><td>" +
+          (b.c.phone ? '<a class="btn sm ghost" href="sms:' + esc(b.c.phone) + "?&body=" + encodeURIComponent(msg) + '">Text</a>' : "") + "</td></tr>";
+      }).join("") + "</tbody></table>" : '<p class="muted">No birthdays in the next 14 days yet. Birthdays come in from the intake form and the My Skinlux app, and from Timely once it is linked.</p>') + "</div>";
     box.innerHTML = h;
   }
 
@@ -521,7 +541,7 @@
     var today = perthDay(Date.now());
     var forms = (LIVE.intake || []).filter(function (f) { return inClinic(f.c) && (f.visit === today || (!f.cleared)); });
     var slots = (LIVE.waitlist && LIVE.waitlist.slots || []).filter(function (s) { return inClinic(s.c); });
-    var h = '<div class="grid g4">' + kpi("Treatments done today", tx.length, money(sumV(tx)) + " at from prices") + kpi("Products sold today", px.length, money(sumV(px)) + " retail") +
+    var h = '<div class="grid g4">' + kpi("Treatments done today", tx.length, m$(sumV(tx), " at from prices")) + kpi("Products sold today", px.length, m$(sumV(px), " retail")) +
       kpi("Intake forms to check", intakeOpen().length, "Flagged for a nurse") + kpi("Open waitlist spots", slots.length, "Posted, not filled yet") + "</div>";
     var act = evs("", 0, function (e) { return EVTXT[e.k]; });
     h += '<div class="grid g2 mt"><div class="card"><div class="section-title"><h3>Today so far</h3><span class="muted">Newest first</span></div>' +
@@ -675,7 +695,7 @@
         var i = LEADS.indexOf(l);
         return '<div class="lead' + (l.fresh ? " fresh" : "") + '"><b>' + esc(l.n) + '</b><div class="muted">' + esc(l.i) + "</div>" +
           '<div class="tagrow" style="margin-top:6px"><span class="chn">' + l.src + '</span><span class="chn">' + LOC(l.c) + "</span></div>" +
-          '<div class="row between" style="margin-top:6px"><small class="muted">' + l.age + "</small><b>" + (l.inj ? "Consult" : money(l.v)) + "</b></div>" +
+          '<div class="row between" style="margin-top:6px"><small class="muted">' + l.age + "</small><b>" + (l.inj ? "Consult" : MGR ? "" : money(l.v)) + "</b></div>" +
           '<div class="row">' + (si < 3 ? '<button class="btn sm" data-lead="' + i + '">Move to ' + STAGES[si + 1] + "</button>" : "") +
           (l.cv ? '<button class="btn sm ghost" data-goconvo="' + l.cv + '">Chat</button>' : "") + "</div></div>";
       }).join("") + "</div>";
@@ -758,7 +778,7 @@
       (team.length ? team.map(function (m) {
         var mine = function (l) { return l.filter(function (e) { return e.t === m.name; }); };
         var rd = protos.filter(function (p) { return (reads[m.name] || {})[p.id]; }).length;
-        return "<tr><td><div class=\"row\" style=\"gap:10px\">" + avatar(m.name) + "<b>" + esc(m.name) + "</b></div></td><td>" + (m.clinics.length === 2 || !m.clinics.length ? "Both" : LOC(m.clinics[0])) + "</td><td>" + mine(t0).length + " done</td><td>" + mine(t30).length + "</td><td>" + money(sumV(mine(p30))) + "</td><td>" + (protos.length ? rd + " of " + protos.length : "None signed yet") + "</td></tr>";
+        return "<tr><td><div class=\"row\" style=\"gap:10px\">" + avatar(m.name) + "<b>" + esc(m.name) + "</b></div></td><td>" + (m.clinics.length === 2 || !m.clinics.length ? "Both" : LOC(m.clinics[0])) + "</td><td>" + mine(t0).length + " done</td><td>" + mine(t30).length + "</td><td>" + (MGR ? "Owner only" : money(sumV(mine(p30)))) + "</td><td>" + (protos.length ? rd + " of " + protos.length : "None signed yet") + "</td></tr>";
       }).join("") : '<tr><td colspan="6" class="muted">Add your team in Settings.</td></tr>') + "</tbody></table>" +
       '<div class="row" style="gap:8px;margin-top:12px"><a class="btn sm ghost" href="scorecard.html">Therapist scorecard</a><a class="btn sm ghost" href="training.html">Training and protocols</a><a class="btn sm ghost" href="settings.html">Edit the team</a></div></div>';
     var tasks = liveTasks();
@@ -819,7 +839,7 @@
       ["Intake and consent forms", "intake.html", "For clients", [[evs("intake", 7).length, "forms this week"], [intakeOpen().length, "waiting for a nurse"]], "today"],
       ["Waitlist slot filler", "waitlist.html", "For clients", [[wp, "people waiting"], [wf, "spots filled, 30 days"]], "today"],
       ["Training and protocols hub", "training.html", "For the team", [[tr.protocols.length, "treatment protocols"], [signed, "signed off"]], "team"],
-      ["Therapist scorecard", "scorecard.html", "For the team", [[tap30, "treatments, 30 days"], [money(sumV(evs("product_sold", 30))), "retail, 30 days"]], "team"],
+      ["Therapist scorecard", "scorecard.html", "For the team", [[tap30, "treatments, 30 days"], (MGR ? [evs("product_sold", 30).length, "products sold, 30 days"] : [money(sumV(evs("product_sold", 30))), "retail, 30 days"])], "team"],
       ["Stock tracker", "stock.html", "For you", [[low, "items running low"], [unc, "not counted yet"]], ""],
       ["Ad compliance checker", "compliance.html", "For you", [["Live", "paste any ad or message"], ["AHPRA", "TGA and Spam Act checks"]], ""],
       ["Offer page builder", "offers.html", "For you", [[ld.filter(function (e) { return e.s === "offer-page"; }).length, "offer claims, 30 days"], ["Live", "spots left counter"]], "leads"],

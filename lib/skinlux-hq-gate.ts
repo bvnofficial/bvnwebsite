@@ -15,28 +15,46 @@ export function isSkinluxHqGated(pathname: string): boolean {
   return pathname.startsWith("/clients/skinlux/hq");
 }
 
+async function hmac(pw: string, label: string): Promise<string> {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(label));
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 export async function skinluxHqToken(): Promise<string | null> {
   const pw = process.env.SKINLUX_HQ_PASSWORD;
-  if (!pw) return null;
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(pw),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("skinlux-hq-v1"));
-  return Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  return pw ? hmac(pw, "skinlux-hq-v1") : null;
+}
+
+/** The manager's sign in: the same HQ, with revenue and money hidden. */
+export async function skinluxMgrToken(): Promise<string | null> {
+  const pw = process.env.SKINLUX_MANAGER_PASSWORD;
+  return pw ? hmac(pw, "skinlux-hq-mgr-v1") : null;
+}
+
+function same(a: string | null, b: string | undefined): boolean {
+  if (!a || !b || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+export type HqRole = "owner" | "manager";
+export async function skinluxHqRoleOf(value: string | undefined): Promise<HqRole | null> {
+  if (same(await skinluxHqToken(), value)) return "owner";
+  if (same(await skinluxMgrToken(), value)) return "manager";
+  return null;
 }
 
 export async function skinluxHqAuthorised(cookieValue: string | undefined): Promise<boolean> {
-  const t = await skinluxHqToken();
-  if (!t || !cookieValue || cookieValue.length !== t.length) return false;
-  let diff = 0;
-  for (let i = 0; i < t.length; i++) diff |= t.charCodeAt(i) ^ cookieValue.charCodeAt(i);
-  return diff === 0;
+  return !!(await skinluxHqRoleOf(cookieValue));
+}
+
+export async function skinluxHqRole(req: { headers: Headers; cookies: { get(name: string): { value: string } | undefined } }): Promise<HqRole | null> {
+  const c = await skinluxHqRoleOf(req.cookies.get(SKINLUX_HQ_COOKIE)?.value);
+  if (c) return c;
+  const m = /^Bearer\s+([a-f0-9]{64})$/i.exec(req.headers.get("authorization") || "");
+  return m ? skinluxHqRoleOf(m[1]) : null;
 }
 
 /** Cookie (direct visits) or "Authorization: Bearer <key>" (the dashboard

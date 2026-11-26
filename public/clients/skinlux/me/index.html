@@ -66,6 +66,8 @@
     else home += '<div class="c"><div class="eyebrow">Book a visit</div><p style="margin:4px 0 12px">Pick a time that suits you online.</p><a class="btn gold block" href="' + esc(D.booking) + '" target="_blank" rel="noopener">Book online</a></div>';
     if (D.pack) home += '<div class="c"><div class="eyebrow">Your package</div><div class="big">' + esc(D.pack.name) + "</div><p class=\"muted\" style=\"margin:4px 0 0\">" + D.pack.left + " session" + (D.pack.left === 1 ? "" : "s") + " left</p></div>";
     if (D.last) home += '<div class="c"><div class="eyebrow">Last treatment</div><h3>' + esc(D.last.treatment) + "</h3><p class=\"muted\" style=\"margin:0 0 10px\">" + esc(D.last.date) + '</p><button class="btn sm ghost" data-go="care">See my aftercare</button></div>';
+    if (D.history && D.history.length) home += '<div class="c"><div class="eyebrow">Your visits</div>' + D.history.map(function (h) { return '<div class="prod"><div><b>' + esc(h.what) + '</b><div class="muted" style="font-size:13px">' + esc(h.date) + (h.who ? " with " + esc(h.who) : "") + "</div></div></div>"; }).join("") + "</div>";
+    if (!D.birthday) home += '<div class="c"><div class="eyebrow">Your birthday</div><p style="margin:4px 0 10px">Tell us your birthday and we will send you a little treat in your birthday week.</p><input type="date" id="dob" style="width:100%;font:inherit;font-size:16px;padding:10px;border-radius:12px;border:1.5px solid var(--line)"><button class="btn sm" id="saveDob" style="margin-top:10px">Save my birthday</button><div class="err" id="derr"></div></div>';
     home += '<div class="c"><div class="eyebrow">Skinlux ' + esc(D.clinicName) + '</div><p style="margin:4px 0 12px">Questions about your skin or a booking? We\'re here.</p><div class="row" style="gap:8px"><a class="btn sm" href="' + tel + '">Call ' + esc(D.phone) + '</a><button class="btn sm ghost" data-go="msg">Send a message</button></div></div>';
     var care = D.last ? '<div class="c"><div class="eyebrow">Aftercare</div><h3>' + esc(D.last.treatment) + '</h3><p style="font-size:15.5px;line-height:1.6">' + esc(D.last.aftercare) + "</p>" +
       '<p class="muted" style="font-size:13px">Something doesn\'t feel right? Message us and ' + (D.last.injectable ? "a nurse" : "your therapist") + ' will get back to you. If it\'s urgent, call the clinic.</p><div class="row" style="gap:8px"><button class="btn sm" data-go="msg">Message the clinic</button><a class="btn sm ghost" href="' + tel + '">Call</a></div></div>'
@@ -75,17 +77,35 @@
       (D.product.reorder ? '<p class="muted" style="margin:4px 0 12px">Likely to run low around ' + esc(D.product.reorder) + ".</p>" : "") + '<button class="btn sm gold" id="reorder">Set one aside for me</button><div class="err" id="rerr"></div></div>';
     if (D.routine && D.routine.length) skin += '<div class="c"><div class="eyebrow">Everyday basics</div>' + D.routine.map(function (p) { return '<div class="prod"><div><b>' + esc(p.name.replace(/^Skin[Cc]are Doctor /, "")) + "</b><div class=\"muted\" style=\"font-size:13px\">" + esc(p.use) + "</div></div><b>" + esc(p.price) + "</b></div>"; }).join("") + '<p class="muted" style="font-size:12.5px;margin:10px 0 0">Ask your therapist which suits your skin.</p></div>';
     if (!skin) skin = '<div class="c"><p class="muted" style="margin:0">Products you buy at Skinlux show here with how to use them.</p></div>';
-    var msg = '<div class="c"><h3>Message the clinic</h3><p class="muted" style="margin:0 0 10px">Goes straight to the Skinlux ' + esc(D.clinicName) + ' team. We reply in clinic hours.</p><textarea id="mt" maxlength="1000" placeholder="Type your message"></textarea><button class="btn gold block" id="send" style="margin-top:10px">Send</button><div class="err" id="merr"></div>' +
+    skin += '<div class="c"><div class="eyebrow">Shop online</div><p style="margin:4px 0 12px">Order your Skincare Doctor products online and have them delivered.</p><a class="btn sm" href="' + esc(D.shop) + '" target="_blank" rel="noopener">Open the shop</a></div>';
+    var msg = '<div class="c"><h3>Message the clinic</h3><p class="muted" style="margin:0 0 10px">Goes straight to the Skinlux ' + esc(D.clinicName) + ' team. We reply in clinic hours.</p><textarea id="mt" maxlength="1000" placeholder="Type your message, for example how your skin is feeling"></textarea><label style="display:block;margin-top:10px;font-size:13px;font-weight:600">Add a photo of your skin (optional)</label><input type="file" id="ph" accept="image/*" capture="environment" style="margin-top:4px"><div id="phPrev"></div><button class="btn gold block" id="send" style="margin-top:10px">Send</button><div class="err" id="merr"></div>' +
       '<p style="margin:14px 0 0"><button class="btn sm ghost" id="cb">Ask for a call back instead</button></p><p class="muted" style="font-size:12px;margin-top:12px">For anything urgent, call ' + esc(D.phone) + ".</p></div>";
     $("main").innerHTML = '<section class="v on" id="v-home">' + home + '</section><section class="v" id="v-care">' + care + '</section><section class="v" id="v-skin">' + skin + '</section><section class="v" id="v-msg">' + msg + "</section>";
     [].forEach.call(document.querySelectorAll("[data-go]"), function (b) { b.onclick = function () { show(b.dataset.go); }; });
     if ($("reorder")) $("reorder").onclick = function () { post("reorder", "", $("reorder"), $("rerr"), "Done. We'll have it ready at the clinic."); };
-    $("send").onclick = function () { var t = $("mt").value.trim(); if (t.length < 2) { $("merr").textContent = "Type your message first."; return; } post("message", t, $("send"), $("merr"), "Sent. The team will get back to you soon.", function () { $("mt").value = ""; }); };
+    var photo = "";
+    $("ph").onchange = function () {
+      var f = $("ph").files[0]; if (!f) return;
+      var img = new Image(), url = URL.createObjectURL(f);
+      img.onload = function () {
+        var max = 1400, w = img.width, h = img.height, sc = Math.min(1, max / Math.max(w, h));
+        var c = document.createElement("canvas"); c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        photo = c.toDataURL("image/jpeg", 0.82);
+        $("phPrev").innerHTML = '<img src="' + photo + '" style="max-width:120px;border-radius:10px;margin-top:8px">';
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    };
+    $("send").onclick = function () { var t = $("mt").value.trim(); if (t.length < 2) { $("merr").textContent = "Type your message first."; return; } post("message", t, $("send"), $("merr"), "Sent. Your therapist or nurse will get back to you soon.", function () { $("mt").value = ""; photo = ""; $("phPrev").innerHTML = ""; $("ph").value = ""; }, { photo: photo }); };
+    if ($("saveDob")) $("saveDob").onclick = function () { var v = $("dob").value; if (!v) { $("derr").textContent = "Pick your birthday first."; return; } post("birthday", "", $("saveDob"), $("derr"), "Saved. Watch out for a birthday treat.", null, { dob: v }); };
     $("cb").onclick = function () { post("callback", $("mt").value.trim(), $("cb"), $("merr"), "Done. The team will call you back."); };
   }
-  function post(action, text, btn, err, okMsg, after) {
+  function post(action, text, btn, err, okMsg, after, extra) {
     btn.disabled = true; err.textContent = "";
-    fetch("/api/skinlux-me", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ k: k, action: action, text: text, product: D.product ? D.product.name : "" }) })
+    var body = { k: k, action: action, text: text, product: D.product ? D.product.name : "" };
+    if (extra) for (var x in extra) body[x] = extra[x];
+    fetch("/api/skinlux-me", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
       .then(function (d) { btn.disabled = false; if (!d.ok) { err.textContent = d.error || "Sorry, that didn't go through. Please call the clinic."; return; } toast(okMsg); if (after) after(); })
       .catch(function () { btn.disabled = false; err.textContent = "No connection. Please try again."; });

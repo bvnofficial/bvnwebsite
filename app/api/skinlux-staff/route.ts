@@ -3,6 +3,8 @@ import { skinluxStaffReqOk } from "@/lib/skinlux-staff-gate";
 import { TREATMENTS } from "@/lib/skinlux-data";
 import { loadSettings } from "@/lib/skinlux-settings";
 import { loadTraining, markRead } from "@/lib/skinlux-apps";
+import { addStaffDoc, addTeamPost, closeClientMsg, loadClientMsgs, loadTeamBoard } from "@/lib/skinlux-team";
+import { getFile } from "@/lib/skinlux-store";
 
 /**
  * Skinlux staff app data, per clinic, from GoHighLevel:
@@ -19,6 +21,22 @@ export async function GET(req: NextRequest) {
   const out = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
   if (!(await skinluxStaffReqOk(req))) return out(401, { ok: false, error: "Not signed in" });
   const u = req.nextUrl.searchParams;
+  if (u.get("view") === "file") {
+    // a client's photo or a staff document (private files)
+    const path = u.get("path") || "";
+    if (!/^(clientmsg|staffdocs)\/[a-z0-9]+\.(jpg|png|pdf)$/.test(path)) return out(400, { ok: false });
+    const f = await getFile(path).catch(() => null);
+    if (!f) return out(404, { ok: false, error: "Not found" });
+    const type = path.endsWith(".pdf") ? "application/pdf" : path.endsWith(".png") ? "image/png" : "image/jpeg";
+    return new NextResponse(f, { headers: { "content-type": type, "cache-control": "private, no-store" } });
+  }
+  if (u.get("view") === "msgs") {
+    const clinic = (u.get("clinic") || "").toLowerCase();
+    const [msgs, posts] = await Promise.all([loadClientMsgs(), loadTeamBoard()]);
+    return out(200, { ok: true,
+      msgs: msgs.filter((m) => !clinic || m.clinic === clinic).slice(0, 80),
+      posts: posts.filter((p) => !clinic || p.clinic === "both" || p.clinic === clinic).slice(0, 60) });
+  }
   if (u.get("view") === "training") {
     const t = await loadTraining().catch(() => null);
     if (!t) return out(502, { ok: false, error: "Couldn't load training" });
@@ -67,6 +85,20 @@ export async function POST(req: NextRequest) {
   const out = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
   if (!(await skinluxStaffReqOk(req))) return out(401, { ok: false, error: "Not signed in" });
   const b = (await req.json().catch(() => null)) as { action?: string; member?: string; protocol?: string } | null;
+  const x = (b || {}) as Record<string, string>;
+  if (x.action === "msg-done") {
+    const ok = await closeClientMsg(String(x.id || ""), String(x.by || "")).catch(() => false);
+    return ok ? out(200, { ok: true }) : out(400, { ok: false, error: "Couldn't update that" });
+  }
+  if (x.action === "team-post") {
+    const p = await addTeamPost(String(x.from || ""), String(x.clinic || ""), String(x.text || "")).catch(() => null);
+    return p ? out(200, { ok: true }) : out(400, { ok: false, error: "Type a message first" });
+  }
+  if (x.action === "doc") {
+    if (!x.member) return out(400, { ok: false, error: "Pick who you are at the top" });
+    const d = await addStaffDoc(String(x.member), String(x.title || ""), String(x.file || "")).catch(() => null);
+    return d ? out(200, { ok: true }) : out(400, { ok: false, error: "Use a photo or PDF under 3 MB" });
+  }
   if (b && b.action === "read") {
     const ok = await markRead(String(b.member || ""), String(b.protocol || "")).catch(() => false);
     return ok ? out(200, { ok: true }) : out(400, { ok: false, error: "Couldn't save that" });

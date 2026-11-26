@@ -235,5 +235,8 @@ export const SKINLUX_MESSAGES: SkinluxMessage[] = [
   "name": "msg_aftercare_injectables_all",
   "group": "Aftercare (sent 30 min after Treatment done)",
   "label": "Injectables (all)"
- }
+ },
+ { "name": "msg_birthday_sms", "group": "9. Birthday", "label": "Birthday week text" },
+ { "name": "msg_birthday_email_subject", "group": "9. Birthday", "label": "Birthday week email subject" },
+ { "name": "msg_birthday_email", "group": "9. Birthday", "label": "Birthday week email" }
 ];

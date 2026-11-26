@@ -123,12 +123,12 @@ export async function recordEvent(b: Extract<Built, { ok: true }>, extra: { sour
   const p = b.payload;
   const name = `${String(p.first_name || "")} ${String(p.last_name || "").slice(0, 1)}`.trim();
   const item = String(p.treatment || p.product || p.interest || p.abandoned_service || p.service || "");
-  const [, id] = await Promise.all([
-    logEvent({ k: String(p.event), c: b.clinic, n: name, t: String(p.therapist || ""), i: item, v: valueOf(b),
-      s: extra.source || String(p.source || ""), inj: p.injectable === "yes" ? 1 : undefined }),
+  const [id] = await Promise.all([
     recordInGhl(b.clinic, p).catch(() => null),
     p.event === "product_sold" ? takeFromStock(b.clinic, String(p.product)) : Promise.resolve(),
   ]);
+  await logEvent({ k: String(p.event), c: b.clinic, n: name, t: String(p.therapist || ""), i: item, v: valueOf(b),
+    s: extra.source || String(p.source || ""), inj: p.injectable === "yes" ? 1 : undefined, cid: id || undefined });
   return id;
 }
 

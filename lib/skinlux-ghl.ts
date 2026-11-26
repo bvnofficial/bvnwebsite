@@ -64,7 +64,7 @@ function isoDate(v: unknown): string {
 /** Create or update a contact by email or mobile. Returns the contact id. */
 export async function upsertContact(clinic: Clinic, p: {
   first_name: string; last_name?: string; email?: string; phone?: string; source?: string;
-  tags?: string[]; fields?: Record<string, string | number | string[]>;
+  tags?: string[]; fields?: Record<string, string | number | string[]>; dob?: string;
 }): Promise<string | null> {
   const k = ghlKeys(clinic);
   if (!k) return null;
@@ -77,6 +77,7 @@ export async function upsertContact(clinic: Clinic, p: {
   if (p.email) body.email = p.email;
   if (p.phone) body.phone = p.phone;
   if (p.source) body.source = p.source;
+  if (p.dob && /^\d{4}-\d{2}-\d{2}$/.test(p.dob)) body.dateOfBirth = p.dob;
   // tags are added separately below: tags in an upsert REPLACE the contact's tags
   if (customFields.length) body.customFields = customFields;
   let d = await ghl(clinic, `/contacts/upsert`, { method: "POST", body });

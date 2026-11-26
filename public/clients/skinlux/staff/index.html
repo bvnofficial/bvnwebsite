@@ -55,6 +55,7 @@
   <button data-tab="done" class="on">Treatment done</button>
   <button data-tab="sold">Product sold</button>
   <button data-tab="calls">Call backs</button>
+  <button data-tab="msgs">Messages</button>
   <button data-tab="learn">Training</button>
 </div>
 
@@ -75,6 +76,7 @@
     <h2>Treatment done</h2>
     <label>Treatment</label><select id="treatment"></select>
     <p class="note" id="injNote" hidden>Injectable: the client gets the nurse aftercare message, never a price or brand name.</p>
+    <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:12px"><input type="checkbox" id="reviewNow" style="width:20px;height:20px"> Happy client: text them our Google review link now</label>
     <button class="go" id="doneBtn">Treatment done, send aftercare</button>
     <p class="note">Sends their aftercare text in 30 minutes, a check in on day 2 or 3, and sets when they're next due.</p>
   </div>
@@ -86,11 +88,31 @@
     <p class="note">Sends how to use it, a check in at day 7, a routine email and a restock reminder before it runs out.</p>
   </div>
 
+  <div class="card" data-pane="msgs" hidden>
+    <h2>Messages from clients</h2>
+    <p class="note">From the My Skinlux app. Yours first (clients you treated last). Call or text them, then tap Done.</p>
+    <div id="cmsgs"><p class="note">Loading</p></div>
+  </div>
+  <div class="card" data-pane="msgs" hidden>
+    <h2>Team board</h2>
+    <p class="note">Notes for everyone at your clinic, from Jellie and the team.</p>
+    <textarea id="tpost" rows="3" placeholder="For example: HIFU offer has 6 spots left" style="width:100%;font:inherit;font-size:15px;padding:10px;border-radius:10px;border:1.5px solid var(--line)"></textarea>
+    <button class="go" id="tpostBtn" style="margin-top:8px">Post to the team</button>
+    <div id="tposts" style="margin-top:12px"></div>
+  </div>
+
   <div class="card" data-pane="learn" hidden>
     <h2>Training</h2>
     <p class="note">Your treatment steps, what rules a client out, and the rebooking line. Tap "I've read this" after reading each one.</p>
     <select id="proto"></select>
     <div id="protoBody" style="margin-top:12px"></div>
+  </div>
+  <div class="card" data-pane="learn" hidden>
+    <h2>My qualifications</h2>
+    <p class="note">Upload a photo or PDF of a certificate or diploma (under 3 MB). Only Jellie sees it, in Skinlux HQ.</p>
+    <input id="docTitle" placeholder="What is it? For example IPL licence" style="width:100%;font:inherit;font-size:15px;padding:10px;border-radius:10px;border:1.5px solid var(--line)">
+    <input type="file" id="docFile" accept="image/*,application/pdf" style="margin-top:8px">
+    <button class="go" id="docBtn" style="margin-top:8px">Upload</button>
   </div>
 
   <div class="card" data-pane="calls" hidden>
@@ -128,7 +150,7 @@
   document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){
     tab=b.dataset.tab;document.querySelectorAll(".tabs button").forEach(function(x){x.classList.toggle("on",x===b)});
     document.querySelectorAll("[data-pane]").forEach(function(p){p.hidden=p.dataset.pane!==tab});
-    $("clientCard").hidden=tab==="calls"||tab==="learn";if(tab==="calls")loadCalls();if(tab==="learn")loadLearn()}});
+    $("clientCard").hidden=tab==="calls"||tab==="learn"||tab==="msgs";if(tab==="calls")loadCalls();if(tab==="learn")loadLearn();if(tab==="msgs")loadMsgs()}});
 
   var timer;
   $("q").oninput=function(){clearTimeout(timer);var q=$("q").value.trim();if(q.length<2){$("results").innerHTML="";return}
@@ -157,7 +179,7 @@
       .then(function(d){btn.disabled=false;if(d.ok){toast("Done. "+(c.first_name)+" is all set.");picked=null;$("q").value="";$("results").innerHTML="";$("newForm").hidden=true;["fn","ln","ph","em"].forEach(function(i){$(i).value=""})}else toast(d.error||"That didn't go through",true)})
       .catch(function(){btn.disabled=false;toast("No connection, try again",true)});
   }
-  $("doneBtn").onclick=function(){send($("doneBtn"),{event:"treatment_done",treatment:$("treatment").value})};
+  $("doneBtn").onclick=function(){send($("doneBtn"),{event:"treatment_done",treatment:$("treatment").value,review_now:$("reviewNow").checked});$("reviewNow").checked=false};
   $("soldBtn").onclick=function(){send($("soldBtn"),{event:"product_sold",product:$("product").value})};
 
   var TR=null;
@@ -177,13 +199,41 @@
       '<b>Steps</b><ol style="padding-left:20px;line-height:1.55">'+p.steps.map(function(x){return"<li>"+escH(x)+"</li>"}).join("")+'</ol>'+
       (p.contra.length?'<b>Do not treat if</b><ul style="padding-left:20px;line-height:1.55">'+p.contra.map(function(x){return"<li>"+escH(x)+"</li>"}).join("")+'</ul>':"")+
       (p.rebook?'<b>Rebooking line</b><p style="background:#f3ece4;padding:10px;border-radius:10px">'+escH(p.rebook)+'</p>':"")+
-      (p.status==="signed"?'<button class="go" id="readBtn">I've read this</button>':"");
+      (p.status==="signed"?'<button class="go" id="readBtn">I&#39;ve read this</button>':"");
     if($("readBtn"))$("readBtn").onclick=function(){
       if(!$("therapist").value){toast("Pick who you are at the top",true);return}
       $("readBtn").disabled=true;
       api("/api/skinlux-staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"read",member:$("therapist").value,protocol:p.id})})
         .then(function(d){if(d.ok){toast("Thanks, marked as read");var keep=$("proto").value;loadLearn();setTimeout(function(){$("proto").value=keep},600)}else{$("readBtn").disabled=false;toast(d.error||"Didn't save",true)}})}}
   $("proto").onchange=showProto;
+
+  function fileUrl(path){return "/api/skinlux-staff?view=file&path="+encodeURIComponent(path)}
+  function loadMsgs(){
+    api("/api/skinlux-staff?view=msgs&clinic="+$("clinic").value).then(function(d){
+      if(!d.ok){$("cmsgs").innerHTML='<p class="note">'+escH(d.error||"Couldn't load")+'</p>';return}
+      var me=$("therapist").value, open=d.msgs.filter(function(m){return m.status==="new"});
+      open.sort(function(a,b){return (b.therapist===me)-(a.therapist===me)||b.at-a.at});
+      $("cmsgs").innerHTML=open.length?open.map(function(m){
+        return '<div class="task"><b>'+escH(m.name)+(m.therapist?' <span class="chip">'+escH(m.therapist)+'</span>':'')+'</b><small>'+new Date(m.at).toLocaleString("en-AU",{timeZone:"Australia/Perth",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})+'</small>'+
+          '<div style="margin:6px 0">'+escH(m.text)+'</div>'+(m.photo?'<a href="'+fileUrl(m.photo)+'" target="_blank" rel="noopener">Open photo</a><br>':'')+
+          (m.phone?'<a href="tel:'+escH(m.phone)+'">Call '+escH(m.phone)+'</a> &nbsp; <a href="sms:'+escH(m.phone)+'">Text</a><br>':'')+
+          '<button class="link" data-done="'+m.id+'">Done, I&#39;ve replied</button></div>'}).join(""):'<p class="note">No new messages from clients.</p>';
+      $("cmsgs").querySelectorAll("[data-done]").forEach(function(b){b.onclick=function(){
+        api("/api/skinlux-staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"msg-done",id:b.dataset.done,by:$("therapist").value})}).then(function(){loadMsgs()})}});
+      $("tposts").innerHTML=d.posts.length?d.posts.map(function(p){return '<div class="task"><b>'+escH(p.from)+'</b><small>'+new Date(p.at).toLocaleString("en-AU",{timeZone:"Australia/Perth",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})+'</small><div style="margin-top:4px;white-space:pre-wrap">'+escH(p.text)+'</div></div>'}).join(""):'<p class="note">Nothing posted yet.</p>';
+    })}
+  $("tpostBtn").onclick=function(){
+    var t=$("tpost").value.trim();if(t.length<2){toast("Type a message first",true);return}
+    api("/api/skinlux-staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"team-post",from:$("therapist").value||"Team",clinic:$("clinic").value,text:t})}).then(function(d){if(d.ok){$("tpost").value="";toast("Posted");loadMsgs()}else toast(d.error||"Didn't post",true)})};
+  $("docBtn").onclick=function(){
+    var f=$("docFile").files[0];if(!$("therapist").value){toast("Pick who you are at the top",true);return}
+    if(!f){toast("Pick a photo or PDF",true);return}
+    if(f.size>3000000){toast("That file is over 3 MB",true);return}
+    var r=new FileReader();r.onload=function(){
+      $("docBtn").disabled=true;
+      api("/api/skinlux-staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"doc",member:$("therapist").value,title:$("docTitle").value,file:r.result})})
+        .then(function(d){$("docBtn").disabled=false;if(d.ok){toast("Uploaded. Thanks!");$("docTitle").value="";$("docFile").value=""}else toast(d.error||"Didn't upload",true)})};
+    r.readAsDataURL(f)};
 
   function loadCalls(){var box=$("tasks");box.innerHTML='<p class="note">Loading</p>';
     api("/api/skinlux-staff?clinic="+$("clinic").value+"&view=calls").then(function(d){

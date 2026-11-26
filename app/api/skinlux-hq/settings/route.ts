@@ -10,7 +10,7 @@ import { cleanSettings, loadSettings, saveSettings } from "@/lib/skinlux-setting
  */
 export const dynamic = "force-dynamic";
 const GHL = "https://services.leadconnectorhq.com";
-const CLINIC_VALUES = ["clinic_phone", "clinic_address", "clinic_hours", "sender_name", "booking_link", "consult_link", "review_link", "voucher_link", "shop_link", "abandoned_offer"];
+const CLINIC_VALUES = ["clinic_phone", "clinic_address", "clinic_hours", "sender_name", "booking_link", "consult_link", "review_link", "voucher_link", "shop_link", "abandoned_offer", "birthday_offer"];
 const json = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
 
 function conn(c: string) {

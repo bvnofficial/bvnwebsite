@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { skinluxHqReqOk } from "@/lib/skinlux-hq-gate";
+import { skinluxHqReqOk, skinluxHqRole } from "@/lib/skinlux-hq-gate";
 import { loadSettings } from "@/lib/skinlux-settings";
 import { logEvent, readEvents, storeConfigured } from "@/lib/skinlux-store";
 import { loadIntake, loadStock, loadTraining, loadWaitlist } from "@/lib/skinlux-apps";
@@ -160,6 +160,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
       inj: tags.some((t) => INJ_TAG.test(t)),
       paused: tags.includes("automation-paused"),
       src: clean(c.source),
+      dob: c.dateOfBirth ? String(c.dateOfBirth).slice(0, 10) : "",
       at: ms(c.dateAdded),
     };
     byId[c.id] = out;
@@ -339,21 +340,34 @@ async function build(): Promise<J> {
   };
 }
 
+// The manager's sign in sees everything except money: values, prices and revenue are removed here, on the server.
+function forManager(d: J): J {
+  return {
+    ...d, role: "manager",
+    events: ((d.events || []) as J[]).map((e) => { const x = { ...e }; delete x.v; return x; }),
+    leads: ((d.leads || []) as J[]).map((l) => ({ ...l, v: 0 })),
+    clients: ((d.clients || []) as J[]).map((c) => ({ ...c, spend: 0 })),
+  };
+}
+const send = (role: string | null, data: J, init?: { status?: number }) =>
+  NextResponse.json(role === "manager" && data.configured ? forManager(data) : { ...data, role: role || "owner" }, { ...(init || {}), headers: { "cache-control": "no-store" } });
+
 export async function GET(req: NextRequest) {
+  const role = await skinluxHqRole(req);
   if (!(await skinluxHqReqOk(req))) {
     return NextResponse.json({ ok: false }, { status: 401, headers: { "cache-control": "no-store" } });
   }
   const fresh = req.nextUrl.searchParams.get("fresh") === "1";
   if (!fresh && CACHE && Date.now() - CACHE.t < TTL_MS) {
-    return NextResponse.json(CACHE.data, { headers: { "cache-control": "no-store" } });
+    return send(role, CACHE.data);
   }
   try {
     const data = await build();
     if (data.configured && (data.errors as string[]).length < 3) CACHE = { t: Date.now(), data };
-    return NextResponse.json(data, { headers: { "cache-control": "no-store" } });
+    return send(role, data);
   } catch (e) {
     console.error("skinlux-hq feed failed:", e instanceof Error ? e.stack || e.message : e);
-    if (CACHE) return NextResponse.json({ ...CACHE.data, stale: true }, { headers: { "cache-control": "no-store" } });
+    if (CACHE) return send(role, { ...CACHE.data, stale: true });
     return NextResponse.json({ configured: true, failed: true }, { status: 502, headers: { "cache-control": "no-store" } });
   }
 }

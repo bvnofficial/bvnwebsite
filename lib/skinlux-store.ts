@@ -76,6 +76,7 @@ export type LogEvent = {
   v?: number;         // value in dollars, when known
   s?: string;         // source or note
   inj?: 1;            // injectable
+  cid?: string;       // GoHighLevel contact id
   at?: number;        // set by the log
 };
 
@@ -102,6 +103,7 @@ export async function logEvent(e: LogEvent): Promise<void> {
     if (e.v) small.v = Math.round(Number(e.v) || 0);
     if (e.s) small.s = cut(e.s, 30);
     if (e.inj) small.inj = 1;
+    if (e.cid && /^[A-Za-z0-9]{8,40}$/.test(e.cid)) small.cid = e.cid;
     const perth = new Date(at + 8 * 3600_000).toISOString();
     const month = perth.slice(0, 7);
     const name = `ev/${month}/${String(at)}_${Math.random().toString(36).slice(2, 7)}_${b64u(JSON.stringify(small))}.json`;
@@ -151,14 +153,14 @@ export function storeConfigured(): boolean {
 
 /** Private files (intake signatures). Returns the stored path. */
 export async function putFile(path: string, bytes: Uint8Array, type: string): Promise<string> {
-  if (!/^[a-z0-9/_-]+\.(png|jpg)$/i.test(path)) throw new Error("Bad path");
+  if (!/^[a-z0-9/_-]+\.(png|jpg|pdf)$/i.test(path)) throw new Error("Bad path");
   const b = await bucket();
   const { error } = await b.upload(path, new Blob([bytes as unknown as ArrayBuffer], { type }), { upsert: true, contentType: type });
   if (error) throw new Error(error.message);
   return path;
 }
 export async function getFile(path: string): Promise<Blob | null> {
-  if (!/^[a-z0-9/_-]+\.(png|jpg)$/i.test(path)) return null;
+  if (!/^[a-z0-9/_-]+\.(png|jpg|pdf)$/i.test(path)) return null;
   const b = await bucket();
   const { data } = await b.download(path);
   return data || null;
