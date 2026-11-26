@@ -20,6 +20,8 @@ const DISALLOW = [
   "/raetzer/",
   // Password-gated lead inbox
   "/leads",
+  // Admin-only door to BVN HQ on the owner's PC
+  "/hq",
   // Payment flow pages (no SEO value)
   "/payment",
   "/payments",
