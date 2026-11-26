@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     const clinicPick = off.clinic === "both" ? (b.clinic === "leederville" ? "leederville" : "booragoon") : off.clinic;
     const built = buildEvent({
       event: "new_lead", clinic: clinicPick, first_name: b.first_name, last_name: b.last_name, email: b.email, phone: b.phone,
-      source: "offer-page", interest: off.name,
+      source: "offer-page", interest: off.name, newsletter: b.newsletter === true,
       message: `Offer page: ${off.name}, $${off.price} (usually $${off.usual}). Ends ${off.ends}. Link: ${off.slug}.`,
     });
     if (!built.ok) return json(400, built);

@@ -177,6 +177,7 @@
             <label>Mobile</label><input id="lfMob" type="tel" autocomplete="tel" inputmode="tel">
             <label>Email (optional)</label><input id="lfEmail" type="email" autocomplete="email">
             <input type="text" id="lfWebsite" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+            <label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;margin-top:10px"><input type="checkbox" id="lfNews" style="width:18px;height:18px;margin-top:2px;flex:0 0 auto"><span>Send me Skinlux skin tips, news and offers by email and text. Unsubscribe any time.</span></label>
             <button class="btn block" id="lfSend" style="margin-top:10px">Send my plan</button>
             <div class="err" id="lfErr"></div>
             <p class="fine">By sending you agree to Skinlux contacting you about your plan by text and email. Reply STOP any time.</p>
@@ -592,7 +593,7 @@
     var btn = $("lfSend"); btn.disabled = true; btn.textContent = "Sending...";
     var names = (lastPlan && lastPlan.picks || []).map(function (id) { return T(id).name; });
     var body = {
-      source: "skin-check", clinic: A.clinic, first_name: nm, phone: mob, email: em, website: $("lfWebsite").value,
+      source: "skin-check", clinic: A.clinic, first_name: nm, phone: mob, email: em, website: $("lfWebsite").value, newsletter: $("lfNews").checked,
       interest: names.join(", ") || "Skin consult",
       message: "Skin check from " + source + ". Age: " + AGES[A.age] + ". Focus: " + focus.join(", ") +
         ". Bothers them: " + A.concerns.join(", ") + ". Downtime: " + ["none", "a day or two", "up to a week"][A.down] +

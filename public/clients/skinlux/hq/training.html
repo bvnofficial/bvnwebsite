@@ -28,7 +28,7 @@
   </div>
   <div class="card sec">
     <h2>Team progress</h2>
-    <p class="sub">Signed off protocols each person has read in the staff app. When you change a protocol, it shows as unread again.</p>
+    <p class="sub">Signed off protocols each person has read in the staff app, and the certificates they uploaded (staff app, Training, My qualifications). When you change a protocol, it shows as unread again.</p>
     <div class="scroll"><table id="team"></table></div>
   </div>
 </div>
@@ -37,11 +37,11 @@
 <script>
 (function () {
   var Q = window.HQ, $ = Q.$, esc = Q.esc;
-  var D = null, TEAM = [], mode = "p", sel = 0;
+  var D = null, TEAM = [], DOCS = [], mode = "p", sel = 0;
   function dirty() { $("bar").style.display = "flex"; }
   Q.api("GET", "/api/skinlux-hq/apps?doc=training").then(function (d) {
     if (!d.ok) { $("ed").innerHTML = '<div class="empty">' + esc(d.error || "Couldn't load training") + "</div>"; return; }
-    D = d.value; TEAM = d.team || []; draw();
+    D = d.value; TEAM = d.team || []; DOCS = d.docs || []; draw();
   });
   [].forEach.call(document.querySelectorAll("#mode button"), function (b) {
     b.onclick = function () { mode = b.dataset.m; sel = 0; [].forEach.call(document.querySelectorAll("#mode button"), function (x) { x.classList.toggle("on", x === b); }); draw(); };
@@ -78,11 +78,21 @@
       $("gB").oninput = function (e) { x.body = e.target.value; dirty(); };
       $("gDel").onclick = function () { if (!confirm("Delete " + x.title + "?")) return; D.guides.splice(sel, 1); sel = 0; dirty(); draw(); };
     }
-    $("team").innerHTML = "<tr><th>Team member</th><th>Read</th><th>Not read yet</th></tr>" + (TEAM.length ? TEAM.map(function (m) {
+    $("team").innerHTML = "<tr><th>Team member</th><th>Read</th><th>Not read yet</th><th>Qualifications</th></tr>" + (TEAM.length ? TEAM.map(function (m) {
       var done = signed.filter(function (p) { return readOk(m, p); });
       var todo = signed.filter(function (p) { return !readOk(m, p); });
-      return "<tr><td><b>" + esc(m) + "</b></td><td>" + done.length + " of " + signed.length + "</td><td>" + (todo.length ? esc(todo.map(function (p) { return p.treatment; }).join(", ")) : '<span class="pill ok">Up to date</span>') + "</td></tr>";
-    }).join("") : '<tr><td colspan="3" class="empty">Add your team in Settings.</td></tr>');
+      var docs = DOCS.filter(function (x) { return x.member === m; });
+      return "<tr><td><b>" + esc(m) + "</b></td><td>" + done.length + " of " + signed.length + "</td><td>" + (todo.length ? esc(todo.map(function (p) { return p.treatment; }).join(", ")) : '<span class="pill ok">Up to date</span>') + "</td><td>" +
+        (docs.length ? docs.map(function (x) { return '<button class="btn sm ghost" data-doc="' + esc(x.path) + '">' + esc(x.title) + "</button>"; }).join(" ") : '<span class="muted">None yet</span>') + "</td></tr>";
+    }).join("") : '<tr><td colspan="4" class="empty">Add your team in Settings.</td></tr>');
+    [].forEach.call($("team").querySelectorAll("[data-doc]"), function (b) {
+      b.onclick = function () {
+        var K = null; try { K = localStorage.getItem("skinluxhq-key"); } catch (e) {}
+        var w = window.open("", "_blank");
+        fetch("/api/skinlux-hq/apps?file=" + encodeURIComponent(b.dataset.doc), { credentials: "include", headers: K ? { Authorization: "Bearer " + K } : {} })
+          .then(function (r) { if (!r.ok) throw 0; return r.blob(); }).then(function (bl) { w.location = URL.createObjectURL(bl); }).catch(function () { w.close(); Q.toast("Couldn't open that file"); });
+      };
+    });
   }
   $("save").onclick = function () {
     var b = $("save"); b.disabled = true; b.textContent = "Saving...";

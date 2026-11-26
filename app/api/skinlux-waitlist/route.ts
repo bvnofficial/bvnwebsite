@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   if ("error" in p) return out(400, { ok: false, error: p.error });
 
   const contactId = await upsertContact(p.clinic, { first_name: p.first, last_name: p.last, email: p.email, phone: p.phone, source: "waitlist",
-    tags: [`clinic-${p.clinic}`, "waitlist"] });
+    tags: [`clinic-${p.clinic}`, "waitlist", ...(b.newsletter === true ? ["newsletter"] : [])] });
   if (contactId) {
     p.contactId = contactId;
     await addNote(p.clinic, contactId, `Joined the waitlist for ${p.treatment}. Best times: ${p.times}.${p.note ? ` Note: ${p.note}` : ""}`);

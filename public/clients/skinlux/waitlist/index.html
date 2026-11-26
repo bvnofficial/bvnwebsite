@@ -46,6 +46,7 @@
       <label for="em">Email (optional)</label><input id="em" type="email" autocomplete="email">
       <label for="nt">Anything we should know (optional)</label><input id="nt" maxlength="300">
       <input type="text" id="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;margin-top:10px"><input type="checkbox" id="news" style="width:18px;height:18px;margin-top:2px;flex:0 0 auto"><span>Send me Skinlux skin tips, news and offers by email and text. Unsubscribe any time.</span></label>
       <button class="btn gold block" type="submit" id="go" style="margin-top:18px">Join the waitlist</button>
       <div class="err" id="err"></div>
       <p class="fine">By joining you agree to Skinlux texting you about free appointment times. Reply STOP any time to come off the list.</p>
@@ -86,7 +87,7 @@
     var btn = $("go"); btn.disabled = true; btn.textContent = "Sending...";
     fetch("/api/skinlux-waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
       clinic: clinic, treatment_id: $("tx").value, times: times, first_name: fn, last_name: $("ln").value.trim(), phone: mob,
-      email: $("em").value.trim(), note: $("nt").value.trim(), website: $("website").value }) })
+      email: $("em").value.trim(), note: $("nt").value.trim(), website: $("website").value, newsletter: $("news").checked }) })
       .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
       .then(function (d) {
         if (!d.ok) { btn.disabled = false; btn.textContent = "Join the waitlist"; $("err").textContent = d.error || "Sorry, that didn't go through. Please call us."; return; }

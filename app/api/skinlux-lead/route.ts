@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const source = String(b.source || "website");
   const built = buildEvent({
     event: "new_lead", clinic: b.clinic, first_name: b.first_name, last_name: b.last_name, email: b.email, phone: b.phone,
-    source: SOURCES.has(source) ? source : "website", interest: b.interest, message: b.message,
+    source: SOURCES.has(source) ? source : "website", interest: b.interest, message: b.message, newsletter: b.newsletter === true,
   });
   if (!built.ok) return out(400, built);
   const sent = await sendEvent(built);

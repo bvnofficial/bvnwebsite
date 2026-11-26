@@ -95,6 +95,7 @@
       '<label for="mob">Mobile</label><input type="tel" id="mob" autocomplete="tel" inputmode="tel">' +
       '<label for="em">Email (optional)</label><input type="email" id="em" autocomplete="email">' +
       '<input type="text" id="website" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">' +
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;margin-top:10px"><input type="checkbox" id="news" style="width:18px;height:18px;margin-top:2px;flex:0 0 auto"><span>Send me Skinlux skin tips, news and offers by email and text. Unsubscribe any time.</span></label>' +
       '<button class="btn gold block" type="submit" id="go" style="margin-top:16px">Claim my spot</button><div class="err" id="err"></div>' +
       '<p class="fine">By claiming you agree to Skinlux contacting you about this offer by text and email. Reply STOP any time. Offer price is for the treatment shown, for new bookings at ' + esc(clinicTxt) + ", while spots last or until " + esc(niceDate(o.ends)) + ". Your therapist checks the treatment suits you at your appointment. Results vary from person to person.</p>" +
       "</form></div></div>";
@@ -113,7 +114,7 @@
       if (preview && !o.open) { $("err").textContent = "Preview only, nothing was sent."; return; }
       var btn = $("go"); btn.disabled = true; btn.textContent = "Sending...";
       fetch("/api/skinlux-offers", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ o: o.slug, clinic: clinic, first_name: fn, phone: mob, email: em, website: $("website").value }) })
+        body: JSON.stringify({ o: o.slug, clinic: clinic, first_name: fn, phone: mob, email: em, website: $("website").value, newsletter: $("news").checked }) })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (d) {
           if (!d.ok) { btn.disabled = false; btn.textContent = "Claim my spot"; $("err").textContent = d.error || "Sorry, that didn't go through. Please call us on " + phones + "."; return; }

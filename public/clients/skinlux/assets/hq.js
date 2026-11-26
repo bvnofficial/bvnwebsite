@@ -286,6 +286,30 @@
   function hm(t) { return new Date(t).toLocaleTimeString("en-AU", { timeZone: "Australia/Perth", hour: "numeric", minute: "2-digit" }); }
   function agoTxt(t) { var m = Math.round((Date.now() - t) / 60000); if (m < 60) return Math.max(1, m) + " min ago"; var h = Math.round(m / 60); if (h < 24) return h + " hrs ago"; var d = Math.round(h / 24); return d === 1 ? "yesterday" : d + " days ago"; }
   var EVTXT = { treatment_done: "Treatment done", product_sold: "Product sold", new_lead: "New lead", incomplete_booking: "Didn't finish booking", booking_made: "Booked", intake: "Intake form", waitlist: "Joined the waitlist", client_app: "Client app" };
+  function hqApi(method, url, body) {
+    var K = null; try { K = localStorage.getItem("skinluxhq-key"); } catch (e) {}
+    var H = { Accept: "application/json", "Content-Type": "application/json" }; if (K) H.Authorization = "Bearer " + K;
+    return fetch(url, { method: method, headers: H, credentials: "include", cache: "no-store", body: body ? JSON.stringify(body) : undefined })
+      .then(function (r) { return r.json(); }).catch(function () { return { ok: false }; });
+  }
+  var CM = { msgs: [], posts: [], loaded: false };
+  function loadCM() {
+    if (!LIVE) return;
+    hqApi("GET", "/api/skinlux-hq/apps?doc=messages").then(function (d) { if (d.ok) { CM = { msgs: d.msgs, posts: d.posts, loaded: true }; renderAll(); } });
+  }
+  function fileLink(path, label) {
+    return '<button class="btn sm ghost" data-file="' + esc(path) + '">' + label + "</button>";
+  }
+  function cmHtml(limit) {
+    var open = CM.msgs.filter(function (m) { return m.status === "new" && inClinic(m.clinic); });
+    if (!CM.loaded) return '<p class="muted">Loading</p>';
+    if (!open.length) return '<p class="muted">No new messages from the My Skinlux app.</p>';
+    return open.slice(0, limit).map(function (m) {
+      return '<div class="rev"><div class="row between"><b>' + esc(m.name) + '</b><small class="muted">' + LOC(m.clinic) + ", " + agoTxt(m.at) + (m.therapist ? ", for " + esc(m.therapist) : "") + "</small></div>" +
+        '<p style="margin:6px 0">' + esc(m.text) + '</p><div class="row" style="gap:8px">' + (m.photo ? fileLink(m.photo, "Open photo") : "") +
+        (m.phone ? '<a class="btn sm ghost" href="tel:' + esc(m.phone) + '">Call</a>' : "") + '<button class="btn sm" data-cmdone="' + m.id + '">Done</button></div></div>';
+    }).join("");
+  }
   function liveTasks() { return ((LIVE && LIVE.tasks) || []).filter(function (t) { return inClinic(t.clinic); }); }
   function intakeOpen() { return ((LIVE && LIVE.intake) || []).filter(function (f) { return inClinic(f.c) && !f.cleared; }); }
   var ui_np = "month";
@@ -556,7 +580,8 @@
       }).join("") : '<p class="muted">No forms for today and nothing waiting for a nurse. Send clients the form link before their visit.</p>') + "</div></div>";
     h += '<div class="grid g2 mt"><div class="card"><div class="section-title"><h3>Waitlist</h3><a class="lnk" href="waitlist.html">Fill a spot</a></div>' +
       (slots.length ? slots.map(function (s) { return '<div class="rev"><b>' + esc(s.t) + '</b> <span class="muted">' + esc(s.when) + ", " + LOC(s.c) + "</span></div>"; }).join("") : '<p class="muted">No open spots. When someone cancels, post the spot on the waitlist page to see who wants it.</p>') + "</div>" +
-      '<div class="card soft"><h3>The Timely diary</h3><p class="muted" style="margin:0">Today\'s appointments for both clinics show here once Timely admin access is shared with bvn@bvnofficial.com. Until then, this page shows what the staff app, forms and waitlist report.</p></div></div>';
+      '<div class="card"><div class="section-title"><h3>Messages from clients</h3><span class="muted">My Skinlux app</span></div>' + cmHtml(6) + "</div></div>" +
+      '<div class="grid g2 mt"><div class="card soft"><h3>The Timely diary</h3><p class="muted" style="margin:0">Today\'s appointments for both clinics show here once Timely admin access is shared with bvn@bvnofficial.com. Until then, this page shows what the staff app, forms and waitlist report.</p></div></div>';
     $("v-today").innerHTML = h;
   }
   function renderToday() {
@@ -786,6 +811,11 @@
       (tasks.length ? "<table><tbody>" + tasks.slice(0, 60).map(function (t) {
         return "<tr" + (t.overdue ? ' class="overdue"' : "") + "><td><b>" + esc(t.title) + "</b>" + (t.body ? '<br><small class="muted">' + esc(t.body.slice(0, 160)) + "</small>" : "") + "</td><td>" + LOC(t.clinic) + "</td><td>" + (t.overdue ? '<span class="badge bad">Overdue</span> ' : "") + esc(t.dueTxt) + "</td><td>" + (t.phone ? '<a class="btn sm ghost" href="tel:' + esc(t.phone) + '">Call</a>' : "") + "</td></tr>";
       }).join("") + "</tbody></table>" : '<p class="muted">No open tasks. Call backs from the follow ups, nurse checks and client app messages land here.</p>') + "</div>";
+    var posts = CM.posts.filter(function (p) { return p.clinic === "both" || inClinic(p.clinic); });
+    h += '<div class="grid g2 mt"><div class="card"><h3>Message the team</h3><p class="muted">Shows on the staff app Team board for the clinic picked at the top.</p>' +
+      '<textarea id="teamMsg" placeholder="For example: HIFU offer has 6 spots left, mention it at checkout today"></textarea><button class="btn sm" style="margin-top:8px" data-act="teammsg">Post to the team</button>' +
+      (posts.length ? '<div style="margin-top:12px">' + posts.slice(0, 8).map(function (p) { return '<div class="rev"><b>' + esc(p.from) + '</b> <small class="muted">' + agoTxt(p.at) + "</small><div style=\"white-space:pre-wrap\">" + esc(p.text) + "</div></div>"; }).join("") + "</div>" : "") + "</div>" +
+      '<div class="card"><div class="section-title"><h3>Messages from clients</h3><span class="muted">Routed to the therapist who last treated them</span></div>' + cmHtml(10) + "</div></div>";
     $("v-team").innerHTML = h;
   }
   function renderTeam() {
@@ -946,6 +976,7 @@
     });
     REVIEWS.forEach(function (r) { if (inClinic(r.c) && !r.replied && r.s <= 3) out.push({ k: "r" + r.n, cls: "bad", t: "New " + r.s + " star review from <b>" + r.n + "</b>", go: ["reviews"] }); });
     STOCK.forEach(function (s) { if (inClinic(s.c) && !s.ordered) out.push({ k: "k" + s.n + s.c, cls: "", t: "<b>" + esc(s.n) + "</b> is low at " + LOC(s.c) + " (" + s.left + " left)", go: [LIVE ? "apps" : "connections"] }); });
+    if (LIVE) CM.msgs.forEach(function (m) { if (m.status === "new" && inClinic(m.clinic)) out.push({ k: "cm" + m.id, cls: "warn", t: "<b>" + esc(m.name) + "</b> messaged from the My Skinlux app" + (m.photo ? " with a photo" : ""), go: ["team"] }); });
     if (LIVE) intakeOpen().forEach(function (f) { out.push({ k: "i" + f.id, cls: f.flags.some(function (x) { return /^STOP/.test(x); }) ? "bad" : "warn", t: "<b>" + esc(f.n) + "</b>'s intake form needs a nurse: " + esc(f.flags.join(", ")), go: ["today"] }); });
     return out;
   }
@@ -994,6 +1025,16 @@
     }
     var gc = t.closest("[data-goconvo]");
     if (gc) { closeClient(); go("inbox", gc.getAttribute("data-goconvo")); return; }
+    var cmd = t.closest("[data-cmdone]");
+    if (cmd) { hqApi("POST", "/api/skinlux-hq/apps", { action: "msg-done", id: cmd.getAttribute("data-cmdone"), by: MGR ? "Manager" : "Jellie" }).then(function () { loadCM(); }); return; }
+    var fl0 = t.closest("[data-file]");
+    if (fl0) {
+      var K4 = null; try { K4 = localStorage.getItem("skinluxhq-key"); } catch (e4) {}
+      var w = window.open("", "_blank");
+      fetch("/api/skinlux-hq/apps?file=" + encodeURIComponent(fl0.getAttribute("data-file")), { credentials: "include", headers: K4 ? { Authorization: "Bearer " + K4 } : {} })
+        .then(function (r) { if (!r.ok) throw 0; return r.blob(); }).then(function (b) { w.location = URL.createObjectURL(b); }).catch(function () { w.close(); toast("Couldn't open that file"); });
+      return;
+    }
     var np = t.closest("[data-np]");
     if (np) { ui_np = np.getAttribute("data-np"); renderLiveNumbers(); return; }
     var cl = t.closest("[data-client]");
@@ -1064,6 +1105,11 @@
     if (act) {
       var k = act.getAttribute("data-act"), v = convo(ui.convo);
       if (k === "readall") { notifs().forEach(function (x) { ui.read[x.k] = true; }); renderBell(); return; }
+      if (k === "teammsg" && LIVE) {
+        var tm = $("teamMsg").value.trim(); if (!tm) { toast("Type a message first"); return; }
+        hqApi("POST", "/api/skinlux-hq/apps", { action: "team-post", text: tm, clinic: clinic(), from: MGR ? "Manager" : "Jellie" }).then(function (d) { if (d.ok) { toast("Posted to the team board"); loadCM(); } else toast(d.error || "Didn't post"); });
+        return;
+      }
       if (k === "teammsg") { var m = $("teamMsg").value.trim(); if (!m) { toast("Type a message first"); return; } $("teamMsg").value = ""; toast("Sent to the team at " + LOC(clinic()) + " on the staff app."); return; }
       if (!v) return;
       if (k === "ai") { v.typed = v.draft; ui.warn = null; renderInbox(); toast("Draft written from your price list and aftercare notes. Check it, then send."); return; }
@@ -1122,5 +1168,5 @@
   $("bellIcon").innerHTML = I("bell", 19);
   var start = (location.hash || "").slice(1);
   go(TITLES[start] ? start : "overview");
-  if (!LIVE) liveEvents();
+  if (!LIVE) liveEvents(); else loadCM();
 })();

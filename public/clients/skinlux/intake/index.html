@@ -99,7 +99,7 @@
       <div class="sig-wrap"><canvas id="sig"></canvas><span class="ph" id="sig-ph">Sign here with your finger or mouse</span></div>
       <div class="row between" style="margin-top:8px">
         <button class="btn ghost sm" type="button" id="sig-clear">Clear signature</button>
-        <button class="btn" type="submit" id="go">Send my form</button>
+        <span></span></div><label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;margin-top:12px"><input type="checkbox" id="news" style="width:18px;height:18px;margin-top:2px;flex:0 0 auto"><span>Send me Skinlux skin tips, news and offers by email and text. Unsubscribe any time.</span></label><div class="row between" style="margin-top:8px"><span></span><button class="btn" type="submit" id="go">Send my form</button>
       </div>
       <div id="form-err" style="color:var(--bad);font-size:13px;margin-top:8px"></div>
     </form>
@@ -316,7 +316,7 @@
       visit: $("vd").value, treatment_id: t.id, treatment: nm(t), meds: $("meds").value.trim(),
       answers: allQ.map(function (q) { return [q[1], ans[q[0]] ? "Yes" : "No"]; }), yes: yes,
       flags: (window._flags || []).filter(function (f) { return f.lv !== "info" || /Medications/.test(f.title); }).map(function (f) { return { lv: f.lv, title: f.title, why: f.why }; }),
-      consent: true, signature: sig, website: $("website").value })
+      consent: true, newsletter: $("news").checked, signature: sig, website: $("website").value })
     }).then(function (r) { return r.json().catch(function () { return { ok: false }; }); }).then(function (d) {
       if (!d.ok) { btn.disabled = false; btn.textContent = "Send my form"; $("form-err").textContent = d.error || "Sorry, that didn't go through. Please call us."; return; }
       $("form").innerHTML = '<div class="done"><h2 style="margin:0 0 8px"></h2><p class="muted"></p></div>';

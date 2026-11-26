@@ -161,6 +161,7 @@ export async function recordInGhl(clinic: Clinic, payload: J): Promise<string | 
   } else if (ev === "booking_made") {
     tags.push("timely-client");
   }
+  if (payload.newsletter === "yes") { tags.push("newsletter"); fields["Marketing consent"] = "Yes"; }
   const id = await upsertContact(clinic, { ...base, source: source || undefined, tags, fields });
   if (id && (ev === "treatment_done" || ev === "product_sold")) await setAppLink(clinic, id);
   if (id && ev === "new_lead") {

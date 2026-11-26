@@ -74,6 +74,7 @@ export function buildEvent(body: Obj): Built {
   if (!first || (!email && !phone)) return { ok: false, error: "Need a first name and a mobile or email" };
 
   const base: Obj = { event, first_name: first, last_name: last, email, phone, clinic: clinic === "booragoon" ? "Booragoon" : "Leederville" };
+  if (body.newsletter === true || body.newsletter === "yes") base.newsletter = "yes";
 
   if (event === "treatment_done") {
     const t = findTreatment(s(body.treatment));

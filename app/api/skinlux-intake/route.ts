@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
   const tags = [`clinic-${clinic}`, "intake-done"];
   if (serious.length) tags.push("intake-flag");
   if (t && t.injectable) tags.push("injectable");
+  if (b.newsletter === true) tags.push("newsletter");
   const contactId = await upsertContact(clinic, { first_name: first, last_name: last, email, phone, tags, source: "intake-form", dob: s(b.dob, 10) });
 
   const visit = s(b.visit, 12);

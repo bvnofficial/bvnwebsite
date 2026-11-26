@@ -252,7 +252,7 @@
     btn.disabled = true; btn.textContent = "Sending...";
     var clinic = A.clinic === "leederville" ? "leederville" : "booragoon";
     var body = {
-      source: "quiz", clinic: clinic, first_name: n, email: em, phone: mob, website: $("f-website").value,
+      source: "quiz", clinic: clinic, first_name: n, email: em, phone: mob, website: $("f-website").value, newsletter: ok,
       interest: picks.map(function (p) { return name(p.t); }).join(", "),
       message: "Quiz. Concerns: " + A.concerns.join(", ") + ". Area: " + A.area.join(", ") +
         ". Downtime: " + ["none", "a day or two", "happy to have some"][+A.downtime] +

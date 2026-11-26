@@ -4,6 +4,7 @@ import { getFile, writeDoc, storeConfigured, purgeTestEvents, isTestName } from 
 import { cleanStock, cleanTraining, cleanWaitlist, loadIntake, loadStock, loadTraining, loadWaitlist } from "@/lib/skinlux-apps";
 import { loadSettings } from "@/lib/skinlux-settings";
 import { ghl, setAppLink } from "@/lib/skinlux-ghl";
+import { addTeamPost, closeClientMsg, loadClientMsgs, loadStaffDocs, loadTeamBoard } from "@/lib/skinlux-team";
 
 /**
  * Skinlux HQ app data (HQ password only):
@@ -20,6 +21,14 @@ export async function GET(req: NextRequest) {
   const doc = req.nextUrl.searchParams.get("doc") || "";
   const sig = req.nextUrl.searchParams.get("sig") || "";
   const link = req.nextUrl.searchParams.get("link") || "";
+  const file = req.nextUrl.searchParams.get("file") || "";
+  if (file) {
+    if (!/^(clientmsg|staffdocs)\/[a-z0-9]+\.(jpg|png|pdf)$/.test(file)) return out(400, { ok: false });
+    const f = await getFile(file).catch(() => null);
+    if (!f) return out(404, { ok: false, error: "Not found" });
+    const type = file.endsWith(".pdf") ? "application/pdf" : file.endsWith(".png") ? "image/png" : "image/jpeg";
+    return new NextResponse(f, { headers: { "content-type": type, "cache-control": "private, no-store" } });
+  }
   if (link) {
     const clinic = req.nextUrl.searchParams.get("clinic") === "leederville" ? "leederville" : "booragoon";
     if (!/^[A-Za-z0-9]{8,40}$/.test(link)) return out(400, { ok: false, error: "Bad client" });
@@ -37,7 +46,8 @@ export async function GET(req: NextRequest) {
     if (doc === "stock") return out(200, { ok: true, value: await loadStock() });
     if (doc === "waitlist") return out(200, { ok: true, value: await loadWaitlist(), treatments: st.treatments.map((t) => t.name) });
     if (doc === "intake") return out(200, { ok: true, value: await loadIntake() });
-    if (doc === "training") return out(200, { ok: true, value: await loadTraining(), team: st.team.map((m) => m.name) });
+    if (doc === "training") return out(200, { ok: true, value: await loadTraining(), team: st.team.map((m) => m.name), docs: await loadStaffDocs() });
+    if (doc === "messages") return out(200, { ok: true, msgs: (await loadClientMsgs()).slice(0, 150), posts: (await loadTeamBoard()).slice(0, 100) });
   } catch {
     return out(502, { ok: false, error: "Couldn't load that just now" });
   }
@@ -94,6 +104,15 @@ export async function POST(req: NextRequest) {
     if (Number(x.stage) === 4) body.status = "lost";
     const done = await ghl(clinic, `/opportunities/${x.id}`, { method: "PUT", body });
     return done ? out(200, { ok: true }) : out(502, { ok: false, error: "GoHighLevel didn't take that change" });
+  }
+  if (b.action === "team-post") {
+    const x = b as unknown as { text?: string; clinic?: string; from?: string };
+    const p = await addTeamPost(String(x.from || "Jellie"), String(x.clinic || "both"), String(x.text || "")).catch(() => null);
+    return p ? out(200, { ok: true }) : out(400, { ok: false, error: "Type a message first" });
+  }
+  if (b.action === "msg-done") {
+    const ok = await closeClientMsg(String(b.id || ""), String(b.by || "HQ")).catch(() => false);
+    return ok ? out(200, { ok: true }) : out(400, { ok: false, error: "Couldn't update that" });
   }
   if (b.action === "purge-tests") {
     const removed = await purgeTestEvents();
