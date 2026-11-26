@@ -125,7 +125,12 @@ export async function POST(req: NextRequest) {
     w.people = w.people.filter((p) => !/bvnsystem/i.test(p.last));
     w.slots = w.slots.filter((s) => !/system test/i.test(s.when));
     if (w.people.length + w.slots.length !== wb) await writeDoc("waitlist", w);
-    return out(200, { ok: true, events: removed, intake: before - log.forms.length, waitlist: wb - w.people.length - w.slots.length, testName: isTestName("Test B") });
+    const msgs = await loadClientMsgs(), posts = await loadTeamBoard();
+    const keepM = msgs.filter((m) => !/bvnsystem/i.test(m.name)), keepP = posts.filter((p) => !/^bvn test$/i.test(p.from));
+    if (keepM.length !== msgs.length) await writeDoc("clientmsgs", { msgs: keepM });
+    if (keepP.length !== posts.length) await writeDoc("teamboard", { posts: keepP });
+    return out(200, { ok: true, events: removed, intake: before - log.forms.length, waitlist: wb - w.people.length - w.slots.length,
+      messages: msgs.length - keepM.length, posts: posts.length - keepP.length, testName: isTestName("Test B") });
   }
   if (b.action === "clear-intake") {
     const log = await loadIntake();
