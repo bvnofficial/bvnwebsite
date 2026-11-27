@@ -3,6 +3,7 @@ import { skinluxHqReqOk, skinluxHqRole } from "@/lib/skinlux-hq-gate";
 import { loadSettings } from "@/lib/skinlux-settings";
 import { logEvent, readEvents, storeConfigured } from "@/lib/skinlux-store";
 import { loadIntake, loadStock, loadTraining, loadWaitlist } from "@/lib/skinlux-apps";
+import { timelyDiary } from "@/lib/skinlux-timely-feed";
 
 /**
  * Skinlux HQ live feed (read only).
@@ -303,6 +304,7 @@ async function appsSummary(errors: string[]): Promise<J> {
 async function build(): Promise<J> {
   const errors: string[] = [];
   const sitePromise = siteCheck();
+  const timelyPromise = timelyDiary().catch(() => ({ on: true, fetchedAt: Date.now(), staff: [], failed: ["all"], appts: [] }));
   const parts = await Promise.all(CLINICS.map(async (c) => {
     const { token, loc } = keys(c);
     if (!token || !loc) return null;
@@ -335,6 +337,7 @@ async function build(): Promise<J> {
     automations: (await loadSettings()).automations,
     team: (await loadSettings()).team,
     tasks,
+    timely: await timelyPromise,
     ...apps,
     errors,
   };
@@ -347,6 +350,7 @@ function forManager(d: J): J {
     events: ((d.events || []) as J[]).map((e) => { const x = { ...e }; delete x.v; return x; }),
     leads: ((d.leads || []) as J[]).map((l) => ({ ...l, v: 0 })),
     clients: ((d.clients || []) as J[]).map((c) => ({ ...c, spend: 0 })),
+    timely: d.timely ? { ...(d.timely as J), appts: (((d.timely as J).appts || []) as J[]).map((a) => ({ ...a, v: 0 })) } : d.timely,
   };
 }
 const send = (role: string | null, data: J, init?: { status?: number }) =>

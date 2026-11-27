@@ -191,7 +191,7 @@
   };
   var ST = {
     done: ["Done, aftercare sent", "ok"], notap: ["Finished, no tap yet", "warn"], inroom: ["In the room", "gold"],
-    upcoming: ["Booked", ""], deposit: ["Deposit not paid", "bad"], free: ["Free slot", ""]
+    upcoming: ["Booked", ""], deposit: ["Deposit not paid", "bad"], free: ["Free slot", ""], pending: ["Not confirmed", "warn"]
   };
   function todayIssues() {
     var out = [];
@@ -276,6 +276,73 @@
     DIARY = { booragoon: noDiary, leederville: { hours: noDiary.hours, staff: [], appts: [] } };
   }
 
+
+  // Timely diary (Timely's one-way calendar sync, read by the HQ server)
+  var TL = (LIVE && LIVE.timely && LIVE.timely.on) ? LIVE.timely : null;
+  function dayPlus(n) { return perthDay(Date.now() + n * 86400000); }
+  function tAppts(fromDay, toDay) {
+    return (TL ? TL.appts : []).filter(function (a) { return inClinic(a.c || "both") && a.d >= fromDay && a.d <= toDay; });
+  }
+  function tSum(list) { return list.reduce(function (s, a) { return s + (a.v || 0); }, 0); }
+  function nameKey(n) { var p = String(n || "").trim().toLowerCase().split(/\s+/); return p[0] + " " + (p.length > 1 ? p[p.length - 1].charAt(0) : ""); }
+  function hm12(t) { var h = +t.slice(0, 2), m = t.slice(3); return (h % 12 || 12) + (m !== "00" ? ":" + m : "") + (h < 12 ? "am" : "pm"); }
+  function apptState(a) {
+    var now = Date.now();
+    if (a.p && a.at > now) return "pending";
+    if (a.end <= now) { var k = nameKey(a.n); return a.n && evs("treatment_done", 0, function (e) { return nameKey(e.n) === k; }).length ? "done" : "notap"; }
+    if (a.at <= now) return "inroom";
+    return "upcoming";
+  }
+  function rebookRate() {
+    if (!TL) return null;
+    var fut = {}, seen = {};
+    tAppts(dayPlus(0), dayPlus(90)).forEach(function (a) { if (a.n && a.at > Date.now()) fut[a.n.toLowerCase()] = 1; });
+    tAppts(dayPlus(-30), dayPlus(0)).forEach(function (a) { if (a.n && a.end <= Date.now()) seen[a.n.toLowerCase()] = 1; });
+    var k = Object.keys(seen); if (!k.length) return null;
+    var yes = k.filter(function (n) { return fut[n]; }).length;
+    return { pct: Math.round(yes / k.length * 100), yes: yes, of: k.length };
+  }
+  function timelyKpis() {
+    if (!TL) return "";
+    var td = tAppts(dayPlus(0), dayPlus(0));
+    var notap = td.filter(function (a) { return apptState(a) === "notap"; }).length, pend = td.filter(function (a) { return a.p; }).length;
+    return '<div class="grid g4 mt">' + kpi("Booked in Timely today", td.length, td.filter(function (a) { return a.end <= Date.now(); }).length + " finished so far") +
+      kpi("Booked value today", MGR ? "Owner only" : money(tSum(td)), "Timely prices") + kpi("Finished, no tap yet", notap, "Remind the team to tap Treatment done") +
+      kpi("Not confirmed", pend, "Pending in Timely") + "</div>";
+  }
+  function timelyDiaryHtml() {
+    if (!TL) return '<div class="grid g2 mt"><div class="card soft"><h3>The Timely diary</h3><p class="muted" style="margin:0">Today\'s appointments show here once the Timely calendar link is on.</p></div></div>';
+    var today = dayPlus(0), h = "";
+    clinicsList().forEach(function (c) {
+      var list = TL.appts.filter(function (a) { return a.c === c && a.d === today; });
+      var staff = []; list.forEach(function (a) { if (staff.indexOf(a.s) < 0) staff.push(a.s); });
+      h += '<div class="card mt"><div class="section-title"><h3>' + LOC(c) + ' diary</h3><span class="muted">' + list.length + " booked today, from Timely " + hm(TL.fetchedAt) + "</span></div>";
+      if (!list.length) { h += '<p class="muted">Nothing booked in Timely here today.</p></div>'; return; }
+      h += '<div class="diary" style="grid-template-columns:repeat(' + staff.length + ',minmax(0,1fr))">';
+      staff.forEach(function (s) {
+        h += '<div class="dcol"><h4>' + esc(s) + "</h4>";
+        list.filter(function (a) { return a.s === s; }).forEach(function (a) {
+          var k = apptState(a), st = ST[k];
+          h += '<div class="appt ' + k + '"><div class="row between"><span class="t">' + hm12(a.t) + "</span>" + (st[1] ? '<span class="badge ' + st[1] + '">' + st[0] + "</span>" : '<small class="muted">' + st[0] + "</small>") + "</div>" +
+            "<div><b>" + esc(a.n || "No client") + '</b></div><div class="muted">' + esc(a.tr) + "</div></div>";
+        });
+        h += "</div>";
+      });
+      h += "</div></div>";
+    });
+    return h;
+  }
+  function timelyOverview(d, lbl) {
+    if (!TL) return MGR ? "" : '<div class="card soft mt"><b>Revenue, bookings and rebook rate come from Timely.</b> <span class="muted">They show here once the Timely link is on. Until then, treatment and product values above use your Settings prices.</span></div>';
+    var past = tAppts(d === 0 ? dayPlus(0) : dayPlus(-(d - 1)), dayPlus(0)).filter(function (a) { return d === 0 || a.at <= Date.now(); });
+    var up = tAppts(dayPlus(0), dayPlus(7)).filter(function (a) { return a.at > Date.now(); });
+    var rr = rebookRate(), pend = tAppts(dayPlus(0), dayPlus(14)).filter(function (a) { return a.p; }).length;
+    return '<div class="section-title mt"><h3>From Timely</h3><span class="muted">Diary of ' + TL.staff.length + " staff, " + hm(TL.fetchedAt) + "</span></div>" +
+      '<div class="grid g4">' + kpi(d === 0 ? "Booked today" : "Appointments, " + lbl.toLowerCase(), past.length, m$(tSum(past), " at Timely prices")) +
+      kpi("Booked next 7 days", up.length, m$(tSum(up), " in the diary")) +
+      kpi("Rebook rate", rr ? rr.pct + "%" : "...", rr ? rr.yes + " of " + rr.of + " clients seen in the last 30 days have their next visit booked" : "Builds as the diary fills") +
+      kpi("Not confirmed", pend, "Pending bookings, next 14 days") + "</div>";
+  }
   // live helpers: the event log (staff app, forms, shop, leads) by clinic and period
   function perthDay(t) { return new Date(t + 8 * 3600000).toISOString().slice(0, 10); }
   function evs(kind, days, extra) {
@@ -353,7 +420,7 @@
         return '<button class="nav' + (ui.view === n[0] ? " on" : "") + '" data-go="' + n[0] + '">' + I(n[2]) + "<span>" + n[1] + "</span>" +
           (ct ? '<span class="ct' + (red ? " red" : "") + '">' + ct + "</span>" : "") + "</button>";
       }).join("") +
-      (LIVE ? (MGR ? '<div class="sync" style="margin-bottom:6px"><b>Manager view</b><br><small class="muted">Revenue and values are for the owner</small></div>' : "") + '<div class="sync"><span class="dot-live"></span>GoHighLevel live, ' + hm(LIVE.syncedAt) + '<br><span class="dot-live"></span>Staff app, shop and forms live<br><span class="dot-live" style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"></span>Timely: waiting on access</div>'
+      (LIVE ? (MGR ? '<div class="sync" style="margin-bottom:6px"><b>Manager view</b><br><small class="muted">Revenue and values are for the owner</small></div>' : "") + '<div class="sync"><span class="dot-live"></span>GoHighLevel live, ' + hm(LIVE.syncedAt) + '<br><span class="dot-live"></span>Staff app, shop and forms live<br>' + (TL ? '<span class="dot-live"></span>Timely diary live, ' + hm(TL.fetchedAt) : '<span class="dot-live" style="background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)"></span>Timely: waiting on access') + '</div>'
         : '<div class="sync"><span class="dot-live"></span>Timely synced 2 min ago<br><span class="dot-live"></span>GoHighLevel live<br><small class="muted">Direct links, no Zapier</small></div>');
   }
 
@@ -413,7 +480,7 @@
     var w = (LIVE.waitlist && LIVE.waitlist.people || []).filter(function (p) { return inClinic(p.c); }).length;
     h += '<div class="grid g4 mt">' + kpi("Intake forms", evs("intake", d).length, intakeOpen().length + " waiting for a nurse") + kpi("On the waitlist", w, "Waiting for a free spot") +
       kpi("Client app messages", evs("client_app", d).length, "Messages, set asides and call backs") + kpi("Website", LIVE.site ? (LIVE.site.up ? "Up" : "DOWN") : "...", LIVE.site && LIVE.site.up ? "Loads in " + (LIVE.site.ms / 1000).toFixed(1) + "s" : "Checked each refresh") + "</div>" +
-      (MGR ? "" : '<div class="card soft mt"><b>Revenue, bookings and rebook rate come from Timely.</b> <span class="muted">They show here once Timely admin access is shared. Until then, treatment and product values above use your Settings prices.</span></div>');
+      timelyOverview(d, lbl);
     // birthdays in the next 14 days (from the date of birth on each GoHighLevel contact)
     var today = new Date(perthDay(Date.now()) + "T00:00:00Z"), bdays = [];
     CLIENTS.forEach(function (c) {
@@ -581,7 +648,7 @@
     h += '<div class="grid g2 mt"><div class="card"><div class="section-title"><h3>Waitlist</h3><a class="lnk" href="waitlist.html">Fill a spot</a></div>' +
       (slots.length ? slots.map(function (s) { return '<div class="rev"><b>' + esc(s.t) + '</b> <span class="muted">' + esc(s.when) + ", " + LOC(s.c) + "</span></div>"; }).join("") : '<p class="muted">No open spots. When someone cancels, post the spot on the waitlist page to see who wants it.</p>') + "</div>" +
       '<div class="card"><div class="section-title"><h3>Messages from clients</h3><span class="muted">My Skinlux app</span></div>' + cmHtml(6) + "</div></div>" +
-      '<div class="grid g2 mt"><div class="card soft"><h3>The Timely diary</h3><p class="muted" style="margin:0">Today\'s appointments for both clinics show here once Timely admin access is shared with bvn@bvnofficial.com. Until then, this page shows what the staff app, forms and waitlist report.</p></div></div>';
+      timelyKpis() + timelyDiaryHtml();
     $("v-today").innerHTML = h;
   }
   function renderToday() {
@@ -914,7 +981,7 @@
       var siteTxt = !site ? "Waiting" : site.up ? "Up, loads in " + (site.ms / 1000).toFixed(1) + "s" : "DOWN, not answering";
       var LC = [
         ["GoHighLevel", on.length ? "Connected: " + on.map(LOC).join(" and ") : "Not connected", on.length === 2 ? "Live" : "Waiting"],
-        ["Timely", "Clients, bookings, visits and sales through the Timely link", "Waiting"],
+        ["Timely", TL ? "Diary of " + TL.staff.length + " staff through Timely's calendar sync" + (TL.failed.length ? ". Not reading: " + TL.failed.join(", ") : "") : "Clients, bookings, visits and sales through the Timely link", TL && !TL.failed.length ? "Live" : "Waiting"],
         ["clientcare inbox", "Incomplete booking emails, forwarded to GoHighLevel", "Waiting"],
         ["Shopify", "Online orders go to the product sale workflow", "Live"],
         ["Instagram, Facebook and WhatsApp", "Connected by Jellie inside GoHighLevel", "Waiting"],
