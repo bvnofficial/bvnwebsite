@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claim Command | Rogalski demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+:root{
+  --navy:#112336;--navy-mid:#1B3A5A;--navy-deep:#0B1826;--sky:#82D2F5;--sky-pale:#C9DEF2;--star:#F2B84B;
+  --ink:#112336;--ink-soft:#5F6E80;--line:#E3EAF2;--surface:#fff;--tint:#F1F6FC;--bg:#F6F9FC;
+  --web:#82D2F5;--call:#F2B84B;--fb:#A9A2FF;--good:#2E9E6A;--bad:#C2412D;
+  --display:'Archivo',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+.top{background:var(--navy-deep);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.wm{font-family:var(--display);font-weight:800;letter-spacing:.14em;font-size:15px}
+.wm span{color:var(--sky)}
+.app{font-family:var(--display);font-weight:700;font-size:15px;opacity:.92;padding-left:18px;border-left:1px solid rgba(255,255,255,.18)}
+.sp{flex:1}
+.clock{font-variant-numeric:tabular-nums;font-size:13px;color:var(--sky-pale)}
+.live{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--sky-pale)}
+.live i{width:8px;height:8px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pl 1.8s infinite}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}70%{box-shadow:0 0 0 9px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.wrap{max-width:1440px;margin:0 auto;padding:18px 24px 40px}
+.intro{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px}
+.intro h1{font-family:var(--display);font-weight:800;font-size:26px;margin:0;letter-spacing:-.01em}
+.intro p{margin:4px 0 0;color:var(--ink-soft);max-width:760px}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);font-weight:600}
+.kpi .v{font-family:var(--display);font-weight:800;font-size:26px;margin-top:2px;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:12px;color:var(--ink-soft)}
+.kpi .v.flash{animation:fl .9s}
+@keyframes fl{0%{color:var(--sky)}100%{color:var(--ink)}}
+.main{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);gap:16px}
+#stage{position:relative;height:640px;border-radius:18px;overflow:hidden;background:radial-gradient(ellipse at 50% 15%,#1F4266 0%,#0B1826 70%);touch-action:none}
+#stage canvas{display:block;cursor:grab}
+.ov{position:absolute;left:18px;top:16px;color:#fff;pointer-events:none}
+.ov .a{font-family:var(--display);font-weight:800;font-size:20px}
+.ov .b{font-size:12px;color:var(--sky-pale);margin-top:2px}
+.ctrls{position:absolute;left:14px;right:14px;bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctrls button{border:1px solid rgba(255,255,255,.2);background:rgba(11,24,38,.78);color:#fff;border-radius:99px;padding:8px 14px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;backdrop-filter:blur(6px)}
+.ctrls button:hover{border-color:var(--sky)}
+.ctrls button.on{border-color:var(--sky);background:rgba(130,210,245,.18)}
+.ctrls i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.views{position:absolute;right:14px;top:14px;display:flex;gap:6px}
+.views button{border:1px solid rgba(255,255,255,.2);background:rgba(11,24,38,.78);color:#fff;border-radius:10px;padding:6px 11px;font-size:12px;cursor:pointer}
+.views button.on{border-color:var(--sky);color:var(--sky)}
+.tag{position:absolute;pointer-events:none;transform:translate(-50%,-130%);background:#fff;color:var(--ink);border-radius:10px;padding:7px 11px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.35);white-space:nowrap;opacity:0;transition:opacity .3s}
+.tag b{font-family:var(--display)}
+.tag small{display:block;color:var(--ink-soft)}
+.hq{position:absolute;pointer-events:none;transform:translate(-50%,-160%);color:var(--star);font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.legend{position:absolute;right:16px;bottom:64px;color:var(--sky-pale);font-size:11px;text-align:right;line-height:1.7;pointer-events:none}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:6px}
+.fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:var(--sky-pale);text-align:center;padding:30px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.panel h3{font-family:var(--display);font-weight:800;font-size:15px;margin:0 0 2px}
+.panel .sub{font-size:12px;color:var(--ink-soft);margin-bottom:10px}
+#feed{display:flex;flex-direction:column;gap:10px;max-height:560px;overflow:hidden}
+.card{border:1px solid var(--line);border-radius:14px;padding:11px 12px;background:#fff;cursor:pointer;transition:border-color .2s,box-shadow .2s;animation:in .5s ease-out}
+.card:hover,.card.sel{border-color:var(--sky);box-shadow:0 6px 20px rgba(17,35,54,.08)}
+@keyframes in{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+.ch{display:flex;align-items:center;gap:8px}
+.chip{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:3px 8px}
+.chip.web{background:#E3F5FD;color:#0E6C93}.chip.call{background:#FDF1DA;color:#8A5B07}.chip.fb{background:#EEEDFF;color:#4B42B8}
+.nm{font-weight:700}
+.where{font-size:12px;color:var(--ink-soft)}
+.tm{margin-left:auto;font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:var(--bad)}
+.tm.ok{color:var(--good)}
+.steps{margin:8px 0 0;padding:0;list-style:none;font-size:12.5px}
+.steps li{display:flex;gap:8px;align-items:flex-start;padding:2px 0;animation:in .35s ease-out}
+.steps li:before{content:"";flex:none;width:14px;height:14px;margin-top:2px;border-radius:50%;background:var(--good) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/12px no-repeat}
+.steps li.wait:before{background:none;border:2px solid var(--sky);border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.steps .s{color:var(--ink-soft);margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row2{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);gap:16px;margin-top:16px}
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.col{background:var(--tint);border-radius:14px;padding:10px;min-height:250px}
+.col h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-soft);display:flex;justify-content:space-between}
+.col h4 b{color:var(--ink);font-family:var(--display);font-size:14px}
+.pc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin-bottom:6px;font-size:12px}
+.pc.new{animation:in .45s ease-out}
+.pc .t{font-weight:700}
+.pc .c{color:var(--ink-soft);font-size:11px}
+.pc .bar{height:3px;border-radius:9px;margin-top:5px}
+.more{font-size:11px;color:var(--ink-soft);text-align:center}
+.phone{width:290px;margin:0 auto;border-radius:38px;background:#0B1826;padding:12px;box-shadow:0 20px 50px rgba(17,35,54,.25)}
+.scr{background:#F2F4F7;border-radius:28px;height:500px;overflow:hidden;display:flex;flex-direction:column}
+.pbar{background:#fff;padding:14px 14px 10px;text-align:center;border-bottom:1px solid #E5E7EB}
+.pbar .av{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-family:var(--display);font-weight:800;font-size:13px}
+.pbar .n{font-weight:700;font-size:13px}.pbar .x{font-size:11px;color:var(--ink-soft)}
+.msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.b{max-width:82%;padding:8px 11px;border-radius:16px;font-size:12.5px;line-height:1.4}
+.b.new{animation:in .35s}
+.b.out{background:#E9EDF2;color:#111;align-self:flex-start;border-bottom-left-radius:5px}
+.b.in{background:#2F7CF6;color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+.b.sys{align-self:center;background:none;color:var(--ink-soft);font-size:11px;padding:0}
+.journey{margin-top:16px}
+.jt{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:0;position:relative;margin:18px 0 10px}
+.jt:before{content:"";position:absolute;left:6%;right:6%;top:13px;height:3px;background:var(--line);border-radius:9px}
+.jt .fill{position:absolute;left:6%;top:13px;height:3px;background:var(--sky);border-radius:9px;transition:width .6s}
+.js{position:relative;text-align:center;cursor:pointer;padding:0 4px}
+.js .dot{width:29px;height:29px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--ink-soft);transition:all .3s;position:relative}
+.js.done .dot{border-color:var(--sky);color:var(--navy)}
+.js.now .dot{background:var(--navy);border-color:var(--navy);color:#fff;transform:scale(1.15)}
+.js .w{font-size:11px;color:var(--ink-soft)}.js .k{font-size:12px;font-weight:600}
+.jprev{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--tint);border-radius:14px;padding:12px 14px}
+.jprev .ic{font-family:var(--display);font-weight:800;color:var(--navy);font-size:12px;background:#fff;border-radius:10px;padding:8px 10px;white-space:nowrap}
+.jprev .tx{font-size:13px}
+.jprev .tx small{display:block;color:var(--ink-soft);margin-top:4px}
+.foot{margin-top:22px;font-size:12px;color:var(--ink-soft);text-align:center}
+.note{font-size:11.5px;color:var(--ink-soft);margin-top:8px}
+@media(max-width:1100px){.main,.row2{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(3,1fr)}#feed{max-height:none}}
+@media(max-width:700px){.wrap{padding:14px 16px 30px}.top{padding:12px 16px}.app{border:0;padding:0}#stage{height:460px}.ov{top:54px}.views{left:14px;right:auto}.kpis{grid-template-columns:repeat(2,1fr)}.pipe{grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto}.jt{grid-template-columns:repeat(4,1fr);row-gap:14px}.jt:before,.jt .fill{display:none}.legend{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wm">ROGALSKI <span>LAWYERS</span></div>
+  <div class="app">Claim Command</div>
+  <div class="sp"></div>
+  <div class="live"><i></i> Live demo, sample data</div>
+  <div class="clock" id="clock"></div>
+</header>
+
+<div class="wrap">
+  <div class="intro">
+    <div>
+      <h1>Every enquiry, answered in seconds, from anywhere in Australia</h1>
+      <p>Watch a free case review form, a missed call on 1300 848 424 and a Facebook message land on the map, fly to Stones Corner, get a reply within seconds, reach the right lawyer and move down the pipeline on their own. Built in GoHighLevel.</p>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="l">Enquiries this week</div><div class="v" id="k1">0</div><div class="d">web, phone and Facebook</div></div>
+    <div class="kpi"><div class="l">Average first reply</div><div class="v" id="k2">0s</div><div class="d">from enquiry to first text</div></div>
+    <div class="kpi"><div class="l">Missed calls saved</div><div class="v" id="k3">0</div><div class="d">texted back automatically</div></div>
+    <div class="kpi"><div class="l">Case reviews booked</div><div class="v" id="k4">0</div><div class="d">straight into lawyer calendars</div></div>
+    <div class="kpi"><div class="l">Costs agreements signed</div><div class="v" id="k5">0</div><div class="d">this week</div></div>
+  </div>
+
+  <div class="main">
+    <div id="stage">
+      <div class="ov"><div class="a" id="ovA">Enquiries across Australia</div><div class="b" id="ovB">Dust disease claims from every state, injury claims across Queensland</div></div>
+      <div class="views"><button class="on" data-v="au">Australia</button><button data-v="qld">Queensland</button><button id="spinBtn" class="on">Spin</button></div>
+      <div class="legend">Free case review form<i style="background:var(--web)"></i><br>Missed call, texted back<i style="background:var(--call)"></i><br>Facebook message<i style="background:var(--fb)"></i><br>Stones Corner head office<i style="background:var(--star)"></i></div>
+      <div class="ctrls">
+        <button data-ch="web"><i style="background:var(--web)"></i>New web enquiry</button>
+        <button data-ch="call"><i style="background:var(--call)"></i>Missed call</button>
+        <button data-ch="fb"><i style="background:var(--fb)"></i>Facebook message</button>
+        <button id="autoBtn" class="on">Auto play on</button>
+      </div>
+      <div class="tag" id="tag"></div>
+      <div class="hq" id="hqLabel">Stones Corner HQ</div>
+      <div class="fallback" id="fb3d">The 3D map needs WebGL. The intake feed and pipeline below still run.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Live intake</h3>
+      <div class="sub">Each enquiry gets a reply and an owner without anyone touching it. Tap a card to see the texts.</div>
+      <div id="feed"></div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="panel">
+      <h3>Claim pipeline</h3>
+      <div class="sub">From first enquiry to a signed costs agreement, then handed to your practice software. Cards move on their own as each step happens.</div>
+      <div class="pipe" id="pipe"></div>
+      <div class="note">Lawyer routing here is a sample. The real rules come from Martin: which claim types go to whom, and who covers when someone is in court.</div>
+    </div>
+    <div class="panel">
+      <h3>What the client sees</h3>
+      <div class="sub" id="phoneSub">The text thread for the selected enquiry</div>
+      <div class="phone"><div class="scr">
+        <div class="pbar"><div class="av">RL</div><div class="n">Rogalski Lawyers</div><div class="x">1300 848 424</div></div>
+        <div class="msgs" id="msgs"></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="panel journey">
+    <h3>While the claim runs: updates on autopilot</h3>
+    <div class="sub">Dust disease and injury claims can run for months or years. GHL keeps the client informed between calls and asks for a Google review when the matter finishes, so the 85 five star reviews keep growing. Sample matter: Graham T., silica disease, Mackay.</div>
+    <div class="jt" id="jt"><div class="fill" id="jfill"></div></div>
+    <div class="jprev" id="jprev"></div>
+  </div>
+
+  <div class="foot">Demo built by Benjamin Vincent Yson for Rogalski Lawyers. Sample data only: the clients, claims and numbers are made up and nothing here is connected to your systems. Messages never promise an outcome; the wording is yours to approve.</div>
+</div>
+
+<script>
+/* ---------- data ---------- */
+const $=s=>document.querySelector(s);
+const CITIES={
+  "Brisbane":[153.03,-27.47,"QLD"],"Ipswich":[152.76,-27.61,"QLD"],"Logan":[153.11,-27.64,"QLD"],"Gold Coast":[153.40,-28.00,"QLD"],
+  "Sunshine Coast":[153.07,-26.65,"QLD"],"Toowoomba":[151.95,-27.56,"QLD"],"Bundaberg":[152.35,-24.87,"QLD"],"Rockhampton":[150.51,-23.38,"QLD"],
+  "Mackay":[149.19,-21.14,"QLD"],"Moranbah":[148.05,-22.00,"QLD"],"Townsville":[146.80,-19.26,"QLD"],"Cairns":[145.77,-16.92,"QLD"],"Mount Isa":[139.49,-20.73,"QLD"],
+  "Sydney":[151.21,-33.87,"NSW"],"Newcastle":[151.78,-32.93,"NSW"],"Wollongong":[150.89,-34.42,"NSW"],"Muswellbrook":[150.89,-32.27,"NSW"],
+  "Melbourne":[144.96,-37.81,"VIC"],"Geelong":[144.36,-38.15,"VIC"],"Ballarat":[143.85,-37.56,"VIC"],
+  "Adelaide":[138.60,-34.93,"SA"],"Perth":[115.86,-31.95,"WA"],"Kalgoorlie":[121.47,-30.75,"WA"],"Hobart":[147.33,-42.88,"TAS"],"Darwin":[130.84,-12.46,"NT"],"Canberra":[149.13,-35.28,"ACT"]
+};
+const QLD_TYPES=[["Workers compensation","Kristy Kersten"],["Car accident and CTP","Anthony Wang"],["Public liability","Sebastian Rogalski"],["Medical negligence","Sebastian Rogalski"],["TPD and super","Sebastian Rogalski"],["Silica disease","Martin Rogalski"],["Asbestos and mesothelioma","Martin Rogalski"]];
+const DUST_TYPES=[["Asbestos and mesothelioma","Martin Rogalski"],["Silica disease","Martin Rogalski"],["Asbestos lung cancer","Martin Rogalski"],["Coal dust and black lung","Martin Rogalski"]];
+const FIRST=["Dave","Sharon","Mick","Leanne","Tony","Kerry","Brett","Jodie","Wayne","Tracey","Glenn","Michelle","Darren","Renee","Craig","Nicole","Shane","Belinda","Troy","Kylie","Gary","Donna","Paul","Lisa","Steve","Amanda","Ray","Karen","Luke","Mel"];
+const LAST="ABCDFGHJKLMNPRSTW";
+const CH={web:{label:"Free case review",color:"#82D2F5"},call:{label:"Missed call",color:"#F2B84B"},fb:{label:"Facebook",color:"#A9A2FF"}};
+const STAGES=["New enquiry","Contacted","Case review booked","Costs agreement signed","Opened in practice software"];
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const short=n=>n.split(" ")[0];
+function pickCity(){
+  // most enquiries from South East Queensland, dust disease from everywhere
+  const r=Math.random();
+  if(r<.45) return rnd(["Brisbane","Ipswich","Logan","Gold Coast","Sunshine Coast","Toowoomba","Brisbane","Logan"]);
+  if(r<.72) return rnd(["Bundaberg","Rockhampton","Mackay","Moranbah","Townsville","Cairns","Mount Isa"]);
+  return rnd(["Sydney","Newcastle","Wollongong","Muswellbrook","Melbourne","Geelong","Ballarat","Adelaide","Perth","Kalgoorlie","Hobart","Darwin","Canberra"]);
+}
+function makeEnquiry(ch){
+  const city=pickCity(), st=CITIES[city][2];
+  let t;
+  if(st!=="QLD") t=rnd(DUST_TYPES);
+  else if(city==="Moranbah"||city==="Mackay") t=Math.random()<.6?["Coal dust and black lung","Martin Rogalski"]:rnd(QLD_TYPES);
+  else t=rnd(QLD_TYPES);
+  return {id:Math.random().toString(36).slice(2,8),ch:ch||rnd(["web","web","call","fb"]),name:rnd(FIRST)+" "+rnd(LAST)+".",city,state:st,type:t[0],lawyer:t[1],born:Date.now(),reply:null,stage:0,msgs:[]};
+}
+
+/* ---------- state ---------- */
+const S={enq:[],week:46,replies:[4,6,5,3,7,4,5,6,4,5],missed:9,booked:17,signed:6,sel:null,auto:true};
+const seedPipe=[
+  ["Jason M.","Workers compensation","Kristy Kersten",1],["Fiona R.","Silica disease","Martin Rogalski",2],["Peter L.","Car accident and CTP","Anthony Wang",1],
+  ["Anne K.","Asbestos and mesothelioma","Martin Rogalski",3],["Rob S.","Public liability","Sebastian Rogalski",2],["Debbie W.","TPD and super","Sebastian Rogalski",4],
+  ["Neil P.","Coal dust and black lung","Martin Rogalski",3],["Cathy B.","Medical negligence","Sebastian Rogalski",0],["Terry H.","Workers compensation","Kristy Kersten",4],
+  ["Sue F.","Car accident and CTP","Anthony Wang",2],["Mark D.","Asbestos lung cancer","Martin Rogalski",1]
+].map(a=>({id:Math.random().toString(36).slice(2,8),name:a[0],type:a[1],lawyer:a[2],stage:a[3],ch:rnd(["web","call","fb"]),seed:true}));
+const PIPE=[...seedPipe];
+
+/* ---------- clock ---------- */
+function tick(){
+  const s=new Date().toLocaleString("en-AU",{timeZone:"Australia/Brisbane",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  $("#clock").textContent=s+" Brisbane";
+}
+setInterval(tick,1000);tick();
+
+/* ---------- KPIs ---------- */
+let last={};
+function setK(id,v){const el=$(id);if(last[id]!==v){el.textContent=v;el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");last[id]=v;}}
+function kpis(){
+  const avg=S.replies.reduce((a,b)=>a+b,0)/S.replies.length;
+  setK("#k1",S.week);setK("#k2",avg.toFixed(1)+"s");setK("#k3",S.missed);setK("#k4",S.booked);setK("#k5",S.signed);
+}
+
+/* ---------- business day helper ---------- */
+function slot(){
+  const d=new Date(new Date().toLocaleString("en-US",{timeZone:"Australia/Brisbane"}));
+  let add=1;d.setDate(d.getDate()+1);
+  while(d.getDay()===0||d.getDay()===6){d.setDate(d.getDate()+1);}
+  const times=["9:30 am","10:30 am","11:15 am","1:00 pm","2:30 pm","3:45 pm"];
+  return d.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"short"})+" at "+rnd(times);
+}
+
+/* ---------- feed ---------- */
+function flow(e){
+  const L=short(e.lawyer), F=short(e.name);
+  const when=slot();
+  if(e.ch==="web") return [
+    [()=>`Free case review form received`,0],
+    [()=>`Text and email sent to ${F}`,4,()=>e.msgs.push(["out",`Hi ${F}, thanks for contacting Rogalski Lawyers about your ${e.type.toLowerCase()} enquiry. ${L} will call you soon from 1300 848 424. If now is a bad time, reply with a time that suits.`])],
+    [()=>`Claim type: ${e.type}`,6],
+    [()=>`Assigned to ${e.lawyer}, call task due in 15 min`,8],
+    [()=>`Free case review booked ${when}`,16,()=>{e.msgs.push(["in","Tomorrow works, thanks"]);e.msgs.push(["out",`Booked: your free case review with ${L} is ${when}. We will send a reminder the day before.`]);S.booked++;e.stage=2;}]
+  ];
+  if(e.ch==="call") return [
+    [()=>`Missed call on 1300 848 424, all lines busy`,0],
+    [()=>`Text back sent to ${F}`,5,()=>{e.msgs.push(["sys","Missed call"]);e.msgs.push(["out",`Hi, it's Rogalski Lawyers. Sorry we missed your call. Can you tell us in a few words what happened? A lawyer will call you back today.`]);S.missed++;}],
+    [()=>`${F} replied: "${e.type.toLowerCase()}"`,9,()=>e.msgs.push(["in",`Hi, it's about a ${e.type.toLowerCase()} claim`])],
+    [()=>`Assigned to ${e.lawyer}, call back task due in 15 min`,11,()=>e.msgs.push(["out",`Thanks ${F}. ${L} will call you back today from 1300 848 424.`])],
+    [()=>`${L} called back, marked as contacted`,18,()=>{e.stage=1;}]
+  ];
+  return [
+    [()=>`Facebook message received`,0],
+    [()=>`Reply sent in Messenger`,3,()=>e.msgs.push(["out",`Hi ${F}, thanks for your message. What is the best number to reach you? One of our lawyers will call to talk it through.`])],
+    [()=>`Phone number captured, contact saved`,8,()=>e.msgs.push(["in","0491 570 156, after 3 is best"])],
+    [()=>`Claim type: ${e.type}, assigned to ${e.lawyer}`,10],
+    [()=>`Call scheduled for after 3 pm, as ${F} asked`,14,()=>{e.msgs.push(["out",`Thanks ${F}. ${L} will call you after 3 pm today.`]);e.stage=1;}]
+  ];
+}
+function addFeed(e){
+  S.enq.unshift(e);S.week++;
+  const steps=flow(e);
+  const el=document.createElement("div");el.className="card";el.dataset.id=e.id;
+  el.innerHTML=`<div class="ch"><span class="chip ${e.ch}">${CH[e.ch].label}</span><span class="nm">${e.name}</span><span class="tm" id="tm${e.id}">0s</span></div>
+  <div class="where">${e.city}, ${e.state} · ${e.type}</div><ul class="steps" id="st${e.id}"></ul>`;
+  el.onclick=()=>select(e);
+  const feed=$("#feed");feed.prepend(el);
+  while(feed.children.length>6) feed.lastChild.remove();
+  const ul=el.querySelector(".steps");
+  const t0=Date.now();
+  const timer=setInterval(()=>{if(e.reply!==null){clearInterval(timer);return;}const s=Math.floor((Date.now()-t0)/420);const tm=$("#tm"+e.id);if(tm)tm.textContent=s+"s";},250);
+  steps.forEach((st,i)=>{
+    setTimeout(()=>{
+      [...ul.querySelectorAll("li.wait")].forEach(li=>li.remove());
+      const li=document.createElement("li");li.innerHTML=`<span>${st[0]()}</span><span class="s">${st[1]}s</span>`;ul.appendChild(li);
+      if(st[2]) st[2]();
+      if(i===1){e.reply=st[1];S.replies.push(st[1]);if(S.replies.length>30)S.replies.shift();const tm=$("#tm"+e.id);if(tm){tm.textContent="replied "+st[1]+"s";tm.classList.add("ok");}}
+      if(i<steps.length-1){const w=document.createElement("li");w.className="wait";w.innerHTML=`<span style="color:var(--ink-soft)">working…</span>`;ul.appendChild(w);}
+      if(S.sel===e) renderPhone();
+      kpis();renderPipe();
+    },st[1]*(i===0?0:420));
+  });
+  PIPE.unshift(e);
+  if(!S.sel||S.sel.done) select(e);
+  setTimeout(()=>{e.done=true;},steps[steps.length-1][1]*420+100);
+  renderPipe();kpis();
+}
+function select(e){
+  S.sel=e;
+  document.querySelectorAll(".card").forEach(c=>c.classList.toggle("sel",c.dataset.id===e.id));
+  $("#phoneSub").textContent=`${e.name}, ${e.city} · ${CH[e.ch].label}`;
+  renderPhone();
+}
+function renderPhone(){
+  const e=S.sel;if(!e)return;
+  const m=$("#msgs");
+  const was=m.dataset.k===e.id?+m.dataset.n:e.msgs.length;m.dataset.k=e.id;m.dataset.n=e.msgs.length;
+  m.innerHTML=e.msgs.map((x,i)=>`<div class="b ${x[0]}${i>=was?' new':''}">${x[1]}</div>`).join("")||`<div class="b sys">Waiting for the first reply…</div>`;
+  m.scrollTop=m.scrollHeight;
+}
+
+/* ---------- pipeline ---------- */
+const seen={};
+function renderPipe(){
+  const p=$("#pipe");
+  p.innerHTML=STAGES.map((s,i)=>{
+    const items=PIPE.filter(x=>x.stage===i);
+    return `<div class="col"><h4><span>${s}</span><b>${items.length}</b></h4>${items.slice(0,5).map(x=>{const k=x.id+':'+x.stage;const n=seen[k]?'':' new';seen[k]=1;return `<div class="pc${n}"><div class="t">${x.name}</div><div class="c">${x.type}</div><div class="c">${short(x.lawyer)}</div><div class="bar" style="background:${CH[x.ch].color}"></div></div>`}).join("")}${items.length>5?`<div class="more">+ ${items.length-5} more</div>`:""}</div>`;
+  }).join("");
+}
+// older cards keep moving along on their own
+setInterval(()=>{
+  const movable=PIPE.filter(x=>(x.seed||x.done)&&x.stage<4&&x.stage>=1);
+  if(!movable.length) return;
+  const x=rnd(movable);x.stage++;
+  if(x.stage===3) S.signed++;
+  if(x.stage===2) S.booked++;
+  renderPipe();kpis();
+},5200);
+
+/* ---------- client journey ---------- */
+const J=[
+  ["Day 1","File opened","Welcome text","Hi Graham, it's Martin at Rogalski Lawyers. Your file is open. Kristy will send you a short list of documents we need. You have my mobile and email if anything comes up."],
+  ["Week 2","Records","Medical records update","Hi Graham, we have asked your doctors and the hospital for your records. These usually take a few weeks. Nothing is needed from you right now."],
+  ["Month 1","Work history","Work history checklist","Hi Graham, could you list the sites and employers you worked for and roughly when? Tap here to fill in a short form, or reply and we will call you."],
+  ["Month 3","Specialist","Appointment reminder","Reminder: your appointment with the specialist is Tuesday at 10 am. Reply if you need help with travel."],
+  ["Month 5","Progress","Monthly update","Hi Graham, a quick update from Martin: your claim has been lodged and we are waiting on a response. We will be in touch the moment we hear."],
+  ["Month 8","Next step","Meeting invite","Martin would like to talk through the next step. Pick a time that suits you here."],
+  ["Finish","Matter closed","Thank you","Hi Graham, thank you for trusting us with your claim. It has been a privilege to help."],
+  ["Finish +3 days","Review","Google review request","If you have a minute, a short Google review helps other families find us. Here is the link. Thank you, from Martin and the team."]
+];
+let jIdx=0,jTimer;
+function renderJ(i){
+  jIdx=i;
+  const jt=$("#jt");
+  jt.querySelectorAll(".js").forEach(n=>n.remove());
+  J.forEach((s,k)=>{const d=document.createElement("div");d.className="js"+(k<i?" done":"")+(k===i?" now":"");d.innerHTML=`<div class="dot">${k+1}</div><div class="w">${s[0]}</div><div class="k">${s[1]}</div>`;d.onclick=()=>{clearInterval(jTimer);renderJ(k);jTimer=setInterval(nextJ,4200);};jt.appendChild(d);});
+  $("#jfill").style.width=(88*i/(J.length-1))+"%";
+  $("#jprev").innerHTML=`<div class="ic">${J[i][2]}</div><div class="tx">${J[i][3]}<small>Sent automatically at ${J[i][0].toLowerCase()} · the lawyer can edit or pause it on the file</small></div>`;
+}
+function nextJ(){renderJ((jIdx+1)%J.length);}
+renderJ(0);jTimer=setInterval(nextJ,4200);
+
+/* ---------- spawning ---------- */
+function spawn(ch){
+  const e=makeEnquiry(ch);
+  const go=()=>addFeed(e);
+  if(window.MAP&&window.MAP.ready) window.MAP.spawn(e,go); else setTimeout(go,600);
+}
+document.querySelectorAll(".ctrls [data-ch]").forEach(b=>b.onclick=()=>spawn(b.dataset.ch));
+$("#autoBtn").onclick=()=>{S.auto=!S.auto;$("#autoBtn").classList.toggle("on",S.auto);$("#autoBtn").textContent=S.auto?"Auto play on":"Auto play off";};
+function autoLoop(){if(S.auto&&!document.hidden) spawn();setTimeout(autoLoop,6500+Math.random()*4500);}
+renderPipe();kpis();
+setTimeout(()=>spawn("web"),1400);
+setTimeout(autoLoop,7000);
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+const stage=document.getElementById("stage");
+let renderer;
+try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});}catch(err){document.getElementById("fb3d").style.display="flex";throw err;}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.prepend(renderer.domElement);
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x0B1826,60,120);
+const camera=new THREE.PerspectiveCamera(40,1,0.1,400);
+camera.position.set(0,40,36);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.06;controls.target.set(1,0,1);
+controls.minDistance=14;controls.maxDistance=80;controls.maxPolarAngle=Math.PI*0.44;
+controls.autoRotate=true;controls.autoRotateSpeed=0.35;controls.enablePan=false;
+
+function size(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.fov=w/h<1?62:40;camera.updateProjectionMatrix();}
+new ResizeObserver(size).observe(stage);size();
+
+scene.add(new THREE.AmbientLight(0x9fc4e8,.65));
+const dl=new THREE.DirectionalLight(0xffffff,1.1);dl.position.set(-20,40,20);scene.add(dl);
+
+/* simplified coastline (lon, lat) */
+const MAIN=[[142.5,-10.7],[143.5,-12.5],[143.8,-14.0],[145.3,-15.0],[145.5,-16.5],[146.0,-17.8],[146.3,-19.0],[147.5,-19.5],[148.8,-20.3],[149.5,-21.5],[150.5,-22.5],[151.0,-23.8],[152.5,-25.0],[153.1,-26.5],[153.6,-28.6],[153.2,-30.5],[152.9,-31.5],[152.0,-32.8],[151.3,-33.8],[150.8,-34.8],[150.1,-36.0],[149.9,-37.5],[148.0,-37.8],[146.4,-39.1],[145.0,-38.5],[144.5,-38.2],[143.5,-38.8],[141.5,-38.4],[140.5,-38.0],[139.7,-37.2],[139.5,-36.0],[138.3,-35.6],[138.5,-34.8],[138.0,-34.2],[137.5,-35.0],[136.0,-34.8],[135.5,-34.8],[135.2,-33.5],[134.2,-32.8],[133.0,-32.1],[131.2,-31.5],[129.0,-31.7],[126.0,-32.3],[124.0,-33.0],[123.5,-33.9],[121.0,-33.8],[119.5,-34.2],[118.0,-35.0],[116.5,-35.0],[115.0,-34.3],[115.6,-33.4],[115.7,-32.0],[115.0,-30.0],[114.9,-29.0],[114.0,-26.5],[113.4,-25.5],[113.8,-23.5],[113.7,-22.0],[114.2,-21.8],[116.0,-20.8],[117.5,-20.6],[119.0,-20.0],[121.0,-19.5],[122.2,-18.0],[122.3,-17.0],[123.5,-16.5],[124.5,-15.5],[125.5,-14.5],[126.8,-13.8],[128.2,-14.9],[129.5,-14.9],[129.8,-13.5],[130.5,-12.5],[131.0,-12.2],[132.5,-11.5],[133.5,-11.8],[135.0,-12.2],[136.5,-11.9],[136.8,-12.5],[136.0,-13.5],[135.4,-14.8],[136.5,-15.8],[138.0,-16.8],[139.3,-17.4],[140.8,-17.4],[141.5,-15.5],[141.6,-13.0],[142.0,-11.0]];
+const TAS=[[144.6,-40.7],[146.0,-41.1],[148.3,-40.9],[148.3,-42.2],[147.8,-43.2],[146.8,-43.6],[145.5,-42.8],[144.8,-41.6]];
+const CX=134,CY=-27,DEPTH=.7;
+const P=(lon,lat,y=DEPTH)=>new THREE.Vector3(lon-CX,y,-(lat-CY));
+
+function landMesh(pts){
+  const sh=new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0]-CX,p[1]-CY)));
+  const g=new THREE.ExtrudeGeometry(sh,{depth:DEPTH,bevelEnabled:true,bevelThickness:.12,bevelSize:.12,bevelSegments:2});
+  g.rotateX(-Math.PI/2);
+  const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0x1B3A5A,roughness:.75,metalness:.15}));
+  scene.add(m);
+  const edge=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts.map(p=>P(p[0],p[1],DEPTH+.13))),new THREE.LineBasicMaterial({color:0x82D2F5,transparent:true,opacity:.75}));
+  scene.add(edge);
+}
+landMesh(MAIN);landMesh(TAS);
+
+/* dot matrix on the land */
+function inside(pt,poly){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const [xi,yi]=poly[i],[xj,yj]=poly[j];if(((yi>pt[1])!==(yj>pt[1]))&&(pt[0]<(xj-xi)*(pt[1]-yi)/(yj-yi)+xi))c=!c;}return c;}
+const dots=[];
+for(let lon=113;lon<=154;lon+=.55)for(let lat=-44;lat<=-10;lat+=.55){if(inside([lon,lat],MAIN)||inside([lon,lat],TAS))dots.push(P(lon,lat,DEPTH+.15));}
+const dg=new THREE.BufferGeometry().setFromPoints(dots);
+scene.add(new THREE.Points(dg,new THREE.PointsMaterial({color:0x82D2F5,size:.12,transparent:true,opacity:.45})));
+
+/* glow sprite texture */
+const cv=document.createElement("canvas");cv.width=cv.height=64;const cx=cv.getContext("2d");
+const gr=cx.createRadialGradient(32,32,0,32,32,32);gr.addColorStop(0,"rgba(255,255,255,1)");gr.addColorStop(.25,"rgba(255,255,255,.6)");gr.addColorStop(1,"rgba(255,255,255,0)");
+cx.fillStyle=gr;cx.fillRect(0,0,64,64);const glowTex=new THREE.CanvasTexture(cv);
+function glow(color,s){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));sp.scale.set(s,s,1);return sp;}
+
+/* HQ beacon at Stones Corner */
+const HQ=P(153.05,-27.5,DEPTH+.15);
+const beacon=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,4,16),new THREE.MeshBasicMaterial({color:0xF2B84B,transparent:true,opacity:.9}));
+beacon.position.copy(HQ).add(new THREE.Vector3(0,2,0));scene.add(beacon);
+const hqGlow=glow(0xF2B84B,3.2);hqGlow.position.copy(HQ).add(new THREE.Vector3(0,.2,0));scene.add(hqGlow);
+const hqTop=glow(0xF2B84B,1.6);hqTop.position.copy(HQ).add(new THREE.Vector3(0,4,0));scene.add(hqTop);
+const ringGeo=new THREE.RingGeometry(.45,.6,64);ringGeo.rotateX(-Math.PI/2);
+
+/* city towers (heat) */
+const towers={};
+function tower(city,color){
+  if(towers[city]) return towers[city];
+  const ll=CITY_LL[city];
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,1,14),new THREE.MeshStandardMaterial({color:0x9ADDF7,emissive:0x4fb3e0,emissiveIntensity:.9,transparent:true,opacity:.9}));
+  m.position.copy(P(ll[0],ll[1],DEPTH+.15));m.scale.y=.01;m.userData={h:0,target:.01,base:m.position.y};scene.add(m);
+  towers[city]=m;return m;
+}
+const CITY_LL={};
+for(const [k,v] of Object.entries({"Brisbane":[153.03,-27.47],"Ipswich":[152.76,-27.61],"Logan":[153.11,-27.64],"Gold Coast":[153.40,-28.00],"Sunshine Coast":[153.07,-26.65],"Toowoomba":[151.95,-27.56],"Bundaberg":[152.35,-24.87],"Rockhampton":[150.51,-23.38],"Mackay":[149.19,-21.14],"Moranbah":[148.05,-22.00],"Townsville":[146.80,-19.26],"Cairns":[145.77,-16.92],"Mount Isa":[139.49,-20.73],"Sydney":[151.21,-33.87],"Newcastle":[151.78,-32.93],"Wollongong":[150.89,-34.42],"Muswellbrook":[150.89,-32.27],"Melbourne":[144.96,-37.81],"Geelong":[144.36,-38.15],"Ballarat":[143.85,-37.56],"Adelaide":[138.60,-34.93],"Perth":[115.86,-31.95],"Kalgoorlie":[121.47,-30.75],"Hobart":[147.33,-42.88],"Darwin":[130.84,-12.46],"Canberra":[149.13,-35.28]})) CITY_LL[k]=v;
+const counts={};
+function bump(city){
+  counts[city]=(counts[city]||0)+1;
+  const t=tower(city);t.userData.target=Math.min(.35+counts[city]*.45,6);
+}
+// seed a week of history
+const seed={"Brisbane":5,"Logan":3,"Ipswich":3,"Gold Coast":3,"Sunshine Coast":2,"Toowoomba":2,"Mackay":2,"Moranbah":2,"Townsville":2,"Rockhampton":1,"Cairns":1,"Sydney":2,"Newcastle":2,"Muswellbrook":1,"Melbourne":2,"Perth":1,"Adelaide":1,"Hobart":1};
+for(const [c,n] of Object.entries(seed)) for(let i=0;i<n;i++) bump(c);
+
+/* effects */
+const FX=[];
+const tagEl=document.getElementById("tag"),hqLabel=document.getElementById("hqLabel");
+let tagTarget=null,tagUntil=0;
+function spawn(e,done){
+  const ll=CITY_LL[e.city];const col=new THREE.Color(e.ch==="web"?0x82D2F5:e.ch==="call"?0xF2B84B:0xA9A2FF);
+  const base=P(ll[0],ll[1],DEPTH+.15);
+  // falling beam
+  const beam=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,1,10),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+  beam.position.copy(base);scene.add(beam);
+  const head=glow(col,1.8);scene.add(head);
+  const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));ring.position.copy(base).add(new THREE.Vector3(0,.02,0));scene.add(ring);
+  // arc to HQ
+  const mid=base.clone().lerp(HQ,.5);mid.y+=2+base.distanceTo(HQ)*.32;
+  const curve=new THREE.QuadraticBezierCurve3(base.clone(),mid,HQ.clone());
+  const pts=curve.getPoints(80);
+  const arcG=new THREE.BufferGeometry().setFromPoints(pts);arcG.setDrawRange(0,0);
+  const arc=new THREE.Line(arcG,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:.9}));scene.add(arc);
+  const comet=glow(col,1.2);comet.visible=false;scene.add(comet);
+  tagTarget=base.clone().add(new THREE.Vector3(base.distanceTo(HQ)<2.5?-4:0,base.distanceTo(HQ)<2.5?2.2:3.2,0));tagUntil=performance.now()+5200;
+  tagEl.innerHTML=`<b>${e.type}</b><small>${e.city}, ${e.state} · ${({web:"free case review form",call:"missed call",fb:"Facebook message"})[e.ch]}</small>`;
+  const t0=performance.now();let arrived=false;
+  FX.push(now=>{
+    const t=(now-t0)/1000;
+    // beam drops from the sky in 0.6s
+    const drop=Math.min(t/.6,1),H=9*(1-drop)+.01;
+    beam.scale.y=Math.max(H,.01);beam.position.y=base.y+H/2;head.position.set(base.x,base.y+H,base.z);
+    if(t>.6){beam.material.opacity=Math.max(0,.95-(t-.6)*1.2);head.material.opacity=Math.max(0,1-(t-.6)*1.4);}
+    const rs=1+t*3.2;ring.scale.set(rs,1,rs);ring.material.opacity=Math.max(0,.9-t*.45);
+    // arc draws between 0.5s and 2.1s
+    if(t>.5){const a=Math.min((t-.5)/1.6,1);const n=Math.floor(a*pts.length);arcG.setDrawRange(0,n);comet.visible=a<1;comet.position.copy(curve.getPoint(a));}
+    if(t>2.1&&!arrived){arrived=true;bump(e.city);pulse();done();}
+    if(t>2.1){arc.material.opacity=Math.max(0,.9-(t-2.1)*.35);}
+    if(t>5){[beam,head,ring,arc,comet].forEach(o=>{scene.remove(o);o.geometry&&o.geometry.dispose();o.material.dispose();});return false;}
+    return true;
+  });
+}
+let pulseT=0;function pulse(){pulseT=performance.now();
+  const r=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:0xF2B84B,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));r.position.copy(HQ).add(new THREE.Vector3(0,.03,0));scene.add(r);const t0=performance.now();
+  FX.push(now=>{const t=(now-t0)/1000;const s=1+t*4;r.scale.set(s,1,s);r.material.opacity=Math.max(0,.9-t*.6);if(t>1.6){scene.remove(r);r.material.dispose();return false;}return true;});
+}
+
+/* camera views */
+let camGoal=null;
+const VIEWS={au:{pos:[0,40,36],tgt:[1,0,1],a:"Enquiries across Australia",b:"Dust disease claims from every state, injury claims across Queensland"},
+             qld:{pos:[22,22,12],tgt:[15,0,-4],a:"Queensland",b:"South East Queensland, the coal regions and the north"}};
+document.querySelectorAll(".views [data-v]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".views [data-v]").forEach(x=>x.classList.toggle("on",x===b));
+  const v=VIEWS[b.dataset.v];camGoal={pos:new THREE.Vector3(...v.pos),tgt:new THREE.Vector3(...v.tgt),t:0};
+  document.getElementById("ovA").textContent=v.a;document.getElementById("ovB").textContent=v.b;
+});
+const spinBtn=document.getElementById("spinBtn");
+spinBtn.onclick=()=>{controls.autoRotate=!controls.autoRotate;spinBtn.classList.toggle("on",controls.autoRotate);};
+renderer.domElement.addEventListener("pointerdown",()=>{camGoal=null;});
+
+/* loop */
+const v3=new THREE.Vector3();
+function place(el,pos){v3.copy(pos).project(camera);const w=stage.clientWidth,h=stage.clientHeight;el.style.left=((v3.x+1)/2*w)+"px";el.style.top=((1-v3.y)/2*h)+"px";return v3.z<1;}
+function loop(now){
+  requestAnimationFrame(loop);
+  if(camGoal){camGoal.t=Math.min(camGoal.t+.02,1);camera.position.lerp(camGoal.pos,.06);controls.target.lerp(camGoal.tgt,.06);if(camGoal.t>=1)camGoal=null;}
+  controls.update();
+  for(let i=FX.length-1;i>=0;i--) if(!FX[i](now)) FX.splice(i,1);
+  for(const m of Object.values(towers)){const u=m.userData;u.h+=(u.target-u.h)*.06;m.scale.y=Math.max(u.h,.01);m.position.y=u.base+u.h/2;}
+  const p=(now-pulseT)/1000;const k=p<1?1+Math.sin(p*Math.PI)*.6:1;
+  hqGlow.scale.setScalar(3.2*k*(1+Math.sin(now/600)*.08));hqTop.scale.setScalar(1.6*(1+Math.sin(now/400)*.15));
+  if(tagTarget&&now<tagUntil){place(tagEl,tagTarget);const hw=tagEl.offsetWidth/2+8,W=stage.clientWidth;tagEl.style.left=Math.min(Math.max(parseFloat(tagEl.style.left),hw),W-hw)+"px";tagEl.style.opacity=1;}else tagEl.style.opacity=0;
+  place(hqLabel,HQ.clone().add(new THREE.Vector3(0,4.6,0)));{const hw=hqLabel.offsetWidth/2+8,W=stage.clientWidth;hqLabel.style.left=Math.min(Math.max(parseFloat(hqLabel.style.left),hw),W-hw)+"px";}
+  renderer.render(scene,camera);
+}
+requestAnimationFrame(loop);
+window.MAP={ready:true,spawn};
+</script>
+</body>
+</html>

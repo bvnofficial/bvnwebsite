@@ -18,6 +18,8 @@ const nextConfig = {
       // Keighran Legal and Legend Lending app suite demos (sample data, relative links).
       { source: "/clients/keighran-legal", destination: "/clients/keighran-legal/index.html", permanent: false },
       { source: "/clients/legend-lending", destination: "/clients/legend-lending/index.html", permanent: false },
+      // Rogalski Lawyers "Claim Command" demo (sample data).
+      { source: "/clients/rogalski-lawyers", destination: "/clients/rogalski-lawyers/index.html", permanent: false },
       // Moved the Regal Homes client deliverable under /client/.
       { source: "/regal-homes", destination: "/client/regal-homes", permanent: true },
       { source: "/regal-homes/:path*", destination: "/client/regal-homes/:path*", permanent: true },
