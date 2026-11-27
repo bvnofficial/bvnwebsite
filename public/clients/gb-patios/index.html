@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patio Planner and Job Hub | G&amp;B Patios demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,600;0,800;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+:root{
+  --blue:#280892;--blue-deep:#17055A;--blue-mid:#3A1DB0;--blue-pale:#E9E6FA;--red:#DC0000;--red-soft:#FDE8E8;
+  --ink:#1B1640;--ink-soft:#5E5A7A;--line:#E4E2EF;--surface:#fff;--bg:#F6F5FB;--good:#1F8A57;--good-soft:#E3F5EC;--amber:#B86E00;--amber-soft:#FFF3DC;
+  --r:14px;--shadow:0 1px 2px rgba(23,5,90,.06),0 8px 24px rgba(23,5,90,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Archivo,Inter,sans-serif;line-height:1.15;margin:0}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;gap:18px;height:64px}
+.mark{display:flex;align-items:baseline;gap:6px;text-decoration:none;white-space:nowrap}
+.mark .gb{font:italic 900 18px Archivo,sans-serif;color:var(--red);text-shadow:1px 1px 0 var(--blue)}
+.mark .pt{font:italic 900 26px Archivo,sans-serif;color:var(--blue);letter-spacing:-.5px;text-shadow:2px 2px 0 var(--red)}
+nav.tabs{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{padding:8px 12px;border-radius:999px;text-decoration:none;color:var(--ink-soft);font-weight:600;font-size:14px;white-space:nowrap}
+nav.tabs a:hover{background:var(--blue-pale);color:var(--blue)}
+.live{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(31,138,87,.5);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(31,138,87,0)}100%{box-shadow:0 0 0 0 rgba(31,138,87,0)}}
+@media (max-width:860px){.live{display:none}}
+@media (max-width:560px){.mark .pt{font-size:21px}.hbar{gap:10px}}
+
+/* hero */
+.hero{background:linear-gradient(135deg,var(--blue-deep),var(--blue) 60%,var(--blue-mid));color:#fff;padding:44px 0 36px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-120px;top:-80px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(220,0,0,.35),transparent 65%)}
+.hero .kick{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px}
+.hero h1{font-size:clamp(28px,4.4vw,46px);font-weight:800;margin:14px 0 10px;max-width:860px}
+.hero h1 em{font-style:italic;color:#FFD0D0}
+.hero p{max-width:760px;color:#DCD8F7;margin:0;font-size:17px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;position:relative;z-index:1}
+.pills span{font-size:13px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px 10px;border-radius:999px}
+
+section{padding:44px 0}
+.shead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 24px;margin-bottom:20px}
+.shead .num{font:italic 900 15px Archivo,sans-serif;color:#fff;background:var(--red);border-radius:8px;padding:4px 9px}
+.shead h2{font-size:clamp(24px,3vw,32px);font-weight:800;color:var(--blue-deep)}
+.shead p{margin:4px 0 0;color:var(--ink-soft);max-width:720px;flex-basis:100%}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-soft);background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px}
+
+/* planner */
+.planner{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,1fr);gap:18px}
+@media (max-width:960px){.planner{grid-template-columns:1fr}}
+.planner{align-items:start}
+.stage{position:sticky;top:80px;height:min(620px,calc(100vh - 100px));min-height:420px;overflow:hidden;padding:0}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.stage .tag{position:absolute;left:14px;top:14px;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;box-shadow:var(--shadow)}
+.stage .tag b{color:var(--blue)}
+.stage .hint{position:absolute;right:14px;bottom:12px;font-size:12px;color:var(--ink-soft);background:rgba(255,255,255,.85);padding:4px 8px;border-radius:8px}
+.stage .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:30px;color:var(--ink-soft)}
+@media (max-width:960px){.stage{position:relative;top:0;min-height:320px;height:62vw;max-height:460px}}
+.controls{padding:18px;display:flex;flex-direction:column;gap:16px}
+.ctl label,.ctl .lbl{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:7px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.range{display:flex;align-items:center;gap:12px}
+.range input{flex:1;accent-color:var(--red)}
+.range output{min-width:64px;text-align:right;font-weight:700;color:var(--blue)}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.sw button{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--red)}
+.swname{font-size:13px;color:var(--ink-soft);margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff}
+.summary{border-top:1px solid var(--line);padding-top:14px}
+.summary h3{font-size:16px;margin-bottom:8px;color:var(--blue-deep)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:5px 12px;font-size:14px}
+.kv dt{color:var(--ink-soft)}.kv dd{margin:0;font-weight:700;text-align:right}
+.zone{margin-top:10px;font-size:13px;padding:8px 10px;border-radius:10px;background:var(--good-soft);color:var(--good);font-weight:600}
+.zone.out{background:var(--amber-soft);color:var(--amber)}
+.cta{border:0;background:var(--red);color:#fff;font-weight:700;border-radius:12px;padding:13px 16px;font-size:16px;width:100%;box-shadow:0 6px 18px rgba(220,0,0,.25)}
+.cta:hover{filter:brightness(1.07)}
+.small{font-size:12px;color:var(--ink-soft);margin:6px 0 0}
+
+/* flow */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{padding:14px 16px}
+.kpi .v{font:800 26px Archivo,sans-serif;color:var(--blue-deep)}
+.kpi .l{font-size:13px;color:var(--ink-soft)}
+.flowgrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}
+@media (max-width:960px){.flowgrid{grid-template-columns:1fr}}
+.timeline{padding:18px}
+.timeline .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.timeline h3{font-size:18px;color:var(--blue-deep)}
+.ghost{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px}
+.ghost:hover{border-color:var(--blue);color:var(--blue)}
+ol.steps{list-style:none;margin:0;padding:0;position:relative}
+ol.steps:before{content:"";position:absolute;left:15px;top:6px;bottom:6px;width:2px;background:var(--line)}
+ol.steps li{position:relative;padding:0 0 14px 44px;opacity:.38;transition:opacity .4s}
+ol.steps li.on{opacity:1}
+ol.steps li .dot{position:absolute;left:5px;top:2px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--ink-soft)}
+ol.steps li.on .dot{background:var(--blue);border-color:var(--blue);color:#fff}
+ol.steps li.on.stop .dot{background:var(--good);border-color:var(--good)}
+ol.steps .when{font-size:12px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.05em}
+ol.steps .what{font-weight:600}
+ol.steps .msg{margin-top:5px;font-size:13px;background:var(--bg);border-radius:10px;padding:8px 10px;color:var(--ink-soft)}
+.pipe{padding:18px}
+.pipe h3{font-size:18px;color:var(--blue-deep);margin-bottom:12px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.col{background:var(--bg);border-radius:12px;padding:10px;min-height:120px}
+.col .ch{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.col .ch b{color:var(--blue)}
+.lead{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 9px;font-size:12.5px;margin-bottom:6px}
+.lead b{display:block;font-size:13px}
+.lead.new{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft);animation:pop .5s}
+@keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:none;opacity:1}}
+.alert{margin-top:12px;display:flex;gap:10px;align-items:flex-start;background:var(--blue-deep);color:#fff;border-radius:12px;padding:12px 14px;font-size:14px}
+.alert .ic{flex:none;width:30px;height:30px;border-radius:8px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800}
+
+/* crew board */
+.board{padding:16px;overflow-x:auto}
+.bgrid{display:grid;grid-template-columns:150px repeat(5,minmax(130px,1fr));gap:8px;min-width:820px}
+.bgrid .hd{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);padding:4px 6px}
+.crew{font-weight:700;font-size:14px;padding:10px 8px;background:var(--blue-pale);border-radius:10px;color:var(--blue-deep)}
+.crew small{display:block;font-weight:500;color:var(--ink-soft);font-size:12px}
+.cell{min-height:92px;border:1px dashed var(--line);border-radius:10px;padding:6px;background:#fff;transition:background .2s}
+.cell.target{background:var(--red-soft);border-color:var(--red)}
+.cell.armed{cursor:pointer}
+.cell.armed:hover{background:var(--blue-pale)}
+.job{border-radius:9px;padding:7px 8px;font-size:12.5px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--blue);cursor:grab;user-select:none}
+.job b{display:block;font-size:13px}
+.job.sel{outline:3px solid var(--red)}
+.job.diy{border-left-color:var(--amber)}
+.chip{display:inline-block;font-size:11px;font-weight:700;padding:2px 6px;border-radius:999px;margin-top:4px}
+.chip.ok{background:var(--good-soft);color:var(--good)}
+.chip.wait{background:var(--amber-soft);color:var(--amber)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);background:var(--blue-deep);color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;max-width:min(92vw,520px);z-index:40;opacity:0;visibility:hidden;transition:transform .35s,opacity .35s,visibility .35s}
+.toast.show{transform:translate(-50%,0);opacity:1;visibility:visible}
+
+/* customer phone */
+.cust{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+@media (max-width:860px){.cust{grid-template-columns:1fr}.phone{margin:0 auto}}
+.track{padding:18px}
+.track h3{font-size:18px;color:var(--blue-deep);margin-bottom:12px}
+.bar{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:6px 0 10px}
+.bar div{height:8px;border-radius:99px;background:var(--line);transition:background .4s}
+.bar div.on{background:var(--red)}
+.barl{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;font-size:11.5px;color:var(--ink-soft)}
+.phone{width:320px;border-radius:38px;background:#111;padding:12px;box-shadow:0 20px 50px rgba(23,5,90,.25)}
+.screen{background:#F2F1F7;border-radius:28px;height:560px;overflow:hidden;display:flex;flex-direction:column}
+.ph{background:#fff;padding:14px 16px 10px;border-bottom:1px solid var(--line);text-align:center;font-size:13px}
+.ph b{display:block;font-size:15px;color:var(--blue-deep)}
+.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.bub{max-width:86%;background:#fff;border-radius:16px 16px 16px 4px;padding:9px 11px;font-size:13px;box-shadow:0 1px 2px rgba(0,0,0,.06);animation:pop .35s}
+.bub.me{align-self:flex-end;background:var(--blue);color:#fff;border-radius:16px 16px 4px 16px}
+.bub .t{display:block;font-size:10.5px;opacity:.6;margin-top:3px}
+.bub img,.bub .pic{display:block;width:100%;height:110px;border-radius:10px;margin-top:6px;background:linear-gradient(160deg,#cfd8e6,#9fb0c8);position:relative;overflow:hidden}
+.pic:before{content:"";position:absolute;left:8%;right:8%;top:30%;height:8px;background:#5d5f66;border-radius:2px;transform:skewY(-3deg)}
+.pic:after{content:"";position:absolute;left:12%;right:12%;top:34%;bottom:12%;border-left:5px solid #e8e6dc;border-right:5px solid #e8e6dc}
+
+/* roadmap */
+.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:900px){.phases{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.phases{grid-template-columns:1fr}}
+.phase{padding:16px}
+.phase .pn{font:italic 900 13px Archivo,sans-serif;color:var(--red);text-transform:uppercase;letter-spacing:.06em}
+.phase h3{font-size:17px;margin:4px 0 8px;color:var(--blue-deep)}
+.phase ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-soft)}
+.phase li{margin-bottom:4px}
+footer{padding:30px 0 50px;color:var(--ink-soft);font-size:13px;border-top:1px solid var(--line);background:#fff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hbar">
+    <a class="mark" href="#top" aria-label="G and B Patios demo, back to top"><span class="gb">G&amp;B</span><span class="pt">PATIOS</span></a>
+    <nav class="tabs" aria-label="Demo sections">
+      <a href="#planner">Patio Planner</a>
+      <a href="#flow">Lead to quote</a>
+      <a href="#crews">Crew Board</a>
+      <a href="#updates">Customer updates</a>
+      <a href="#plan">Roadmap</a>
+    </nav>
+    <div class="live"><i></i> Live demo, sample data</div>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="wrap">
+    <span class="kick">Demo for G&amp;B Patios</span>
+    <h1>Design a patio online, get the enquiry answered in seconds, and <em>keep every crew and customer in step.</em></h1>
+    <p>Your customers build their patio, carport or louvre roof in 3D on your website. Every plan lands in GoHighLevel with the size, roof and colour filled in, gets a reply straight away, and follows the job through to install day and the Google review.</p>
+    <div class="pills"><span>Gold Coast, Brisbane and Ipswich</span><span>Patios, carports, louvres</span><span>DIY kits Australia wide</span><span>QBCC 1199779</span><span>15 year structural guarantee</span></div>
+  </div>
+</div>
+
+<main>
+<section id="planner">
+  <div class="wrap">
+    <div class="shead"><span class="num">1</span><h2>Patio Planner</h2><p>Lives on gbpatios.com.au in place of the plain enquiry form. Drag the 3D view to look around. The customer sees their build change as they choose, and you get a lead that already says what they want.</p></div>
+    <div class="planner">
+      <div class="card stage">
+        <canvas id="scene" aria-label="3D preview of the patio being designed"></canvas>
+        <div class="tag" id="tag">Flat patio, attached, <b>6.0 x 4.0 m</b></div>
+        <div class="hint">Drag to rotate, scroll or pinch to zoom</div>
+        <div class="fallback" id="fallback">The 3D preview needs WebGL, which this browser has turned off. Every choice on the right still works and still creates the lead.</div>
+      </div>
+      <div class="card controls">
+        <div class="ctl"><span class="lbl" id="l-type">What are you building?</span>
+          <div class="seg" role="group" aria-labelledby="l-type" id="type">
+            <button data-v="flat" aria-pressed="true">Flat patio</button>
+            <button data-v="gable" aria-pressed="false">Gable patio</button>
+            <button data-v="insulated" aria-pressed="false">Insulated patio</button>
+            <button data-v="carport" aria-pressed="false">Carport</button>
+            <button data-v="louvre" aria-pressed="false">Louvre roof</button>
+          </div>
+        </div>
+        <div class="ctl"><span class="lbl" id="l-mount">How does it stand?</span>
+          <div class="seg" role="group" aria-labelledby="l-mount" id="mount">
+            <button data-v="attached" aria-pressed="true">Attached to the house</button>
+            <button data-v="free" aria-pressed="false">Freestanding</button>
+          </div>
+        </div>
+        <div class="ctl"><label for="w">Width along the house</label><div class="range"><input id="w" type="range" min="3" max="12" step="0.5" value="6"><output for="w" id="wo">6.0 m</output></div></div>
+        <div class="ctl"><label for="d">Depth out from the house</label><div class="range"><input id="d" type="range" min="2.4" max="8" step="0.2" value="4"><output for="d" id="do">4.0 m</output></div></div>
+        <div class="ctl" id="louvreCtl" hidden><label for="ang">Louvre blades open</label><div class="range"><input id="ang" type="range" min="0" max="135" step="5" value="60"><output for="ang" id="ango">60°</output></div></div>
+        <div class="ctl"><span class="lbl" id="l-col">Roof colour (Colorbond)</span><div class="sw" role="group" aria-labelledby="l-col" id="sw"></div><div class="swname" id="swname"></div></div>
+        <div class="ctl"><span class="lbl" id="l-build">Who builds it?</span>
+          <div class="seg" role="group" aria-labelledby="l-build" id="build">
+            <button data-v="gb" aria-pressed="true">G&amp;B builds it</button>
+            <button data-v="diy" aria-pressed="false">DIY kit, delivered</button>
+          </div>
+        </div>
+        <div class="two">
+          <div class="ctl"><label for="fname">First name</label><input id="fname" autocomplete="off" placeholder="Karen" maxlength="30"></div>
+          <div class="ctl"><label for="pc">Postcode</label><input id="pc" inputmode="numeric" maxlength="4" value="4211"></div>
+        </div>
+        <div class="summary">
+          <h3 id="sumTitle">Your build</h3>
+          <dl class="kv" id="kv"></dl>
+          <div class="zone" id="zone"></div>
+        </div>
+        <button class="cta" id="send">Book my free site visit</button>
+        <p class="small">Demo only. Nothing you type here is sent or stored. Price ranges can be shown here too once G&amp;B Patios sets them, or left for the site visit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="flow" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="shead"><span class="num">2</span><h2>From plan to quote, on autopilot</h2><p>What GoHighLevel does after someone presses the button above. Every step can be changed: the wording, the timing and who gets the alert.</p></div>
+    <div class="kpis">
+      <div class="card kpi"><div class="v" id="k1">14</div><div class="l">Enquiries this week</div></div>
+      <div class="card kpi"><div class="v">2 min</div><div class="l">Average first reply</div></div>
+      <div class="card kpi"><div class="v">7</div><div class="l">Quotes out, being followed up</div></div>
+      <div class="card kpi"><div class="v">38%</div><div class="l">Quotes that become jobs</div></div>
+      <div class="card kpi"><div class="v">66 <small style="font-size:14px;color:var(--good)">+3</small></div><div class="l">Google reviews, 3 new this month</div></div>
+    </div>
+    <div class="flowgrid">
+      <div class="card timeline">
+        <div class="top"><h3>Karen's patio plan</h3><button class="ghost" id="play">Play the flow</button></div>
+        <ol class="steps" id="steps"></ol>
+      </div>
+      <div>
+        <div class="card pipe">
+          <h3>Custom build pipeline</h3>
+          <div class="cols" id="cols"></div>
+          <p class="small">Plus a shorter pipeline for DIY kits: enquiry, quote, paid, shipped, delivered, review.</p>
+        </div>
+        <div class="alert" id="alert" aria-live="polite"><div class="ic">!</div><div id="alertTxt">Alert to Goran's phone: new patio plan, Pacific Pines, 6.0 x 4.0 m flat patio in Monument, wants a site visit.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="crews">
+  <div class="wrap">
+    <div class="shead"><span class="num">3</span><h2>Crew Board</h2><p>Every won job on one screen: which crew, which day, whether materials and approval are in. Crews check it on their phones. Drag a job to another day (or tap the job, then tap a day) and the customer gets a text with the new date.</p></div>
+    <div class="card board"><div class="bgrid" id="bgrid"></div></div>
+    <p class="small" style="margin-top:10px">If you already run jobs in ServiceM8, Tradify or simPRO, this board becomes a link between that tool and GoHighLevel instead.</p>
+  </div>
+</section>
+
+<section id="updates" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="shead"><span class="num">4</span><h2>Customer updates</h2><p>A patio job takes weeks from quote to install. The customer hears from you at every step without anyone picking up the phone, and the last text asks for a Google review.</p></div>
+    <div class="cust">
+      <div class="card track">
+        <h3>Job #1042: flat patio, Pacific Pines</h3>
+        <div class="bar" id="bar"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="barl"><span>Accepted</span><span>Approval</span><span>Materials</span><span>Install</span><span>Done</span><span>Review</span></div>
+        <p style="margin:16px 0 12px;color:var(--ink-soft)">Each text goes out when the job moves on the Crew Board or in the pipeline. Photos from the crew's phone go straight into the finished job message and into your gallery.</p>
+        <button class="ghost" id="playPhone">Play Karen's texts</button>
+      </div>
+      <div class="phone" aria-label="Sample text messages to a customer">
+        <div class="screen">
+          <div class="ph"><b>G&amp;B Patios</b>Text messages</div>
+          <div class="msgs" id="msgs" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="plan">
+  <div class="wrap">
+    <div class="shead"><span class="num">5</span><h2>How it could roll out</h2><p>One step at a time, starting with what brings in and answers leads. Nothing gets built until we've talked through how you work now.</p></div>
+    <div class="phases">
+      <div class="card phase"><div class="pn">Step 1</div><h3>GoHighLevel base</h3><ul><li>Pipelines for custom builds and DIY kits</li><li>Website form into GHL</li><li>Missed call text back on the 1300 and mobiles</li><li>Quote follow up and review requests</li><li>Weekly numbers by lead source</li></ul></div>
+      <div class="card phase"><div class="pn">Step 2</div><h3>More and better leads</h3><ul><li>Patio Planner on the website</li><li>Site visit booking by area</li><li>Google Ads and Facebook tracked to jobs</li></ul></div>
+      <div class="card phase"><div class="pn">Step 3</div><h3>Running the jobs</h3><ul><li>Crew Board</li><li>Customer update texts</li><li>Site measure form for the phone</li></ul></div>
+      <div class="card phase"><div class="pn">Step 4</div><h3>Growth</h3><ul><li>DIY kit builder with online ordering</li><li>Before and after gallery with reviews</li><li>Crew applications page</li></ul></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Demo built by Benjamin Vincent Yson for G&amp;B Patios. Sample data only: the customers, jobs, numbers and messages are made up, and nothing here is connected to your systems. Crew names come from your own testimonials. Colorbond colours are shown as close screen matches.</div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- state ---------- */
+const COLOURS = [
+  ['Monument','#323233'],['Basalt','#6D6C6E'],['Woodland Grey','#4B4C46'],['Shale Grey','#BDBFBA'],
+  ['Surfmist','#E4E2D5'],['Classic Cream','#E9DCB8'],['Paperbark','#CABFA4'],['Dune','#B1ADA3']
+];
+const NAMES = {flat:'Flat patio',gable:'Gable patio',insulated:'Insulated patio',carport:'Carport',louvre:'Louvre roof'};
+const st = {type:'flat',mount:'attached',W:6,D:4,H:2.7,ang:60,col:0,build:'gb'};
+
+/* ---------- controls ---------- */
+function seg(id, key, after){
+  const g = $(id);
+  g.addEventListener('click', e => {
+    const b = e.target.closest('button'); if(!b || b.disabled) return;
+    g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    st[key] = b.dataset.v; after && after(); update();
+  });
+}
+function setSeg(id, v){ $(id).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.v === v)); }
+seg('#type','type',() => {
+  if(st.type === 'louvre' || st.type === 'carport'){ st.mount = 'free'; setSeg('#mount','free'); }
+  $('#louvreCtl').hidden = st.type !== 'louvre';
+});
+seg('#mount','mount');
+seg('#build','build');
+const sw = $('#sw');
+COLOURS.forEach(([n,h],i) => {
+  const b = document.createElement('button');
+  b.style.background = h; b.setAttribute('aria-label', n); b.setAttribute('aria-pressed', i === 0); b.title = n;
+  b.onclick = () => { st.col = i; sw.querySelectorAll('button').forEach((x,j) => x.setAttribute('aria-pressed', j === i)); update(); };
+  sw.appendChild(b);
+});
+[['#w','W','#wo',v => v.toFixed(1)+' m'],['#d','D','#do',v => v.toFixed(1)+' m'],['#ang','ang','#ango',v => v+'°']].forEach(([id,k,o,f]) => {
+  $(id).addEventListener('input', e => { st[k] = parseFloat(e.target.value); $(o).textContent = f(st[k]); update(); });
+});
+$('#pc').addEventListener('input', update);
+$('#fname').addEventListener('input', update);
+
+function zoneFor(pc){
+  const n = parseInt(pc,10);
+  if(!/^\d{4}$/.test(pc)) return {ok:false, txt:'Enter a 4 digit postcode to check the area.'};
+  if(n >= 4207 && n <= 4230) return {ok:true, area:'Gold Coast', txt:'Gold Coast: inside the G&B build area.'};
+  if(n >= 4100 && n <= 4179) return {ok:true, area:'Brisbane', txt:'Brisbane: inside the G&B build area.'};
+  if(n >= 4300 && n <= 4306) return {ok:true, area:'Ipswich', txt:'Ipswich: inside the G&B build area.'};
+  return {ok:false, txt:'Outside the build area, so we offer a DIY kit delivered to your door.'};
+}
+function calc(){
+  const {type,mount,W,D} = st;
+  const front = Math.max(2, Math.ceil(W/4)+1);
+  let posts = mount === 'attached' ? front : front*2;
+  let roof, gutter;
+  if(type === 'louvre'){ const bays = W > 4.5 ? 2 : 1; posts = W > 6 ? 6 : 4; roof = Math.ceil(D/0.2)*bays+' blades, '+bays+(bays>1?' bays':' bay'); gutter = 'built into the frame'; }
+  else if(type === 'gable'){ roof = 2*Math.ceil(D/0.762)+' roof sheets'; gutter = (2*D).toFixed(1)+' m'; }
+  else if(type === 'insulated'){ roof = Math.ceil(W/1.0)+' insulated panels, '+D.toFixed(1)+' m long'; gutter = W.toFixed(1)+' m'; }
+  else { roof = Math.ceil(W/0.762)+' roof sheets, '+D.toFixed(1)+' m long'; gutter = W.toFixed(1)+' m'; }
+  return {area:(W*D).toFixed(1), posts, roof, gutter, dp: W > 6 ? 2 : 1, guar: type === 'louvre' ? '10 years structural' : '15 years structural'};
+}
+function update(){
+  const c = calc(), z = zoneFor($('#pc').value.trim()), col = COLOURS[st.col][0];
+  $('#swname').textContent = col;
+  $('#tag').innerHTML = esc(NAMES[st.type]+', '+(st.mount==='attached'?'attached':'freestanding')+', ')+'<b>'+st.W.toFixed(1)+' x '+st.D.toFixed(1)+' m</b>';
+  const rows = [['Area',c.area+' m²'],['Posts',c.posts],['Roof',c.roof],['Gutter',c.gutter],['Downpipes',c.dp],['Guarantee',c.guar]];
+  if(st.build === 'diy') rows.push(['Kit','BlueScope steel frame, Colorbond roof, brackets, fixings, instructions']);
+  else rows.push(['Building approval','checked at the free site visit']);
+  $('#kv').innerHTML = rows.map(([k,v]) => '<dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd>').join('');
+  const zone = $('#zone');
+  if(st.build === 'diy'){ zone.className = 'zone'; zone.textContent = 'DIY kit: delivered Australia wide. Freight is worked out from your postcode.'; }
+  else { zone.className = 'zone'+(z.ok?'':' out'); zone.textContent = z.txt; }
+  $('#sumTitle').textContent = 'Your '+NAMES[st.type].toLowerCase()+' in '+col;
+  $('#send').textContent = st.build === 'diy' || !z.ok ? 'Get my DIY kit quote' : 'Book my free site visit';
+  build3d();
+}
+
+/* ---------- 3D ---------- */
+let userMoved = false, THREE, scene, camera, renderer, controls, group, mats = {}, blades = [], ready = false;
+async function init3d(){
+  try{
+    THREE = await import('three');
+    const {OrbitControls} = await import('three/addons/controls/OrbitControls.js');
+    const canvas = $('#scene');
+    renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    scene = new THREE.Scene(); scene.background = new THREE.Color('#DDE7F3'); scene.fog = new THREE.Fog('#DDE7F3', 40, 90);
+    camera = new THREE.PerspectiveCamera(40, 1, 0.1, 200);
+    controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true; controls.maxPolarAngle = Math.PI*0.48; controls.minDistance = 6; controls.maxDistance = 40;
+    controls.autoRotate = !reduce; controls.autoRotateSpeed = 0.5;
+    canvas.addEventListener('pointerdown', () => { controls.autoRotate = false; userMoved = true; });
+    scene.add(new THREE.HemisphereLight('#ffffff', '#7a8a6a', 0.9));
+    const sun = new THREE.DirectionalLight('#fff6e6', 1.6);
+    sun.position.set(10, 16, 12); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, {left:-16, right:16, top:16, bottom:-16, near:1, far:60});
+    scene.add(sun);
+    const M = (c,o={}) => new THREE.MeshStandardMaterial(Object.assign({color:c, roughness:.8}, o));
+    mats = {grass:M('#7FA25A'), slab:M('#C9C6BE'), wall:M('#EFE9DE'), trim:M('#3B3A40'), houseRoof:M('#8B8E96'), glass:M('#8FB3D1',{roughness:.2,metalness:.2}),
+      post:M('#F2F2EE',{roughness:.5}), under:M('#FBFBF8',{roughness:.6}), car:M('#B3261E',{roughness:.35,metalness:.4}), tyre:M('#1E1E22'),
+      roof:M(COLOURS[0][1],{roughness:.45,metalness:.3,side:THREE.DoubleSide}), screen:M('#ffffff',{transparent:true,opacity:.35,side:THREE.DoubleSide})};
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(120,120), mats.grass);
+    ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; scene.add(ground);
+    // house
+    const house = new THREE.Group();
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(16, 3.2, 9), mats.wall); wall.position.set(0, 1.6, -4.5); wall.castShadow = wall.receiveShadow = true; house.add(wall);
+    const shape = new THREE.Shape(); shape.moveTo(-5.2,0); shape.lineTo(5.2,0); shape.lineTo(0,2.6); shape.lineTo(-5.2,0);
+    const rg = new THREE.ExtrudeGeometry(shape, {depth:17, bevelEnabled:false}); rg.rotateY(Math.PI/2); rg.translate(-8.5, 3.2, -4.5);
+    const hr = new THREE.Mesh(rg, mats.houseRoof); hr.castShadow = true; house.add(hr);
+    [[-4.5,1.6],[4.5,1.6]].forEach(([x,y]) => { const w = new THREE.Mesh(new THREE.BoxGeometry(2.2,1.3,0.06), mats.glass); w.position.set(x,y,0.01); house.add(w); });
+    const door = new THREE.Mesh(new THREE.BoxGeometry(2.6,2.3,0.06), mats.glass); door.position.set(0,1.15,0.01); house.add(door);
+    scene.add(house);
+    group = new THREE.Group(); scene.add(group);
+    ready = true;
+    const ro = new ResizeObserver(resize); ro.observe($('.stage')); resize();
+    build3d(true);
+    renderer.setAnimationLoop(tick);
+  }catch(err){
+    $('#fallback').style.display = 'flex'; $('#scene').style.display = 'none';
+  }
+}
+function resize(){
+  const el = $('.stage'), w = el.clientWidth, h = el.clientHeight;
+  if(!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); if(!userMoved) frame();
+}
+let lastKey = '';
+function build3d(force){
+  if(!ready) return;
+  const key = [st.type, st.mount, st.W, st.D, st.H].join('|');
+  mats.roof.color.set(COLOURS[st.col][1]);
+  blades.forEach(b => b.rotation.x = -st.ang*Math.PI/180);
+  if(key === lastKey && !force) return;
+  const first = !lastKey; lastKey = key;
+  group.traverse(o => { if(o.geometry) o.geometry.dispose(); });
+  group.clear(); blades = [];
+  const {type, mount, W, D, H} = st;
+  const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; group.add(m); return m; };
+  const slab = add(new THREE.BoxGeometry(W+0.6, 0.1, D+0.4), mats.slab, 0, 0.05, D/2+0.1); slab.castShadow = false;
+  const front = Math.max(2, Math.ceil(W/4)+1);
+  const postsAt = z => { for(let i=0;i<front;i++){ const x = -W/2+0.15+i*(W-0.3)/(front-1); add(new THREE.BoxGeometry(0.1,H,0.1), mats.post, x, H/2, z); } };
+  if(type === 'louvre'){
+    const xs = W > 6 ? [-W/2+0.1, 0, W/2-0.1] : [-W/2+0.1, W/2-0.1];
+    [0.35, D-0.1].forEach(z => xs.forEach(x => add(new THREE.BoxGeometry(0.15,H,0.15), mats.post, x, H/2, z)));
+    const fy = H+0.12;
+    add(new THREE.BoxGeometry(W,0.25,0.15), mats.roof, 0, fy, D-0.1);
+    add(new THREE.BoxGeometry(W,0.25,0.15), mats.roof, 0, fy, 0.35);
+    add(new THREE.BoxGeometry(0.15,0.25,D-0.45), mats.roof, -W/2+0.08, fy, (D+0.25)/2);
+    add(new THREE.BoxGeometry(0.15,0.25,D-0.45), mats.roof, W/2-0.08, fy, (D+0.25)/2);
+    const bays = W > 4.5 ? 2 : 1, bw = (W-0.3)/bays;
+    if(bays === 2) add(new THREE.BoxGeometry(0.12,0.22,D-0.45), mats.roof, 0, fy, (D+0.25)/2);
+    for(let b=0;b<bays;b++){
+      const cx = -W/2+0.15+bw*(b+0.5);
+      for(let z=0.55; z<D-0.2; z+=0.2){ const m = add(new THREE.BoxGeometry(bw-0.1,0.025,0.18), mats.roof, cx, fy, z); m.rotation.x = -st.ang*Math.PI/180; blades.push(m); }
+    }
+  } else if(type === 'gable'){
+    const rise = Math.min(W/2*Math.tan(15*Math.PI/180), 1.6), th = Math.atan(rise/(W/2)), half = (W/2+0.15)/Math.cos(th);
+    postsAt(D-0.1); if(mount === 'free') postsAt(0.3);
+    add(new THREE.BoxGeometry(W,0.2,0.1), mats.post, 0, H-0.1, D-0.1);
+    add(new THREE.BoxGeometry(W,0.2,0.1), mats.post, 0, H-0.1, mount==='free'?0.3:0.05);
+    const L = add(new THREE.BoxGeometry(half,0.04,D+0.3), mats.roof, -W/4, H+rise/2, D/2); L.rotation.z = th;
+    const R = add(new THREE.BoxGeometry(half,0.04,D+0.3), mats.roof, W/4, H+rise/2, D/2); R.rotation.z = -th;
+    add(new THREE.BoxGeometry(0.08,0.12,D+0.3), mats.post, 0, H+rise, D/2);
+    const tri = new THREE.Shape(); tri.moveTo(-W/2,0); tri.lineTo(W/2,0); tri.lineTo(0,rise); tri.lineTo(-W/2,0);
+    const g = add(new THREE.ShapeGeometry(tri), mats.screen, 0, H, D+0.05); g.castShadow = false;
+  } else {
+    const drop = Math.max(0.12, D*Math.tan(2.5*Math.PI/180)), back = H+drop, th = Math.atan(drop/D);
+    postsAt(D-0.1); if(mount === 'free') postsAt(0.3);
+    add(new THREE.BoxGeometry(W,0.2,0.1), mats.post, 0, H-0.1, D-0.1);
+    if(mount === 'free'){ for(let i=0;i<front;i++){ const x = -W/2+0.15+i*(W-0.3)/(front-1); add(new THREE.BoxGeometry(0.1,drop+0.05,0.1), mats.post, x, H+drop/2, 0.3); } add(new THREE.BoxGeometry(W,0.2,0.1), mats.post, 0, back-0.1, 0.3); }
+    else add(new THREE.BoxGeometry(W,0.18,0.08), mats.post, 0, back-0.09, 0.04);
+    const thick = type === 'insulated' ? 0.075 : 0.035;
+    const r = add(new THREE.BoxGeometry(W+0.3, thick, D+0.25), mats.roof, 0, (H+back)/2+0.02, D/2); r.rotation.x = th;
+    if(type === 'insulated'){ const u = add(new THREE.BoxGeometry(W+0.28, 0.03, D+0.23), mats.under, 0, (H+back)/2-0.035, D/2); u.rotation.x = th; }
+    add(new THREE.BoxGeometry(W+0.3,0.12,0.12), mats.roof, 0, H-0.02, D+0.15);
+  }
+  if(type === 'carport'){
+    const car = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1.8,0.7,4.2), mats.car); body.position.y = 0.6;
+    const cab = new THREE.Mesh(new THREE.BoxGeometry(1.6,0.55,2.2), mats.glass); cab.position.set(0,1.2,-0.2);
+    car.add(body, cab);
+    [[-0.85,1.4],[0.85,1.4],[-0.85,-1.4],[0.85,-1.4]].forEach(([x,z]) => { const t = new THREE.Mesh(new THREE.CylinderGeometry(0.33,0.33,0.25,20), mats.tyre); t.rotation.z = Math.PI/2; t.position.set(x,0.33,z); car.add(t); });
+    car.traverse(o => { if(o.isMesh) o.castShadow = true; });
+    car.position.set(0, 0.1, D/2); car.scale.setScalar(Math.min(1, (D-0.4)/4.4)); group.add(car);
+  }
+  if(first) frame();
+  controls.target.set(0, 1.4, D/2);
+}
+function frame(){
+  const a = camera.aspect || 1, dist = (Math.max(st.W, st.D)*1.1+9)*(a < 1.2 ? 1.2/a : 1);
+  camera.position.set(dist*0.55, dist*0.42, st.D+dist*0.8);
+}
+function tick(){ controls.update(); renderer.render(scene, camera); }
+
+/* ---------- flow ---------- */
+const PIPE = {
+  'New enquiry':[['Mark T.','Coomera, carport 6 x 6'],['Priya S.','Sunnybank, louvres 4 x 4']],
+  'Site visit booked':[['Dean R.','Oxenford, gable 7 x 5'],['Lou B.','Upper Coomera, flat 5 x 3.6']],
+  'Quote sent':[['Tanya W.','Ipswich, insulated 6 x 4'],['Greg H.','Helensvale, carport 3 x 6']]
+};
+const COUNTS = {'New enquiry':5,'Site visit booked':4,'Quote sent':7};
+function drawPipe(newLead){
+  $('#cols').innerHTML = Object.keys(PIPE).map(k => {
+    const n = COUNTS[k] + (newLead && k === 'New enquiry' ? 1 : 0);
+    const cards = (newLead && k === 'New enquiry' ? '<div class="lead new"><b>'+esc(newLead.name)+'</b>'+esc(newLead.line)+'</div>' : '') +
+      PIPE[k].map(([a,b]) => '<div class="lead"><b>'+esc(a)+'</b>'+esc(b)+'</div>').join('');
+    return '<div class="col"><div class="ch"><span>'+esc(k)+'</span><b>'+n+'</b></div>'+cards+'</div>';
+  }).join('');
+}
+function flowSteps(p){
+  const ask = p.diy ? 'wants a DIY kit quote' : 'wants a site visit';
+  const next = p.diy ? 'Goran will email your kit quote with freight today.' : 'Goran will call you today to book your free site visit.';
+  return [
+    ['0:00','Plan lands in GoHighLevel', 'Contact, size, roof type, colour, postcode and "'+ask+'" filled in. Tagged '+p.area+'.'],
+    ['0:05','Text to '+p.name, 'Hi '+p.name+', thanks for your plan: '+p.desc+'. '+next+' G&B Patios'],
+    ['0:05','Alert to Goran', 'New plan from '+p.name+' ('+p.pc+'): '+p.desc+'. Call within the hour.'],
+    p.diy ? ['1 hour','Quote not sent yet?', 'Reminder to the office, so the kit quote goes out the same day.'] : ['1 hour','Nobody called yet?', 'Reminder to the office and a booking link sent to '+p.name+' with site visit times near '+p.area+'.'],
+    ['Quote sent','Follow up starts', 'Day 2 text, day 5 email with photos of a similar build, day 7 call task, day 14 last check in. Ezi Pay info if they ticked finance.'],
+    ['Reply','Follow up stops', 'The moment '+p.name+' replies or accepts, the reminders stop and the job moves to Won'+(p.diy?' and into kit dispatch.':' and onto the Crew Board.'), true],
+    ['Final payment','Google review request', 'Thank you text with your review link, one reminder 3 days later, then nothing.']
+  ];
+}
+let flowTimer = [];
+function playFlow(p){
+  flowTimer.forEach(clearTimeout); flowTimer = [];
+  const steps = flowSteps(p);
+  $('#steps').innerHTML = steps.map(([w,t,m,stop],i) => '<li'+(stop?' class="stop"':'')+'><span class="dot">'+(i+1)+'</span><div class="when">'+esc(w)+'</div><div class="what">'+esc(t)+'</div><div class="msg">'+esc(m)+'</div></li>').join('');
+  $('#steps').closest('.timeline').querySelector('h3').textContent = p.name+"'s patio plan";
+  const lis = [...$('#steps').children];
+  lis.forEach((li,i) => flowTimer.push(setTimeout(() => li.classList.add('on'), reduce ? 0 : 350+i*650)));
+  drawPipe({name:p.name, line:p.area+', '+p.short});
+  $('#alertTxt').textContent = 'Alert to Goran\'s phone: new plan from '+p.name+', '+p.desc+', '+(p.diy?'wants a DIY kit quote.':'wants a site visit.');
+  $('#k1').textContent = '15';
+}
+function currentPlan(){
+  const name = ($('#fname').value.trim() || 'Karen').slice(0,30);
+  const pc = $('#pc').value.trim() || '4211', z = zoneFor(pc);
+  const col = COLOURS[st.col][0], size = st.W.toFixed(1)+' x '+st.D.toFixed(1)+' m';
+  const diy = st.build === 'diy' || !z.ok;
+  return {name, pc, diy, area: z.area || 'DIY kit', desc: size+' '+NAMES[st.type].toLowerCase()+' in '+col+(diy?' (DIY kit)':''), short: NAMES[st.type].toLowerCase()+' '+size};
+}
+$('#play').onclick = () => playFlow(currentPlan());
+$('#send').onclick = () => {
+  const p = currentPlan(); playFlow(p);
+  toast('Sent to GoHighLevel (demo): '+p.name+', '+p.desc+'.');
+  $('#flow').scrollIntoView({behavior: reduce ? 'auto' : 'smooth'});
+};
+
+/* ---------- crew board ---------- */
+const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+const CREWS = [['Rick\'s crew','Gold Coast north'],['Brett and Robert','Gold Coast south'],['Sub crew','Brisbane and Ipswich']];
+const JOBS = [
+  {id:1,c:0,d:0,who:'Karen M.',job:'Flat patio 6 x 4, Pacific Pines',st:['Materials in','ok']},
+  {id:2,c:0,d:2,who:'Dean R.',job:'Gable patio 7 x 5, Oxenford',st:['Approval due Tue','wait']},
+  {id:3,c:1,d:1,who:'Sue L.',job:'Insulated patio 5 x 4, Mudgeeraba',st:['Ready','ok']},
+  {id:4,c:1,d:3,who:'Bill P.',job:'Louvres 4 x 3.6, Robina',st:['Louvres on order','wait']},
+  {id:5,c:2,d:0,who:'Tanya W.',job:'Insulated patio 6 x 4, Ipswich',st:['Ready','ok']},
+  {id:6,c:2,d:2,who:'Amit K.',job:'Carport 6 x 6, Sunnybank',st:['Materials in','ok']},
+  {id:7,c:2,d:4,who:'Kit dispatch',job:'DIY patio kit to Toowoomba',st:['Freight booked','ok'],diy:true}
+];
+let selJob = null;
+function drawBoard(){
+  let h = '<div class="hd">Crew</div>'+DAYS.map(d => '<div class="hd">'+d+'</div>').join('');
+  CREWS.forEach(([n,s],c) => {
+    h += '<div class="crew">'+esc(n)+'<small>'+esc(s)+'</small></div>';
+    DAYS.forEach((d,di) => {
+      h += '<div class="cell'+(selJob?' armed':'')+'" data-c="'+c+'" data-d="'+di+'" aria-label="'+esc(n+', '+d)+'">'+
+        JOBS.filter(j => j.c === c && j.d === di).map(j => '<div class="job'+(j.diy?' diy':'')+(selJob===j.id?' sel':'')+'" draggable="true" tabindex="0" role="button" data-id="'+j.id+'"><b>'+esc(j.who)+'</b>'+esc(j.job)+'<br><span class="chip '+j.st[1]+'">'+esc(j.st[0])+'</span></div>').join('')+'</div>';
+    });
+  });
+  $('#bgrid').innerHTML = h;
+}
+function moveJob(id, c, d){
+  const j = JOBS.find(x => x.id === id); if(!j) return;
+  if(j.c === c && j.d === d){ selJob = null; drawBoard(); return; }
+  j.c = c; j.d = d; selJob = null; drawBoard();
+  const day = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday'}[DAYS[d]];
+  toast(j.diy ? 'Kit dispatch moved to '+day+'. Tracking text goes out on the day.' : 'Text sent to '+j.who+': your install has moved to '+day+' at 7am with '+CREWS[c][0]+'.');
+}
+const bg = $('#bgrid');
+bg.addEventListener('click', e => {
+  const job = e.target.closest('.job'), cell = e.target.closest('.cell');
+  if(job && !selJob){ selJob = +job.dataset.id; drawBoard(); return; }
+  if(job && selJob === +job.dataset.id){ selJob = null; drawBoard(); return; }
+  if(cell && selJob){ moveJob(selJob, +cell.dataset.c, +cell.dataset.d); }
+});
+bg.addEventListener('keydown', e => { if((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('job')){ e.preventDefault(); e.target.click(); } });
+bg.addEventListener('dragstart', e => { const j = e.target.closest('.job'); if(j){ e.dataTransfer.setData('text/plain', j.dataset.id); } });
+bg.addEventListener('dragover', e => { const c = e.target.closest('.cell'); if(c){ e.preventDefault(); bg.querySelectorAll('.target').forEach(x => x.classList.remove('target')); c.classList.add('target'); } });
+bg.addEventListener('dragleave', e => { const c = e.target.closest('.cell'); if(c && !c.contains(e.relatedTarget)) c.classList.remove('target'); });
+bg.addEventListener('drop', e => { const c = e.target.closest('.cell'); if(c){ e.preventDefault(); moveJob(+e.dataTransfer.getData('text/plain'), +c.dataset.c, +c.dataset.d); } });
+
+/* ---------- customer texts ---------- */
+const TEXTS = [
+  [0,'Hi Karen, thanks for going ahead with your 6 x 4 m flat patio in Monument. Your deposit is in. We will text you at every step. G&B Patios','Mon 9:02am'],
+  [1,'Good news: building approval for your patio came through today.','Wed 2:15pm'],
+  [2,'Your Colorbond roof sheets and steel are in our yard. Install is booked for Monday 7am with Rick\'s crew.','Thu 4:40pm'],
+  [-1,'Great, thanks! Do I need to move anything?','Thu 5:03pm'],
+  [-2,'Rick will call at 6:45 on the day. Just clear the area along the back wall if you can.','Thu 5:10pm'],
+  [3,'Rick\'s crew is on the way, about 20 minutes out.','Mon 6:41am'],
+  [4,'All done! Here is your new patio. Your final invoice is in your email.','Mon 3:55pm','pic'],
+  [5,'Thanks for choosing G&B Patios, Karen. If you are happy with the patio, a Google review would mean a lot to our small team. Tap here to leave one.','Wed 10:00am']
+];
+let phoneTimer = [];
+function playPhone(){
+  phoneTimer.forEach(clearTimeout); phoneTimer = [];
+  const box = $('#msgs'); box.innerHTML = '';
+  const bars = [...$('#bar').children]; bars.forEach(b => b.classList.remove('on'));
+  TEXTS.forEach(([stage,txt,t,pic],i) => phoneTimer.push(setTimeout(() => {
+    const b = document.createElement('div'); b.className = 'bub'+(stage === -1 ? ' me' : '');
+    b.textContent = txt;
+    if(pic){ const p = document.createElement('div'); p.className = 'pic'; p.setAttribute('role','img'); p.setAttribute('aria-label','Photo of the finished patio'); b.appendChild(p); }
+    const ts = document.createElement('span'); ts.className = 't'; ts.textContent = t; b.appendChild(ts);
+    box.appendChild(b); box.scrollTop = box.scrollHeight;
+    if(stage >= 0) bars.forEach((x,k) => x.classList.toggle('on', k <= stage));
+  }, reduce ? 0 : i*900)));
+}
+$('#playPhone').onclick = playPhone;
+
+/* ---------- toast ---------- */
+let tt;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 4200); }
+
+/* ---------- start ---------- */
+update();
+drawPipe(null);
+playFlow({name:'Karen', pc:'4211', area:'Gold Coast', desc:'6.0 x 4.0 m flat patio in Monument', short:'flat patio 6.0 x 4.0 m'});
+drawBoard();
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ playPhone(); io.disconnect(); } }), {threshold:.3});
+io.observe($('#updates'));
+init3d();
+</script>
+</body>
+</html>
