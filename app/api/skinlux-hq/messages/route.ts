@@ -1,3 +1,4 @@
+import { accountOf } from "@/lib/skinlux-ghl";
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxHqReqOk } from "@/lib/skinlux-hq-gate";
 import { SKINLUX_MESSAGES } from "@/lib/skinlux-messages";
@@ -20,7 +21,7 @@ const RISKY_ALL = /(guarantee|100% results|permanent results|no risk)/i;
 const isInj = (name: string) => /(_inj_|injectables)/.test(name);
 
 function conn(c: Clinic) {
-  const C = c.toUpperCase();
+  const C = accountOf(c).toUpperCase();
   const token = process.env[`GHL_SKINLUX_${C}_TOKEN`], loc = process.env[`GHL_SKINLUX_${C}_LOCATION`];
   return token && loc ? { token, loc, h: { Authorization: `Bearer ${token}`, Version: "2021-07-28", Accept: "application/json", "Content-Type": "application/json" } } : null;
 }

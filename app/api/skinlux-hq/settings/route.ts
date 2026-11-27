@@ -1,3 +1,4 @@
+import { CLINIC_DETAIL, accountOf, forgetClinicDetails, oneAccount } from "@/lib/skinlux-ghl";
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxHqReqOk } from "@/lib/skinlux-hq-gate";
 import { cleanSettings, loadSettings, saveSettings } from "@/lib/skinlux-settings";
@@ -11,10 +12,14 @@ import { cleanSettings, loadSettings, saveSettings } from "@/lib/skinlux-setting
 export const dynamic = "force-dynamic";
 const GHL = "https://services.leadconnectorhq.com";
 const CLINIC_VALUES = ["clinic_phone", "clinic_address", "clinic_hours", "sender_name", "booking_link", "consult_link", "review_link", "voucher_link", "shop_link", "abandoned_offer", "birthday_offer"];
+// With one account for both clinics, the clinic's own details live in suffixed values
+// (clinic_phone_booragoon, clinic_phone_leederville, ...); links and offers are shared.
+const PER_CLINIC: string[] = CLINIC_DETAIL.map(([k]) => k);
+const vname = (name: string, clinic: string) => (oneAccount() && PER_CLINIC.includes(name) ? `${name}_${clinic}` : name);
 const json = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
 
 function conn(c: string) {
-  const C = c.toUpperCase();
+  const C = accountOf(c).toUpperCase();
   const token = process.env[`GHL_SKINLUX_${C}_TOKEN`], loc = process.env[`GHL_SKINLUX_${C}_LOCATION`];
   return token && loc ? { loc, h: { Authorization: `Bearer ${token}`, Version: "2021-07-28", Accept: "application/json", "Content-Type": "application/json" } } : null;
 }
@@ -25,7 +30,8 @@ async function clinicValues(c: string): Promise<Record<string, { id: string; val
   if (!r || !r.ok) return null;
   const d = (await r.json().catch(() => ({}))) as { customValues?: { id: string; name: string; value?: string }[] };
   const found: Record<string, { id: string; value: string }> = {};
-  (d.customValues || []).forEach((v) => { if (CLINIC_VALUES.includes(v.name)) found[v.name] = { id: v.id, value: v.value || "" }; });
+  const want = Object.fromEntries(CLINIC_VALUES.map((n) => [vname(n, c), n]));
+  (d.customValues || []).forEach((v) => { if (want[v.name]) found[want[v.name]] = { id: v.id, value: v.value || "" }; });
   return found;
 }
 
@@ -58,11 +64,12 @@ export async function PUT(req: NextRequest) {
         if (/link$/.test(name) && value && !/^https?:\/\/\S+$/.test(value)) return json(422, { ok: false, error: `${name.replace(/_/g, " ")} has to be a web link starting with https://` });
         if (/guarantee|best in|number one|no risk/i.test(value)) return json(422, { ok: false, error: "Words like guaranteed or best can't be used in health advertising" });
         if (!cur[name] || cur[name].value === value) continue;
-        const r = await fetch(`${GHL}/locations/${k.loc}/customValues/${cur[name].id}`, { method: "PUT", headers: k.h, body: JSON.stringify({ name, value }) }).catch(() => null);
+        const r = await fetch(`${GHL}/locations/${k.loc}/customValues/${cur[name].id}`, { method: "PUT", headers: k.h, body: JSON.stringify({ name: vname(name, body.clinic), value }) }).catch(() => null);
         if (!r || !r.ok) return json(502, { ok: false, error: `GoHighLevel didn't save ${name.replace(/_/g, " ")}` });
         saved.push(name);
       }
-      return json(200, { ok: true, saved });
+      forgetClinicDetails();
+      return json(200, { ok: true, saved, oneAccount: oneAccount() });
     }
     return json(400, { ok: false, error: "Nothing to save" });
   } catch (e) {

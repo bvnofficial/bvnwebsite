@@ -1,3 +1,4 @@
+import { accountOf } from "@/lib/skinlux-ghl";
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxHqReqOk } from "@/lib/skinlux-hq-gate";
 
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
   const ch = String(body.ch || "sms");
   if (!["booragoon", "leederville"].includes(clinic) || !contactId || !text) return no(400, "Missing clinic, contact or message");
 
-  const token = process.env[`GHL_SKINLUX_${clinic.toUpperCase()}_TOKEN`];
+  const token = process.env[`GHL_SKINLUX_${accountOf(clinic).toUpperCase()}_TOKEN`];
   if (!token) return no(503, "That clinic isn't connected");
 
   // check the contact's tags on the server, not only what the page says

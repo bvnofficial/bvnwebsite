@@ -4,6 +4,7 @@ import { loadSettings } from "@/lib/skinlux-settings";
 import { logEvent, readEvents, storeConfigured } from "@/lib/skinlux-store";
 import { loadIntake, loadStock, loadTraining, loadWaitlist } from "@/lib/skinlux-apps";
 import { timelyDiary } from "@/lib/skinlux-timely-feed";
+import { oneAccount } from "@/lib/skinlux-ghl";
 
 /**
  * Skinlux HQ live feed (read only).
@@ -148,8 +149,12 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
     const lastT = field(c, "Last treatment"), lastD = field(c, "Last treatment date");
     const pkg = field(c, "Package name"), left = num(field(c, "Package sessions left"));
     const product = field(c, "Last product bought");
+    // one account for both clinics: the Clinic field (last clinic they dealt with), then the clinic tag
+    const cf = field(c, "Clinic").toLowerCase();
+    const cl: Clinic = /leederville/.test(cf) ? "leederville" : /booragoon/.test(cf) ? "booragoon"
+      : tags.includes("clinic-leederville") && !tags.includes("clinic-booragoon") ? "leederville" : tags.includes("clinic-booragoon") ? "booragoon" : clinic;
     const out = {
-      id: c.id, name, clinic, phone: clean(c.phone), email: clean(c.email),
+      id: c.id, name, clinic: cl, phone: clean(c.phone), email: clean(c.email),
       since: c.dateAdded ? new Date(ms(c.dateAdded)).toLocaleDateString("en-AU", { month: "short", year: "numeric" }) : "",
       visits: tags.filter((t) => t.startsWith("treated-")).length, spend: 0, points: 0,
       last: lastT ? `${lastD ? lastD + ", " : ""}${lastT}` : "No treatment recorded yet",
@@ -196,7 +201,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
     return {
       id: v.id, contactId: v.contactId,
       name: clean(v.fullName || v.contactName) || ct.name || clean(v.phone) || "Unknown",
-      ch: chKey(lastType), ghlType: lastType, clinic,
+      ch: chKey(lastType), ghlType: lastType, clinic: ct.clinic || clinic,
       at: when(ms(v.lastMessageDate || v.dateUpdated)),
       unread: num(v.unreadCount) > 0,
       nurse: tags.includes("checkin-worried") || tags.includes("automation-paused"),
@@ -223,7 +228,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
       const ct = byId[o.contactId] || {};
       return {
         id: o.id, n: clean((o.contact && o.contact.name) || ct.name || o.name) || "Lead",
-        src: clean(o.source) || ct.src || "Not recorded", i: clean(o.name) || "", c: clinic, s,
+        src: clean(o.source) || ct.src || "Not recorded", i: clean(o.name) || "", c: ct.clinic || clinic, s,
         age: age(ms(o.createdAt)), v: num(o.monetaryValue), inj: !!ct.inj,
         cv: (convos.find((x) => x.contactId === o.contactId) || {}).id,
       };
@@ -232,7 +237,7 @@ async function readClinic(clinic: Clinic, token: string, L: string, errors: stri
   const tasks = (((taskRes && taskRes.tasks) || []) as J[]).filter((t) => !/^\(Example\)|bvnsystem/i.test(String(t.title || ""))).map((t) => {
     const c = (t.contactDetails || {}) as J;
     const due = ms(t.dueDate);
-    return { id: String(t._id || t.id), title: clean(t.title), body: clean(t.body), clinic, due, dueTxt: due ? when(due) : "",
+    return { id: String(t._id || t.id), title: clean(t.title), body: clean(t.body), clinic: (byId[String(t.contactId || c.id || "")] || {}).clinic || clinic, due, dueTxt: due ? when(due) : "",
       overdue: !!due && due < Date.now(), name: clean([c.firstName, c.lastName].filter(Boolean).join(" ")), phone: clean(c.phone),
       contactId: String(t.contactId || c.id || ""), assigned: clean(t.assignedTo || "") };
   });
@@ -305,7 +310,9 @@ async function build(): Promise<J> {
   const errors: string[] = [];
   const sitePromise = siteCheck();
   const timelyPromise = timelyDiary().catch(() => ({ on: true, fetchedAt: Date.now(), staff: [], failed: ["all"], appts: [] }));
+  const one = oneAccount();
   const parts = await Promise.all(CLINICS.map(async (c) => {
+    if (one && c !== "booragoon") return null; // one account: read it once, split by each contact's clinic
     const { token, loc } = keys(c);
     if (!token || !loc) return null;
     return readClinic(c, token, loc, errors);
@@ -324,7 +331,8 @@ async function build(): Promise<J> {
   return {
     configured: true,
     syncedAt: Date.now(),
-    clinics: CLINICS.filter((c, i) => !!parts[i]),
+    clinics: one && parts[0] ? CLINICS.slice() : CLINICS.filter((c, i) => !!parts[i]),
+    oneAccount: one,
     canSend: process.env.SKINLUX_HQ_SEND === "1",
     clients: allClients, convos, leads,
     sources: Object.entries(srcCount).map(([k, v]) => [k, v[0], v[1]]).sort((a, b) => (b[1] as number) - (a[1] as number)),

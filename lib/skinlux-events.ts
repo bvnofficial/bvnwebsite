@@ -6,7 +6,7 @@
 import { Clinic, DEFAULT_PRODUCT_LIFE, PRODUCTS, aftercareSms, findTreatment, ghlDate } from "@/lib/skinlux-data";
 import { AUTO_OF_KIND, currentSettings, loadSettings, productLife, treatmentDays } from "@/lib/skinlux-settings";
 import { logEvent } from "@/lib/skinlux-store";
-import { recordInGhl } from "@/lib/skinlux-ghl";
+import { accountOf, ghlKeys, recordInGhl } from "@/lib/skinlux-ghl";
 import { takeFromStock } from "@/lib/skinlux-apps";
 import { meLink } from "@/lib/skinlux-me";
 
@@ -39,9 +39,9 @@ function slug(x: string): string {
 /** Jellie's edited aftercare from the HQ message editor (GoHighLevel custom
  *  value msg_aftercare_*), or the built in wording if it isn't set or reachable. */
 export async function editedAftercare(clinic: Clinic, treatment: string, injectable: boolean): Promise<string | null> {
-  const C = clinic.toUpperCase();
-  const token = process.env[`GHL_SKINLUX_${C}_TOKEN`], loc = process.env[`GHL_SKINLUX_${C}_LOCATION`];
-  if (!token || !loc) return null;
+  const k = ghlKeys(clinic);
+  if (!k) return null;
+  const { token, loc } = k;
   const r = await fetch(`https://services.leadconnectorhq.com/locations/${loc}/customValues`, {
     headers: { Authorization: `Bearer ${token}`, Version: "2021-07-28", Accept: "application/json" }, cache: "no-store",
   }).catch(() => null);
@@ -150,7 +150,7 @@ export async function sendEvent(b: Extract<Built, { ok: true }>, opts: { skipRec
     const st = await loadSettings();
     if (st.automations[b.clinic] && st.automations[b.clinic][auto] === false) return { ok: true, status: 200, paused: true };
   }
-  const url = process.env[`GHL_HOOK_${b.clinic.toUpperCase()}_${b.kind}`];
+  const url = process.env[`GHL_HOOK_${accountOf(b.clinic).toUpperCase()}_${b.kind}`];
   if (!url) return { ok: false, status: 503, error: `The ${b.kind.toLowerCase()} workflow isn't connected yet` };
   const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b.payload) }).catch(() => null);
   if (!r || !r.ok) return { ok: false, status: 502, error: "GoHighLevel didn't accept it" };

@@ -12,8 +12,14 @@ const V = "2021-07-28";
 // eslint-disable-next-line
 type J = Record<string, any>;
 
+/** One GoHighLevel sub account for both clinics (owner, 27 Nov 2026): set Vercel env
+ *  SKINLUX_ONE_ACCOUNT=1 and every clinic uses the main (Booragoon) account. The clinic
+ *  is then carried by the tag clinic-booragoon or clinic-leederville and the Clinic field. */
+export const oneAccount = (): boolean => process.env.SKINLUX_ONE_ACCOUNT === "1";
+export const accountOf = (clinic: string): string => (oneAccount() ? "booragoon" : clinic.toLowerCase());
+
 export function ghlKeys(clinic: string): { token: string; loc: string } | null {
-  const C = clinic.toUpperCase();
+  const C = accountOf(clinic).toUpperCase();
   const token = process.env[`GHL_SKINLUX_${C}_TOKEN`], loc = process.env[`GHL_SKINLUX_${C}_LOCATION`];
   return token && loc ? { token, loc } : null;
 }
@@ -163,6 +169,7 @@ export async function recordInGhl(clinic: Clinic, payload: J): Promise<string | 
     tags.push("timely-client");
   }
   if (payload.newsletter === "yes") { tags.push("newsletter"); fields["Marketing consent"] = "Yes"; }
+  Object.assign(fields, await clinicFields(clinic));
   const id = await upsertContact(clinic, { ...base, source: source || undefined, tags, fields });
   if (id && (ev === "treatment_done" || ev === "product_sold")) await setAppLink(clinic, id);
   if (id && ev === "new_lead") {
@@ -171,6 +178,33 @@ export async function recordInGhl(clinic: Clinic, payload: J): Promise<string | 
     if (what) await addNote(clinic, id, `New enquiry from the ${source || "website"}: ${what}`);
   }
   return id;
+}
+
+// Each clinic's own details. With one account for both clinics the messages read them
+// from the contact ({{contact.clinic_phone}} and so on), so every contact carries the
+// details of the clinic it last dealt with. Values: GoHighLevel custom values
+// clinic_name_booragoon, clinic_phone_leederville, ... (edited in HQ Settings).
+export const CLINIC_DETAIL = [
+  ["clinic_name", "Clinic name"], ["clinic_phone", "Clinic phone"], ["clinic_address", "Clinic address"],
+  ["clinic_hours", "Clinic hours"], ["sender_name", "Clinic team"],
+] as const;
+let detailCache: { at: number; v: Record<string, string> } | null = null;
+export async function clinicDetails(clinic: Clinic): Promise<Record<string, string>> {
+  if (!detailCache || Date.now() - detailCache.at > 300_000) {
+    const d = await ghl(clinic, `/locations/{loc}/customValues`);
+    if (d) detailCache = { at: Date.now(), v: Object.fromEntries(((d.customValues || []) as J[]).map((x) => [String(x.name), String(x.value || "")])) };
+  }
+  const v = (detailCache && detailCache.v) || {};
+  const out: Record<string, string> = {};
+  for (const [key] of CLINIC_DETAIL) out[key] = v[`${key}_${clinic}`] || (oneAccount() ? "" : v[key]) || "";
+  if (!out.clinic_name) out.clinic_name = clinic === "booragoon" ? "Booragoon" : "Leederville";
+  return out;
+}
+export function forgetClinicDetails(): void { detailCache = null; }
+export async function clinicFields(clinic: Clinic): Promise<Record<string, string>> {
+  if (!oneAccount()) return {};
+  const d = await clinicDetails(clinic).catch(() => ({} as Record<string, string>));
+  return Object.fromEntries(CLINIC_DETAIL.map(([key, field]) => [field, d[key] || ""]).filter(([, v]) => v));
 }
 
 /** Puts the client's private My Skinlux link on their record (field "Client app link"). */

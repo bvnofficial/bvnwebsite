@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { aiAuthOk, aiBody, aiClinic, aiOut } from "@/lib/skinlux-ai";
 import { normPhone } from "@/lib/skinlux-events";
-import { addNote, addTask, openLead, upsertContact } from "@/lib/skinlux-ghl";
+import { addNote, addTask, openLead, upsertContact, clinicFields } from "@/lib/skinlux-ghl";
 import { logEvent } from "@/lib/skinlux-store";
 import { INJECTABLE_RE } from "@/lib/skinlux-timely-public";
 
@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
 
   const tags = [`clinic-${clinic}`, "source-ai-chat", "booking-request", "new-client"];
   if (inj) tags.push("injectable");
-  const id = await upsertContact(clinic, { first_name: first, last_name: last, email: email || undefined, phone, source: "ai-chat", tags });
+  const fields = { Clinic: clinic === "leederville" ? "Leederville" : "Booragoon", ...(await clinicFields(clinic)) };
+  const id = await upsertContact(clinic, { first_name: first, last_name: last, email: email || undefined, phone, source: "ai-chat", tags, fields });
   if (!id) return aiOut(200, { ok: false, answer: "The request couldn't be saved. Give them the clinic phone number to book." });
 
   const what = inj ? "a cosmetic consultation with a nurse" : treatment;

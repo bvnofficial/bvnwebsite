@@ -1,6 +1,6 @@
 // Shared bits for the Skinlux chat agent's API calls (GoHighLevel Conversation AI
 // "API call" actions). The agent sends "Authorization: Bearer <SKINLUX_AI_KEY>";
-// the clinic comes as ?clinic= on the action URL, fixed per agent.
+// the clinic comes in the body (one agent for both clinics) or as ?clinic= on the URL.
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 
@@ -15,7 +15,8 @@ export function aiAuthOk(req: NextRequest): boolean {
 export const aiOut = (status: number, body: object) => NextResponse.json(body, { status, headers: { "cache-control": "no-store" } });
 
 export function aiClinic(req: NextRequest, body: Record<string, unknown>): "booragoon" | "leederville" {
-  const v = String(req.nextUrl.searchParams.get("clinic") || body.clinic || "").toLowerCase();
+  // one agent for both clinics sends the clinic it picked; older agents send ?clinic=
+  const v = String(body.clinic || req.nextUrl.searchParams.get("clinic") || "").toLowerCase();
   return v.includes("leeder") ? "leederville" : "booragoon";
 }
 

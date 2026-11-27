@@ -1,3 +1,4 @@
+import { accountOf } from "@/lib/skinlux-ghl";
 import { NextRequest, NextResponse } from "next/server";
 import { skinluxStaffReqOk } from "@/lib/skinlux-staff-gate";
 import { TREATMENTS } from "@/lib/skinlux-data";
@@ -52,7 +53,7 @@ export async function GET(req: NextRequest) {
   }
   const clinic = (u.get("clinic") || "").toLowerCase();
   if (clinic !== "booragoon" && clinic !== "leederville") return out(400, { ok: false, error: "Pick a clinic" });
-  const C = clinic.toUpperCase();
+  const C = accountOf(clinic).toUpperCase();
   const token = process.env[`GHL_SKINLUX_${C}_TOKEN`], loc = process.env[`GHL_SKINLUX_${C}_LOCATION`];
   if (!token || !loc) return out(503, { ok: false, error: "This clinic isn't connected yet", configured: false });
   const h = { Authorization: `Bearer ${token}`, Version: "2021-07-28", Accept: "application/json", "Content-Type": "application/json" };
