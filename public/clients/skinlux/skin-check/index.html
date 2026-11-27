@@ -106,7 +106,7 @@
           <div class="center muted" style="font-size:12px;letter-spacing:2px">FACE AND BODY</div>
           <div class="hero-orb"><b>60s</b></div>
           <h2 class="center" style="font-size:28px">Your free skin check</h2>
-          <p class="center muted">Take a selfie, answer three quick questions and get a 12 week plan made from the Skinlux menu. Your photo stays on your phone. It is never uploaded or saved.</p>
+          <p class="center muted">Take a selfie, answer three quick questions and find out the best first treatment for your skin. Your photo stays on your phone. It is never uploaded or saved.</p>
           <button class="btn gold block" id="start" style="margin-top:18px">Start my skin check</button>
           <p class="fine center">A cosmetic skin guide, not a medical diagnosis. Your therapist checks everything at your consult. If you are worried about a mole, spot or skin condition, please see your GP.</p>
         </div>
@@ -144,8 +144,7 @@
         <div class="scr" id="s3">
           <h3>Three quick questions</h3>
           <div class="q"><b>Your age</b><div id="qAge"></div></div>
-          <div class="q"><b>What bothers you most? Pick up to 3</b><div id="qCon"></div></div>
-          <div class="q"><b>How much downtime can you take?</b><div id="qDown"></div></div>
+          <div class="q"><b>What would you like to work on? Pick any</b><div id="qCon"></div></div>
           <div class="q"><b>Closest clinic</b><div id="qClinic"></div></div>
           <button class="btn gold block" id="toResults" style="margin-top:18px">See my results</button>
         </div>
@@ -160,17 +159,17 @@
           <div class="mini"><canvas id="cvMini" width="360" height="440"></canvas></div>
           <div id="metrics"></div>
           <div id="focus"></div>
-          <div class="sticky-cta"><button class="btn gold block" id="toPlan">See my 12 week plan</button></div>
+          <div class="sticky-cta"><button class="btn gold block" id="toPlan">See my first step</button></div>
         </div>
 
         <div class="scr" id="s5">
-          <h3>Your 12 week plan</h3>
+          <h3>Your first step</h3>
           <p class="muted" style="font-size:13px" id="planIntro"></p>
           <div id="plan"></div>
           <div id="routine"></div>
           <div class="sticky-cta">
-            <button class="btn gold block" id="book">Book my consult</button>
-            <button class="btn ghost block" id="sendRep" style="margin-top:8px">Text me my plan</button>
+            <button class="btn gold block" id="book">Book my first step</button>
+            <button class="btn ghost block" id="sendRep" style="margin-top:8px">Text me my result</button>
           </div>
           <div id="leadForm" class="hidden card" style="margin-top:10px">
             <label>First name</label><input id="lfName" autocomplete="given-name">
@@ -178,9 +177,9 @@
             <label>Email (optional)</label><input id="lfEmail" type="email" autocomplete="email">
             <input type="text" id="lfWebsite" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
             <label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;margin-top:10px"><input type="checkbox" id="lfNews" style="width:18px;height:18px;margin-top:2px;flex:0 0 auto"><span>Send me Skinlux skin tips, news and offers by email and text. Unsubscribe any time.</span></label>
-            <button class="btn block" id="lfSend" style="margin-top:10px">Send my plan</button>
+            <button class="btn block" id="lfSend" style="margin-top:10px">Send my result</button>
             <div class="err" id="lfErr"></div>
-            <p class="fine">By sending you agree to Skinlux contacting you about your plan by text and email. Reply STOP any time.</p>
+            <p class="fine">By sending you agree to Skinlux contacting you about your result by text and email. Reply STOP any time.</p>
           </div>
           <button class="btn ghost sm" id="again" style="margin-top:14px">Start again</button>
           <p class="fine">Your therapist goes through pricing with you at your consult. Cosmetic injectables are discussed only at a consult with a registered nurse.</p>
@@ -421,11 +420,14 @@
   // ---------- Questions ----------
   var AGES = ["Under 30", "30 to 39", "40 to 49", "50 plus"];
   var CONCERNS = [
-    ["redness", "Redness or rosacea"], ["evenness", "Pigmentation and sun spots"], ["texture", "Texture and scars"],
-    ["dull", "Dull skin"], ["congestion", "Breakouts and pores"], ["firmness", "Loss of firmness"], ["lines", "Fine lines"]
+    ["double-chin", "Double chin", "firmness", "hifu"], ["sagging", "Sagging skin", "firmness", "hifu"],
+    ["ageing", "Ageing", "lines", "hifu"], ["laxity", "Skin laxity", "firmness", "hifu"],
+    ["jawline", "Jawline definition", "firmness", "hifu"], ["congestion", "Congestion and pores", "congestion", "carbon"],
+    ["texture", "Texture", "texture", "carbon"], ["dull", "Dull skin", "dull", "carbon"]
   ];
+  function conc(id) { return CONCERNS.filter(function (c) { return c[0] === id; })[0]; }
   var DOWN = [[0, "None, I need to look normal"], [1, "A day or two is fine"], [2, "Up to a week"]];
-  var A = { age: 1, concerns: ["evenness"], down: 0, clinic: "booragoon" };
+  var A = { age: 1, concerns: [], clinic: "booragoon" };
   function chips(el, items, isOn, onClick) {
     $(el).innerHTML = "";
     items.forEach(function (it) {
@@ -439,10 +441,8 @@
     chips("qCon", CONCERNS, function (it) { return A.concerns.indexOf(it[0]) > -1; }, function (it) {
       var i = A.concerns.indexOf(it[0]);
       if (i > -1) A.concerns.splice(i, 1);
-      else if (A.concerns.length < 3) A.concerns.push(it[0]);
-      else toast("Pick up to 3. Tap one to remove it first.");
+      else A.concerns.push(it[0]);
     });
-    chips("qDown", DOWN, function (it) { return it[0] === A.down; }, function (it) { A.down = it[0]; });
     chips("qClinic", [["booragoon", "Booragoon"], ["leederville", "Leederville"]], function (it) { return it[0] === A.clinic; }, function (it) { A.clinic = it[0]; });
   }
   render();
@@ -468,7 +468,8 @@
     R.firmness = clamp(ageFirm - Math.round((94 - lineScore) / 6), 38, 94);
     var keys = Object.keys(R);
     var overall = Math.round(keys.reduce(function (s, k) { return s + R[k]; }, 0) / keys.length);
-    focus = keys.map(function (k) { return [k, R[k] - (A.concerns.indexOf(k) > -1 ? 14 : 0)]; })
+    var picked = A.concerns.map(function (id) { return conc(id)[2]; });
+    focus = keys.map(function (k) { return [k, R[k] - (picked.indexOf(k) > -1 ? 14 : 0)]; })
       .sort(function (a, b) { return a[1] - b[1]; }).slice(0, 3).map(function (x) { return x[0]; });
 
     go(4);
@@ -506,81 +507,51 @@
       mc.beginPath(); mc.ellipse((a[0] + a[2]) / 2 * W, (a[1] + a[3]) / 2 * H, (a[2] - a[0]) / 2 * W, (a[3] - a[1]) / 2 * H, 0, 0, Math.PI * 2); mc.fill(); mc.stroke();
     });
 
-    feed("app", "SKIN CHECK", "Score <b>" + overall + "</b>. Focus: " + focus.map(function (k) { return NAMES[k]; }).join(", ") + ". Age " + AGES[A.age] + ", downtime: " + ["none", "a day or two", "up to a week"][A.down] + ".");
+    feed("app", "SKIN CHECK", "Score <b>" + overall + "</b>. Focus: " + focus.map(function (k) { return NAMES[k]; }).join(", ") + ". Age " + AGES[A.age] + ".");
   }
   $("toResults").onclick = function () {
-    if (!A.concerns.length) { toast("Pick at least one thing that bothers you."); return; }
+    if (!A.concerns.length) { toast("Pick at least one thing you would like to work on."); return; }
     results();
   };
 
-  // ---------- Plan ----------
-  // Downtime level: 0 none, 1 a day or two, 2 up to a week. From prices come from the Skinlux menu.
-  var TX = {
-    "ipl-skin": { dt: 1, from: 240, cap: 3, why: "Targets redness and sun spots with light." },
-    "led": { dt: 0, from: 100, cap: 6, why: "Calms redness and helps healing. Often added on." },
-    "clinical-peel": { dt: 0, from: 220, cap: 4, why: "Resurfacing peel with LED for smoother, brighter skin." },
-    "bright": { dt: 0, from: 295, cap: 3, why: "Signature glow treatment with no downtime." },
-    "carbon": { dt: 0, from: 460, cap: 4, why: "Deep cleans pores and clears congestion." },
-    "diamond": { dt: 0, from: 195, cap: 8, why: "Builds collagen and firms with no downtime." },
-    "hifu": { dt: 0, from: 450, cap: 1, why: "Lifts and tightens. Results build over 8 to 12 weeks." },
-    "needling": { dt: 1, from: 330, cap: 3, why: "Builds collagen to smooth scars, texture and pigment." },
-    "nano-rf": { dt: 2, from: 520, cap: 3, why: "Fractional resurfacing for deeper texture and scars." },
-    "advanced-peel": { dt: 2, from: 195, cap: 2, why: "Stronger peel for stubborn pigment." }
+  // ---------- First step ----------
+  // Jellie (27 Nov 2026): show ONE first treatment, the team guides the next steps in clinic.
+  // Lift and jawline concerns lead to HIFU, congestion, texture and dull skin lead to Carbon Laser.
+  // Each links to its offer page in HQ Offers (link names "hifu" and "carbon-laser") while that
+  // offer is live, otherwise to the booking page. No prices on this page.
+  var STEP = {
+    hifu: { name: "HIFU", offer: "hifu", why: "HIFU works under the skin to lift and tighten, so it can help with a double chin, sagging and a softer jawline. No downtime, and results keep building over 8 to 12 weeks." },
+    carbon: { name: "Carbon Laser", offer: "carbon-laser", why: "Carbon Laser deep cleans the pores and polishes the surface, so it can help with congestion, rough texture and dull skin. No downtime, and most people see clearer skin after the first session." }
   };
-  var MAP = {
-    redness: ["ipl-skin", "led"],
-    evenness: ["ipl-skin", "advanced-peel", "needling", "clinical-peel"],
-    texture: ["needling", "nano-rf", "clinical-peel"],
-    dull: ["bright", "clinical-peel"],
-    congestion: ["carbon", "clinical-peel"],
-    firmness: ["hifu", "diamond"],
-    lines: ["injectable"]
-  };
-  function plan() {
-    var picks = [], consult = false;
-    focus.forEach(function (k) {
-      var opts = MAP[k];
-      for (var i = 0; i < opts.length; i++) {
-        if (opts[i] === "injectable") { consult = true; return; }
-        var tx = TX[opts[i]];
-        if (tx.dt <= A.down && T(opts[i]) && picks.indexOf(opts[i]) < 0) { picks.push(opts[i]); return; }
-      }
-    });
-    picks = picks.slice(0, 3);
-    var total = 0, count = 0, html = "";
-    picks.forEach(function (id) {
-      var t = T(id), tx = TX[id], from = t.from > 0 ? t.from : tx.from; // price from HQ Settings
-      var sessions = t.interval_days ? Math.min(tx.cap, Math.floor(84 / t.interval_days) + 1) : 1;
-      var step = t.interval_days ? Math.max(1, Math.round(t.interval_days / 7)) : 12;
-      var weeks = []; for (var w = 0; w < sessions; w++) weeks.push(1 + w * step);
-      total += sessions * from; count += sessions;
-      html += '<div class="tx"><div class="row between"><b>' + t.name + '</b><span class="badge gold">' + sessions + (sessions === 1 ? " session" : " sessions") + '</span></div>' +
-        '<p>' + tx.why + ' Downtime: ' + t.downtime.toLowerCase() + '</p>' +
-        '<div class="weeks">' + Array.apply(null, Array(12)).map(function (_, i) { return '<i class="' + (weeks.indexOf(i + 1) > -1 ? "s" : "") + '">' + (i + 1) + '</i>'; }).join("") + '</div>' +
-        '<p style="margin-top:6px">Ask about packs and this month\'s offer.</p></div>';
-    });
-    if (consult) {
-      html += '<div class="tx" style="border-color:var(--gold)"><div class="row between"><b>Nurse consult for fine lines</b><span class="badge ok">Free</span></div>' +
-        '<p>Talk through your options with Nurse Leo or Nurse Maria. Treatment and pricing are discussed only at your consult.</p></div>';
-    }
-    if (!picks.length && !consult) html += '<div class="tx"><b>Skin consult</b><p>Your skin looks healthy. A consult with our therapist sets up a maintenance routine.</p></div>';
-    html += '<div class="total"><small style="color:var(--taupe);letter-spacing:1px;text-transform:uppercase;font-size:11px">Your 12 week plan</small><div class="v">' + (count ? count + (count === 1 ? " session" : " sessions") : "Free consult") + '</div><small style="color:var(--taupe)">' + (consult ? "Plus a free nurse consult. " : "") + 'At ' + S.locations[A.clinic].name + '. Your therapist confirms it at your consult.</small></div>';
-    $("plan").innerHTML = html;
-    $("planIntro").textContent = "Made for your top focus areas" + (A.down === 0 ? ", with no downtime treatments only." : ", within the downtime you picked.");
-
-    // Routine products come from HQ Settings (each product is marked for everyone, tone, texture or clear skin)
-    var want = { everyone: true, tone: /evenness|dull|redness/.test(focus.join()), texture: /texture|lines|firmness/.test(focus.join()), clear: focus.indexOf("congestion") > -1 };
-    var prods = (S.routine_products || []).filter(function (p) { return want[p.routine]; }).slice(0, 5);
-    function e(x) { return String(x || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-    $("routine").innerHTML = !prods.length ? "" : "<h3 style='margin-top:6px'>Your home routine</h3>" + prods.map(function (p) {
-      return '<div class="prod"><span><b>' + e(p.name) + '</b><br><small>' + e(p.use) + '</small></span></div>';
-    }).join("");
-
-    feed("ghl", "GHL", "Plan built: " + (picks.map(function (id) { return T(id).name; }).join(", ") || "consult only") + (consult ? " plus nurse consult" : "") + ". Plan value <b>" + money(total) + "</b>.");
-    return { picks: picks, total: total, consult: consult };
+  var stepLink = null;
+  function e(x) { return String(x || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function firstStep() {
+    var votes = { hifu: 0, carbon: 0 };
+    A.concerns.forEach(function (id) { votes[conc(id)[3]]++; });
+    var id = votes.hifu > votes.carbon ? "hifu" : votes.carbon > votes.hifu ? "carbon" :
+      (R.firmness <= Math.min(R.congestion, R.texture, R.dull) ? "hifu" : "carbon");
+    var st = STEP[id];
+    var mine = A.concerns.filter(function (c) { return conc(c)[3] === id; }).map(function (c) { return conc(c)[1].toLowerCase(); });
+    $("plan").innerHTML = '<div class="total"><small style="color:var(--taupe);letter-spacing:1px;text-transform:uppercase;font-size:11px">Your first step</small>' +
+      '<div class="v">' + st.name + '</div><small style="color:var(--taupe)">At ' + e(S.locations[A.clinic].name) + '</small></div>' +
+      '<div class="tx"><p>' + st.why + '</p>' + (mine.length ? '<p style="margin-top:6px">Picked for your ' + e(mine.join(", ")) + '.</p>' : '') +
+      '<p style="margin-top:6px">At your visit your therapist looks at your skin in person and guides you on the next steps.</p></div>';
+    $("planIntro").textContent = "Based on your photo and what you would like to work on.";
+    $("routine").innerHTML = "";
+    stepLink = S.booking; $("book").textContent = "Book my first step";
+    fetch("/api/skinlux-offers?o=" + st.offer, { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok || !d.offer || !d.offer.open) return;
+        stepLink = "../offers/index.html?o=" + encodeURIComponent(st.offer) + "&src=skin-check";
+        $("book").textContent = "See this month's " + st.name + " offer";
+      })
+      .catch(function () {});
+    feed("ghl", "GHL", "First step: " + st.name + ".");
+    return { id: id, name: st.name };
   }
   var lastPlan = null;
-  $("toPlan").onclick = function () { go(5); lastPlan = plan(); };
+  $("toPlan").onclick = function () { go(5); lastPlan = firstStep(); };
 
   var sentLead = false;
   $("sendRep").onclick = function () { $("leadForm").classList.toggle("hidden"); };
@@ -589,18 +560,16 @@
     $("lfErr").textContent = "";
     if (!nm) { $("lfErr").textContent = "Please add your first name."; return; }
     if (mob.replace(/\D/g, "").length < 9) { $("lfErr").textContent = "Please add your mobile number."; return; }
-    if (sentLead) { toast("Your plan is already on its way."); return; }
+    if (sentLead) { toast("Your result is already on its way."); return; }
     var btn = $("lfSend"); btn.disabled = true; btn.textContent = "Sending...";
-    var names = (lastPlan && lastPlan.picks || []).map(function (id) { return T(id).name; });
     var body = {
       source: "skin-check", clinic: A.clinic, first_name: nm, phone: mob, email: em, website: $("lfWebsite").value, newsletter: $("lfNews").checked,
-      interest: names.join(", ") || "Skin consult",
+      interest: lastPlan ? lastPlan.name : "Skin consult",
       message: "Skin check from " + source + ". Age: " + AGES[A.age] + ". Focus: " + focus.join(", ") +
-        ". Bothers them: " + A.concerns.join(", ") + ". Downtime: " + ["none", "a day or two", "up to a week"][A.down] +
-        ". Plan: " + (names.join(", ") || "consult only") + (lastPlan && lastPlan.consult ? " plus nurse consult" : "") +
-        ", from " + money(lastPlan ? lastPlan.total : 0) + "."
+        ". Wants to work on: " + A.concerns.map(function (id) { return conc(id)[1]; }).join(", ") +
+        ". First step: " + (lastPlan ? lastPlan.name : "consult") + "."
     };
-    function done(ok, m) { btn.disabled = false; btn.textContent = "Send my plan"; if (!ok) $("lfErr").textContent = m || "Sorry, that didn't go through. Please call us on " + S.locations[A.clinic].phone + "."; }
+    function done(ok, m) { btn.disabled = false; btn.textContent = "Send my result"; if (!ok) $("lfErr").textContent = m || "Sorry, that didn't go through. Please call us on " + S.locations[A.clinic].phone + "."; }
     fetch("/api/skinlux-lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
       .then(function (d) {
@@ -611,7 +580,7 @@
       })
       .catch(function () { done(false); });
   };
-  $("book").onclick = function () { window.open(S.booking, "_blank", "noopener"); };
+  $("book").onclick = function () { var u = stepLink || S.booking; if (/^\.\.\//.test(u)) location.href = u; else window.open(u, "_blank", "noopener"); };
   $("again").onclick = function () { sentLead = false; $("leadForm").classList.add("hidden"); go(0); };
 })();
 </script>
