@@ -183,7 +183,7 @@
             <p class="fine">By sending you agree to Skinlux contacting you about your plan by text and email. Reply STOP any time.</p>
           </div>
           <button class="btn ghost sm" id="again" style="margin-top:14px">Start again</button>
-          <p class="fine">Prices are from the Skinlux menu and are a guide. Cosmetic injectables are discussed only at a consult with a registered nurse.</p>
+          <p class="fine">Your therapist goes through pricing with you at your consult. Cosmetic injectables are discussed only at a consult with a registered nurse.</p>
         </div>
       </div></div>
     </div>
@@ -547,24 +547,24 @@
       }
     });
     picks = picks.slice(0, 3);
-    var total = 0, html = "";
+    var total = 0, count = 0, html = "";
     picks.forEach(function (id) {
       var t = T(id), tx = TX[id], from = t.from > 0 ? t.from : tx.from; // price from HQ Settings
       var sessions = t.interval_days ? Math.min(tx.cap, Math.floor(84 / t.interval_days) + 1) : 1;
       var step = t.interval_days ? Math.max(1, Math.round(t.interval_days / 7)) : 12;
       var weeks = []; for (var w = 0; w < sessions; w++) weeks.push(1 + w * step);
-      total += sessions * from;
+      total += sessions * from; count += sessions;
       html += '<div class="tx"><div class="row between"><b>' + t.name + '</b><span class="badge gold">' + sessions + (sessions === 1 ? " session" : " sessions") + '</span></div>' +
         '<p>' + tx.why + ' Downtime: ' + t.downtime.toLowerCase() + '</p>' +
         '<div class="weeks">' + Array.apply(null, Array(12)).map(function (_, i) { return '<i class="' + (weeks.indexOf(i + 1) > -1 ? "s" : "") + '">' + (i + 1) + '</i>'; }).join("") + '</div>' +
-        '<p style="margin-top:6px">From ' + money(from) + ' a session. Ask about packs and this month\'s offer.</p></div>';
+        '<p style="margin-top:6px">Ask about packs and this month\'s offer.</p></div>';
     });
     if (consult) {
       html += '<div class="tx" style="border-color:var(--gold)"><div class="row between"><b>Nurse consult for fine lines</b><span class="badge ok">Free</span></div>' +
         '<p>Talk through your options with Nurse Leo or Nurse Maria. Treatment and pricing are discussed only at your consult.</p></div>';
     }
     if (!picks.length && !consult) html += '<div class="tx"><b>Skin consult</b><p>Your skin looks healthy. A consult with our therapist sets up a maintenance routine.</p></div>';
-    html += '<div class="total"><small style="color:var(--taupe);letter-spacing:1px;text-transform:uppercase;font-size:11px">Your 12 week plan</small><div class="v">' + (total ? "From " + money(total) : "Free consult") + '</div><small style="color:var(--taupe)">' + (consult ? "Plus a free nurse consult. " : "") + 'At ' + S.locations[A.clinic].name + '. Your therapist confirms it at your consult.</small></div>';
+    html += '<div class="total"><small style="color:var(--taupe);letter-spacing:1px;text-transform:uppercase;font-size:11px">Your 12 week plan</small><div class="v">' + (count ? count + (count === 1 ? " session" : " sessions") : "Free consult") + '</div><small style="color:var(--taupe)">' + (consult ? "Plus a free nurse consult. " : "") + 'At ' + S.locations[A.clinic].name + '. Your therapist confirms it at your consult.</small></div>';
     $("plan").innerHTML = html;
     $("planIntro").textContent = "Made for your top focus areas" + (A.down === 0 ? ", with no downtime treatments only." : ", within the downtime you picked.");
 
@@ -573,7 +573,7 @@
     var prods = (S.routine_products || []).filter(function (p) { return want[p.routine]; }).slice(0, 5);
     function e(x) { return String(x || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
     $("routine").innerHTML = !prods.length ? "" : "<h3 style='margin-top:6px'>Your home routine</h3>" + prods.map(function (p) {
-      return '<div class="prod"><span><b>' + e(p.name) + '</b><br><small>' + e(p.use) + '</small></span><span>' + e(p.price) + '</span></div>';
+      return '<div class="prod"><span><b>' + e(p.name) + '</b><br><small>' + e(p.use) + '</small></span></div>';
     }).join("");
 
     feed("ghl", "GHL", "Plan built: " + (picks.map(function (id) { return T(id).name; }).join(", ") || "consult only") + (consult ? " plus nurse consult" : "") + ". Plan value <b>" + money(total) + "</b>.");
