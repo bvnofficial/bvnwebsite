@@ -48,6 +48,7 @@
   .q { margin-top: 14px; }
   .q > b { display: block; font-size: 14px; margin-bottom: 6px; }
   .q .chip { margin: 0 4px 6px 0; }
+  .q .cgrp { display: block; margin: 8px 0 4px; color: var(--taupe); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
   .ring { width: 150px; height: 150px; margin: 8px auto 4px; position: relative; }
   .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   .ring .num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -419,11 +420,20 @@
 
   // ---------- Questions ----------
   var AGES = ["Under 30", "30 to 39", "40 to 49", "50 plus"];
+  // Jellie's treatment flowchart (28 Nov 2026). [id, label, skin measure it weights, first step treatment, group]
+  // Face concerns only: the check reads a selfie, so body, hair and underarm treatments are left to the consult.
   var CONCERNS = [
-    ["double-chin", "Double chin", "firmness", "hifu"], ["sagging", "Sagging skin", "firmness", "hifu"],
-    ["ageing", "Ageing", "lines", "hifu"], ["laxity", "Skin laxity", "firmness", "hifu"],
-    ["jawline", "Jawline definition", "firmness", "hifu"], ["congestion", "Congestion and pores", "congestion", "carbon"],
-    ["texture", "Texture", "texture", "carbon"], ["dull", "Dull skin", "dull", "carbon"]
+    ["double-chin", "Double chin", "firmness", "hifu", "Lift and firm"], ["sagging", "Sagging skin", "firmness", "hifu", "Lift and firm"],
+    ["ageing", "Ageing", "lines", "hifu", "Lift and firm"], ["laxity", "Skin laxity", "firmness", "hifu", "Lift and firm"],
+    ["jawline", "Jawline definition", "firmness", "hifu", "Lift and firm"], ["slimming", "Facial slimming", "firmness", "hifu", "Lift and firm"],
+    ["congestion", "Congestion and pores", "congestion", "carbon", "Clear and bright"], ["texture", "Texture", "texture", "carbon", "Clear and bright"],
+    ["dull", "Dull skin", "dull", "carbon", "Clear and bright"], ["acne", "Acne and breakouts", "congestion", "carbon", "Clear and bright"],
+    ["blackheads", "Blackheads and whiteheads", "congestion", "carbon", "Clear and bright"], ["uneven", "Uneven skin tone", "evenness", "carbon", "Clear and bright"],
+    ["redness", "Redness or rosacea", "redness", "ipl", "Redness and pigmentation"], ["sun", "Sun damage and pigmentation", "evenness", "ipl", "Redness and pigmentation"],
+    ["melasma", "Melasma", "evenness", "needling", "Redness and pigmentation"],
+    ["lines", "Fine lines and wrinkles", "lines", "needling", "Lines and scars"], ["scars", "Acne scarring", "texture", "nanorf", "Lines and scars"],
+    ["eyelids", "Hooded or loose eyelids", "lines", "plasma", "Eyes and small spots"], ["tags", "Skin tags and small bumps", null, "electro", "Eyes and small spots"],
+    ["sensitive", "Sensitive or inflamed skin", "redness", "led", "Eyes and small spots"]
   ];
   function conc(id) { return CONCERNS.filter(function (c) { return c[0] === id; })[0]; }
   var DOWN = [[0, "None, I need to look normal"], [1, "A day or two is fine"], [2, "Up to a week"]];
@@ -438,10 +448,15 @@
   }
   function render() {
     chips("qAge", AGES.map(function (a, i) { return [i, a]; }), function (it) { return it[0] === A.age; }, function (it) { A.age = it[0]; });
-    chips("qCon", CONCERNS, function (it) { return A.concerns.indexOf(it[0]) > -1; }, function (it) {
-      var i = A.concerns.indexOf(it[0]);
-      if (i > -1) A.concerns.splice(i, 1);
-      else A.concerns.push(it[0]);
+    var groups = [];
+    CONCERNS.forEach(function (c) { if (groups.indexOf(c[4]) < 0) groups.push(c[4]); });
+    $("qCon").innerHTML = groups.map(function (g, i) { return '<small class="cgrp">' + g + '</small><div id="qCon' + i + '"></div>'; }).join("");
+    groups.forEach(function (g, i) {
+      chips("qCon" + i, CONCERNS.filter(function (c) { return c[4] === g; }), function (it) { return A.concerns.indexOf(it[0]) > -1; }, function (it) {
+        var j = A.concerns.indexOf(it[0]);
+        if (j > -1) A.concerns.splice(j, 1);
+        else A.concerns.push(it[0]);
+      });
     });
     chips("qClinic", [["booragoon", "Booragoon"], ["leederville", "Leederville"]], function (it) { return it[0] === A.clinic; }, function (it) { A.clinic = it[0]; });
   }
@@ -519,27 +534,41 @@
   // Lift and jawline concerns lead to HIFU, congestion, texture and dull skin lead to Carbon Laser.
   // Each links to its offer page in HQ Offers (link names "hifu" and "carbon-laser") while that
   // offer is live, otherwise to the booking page. No prices on this page.
+  // 28 Nov 2026: Jellie's flowchart adds IPL, needling, nano RF, plasma, electrocautery and LED.
+  // The treatment with the most picks wins. A tie goes to the earlier one in ORDER, so the two
+  // Meta ad offers (HIFU, Carbon Laser) come first; a HIFU vs Carbon tie is settled by the photo.
   var STEP = {
-    hifu: { name: "HIFU", offer: "hifu", why: "HIFU works under the skin to lift and tighten, so it can help with a double chin, sagging and a softer jawline. No downtime, and results keep building over 8 to 12 weeks." },
-    carbon: { name: "Carbon Laser", offer: "carbon-laser", why: "Carbon Laser deep cleans the pores and polishes the surface, so it can help with congestion, rough texture and dull skin. No downtime, and most people see clearer skin after the first session." }
+    hifu: { name: "HIFU", offer: "hifu", down: "No visible downtime", why: "HIFU works under the skin to lift and tighten, so it can help with a double chin, sagging and a softer jawline. Results keep building over 8 to 12 weeks." },
+    carbon: { name: "Carbon Laser", offer: "carbon-laser", down: "No to minimal downtime", why: "Carbon Laser deep cleans the pores and polishes the surface, so it can help with congestion, breakouts, blackheads, rough texture and dull skin." },
+    ipl: { name: "IPL Skin Correction", down: "1 to 2 days downtime", why: "IPL uses gentle pulses of light to fade sun spots and pigmentation and calm redness and rosacea over a short course." },
+    needling: { name: "Skin Needling", down: "1 to 5 days downtime", why: "Skin needling makes tiny channels that get the skin making new collagen, so it can help soften fine lines and wrinkles, melasma and pigmentation." },
+    nanorf: { name: "Nano Fractional RF", down: "1 to 5 days downtime", why: "Nano fractional RF heats the deeper layers to tighten the skin and smooth acne scarring, deeper lines and texture." },
+    plasma: { name: "Plasma Fibroblast", down: "1 to 7 days downtime", why: "Plasma fibroblast tightens small areas like hooded eyelids and the top lip without surgery or injectables." },
+    electro: { name: "Electrocautery", down: "1 to 7 days downtime", why: "Electrocautery removes skin tags, cherry spots and other small bumps. Your therapist checks every spot first." },
+    led: { name: "LED Therapy", down: "No downtime", why: "LED light therapy helps calm inflamed or sensitive skin, supports healing and helps manage redness and eczema." }
   };
+  var ORDER = ["hifu", "carbon", "ipl", "needling", "nanorf", "led", "plasma", "electro"];
   var stepLink = null;
   function e(x) { return String(x || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function firstStep() {
-    var votes = { hifu: 0, carbon: 0 };
+    var votes = {};
+    ORDER.forEach(function (t) { votes[t] = 0; });
     A.concerns.forEach(function (id) { votes[conc(id)[3]]++; });
-    var id = votes.hifu > votes.carbon ? "hifu" : votes.carbon > votes.hifu ? "carbon" :
-      (R.firmness <= Math.min(R.congestion, R.texture, R.dull) ? "hifu" : "carbon");
+    var top = Math.max.apply(null, ORDER.map(function (t) { return votes[t]; }));
+    var tied = ORDER.filter(function (t) { return votes[t] === top; });
+    var id = tied[0];
+    if (id === "hifu" && tied.indexOf("carbon") > -1)
+      id = R.firmness <= Math.min(R.congestion, R.texture, R.dull) ? "hifu" : "carbon";
     var st = STEP[id];
     var mine = A.concerns.filter(function (c) { return conc(c)[3] === id; }).map(function (c) { return conc(c)[1].toLowerCase(); });
     $("plan").innerHTML = '<div class="total"><small style="color:var(--taupe);letter-spacing:1px;text-transform:uppercase;font-size:11px">Your first step</small>' +
-      '<div class="v">' + st.name + '</div><small style="color:var(--taupe)">At ' + e(S.locations[A.clinic].name) + '</small></div>' +
+      '<div class="v">' + st.name + '</div><small style="color:var(--taupe)">' + st.down + ', at ' + e(S.locations[A.clinic].name) + '</small></div>' +
       '<div class="tx"><p>' + st.why + '</p>' + (mine.length ? '<p style="margin-top:6px">Picked for your ' + e(mine.join(", ")) + '.</p>' : '') +
       '<p style="margin-top:6px">At your visit your therapist looks at your skin in person and guides you on the next steps.</p></div>';
     $("planIntro").textContent = "Based on your photo and what you would like to work on.";
     $("routine").innerHTML = "";
     stepLink = S.booking; $("book").textContent = "Book my first step";
-    fetch("/api/skinlux-offers?o=" + st.offer, { cache: "no-store" })
+    if (st.offer) fetch("/api/skinlux-offers?o=" + st.offer, { cache: "no-store" })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d || !d.ok || !d.offer || !d.offer.open) return;
