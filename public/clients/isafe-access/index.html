@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Recert Command | iSafe Access demo</title>
+<title>Compliance Sales Hub | iSafe Access demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --green:#69BF4A;--green-deep:#4E9A34;--green-pale:#E8F5E2;--char:#24272A;--char-2:#33373B;--char-3:#1A1C1E;
-  --blue:#066AAB;--blue-pale:#E3F0F9;--amber:#E9A21B;--amber-pale:#FDF3DF;--red:#C9372C;--red-pale:#FBE7E5;
+  --green:#69BF4A;--green-deep:#4E9A34;--green-pale:#E8F5E2;--char:#24272A;--char-3:#1A1C1E;
+  --blue:#066AAB;--blue-pale:#E3F0F9;--amber:#E9A21B;--amber-pale:#FDF3DF;--red:#C9372C;--red-pale:#FBE7E5;--violet:#7A5BC7;--violet-pale:#EFEAFA;
   --ink:#24272A;--soft:#5E666E;--line:#E4E7EA;--bg:#F5F6F7;--card:#fff;
   --display:'Archivo',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;
 }
@@ -20,7 +20,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 button{font-family:inherit;cursor:pointer}
 h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.01em}
 .top{background:var(--char-3);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
-.wm{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:.01em}
+.wm{font-family:var(--display);font-weight:800;font-size:17px}
 .wm b{color:var(--green)}
 .app{font-family:var(--display);font-weight:700;font-size:14px;opacity:.9;padding-left:16px;border-left:1px solid rgba(255,255,255,.2)}
 .sp{flex:1}
@@ -29,126 +29,151 @@ h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.01em}
 nav.tabs{background:var(--char);display:flex;gap:4px;padding:0 18px;overflow-x:auto;position:sticky;top:50px;z-index:19}
 nav.tabs button{background:none;border:0;color:#AEB4BA;font-weight:600;font-size:13px;padding:12px 14px;border-bottom:3px solid transparent;white-space:nowrap}
 nav.tabs button.on{color:#fff;border-bottom-color:var(--green)}
-main{max-width:1240px;margin:0 auto;padding:22px 20px 60px}
+main{max-width:1260px;margin:0 auto;padding:22px 20px 60px}
 .hero{display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
-.hero h1{font-size:26px;font-weight:800}
-.hero p{margin:6px 0 0;color:var(--soft);max-width:640px}
-.note{font-size:12px;color:var(--soft);background:#fff;border:1px dashed #C9CED3;border-radius:8px;padding:8px 12px}
+.hero h1{font-size:25px;font-weight:800}
+.hero p{margin:6px 0 0;color:var(--soft);max-width:680px}
+.note{font-size:12px;color:var(--soft);background:#fff;border:1px dashed #C9CED3;border-radius:8px;padding:8px 12px;max-width:320px}
 .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .kpi .l{font-size:12px;color:var(--soft);font-weight:500}
-.kpi .v{font-family:var(--display);font-size:26px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .v{font-family:var(--display);font-size:25px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:14px;color:var(--soft);font-weight:600}
 .kpi .s{font-size:12px;margin-top:2px;color:var(--soft)}
-.kpi .s.up{color:var(--green-deep)}.kpi .s.warn{color:var(--red)}
+.bar{height:6px;background:#EEF0F2;border-radius:9px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);border-radius:9px;transition:width 1s ease}
 section.view{display:none}
 section.view.on{display:block;animation:fade .3s ease}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
 .card h2{font-size:17px;font-weight:700}
 .card .sub{color:var(--soft);font-size:13px;margin:4px 0 14px}
-.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
-.grid2b{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.grid2e{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.stack{display:grid;gap:16px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .btn{background:var(--green);color:#fff;border:0;border-radius:9px;padding:9px 14px;font-weight:600;font-size:13px}
 .btn:hover{background:var(--green-deep)}
 .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
 .btn.ghost:hover{background:var(--bg)}
 .btn.dark{background:var(--char)}
-.pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:99px}
+.btn.sm{padding:6px 10px;font-size:12px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:99px;white-space:nowrap}
 .p-ok{background:var(--green-pale);color:var(--green-deep)}
 .p-due{background:var(--amber-pale);color:#9A6508}
 .p-bad{background:var(--red-pale);color:var(--red)}
 .p-blue{background:var(--blue-pale);color:var(--blue)}
+.p-vio{background:var(--violet-pale);color:var(--violet)}
 .p-grey{background:#EEF0F2;color:var(--soft)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--soft)}
+.chip.on{background:var(--char);border-color:var(--char);color:#fff}
+.av{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;font-size:10px;font-weight:700;color:#fff;flex:none}
 /* board */
-.board{display:grid;grid-template-columns:repeat(6,minmax(170px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
-.col{background:#EEF0F2;border-radius:12px;padding:10px;min-height:300px}
-.col h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--soft);display:flex;justify-content:space-between;margin:2px 2px 10px}
-.col h3 span{background:#fff;border-radius:99px;padding:0 7px;color:var(--ink)}
-.bc{background:#fff;border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid var(--line);font-size:12.5px;transition:transform .4s ease,box-shadow .4s ease}
-.bc b{display:block;font-size:13px;margin-bottom:2px}
-.bc .m{color:var(--soft);font-size:12px}
-.bc .f{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.board{display:grid;grid-template-columns:repeat(8,minmax(158px,1fr));gap:9px;overflow-x:auto;padding-bottom:6px}
+.col{background:#EEF0F2;border-radius:12px;padding:9px;min-height:320px}
+.col h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--soft);display:flex;justify-content:space-between;gap:6px;margin:2px 2px 9px;line-height:1.3}
+.col h3 span{background:#fff;border-radius:99px;padding:0 7px;color:var(--ink);height:18px}
+.bc{background:#fff;border-radius:10px;padding:9px;margin-bottom:8px;border:1px solid var(--line);font-size:12px;transition:box-shadow .4s,transform .4s}
+.bc b{display:block;font-size:12.5px;margin-bottom:3px}
+.bc .m{color:var(--soft);font-size:11.5px}
+.bc .f{display:flex;justify-content:space-between;align-items:center;margin-top:7px;gap:6px}
 .bc.flash{box-shadow:0 0 0 2px var(--green);transform:scale(1.02)}
+.bc.stuck{border-color:var(--red)}
 /* feed */
-.feed{list-style:none;margin:0;padding:0;max-height:330px;overflow:auto}
+.feed{list-style:none;margin:0;padding:0;max-height:360px;overflow:auto}
 .feed li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;animation:fade .4s ease}
 .feed li:last-child{border-bottom:0}
 .feed .t{font-variant-numeric:tabular-nums;color:var(--soft);font-size:12px;min-width:44px;padding-top:1px}
 .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none}
-/* roof */
-.roofwrap{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:start}
-svg.roof{width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:12px}
-.anc{cursor:pointer}
-.anc circle.o{transition:fill .25s}
-.legend{display:flex;gap:14px;font-size:12px;color:var(--soft);margin-top:8px;flex-wrap:wrap}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-/* phone */
-.phone{width:290px;max-width:100%;margin:0 auto;background:var(--char-3);border-radius:34px;padding:12px;box-shadow:0 18px 40px rgba(0,0,0,.18)}
-.screen{background:#fff;border-radius:24px;overflow:hidden;min-height:520px;display:flex;flex-direction:column}
-.ph-top{background:var(--char);color:#fff;padding:14px 16px 12px}
-.ph-top small{color:#AEB4BA;font-size:11px}
-.ph-top div{font-family:var(--display);font-weight:700;font-size:15px}
-.ph-body{padding:14px 16px;flex:1;font-size:13px;max-height:470px;overflow-y:auto}
-.status-big{border-radius:14px;padding:16px;text-align:center;margin-bottom:12px}
-.status-big .s1{font-family:var(--display);font-size:22px;font-weight:800}
-.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+/* attempts */
+.lead-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.attempts{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:12px 0}
+.att{border:1px solid var(--line);border-radius:9px;padding:8px 4px;text-align:center;font-size:11px;color:var(--soft);background:#fff;transition:all .3s}
+.att b{display:block;font-family:var(--display);font-size:15px;color:var(--ink)}
+.att.done{background:#EEF0F2}
+.att.now{border-color:var(--green);box-shadow:0 0 0 3px var(--green-pale)}
+.att.win{background:var(--green);border-color:var(--green);color:#fff}
+.att.win b{color:#fff}
+.steps{list-style:none;margin:0;padding:0}
+.steps li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--soft)}
+.steps li.done{color:var(--ink)}
+.steps li .ck{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-size:11px;color:#fff}
+.steps li.done .ck{background:var(--green);border-color:var(--green)}
+/* renewals */
+.months{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-bottom:6px}
+.mo{background:#EEF0F2;border-radius:8px;padding:8px 2px;text-align:center;font-size:11px;color:var(--soft);cursor:pointer;border:2px solid transparent}
+.mo b{display:block;font-family:var(--display);font-size:16px;color:var(--ink)}
+.mo.on{border-color:var(--green);background:#fff}
+.mo .h{height:4px;border-radius:9px;background:var(--green);margin:6px 6px 0;opacity:.8}
+.task{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:13px;background:#fff;animation:fade .3s ease}
+.task .tx{flex:1}
+.task .tx small{display:block;color:var(--soft);font-size:12px}
+.task.over{border-color:#F0B8B2;background:#FFFBFA}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.vs > div{border-radius:10px;padding:12px;font-size:13px}
+.vs h3{font-size:13px;margin-bottom:6px}
+/* handover */
+.sheet{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sheet .hd{background:var(--char);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.sheet .bd{padding:6px 14px 14px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
 .kv span:first-child{color:var(--soft)}
-.anclist{list-style:none;margin:0;padding:0}
-.anclist li{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
-.seg{display:flex;gap:6px}
-.seg button{border:1px solid var(--line);background:#fff;border-radius:8px;font-size:11px;font-weight:600;padding:5px 8px}
-.seg button.pass.on{background:var(--green);border-color:var(--green);color:#fff}
-.seg button.fail.on{background:var(--red);border-color:var(--red);color:#fff}
-/* quote */
-.qline{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;animation:fade .3s ease}
-.empty{color:var(--soft);font-size:13px;padding:18px 0;text-align:center}
-/* map */
-svg.map{width:100%;height:auto;background:linear-gradient(180deg,#F2F7FB,#fff);border:1px solid var(--line);border-radius:12px}
-.runlist{list-style:none;margin:0;padding:0}
-.runlist li{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:13px}
-.runlist li b{font-family:var(--display)}
-.route{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:6 6;opacity:0;transition:opacity .4s}
-.route.on{opacity:1;animation:dash 1.2s linear infinite}
-@keyframes dash{to{stroke-dashoffset:-24}}
-/* portal */
+.kv span:last-child{text-align:right}
+.track{list-style:none;margin:0;padding:0;position:relative}
+.track:before{content:"";position:absolute;left:15px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.track li{position:relative;padding:0 0 16px 44px}
+.track li .n{position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:12px;color:var(--soft);transition:all .3s}
+.track li.done .n{background:var(--green);border-color:var(--green);color:#fff}
+.track li.now .n{border-color:var(--green);color:var(--green-deep);box-shadow:0 0 0 5px var(--green-pale)}
+.track li h3{font-size:14px}
+.track li p{margin:2px 0 0;color:var(--soft);font-size:12.5px}
+.src{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:1px}
+.s-ghl{background:var(--green-pale);color:var(--green-deep)}
+.s-tra{background:var(--blue-pale);color:var(--blue)}
+.s-xer{background:var(--violet-pale);color:var(--violet)}
+/* reports */
+.funnel{display:grid;gap:7px}
+.fr{display:grid;grid-template-columns:130px 1fr 60px;gap:10px;align-items:center;font-size:13px}
+.fr .fb{height:26px;background:#EEF0F2;border-radius:7px;overflow:hidden}
+.fr .fb i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#8CD371);border-radius:7px;transition:width 1s ease}
+.fr .pc{color:var(--soft);font-size:12px;text-align:right}
+.bars{display:grid;gap:9px}
+.hb{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;font-size:13px}
+.hb .fb{height:12px;background:#EEF0F2;border-radius:9px;overflow:hidden}
+.hb .fb i{display:block;height:100%;border-radius:9px;transition:width 1s ease}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;font-size:11.5px;color:var(--soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;border-bottom:1px solid var(--line)}
-td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
-tr:hover td{background:#FAFBFB}
-.portal-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--char);color:#fff;border-radius:12px 12px 0 0;padding:14px 18px;margin:-18px -18px 16px}
-.portal-top small{color:#AEB4BA}
-/* timeline */
-.tl{list-style:none;margin:0;padding:0;position:relative}
-.tl:before{content:"";position:absolute;left:15px;top:6px;bottom:6px;width:2px;background:var(--line)}
-.tl li{position:relative;padding:0 0 18px 44px}
-.tl li .n{position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13px;color:var(--soft);transition:all .3s}
-.tl li.done .n{background:var(--green);border-color:var(--green);color:#fff}
-.tl li.now .n{border-color:var(--green);color:var(--green-deep);box-shadow:0 0 0 5px var(--green-pale)}
-.tl li h3{font-size:14px;font-weight:700}
-.tl li p{margin:3px 0 0;color:var(--soft);font-size:13px}
-.sms{background:var(--bg);border-radius:12px;padding:12px;font-size:13px;margin-top:6px;max-width:460px}
-/* modal */
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.n{font-variant-numeric:tabular-nums;text-align:right}
+th.n{text-align:right}
+/* targets */
+.guard{background:var(--amber-pale);border-radius:10px;padding:12px 14px;font-size:13px;margin-top:12px}
 .modal{position:fixed;inset:0;background:rgba(20,22,24,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}
 .modal.on{display:flex}
-.cert{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:26px;position:relative;border-top:8px solid var(--green)}
-.cert h2{font-size:20px}
-.cert .x{position:absolute;right:14px;top:12px;background:none;border:0;font-size:22px;color:var(--soft)}
+.mbox{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:24px;position:relative;border-top:8px solid var(--green)}
+.mbox .x{position:absolute;right:14px;top:12px;background:none;border:0;font-size:22px;color:var(--soft)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:var(--char);color:#fff;padding:11px 16px;border-radius:10px;font-size:13px;opacity:0;transition:all .3s;z-index:60;max-width:90%}
 .toast.on{opacity:1;transform:translateX(-50%)}
-footer{max-width:1240px;margin:0 auto;padding:0 20px 34px;color:var(--soft);font-size:12px}
-@media (max-width:980px){
+footer{max-width:1260px;margin:0 auto;padding:0 20px 34px;color:var(--soft);font-size:12px}
+@media (max-width:1020px){
   .kpis{grid-template-columns:repeat(2,1fr)}
-  .grid2,.grid2b,.roofwrap{grid-template-columns:1fr}
-  .board{grid-template-columns:repeat(6,200px)}
+  .grid2,.grid2e{grid-template-columns:1fr}
+  .board{grid-template-columns:repeat(8,190px)}
 }
 @media (max-width:560px){
   main{padding:16px 12px 50px}
-  .hero h1{font-size:21px}
+  .hero h1{font-size:20px}
   .top{padding:12px 14px;position:static}
   .app{display:none}
   nav.tabs{top:0;padding:0 8px}
-  .kpi .v{font-size:22px}
+  .kpi .v{font-size:21px}
+  .attempts{grid-template-columns:repeat(4,1fr)}
+  .months{grid-template-columns:repeat(6,1fr)}
+  .vs{grid-template-columns:1fr}
+  .fr{grid-template-columns:96px 1fr 44px}
+  .hb{grid-template-columns:110px 1fr 34px}
   .hide-s{display:none}
 }
 </style>
@@ -157,380 +182,400 @@ footer{max-width:1240px;margin:0 auto;padding:0 20px 34px;color:var(--soft);font
 
 <header class="top">
   <div class="wm">i<b>Safe</b> Access</div>
-  <div class="app">Recert Command</div>
+  <div class="app">Compliance Sales Hub</div>
   <div class="sp"></div>
   <span class="tag">Demo · sample data</span>
-  <span class="clock" id="clock">Picton</span>
+  <span class="clock" id="clock">Sydney</span>
 </header>
 
 <nav class="tabs" id="tabs">
-  <button data-v="renewals" class="on">Renewals</button>
-  <button data-v="inspect">Roof inspection</button>
-  <button data-v="runs">Run planner</button>
-  <button data-v="portal">Client portal</button>
-  <button data-v="tag">Tag check</button>
-  <button data-v="auto">Autopilot</button>
+  <button data-v="pipe" class="on">Sales pipeline</button>
+  <button data-v="lead">New lead to qualified</button>
+  <button data-v="renew">Renewals</button>
+  <button data-v="hand">Won to Tradify</button>
+  <button data-v="rep">Reports</button>
+  <button data-v="tgt">Target list</button>
 </nav>
 
 <main>
   <div class="hero">
     <div>
-      <h1 id="hello">Morning, Ross. 31 buildings are due in the next 60 days.</h1>
-      <p>One place for every anchor you have tagged: when it is due, who has been reminded, what failed and what has been quoted. Built on GoHighLevel with a few custom tools around it.</p>
+      <h1 id="hello">Morning, Ross. 17 new compliance clients this month, 8 to go.</h1>
+      <p>GoHighLevel runs the selling: every lead, every follow up and every renewal. Tradify keeps the jobs, scheduling and the field app, exactly as the team uses it now.</p>
     </div>
-    <div class="note">Every building, client and number on this page is made up for the demo.</div>
+    <div class="note">Every company, contact and number on this page is made up for the demo. Targets come from the brief: 700 to 1,000 compliance clients in a year.</div>
   </div>
 
   <div class="kpis">
-    <div class="kpi"><div class="l">Buildings on the register</div><div class="v" data-count="412">0</div><div class="s up">+18 this quarter</div></div>
-    <div class="kpi"><div class="l">Anchors tracked</div><div class="v" data-count="6138">0</div><div class="s">across NSW and the ACT</div></div>
-    <div class="kpi"><div class="l">Due in 60 days</div><div class="v" data-count="31">0</div><div class="s">22 reminded, 9 booked</div></div>
-    <div class="kpi"><div class="l">Failed anchors waiting on a quote</div><div class="v" id="kFail">4</div><div class="s warn" id="kFailS">2 older than 48 hours</div></div>
-    <div class="kpi"><div class="l">Renewals booked on time</div><div class="v" data-count="94" data-suffix="%">0</div><div class="s up">from 71% before reminders</div></div>
+    <div class="kpi"><div class="l">Compliance clients</div><div class="v"><span data-count="718">0</span> <small>/ 1,000</small></div><div class="bar"><i style="width:0" data-w="72"></i></div></div>
+    <div class="kpi"><div class="l">New clients this month</div><div class="v"><span data-count="17">0</span> <small>/ 20 to 25</small></div><div class="bar"><i style="width:0" data-w="74"></i></div></div>
+    <div class="kpi"><div class="l">New conversations this month</div><div class="v"><span data-count="71">0</span> <small>/ 80 to 100</small></div><div class="bar"><i style="width:0" data-w="79"></i></div></div>
+    <div class="kpi"><div class="l">Speed to quote (median)</div><div class="v">0.8 <small>days</small></div><div class="s" style="color:var(--green-deep)">target 1 day</div></div>
+    <div class="kpi"><div class="l">Renewal tasks overdue</div><div class="v" id="kOver">2</div><div class="s" style="color:var(--red)">they stay on the list until done</div></div>
   </div>
 
-  <!-- RENEWALS -->
-  <section class="view on" id="v-renewals">
-    <div class="grid2">
+  <!-- PIPELINE -->
+  <section class="view on" id="v-pipe">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:6px">
+        <div><h2>New compliance clients</h2><div class="sub" style="margin-bottom:0">The stages from the brief. Under $5k goes straight to a quote; over $5k gets a proposal and a sales meeting.</div></div>
+        <button class="btn" id="advance">Run today's automations</button>
+      </div>
+      <div class="chips" id="segChips" style="margin-top:12px"></div>
+      <div class="board" id="board"></div>
+      <div class="row" style="margin-top:10px;font-size:12px;color:var(--soft)">
+        <span class="row" style="gap:5px"><span class="av" style="background:#066AAB">D</span>Darnell</span>
+        <span class="row" style="gap:5px"><span class="av" style="background:#7A5BC7">R</span>Renee</span>
+        <span class="row" style="gap:5px"><span class="av" style="background:#E9A21B">L</span>Lee</span>
+        <span>Red border: stuck in a stage too long, alert sent.</span>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:16px">
       <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <div><h2>Recertification renewals</h2><div class="sub">Each card is a building. It moves on its own as reminders go out and clients book.</div></div>
-          <button class="btn" id="advance">Run today's automations</button>
-        </div>
-        <div class="board" id="board"></div>
+        <h2>Lost, with a reason every time</h2>
+        <div class="sub">"Not now" leads are not lost: they go to nurture and come back before their renewal month.</div>
+        <div class="bars" id="lost"></div>
       </div>
       <div class="card">
         <h2>What the system did today</h2>
-        <div class="sub">Every text, email and task, logged against the building.</div>
+        <div class="sub">Every task, email and text, logged on the contact.</div>
         <ul class="feed" id="feed"></ul>
       </div>
     </div>
   </section>
 
-  <!-- INSPECTION -->
-  <section class="view" id="v-inspect">
-    <div class="roofwrap">
+  <!-- LEAD -->
+  <section class="view" id="v-lead">
+    <div class="grid2">
       <div class="card">
         <div class="row" style="justify-content:space-between">
-          <div><h2>Roof inspection: Coastline Towers, Wollongong</h2><div class="sub">Tap an anchor on the roof plan, or use the technician's phone. Pass or fail each one, then finish the job.</div></div>
-          <span class="pill p-blue">SP 50213 · 12 anchors · 1 static line</span>
+          <div><h2>From enquiry to qualified</h2><div class="sub">A new enquiry from the website form. Press the button to step through what happens.</div></div>
+          <div class="row"><button class="btn" id="leadNext">Next step</button><button class="btn ghost" id="leadReset">Start again</button></div>
         </div>
-        <svg class="roof" id="roof" viewBox="0 0 640 380" aria-label="Roof plan with anchor points"></svg>
-        <div class="legend"><span><i style="background:#C9CED3"></i>Not tested</span><span><i style="background:var(--green)"></i>Pass</span><span><i style="background:var(--red)"></i>Fail, tagged out</span><span><i style="background:var(--blue);border-radius:2px;height:4px;width:16px"></i>Static line</span></div>
-        <div class="row" style="margin-top:14px">
-          <button class="btn" id="finish">Finish inspection</button>
-          <button class="btn ghost" id="autofill">Fill a typical result</button>
-          <button class="btn ghost" id="resetRoof">Start again</button>
-          <span id="roofCount" style="color:var(--soft);font-size:13px">0 of 12 tested</span>
+        <div class="lead-card">
+          <div class="row" style="justify-content:space-between">
+            <div><b style="font-family:var(--display);font-size:16px">Westbrook Strata Management</b><div style="color:var(--soft);font-size:13px">Priya Nair, Portfolio Manager · 23 buildings · Parramatta</div></div>
+            <div class="row"><span class="pill p-blue">Strata</span><span class="pill p-ok">Tier 1</span><span class="pill p-grey">Website form</span></div>
+          </div>
+          <div class="attempts" id="attempts"></div>
+          <div style="font-size:12.5px;color:var(--soft)" id="attNote">Up to 8 call or email attempts. Each one creates the next task automatically.</div>
+        </div>
+        <ul class="steps" id="leadSteps"></ul>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2>Speed to lead</h2>
+          <div class="sub">Time from enquiry to first contact.</div>
+          <div class="v" style="font-family:var(--display);font-size:34px;font-weight:800" id="stl">00:00</div>
+          <div style="color:var(--soft);font-size:12.5px">Darnell's phone buzzes the moment the form comes in. Target: under 15 minutes in business hours.</div>
+        </div>
+        <div class="card">
+          <h2>Document request</h2>
+          <div class="sub">Sent automatically once someone answers. Uploads go to the client's OneDrive folder.</div>
+          <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:13px">Hi Priya, thanks for the chat today. To quote your annual compliance checks, could you upload site addresses, roof plans and your current height safety certificates here: isafeaccess.com.au/docs. Any questions, reply to this email or call Darnell on the 1300 number.</div>
+          <div class="row" style="margin-top:10px" id="docs"><span class="pill p-grey">Site list</span><span class="pill p-grey">Roof plans</span><span class="pill p-grey">Current certificates</span></div>
         </div>
       </div>
-      <div class="grid2b" style="grid-template-columns:1fr">
-        <div class="phone">
-          <div class="screen">
-            <div class="ph-top"><small>Technician app · works offline</small><div>Coastline Towers</div></div>
-            <div class="ph-body"><ul class="anclist" id="anclist"></ul></div>
+    </div>
+  </section>
+
+  <!-- RENEWALS -->
+  <section class="view" id="v-renew">
+    <div class="grid2">
+      <div class="card">
+        <h2>Renewals by month</h2>
+        <div class="sub">All 718 compliance clients by renewal month. Click a month.</div>
+        <div class="months" id="months"></div>
+        <div class="row" style="justify-content:space-between;margin:14px 0 8px">
+          <b id="moTitle" style="font-family:var(--display)">January renewals</b>
+          <button class="btn sm" id="nextDay">Next day</button>
+        </div>
+        <div id="tasks"></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2>The Tradify gap, fixed</h2>
+          <div class="vs">
+            <div style="background:var(--red-pale)"><h3 style="color:var(--red)">Today</h3>A calendar reminder about 11 months out. If nobody actions it that day, it is gone.</div>
+            <div style="background:var(--green-pale)"><h3 style="color:var(--green-deep)">In GoHighLevel</h3>A task that stays open until it is done, shows again every morning it is overdue, and goes to Ross after 3 days.</div>
           </div>
         </div>
         <div class="card">
-          <h2>Fail to quote</h2>
-          <div class="sub">Each failed anchor becomes a quote line with its photo note. The quote goes to the strata manager for approval, then into the new work pipeline.</div>
-          <div id="quote"><div class="empty">No failed anchors yet.</div></div>
+          <h2>"Not now" nurture</h2>
+          <div class="sub">For leads who already have a provider. One email a month until 60 days before their renewal, then a call task.</div>
+          <ul class="steps" id="nurture"></ul>
+          <div style="font-size:12px;color:var(--soft);margin-top:8px">Every email has the sender's name and an unsubscribe link, and only goes to people who enquired or are existing contacts.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- RUNS -->
-  <section class="view" id="v-runs">
+  <!-- HANDOVER -->
+  <section class="view" id="v-hand">
+    <div class="grid2e">
+      <div class="card">
+        <h2>Won: handover to ops</h2>
+        <div class="sub">Tradify has no open connection for GoHighLevel to write to, so the handover is a ready made job sheet and a task for Renee. Nothing gets retyped from emails.</div>
+        <div class="sheet">
+          <div class="hd"><div><small style="color:#AEB4BA">Handover task for Renee</small><div style="font-family:var(--display);font-weight:700">Northgate Shopping Centre</div></div><span class="pill p-ok">Won · Proposal</span></div>
+          <div class="bd">
+            <div class="kv"><span>Client contact</span><span>Mark Ellis, Centre Manager</span></div>
+            <div class="kv"><span>Segment</span><span>Shopping centre · Tier 1</span></div>
+            <div class="kv"><span>Scope</span><span>Annual compliance, 64 anchors, 2 static lines, 3 roof ladders</span></div>
+            <div class="kv"><span>Site documents</span><span>OneDrive folder link</span></div>
+            <div class="kv"><span>Access notes</span><span>Loading dock B, sign in with security</span></div>
+            <div class="kv"><span>Renewal month</span><span>February</span></div>
+            <div class="row" style="margin-top:12px"><button class="btn" id="copySheet">Copy for Tradify</button><button class="btn dark" id="inTradify">Created in Tradify</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>After the job</h2>
+        <div class="sub">Status comes back without anyone updating two systems. Tradify sends invoices to Xero, so the CRM can read invoiced and paid from Xero.</div>
+        <ul class="track" id="track"></ul>
+        <button class="btn" id="playTrack">Play it</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORTS -->
+  <section class="view" id="v-rep">
+    <div class="grid2e">
+      <div class="card">
+        <h2>Conversion at each stage</h2>
+        <div class="sub">Last 90 days. The question Ross asked: where do deals drop out?</div>
+        <div class="funnel" id="funnel"></div>
+      </div>
+      <div class="card">
+        <h2>Win rate by segment</h2>
+        <div class="sub">Quotes and proposals, last 90 days.</div>
+        <div class="bars" id="seg"></div>
+        <div style="font-size:12px;color:var(--soft);margin-top:12px">Tier 2 (builders, roofers) wins fast but swings month to month, as the brief says.</div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <h2>This week, per person</h2>
+        <div class="sub">Calls, conversations, meetings and quotes. Reviewed in the weekly pipeline meeting.</div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>Person</th><th class="n">Calls</th><th class="n">Conversations</th><th class="n">Meetings</th><th class="n">Quotes sent</th><th class="n hide-s">Won</th></tr></thead>
+          <tbody>
+            <tr><td><span class="row" style="gap:7px"><span class="av" style="background:#066AAB">D</span>Darnell</span></td><td class="n">96</td><td class="n">21</td><td class="n">5</td><td class="n">6</td><td class="n hide-s">3</td></tr>
+            <tr><td><span class="row" style="gap:7px"><span class="av" style="background:#7A5BC7">R</span>Renee</span></td><td class="n">38</td><td class="n">14</td><td class="n">2</td><td class="n">1</td><td class="n hide-s">2</td></tr>
+            <tr><td><span class="row" style="gap:7px"><span class="av" style="background:#E9A21B">L</span>Lee</span></td><td class="n">12</td><td class="n">9</td><td class="n">1</td><td class="n">7</td><td class="n hide-s">1</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <h2>Leads by source</h2>
+        <div class="sub">This month, 71 new conversations.</div>
+        <div class="bars" id="src"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARGETS -->
+  <section class="view" id="v-tgt">
     <div class="grid2">
       <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <div><h2>Run planner</h2><div class="sub">Buildings due in the next 60 days, grouped into day runs out of Picton. Schematic map, not to scale.</div></div>
-          <button class="btn" id="plan">Plan next week's runs</button>
-        </div>
-        <svg class="map" id="map" viewBox="0 0 600 470" aria-label="Schematic map of NSW service area"></svg>
+        <h2>Firmable target list: 300 companies</h2>
+        <div class="sub">Kept apart from enquiries and clients. Darnell works them one to one by phone and personal email first.</div>
+        <div class="chips" id="tChips"></div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>Company</th><th class="hide-s">Segment</th><th>Contact</th><th>Status</th><th></th></tr></thead>
+          <tbody id="tRows"></tbody>
+        </table></div>
+        <div class="guard"><b>Bulk email is switched off for this list.</b> Researched contacts only get a sequence after a two way conversation, in line with the Spam Act notes in the brief.</div>
       </div>
       <div class="card">
-        <h2>Proposed runs</h2>
-        <div class="sub">Each client gets a text with a booking link for their run's day.</div>
-        <ul class="runlist" id="runs"><li style="color:var(--soft)">Press "Plan next week's runs".</li></ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- PORTAL -->
-  <section class="view" id="v-portal">
-    <div class="card">
-      <div class="portal-top">
-        <div><small>What your client sees</small><div style="font-family:var(--display);font-weight:700;font-size:16px">Harbour Line Strata · anchor register</div></div>
-        <div class="row"><span class="pill p-ok">9 in date</span><span class="pill p-due">2 due soon</span><span class="pill p-bad">1 action needed</span></div>
-      </div>
-      <div style="overflow-x:auto">
-      <table>
-        <thead><tr><th>Building</th><th class="hide-s">Suburb</th><th>Anchors</th><th>Last inspected</th><th>Next due</th><th>Status</th><th></th></tr></thead>
-        <tbody id="portalRows"></tbody>
-      </table>
-      </div>
-      <p style="color:var(--soft);font-size:12.5px;margin:14px 0 0">Strata managers log in, download any certificate, see what failed and why, and book the next inspection without an email chain. Contractors' prequalification packs can sit here too.</p>
-    </div>
-  </section>
-
-  <!-- TAG -->
-  <section class="view" id="v-tag">
-    <div class="grid2">
-      <div class="card">
-        <h2>Tag check</h2>
-        <div class="sub">A QR code on every anchor tag. A gutter cleaner or roofer scans it before clipping on and sees if that anchor is safe to use today.</div>
-        <div class="row" style="margin-bottom:12px">
-          <button class="btn" data-tag="A04">Scan anchor A04</button>
-          <button class="btn ghost" data-tag="A09">Scan anchor A09</button>
-          <button class="btn ghost" data-tag="A11">Scan anchor A11</button>
-        </div>
-        <p style="color:var(--soft);font-size:13px;margin:0">Each scan is logged, so you can see which buildings get used most and who is working on your clients' roofs. An out of date or failed anchor shows a clear stop screen and a button to call the office.</p>
-      </div>
-      <div class="phone">
-        <div class="screen">
-          <div class="ph-top"><small>isafeaccess.com.au/tag</small><div id="tagTitle">Anchor A04</div></div>
-          <div class="ph-body" id="tagBody"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- AUTOPILOT -->
-  <section class="view" id="v-auto">
-    <div class="grid2">
-      <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <div><h2>Renewal autopilot</h2><div class="sub">What happens to one building, from 90 days before expiry to the Google review.</div></div>
-          <button class="btn" id="play">Play it</button>
-        </div>
-        <ul class="tl" id="tl"></ul>
-      </div>
-      <div class="card">
-        <h2>New enquiries</h2>
-        <div class="sub">Website forms and the 1300 line, straight into GoHighLevel.</div>
-        <ul class="feed" id="leads"></ul>
-        <div class="sms" id="mct"><b style="font-size:12px;color:var(--soft)">Missed call text back</b><br>Hi, it's iSafe Access. Sorry we missed you, the team is probably on a roof. What can we help with? Reply here or book a site assessment: isafeaccess.com.au/book</div>
+        <h2>Progress</h2>
+        <div class="sub">Target list worked so far.</div>
+        <div class="funnel" id="tFunnel"></div>
+        <div style="margin-top:16px;font-size:13px;color:var(--soft)">Existing clients have their own list too: Darnell's first job is calling 30 to 40 of the 700 about installs, PPE and training.</div>
       </div>
     </div>
   </section>
 </main>
 
-<footer>Demo prepared for iSafe Access by Benjamin Vincent Yson (BVN). Sample data only; nothing here is connected to your real records.</footer>
+<footer>Demo prepared for iSafe Access by Benjamin Vincent Yson (BVN). Sample data only; nothing here is connected to your systems.</footer>
 
-<div class="modal" id="modal"><div class="cert" id="certBox"></div></div>
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 (function(){
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600)};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2800)};
+const AV={D:'#066AAB',R:'#7A5BC7',L:'#E9A21B'};
+const av=k=>`<span class="av" style="background:${AV[k]}">${k}</span>`;
 
-/* clock in Sydney time */
 function tick(){
   const d=new Date();
-  const s=d.toLocaleString('en-AU',{timeZone:'Australia/Sydney',weekday:'short',hour:'2-digit',minute:'2-digit'});
-  $('#clock').textContent='Picton · '+s;
+  $('#clock').textContent='Sydney · '+d.toLocaleString('en-AU',{timeZone:'Australia/Sydney',weekday:'short',hour:'2-digit',minute:'2-digit'});
   const h=+d.toLocaleString('en-AU',{timeZone:'Australia/Sydney',hour:'2-digit',hour12:false});
-  const g=h<12?'Morning':h<17?'Afternoon':'Evening';
-  $('#hello').textContent=g+', Ross. 31 buildings are due in the next 60 days.';
+  $('#hello').textContent=(h<12?'Morning':h<17?'Afternoon':'Evening')+', Ross. 17 new compliance clients this month, 8 to go.';
 }
 tick();setInterval(tick,30000);
+$$('[data-count]').forEach(el=>{const n=+el.dataset.count,st=performance.now();(function f(t){const p=Math.min(1,(t-st)/900);el.textContent=Math.round(n*(1-Math.pow(1-p,3))).toLocaleString('en-AU');if(p<1)requestAnimationFrame(f)})(st)});
+setTimeout(()=>$$('.bar i').forEach(i=>i.style.width=i.dataset.w+'%'),100);
 
-/* count up */
-$$('[data-count]').forEach(el=>{
-  const n=+el.dataset.count,suf=el.dataset.suffix||'';let i=0;const st=performance.now();
-  (function f(t){const p=Math.min(1,(t-st)/900);el.textContent=Math.round(n*(1-Math.pow(1-p,3))).toLocaleString('en-AU')+suf;if(p<1)requestAnimationFrame(f)})(st);
-});
-
-/* tabs */
+const shown={};
 $$('#tabs button').forEach(b=>b.onclick=()=>{
   $$('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
   $$('section.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));
-  if(b.dataset.v==='tag'&&!$('#tagBody').innerHTML)showTag('A04');
+  if(!shown[b.dataset.v]){shown[b.dataset.v]=1;(onShow[b.dataset.v]||(()=>{}))()}
+  window.scrollTo({top:0,behavior:'smooth'});
 });
 
-/* RENEWALS BOARD */
-const cols=['Due in 90 days','Reminder sent','Booked','Inspected','Certificate issued','Failed: quoted'];
-const bld=[
- {n:'Harbour Line SP 31877',s:'Kiama',a:14,d:'12 Feb',c:0},
- {n:'Southgate Logistics DC',s:'Minto',a:38,d:'20 Feb',c:0},
- {n:'Bayside Primary School',s:'Engadine',a:9,d:'03 Feb',c:1},
- {n:'Parkview Aged Care',s:'Camden',a:22,d:'28 Jan',c:1},
- {n:'Coastline Towers SP 50213',s:'Wollongong',a:12,d:'16 Jan',c:2},
- {n:'Northside Retail Centre',s:'Charlestown',a:46,d:'21 Jan',c:2},
- {n:'Eastwood Cold Store',s:'Ingleburn',a:17,d:'09 Jan',c:3},
- {n:'Ridgeway Apartments SP 4410',s:'Parramatta',a:11,d:'05 Jan',c:4},
- {n:'Fernhill Medical Hub',s:'Narellan',a:8,d:'02 Jan',c:5,f:2},
- {n:'Kingsway Service Station',s:'Goulburn',a:4,d:'14 Feb',c:0}
+/* PIPELINE */
+const stages=['New lead','Contacting','Qualified','Site visit booked','Quote or proposal','Follow up','Won','Handover to ops'];
+const segs=['All','Strata','Education','Government','Facility manager','Builder','Roofer'];
+const deals=[
+ {n:'Westbrook Strata Mgmt',sg:'Strata',t:1,o:'D',v:'Proposal',s:0,src:'Website'},
+ {n:'Hillview Public School',sg:'Education',t:1,o:'R',v:'Quote',s:0,src:'Phone'},
+ {n:'Coastal Council Depots',sg:'Government',t:1,o:'D',v:'Proposal',s:1,src:'Firmable',a:3},
+ {n:'Summit Roofing Co',sg:'Roofer',t:2,o:'D',v:'Quote',s:1,src:'Referral',a:6},
+ {n:'Harbourside Strata',sg:'Strata',t:1,o:'D',v:'Quote',s:2,src:'Firmable'},
+ {n:'St Brigid\'s College',sg:'Education',t:1,o:'L',v:'Quote',s:3,src:'Repeat client'},
+ {n:'Metro Rail Facilities',sg:'Government',t:1,o:'L',v:'Proposal',s:4,src:'Referral',st:1},
+ {n:'Eastgate Plaza',sg:'Facility manager',t:1,o:'L',v:'Quote',s:4,src:'Website'},
+ {n:'Kestrel Builders',sg:'Builder',t:2,o:'L',v:'Quote',s:5,src:'Phone'},
+ {n:'Riverside Hospital',sg:'Government',t:1,o:'D',v:'Proposal',s:5,src:'Firmable',st:1},
+ {n:'Northgate Shopping Centre',sg:'Facility manager',t:1,o:'D',v:'Proposal',s:6,src:'Referral'},
+ {n:'Greenway Strata SP 4471',sg:'Strata',t:1,o:'R',v:'Quote',s:7,src:'Website'}
 ];
+let seg='All';
+$('#segChips').innerHTML=segs.map(s=>`<button class="chip${s==='All'?' on':''}" data-s="${s}">${s}</button>`).join('');
+$('#segChips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;seg=b.dataset.s;$$('#segChips .chip').forEach(c=>c.classList.toggle('on',c===b));drawBoard()};
 function drawBoard(flash){
-  $('#board').innerHTML=cols.map((c,i)=>{
-    const list=bld.filter(b=>b.c===i);
-    return `<div class="col"><h3>${c}<span>${list.length}</span></h3>${list.map(b=>{
-      const p=i===5?`<span class="pill p-bad">${b.f||1} failed</span>`:i===4?'<span class="pill p-ok">Certified</span>':i>=2?'<span class="pill p-blue">On schedule</span>':'<span class="pill p-due">Due '+b.d+'</span>';
-      return `<div class="bc${flash&&flash.includes(b)?' flash':''}"><b>${b.n}</b><div class="m">${b.s} · ${b.a} anchors</div><div class="f">${p}<span class="m">${b.d}</span></div></div>`}).join('')}</div>`}).join('');
+  $('#board').innerHTML=stages.map((st,i)=>{
+    const list=deals.filter(d=>d.s===i&&(seg==='All'||d.sg===seg));
+    return `<div class="col"><h3>${st}<span>${list.length}</span></h3>${list.map(d=>`<div class="bc${flash&&flash.includes(d)?' flash':''}${d.st?' stuck':''}"><b>${d.n}</b><div class="m">${d.sg} · Tier ${d.t} · ${d.src}</div><div class="f"><span class="pill ${d.v==='Proposal'?'p-vio':'p-blue'}">${d.v==='Proposal'?'Over $5k':'Under $5k'}</span>${i===1?`<span class="m">Attempt ${d.a||1}/8</span>`:''}${av(d.o)}</div></div>`).join('')}</div>`}).join('');
 }
 drawBoard();
-const feedItems=[
- ['#E9A21B','90 day reminder emailed to Harbour Line SP 31877, with a booking link.'],
- ['#066AAB','Bayside Primary School booked 3 Feb from the text link. Run: South coast.'],
- ['#69BF4A','Certificate for Ridgeway Apartments sent to the strata manager. Next due set to Jan 2028.'],
- ['#C9372C','Fernhill Medical Hub: 2 anchors failed. Draft quote created, task for Lee to check photos.'],
- ['#E9A21B','Parkview Aged Care has not opened the 60 day reminder. Call task created for Renee.'],
- ['#69BF4A','Google review request sent to Eastwood Cold Store, 2 days after sign off.']
-];
-let fi=0;const now=()=>new Date().toLocaleTimeString('en-AU',{timeZone:'Australia/Sydney',hour:'2-digit',minute:'2-digit',hour12:false});
-function addFeed(el,item){const li=document.createElement('li');li.innerHTML=`<span class="t">${now()}</span><span class="dot" style="background:${item[0]}"></span><span>${item[1]}</span>`;el.prepend(li)}
-for(let i=0;i<4;i++)addFeed($('#feed'),feedItems[fi++]);
+const lost=[['Not now (has a provider)',41,'#E9A21B'],['No response after 8 attempts',23,'#9AA2A9'],['Price',14,'#C9372C'],['Timing',12,'#066AAB'],['Not ICP',10,'#7A5BC7']];
+function bars(el,rows,max,suffix){$(el).innerHTML=rows.map(r=>`<div class="hb"><span>${r[0]}</span><span class="fb"><i style="width:0;background:${r[2]}" data-w="${r[1]/max*100}"></i></span><span style="text-align:right;font-variant-numeric:tabular-nums">${r[1]}${suffix||''}</span></div>`).join('');setTimeout(()=>$$(el+' i').forEach(i=>i.style.width=i.dataset.w+'%'),60)}
+bars('#lost',lost,41,'%');
+const nowT=()=>new Date().toLocaleTimeString('en-AU',{timeZone:'Australia/Sydney',hour:'2-digit',minute:'2-digit',hour12:false});
+function addFeed(c,t){const li=document.createElement('li');li.innerHTML=`<span class="t">${nowT()}</span><span class="dot" style="background:${c}"></span><span>${t}</span>`;$('#feed').prepend(li)}
+[['#069','Website enquiry from Westbrook Strata Mgmt. Darnell notified, call task due in 15 minutes.'],
+ ['#E9A21B','Coastal Council Depots: attempt 3 of 8 logged (voicemail). Attempt 4 set for Thursday.'],
+ ['#7A5BC7','Riverside Hospital proposal has sat 9 days in Follow up. Alert sent to Darnell and Ross.'],
+ ['#69BF4A','Greenway Strata SP 4471 won. Handover task created for Renee.']].forEach(x=>addFeed(x[0],x[1]));
+const moreFeed=[['#69BF4A','Quote follow up day 5 sent to Kestrel Builders.'],['#E9A21B','Renewal task for Lakeside Aged Care is 2 days overdue. Shown again on Renee\'s list.'],['#069','Hillview Public School booked a site visit from the calendar link.'],['#7A5BC7','Testimonial request sent to Parkview Strata, paid in Xero yesterday.']];
+let mf=0;
 $('#advance').onclick=()=>{
   const moved=[];
-  [...bld].sort((a,b)=>b.c-a.c).forEach(b=>{if(b.c<4&&Math.random()<.55){b.c++;moved.push(b)}});
-  if(!moved.length){bld[0].c=Math.min(4,bld[0].c+1);moved.push(bld[0])}
+  deals.filter(d=>d.s<7).sort((a,b)=>b.s-a.s).forEach(d=>{if(Math.random()<.45){d.s++;d.st=0;moved.push(d)}});
+  if(!moved.length){deals[0].s++;moved.push(deals[0])}
   drawBoard(moved);
-  moved.slice(0,3).forEach(b=>addFeed($('#feed'),[ '#69BF4A',`${b.n} moved to "${cols[b.c]}".`]));
-  if(fi<feedItems.length)addFeed($('#feed'),feedItems[fi++]);
-  toast(moved.length+' buildings moved on. Nobody had to chase them.');
+  moved.slice(0,3).forEach(d=>addFeed('#69BF4A',`${d.n} moved to "${stages[d.s]}".`));
+  if(mf<moreFeed.length){addFeed(moreFeed[mf][0],moreFeed[mf][1]);mf++}
+  toast(moved.length+' deals moved on and the next tasks are set.');
 };
 
-/* ROOF */
-const anchors=[
- {id:'A01',x:90,y:80},{id:'A02',x:200,y:80},{id:'A03',x:310,y:80},{id:'A04',x:420,y:80},{id:'A05',x:530,y:80},
- {id:'A06',x:90,y:300},{id:'A07',x:200,y:300},{id:'A08',x:310,y:300},{id:'A09',x:420,y:300},{id:'A10',x:530,y:300},
- {id:'A11',x:575,y:190},{id:'A12',x:60,y:190}
+/* LEAD */
+const leadSteps=[
+ 'Website form creates the contact, tags it Strata and Tier 1, and opens a deal at New lead.',
+ 'Darnell gets a text and a call task. Attempt 1: no answer, voicemail left.',
+ 'Attempt 2 created for the next morning: email with a short intro from Darnell.',
+ 'Attempt 3: Priya answers. 23 buildings, renewing with another provider in March.',
+ 'Document request sent with the upload link. Deal moves to Contacting: waiting on documents.',
+ 'Site list, roof plans and certificates uploaded. Deal moves to Qualified, owner Lee for quoting.',
+ 'Over $5k, so it goes the proposal path: sales meeting booked from Darnell\'s calendar link.'
 ];
-const faults={A07:'Corroded fixing at base, roof sheet cracked around the bolt',A11:'Loose hardware, anchor moves under hand load',A03:'Tag missing and no install record found',A09:'Deformation after a fall arrest event'};
-let st={};
-function svgRoof(){
-  let h=`<defs><pattern id="rib" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M0 0V14" stroke="#E4E7EA" stroke-width="2"/></pattern></defs>
-  <rect x="30" y="40" width="580" height="300" rx="6" fill="url(#rib)" stroke="#9AA2A9" stroke-width="2"/>
-  <rect x="250" y="150" width="140" height="80" rx="4" fill="#EEF0F2" stroke="#C9CED3"/><text x="320" y="195" text-anchor="middle" font-size="12" fill="#5E666E">Plant room</text>
-  <rect x="455" y="150" width="70" height="60" rx="4" fill="#F5F6F7" stroke="#C9CED3"/><text x="490" y="184" text-anchor="middle" font-size="11" fill="#5E666E">HVAC</text>
-  <rect x="40" y="345" width="70" height="22" rx="4" fill="#24272A"/><text x="75" y="360" text-anchor="middle" font-size="10" fill="#fff">Roof hatch</text>
-  <line x1="90" y1="80" x2="530" y2="80" stroke="#066AAB" stroke-width="4" stroke-linecap="round" opacity=".75"/>`;
-  anchors.forEach(a=>{const s=st[a.id];const c=s==='p'?'#69BF4A':s==='f'?'#C9372C':'#C9CED3';
-    h+=`<g class="anc" data-id="${a.id}"><circle cx="${a.x}" cy="${a.y}" r="17" fill="#fff" stroke="${c}" stroke-width="3"/><circle class="o" cx="${a.x}" cy="${a.y}" r="8" fill="${c}"/><text x="${a.x}" y="${a.y-24}" text-anchor="middle" font-size="11" font-weight="600" fill="#24272A">${a.id}</text></g>`});
-  $('#roof').innerHTML=h;
-  $$('#roof .anc').forEach(g=>g.onclick=()=>{const id=g.dataset.id;st[id]=st[id]==='p'?'f':st[id]==='f'?undefined:'p';renderRoof()});
+let ls=0,stlTimer=null,stlSec=0;
+function drawLead(){
+  $('#leadSteps').innerHTML=leadSteps.map((s,i)=>`<li class="${i<ls?'done':''}"><span class="ck">${i<ls?'&#10003;':''}</span><span>${s}</span></li>`).join('');
+  const att=ls<2?0:ls<3?1:ls<4?2:3;
+  $('#attempts').innerHTML=Array.from({length:8},(_,i)=>{const n=i+1;let c='att';if(ls>=4&&n===3)c+=' win';else if(n<=att&&n<3)c+=' done';else if(n===att+1&&ls>=1&&ls<4)c+=' now';return `<div class="${c}"><b>${n}</b>${ls>=4&&n===3?'Answered':n<=att?'Done':n===att+1&&ls>=1&&ls<4?'Due':'·'}</div>`}).join('');
+  $('#attNote').textContent=ls>=4?'Reached on attempt 3. The remaining attempts were cancelled automatically.':'Up to 8 call or email attempts. Each one creates the next task automatically.';
+  const d=$$('#docs .pill');d.forEach(p=>p.className='pill '+(ls>=6?'p-ok':ls>=5?'p-due':'p-grey'));
+  $('#leadNext').disabled=ls>=leadSteps.length;
 }
-function renderRoof(){
-  svgRoof();
-  $('#anclist').innerHTML=anchors.map(a=>`<li><span><b>${a.id}</b><br><span style="color:var(--soft);font-size:11px">${a.id==='A01'||a.id==='A05'?'Static line end':'Single point anchor'}</span></span><span class="seg"><button class="pass${st[a.id]==='p'?' on':''}" data-id="${a.id}" data-s="p">Pass</button><button class="fail${st[a.id]==='f'?' on':''}" data-id="${a.id}" data-s="f">Fail</button></span></li>`).join('');
-  $$('#anclist button').forEach(b=>b.onclick=()=>{st[b.dataset.id]=st[b.dataset.id]===b.dataset.s?undefined:b.dataset.s;renderRoof()});
-  const n=Object.values(st).filter(Boolean).length;$('#roofCount').textContent=n+' of 12 tested';
-  const fails=anchors.filter(a=>st[a.id]==='f');
-  $('#quote').innerHTML=fails.length?fails.map(a=>`<div class="qline"><span><b>${a.id}</b> replace anchor and fixings<br><span style="color:var(--soft);font-size:12px">${faults[a.id]||'Failed proof load test'}</span></span><span class="pill p-bad">Tagged out</span></div>`).join('')+`<div class="row" style="margin-top:12px"><button class="btn dark" id="sendQ">Send quote for approval</button><span style="color:var(--soft);font-size:12px">Prices come from your own price list.</span></div>`:'<div class="empty">No failed anchors yet.</div>';
-  const sq=$('#sendQ');if(sq)sq.onclick=()=>{toast('Quote sent to the strata manager. Follow up set for day 2 and day 5.');$('#kFail').textContent=+$('#kFail').textContent+1};
+function startStl(){clearInterval(stlTimer);stlSec=0;$('#stl').textContent='00:00';stlTimer=setInterval(()=>{stlSec+=9;const m=Math.floor(stlSec/60),s=stlSec%60;$('#stl').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(stlSec>=7*60){clearInterval(stlTimer);$('#stl').style.color='var(--green-deep)'}},60)}
+$('#leadNext').onclick=()=>{if(ls<leadSteps.length){ls++;drawLead();if(ls===1)startStl();if(ls===leadSteps.length)toast('Qualified and meeting booked. Nothing was typed into Tradify notes.')}};
+$('#leadReset').onclick=()=>{ls=0;clearInterval(stlTimer);$('#stl').textContent='00:00';$('#stl').style.color='';drawLead()};
+drawLead();
+
+/* RENEWALS */
+const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const full=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const per=[71,64,58,55,52,49,57,60,63,66,62,61];
+let mo=0,day=0;
+const tasksBy={
+ 0:[{n:'Lakeside Aged Care',o:'R',d:2},{n:'Ridgeway Apartments SP 4410',o:'R',d:1},{n:'Bayview Primary School',o:'D',d:0},{n:'Southgate Logistics DC',o:'R',d:0},{n:'Ashfield Council Pool',o:'D',d:-3}],
+ 1:[{n:'Northgate Shopping Centre',o:'D',d:-12},{n:'Greenway Strata SP 4471',o:'R',d:-18},{n:'Kingsford Medical Hub',o:'R',d:-20}]
+};
+function drawMonths(){$('#months').innerHTML=mn.map((m,i)=>`<div class="mo${i===mo?' on':''}" data-i="${i}">${m}<b>${per[i]}</b><div class="h" style="opacity:${.25+per[i]/100}"></div></div>`).join('')}
+$('#months').onclick=e=>{const m=e.target.closest('.mo');if(!m)return;mo=+m.dataset.i;drawMonths();drawTasks()};
+function drawTasks(){
+  $('#moTitle').textContent=full[mo]+' renewals · '+per[mo]+' clients';
+  const list=(tasksBy[mo]||[{n:'Renewal tasks open 60 days before the month',o:'R',d:-40}]).map(t=>({...t,d:t.d+day}));
+  $('#tasks').innerHTML=list.map(t=>{const over=t.d>0;const esc=t.d>=3;return `<div class="task${over?' over':''}">${av(t.o)}<div class="tx"><b>${t.n}</b><small>${over?`Overdue ${t.d} day${t.d>1?'s':''}, shown again this morning${esc?' · escalated to Ross':''}`:t.d===0?'Due today: call to book the annual check':'Opens in '+(-t.d)+' days'}</small></div>${over?'<span class="pill p-bad">Overdue</span>':t.d===0?'<span class="pill p-due">Today</span>':'<span class="pill p-grey">Upcoming</span>'}<button class="btn sm ghost" data-done="${t.n}">Done</button></div>`}).join('');
+  if(mo===0)$('#kOver').textContent=list.filter(t=>t.d>0).length;
 }
-renderRoof();
-$('#autofill').onclick=()=>{anchors.forEach(a=>st[a.id]='p');st.A07='f';st.A11='f';renderRoof()};
-$('#resetRoof').onclick=()=>{st={};renderRoof()};
-$('#finish').onclick=()=>{
-  const n=Object.values(st).filter(Boolean).length;
-  if(n<12){toast((12-n)+' anchors still to test.');return}
-  const p=anchors.filter(a=>st[a.id]==='p').length,f=12-p;
-  $('#certBox').innerHTML=`<button class="x" aria-label="Close">&times;</button>
-  <div style="font-size:12px;color:var(--soft);font-weight:600;letter-spacing:.06em;text-transform:uppercase">Certificate of inspection</div>
-  <h2 style="margin-top:4px">Coastline Towers SP 50213</h2>
-  <p style="color:var(--soft);margin:4px 0 14px">Inspected to AS/NZS 1891.4 and AS/NZS 5532 by a competent person.</p>
-  <div class="kv"><span>Anchors passed and tagged</span><b>${p}</b></div>
-  <div class="kv"><span>Anchors failed and tagged out</span><b style="color:${f?'var(--red)':'inherit'}">${f}</b></div>
-  <div class="kv"><span>Static line</span><b>Pass</b></div>
-  <div class="kv"><span>Next inspection due</span><b>Jan 2028</b></div>
-  <p style="font-size:13px;margin:16px 0 0">Sent to the strata manager by email and added to their portal. The building is back in the renewal queue for next year${f?', and a quote for the '+f+' failed anchors is waiting for approval':''}.</p>
-  <div class="row" style="margin-top:16px"><button class="btn" id="okCert">Done</button></div>`;
+$('#tasks').onclick=e=>{const b=e.target.closest('[data-done]');if(!b)return;const k=tasksBy[mo];if(k){const i=k.findIndex(t=>t.n===b.dataset.done);if(i>-1)k.splice(i,1)}drawTasks();toast(b.dataset.done+': renewal booked. Handover task sent to Renee for Tradify.')};
+$('#nextDay').onclick=()=>{day++;drawTasks();toast('Next morning: anything not done is back on the list.')};
+drawMonths();drawTasks();
+const nurture=['Month 1: thanks for the chat, and a one page guide to anchor recertification rules','Month 2: case study from a strata portfolio like theirs','Month 3 onward: one short compliance tip a month','60 days before renewal: call task for Darnell','30 days before: "Shall we quote your next annual check?" email'];
+$('#nurture').innerHTML=nurture.map((n,i)=>`<li class="${i<2?'done':''}"><span class="ck">${i<2?'&#10003;':''}</span><span>${n}</span></li>`).join('');
+
+/* HANDOVER */
+const track=[
+ ['Won','Proposal accepted by email. Deal marked Won in GoHighLevel.','ghl'],
+ ['Handover','Renee creates the client and job in Tradify from the job sheet, then taps "Created in Tradify".','tra'],
+ ['Job completed','Technicians finish the inspection in the Tradify field app.','tra'],
+ ['Report and invoice sent','Invoice raised and sent with the compliance report. Target: 2 to 5 days after the job.','xer'],
+ ['Paid','Payment lands in Xero on 30 day terms. Deal moves to Paid.','xer'],
+ ['Testimonial and review','Request sent 2 days after payment. Renewal month set for next year.','ghl']
+];
+const srcL={ghl:['s-ghl','GoHighLevel'],tra:['s-tra','Tradify'],xer:['s-xer','Xero']};
+$('#track').innerHTML=track.map((t,i)=>`<li><span class="n">${i+1}</span><h3>${t[0]}<span class="src ${srcL[t[2]][0]}">${srcL[t[2]][1]}</span></h3><p>${t[1]}</p></li>`).join('');
+let playing=false;
+function playTrack(){if(playing)return;playing=true;const li=$$('#track li');li.forEach(l=>l.className='');li.forEach((l,i)=>setTimeout(()=>{if(i)li[i-1].className='done';l.className='now';if(i===li.length-1)setTimeout(()=>{l.className='done';playing=false;toast('Won to paid to review, tracked in one place.')},800)},i*750))}
+$('#playTrack').onclick=playTrack;
+$('#copySheet').onclick=()=>toast('Job sheet copied. Paste it into a new Tradify job.');
+$('#inTradify').onclick=()=>{toast('Marked as created in Tradify. Deal moves to Handover to ops.');const li=$$('#track li');li[0].className='done';li[1].className='done';};
+
+/* REPORTS */
+const onShow={
+ rep(){
+  const f=[['New lead',214,100],['Contacted',171,80],['Qualified',96,45],['Quote or proposal',74,35],['Won',47,22]];
+  $('#funnel').innerHTML=f.map(r=>`<div class="fr"><span>${r[0]}</span><span class="fb"><i style="width:0" data-w="${r[2]}"></i></span><span class="pc">${r[1]} · ${r[2]}%</span></div>`).join('');
+  setTimeout(()=>$$('#funnel i').forEach(i=>i.style.width=i.dataset.w+'%'),60);
+  bars('#seg',[['Strata',71,'#69BF4A'],['Education',64,'#69BF4A'],['Facility manager',58,'#69BF4A'],['Government',43,'#066AAB'],['Builder',52,'#E9A21B'],['Roofer',47,'#E9A21B']],100,'%');
+  bars('#src',[['Firmable outreach',24,'#066AAB'],['Phone',17,'#69BF4A'],['Referral',12,'#7A5BC7'],['Repeat client',9,'#E9A21B'],['Website form',6,'#9AA2A9'],['Email',3,'#C9CED3']],24);
+ },
+ tgt(){drawTargets()}
+};
+
+/* TARGETS */
+const tgts=[
+ ['Pinnacle Strata Group','Strata','Head of Compliance','Called, follow up Tue','p-due'],
+ ['Sydney West Grammar','Education','Business Manager','Meeting booked','p-ok'],
+ ['Hawkesbury Shire Council','Government','Facilities Coordinator','Not contacted','p-grey'],
+ ['Eastside Medical Precinct','Government','Facilities Manager','Email sent','p-blue'],
+ ['Crestwood Shopping Centre','Facility manager','Operations Manager','Conversation had','p-ok'],
+ ['Harbour Strata Services','Strata','Strata Manager','Not contacted','p-grey'],
+ ['Blue Gum Christian School','Education','Property Manager','Called, no answer','p-due']
+];
+let tseg='All';
+function drawTargets(){
+  $('#tChips').innerHTML=['All','Strata','Education','Government','Facility manager'].map(s=>`<button class="chip${s===tseg?' on':''}" data-s="${s}">${s}</button>`).join('');
+  $('#tRows').innerHTML=tgts.filter(t=>tseg==='All'||t[1]===tseg).map(t=>`<tr><td><b>${t[0]}</b></td><td class="hide-s">${t[1]}</td><td>${t[2]}</td><td><span class="pill ${t[4]}">${t[3]}</span></td><td><button class="btn sm ghost" data-call="${t[0]}">Log call</button></td></tr>`).join('');
+  const f=[['On the list',300,100],['Contacted',126,42],['Conversation had',58,19],['Meeting or quote',21,7],['Won',6,2]];
+  $('#tFunnel').innerHTML=f.map(r=>`<div class="fr"><span>${r[0]}</span><span class="fb"><i style="width:0" data-w="${r[2]}"></i></span><span class="pc">${r[1]}</span></div>`).join('');
+  setTimeout(()=>$$('#tFunnel i').forEach(i=>i.style.width=i.dataset.w+'%'),60);
+}
+$('#tChips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;tseg=b.dataset.s;drawTargets()};
+$('#tRows').onclick=e=>{const b=e.target.closest('[data-call]');if(!b)return;
+  $('#mbox').innerHTML=`<button class="x" aria-label="Close">&times;</button><div style="font-size:12px;color:var(--soft);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Log call</div><h2 style="margin:4px 0 12px">${b.dataset.call}</h2><div class="row">${['No answer','Voicemail','Conversation','Not now','Not ICP'].map(o=>`<button class="btn ghost sm" data-o="${o}">${o}</button>`).join('')}</div><p style="font-size:12.5px;color:var(--soft);margin:14px 0 0">One tap logs the attempt, counts it in Darnell's weekly numbers and sets the next task.</p>`;
   $('#modal').classList.add('on');
-  const close=()=>$('#modal').classList.remove('on');
-  $('#certBox .x').onclick=close;$('#okCert').onclick=close;
+  $('#mbox .x').onclick=()=>$('#modal').classList.remove('on');
+  $$('#mbox [data-o]').forEach(o=>o.onclick=()=>{$('#modal').classList.remove('on');toast(b.dataset.call+': '+o.dataset.o+' logged. Next task set.')});
 };
 $('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('on')};
-
-/* MAP */
-const towns=[
- {n:'Newcastle',x:470,y:60},{n:'Central Coast',x:430,y:120},{n:'Sydney',x:395,y:185},{n:'Parramatta',x:350,y:180},
- {n:'Picton',x:320,y:250,hq:1},{n:'Camden',x:330,y:225},{n:'Wollongong',x:370,y:285},{n:'Kiama',x:365,y:325},
- {n:'Goulburn',x:220,y:330},{n:'Canberra',x:140,y:400}
-];
-const jobs=[[465,68],[478,52],[455,80],[428,128],[440,112],[400,190],[388,178],[410,196],[355,172],[342,188],[336,230],[322,218],[372,292],[380,278],[362,300],[368,330],[358,318],[224,322],[214,338],[148,392],[132,408],[140,386]];
-function drawMap(){
-  let h=`<path d="M520 10 C 500 70, 470 120, 440 160 S 400 240, 390 300 S 370 380, 330 460" fill="none" stroke="#B9D7EC" stroke-width="10" stroke-linecap="round" opacity=".6"/>
-  <text x="520" y="250" font-size="12" fill="#8FB6D3" font-style="italic">Tasman Sea</text>
-  <path id="r1" class="route" stroke="#066AAB" d="M320 250 L336 230 L342 188 L355 172 L388 178 L400 190 L410 196 L320 250"/>
-  <path id="r2" class="route" stroke="#69BF4A" d="M320 250 L362 300 L372 292 L380 278 L358 318 L368 330 L320 250"/>
-  <path id="r3" class="route" stroke="#E9A21B" d="M320 250 L428 128 L440 112 L455 80 L465 68 L478 52"/>
-  <path id="r4" class="route" stroke="#9B6BD6" d="M320 250 L224 322 L214 338 L148 392 L132 408 L140 386"/>`;
-  jobs.forEach(j=>h+=`<circle cx="${j[0]}" cy="${j[1]}" r="5" fill="#C9372C" opacity=".85"/>`);
-  towns.forEach(t=>h+=t.hq?`<g><circle cx="${t.x}" cy="${t.y}" r="11" fill="#69BF4A" stroke="#fff" stroke-width="3"/><text x="${t.x-16}" y="${t.y+4}" text-anchor="end" font-size="13" font-weight="700" fill="#24272A">Picton office</text></g>`:`<g><circle cx="${t.x}" cy="${t.y}" r="3" fill="#24272A"/><text x="${t.x-8}" y="${t.y+4}" text-anchor="end" font-size="11.5" fill="#5E666E">${t.n}</text></g>`);
-  $('#map').innerHTML=h;
-}
-drawMap();
-const runs=[
- {c:'#066AAB',n:'Mon 7 Dec · Sydney and west',b:7,a:96,k:'188 km'},
- {c:'#69BF4A',n:'Tue 8 Dec · Illawarra',b:6,a:71,k:'164 km'},
- {c:'#E9A21B',n:'Wed 9 and Thu 10 Dec · Central Coast and Newcastle',b:5,a:88,k:'412 km, one night away'},
- {c:'#9B6BD6',n:'Fri 11 Dec · Goulburn and Canberra',b:4,a:39,k:'386 km'}
-];
-$('#plan').onclick=()=>{
-  $$('.route').forEach((r,i)=>setTimeout(()=>r.classList.add('on'),i*350));
-  $('#runs').innerHTML=runs.map(r=>`<li style="border-left:4px solid ${r.c}"><b>${r.n}</b><br><span style="color:var(--soft)">${r.b} buildings · ${r.a} anchors · ${r.k}</span></li>`).join('')+`<li style="background:var(--green-pale);border-color:transparent">22 booking texts ready to send. Clients pick a time on their run's day.</li>`;
-  toast('22 buildings grouped into 4 runs.');
-};
-
-/* PORTAL */
-const prow=[
- ['Harbour Line SP 31877','Kiama',14,'14 Feb 2026','12 Feb 2027','due'],
- ['Ocean Rise SP 28810','Shellharbour',9,'02 Jun 2026','02 Jun 2027','ok'],
- ['The Esplanade SP 19034','Wollongong',21,'18 Mar 2026','18 Mar 2027','ok'],
- ['Kurrajong Court SP 7721','Campbelltown',6,'30 Jan 2026','30 Jan 2027','due'],
- ['Mill Street Lofts SP 60455','Camperdown',11,'11 Nov 2026','11 Nov 2027','bad'],
- ['Belmore Gardens SP 33190','Belmore',8,'07 Aug 2026','07 Aug 2027','ok']
-];
-const lab={ok:['p-ok','In date'],due:['p-due','Due soon'],bad:['p-bad','1 anchor failed']};
-$('#portalRows').innerHTML=prow.map(r=>`<tr><td><b>${r[0]}</b></td><td class="hide-s">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td><span class="pill ${lab[r[5]][0]}">${lab[r[5]][1]}</span></td><td style="white-space:nowrap"><button class="btn ghost" data-cert="${r[0]}">Certificate</button> ${r[5]==='ok'?'':r[5]==='bad'?'<button class="btn dark" data-q="1">Approve quote</button>':'<button class="btn" data-b="1">Book</button>'}</td></tr>`).join('');
-$('#portalRows').onclick=e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.cert)toast('Certificate PDF for '+b.dataset.cert+' would download here.');
-  if(b.dataset.b)toast('Booking page opens with next week\'s run days for that area.');
-  if(b.dataset.q)toast('Quote approved. Job created in the new work pipeline and the crew notified.');};
-
-/* TAG */
-const tags={
- A04:{s:'ok',t:'Safe to use',last:'18 Mar 2026',next:'18 Mar 2027',by:'Recert technician 2',type:'Single point anchor, rated 15 kN'},
- A09:{s:'due',t:'Due in 23 days',last:'19 Dec 2025',next:'19 Dec 2026',by:'Recert technician 1',type:'Single point anchor, rated 15 kN'},
- A11:{s:'bad',t:'Do not use',last:'11 Nov 2026',next:'Failed, tagged out',by:'Recert technician 2',type:'Single point anchor'}
-};
-function showTag(id){
-  const t=tags[id];const bg=t.s==='ok'?'var(--green-pale)':t.s==='due'?'var(--amber-pale)':'var(--red-pale)';const fg=t.s==='ok'?'var(--green-deep)':t.s==='due'?'#9A6508':'var(--red)';
-  $('#tagTitle').textContent='Anchor '+id;
-  $('#tagBody').innerHTML=`<div class="status-big" style="background:${bg};color:${fg}"><div class="s1">${t.t}</div><div style="font-size:12px;margin-top:3px">The Esplanade SP 19034, Wollongong</div></div>
-  <div class="kv"><span>Type</span><span>${t.type}</span></div><div class="kv"><span>Last inspected</span><span>${t.last}</span></div><div class="kv"><span>Next due</span><span>${t.next}</span></div><div class="kv"><span>Inspected by</span><span>${t.by}</span></div>
-  ${t.s==='bad'?'<p style="font-size:12.5px;color:var(--red);margin:12px 0">This anchor failed inspection. Use another anchor or stop work and call the office.</p><button class="btn" style="width:100%;background:var(--red)">Call 1300 147 233</button>':t.s==='due'?'<p style="font-size:12.5px;margin:12px 0">Still in date. The building manager has been sent a reminder.</p>':'<p style="font-size:12.5px;margin:12px 0">Check your harness and lanyard before you clip on.</p>'}`;
-  $$('[data-tag]').forEach(b=>b.className='btn'+(b.dataset.tag===id?'':' ghost'));
-}
-$$('[data-tag]').forEach(b=>b.onclick=()=>showTag(b.dataset.tag));
-
-/* AUTOPILOT */
-const steps=[
- ['90 days out','Email to the strata manager with last year\'s certificate and a link to book.'],
- ['60 days out','Text reminder. If nobody books in 7 days, a call task goes to the office.'],
- ['Booked','Client picks a time on their area\'s run day. Calendar and job sheet update.'],
- ['Day before','Text with the technician\'s arrival window and roof access check.'],
- ['Inspection','Technician passes or fails each anchor on the phone, with photos.'],
- ['Certificate','PDF certificate sent and saved in the client portal. Next due date set.'],
- ['Failed anchors','Quote sent for approval, followed up on day 2 and day 5.'],
- ['2 days later','Google review request to the person who booked.']
-];
-$('#tl').innerHTML=steps.map((s,i)=>`<li><span class="n">${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></li>`).join('');
-let playing=false;
-$('#play').onclick=()=>{if(playing)return;playing=true;const li=$$('#tl li');li.forEach(l=>l.className='');
-  li.forEach((l,i)=>setTimeout(()=>{if(i)li[i-1].className='done';l.className='now';if(i===li.length-1)setTimeout(()=>{l.className='done';playing=false;toast('One renewal done, start to finish, with no chasing.')},900)},i*800));};
-const leads=[
- ['#066AAB','Web form: facility manager, 3 warehouses in Smeaton Grange, wants anchors recertified. Assessment task for Lee.'],
- ['#E9A21B','Missed call on 1300 line at 12:41. Text back sent, caller replied asking about HVAC platforms.'],
- ['#69BF4A','Call back request from the HVAC page. Source: Google. Added to new work pipeline.'],
- ['#066AAB','Training enquiry: onsite induction for 8 staff. Booking link sent.']
-];
-leads.forEach(l=>addFeed($('#leads'),l));
 })();
 </script>
 </body>

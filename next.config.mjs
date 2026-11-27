@@ -22,7 +22,7 @@ const nextConfig = {
       { source: "/clients/rogalski-lawyers", destination: "/clients/rogalski-lawyers/index.html", permanent: false },
       // G&B Patios "Patio Planner and Job Hub" demo (sample data).
       { source: "/clients/gb-patios", destination: "/clients/gb-patios/index.html", permanent: false },
-      // iSafe Access "Recert Command" demo (sample data).
+      // iSafe Access "Compliance Sales Hub" demo (sample data).
       { source: "/clients/isafe-access", destination: "/clients/isafe-access/index.html", permanent: false },
       // Moved the Regal Homes client deliverable under /client/.
       { source: "/regal-homes", destination: "/client/regal-homes", permanent: true },
