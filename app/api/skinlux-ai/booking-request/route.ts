@@ -10,6 +10,7 @@ import { INJECTABLE_RE } from "@/lib/skinlux-timely-public";
  * contact (name, mobile, email, clinic tags), a card in the Leads pipeline,
  * a note with what they asked for, and a task for the team to book it in Timely
  * and text them to confirm. Shows in Skinlux HQ (Leads, Team tasks, numbers).
+ * ?src=call when the AI phone agent sends it (tag source-ai-call, "AI phone call" in the note).
  * POST ?clinic=booragoon { first_name, last_name?, phone, email?, treatment, preferred_time, notes?, contact_id? }
  */
 export const dynamic = "force-dynamic";
@@ -24,19 +25,21 @@ export async function POST(req: NextRequest) {
   const missing = [!first && "first name", phone.replace(/\D/g, "").length < 9 && "mobile number", !treatment && "treatment", !when && "preferred day and time"].filter(Boolean);
   if (missing.length) return aiOut(200, { ok: false, answer: `Before sending the request, ask for their ${missing.join(", ")}.` });
   const inj = INJECTABLE_RE.test(treatment);
+  const call = req.nextUrl.searchParams.get("src") === "call" || s(b.src, 10) === "call";
+  const src = call ? "ai-call" : "ai-chat", from = call ? "the AI phone call" : "the website chat";
 
-  const tags = [`clinic-${clinic}`, "source-ai-chat", "booking-request", "new-client"];
+  const tags = [`clinic-${clinic}`, `source-${src}`, "booking-request", "new-client"];
   if (inj) tags.push("injectable");
   const fields = { Clinic: clinic === "leederville" ? "Leederville" : "Booragoon", ...(await clinicFields(clinic)) };
-  const id = await upsertContact(clinic, { first_name: first, last_name: last, email: email || undefined, phone, source: "ai-chat", tags, fields });
+  const id = await upsertContact(clinic, { first_name: first, last_name: last, email: email || undefined, phone, source: src, tags, fields });
   if (!id) return aiOut(200, { ok: false, answer: "The request couldn't be saved. Give them the clinic phone number to book." });
 
   const what = inj ? "a cosmetic consultation with a nurse" : treatment;
-  await openLead(clinic, id, `${first} ${last}`.trim() + `: ${what}`, "ai-chat");
-  await addNote(clinic, id, `Booking request from the website chat: ${what}, wants ${when}.${inj ? ` (Asked about: ${treatment})` : ""}${email ? ` Email ${email}.` : ""}${notes ? ` Notes: ${notes}` : ""}`);
+  await openLead(clinic, id, `${first} ${last}`.trim() + `: ${what}`, src);
+  await addNote(clinic, id, `Booking request from ${from}: ${what}, wants ${when}.${inj ? ` (Asked about: ${treatment})` : ""}${email ? ` Email ${email}.` : ""}${notes ? ` Notes: ${notes}` : ""}`);
   await addTask(clinic, id, `Book ${first} ${last} in Timely: ${what}, ${when}`.slice(0, 200),
-    `From the website chat. Book it in Timely, then text ${first} to confirm the time and any deposit.${notes ? ` Notes: ${notes}` : ""}`, 1);
-  await logEvent({ k: "new_lead", c: clinic, n: `${first} ${last.slice(0, 1)}`.trim(), i: what, s: "ai-chat", inj: inj ? 1 : undefined });
+    `From ${from}. Book it in Timely, then text ${first} to confirm the time and any deposit.${notes ? ` Notes: ${notes}` : ""}`, 1);
+  await logEvent({ k: "new_lead", c: clinic, n: `${first} ${last.slice(0, 1)}`.trim(), i: what, s: src, inj: inj ? 1 : undefined });
 
   return aiOut(200, { ok: true,
     answer: `Request sent. Tell ${first} the ${clinic === "leederville" ? "Leederville" : "Booragoon"} team will book ${when} and text them to confirm, usually within clinic hours. A deposit may be needed for some treatments.` });
